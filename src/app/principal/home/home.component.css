@@ -1,0 +1,374 @@
+
+.landing-page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #020024;
+background: linear-gradient(279deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+  overflow: hidden; /* Important for the wavy shape */
+  position: relative; /* For positioning the wavy background */
+}
+
+/* Navbar Styling */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #ffffff; /* Or a very light pink like #FFF0F5 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 10; /* Ensure navbar is above other elements */
+}
+
+.navbar .logo {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .logo img {
+  width: 40px; /* Adjust size as needed */
+  height: 40px;
+  margin-right: 10px;
+}
+
+.navbar .logo span {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333; /* Darker text for contrast */
+}
+
+.navbar .nav-links ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.navbar .nav-links li {
+  margin-left: 30px;
+}
+
+.navbar .nav-links a {
+  text-decoration: none;
+  color: #666;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar .nav-links a:hover {
+  color: #6985ff; /* A soft pink for hover, matching the inspiration */
+}
+
+/* Hero Section Styling (Main content area) */
+.hero-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  flex-direction: row; /* Content and image side by side */
+  align-items: center;
+  justify-content: start;
+  padding: 50px 4px;
+  flex: 1;
+  position: relative;
+  z-index: 5;
+}
+
+.hero-content {
+  display: block;
+  padding: 10px;
+  margin: 2px;
+  width: 400px;
+}
+
+.hero-content h1 {
+  font-size: 3.5em;
+  color: #efecec;
+  margin-bottom: 10px;
+  line-height: 1.2;
+  text-shadow: #191a1a 1px 0 1px;
+}
+
+.hero-content p {
+  font-size: 1.2em;
+  color: #2e2d28;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  text-shadow: #031478 1px 0 1px;
+}
+
+
+
+
+.call-to-action-button {
+ background: #fafeff;
+background: linear-gradient(279deg, rgba(250, 254, 255, 1) 2%, rgba(183, 193, 196, 1) 96%);
+  color: #0c2c97;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(255, 105, 180, 0.3);
+}
+
+
+
+
+.landing-page-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60%;
+  height: 100%;
+  background-color: #ffffff;
+  border-bottom-left-radius: 50% 30%;
+  border-top-left-radius: 60% 76%;
+  transform: translateX(30%);
+  z-index: 1;
+  pointer-events: none;
+   background-image: url('/assets/medic.svg');
+  background-repeat: no-repeat;
+  background-size: 70%;
+  background-position: center left;
+
+}
+
+
+.landing-page-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55%;
+  height: 100%;
+  background-color: #c0c9ff;
+  border-bottom-left-radius: 45% 25%;
+  border-top-left-radius: 55% 35%;
+  transform: translateX(40%) translateY(-5%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+app-login {
+  width: 100dvw;
+  z-index: 1000;
+  position: relative; /* <-- Esto activa el z-index */
+}
+
+
+
+
+
+/* ... (tu CSS existente, sin cambios arriba del media query) ... */
+
+/* Ajustes para el Hero Section en pantallas pequeñas */
+@media (max-width: 900px) {
+  .hero-section {
+    flex-direction: column; /* Apila el contenido y la imagen verticalmente */
+    text-align: center; /* Centra el texto */
+    padding: 30px 20px; /* Ajusta el padding para dar más espacio */
+    justify-content: center; /* Centra el contenido verticalmente si hay espacio */
+    align-items: center; /* Centra los ítems horizontalmente */
+    /* Remove flex-grow: 1 or adjust as needed if it pushes content too much */
+    flex: none; /* Desactiva flex-grow para evitar que el hero-section se estire demasiado */
+    height: auto; /* Permite que la altura se ajuste al contenido */
+  }
+
+  .hero-content {
+    margin-right: 0; /* Elimina el margen derecho */
+    margin-bottom: 30px; /* Espacio entre el texto y la imagen */
+    width: 90%; /* Hace que el contenido ocupe más ancho en pantallas pequeñas */
+    max-width: 450px; /* Limita el ancho máximo para legibilidad */
+    padding: 0 15px; /* Padding interno para el texto */
+  }
+
+  .hero-content h1 {
+    font-size: 2.2em; /* Reduce el tamaño del título */
+    margin-bottom: 15px;
+  }
+
+  .hero-content p {
+    font-size: 1em; /* Reduce el tamaño del párrafo */
+    margin-bottom: 25px;
+  }
+
+  /* Ajustes para el botón */
+  .call-to-action-button {
+    padding: 12px 25px; /* Ajusta el padding del botón */
+    font-size: 1em;
+  }
+
+  /* La ilustración médica se gestiona ahora en el ::before */
+  /* Remove .hero-image img styling if it's no longer used for the main illustration */
+  /* .hero-image img {
+    width: 300px;
+  } */
+
+  /* Navbar Adjustments */
+  .navbar {
+    flex-direction: column; /* Apila los elementos del navbar */
+    padding: 15px 20px;
+  }
+
+  .navbar .nav-links ul {
+    margin-top: 15px;
+    flex-wrap: wrap; /* Permite que los enlaces se envuelvan */
+    justify-content: center; /* Centra los enlaces */
+  }
+
+  .navbar .nav-links li {
+    margin: 5px 10px; /* Reduce el margen entre los enlaces */
+  }
+
+  /* Mejoras para las ondas de fondo en móvil */
+  .landing-page-container::before,
+  .landing-page-container::after {
+    width: 100%; /* Las ondas ocupan todo el ancho */
+    border-radius: 0; /* Desactiva los border-radius específicos para una forma más limpia */
+    transform: none; /* Elimina cualquier transformación inicial */
+    height: 60%; /* Ocupa una parte mayor de la altura en móvil */
+    top: auto;
+    bottom: 0; /* Posiciónalas desde la parte inferior */
+    background-size: contain; /* Asegura que la imagen de fondo se ajuste sin recortarse */
+    background-position: center bottom; /* Centra la imagen en la parte inferior */
+  }
+
+  .landing-page-container::before {
+    background-color: #ffffff; /* Tu color para la onda de arriba */
+    height: 55%; /* Una altura ligeramente menor para la onda de arriba */
+    bottom: 0;
+    /* Mantenemos tu imagen de fondo aquí */
+  }
+
+  .landing-page-container::after {
+    background-color: #c0c9ff; /* Tu color para la onda de abajo */
+    height: 60%; /* La onda de abajo es un poco más alta */
+    bottom: 0;
+  }
+
+  /* Asegura que el app-login tenga espacio y se vea bien */
+  app-login {
+    width: 90%; /* Ocupa la mayoría del ancho */
+    max-width: 400px; /* Pero no demasiado grande */
+    margin: 30px auto; /* Centra el componente y le da margen */
+    padding: 20px; /* Ajusta el padding interno */
+  }
+
+  /* Ajusta el z-index de app-login si es necesario para que siempre esté encima */
+  app-login {
+    z-index: 100; /* Asegura que esté por encima de las ondas de fondo */
+    position: relative; /* Necesario para que el z-index funcione correctamente */
+  }
+
+  /* Asegúrate de que el contenido del hero-section no se superponga con app-login */
+  .hero-section {
+    padding-bottom: 20px; /* Un poco de padding extra abajo del hero para separar del login */
+  }
+
+  /* Si el modal-backdrop se usa para algo más que el login, considéralo */
+  .modal-backdrop {
+    height: 100vh; /* Asegura que cubra toda la altura de la ventana */
+    width: 100vw; /* Asegura que cubra todo el ancho de la ventana */
+  }
+
+  .svg-medical {
+    height: 250px; /* Reduce la altura del SVG en móvil */
+    background-size: contain; /* Asegura que el SVG se ajuste */
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-content h1 {
+    font-size: 1.8em; /* Más reducción del tamaño del título */
+  }
+
+  .hero-content p {
+    font-size: 0.9em; /* Más reducción del tamaño del párrafo */
+  }
+
+  .call-to-action-button {
+    font-size: 0.9em;
+    padding: 10px 20px;
+  }
+
+  .navbar .logo span {
+    font-size: 1.1em;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar .logo span {
+    font-size: 1.2em;
+  }
+
+  .navbar .nav-links ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .navbar .nav-links li {
+    margin: 5px 10px;
+  }
+
+  app-login {
+    width: 100dvw;
+  }
+}
+
+.hero-content {
+  background-color: none;
+}
+
+
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100dvw;
+  height: 100dvh;
+  --color: rgba(114, 114, 114, 0.3);
+  background-color: #191a1a;
+  background-image: linear-gradient(0deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%,transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%,transparent),
+      linear-gradient(90deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%,transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%,transparent);
+  background-size: 55px 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+
+}
+
+.modal-content {
+  border-radius: 12px;
+  padding: 0.5rem;
+  position: relative;
+
+  backdrop-filter: blur(4px); /* Agrega el efecto de desenfoque */
+}
+
+.close-button {
+  color: orangered;
+  position: relative;
+  font-size: 48px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+
+.svg-medical {
+  width: 100%;
+  height: 400px; /* Altura fija necesaria */
+  background-image: url('/src/assets/medic.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+   z-index: 9999;
+  position: relative;
+}

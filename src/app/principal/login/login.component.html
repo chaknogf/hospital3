@@ -1,0 +1,32 @@
+<div class="container-login">
+  <!-- From Uiverse.io by alexruix -->
+<div class="form-box">
+<form class="form" [formGroup]="loginForm" onsubmit="">
+    <span class="title">Login</span>
+    <span class="subtitle">Ingresa tus credenciales</span>
+    <div class="form-container">
+      <input
+          type="text"
+          class="input"
+          formControlName="username"
+          placeholder="Username"
+          autocomplete="off"
+        />
+
+			<input
+          type="password"
+          class="input"
+          formControlName="password"
+          placeholder="Password"
+        />
+
+    </div>
+    <button (click)="onSubmit()">Iniciar Sesión</button>
+</form>
+
+</div>
+
+
+
+</div>
+
