@@ -4,7 +4,7 @@ echo "🚀 Iniciando despliegue de la app 'hospital3'..."
 
 # Ruta al proyecto Angular
 PROYECTO_DIR="/home/matrix/Programas/hospital3"
-DIST_DIR="$PROYECTO_DIR/dist/hospital3/browser"
+DIST_DIR="$PROYECTO_DIR/dist/hospital3"
 DESTINO="/var/www/hospital3"
 
 # 1. Ir al directorio del proyecto
@@ -21,13 +21,14 @@ if [ ! -d "$DIST_DIR" ]; then
 fi
 
 # 4. Crear destino si no existe
+echo "📁 Verificando directorio destino..."
 sudo mkdir -p "$DESTINO"
 
 # 5. Copiar archivos
 echo "📂 Copiando archivos a $DESTINO"
 sudo cp -r "$DIST_DIR"/* "$DESTINO"/
 
-# 6. Asignar permisos (ajustar usuario si no es www-data)
+# 6. Asignar permisos (ajustar usuario si no es nginx)
 echo "🔐 Ajustando permisos..."
 sudo chown -R nginx:nginx "$DESTINO"
 sudo chmod -R 755 "$DESTINO"
@@ -39,4 +40,5 @@ sudo nginx -t || { echo "❌ Error en la configuración de Nginx"; exit 1; }
 echo "🔄 Recargando Nginx..."
 sudo systemctl reload nginx
 
-echo "✅ Despliegue completado correctamente. Visite: https://hgtecpan.duckdns.org/hospital3/ o   http://hgtecpan.duckdns.org/home/"
+echo "✅ Despliegue completado correctamente. Visite:"
+echo "🌐 https://hgtecpan.duckdns.org/hospital3/"
