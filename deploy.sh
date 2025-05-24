@@ -4,7 +4,7 @@ echo "🚀 Iniciando despliegue de la app 'hospital3'..."
 
 # Ruta al proyecto Angular
 PROYECTO_DIR="/home/matrix/Programas/hospital3"
-DIST_DIR="$PROYECTO_DIR/dist/hospital3/browser"
+DIST_DIR="$PROYECTO_DIR/dist/hospital3/"
 DESTINO="/var/www/hospital3"
 
 # 1. Ir al directorio del proyecto
@@ -12,7 +12,7 @@ cd "$PROYECTO_DIR" || { echo "❌ No se pudo acceder al proyecto"; exit 1; }
 
 # 2. Compilar con base-href
 echo "🏗️ Ejecutando build..."
-ng build --configuration production --base-href /hospital3/ || { echo "❌ Error en el build"; exit 1; }
+ng build --base-href=/hospital3/ || { echo "❌ Error en el build"; exit 1; }
 
 # 3. Verificar que el dist existe
 if [ ! -d "$DIST_DIR" ]; then
