@@ -309,7 +309,7 @@ app-login {
 .svg-medical {
   width: 100%;
   height: 400px;
-  background-image: url('/src/assets/medic.svg');
+  background-image: url('assets/medic.svg');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
