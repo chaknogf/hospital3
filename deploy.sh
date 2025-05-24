@@ -4,7 +4,7 @@ echo "🚀 Iniciando despliegue de la app 'hospital3'..."
 
 # Ruta al proyecto Angular
 PROYECTO_DIR="/home/matrix/Programas/hospital3"
-DIST_DIR="$PROYECTO_DIR/dist/hospital3"
+DIST_DIR="$PROYECTO_DIR/dist/hospital3/browser"
 DESTINO="/var/www/hospital3"
 
 # 1. Ir al directorio del proyecto
