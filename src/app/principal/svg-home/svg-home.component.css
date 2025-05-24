@@ -1,0 +1,10 @@
+svg {
+  width: 50dvw;
+}
+
+@media screen and (max-width: 600px) {
+  svg {
+    width: 80dvw;
+  }
+
+}

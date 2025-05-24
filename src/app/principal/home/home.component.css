@@ -68,6 +68,12 @@
   z-index: 5;
 }
 
+.hero-image {
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
 .hero-content {
   display: block;
   padding: 10px;
@@ -117,10 +123,7 @@
   transform: translateX(30%);
   z-index: 1;
   pointer-events: none;
-  background-image: url('/assets/medic.svg');
-  background-repeat: no-repeat;
-  background-size: 70%;
-  background-position: center left;
+
 }
 
 .landing-page-container::after {
@@ -306,7 +309,7 @@ app-login {
   cursor: pointer;
 }
 
-.svg-medical {
+/* .svg-medical {
   width: 100%;
   height: 400px;
   background-image: url('/assets/medic.svg');
@@ -315,4 +318,4 @@ app-login {
   background-position: center;
   z-index: 9999;
   position: relative;
-}
+} */
