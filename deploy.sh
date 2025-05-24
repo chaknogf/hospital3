@@ -1,18 +1,18 @@
 #!/bin/bash
 
-echo "🚀 Iniciando despliegue de la app 'medicalApp'..."
+echo "🚀 Iniciando despliegue de la app 'hospital3'..."
 
 # Ruta al proyecto Angular
-PROYECTO_DIR="/home/matrix/Programas/medicalAppDocencia"
-DIST_DIR="$PROYECTO_DIR/dist/medicalApp/browser"
-DESTINO="/var/www/medicalApp"
+PROYECTO_DIR="/home/matrix/Programas/hospital3"
+DIST_DIR="$PROYECTO_DIR/dist/hospital3/browser"
+DESTINO="/var/www/hospital3"
 
 # 1. Ir al directorio del proyecto
 cd "$PROYECTO_DIR" || { echo "❌ No se pudo acceder al proyecto"; exit 1; }
 
 # 2. Compilar con base-href
 echo "🏗️ Ejecutando build..."
-ng build --base-href=/medicalApp/ || { echo "❌ Error en el build"; exit 1; }
+ng build --base-href=/hospital3/ || { echo "❌ Error en el build"; exit 1; }
 
 # 3. Verificar que el dist existe
 if [ ! -d "$DIST_DIR" ]; then
@@ -39,4 +39,4 @@ sudo nginx -t || { echo "❌ Error en la configuración de Nginx"; exit 1; }
 echo "🔄 Recargando Nginx..."
 sudo systemctl reload nginx
 
-echo "✅ Despliegue completado correctamente. Visite: https://hgtecpan.duckdns.org/medicalApp/"
+echo "✅ Despliegue completado correctamente. Visite: https://hgtecpan.duckdns.org/hospital3/ o   http://hgtecpan.duckdns.org/home/"
