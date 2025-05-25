@@ -24,12 +24,15 @@ export class DashboardComponent implements OnInit {
 
   modulos = [
     { nombre: 'Pacientes', descripcion: 'Gestión de pacientes y registros médicos', ruta: '/pacientes', icon: TarjetaPacienteComponent },
-    { nombre: 'Vacunas', descripcion: 'Control de vacunas y esquemas', ruta: '/vacunas' },
+    { nombre: 'UISAU', descripcion: 'Gestor de Atención al Usuario', ruta: '/usisau' },
+    // { nombre: 'Vacunas', descripcion: 'Control de vacunas y esquemas', ruta: '/vacunas' },
     { nombre: 'Personal', descripcion: 'Administración del personal médico', ruta: '/personal' },
     { nombre: 'Estadística', descripcion: 'Gestión de reportes y datos estadísticos', ruta: '/estadistica', icon: DatosIconComponent },
     { nombre: 'Clínica', descripcion: 'Gestión de consulta médica', ruta: '/clinica' },
     { nombre: 'Reportes y SIGSA', descripcion: 'Imprime reportes y sigsas', ruta: '/reportes' },
     { nombre: 'Rayos X', descripcion: 'Gestor de rayos x', ruta: '/rayos' },
     { nombre: 'Laboratorio', descripcion: 'Gestión de Laboratorio', ruta: '/laboratorio' },
+
   ];
 }
+

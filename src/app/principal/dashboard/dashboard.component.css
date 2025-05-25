@@ -2,6 +2,7 @@
   --primary-glow: #00f0ff;
   --hud-blue: #0e1726;
   --hud-overlay: rgba(0, 255, 255, 0.05);
+
 }
 
 body, html {
@@ -9,6 +10,7 @@ body, html {
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
   background-color: var(--hud-blue);
+
 }
 
 .layout-container {
@@ -23,6 +25,7 @@ body, html {
   align-items: stretch;
   padding: 1rem;
   position: relative;
+  border-radius: 5px;
 }
 
 /* Futurist HUD background animation */
