@@ -12,15 +12,16 @@ body, html {
 }
 
 .layout-container {
-  min-height: 100vh;
+  min-height: 100dvh;
   background: radial-gradient(ellipse at center, #0a0f1a 0%, #000c17 100%);
   overflow: hidden;
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 1rem;
+  align-content: center;
   justify-content: center;
-  align-items: center;
-  padding: 2rem;
+  align-items: stretch;
+  padding: 1rem;
   position: relative;
 }
 
@@ -45,17 +46,20 @@ body, html {
 
 .card {
   position: relative;
-  width: 300px;
+  width: 200px;
+  height: 130px;
   background: var(--hud-overlay);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 1rem;
-  padding: 2rem;
+  padding: 1.5rem;
   color: #e0ffff;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
   z-index: 1;
+  text-decoration: none;
+
 }
 
 .card::after {
@@ -86,4 +90,6 @@ body, html {
 .card p {
   font-size: 0.95rem;
   color: #b3ecff;
+
+
 }
