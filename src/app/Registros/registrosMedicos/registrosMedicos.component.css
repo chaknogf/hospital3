@@ -1,0 +1,98 @@
+:root {
+  --primary-glow: #00f0ff;
+  --hud-blue: #0e1726;
+  --hud-overlay: rgba(0, 255, 255, 0.05);
+
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--hud-blue);
+
+}
+
+.layout-container {
+  min-height: 100dvh;
+  background: radial-gradient(ellipse at center, #0a0f1a 0%, #000c17 100%);
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-content: center;
+  justify-content: center;
+  align-items: stretch;
+  padding: 1rem;
+  position: relative;
+  border-radius: 5px;
+}
+
+/* Futurist HUD background animation */
+.layout-container::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  background: repeating-radial-gradient(circle at center, var(--primary-glow) 1px, transparent 2px);
+  opacity: 0.04;
+  animation: rotateGrid 60s linear infinite;
+  z-index: 0;
+}
+
+@keyframes rotateGrid {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.card {
+  position: relative;
+  width: 200px;
+  height: 130px;
+  background: var(--hud-overlay);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  color: #e0ffff;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+  z-index: 1;
+  text-decoration: none;
+
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  border: 1px dashed rgba(0, 255, 255, 0.1);
+  pointer-events: none;
+  animation: pulseBorder 4s infinite ease-in-out;
+}
+
+@keyframes pulseBorder {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.5; }
+}
+
+.card:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+}
+
+.card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: #b3ecff;
+
+
+}
