@@ -1,6 +1,7 @@
+
 <div class="layout-container">
   <a *ngFor="let opt of options" [routerLink]="opt.ruta" class="card">
-    <ng-container *ngIf="opt.icon" [ngComponentOutlet]="opt.icon"></ng-container>
+    <span [innerHTML]="opt.icon"></span>
     <h2>{{opt.nombre}}</h2>
     <p>{{opt.descripcion}}</p>
   </a>

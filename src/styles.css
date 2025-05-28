@@ -1,23 +1,297 @@
-/*
-body {
- height: 100dvw;
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: rgba(10, 1, 20, 0.956);
-  background-image: url('./assets/rainbow.svg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center center;
-}
-*/
+
 
 body {
-  background: #020024;
-background: linear-gradient(279deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+
+  background: #0d063d;
+  background: radial-gradient(ellipse at bottom, rgba(0, 212, 255, 1) -15%, rgba(9, 9, 121, 1) 75%);
+
+}
+
+.layout-container {
+  min-height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-content:flex-start;
+  justify-content: center;
+  align-items: stretch;
+  padding: 0.6rem;
+  position: relative;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+
+.custom-table-wrapper {
+  width: 100dvw;
+  padding: 0.2rem;
+  border-radius: 12px;
+  background-color: #fffffff0; /* Azul grisáceo profundo */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+  overflow-x: auto;
+  border: 1px solid #3ae3d9; /* Acento turquesa elegante */
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  margin: 0.5rem 0;
+  z-index: 10;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  color: #09094e;
+  table-layout: fixed;
+
+}
+
+.custom-table thead {
+  background-color: #24283b;
+  line-height: 1.1; /* Reduce altura */
+  font-size: clamp(0.75rem, 2vw, 0.95rem); /* Ajuste fluido de tamaño de texto */
+}
+
+.custom-table th {
+  padding: 0.5rem 0.3rem; /* Menos espacio */
+  white-space: nowrap;    /* Evita salto de línea si no desea multirenglón */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: inherit;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 0.3rem 0.3rem;
+  text-align: center;
+  /* border-bottom: 1px solid #2e3247; */
+  font-size: 0.95rem;
+  text-transform: capitalize;
+  word-wrap: break-word;
+}
+
+.custom-table th {
+  color: #f2f2f2;
+  font-weight: 600;
+  background-color: #2f354d;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.custom-table th:hover {
+  background-color: #3a405e;
+  border-radius: 6px;
+}
+
+.custom-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  transition: background 0.3s;
+  border-radius: 8px;
+}
+
+/* Botones con diseño elegante */
+.custom-btn {
+  background-color: #3ae3d9;
+  color: #1b1e2b;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  margin: 0 0.3rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.custom-btn:hover {
+  background-color: #23c9bf;
+  color: #ffffff;
+}
+
+/* Mobile-first ajustes */
+@media (max-width: 768px) {
+  .custom-table-wrapper {
+    padding: 0.75rem;
+  }
+
+  .custom-table th,
+  .custom-table td {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.3rem;
+  }
+
+  .custom-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+  }
+}
+
+.custom-table tbody tr:nth-child(even) {
+  background-color: #f5f8fa;
+}
+
+.custom-table tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #051e2f;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 9999px rgba(58, 227, 217, 0.05);
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+
+}
+
+.table-button {
+  border-radius: 4px;
+  margin: 0.1rem;
+  padding: 0.2rem;
+  font-size: x-small
+}
+
+.table-button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Contenedor de búsqueda */
+.search-container {
+  width: 95dvw;
+  margin: 0 auto;
+  padding: 0.5rem;
+  background-color: #673ab761;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 960px;
+}
+
+/* Campos de entrada */
+.search-input {
+  flex: 1 1 140px;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  min-width: 110px;
+  transition: all 0.2s ease;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.search-input:focus {
+  border-color: #09f7c0;
+  box-shadow: 0 0 4px rgba(9, 247, 192, 0.25);
+  outline: none;
+  text-align: end;
+  font-size: 0.85rem;
+}
+
+/* Botones base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  white-space: nowrap;
+  min-width: 120px;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Icono en botón */
+.btn span {
+  margin-right: 0.4rem;
+  display: inline-block;
+}
+
+/* Colores personalizados */
+.btn-submit {
+  background-color: #0b2932;
+  color: #09f7c0;
+}
+
+.btn-submit:hover {
+  background-color: #09f7c0;
+  color: #0b2932;
+  border: 1px solid #0b2932;
+}
+
+.btn-delete {
+  background-color: #0b2932;
+  color: #f4b857;
+}
+
+.btn-delete:hover {
+  background-color: #f4b857;
+  color: #0b2932;
+  border: 1px solid #0b2932;
+}
+
+.btn-create {
+  background-color: #0b2932;
+  color: #85c0e0;
+}
+
+.btn-create:hover {
+  background-color: #85c0e0;
+  color: #0b2932;
+  border: 1px solid #0b2932;
+}
+
+/* Responsividad extrema */
+@media (max-width: 600px) {
+  .search-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-input,
+  .btn {
+    width: 100%;
+  }
+}
+/* Contenedores de botones */
+.div-btn-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 4px;
+  border-radius: 4px;
+  width: 90dvw
+
+}
+
+.div-btn-opt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 4px;
+  border-radius: 4px;
+  width: auto;
+  transform: scale(0.9);
 }

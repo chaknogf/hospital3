@@ -1,1 +1,8 @@
+<app-navbar
+  [usuario]="username"
+  [rol]="role"
+  (cerrarSesion)="desconectarUsuario()"
+  *ngIf="estaAutenticado"
+></app-navbar>
+
 <router-outlet></router-outlet>

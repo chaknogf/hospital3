@@ -1,3 +1,92 @@
-<p>
-  formularioPaciente works!
-</p>
+<div class="formulario-paciente">
+  <h2>{{ enEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
+
+  <!-- Identificadores -->
+  <fieldset>
+    <legend>Identificadores</legend>
+    <div *ngFor="let id of patient.identificadores; let i = index">
+      <input [(ngModel)]="id.tipo" placeholder="Tipo (DPI, expediente)" name="idTipo{{i}}" />
+      <input [(ngModel)]="id.valor" placeholder="Valor" name="idValor{{i}}" />
+    </div>
+    <button (click)="patient.identificadores.push({ tipo: '', valor: '' })">➕ Añadir identificador</button>
+  </fieldset>
+
+  <!-- Nombre -->
+  <fieldset>
+    <legend>Nombre</legend>
+    <input [(ngModel)]="patient.nombre.primer" placeholder="Primer nombre" name="nombre1" />
+    <input [(ngModel)]="patient.nombre.segundo" placeholder="Segundo nombre" name="nombre2" />
+    <input [(ngModel)]="patient.nombre.otro" placeholder="Otro nombre" name="nombre3" />
+    <input [(ngModel)]="patient.nombre.apellido_primero" placeholder="Apellido primero" name="apellido1" />
+    <input [(ngModel)]="patient.nombre.apellido_segundo" placeholder="Apellido segundo" name="apellido2" />
+    <input [(ngModel)]="patient.nombre.casada" placeholder="Apellido casada" name="casada" />
+  </fieldset>
+
+  <!-- Sexo y Fecha -->
+  <fieldset>
+    <legend>Información básica</legend>
+    <select [(ngModel)]="patient.sexo" name="sexo">
+      <option value="">Seleccione sexo</option>
+      <option value="M">Masculino</option>
+      <option value="F">Femenino</option>
+    </select>
+    <input type="date" [(ngModel)]="patient.fecha_nacimiento" name="fechaNacimiento" />
+  </fieldset>
+
+  <!-- Contacto -->
+  <fieldset>
+    <legend>Contacto</legend>
+    <div *ngFor="let c of patient.contacto; let i = index">
+      <input [(ngModel)]="c.clave" placeholder="Tipo (teléfono, email...)" name="contactoClave{{i}}" />
+      <input [(ngModel)]="c.valor" placeholder="Valor" name="contactoValor{{i}}" />
+    </div>
+    <button (click)="patient.contacto.push({ clave: '', valor: '' })">➕ Añadir contacto</button>
+  </fieldset>
+
+  <!-- Referencias -->
+  <fieldset>
+    <legend>Referencias</legend>
+    <div *ngFor="let r of patient.referencias; let i = index">
+      <input [(ngModel)]="r.nombre" placeholder="Nombre" name="referenciaNombre{{i}}" />
+      <input [(ngModel)]="r.parentesco" placeholder="Parentesco" name="referenciaParentesco{{i}}" />
+      <input [(ngModel)]="r.telefono" placeholder="Teléfono" name="referenciaTelefono{{i}}" />
+    </div>
+    <button (click)="patient.referencias.push({ nombre: '', telefono: '', parentesco: '' })">➕ Añadir referencia</button>
+  </fieldset>
+
+  <!-- Datos Extra -->
+  <fieldset>
+    <legend>Datos extra</legend>
+    <div *ngFor="let extra of patient.datos_extra; let i = index">
+      <input [(ngModel)]="extra.tipo" placeholder="Tipo (Grupo Sanguíneo, ocupación...)" name="extraTipo{{i}}" />
+      <input [(ngModel)]="extra.valor" placeholder="Valor" name="extraValor{{i}}" />
+    </div>
+    <button (click)="patient.datos_extra.push({ tipo: '', valor: '' })">➕ Añadir dato extra</button>
+  </fieldset>
+
+  <!-- Estado -->
+  <fieldset>
+    <legend>Estado</legend>
+    <select [(ngModel)]="patient.estado" name="estado">
+      <option value="">Seleccione estado</option>
+      <option value="A">Activo</option>
+      <option value="I">Inactivo</option>
+    </select>
+  </fieldset>
+
+  <!-- Metadatos -->
+  <fieldset>
+    <legend>Metadatos</legend>
+    <div *ngFor="let meta of patient.metadatos; let i = index">
+      <input [(ngModel)]="meta.usuario" placeholder="Usuario" name="usuario{{i}}" />
+      <input [(ngModel)]="meta.registro" placeholder="Fecha registro" name="registro{{i}}" type="datetime-local" />
+    </div>
+    <button (click)="patient.metadatos.push({ usuario: '', registro: '' })">➕ Añadir metadato</button>
+  </fieldset>
+
+  <!-- Botones -->
+  <div class="botones">
+    <button (click)="guardar()">💾 Guardar</button>
+    <button (click)="volver()">↩️ Cancelar</button>
+  </div>
+</div>

@@ -1,6 +1,7 @@
+
 <div class="layout-container">
   <a *ngFor="let app of modulos" [routerLink]="app.ruta" class="card">
-    <ng-container *ngIf="app.icon" [ngComponentOutlet]="app.icon"></ng-container>
+    <span [innerHTML]="app.icon"></span>
     <h2>{{app.nombre}}</h2>
     <p>{{app.descripcion}}</p>
   </a>

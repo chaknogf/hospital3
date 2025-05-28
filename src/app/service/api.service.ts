@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
-import { Usuarios } from '../interface/interfaces';
+import { Paciente, Usuarios } from '../interface/interfaces';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
@@ -56,6 +56,7 @@ export class ApiService {
       this.router.navigate(['/dash']);
     } else {
       throw new Error('No se recibió el token.');
+
     }
   }
 
@@ -66,6 +67,7 @@ export class ApiService {
     const token = localStorage.getItem('access_token');
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
+
 
     if (!token) {
       throw new Error('🔒 No estás autenticado.');
@@ -85,7 +87,8 @@ export class ApiService {
       localStorage.setItem('role', rolUsuario);
       //window.location.reload();
 
-      console.log('✅ Usuario autenticado:', response.data);
+      // console.log('✅ Usuario autenticado:', response.data);
+      //console.log(username, role);
       return response.data;
 
     } catch (error) {
@@ -98,7 +101,9 @@ export class ApiService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('username');
     localStorage.removeItem('role');
-    window.location.reload();
+    // window.location.reload();
+    this.router.navigate(['/inicio']);
+
 
 
   }
@@ -144,7 +149,7 @@ export class ApiService {
     }
   }
 
-  async updateUser(userId: number | string, user: any): Promise<any> {
+  async updateUser(userId: number, user: any): Promise<any> {
     try {
       const response = await this.api.put(`/user/actualizar/${userId}`, user);
       console.log('👤 Usuario actualizado correctamente');
@@ -166,4 +171,86 @@ export class ApiService {
     }
   }
 
+  // pacientes
+
+  async getPacientes(filtros: any): Promise<any> {
+    try {
+      const filtrosLimpiados = this.limpiarParametros(filtros);
+      const response = await this.api.get<Paciente[]>('/pacientes/', {
+        params: filtrosLimpiados
+      });
+      console.log('👤 Pacientes obtenidos correctamente');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener pacientes:', error);
+      throw error;
+    }
+  }
+
+  async getPaciente(id: number): Promise<Paciente> {
+    try {
+      const response = await this.api.get<Paciente[]>(`/pacientes/?id=${id}&skip=0&limit=1`);
+      console.log('👤 Paciente obtenido correctamente');
+      return response.data[0];
+
+    } catch (error) {
+      console.error('❌ Error al obtener paciente:', error);
+      throw error;
+    }
+  }
+  async createPaciente(paciente: any): Promise<any> {
+    try {
+      const response = await this.api.post(
+        '/paciente/crear', paciente,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      console.log('👤 Paciente creado correctamente');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al crear paciente:', error);
+      throw error;
+    }
+  }
+  async updatePaciente(pacienteId: number, paciente: any): Promise<any> {
+    try {
+      const response = await this.api.put(
+        `/paciente/actualizar/${pacienteId}`,
+        paciente,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+      console.log('👤 Paciente actualizado correctamente');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al actualizar paciente:', error);
+      throw error;
+    }
+  }
+
+  async deletePaciente(pacienteId: number): Promise<any> {
+    try {
+      const response = await this.api.delete(`/paciente/eliminar/${pacienteId}`);
+      console.log('👤 Paciente eliminado correctamente');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al eliminar paciente:', error);
+      throw error;
+    }
+  }
+
+  limpiarParametros(filtros: any): any {
+    const filtrosLimpiados: any = {};
+    for (const key in filtros) {
+      if (filtros[key] !== null && filtros[key] !== undefined && filtros[key] !== '') {
+        filtrosLimpiados[key] = filtros[key];
+      }
+    }
+    return filtrosLimpiados;
+  }
 }

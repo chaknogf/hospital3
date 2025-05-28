@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
 import { LoginComponent } from './principal/login/login.component';
 import { DashboardComponent } from './principal/dashboard/dashboard.component';
 import { HomeComponent } from './principal/home/home.component';
@@ -16,16 +17,16 @@ import { RegistrosMedicosComponent } from './Registros/registrosMedicos/registro
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
   { path: 'inicio', component: HomeComponent },
-  { path: 'dash', component: DashboardComponent },
-  { path: 'registros', component: RegistrosMedicosComponent },
-  { path: 'pacientes', component: PacientesComponent },
-  { path: 'paciente', component: FormularioPacienteComponent },
-  { path: 'paciente/:id', component: FormularioPacienteComponent },
-  { path: 'coex', component: CoexComponent },
-  { path: 'emergencia', component: EmergenciaComponent },
-  { path: 'ingreso', component: HospitalizacionComponent },
-  { path: 'consultas', component: ConsultasComponent },
-  { path: 'recepcion', component: RecepcionComponent },
-  { path: 'prestamos', component: PrestamoComponent },
-  { path: 'registro', component: FormConsultaComponent }
+  { path: 'dash', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'registros', component: RegistrosMedicosComponent, canActivate: [AuthGuard] },
+  { path: 'pacientes', component: PacientesComponent, canActivate: [AuthGuard] },
+  { path: 'paciente', component: FormularioPacienteComponent, canActivate: [AuthGuard] },
+  { path: 'paciente/:id', component: FormularioPacienteComponent, canActivate: [AuthGuard] },
+  { path: 'coex', component: CoexComponent, canActivate: [AuthGuard] },
+  { path: 'emergencia', component: EmergenciaComponent, canActivate: [AuthGuard] },
+  { path: 'ingreso', component: HospitalizacionComponent, canActivate: [AuthGuard] },
+  { path: 'consultas', component: ConsultasComponent, canActivate: [AuthGuard] },
+  { path: 'recepcion', component: RecepcionComponent, canActivate: [AuthGuard] },
+  { path: 'prestamos', component: PrestamoComponent, canActivate: [AuthGuard] },
+  { path: 'registro', component: FormConsultaComponent, canActivate: [AuthGuard] },
 ];

@@ -1,3 +1,60 @@
-<p>
-  pacientes works!
-</p>
+<div class="layout-container">
+
+  <!-- Contenedor de búsqueda -->
+  <div class="search-container">
+    <form class="search-form" (submit)="ObtenerPacientes(); $event.preventDefault()">
+      <input type="text" placeholder="Buscar por identificador" class="search-input" [(ngModel)]="buscarIdentificador" name="identificador">
+      <input type="text" placeholder="Buscar por nombre completo" class="search-input" [(ngModel)]="buscarNombreCompleto" name="nombreCompleto">
+      <input type="text" placeholder="Buscar por nombre" class="search-input" [(ngModel)]="buscarNombre" name="nombre">
+      <input type="text" placeholder="Buscar por apellido" class="search-input" [(ngModel)]="buscarApellido" name="apellido">
+      <input type="date" class="search-input" [(ngModel)]="buscarFechaNacimiento" name="fechaNacimiento">
+      <button type="button" class="btn btn-submit" (click)="ObtenerPacientes()">
+          <span [innerHTML]="searchIcon"></span> Buscar Pacientes
+        </button>
+      <button type="button" class="btn btn-delete" (click)="limpiarCampos()" >
+        <span [innerHTML]="deletInput"></span>Limpiar Campos
+      </button>
+      <button type="button" class="btn btn-create"  (click)="agregar()" >
+        <span [innerHTML]="createIcon"></span>Agregar Paciente
+      </button>
+    </form>
+  </div>
+
+  <!-- Tabla personalizada -->
+  <div class="custom-table-wrapper">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Identificador</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Fecha Nacimiento</th>
+          <th>Género</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let paciente of pacientes">
+          <td>{{ paciente.id }}</td>
+          <td>
+            <div *ngFor="let id of paciente.identificadores">
+              {{ id.tipo }}: {{ id.valor }}
+            </div>
+          </td>
+          <td>{{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}</td>
+          <td>{{ paciente.nombre.apellido_primero }} {{ paciente.nombre.apellido_segundo }} {{ paciente.nombre.casada }}</td>
+          <td>{{ paciente.fecha_nacimiento | date: 'shortDate' }}</td>
+          <td>{{ paciente.sexo }}</td>
+          <td>
+            <button class="table-button" (click)="editarPaciente(paciente.id)" [innerHTML]="editIcon">Editar</button>
+            <button class="table-button"  [innerHTML]="medicalServiceIcon">Detalles</button>
+            <!-- <button class="table-button" (click)="eliminarPaciente(paciente.id)" [innerHTML]="trashIcon">Eliminar</button> -->
+            <button class="table-button"  [innerHTML]="tablaShanonIcon">Ver Expediente</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
