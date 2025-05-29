@@ -201,7 +201,7 @@ export class ApiService {
   async createPaciente(paciente: any): Promise<any> {
     try {
       const response = await this.api.post(
-        '/paciente/crear', paciente,
+        '/paciente/crear/', paciente,
         {
           headers: {
             'Content-Type': 'application/json'
