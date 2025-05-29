@@ -5,17 +5,23 @@ import { Paciente, Nombres, Extras, Contacto, Referencias, Identificadores, Meta
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { Meta } from '@angular/platform-browser';
+import { DpiValidadorDirective } from '../../../directives/dpi-validador.directive';
+import { UnaPalabraDirective } from '../../../directives/unaPalabra.directive';
 
 @Component({
   selector: 'app-formularioPaciente',
   templateUrl: './formularioPaciente.component.html',
   styleUrls: ['./formularioPaciente.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, DpiValidadorDirective, UnaPalabraDirective]
 })
 export class FormularioPacienteComponent implements OnInit {
 
   public enEdicion: boolean = false;
+  public usuarioActual: string = '';
+  edadAnios: number = 0;
+  edadMeses: number = 0;
+  edadDias: number = 0;
 
   nombres: Nombres = {
     primer: '',
@@ -27,7 +33,11 @@ export class FormularioPacienteComponent implements OnInit {
   }
 
   contacto: Contacto[] = [
-    { clave: '', valor: '' }
+    { clave: 'teléfono 1', valor: '' },
+    { clave: 'teléfono 2', valor: '' },
+    { clave: 'teléfono 3', valor: '' },
+    { clave: 'municipio', valor: '' },
+    { clave: 'dirección domicilio', valor: '' }
   ];
 
   referencias: Referencias[] = [
@@ -35,11 +45,29 @@ export class FormularioPacienteComponent implements OnInit {
   ];
 
   identificadores: Identificadores[] = [
-    { tipo: '', valor: '' }
+    {
+      tipo: 'CUI',
+      valor: ''
+    },
+    {
+      tipo: 'expediente',
+      valor: ''
+    },
+    {
+      tipo: 'pasaporte',
+      valor: ''
+    }
   ];
 
   extras: Extras[] = [
-    { tipo: '', valor: '' }
+    { tipo: 'estado civil', valor: '' },
+    { tipo: 'pueblo', valor: '' },
+    { tipo: 'nacionalidad', valor: '' },
+    { tipo: 'idioma', valor: '' },
+    { tipo: 'ocupación', valor: '' },
+    { tipo: 'nivel educativo', valor: '' }
+
+
   ];
 
   metadatos: Metadatos[] = [
@@ -50,7 +78,7 @@ export class FormularioPacienteComponent implements OnInit {
     id: 0,
     identificadores: this.identificadores,
     nombre: this.nombres, // Notar aquí el cambio: nombre singular y no array
-    sexo: '',
+    sexo: 'V',
     fecha_nacimiento: '',
     contacto: this.contacto,
     referencias: this.referencias,
@@ -91,6 +119,9 @@ export class FormularioPacienteComponent implements OnInit {
         console.error('❌ ID de paciente inválido:', idParam);
       }
     }
+
+    this.usuarioActual = localStorage.getItem('usuario') || '';
+
   }
 
   volver() {
@@ -122,11 +153,59 @@ export class FormularioPacienteComponent implements OnInit {
   }
 
   guardar() {
+    const nuevoMetadato = {
+      usuario: this.usuarioActual, // Puedes obtenerlo del token o sesión
+      registro: new Date().toISOString()
+    };
+
+    // Aseguramos que el array metadatos existe
+    if (!this.patient.metadatos) {
+      this.patient.metadatos = [];
+    }
+
+    this.patient.metadatos.push(nuevoMetadato);
+
     if (this.enEdicion) {
       this.actualizar();
     } else {
       this.crear();
     }
+  }
+
+  calcularFechaDesdeEdad() {
+    const hoy = new Date();
+    const fecha = new Date(
+      hoy.getFullYear() - (this.edadAnios || 0),
+      hoy.getMonth() - (this.edadMeses || 0),
+      hoy.getDate() - (this.edadDias || 0)
+    );
+
+    this.patient.fecha_nacimiento = fecha.toISOString().substring(0, 10);
+  }
+
+  calcularEdadDesdeFecha() {
+    if (!this.patient.fecha_nacimiento) return;
+
+    const hoy = new Date();
+    const nacimiento = new Date(this.patient.fecha_nacimiento);
+
+    let edadAnios = hoy.getFullYear() - nacimiento.getFullYear();
+    let edadMeses = hoy.getMonth() - nacimiento.getMonth();
+    let edadDias = hoy.getDate() - nacimiento.getDate();
+
+    if (edadDias < 0) {
+      edadMeses--;
+      edadDias += new Date(hoy.getFullYear(), hoy.getMonth(), 0).getDate();
+    }
+
+    if (edadMeses < 0) {
+      edadAnios--;
+      edadMeses += 12;
+    }
+
+    this.edadAnios = edadAnios;
+    this.edadMeses = edadMeses;
+    this.edadDias = edadDias;
   }
 
 

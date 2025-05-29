@@ -2,46 +2,115 @@
   <h2>{{ enEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
 
   <!-- Identificadores -->
-  <fieldset>
-    <legend>Identificadores</legend>
-    <div *ngFor="let id of patient.identificadores; let i = index">
-      <input [(ngModel)]="id.tipo" placeholder="Tipo (DPI, expediente)" name="idTipo{{i}}" />
-      <input [(ngModel)]="id.valor" placeholder="Valor" name="idValor{{i}}" />
-    </div>
-    <button (click)="patient.identificadores.push({ tipo: '', valor: '' })">➕ Añadir identificador</button>
-  </fieldset>
+ <fieldset>
+  <legend>Identificadores</legend>
+
+  <label for="cui">CUI</label>
+ <input
+  id="cui"
+  type="text"
+  [(ngModel)]="patient.identificadores[0].valor"
+  name="cui"
+  placeholder="Ingresa el número de CUI"
+  validarDPI
+  [identificadorTipo]="patient.identificadores[0].tipo"
+  maxlength="13"
+  required
+/>
+<div *ngIf="patient.identificadores[0].valor?.length !== 13" class="input-error-msg">
+  El CUI debe tener exactamente 13 dígitos.
+</div>
+
+
+  <label for="expediente">Expediente</label>
+  <input
+    id="expediente"
+    type="text"
+    [(ngModel)]="patient.identificadores[1].valor"
+    name="expediente"
+    placeholder="Ingresa el número de expediente"
+    required
+  />
+</fieldset>
 
   <!-- Nombre -->
   <fieldset>
     <legend>Nombre</legend>
-    <input [(ngModel)]="patient.nombre.primer" placeholder="Primer nombre" name="nombre1" />
-    <input [(ngModel)]="patient.nombre.segundo" placeholder="Segundo nombre" name="nombre2" />
-    <input [(ngModel)]="patient.nombre.otro" placeholder="Otro nombre" name="nombre3" />
-    <input [(ngModel)]="patient.nombre.apellido_primero" placeholder="Apellido primero" name="apellido1" />
-    <input [(ngModel)]="patient.nombre.apellido_segundo" placeholder="Apellido segundo" name="apellido2" />
-    <input [(ngModel)]="patient.nombre.casada" placeholder="Apellido casada" name="casada" />
+    <input [(ngModel)]="patient.nombre.primer" placeholder="Primer nombre" name="nombre1" unaPalabra />
+    <input [(ngModel)]="patient.nombre.segundo" placeholder="Segundo nombre" name="nombre2" unaPalabra />
+    <input [(ngModel)]="patient.nombre.otro" placeholder="Otro nombre" name="nombre3" *ngIf="patient.nombre.segundo" />
+    <input [(ngModel)]="patient.nombre.apellido_primero" placeholder="Apellido primero" name="apellido1" unaPalabra />
+    <input [(ngModel)]="patient.nombre.apellido_segundo" placeholder="Apellido segundo" name="apellido2" unaPalabra />
+    <input [(ngModel)]="patient.nombre.casada" placeholder="Apellido casada" name="casada" *ngIf="patient.sexo === 'F'" />
   </fieldset>
 
   <!-- Sexo y Fecha -->
-  <fieldset>
-    <legend>Información básica</legend>
-    <select [(ngModel)]="patient.sexo" name="sexo">
-      <option value="">Seleccione sexo</option>
-      <option value="M">Masculino</option>
-      <option value="F">Femenino</option>
-    </select>
-    <input type="date" [(ngModel)]="patient.fecha_nacimiento" name="fechaNacimiento" />
-  </fieldset>
+ <fieldset>
+  <legend>Información básica</legend>
 
+  <label for="sexo">Sexo</label>
+  <select [(ngModel)]="patient.sexo" name="sexo">
+    <option value="">Seleccione sexo</option>
+    <option value="M">Masculino</option>
+    <option value="F">Femenino</option>
+  </select>
+
+  <label for="fechaNacimiento">Fecha de nacimiento</label>
+  <input
+    type="date"
+    [(ngModel)]="patient.fecha_nacimiento"
+    name="fechaNacimiento"
+    (change)="calcularEdadDesdeFecha()"
+  />
+
+  <div style="margin-top: 1rem;">
+    <p><strong>O calcula la fecha con la edad:</strong></p>
+
+    <div style="display: flex; gap: 0.5rem;">
+      <input
+        type="number"
+        [(ngModel)]="edadAnios"
+        placeholder="Años"
+        (input)="calcularFechaDesdeEdad()"
+        min="0"
+        style="width: 80px;"
+      />
+      <input
+        type="number"
+        [(ngModel)]="edadMeses"
+        placeholder="Meses"
+        (input)="calcularFechaDesdeEdad()"
+        min="0"
+        max="11"
+        style="width: 80px;"
+      />
+      <input
+        type="number"
+        [(ngModel)]="edadDias"
+        placeholder="Días"
+        (input)="calcularFechaDesdeEdad()"
+        min="0"
+        max="30"
+        style="width: 80px;"
+      />
+    </div>
+  </div>
+</fieldset>
   <!-- Contacto -->
   <fieldset>
-    <legend>Contacto</legend>
-    <div *ngFor="let c of patient.contacto; let i = index">
-      <input [(ngModel)]="c.clave" placeholder="Tipo (teléfono, email...)" name="contactoClave{{i}}" />
-      <input [(ngModel)]="c.valor" placeholder="Valor" name="contactoValor{{i}}" />
-    </div>
-    <button (click)="patient.contacto.push({ clave: '', valor: '' })">➕ Añadir contacto</button>
-  </fieldset>
+  <legend>Contacto</legend>
+
+  <div *ngFor="let c of patient.contacto; let i = index">
+    <label [for]="'contacto-' + i"  >{{ c.clave | titlecase }}</label>
+    <input
+      type="text"
+      [(ngModel)]="patient.contacto[i].valor"
+      [name]="'contacto-' + i"
+      [id]="'contacto-' + i"
+      placeholder="Ingresa {{ c.clave }}"
+    />
+  </div>
+</fieldset>
 
   <!-- Referencias -->
   <fieldset>
@@ -58,32 +127,36 @@
   <fieldset>
     <legend>Datos extra</legend>
     <div *ngFor="let extra of patient.datos_extra; let i = index">
-      <input [(ngModel)]="extra.tipo" placeholder="Tipo (Grupo Sanguíneo, ocupación...)" name="extraTipo{{i}}" />
-      <input [(ngModel)]="extra.valor" placeholder="Valor" name="extraValor{{i}}" />
+      <label [for]="'extra-' + i"  >{{ extra.tipo | titlecase }}</label>
+      <input
+        type="text"
+        [(ngModel)]="patient.datos_extra[i].valor"
+        [name]="'extra-' + i"
+        [id]="'extra-' + i"
+        placeholder="Ingresa {{ extra.valor }}"
+        />
     </div>
     <button (click)="patient.datos_extra.push({ tipo: '', valor: '' })">➕ Añadir dato extra</button>
   </fieldset>
 
   <!-- Estado -->
-  <fieldset>
-    <legend>Estado</legend>
-    <select [(ngModel)]="patient.estado" name="estado">
-      <option value="">Seleccione estado</option>
-      <option value="A">Activo</option>
-      <option value="I">Inactivo</option>
-    </select>
-  </fieldset>
+ <fieldset>
+  <legend>Estado</legend>
+  <select [(ngModel)]="patient.estado" name="estado">
+    <option value="V">Vivo</option>
+    <option value="M">Muerto</option>
+  </select>
+</fieldset>
 
   <!-- Metadatos -->
-  <fieldset>
-    <legend>Metadatos</legend>
-    <div *ngFor="let meta of patient.metadatos; let i = index">
-      <input [(ngModel)]="meta.usuario" placeholder="Usuario" name="usuario{{i}}" />
-      <input [(ngModel)]="meta.registro" placeholder="Fecha registro" name="registro{{i}}" type="datetime-local" />
-    </div>
-    <button (click)="patient.metadatos.push({ usuario: '', registro: '' })">➕ Añadir metadato</button>
-  </fieldset>
-
+ <fieldset>
+  <legend>Historial de registros</legend>
+  <ul>
+    <li *ngFor="let meta of patient.metadatos">
+      {{ meta.usuario }} — {{ meta.registro | date:'short' }}
+    </li>
+  </ul>
+</fieldset>
   <!-- Botones -->
   <div class="botones">
     <button (click)="guardar()">💾 Guardar</button>

@@ -1,32 +1,37 @@
+body {
+  background-color: #e5e5e0;
+  font-family: 'Segoe UI', sans-serif;
+  color: #2f2f2f;
+  line-height: 1.5;
+}
+
 .formulario-paciente {
   max-width: 900px;
   margin: 2rem auto;
   padding: 2rem;
-  background: #fefefe;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
-  font-family: 'Segoe UI', Roboto, sans-serif;
-  color: #333;
-  transition: all 0.3s ease;
+  background: #d5d4dc;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .formulario-paciente h2 {
   text-align: center;
-  color: #007acc;
-  margin-bottom: 1.5rem;
+  color: #3f4b44;
+  margin-bottom: 1.2rem;
+  font-weight: 600;
 }
 
 fieldset {
-  border: 1px solid #e0e0e0;
-  padding: 1rem;
+  border: 1px solid #b8b8b2;
+  padding: 1.2rem;
   margin-bottom: 1.5rem;
-  border-radius: 10px;
-  background-color: #fafafa;
+  border-radius: 8px;
+  background-color: #f0f0f3;
 }
 
 legend {
-  font-weight: bold;
-  color: #007acc;
+  font-weight: 600;
+  color: #3f4b44;
   padding: 0 0.5rem;
   font-size: 1rem;
 }
@@ -34,42 +39,48 @@ legend {
 input,
 select {
   display: block;
-  width: 98%;
+  width: 97%;
   padding: 0.6rem;
-  margin: 0.5rem 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  margin-top: 0.5rem;
+  border: 1px solid #b8b8b2;
+  border-radius: 6px;
+  background-color: #0919384c;
+  color: #091047;
   font-size: 0.95rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+label {
+  color: #171443;
+  font-weight: 600;
+  font-size: larger;
 }
 
 input:focus,
 select:focus {
-  border-color: #007acc;
+  border-color: #6c6d85;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+  box-shadow: 0 0 0 2px rgba(108, 133, 115, 0.25);
 }
 
 button {
-  background-color: #007acc;
+  background-color: #6c6f85;
   color: white;
   padding: 0.6rem 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 0.95rem;
   cursor: pointer;
-  margin-top: 0.5rem;
   transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #005fa3;
+  background-color: #171443;
 }
 
 .botones {
   display: flex;
   justify-content: space-between;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 
 .botones button {
@@ -77,14 +88,9 @@ button:hover {
   margin: 0 0.5rem;
 }
 
-/* Responsive para pantallas pequeñas */
 @media (max-width: 600px) {
   .formulario-paciente {
     padding: 1rem;
-  }
-
-  input, select {
-    width: 90%;
   }
 
   .botones {
@@ -94,4 +100,15 @@ button:hover {
   .botones button {
     margin: 0.5rem 0;
   }
+
+  input, select {
+    width: 95%;
+  }
+}
+
+.input-error-msg {
+  color: #b30000;
+  font-size: 0.95rem;
+  margin-top: 0.3rem;
+
 }
