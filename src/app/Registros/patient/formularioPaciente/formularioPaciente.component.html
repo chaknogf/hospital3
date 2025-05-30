@@ -1,4 +1,7 @@
 <div class="formulario-paciente">
+  <!-- Campo trampa para evitar autocompletado real -->
+<input type="text" name="fakeusernameremembered" style="display: none;" />
+<input type="password" name="fakepasswordremembered" style="display: none;" />
   <h2>{{ enEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
 
   <!-- Identificadores -->
@@ -36,12 +39,12 @@
   <!-- Nombre -->
   <fieldset>
     <legend>Nombre</legend>
-    <input [(ngModel)]="patient.nombre.primer" placeholder="Primer nombre" name="nombre1" unaPalabra />
-    <input [(ngModel)]="patient.nombre.segundo" placeholder="Segundo nombre" name="nombre2" unaPalabra />
-    <input [(ngModel)]="patient.nombre.otro" placeholder="Otro nombre" name="nombre3" *ngIf="patient.nombre.segundo" />
-    <input [(ngModel)]="patient.nombre.apellido_primero" placeholder="Apellido primero" name="apellido1" unaPalabra />
-    <input [(ngModel)]="patient.nombre.apellido_segundo" placeholder="Apellido segundo" name="apellido2" unaPalabra />
-    <input [(ngModel)]="patient.nombre.casada" placeholder="Apellido casada" name="casada" *ngIf="patient.sexo === 'F'" />
+    <input [(ngModel)]="patient.nombre.primer" placeholder="Primer nombre" name="nombre1" unaPalabra autocomplete="new-name" />
+    <input [(ngModel)]="patient.nombre.segundo" placeholder="Segundo nombre" name="nombre2" unaPalabra autocomplete="new-name" />
+    <input [(ngModel)]="patient.nombre.otro" placeholder="Otro nombre" name="nombre3" *ngIf="patient.nombre.segundo" autocomplete="new-name" />
+    <input [(ngModel)]="patient.nombre.apellido_primero" placeholder="Apellido primero" name="apellido1" unaPalabra autocomplete="new-name" />
+    <input [(ngModel)]="patient.nombre.apellido_segundo" placeholder="Apellido segundo" name="apellido2" unaPalabra autocomplete="new-name" />
+    <input [(ngModel)]="patient.nombre.casada" placeholder="Apellido casada" name="casada" *ngIf="patient.sexo === 'F'" autocomplete="new-name" />
   </fieldset>
 
   <!-- Sexo y Fecha -->
@@ -101,17 +104,32 @@
   <legend>Contacto</legend>
 
   <div *ngFor="let c of patient.contacto; let i = index">
-    <label [for]="'contacto-' + i"  >{{ c.clave | titlecase }}</label>
+    <label [for]="'contacto-' + i">{{ c.clave | titlecase }}</label>
+
+    <!-- Si la clave es "telefono", aplica la directiva -->
     <input
+      *ngIf="esTelefono(c.clave); else normalInput"
       type="text"
       [(ngModel)]="patient.contacto[i].valor"
       [name]="'contacto-' + i"
       [id]="'contacto-' + i"
       placeholder="Ingresa {{ c.clave }}"
+      unaPalabra
+      autocomplete="new-tel"
     />
+
+    <!-- Si no, input sin directiva -->
+    <ng-template #normalInput>
+      <input
+        type="text"
+        [(ngModel)]="patient.contacto[i].valor"
+        [name]="'contacto-' + i"
+        [id]="'contacto-' + i"
+        placeholder="Ingresa {{ c.clave }}"
+      />
+    </ng-template>
   </div>
 </fieldset>
-
   <!-- Referencias -->
   <fieldset>
     <legend>Referencias</legend>

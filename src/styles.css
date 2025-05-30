@@ -22,6 +22,11 @@ body {
   z-index: 1;
 }
 
+.gap-1 {
+  padding-top: 0.1rem;
+  padding-bottom: 0.2rem;
+  border-bottom: #f26411e0 dotted 0.05rem;
+}
 
 .custom-table-wrapper {
   width: 100dvw;
@@ -52,6 +57,7 @@ body {
   background-color: #24283b;
   line-height: 1.1; /* Reduce altura */
   font-size: clamp(0.75rem, 2vw, 0.95rem); /* Ajuste fluido de tamaño de texto */
+
 }
 
 .custom-table th {
@@ -62,13 +68,18 @@ body {
   font-size: inherit;
 }
 
+.custom-table td {
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+
 .custom-table th,
 .custom-table td {
   padding: 0.3rem 0.3rem;
   text-align: center;
   /* border-bottom: 1px solid #2e3247; */
-  font-size: 0.95rem;
-  text-transform: capitalize;
+
+
   word-wrap: break-word;
 }
 
@@ -177,6 +188,12 @@ body {
   max-width: 960px;
 }
 
+input::placeholder {
+  color: #888;
+  text-transform:lowercase;
+  font-size: 0.6rem;
+}
+
 /* Campos de entrada */
 .search-input {
   flex: 1 1 140px;
@@ -193,15 +210,13 @@ body {
   transition: all 0.2s ease;
 }
 
-.search-input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-}
+
 
 .search-input:focus {
   border-color: #09f7c0;
   box-shadow: 0 0 4px rgba(9, 247, 192, 0.25);
   outline: none;
-  text-align: end;
+
   font-size: 0.85rem;
 }
 
@@ -294,4 +309,67 @@ body {
   border-radius: 4px;
   width: auto;
   transform: scale(0.9);
+}
+
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100dvw;
+  height: 100dvh;
+  background-color: rgba(0, 0, 50, 0.7); /* azul medianoche translúcido */
+  z-index: 1000;
+}
+
+.modal-detalle-paciente {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100dvw;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  border: 1px solid #e0e0e0;
+}
+
+.modal-content {
+  background-color: #001f3f; /* azul medianoche sólido */
+  padding: 1rem;
+  border-radius: 10px;
+  width: 90dvw;
+  max-height: 85dvh;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+/* Versión adaptativa para pantallas más grandes */
+@media (min-width: 768px) {
+  .modal-content {
+    width: 60dvw;
+  }
+}
+
+@media (min-width: 1024px) {
+  .modal-content {
+    width: 45dvw;
+  }
+}
+
+.close-modal {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+.close-modal:hover {
+  color: #ff6666;
 }

@@ -1,0 +1,67 @@
+<div class="card-detalle-paciente">
+  <h2>🧍‍♂️ Detalle del Paciente</h2>
+
+  <section>
+    <h3>🆔 Identificadores</h3>
+    <p><strong>CUI:</strong> {{ patient.identificadores[0].valor || '—' }}</p>
+    <p><strong>Expediente:</strong> {{ patient.identificadores[1].valor || '—' }}</p>
+  </section>
+
+  <section>
+    <h3>📛 Nombre Completo</h3>
+    <p>
+      {{ patient.nombre.primer || '' }} {{ patient.nombre.segundo || '' }} {{ patient.nombre.otro || '' }}
+      {{ patient.nombre.apellido_primero || '' }} {{ patient.nombre.apellido_segundo || '' }}
+      <span *ngIf="patient.sexo === 'F' && patient.nombre.casada">de {{ patient.nombre.casada }}</span>
+    </p>
+  </section>
+
+  <section>
+    <h3>🗓️ Información Básica</h3>
+    <p><strong>Sexo:</strong> {{ patient.sexo === 'M' ? 'Masculino' : 'Femenino' }}</p>
+    <p><strong>Fecha de Nacimiento:</strong> {{ patient.fecha_nacimiento | date:'longDate' }}</p>
+  </section>
+
+  <section *ngIf="(patient.contacto?.length ?? 0) > 0">
+    <h3>📞 Contacto</h3>
+    <ul>
+      <li *ngFor="let c of patient.contacto">
+        <strong>{{ c?.clave | titlecase }}:</strong> {{ c?.valor || '—' }}
+      </li>
+    </ul>
+  </section>
+
+  <section *ngIf="patient.referencias?.length ?? 0">
+    <h3>👥 Referencias</h3>
+    <ul>
+      <li *ngFor="let r of patient.referencias">
+        {{ r?.nombre || '—' }} ({{ r?.parentesco || '—' }}): {{ r?.telefono || '—' }}
+      </li>
+    </ul>
+  </section>
+
+  <section *ngIf="patient.datos_extra?.length ?? 0">
+    <h3>📎 Datos Extra</h3>
+    <ul>
+      <li *ngFor="let d of patient.datos_extra">
+        <strong>{{ d?.tipo | titlecase }}:</strong> {{ d?.valor || '—' }}
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h3>⚕️ Estado</h3>
+    <p>{{ patient.estado === 'V' ? '🟢 Vivo' : '⚫ Fallecido' }}</p>
+  </section>
+
+  <section *ngIf="patient.metadatos?.length ?? 0">
+    <h3>📜 Historial de Actualizaciones</h3>
+    <ul>
+      <li *ngFor="let meta of patient.metadatos">
+        {{ meta?.usuario || '—' }} — <em>{{ meta?.registro | date:'short' }}</em>
+      </li>
+    </ul>
+  </section>
+
+
+</div>

@@ -6,13 +6,14 @@ import { CommonModule } from '@angular/common';
 import { Paciente } from '../../../interface/interfaces';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { DetallePacienteComponent } from '../detallePaciente/detallePaciente.component';
 
 @Component({
   selector: 'app-pacientes',
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, DetallePacienteComponent]
 })
 export class PacientesComponent implements OnInit {
 
@@ -20,13 +21,14 @@ export class PacientesComponent implements OnInit {
   public porcentajeDeCarga = 0;
   public totalDeRegistros = 0;
   public buscarIdentificador: string = '';
-  public buscarNombre: string = '';
+  public buscarPrimerNombre: string = '';
   public buscarSegundoNombre: string = '';
-  public buscarApellido: string = '';
+  public buscarPrimerApellido: string = '';
   public buscarSegundoApellido: string = '';
   public buscarFechaNacimiento: string = '';
   public buscarNombreCompleto: string = '';
-
+  public cargando: boolean = false;
+  //iconos
   searchIcon: SafeHtml = searchIcon;
   deletInput: SafeHtml = deletInput;
   createIcon: SafeHtml = createIcon;
@@ -34,6 +36,9 @@ export class PacientesComponent implements OnInit {
   trashIcon: SafeHtml = trashIcon;
   tablaShanonIcon: SafeHtml = tablaShanonIcon;
   medicalServiceIcon: SafeHtml = medicalServiceIcon;
+  //variables de detallePaciente Modal
+  pacienteSeleccionadoId: number | null = null;
+  mostrarDetallePaciente: boolean = false;
 
   constructor(
     private api: ApiService,
@@ -58,10 +63,10 @@ export class PacientesComponent implements OnInit {
   async ObtenerPacientes() {
     const filtros = {
       id: '',
-      identificadores: this.buscarIdentificador,
-      primer_nombre: this.buscarNombre,
+      identificador: this.buscarIdentificador,
+      primer_nombre: this.buscarPrimerNombre,
       segundo_nombre: this.buscarSegundoNombre,
-      primer_apellido: this.buscarApellido,
+      primer_apellido: this.buscarPrimerApellido,
       segundo_apellido: this.buscarSegundoApellido,
       nombre_completo: this.buscarNombreCompleto,
       sexo: '',
@@ -71,19 +76,25 @@ export class PacientesComponent implements OnInit {
       skip: 0,
       limit: 10
     };
+    // if (
+    //   !this.buscarIdentificador &&
+    //   !this.buscarNombre &&
+    //   !this.buscarApellido &&
+    //   !this.buscarNombreCompleto &&
+    //   !this.buscarFechaNacimiento
+    // ) {
+    //   alert('Por favor, ingresa al menos un criterio de búsqueda.');
+    //   return;
+    // }
+    this.cargando = true;
     try {
-      this.porcentajeDeCarga = 0.1;
       const response = await this.api.getPacientes(filtros);
       this.pacientes = response;
-      console.table(this.pacientes);
-      this.porcentajeDeCarga = 0.5;
-      this.totalDeRegistros = this.pacientes.length;
-      if (this.totalDeRegistros > 0) {
-        this.porcentajeDeCarga = 1;
-      }
+      this.totalDeRegistros = response.length;
     } catch (error) {
-      console.error('Error al obtener los pacientes:', error);
-      this.porcentajeDeCarga = 0;
+      console.error('Error:', error);
+    } finally {
+      this.cargando = false;
     }
   }
 
@@ -99,8 +110,14 @@ export class PacientesComponent implements OnInit {
   agregar() {
     this.router.navigate(['/paciente']);
   }
-  verDetallesPaciente(pacienteId: number) {
-    this.router.navigate(['/detalles-paciente', pacienteId]);
+  verDetallesPaciente(pacienteId: number): void {
+    this.pacienteSeleccionadoId = pacienteId;
+    this.mostrarDetallePaciente = true;
+  }
+
+  cerrarDetallePaciente(): void {
+    this.mostrarDetallePaciente = false;
+    this.pacienteSeleccionadoId = null;
   }
   navegarARegistroMedico(pacienteId: number) {
     this.router.navigate(['/registro-medico', pacienteId]);
@@ -108,8 +125,8 @@ export class PacientesComponent implements OnInit {
 
   limpiarCampos() {
     this.buscarIdentificador = '';
-    this.buscarNombre = '';
-    this.buscarApellido = '';
+    this.buscarPrimerNombre = '';
+    this.buscarPrimerApellido = '';
     this.buscarFechaNacimiento = '';
     this.buscarNombreCompleto = '';
     this.ObtenerPacientes();

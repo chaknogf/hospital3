@@ -277,7 +277,7 @@ app-login {
 
 
 
-.modal-backdrop {
+.modal-backdrop-login {
   position: fixed;
   top: 0;
   left: 0;
@@ -294,20 +294,22 @@ app-login {
   z-index: 1000;
 }
 
-.modal-content {
+.modal-content-login {
   border-radius: 12px;
   padding: 0.5rem;
   position: relative;
   backdrop-filter: blur(4px);
 }
 
-.close-button {
+.close-button-login {
   color: orangered;
   font-size: 48px;
   background: none;
   border: none;
   cursor: pointer;
 }
+
+
 
 /* .svg-medical {
   width: 100%;

@@ -47,6 +47,10 @@
   padding: 8px 15px;
 }
 
+input::placeholder {
+  font-size: large;
+}
+
 .form-section {
   padding: 16px;
   font-size: .85rem;

@@ -33,9 +33,9 @@ export class FormularioPacienteComponent implements OnInit {
   }
 
   contacto: Contacto[] = [
-    { clave: 'teléfono 1', valor: '' },
-    { clave: 'teléfono 2', valor: '' },
-    { clave: 'teléfono 3', valor: '' },
+    { clave: 'telefono', valor: '' },
+    { clave: 'telefono', valor: '' },
+    { clave: 'telefono', valor: '' },
     { clave: 'municipio', valor: '' },
     { clave: 'dirección domicilio', valor: '' }
   ];
@@ -120,7 +120,7 @@ export class FormularioPacienteComponent implements OnInit {
       }
     }
 
-    this.usuarioActual = localStorage.getItem('usuario') || '';
+    this.usuarioActual = localStorage.getItem('username') || '';
 
   }
 
@@ -128,6 +128,9 @@ export class FormularioPacienteComponent implements OnInit {
     this.router.navigate(['/pacientes']);
   }
 
+  esTelefono(clave: string): boolean {
+    return clave.toLowerCase().includes('telefono');
+  }
   crear(): void {
     this.api.createPaciente(this.patient)
       .then(() => {

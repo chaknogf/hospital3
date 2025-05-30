@@ -3,10 +3,10 @@
   <!-- Contenedor de búsqueda -->
   <div class="search-container">
     <form class="search-form" (submit)="ObtenerPacientes(); $event.preventDefault()">
-      <input type="text" placeholder="Buscar por identificador" class="search-input" [(ngModel)]="buscarIdentificador" name="identificador">
+      <input type="text" placeholder="Buscar por identificador" class="search-input" [(ngModel)]="buscarIdentificador" name="identificador" unaPalabra>
       <input type="text" placeholder="Buscar por nombre completo" class="search-input" [(ngModel)]="buscarNombreCompleto" name="nombreCompleto">
-      <input type="text" placeholder="Buscar por nombre" class="search-input" [(ngModel)]="buscarNombre" name="nombre">
-      <input type="text" placeholder="Buscar por apellido" class="search-input" [(ngModel)]="buscarApellido" name="apellido">
+      <input type="text" placeholder="Buscar por nombre" class="search-input" [(ngModel)]="buscarPrimerNombre" name="nombre" unaPalabra>
+      <input type="text" placeholder="Buscar por apellido" class="search-input" [(ngModel)]="buscarPrimerApellido" name="apellido" unPalabra>
       <input type="date" class="search-input" [(ngModel)]="buscarFechaNacimiento" name="fechaNacimiento">
       <button type="button" class="btn btn-submit" (click)="ObtenerPacientes()">
           <span [innerHTML]="searchIcon"></span> Buscar Pacientes
@@ -27,34 +27,59 @@
         <tr>
           <th>Id</th>
           <th>Identificador</th>
-          <th>Nombre</th>
-          <th>Apellido</th>
+          <th>Nombre Completo</th>
           <th>Fecha Nacimiento</th>
           <th>Género</th>
+          <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody >
         <tr *ngFor="let paciente of pacientes">
           <td>{{ paciente.id }}</td>
-          <td>
-            <div *ngFor="let id of paciente.identificadores">
+          <td >
+            <div *ngFor="let id of paciente.identificadores" class="gap-1" >
               {{ id.tipo }}: {{ id.valor }}
             </div>
           </td>
-          <td>{{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}</td>
-          <td>{{ paciente.nombre.apellido_primero }} {{ paciente.nombre.apellido_segundo }} {{ paciente.nombre.casada }}</td>
+          <td>
+            <ng-container >
+               {{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}
+            </ng-container>
+            <ng-container >
+             {{ paciente.nombre.apellido_primero }} {{ paciente.nombre.apellido_segundo }} {{ paciente.nombre.casada }}
+            </ng-container>
+           </td>
+
           <td>{{ paciente.fecha_nacimiento | date: 'shortDate' }}</td>
-          <td>{{ paciente.sexo }}</td>
+          <td>{{ paciente.sexo === 'M' ? 'Masculino' : 'Femenino' }}</td>
+          <td>{{ paciente.estado === 'V' ? 'Vivo' : 'Fallido' }}</td>
           <td>
             <button class="table-button" (click)="editarPaciente(paciente.id)" [innerHTML]="editIcon">Editar</button>
-            <button class="table-button"  [innerHTML]="medicalServiceIcon">Detalles</button>
+            <button class="table-button"  [innerHTML]="medicalServiceIcon">Consulta</button>
             <!-- <button class="table-button" (click)="eliminarPaciente(paciente.id)" [innerHTML]="trashIcon">Eliminar</button> -->
-            <button class="table-button"  [innerHTML]="tablaShanonIcon">Ver Expediente</button>
+            <button
+              class="table-button"
+              [innerHTML]="tablaShanonIcon"
+              (click)="verDetallesPaciente(paciente.id)">
+              Ver Expediente
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
+</div>
+
+
+
+<!-- Modal para Detalle de Paciente -->
+<div class="modal-backdrop" *ngIf="mostrarDetallePaciente" (click)="cerrarDetallePaciente()"></div>
+
+<div class="modal-detalle-paciente" *ngIf="mostrarDetallePaciente">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-modal" (click)="cerrarDetallePaciente()">×</button>
+    <detallePaciente [pacienteId]="pacienteSeleccionadoId"></detallePaciente>
+  </div>
 </div>
