@@ -174,7 +174,7 @@ export class FormularioPacienteComponent implements OnInit {
 
     if (requiereExpediente) {
       this.generarExpediente().then((expediente) => {
-        const identificador = {
+        const identificadores = {
           tipo: 'expediente',
           valor: expediente
         };
@@ -255,6 +255,7 @@ export class FormularioPacienteComponent implements OnInit {
   async generarExpediente(): Promise<string> {
     return this.api.corExpediente()
       .then((data: string) => {
+
         console.log('👤 Correlativo obtenido correctamente:', data);
         return data; // ← retornamos el valor
       })
