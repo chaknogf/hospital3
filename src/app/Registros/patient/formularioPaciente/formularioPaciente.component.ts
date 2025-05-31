@@ -76,6 +76,7 @@ export class FormularioPacienteComponent implements OnInit {
 
   patient: Paciente = {
     id: 0,
+    unidad: 287,
     identificadores: this.identificadores,
     nombre: this.nombres, // Notar aquí el cambio: nombre singular y no array
     sexo: 'V',
@@ -157,7 +158,7 @@ export class FormularioPacienteComponent implements OnInit {
 
   guardar() {
     const nuevoMetadato = {
-      usuario: this.usuarioActual, // Puedes obtenerlo del token o sesión
+      usuario: this.usuarioActual,
       registro: new Date().toISOString()
     };
 
@@ -168,6 +169,36 @@ export class FormularioPacienteComponent implements OnInit {
 
     this.patient.metadatos.push(nuevoMetadato);
 
+    // Confirmar si desea generar expediente
+    const requiereExpediente = confirm('¿Desea generar un nuevo expediente para este paciente?');
+
+    if (requiereExpediente) {
+      this.generarExpediente().then((expediente) => {
+        const identificador = {
+          tipo: 'expediente',
+          valor: expediente
+        };
+
+        // Asegurar array identificadores
+        if (!this.patient.identificadores) {
+          this.patient.identificadores = [];
+        }
+
+        this.patient.identificadores.push(identificador);
+
+        // Continuar con la creación o edición
+        this.continuarGuardado();
+      }).catch((err) => {
+        console.error('❌ Error al generar expediente:', err);
+        alert('Ocurrió un error al generar el expediente.');
+      });
+    } else {
+      // Si no requiere expediente, continuar directamente
+      this.continuarGuardado();
+    }
+  }
+
+  continuarGuardado() {
     if (this.enEdicion) {
       this.actualizar();
     } else {
@@ -212,7 +243,26 @@ export class FormularioPacienteComponent implements OnInit {
   }
 
 
+  dAnios: number = 0;
 
+  // Getter to return sorted metadatos by registro date
+  get sortedMetadatos() {
+    return (this.patient?.metadatos || []).slice().sort((b: any, a: any) => {
+      return new Date(a.registro).getTime() - new Date(b.registro).getTime();
+    });
+  }
+
+  async generarExpediente(): Promise<string> {
+    return this.api.corExpediente()
+      .then((data: string) => {
+        console.log('👤 Correlativo obtenido correctamente:', data);
+        return data; // ← retornamos el valor
+      })
+      .catch((error) => {
+        console.error('❌ Error al generar expediente:', error);
+        throw error;
+      });
+  }
 
 
 }

@@ -37,9 +37,11 @@
       <tbody >
         <tr *ngFor="let paciente of pacientes">
           <td>{{ paciente.id }}</td>
-          <td >
+          <td>
             <div *ngFor="let id of paciente.identificadores" class="gap-1" >
-              {{ id.tipo }}: {{ id.valor }}
+              <ng-container *ngIf="id.valor && id.valor.trim() !== ''">
+                {{ id.tipo }}: {{ id.valor }}
+              </ng-container>
             </div>
           </td>
           <td>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
-import { Paciente, Usuarios } from '../interface/interfaces';
+import { Paciente, Usuarios, Correlativo } from '../interface/interfaces';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
@@ -253,4 +253,31 @@ export class ApiService {
     }
     return filtrosLimpiados;
   }
+
+  // correlativos
+
+  async corExpediente(): Promise<string> {
+    try {
+      const response = await this.api.post<{ 'correlativo': string }>('/generar/expediente');
+      console.log('👤 Correlativo obtenido correctamente:', response.data['correlativo']);
+      return response.data['correlativo'];
+    } catch (error) {
+      console.error('❌ Error al obtener correlativo:', error);
+      throw error;
+    }
+  }
+
+  async corEmergencia(): Promise<any> {
+    try {
+      const response = await this.api.post<{ 'correlativo': string }>('/generar/emergencia');
+      console.log('👤 Correlativo obtenido correctamente:', response.data['correlativo']);
+      return response.data['correlativo'];
+    } catch (error) {
+      console.error('❌ Error al obtener correlativo:', error);
+      throw error;
+    }
+  }
+
+
+
 }

@@ -112,3 +112,22 @@ button:hover {
   margin-top: 0.3rem;
 
 }
+
+.historial-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.1rem;
+  list-style:none;
+  padding: 0;
+  margin: 0.4rem;
+  font-size: small;
+}
+
+.historial-grid li {
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  border-radius: 0.75rem;
+  text-align: center;
+}
+
+

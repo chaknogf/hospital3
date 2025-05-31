@@ -19,6 +19,7 @@ export interface Currentuser {
 // pacientes
 export interface Paciente {
   id: number;
+  unidad: number;
   identificadores: Identificadores[];
   nombre: Nombres;
   sexo: string;
@@ -63,4 +64,8 @@ export interface Extras {
 export interface Metadatos {
   usuario: string;
   registro: string;
+}
+
+export interface Correlativo {
+  correlativo: number
 }

@@ -4,6 +4,12 @@
 <input type="password" name="fakepasswordremembered" style="display: none;" />
   <h2>{{ enEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
 
+  <div >
+    <label for="unidad">Unidad</label>
+    <input type="number" name="unidad" [(ngModel)]="patient.unidad" [defaultValue]="287" disabled="" style="width: 35px; height: 10px; font-size: 12px;">
+
+  </div>
+
   <!-- Identificadores -->
  <fieldset>
   <legend>Identificadores</legend>
@@ -20,7 +26,7 @@
   maxlength="13"
   required
 />
-<div *ngIf="patient.identificadores[0].valor?.length !== 13" class="input-error-msg">
+<div *ngIf="patient.identificadores[0].valor && patient.identificadores[0].valor.length !== 13" class="input-error-msg">
   El CUI debe tener exactamente 13 dígitos.
 </div>
 
@@ -33,7 +39,9 @@
     name="expediente"
     placeholder="Ingresa el número de expediente"
     required
+
   />
+  <button (click)="generarExpediente()" >Generar Expediente</button>
 </fieldset>
 
   <!-- Nombre -->
@@ -167,10 +175,10 @@
 </fieldset>
 
   <!-- Metadatos -->
- <fieldset>
+<fieldset>
   <legend>Historial de registros</legend>
-  <ul>
-    <li *ngFor="let meta of patient.metadatos">
+  <ul class="historial-grid">
+    <li *ngFor="let meta of sortedMetadatos; let i = index">
       {{ meta.usuario }} — {{ meta.registro | date:'short' }}
     </li>
   </ul>
