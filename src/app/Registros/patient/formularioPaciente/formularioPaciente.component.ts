@@ -184,7 +184,7 @@ export class FormularioPacienteComponent implements OnInit {
           this.patient.identificadores = [];
         }
 
-        this.patient.identificadores.push(identificador);
+        this.patient.identificadores.push(identificadores);
 
         // Continuar con la creación o edición
         this.continuarGuardado();
