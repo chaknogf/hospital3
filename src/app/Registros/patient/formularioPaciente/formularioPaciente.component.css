@@ -1,7 +1,4 @@
-
-
 form {
-  /* background-color: var(--rich-black); */
   font-family: 'Segoe UI', sans-serif;
   color: var(--white);
   line-height: 1.5;
@@ -11,40 +8,34 @@ form {
   max-width: 900px;
   margin: 0.8rem auto;
   padding: 2rem;
-  background: var(--prussian-blue);
-  color: var(--white) !important; ;
-  border-radius: 42px;
-  box-shadow: 0 2px 8px rgba(0, 168, 232, 0.2);
-   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+
+
+
+
 }
-
-
 
 .formulario-paciente h2 {
   text-align: center;
-  color: var(--picton-blue);
-  margin:0;
+  color: var(-vivid-sky-blue);
+  margin: 0;
   font-weight: 600;
 }
 
 fieldset {
-   border: 1px solid rgba(255, 254, 254, 0.1);
   padding: 1.2rem;
   margin-bottom: 0.6rem;
-  border-radius: 38px;
-  background-color: rgba(182, 215, 227, 0.159); /* azul claro translúcido */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px); /* para Safari */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.334);
+  border-radius: 1rem;
+  /* background-color: var(--dark-blue); */
+  border: 1px solid var(--neon-blue);
+  box-shadow: 0 0 12px rgba(76, 201, 240, 0.2);
+  color: var(--vivid-sky-blue);
 }
 
 legend {
   font-weight: 600;
-  color: var(--white);
+  color: var(--vivid-sky-blue);
   padding: 0 0.5rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 
 input,
@@ -53,52 +44,47 @@ select {
   width: 97%;
   padding: 0.6rem;
   margin-top: 0.5rem;
-  border: 1px solid var(--cerulean);
+  border: none;
+  box-shadow: var(--french-gray-2) 0 0 0 1px inset, var(--outer-space) 0 0 0 2px, var(--neon-blue) 0 0 0 4px inset;
   border-radius: 16px;
-  background-color: rgba(143, 179, 190, 0.268);
-  color: var(--white) ;
+  background-color: var(--indigo-dye-2);
+  color: var(--vivid-sky-blue);
   font-size: 0.95rem;
   text-transform: uppercase;
-  z-index: 1;
-}
-
-input::placeholder {
-  color: var(--white);
-  padding-left: 3.5rem ;
-  text-transform: capitalize;
-}
-
-label {
-  color: var(--picton-blue);
-  font-weight: 600;
-  font-size: larger;
 }
 
 input:focus,
 select:focus {
-  border-color: var(--picton-blue);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 168, 232, 0.4);
+  border-color: var(--rose);
+  background-color: var(--tiffany-blue);
+  color: var(--rich-black);
+}
+
+input::placeholder {
+  color: var(--vivid-sky-blue);
+  padding-left: 3.5rem;
+  text-transform: capitalize;
+}
+
+label {
+  color: var(--aquamarine);
+  font-weight: 600;
+  font-size: 1rem;
 }
 
 button {
-  background-color: var(--cerulean);
-  color: var(--white);
+  background-color: var(--antiflash-white);
+  color: var(--rich-black);
   padding: 0.6rem 1rem;
   border: none;
   border-radius: 16px;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: var(--picton-blue);
-}
-.botones {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
+  background-color: var(--grape);
 }
 
 .botones {
@@ -125,7 +111,8 @@ button:hover {
     margin: 0.5rem 0;
   }
 
-  input, select {
+  input,
+  select {
     width: 95%;
   }
 }
@@ -148,7 +135,7 @@ button:hover {
 
 .historial-grid li {
   background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--cerulean);
+  border: 1px solid var(--chefchaouen-blue);
   border-radius: 0.75rem;
   text-align: center;
   color: var(--white);

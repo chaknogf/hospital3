@@ -6,6 +6,7 @@ import { ApiService } from '../../../service/api.service';
 import { DpiValidadorDirective } from '../../../directives/dpi-validador.directive';
 import { UnaPalabraDirective } from '../../../directives/unaPalabra.directive';
 import { Paciente, Metadata, DatosExtra } from '../../../interface/interfaces';
+import { validarCui } from '../../../validators/dpi.validator';
 
 @Component({
   selector: 'app-formularioPaciente',
@@ -26,6 +27,7 @@ export class FormularioPacienteComponent implements OnInit {
   edadAnios = 0;
   edadMeses = 0;
   edadDias = 0;
+  esGemelo = false;
   form: FormGroup;
   private actualizandoFecha = false;
   private actualizandoEdad = false;
@@ -47,7 +49,7 @@ export class FormularioPacienteComponent implements OnInit {
         apellido_segundo: [''],
         casada: ['']
       }),
-      sexo: ['V'],
+      sexo: [''],
       fecha_nacimiento: [''],
       edad: this.fb.group({
         anios: [0],
@@ -66,53 +68,67 @@ export class FormularioPacienteComponent implements OnInit {
           nombre: [''],
           telefono: [''],
           parentesco: ['']
-        }),
-        referencia2: this.fb.group({
-          nombre: [''],
-          telefono: [''],
-          parentesco: ['']
-        }),
-        referencia3: this.fb.group({
-          nombre: [''],
-          telefono: [''],
-          parentesco: ['']
         })
       }),
       identificadores: this.fb.group({
-        cui: [null],
+        cui: ['', [validarCui()]],
         expediente: [''],
         pasaporte: [''],
         otro: ['']
       }),
       datos_extra: this.fb.group({
         r0: this.fb.group({
-          nacionalidad: ['GTM']
+          tipo: ['nacionalidad'],
+          valor: ['GTM']
         }),
         r1: this.fb.group({
-          estado_civil: [''],
+          tipo: ['estado_civil'],
+          valor: ['']
         }),
         r2: this.fb.group({
-          pueblo: [''],
+          tipo: ['pueblo'],
+          valor: ['']
         }),
-        idioma: [''],
+        r3: this.fb.group({
+          tipo: ['idioma'],
+          valor: ['español']
+        }),
+        r4: this.fb.group({
+          tipo: ['ocupacion'],
+          valor: ['']
+        }),
+        r5: this.fb.group({
+          tipo: ['nivel_educativo'],
+          valor: ['']
+        }),
+        r6: this.fb.group({
+          tipo: ['peso_nacimiento'],
+          valor: ['0', [Validators.min(0)]]
+        }),
+        r7: this.fb.group({
+          tipo: ['edad_gestacional'],
+          valor: ['0', [Validators.min(20), Validators.max(44)]]
+        }),
+        r8: this.fb.group({
+          tipo: ['parto'],
+          valor: ['0']
+        }),
+        r9: this.fb.group({
+          tipo: ['gemelo'],
+          valor: ['0']
+        }),
+        r10: this.fb.group({
+          tipo: ['expediente_madre'],
+          valor: ['0']
+        })
       }),
-      r3: this.fb.group({
-        ocupacion: [''],
-      }),
-      r4: this.fb.group({
-        nivel_educativo: [''],
-      }),
-      r5: this.fb.group({
-        peso_nacimiento: ['', [Validators.min(0)]],
-      }),
-      r6: this.fb.group({
-        edad_gestacional: ['', [Validators.min(20), Validators.max(44)]],
-      }),
-      r7: this.fb.group({
-        parto: [''],
-      }),
-      estado: [''],
-      metadatos: this.fb.group({})
+      estado: ['V'],
+      metadatos: this.fb.group({
+        r0: this.fb.group({
+          usuario: [''],
+          registro: [''],
+        })
+      })
     });
   }
 
@@ -168,8 +184,12 @@ export class FormularioPacienteComponent implements OnInit {
     const metadata: Metadata = { usuario: this.usuarioActual, registro: timestamp };
 
     const metadatosGroup = this.form.get('metadatos') as FormGroup;
-    metadatosGroup.addControl(timestamp, this.fb.group(metadata));
 
+    // Obtener la cantidad actual de registros (r0, r1, etc.)
+    const total = Object.keys(metadatosGroup.controls).length;
+    const nuevaClave = `r${total}`;
+    // Agregar el nuevo grupo
+    metadatosGroup.addControl(nuevaClave, this.fb.group(metadata));
     this.tieneExpediente()
       ? this.continuarGuardado()
       : this.confirmarGenerarExpediente();
@@ -184,22 +204,27 @@ export class FormularioPacienteComponent implements OnInit {
     this.enEdicion ? this.actualizar(paciente) : this.crear(paciente);
   }
 
-  crear(paciente: Paciente): void {
-    this.api.createPaciente(paciente)
-      .then(() => {
-        console.log('👤 Paciente creado correctamente');
-        this.volver();
-      })
-      .catch(error => this.mostrarError('crear paciente', error));
+  async crear(paciente: Paciente): Promise<void> {
+    try {
+      const datos = this.getDatosParaGuardar();
+      console.table(datos);
+      await this.api.createPaciente(datos); // Usamos await, ya que el método es async
+      console.log('👤 Paciente creado correctamente');
+      this.volver();
+    } catch (error) {
+      this.mostrarError('generar expediente', error);
+      throw error;
+    }
   }
-
   async actualizar(paciente: Paciente): Promise<void> {
     try {
-      await this.api.updatePaciente(paciente.id, paciente);
+      const datos = this.getDatosParaGuardar();
+      await this.api.updatePaciente(paciente.id, datos);
       console.log('👤 Paciente actualizado correctamente');
       this.volver();
     } catch (error) {
       this.mostrarError('actualizar paciente', error);
+      console.table(paciente);
     }
   }
 
@@ -265,13 +290,6 @@ export class FormularioPacienteComponent implements OnInit {
     this.actualizandoEdad = false;
   }
 
-  private inicializarDatosExtra(): FormGroup[] {
-    const tipos: DatosExtra['tipo'][] = [
-      'nacionalidad', 'estado civil', 'pueblo', 'idioma',
-      'ocupación', 'nivel educativo', 'peso nacimiento', 'edad gestacional'
-    ];
-    return tipos.map(tipo => this.fb.group({ tipo: [tipo], valor: [''] }));
-  }
 
   get sortedMetadatos(): Metadata[] {
     const metadatos = this.form.get('metadatos')?.value || {};
@@ -324,4 +342,22 @@ export class FormularioPacienteComponent implements OnInit {
     });
     this.form.setControl('referencias', referenciasGroup);
   }
+
+
+  getDatosParaGuardar(): any {
+    const formularioCompleto = this.form.getRawValue();
+    // Excluimos 'edad' del objeto
+    const { edad, ...datosSinEdad } = formularioCompleto;
+    return datosSinEdad;
+  }
+
+  get mostrarDatosNacimiento(): boolean {
+    const edad = this.form.get('edad');
+    return this.enEdicion === true ||
+      (edad?.get('anios')?.value === 0 &&
+        edad?.get('meses')?.value === 0 &&
+        edad?.get('dias')?.value < 2);
+  }
+
+
 }

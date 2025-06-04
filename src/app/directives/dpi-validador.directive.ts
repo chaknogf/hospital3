@@ -1,4 +1,4 @@
-import { Directive, HostListener, Input } from '@angular/core';
+import { Directive, HostListener } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
 @Directive({
@@ -6,17 +6,13 @@ import { NgControl } from '@angular/forms';
   standalone: true
 })
 export class DpiValidadorDirective {
-  @Input() identificadorTipo: string = '';
-
   constructor(private control: NgControl) { }
 
   @HostListener('input', ['$event.target.value'])
   onInput(value: string) {
-    if (this.identificadorTipo?.toLowerCase() === 'cui' || this.identificadorTipo?.toLowerCase() === 'dpi') {
-      const soloNumeros = value.replace(/\D/g, '').slice(0, 13);
-      if (soloNumeros !== value) {
-        this.control.control?.setValue(soloNumeros);
-      }
+    const soloNumeros = value.replace(/\D/g, '').slice(0, 13);
+    if (soloNumeros !== value) {
+      this.control.control?.setValue(soloNumeros);
     }
   }
 }

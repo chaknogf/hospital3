@@ -53,17 +53,20 @@ export interface Metadata {
   registro?: string;
 }
 
+
+
 export interface DatosExtra {
-  tipo:
-  | 'nacionalidad'
-  | 'estado civil'
-  | 'pueblo'
-  | 'idioma'
-  | 'ocupación'
-  | 'nivel educativo'
-  | 'peso nacimiento'
-  | 'edad gestacional';
-  valor: string;
+  nacionalidad?: string;
+  estado_civil?: string;
+  pueblo?: string;
+  idioma?: string;
+  ocupacion?: string;
+  nivel_educativo?: string;
+  peso_nacimiento?: string;
+  edad_gestacional?: string;
+  parto?: string;
+  gemelo?: string;
+  expediente_madre?: string;
 }
 
 export interface Paciente {
@@ -75,7 +78,7 @@ export interface Paciente {
   fecha_nacimiento?: string;
   contacto?: Contacto;
   referencias?: { [key: string]: Referencia };
-  datos_extra?: DatosExtra[];  // <--- Aquí usamos arreglo, no diccionario
+  datos_extra?: { [key: string]: DatosExtra };
   estado?: string;
   metadatos?: { [key: string]: Metadata };
 }

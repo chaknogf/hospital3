@@ -27,14 +27,14 @@
       formControlName="cui"
       placeholder="Ingresa el número de CUI"
       validarDPI
-      unaPalabra
       maxlength="13"
       required
-
+      autocomplete="new-name"
     />
-    <div *ngIf="form.get('identificadores.cui')?.value?.length !== 13 && form.get('identificadores.cui')?.touched" class="input-error-msg">
-      El CUI debe tener exactamente 13 dígitos.
-    </div>
+  <div *ngIf="form.get('identificadores.cui')?.errors?.['validarDPI']">
+  El CUI debe tener exactamente 13 dígitos.
+  Te faltan {{ form.get('identificadores.cui')?.errors?.['validarDPI'].faltantes }} dígito(s).
+</div>
 
     <label *ngIf="enEdicion == true" for="expediente" >Expediente</label>
     <div class="input-buton" *ngIf="form.get('identificadores.expediente')?.value === ''">
@@ -46,6 +46,7 @@
         *ngIf="enEdicion == true"
         required
         unaPalabra
+        autocomplete="new-name"
       />
       <!-- <button type="button" (click)="generarExpediente()" class="btn-input">Generar Expediente</button> -->
     </div>
@@ -56,7 +57,8 @@
       type="text"
       formControlName="pasaporte"
       placeholder="Ingresa el pasaporte"
-      *ngIf="form.get('datos_extra.r0.nacionalidad')?.value !== 'GTM'"
+      *ngIf="form.get('datos_extra.r0.valor')?.value !== 'GTM'"
+      autocomplete="new-name"
     />
   </fieldset>
 
@@ -99,15 +101,15 @@
   <fieldset class="grupo contacto" formGroupName="contacto">
     <legend>Contacto</legend>
     <label for="telefono_a">Teléfono A</label>
-    <input type="number" formControlName="telefono" placeholder="Teléfono A" name="telefono_a" />
+    <input type="text" formControlName="telefono" placeholder="Teléfono A" name="telefono_a" autocomplete="new-tel" />
     <label for="telefono_b">Teléfono B</label>
-    <input type="number" formControlName="telefono2" placeholder="Teléfono B" name="telefono_b" />
+    <input type="text" formControlName="telefono2" placeholder="Teléfono B" name="telefono_b" autocomplete="new-tel" />
     <label for="telefono_c">Teléfono C</label>
-    <input type="number" formControlName="telefono3" placeholder="Teléfono C" name="telefono_c" />
+    <input type="text" formControlName="telefono3" placeholder="Teléfono C" name="telefono_c"  autocomplete="new-tel" />
     <label for="municipio">Municipio</label>
-    <input type="text" formControlName="municipio" placeholder="Municipio" name="municipio" />
+    <input type="text" formControlName="municipio" placeholder="Municipio" name="municipio" autocomplete="new-tel" />
     <label for="direccion">Dirección domicilio</label>
-    <input type="text" formControlName="direccion" placeholder="Dirección" name="direccion" />
+    <input type="text" formControlName="direccion" placeholder="Dirección" name="direccion" autocomplete="new-tel" />
   </fieldset>
 
   <!-- Referencias -->
@@ -125,56 +127,70 @@
 <button type="button" (click)="agregarReferencia()">Agregar referencia</button>
   </fieldset>
 
-  <fieldset class="grupo datos-extra">
+ <fieldset class="grupo datos-extra">
   <legend>Datos extra</legend>
-
   <div formGroupName="datos_extra">
+
+    <!-- Datos generales -->
     <div formGroupName="r0">
       <label for="nacionalidad">Nacionalidad</label>
-      <input type="text" id="nacionalidad" formControlName="nacionalidad" />
+      <input type="text" id="nacionalidad" formControlName="valor" />
     </div>
 
     <div formGroupName="r1">
       <label for="estado_civil">Estado civil</label>
-      <input type="text" id="estado_civil" formControlName="estado_civil" />
+      <input type="text" id="estado_civil" formControlName="valor" />
     </div>
 
     <div formGroupName="r2">
       <label for="pueblo">Pueblo</label>
-      <input type="text" id="pueblo" formControlName="pueblo" />
+      <input type="text" id="pueblo" formControlName="valor" />
     </div>
 
-    <!-- Idioma está directamente en datos_extra -->
-    <div>
+    <div formGroupName="r3">
       <label for="idioma">Idioma</label>
-      <input type="text" id="idioma" formControlName="idioma" />
+      <input type="text" id="idioma" formControlName="valor" />
     </div>
-  </div>
 
-  <!-- r3 a r7 están directamente en this.form -->
-  <div formGroupName="r3">
-    <label for="ocupacion">Ocupación</label>
-    <input type="text" id="ocupacion" formControlName="ocupacion" />
-  </div>
+    <div formGroupName="r4">
+      <label for="ocupacion">Ocupación</label>
+      <input type="text" id="ocupacion" formControlName="valor" />
+    </div>
 
-  <div formGroupName="r4">
-    <label for="nivel_educativo">Nivel educativo</label>
-    <input type="text" id="nivel_educativo" formControlName="nivel_educativo" />
-  </div>
+    <div formGroupName="r5">
+      <label for="nivel_educativo">Nivel educativo</label>
+      <input type="text" id="nivel_educativo" formControlName="valor" />
+    </div>
 
-  <div formGroupName="r5">
-    <label for="peso_nacimiento">Peso nacimiento</label>
-    <input type="number" id="peso_nacimiento" formControlName="peso_nacimiento" />
-  </div>
+    <!-- Subtítulo visual -->
+    <legend class="subtitulo">Datos de nacimiento</legend>
 
-  <div formGroupName="r6">
-    <label for="edad_gestacional">Edad gestacional</label>
-    <input type="number" id="edad_gestacional" formControlName="edad_gestacional" />
-  </div>
+    <!-- Datos de nacimiento con condición -->
+    <div formGroupName="r6" *ngIf="mostrarDatosNacimiento">
+      <label for="peso_nacimiento">Peso nacimiento</label>
+      <input type="number" id="peso_nacimiento" formControlName="valor" />
+    </div>
 
-  <div formGroupName="r7">
-    <label for="parto">Parto</label>
-    <input type="text" id="parto" formControlName="parto" />
+    <div formGroupName="r7" *ngIf="mostrarDatosNacimiento">
+      <label for="edad_gestacional">Edad gestacional</label>
+      <input type="text" id="edad_gestacional" formControlName="valor" />
+    </div>
+
+    <div formGroupName="r8" *ngIf="mostrarDatosNacimiento">
+      <label for="parto">Parto</label>
+      <input type="text" id="parto" formControlName="valor" />
+    </div>
+
+    <div formGroupName="r9" *ngIf="mostrarDatosNacimiento">
+      <label for="gemelo">Número de Gemelo</label>
+      <input type="text" id="gemelo" formControlName="valor" />
+    </div>
+
+    <div formGroupName="r10" *ngIf="mostrarDatosNacimiento">
+      <label for="expediente_madre">Expediente de la Madre</label>
+      <input type="text" id="expediente_madre" formControlName="valor" />
+    </div>
+
   </div>
 </fieldset>
 

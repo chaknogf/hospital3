@@ -1,17 +1,87 @@
 
 :root {
-  --white: #ffffff !important;
-  --rich-black: #00171f !important;
-  --prussian-blue: #003459 !important;
-  --cerulean: #007ea7 !important;
-  --picton-blue: #e8eff1 !important;
-  --sky-blue-palid: #ccecf85c !important;
+  /* Escala de blancos y grises */
+  --white: #ffffff;
+  --seasalt: #f8f9fa;
+  --antiflash-white: #e9ecef;
+  --platinum: #dee2e6;
+  --french-gray: #ced4da;
+  --french-gray-2: #adb5bd;
+  --slate-gray: #7d8597;
+  --paynes-gray: #5c677d;
+  --outer-space: #495057;
+  --onyx: #343a40;
+  --eerie-black: #212529;
+
+  /* Azules profundos y negros */
+  --rich-black: #00111c;
+  --rich-black-2: #001523;
+  --rich-black-3: #001a2c;
+  --prussian-blue: #002137;
+  --prussian-blue-2: #00253e;
+  --prussian-blue-3: #002945;
+  --prussian-blue-4: #002e4e;
+  --prussian-blue-5: #003356;
+  --indigo-dye: #003a61;
+  --indigo-dye-2: #00406c;
+  --oxford-blue: #002855;
+  --oxford-blue-2: #001845;
+  --oxford-blue-3: #001233;
+  --delft-blue: #33415c;
+  --yale-blue: #023e7d;
+  --sapphire: #0353a4;
+  --true-blue: #0466c8;
+
+  /* Azules claros y celestes */
+  --picton-blue: #4ea8de;
+  --aero: #48bfe3;
+  --sky-blue: #8ecae6;
+  --sky-blue-palid: #ccecf85c;
+  --united-nations-blue: #5390d9;
+  --cerulean: #007ea7;
+  --persian-blue: #072ac8ff;
+
+  /* Verdes y tonos turquesa */
+  --celadon: #99e2b4;
+  --celadon-2: #88d4ab;
+  --mint: #78c6a3;
+  --mint-2: #67b99a;
+  --zomp: #56ab91;
+  --zomp-2: #469d89;
+  --viridian: #358f80;
+  --pine-green: #248277;
+  --skobeloff: #14746f;
+  --caribbean-current: #036666;
+  --blue-green: #219ebc;
+  --tiffany-blue: #64dfdf;
+  --turquoise: #72efdd;
+  --aquamarine: #80ffdb;
+
+  /* Tonos cálidos */
+  --selective-yellow: #ffb703;
+  --ut-orange: #fb8500;
+
+  /* Tonos violeta */
+  --french-violet: #7400b8;
+  --grape: #6930c3;
+  --slate-blue: #5e60ce;
+
+  --rose: #f72585ff;
+--fandango: #b5179eff;
+--grape: #7209b7ff;
+--chrysler-blue: #560badff;
+--dark-blue: #480ca8ff;
+--zaffre: #3a0ca3ff;
+--palatinate-blue: #3f37c9ff;
+--neon-blue: #4361eeff;
+--chefchaouen-blue: #4895efff;
+--vivid-sky-blue: #4cc9f0ff;
 }
 
 body {
 
 
-  background: radial-gradient(ellipse at bottom, rgba(0, 213, 255, 0.784) -15%, rgba(9, 9, 121, 1) 75%);
+  background: radial-gradient(ellipse at bottom, #00d5ffc8 -15%, #090979 75%);
    backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 
