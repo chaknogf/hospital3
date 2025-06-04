@@ -1,191 +1,205 @@
-<div class="formulario-paciente">
-  <!-- Campo trampa para evitar autocompletado real -->
-<input type="text" name="fakeusernameremembered" style="display: none;" />
-<input type="password" name="fakepasswordremembered" style="display: none;" />
+<form [formGroup]="form" class="formulario-paciente" (ngSubmit)="guardar()">
+  <!-- Anti-autocompletado -->
+  <input type="text" name="fakeusernameremembered" style="display: none;" />
+  <input type="password" name="fakepasswordremembered" style="display: none;" />
+
   <h2>{{ enEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
 
-  <div >
+  <!-- Unidad -->
+  <div class="campo unidad">
     <label for="unidad">Unidad</label>
-    <input type="number" name="unidad" [(ngModel)]="patient.unidad" [defaultValue]="287" disabled="" style="width: 35px; height: 10px; font-size: 12px;">
-
+    <input
+      id="unidad"
+      type="number"
+      formControlName="unidad"
+      style="width: 35px; height: 10px; font-size: 12px;"
+    />
   </div>
 
   <!-- Identificadores -->
- <fieldset>
-  <legend>Identificadores</legend>
+  <fieldset class="grupo identificadores" formGroupName="identificadores">
+    <legend>Identificadores</legend>
 
-  <label for="cui">CUI</label>
- <input
-  id="cui"
-  type="text"
-  [(ngModel)]="patient.identificadores[0].valor"
-  name="cui"
-  placeholder="Ingresa el número de CUI"
-  validarDPI
-  [identificadorTipo]="patient.identificadores[0].tipo"
-  maxlength="13"
-  required
-/>
-<div *ngIf="patient.identificadores[0].valor && patient.identificadores[0].valor.length !== 13" class="input-error-msg">
-  El CUI debe tener exactamente 13 dígitos.
-</div>
+    <label for="cui">CUI</label>
+    <input
+      id="cui"
+      type="number"
+      formControlName="cui"
+      placeholder="Ingresa el número de CUI"
+      validarDPI
+      unaPalabra
+      maxlength="13"
+      required
 
+    />
+    <div *ngIf="form.get('identificadores.cui')?.value?.length !== 13 && form.get('identificadores.cui')?.touched" class="input-error-msg">
+      El CUI debe tener exactamente 13 dígitos.
+    </div>
 
-  <label for="expediente">Expediente</label>
-  <input
-    id="expediente"
-    type="text"
-    [(ngModel)]="patient.identificadores[1].valor"
-    name="expediente"
-    placeholder="Ingresa el número de expediente"
-    required
+    <label *ngIf="enEdicion == true" for="expediente" >Expediente</label>
+    <div class="input-buton" *ngIf="form.get('identificadores.expediente')?.value === ''">
+      <input
+        id="expediente"
+        type="text"
+        formControlName="expediente"
+        placeholder="Ingresa el número de expediente"
+        *ngIf="enEdicion == true"
+        required
+        unaPalabra
+      />
+      <!-- <button type="button" (click)="generarExpediente()" class="btn-input">Generar Expediente</button> -->
+    </div>
 
-  />
-  <button (click)="generarExpediente()" >Generar Expediente</button>
-</fieldset>
+    <label for="pasaporte" *ngIf="form.get('datos_extra.r0.nacionalidad')?.value !== 'GTM'">Pasaporte</label>
+    <input
+      id="pasaporte"
+      type="text"
+      formControlName="pasaporte"
+      placeholder="Ingresa el pasaporte"
+      *ngIf="form.get('datos_extra.r0.nacionalidad')?.value !== 'GTM'"
+    />
+  </fieldset>
 
   <!-- Nombre -->
-  <fieldset>
+  <fieldset class="grupo nombres" formGroupName="nombre">
     <legend>Nombre</legend>
-    <input [(ngModel)]="patient.nombre.primer" placeholder="Primer nombre" name="nombre1" unaPalabra autocomplete="new-name" />
-    <input [(ngModel)]="patient.nombre.segundo" placeholder="Segundo nombre" name="nombre2" unaPalabra autocomplete="new-name" />
-    <input [(ngModel)]="patient.nombre.otro" placeholder="Otro nombre" name="nombre3" *ngIf="patient.nombre.segundo" autocomplete="new-name" />
-    <input [(ngModel)]="patient.nombre.apellido_primero" placeholder="Apellido primero" name="apellido1" unaPalabra autocomplete="new-name" />
-    <input [(ngModel)]="patient.nombre.apellido_segundo" placeholder="Apellido segundo" name="apellido2" unaPalabra autocomplete="new-name" />
-    <input [(ngModel)]="patient.nombre.casada" placeholder="Apellido casada" name="casada" *ngIf="patient.sexo === 'F'" autocomplete="new-name" />
+    <input formControlName="primer" placeholder="Primer nombre" name="nombre1" unaPalabra autocomplete="new-name" />
+    <input formControlName="segundo" placeholder="Segundo nombre" name="nombre2" unaPalabra autocomplete="new-name" />
+    <input formControlName="otro" placeholder="Otro nombre" name="nombre3" *ngIf="form.get('nombre.segundo')?.value" autocomplete="new-name" />
+    <input formControlName="apellido_primero" placeholder="Apellido primero" name="apellido1" unaPalabra autocomplete="new-name" />
+    <input formControlName="apellido_segundo" placeholder="Apellido segundo" name="apellido2" unaPalabra autocomplete="new-name" />
+    <input formControlName="casada" placeholder="Apellido casada" name="casada" *ngIf="form.get('sexo')?.value === 'F'" autocomplete="new-name" />
   </fieldset>
 
-  <!-- Sexo y Fecha -->
- <fieldset>
-  <legend>Información básica</legend>
+  <!-- Información Básica -->
+  <fieldset class="grupo info-basica">
+    <legend>Información básica</legend>
 
-  <label for="sexo">Sexo</label>
-  <select [(ngModel)]="patient.sexo" name="sexo">
-    <option value="">Seleccione sexo</option>
-    <option value="M">Masculino</option>
-    <option value="F">Femenino</option>
-  </select>
+    <label for="sexo">Sexo</label>
+    <select formControlName="sexo" name="sexo">
+      <option value="">Seleccione sexo</option>
+      <option value="M">Masculino</option>
+      <option value="F">Femenino</option>
+    </select>
 
-  <label for="fechaNacimiento">Fecha de nacimiento</label>
-  <input
-    type="date"
-    [(ngModel)]="patient.fecha_nacimiento"
-    name="fechaNacimiento"
-    (change)="calcularEdadDesdeFecha()"
-  />
+    <label for="fechaNacimiento">Fecha de nacimiento</label>
+    <input type="date" formControlName="fecha_nacimiento" name="fechaNacimiento" />
 
-  <div style="margin-top: 1rem;">
-    <p><strong>O calcula la fecha con la edad:</strong></p>
-
-    <div style="display: flex; gap: 0.5rem;">
-      <input
-        type="number"
-        [(ngModel)]="edadAnios"
-        placeholder="Años"
-        (input)="calcularFechaDesdeEdad()"
-        min="0"
-        style="width: 80px;"
-      />
-      <input
-        type="number"
-        [(ngModel)]="edadMeses"
-        placeholder="Meses"
-        (input)="calcularFechaDesdeEdad()"
-        min="0"
-        max="11"
-        style="width: 80px;"
-      />
-      <input
-        type="number"
-        [(ngModel)]="edadDias"
-        placeholder="Días"
-        (input)="calcularFechaDesdeEdad()"
-        min="0"
-        max="30"
-        style="width: 80px;"
-      />
+    <div class="edad-manual" formGroupName="edad">
+      <p><strong>O calcula la fecha con la edad:</strong></p>
+      <div class="edad-inputs">
+        <input type="number" formControlName="anios" placeholder="Años" min="0" (input)="calcularFechaDesdeEdad()" />
+        <input type="number" formControlName="meses" placeholder="Meses" min="0" max="11" (input)="calcularFechaDesdeEdad()" />
+        <input type="number" formControlName="dias" placeholder="Días" min="0" max="30" (input)="calcularFechaDesdeEdad()" />
+      </div>
     </div>
-  </div>
-</fieldset>
+  </fieldset>
+
   <!-- Contacto -->
-  <fieldset>
-  <legend>Contacto</legend>
+  <fieldset class="grupo contacto" formGroupName="contacto">
+    <legend>Contacto</legend>
+    <label for="telefono_a">Teléfono A</label>
+    <input type="number" formControlName="telefono" placeholder="Teléfono A" name="telefono_a" />
+    <label for="telefono_b">Teléfono B</label>
+    <input type="number" formControlName="telefono2" placeholder="Teléfono B" name="telefono_b" />
+    <label for="telefono_c">Teléfono C</label>
+    <input type="number" formControlName="telefono3" placeholder="Teléfono C" name="telefono_c" />
+    <label for="municipio">Municipio</label>
+    <input type="text" formControlName="municipio" placeholder="Municipio" name="municipio" />
+    <label for="direccion">Dirección domicilio</label>
+    <input type="text" formControlName="direccion" placeholder="Dirección" name="direccion" />
+  </fieldset>
 
-  <div *ngFor="let c of patient.contacto; let i = index">
-    <label [for]="'contacto-' + i">{{ c.clave | titlecase }}</label>
-
-    <!-- Si la clave es "telefono", aplica la directiva -->
-    <input
-      *ngIf="esTelefono(c.clave); else normalInput"
-      type="text"
-      [(ngModel)]="patient.contacto[i].valor"
-      [name]="'contacto-' + i"
-      [id]="'contacto-' + i"
-      placeholder="Ingresa {{ c.clave }}"
-      unaPalabra
-      autocomplete="new-tel"
-    />
-
-    <!-- Si no, input sin directiva -->
-    <ng-template #normalInput>
-      <input
-        type="text"
-        [(ngModel)]="patient.contacto[i].valor"
-        [name]="'contacto-' + i"
-        [id]="'contacto-' + i"
-        placeholder="Ingresa {{ c.clave }}"
-      />
-    </ng-template>
-  </div>
-</fieldset>
   <!-- Referencias -->
-  <fieldset>
+  <fieldset class="grupo referencias" >
     <legend>Referencias</legend>
-    <div *ngFor="let r of patient.referencias; let i = index">
-      <input [(ngModel)]="r.nombre" placeholder="Nombre" name="referenciaNombre{{i}}" />
-      <input [(ngModel)]="r.parentesco" placeholder="Parentesco" name="referenciaParentesco{{i}}" />
-      <input [(ngModel)]="r.telefono" placeholder="Teléfono" name="referenciaTelefono{{i}}" />
-    </div>
-    <button (click)="patient.referencias.push({ nombre: '', telefono: '', parentesco: '' })">➕ Añadir referencia</button>
-  </fieldset>
-
-  <!-- Datos Extra -->
-  <fieldset>
-    <legend>Datos extra</legend>
-    <div *ngFor="let extra of patient.datos_extra; let i = index">
-      <label [for]="'extra-' + i"  >{{ extra.tipo | titlecase }}</label>
-      <input
-        type="text"
-        [(ngModel)]="patient.datos_extra[i].valor"
-        [name]="'extra-' + i"
-        [id]="'extra-' + i"
-        placeholder="Ingresa {{ extra.valor }}"
-        />
-    </div>
-    <button (click)="patient.datos_extra.push({ tipo: '', valor: '' })">➕ Añadir dato extra</button>
-  </fieldset>
-
-  <!-- Estado -->
- <fieldset>
-  <legend>Estado</legend>
-  <select [(ngModel)]="patient.estado" name="estado">
-    <option value="V">Vivo</option>
-    <option value="M">Muerto</option>
-  </select>
-</fieldset>
-
-  <!-- Metadatos -->
-<fieldset>
-  <legend>Historial de registros</legend>
-  <ul class="historial-grid">
-    <li *ngFor="let meta of sortedMetadatos; let i = index">
-      {{ meta.usuario }} — {{ meta.registro | date:'short' }}
-    </li>
-  </ul>
-</fieldset>
-  <!-- Botones -->
-  <div class="botones">
-    <button (click)="guardar()">💾 Guardar</button>
-    <button (click)="volver()">↩️ Cancelar</button>
+    <div formGroupName="referencias">
+  <div *ngFor="let key of referenciasKeys(); let i = index" [formGroupName]="key">
+    <input formControlName="nombre" placeholder="Nombre de referencia">
+    <input formControlName="telefono" placeholder="Teléfono">
+    <input formControlName="parentesco" placeholder="Parentesco">
+    <button type="button" (click)="eliminarReferencia(key)">Eliminar</button>
   </div>
 </div>
+
+<button type="button" (click)="agregarReferencia()">Agregar referencia</button>
+  </fieldset>
+
+  <fieldset class="grupo datos-extra">
+  <legend>Datos extra</legend>
+
+  <div formGroupName="datos_extra">
+    <div formGroupName="r0">
+      <label for="nacionalidad">Nacionalidad</label>
+      <input type="text" id="nacionalidad" formControlName="nacionalidad" />
+    </div>
+
+    <div formGroupName="r1">
+      <label for="estado_civil">Estado civil</label>
+      <input type="text" id="estado_civil" formControlName="estado_civil" />
+    </div>
+
+    <div formGroupName="r2">
+      <label for="pueblo">Pueblo</label>
+      <input type="text" id="pueblo" formControlName="pueblo" />
+    </div>
+
+    <!-- Idioma está directamente en datos_extra -->
+    <div>
+      <label for="idioma">Idioma</label>
+      <input type="text" id="idioma" formControlName="idioma" />
+    </div>
+  </div>
+
+  <!-- r3 a r7 están directamente en this.form -->
+  <div formGroupName="r3">
+    <label for="ocupacion">Ocupación</label>
+    <input type="text" id="ocupacion" formControlName="ocupacion" />
+  </div>
+
+  <div formGroupName="r4">
+    <label for="nivel_educativo">Nivel educativo</label>
+    <input type="text" id="nivel_educativo" formControlName="nivel_educativo" />
+  </div>
+
+  <div formGroupName="r5">
+    <label for="peso_nacimiento">Peso nacimiento</label>
+    <input type="number" id="peso_nacimiento" formControlName="peso_nacimiento" />
+  </div>
+
+  <div formGroupName="r6">
+    <label for="edad_gestacional">Edad gestacional</label>
+    <input type="number" id="edad_gestacional" formControlName="edad_gestacional" />
+  </div>
+
+  <div formGroupName="r7">
+    <label for="parto">Parto</label>
+    <input type="text" id="parto" formControlName="parto" />
+  </div>
+</fieldset>
+
+  <!-- Estado -->
+  <fieldset class="grupo estado">
+    <legend>Estado</legend>
+    <select formControlName="estado" name="estado">
+      <option value="V">Vivo</option>
+      <option value="M">Muerto</option>
+    </select>
+  </fieldset>
+
+  <!-- Metadatos -->
+  <fieldset class="grupo metadatos">
+    <legend>Historial de registros</legend>
+    <ul class="historial-grid">
+      <li *ngFor="let meta of sortedMetadatos; let i = index">
+        {{ meta.usuario }} — {{ meta.registro | date:'short' }}
+      </li>
+    </ul>
+  </fieldset>
+
+  <!-- Botones -->
+  <div class="botones">
+    <button type="submit">💾 Guardar</button>
+    <button type="button" (click)="volver()">↩️ Cancelar</button>
+  </div>
+</form>

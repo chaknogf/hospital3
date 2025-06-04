@@ -17,55 +17,68 @@ export interface Currentuser {
 }
 
 // pacientes
-export interface Paciente {
-  id: number;
-  unidad: number;
-  identificadores: Identificadores[];
-  nombre: Nombres;
-  sexo: string;
-  fecha_nacimiento: string;
-  contacto: Contacto[];
-  referencias: Referencias[];
-  datos_extra: Extras[];
-  estado: string;
-  metadatos: Metadatos[];
+export interface Identificadores {
+  cui?: number;
+  expediente?: string;
+  pasaporte?: string;
+  otro?: string;
 }
 
-export interface Nombres {
+export interface Nombre {
   primer: string;
-  segundo: string;
-  otro: string;
+  segundo?: string;
+  otro?: string;
   apellido_primero: string;
-  apellido_segundo: string;
-  casada: string | null;
+  apellido_segundo?: string;
+  casada?: string;
 }
 
 export interface Contacto {
-  clave: string;
-  valor: string;
+  direccion?: string;
+  municipio?: string;
+  telefono?: string;
+  telefono2?: string;
+  telefono3?: string;
 }
 
-export interface Referencias {
+export interface Referencia {
   nombre: string;
-  telefono: string;
-  parentesco: string;
+  parentesco?: string;
+  telefono?: string;
 }
 
-export interface Identificadores {
-  tipo: string;
+
+export interface Metadata {
+  usuario?: string;
+  registro?: string;
+}
+
+export interface DatosExtra {
+  tipo:
+  | 'nacionalidad'
+  | 'estado civil'
+  | 'pueblo'
+  | 'idioma'
+  | 'ocupación'
+  | 'nivel educativo'
+  | 'peso nacimiento'
+  | 'edad gestacional';
   valor: string;
 }
 
-export interface Extras {
-  tipo: string;
-  valor: string;
+export interface Paciente {
+  id: number
+  unidad?: number;
+  identificadores?: Identificadores;
+  nombre: Nombre;
+  sexo?: string;
+  fecha_nacimiento?: string;
+  contacto?: Contacto;
+  referencias?: { [key: string]: Referencia };
+  datos_extra?: DatosExtra[];  // <--- Aquí usamos arreglo, no diccionario
+  estado?: string;
+  metadatos?: { [key: string]: Metadata };
 }
-
-export interface Metadatos {
-  usuario: string;
-  registro: string;
-}
-
 export interface Correlativo {
   correlativo: number
 }

@@ -37,13 +37,20 @@
       <tbody >
         <tr *ngFor="let paciente of pacientes">
           <td>{{ paciente.id }}</td>
-          <td>
-            <div *ngFor="let id of paciente.identificadores" class="gap-1" >
-              <ng-container *ngIf="id.valor && id.valor.trim() !== ''">
-                {{ id.tipo }}: {{ id.valor }}
-              </ng-container>
-            </div>
-          </td>
+            <td>
+            <ng-container *ngIf="paciente.identificadores?.cui ">
+              {{ paciente.identificadores?.cui }}
+            </ng-container>
+            <ng-container *ngIf="paciente.identificadores?.expediente ">
+              {{ paciente.identificadores?.expediente }}
+            </ng-container>
+            <ng-container *ngIf="paciente.identificadores?.pasaporte ">
+              {{ paciente.identificadores?.pasaporte }}
+            </ng-container>
+            <ng-container *ngIf="paciente.identificadores?.otro ">
+              {{ paciente.identificadores?.otro }}
+            </ng-container>
+            </td>
           <td>
             <ng-container >
                {{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}
@@ -59,7 +66,7 @@
           <td>
             <button class="table-button" (click)="editarPaciente(paciente.id)" [innerHTML]="editIcon">Editar</button>
             <button class="table-button"  [innerHTML]="medicalServiceIcon">Consulta</button>
-            <!-- <button class="table-button" (click)="eliminarPaciente(paciente.id)" [innerHTML]="trashIcon">Eliminar</button> -->
+            <button class="table-button" (click)="eliminarPaciente(paciente.id)" [innerHTML]="trashIcon">Eliminar</button>
             <button
               class="table-button"
               [innerHTML]="tablaShanonIcon"

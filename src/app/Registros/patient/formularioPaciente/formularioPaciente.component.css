@@ -1,37 +1,48 @@
-body {
-  background-color: #e5e5e0;
+
+
+form {
+  /* background-color: var(--rich-black); */
   font-family: 'Segoe UI', sans-serif;
-  color: #2f2f2f;
+  color: var(--white);
   line-height: 1.5;
 }
 
 .formulario-paciente {
   max-width: 900px;
-  margin: 2rem auto;
+  margin: 0.8rem auto;
   padding: 2rem;
-  background: #d5d4dc;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: var(--prussian-blue);
+  color: var(--white) !important; ;
+  border-radius: 42px;
+  box-shadow: 0 2px 8px rgba(0, 168, 232, 0.2);
+   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
+
+
 
 .formulario-paciente h2 {
   text-align: center;
-  color: #3f4b44;
-  margin-bottom: 1.2rem;
+  color: var(--picton-blue);
+  margin:0;
   font-weight: 600;
 }
 
 fieldset {
-  border: 1px solid #b8b8b2;
+   border: 1px solid rgba(255, 254, 254, 0.1);
   padding: 1.2rem;
-  margin-bottom: 1.5rem;
-  border-radius: 8px;
-  background-color: #f0f0f3;
+  margin-bottom: 0.6rem;
+  border-radius: 38px;
+  background-color: rgba(182, 215, 227, 0.159); /* azul claro translúcido */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* para Safari */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.334);
 }
 
 legend {
   font-weight: 600;
-  color: #3f4b44;
+  color: var(--white);
   padding: 0 0.5rem;
   font-size: 1rem;
 }
@@ -42,39 +53,52 @@ select {
   width: 97%;
   padding: 0.6rem;
   margin-top: 0.5rem;
-  border: 1px solid #b8b8b2;
-  border-radius: 6px;
-  background-color: #0919384c;
-  color: #091047;
+  border: 1px solid var(--cerulean);
+  border-radius: 16px;
+  background-color: rgba(143, 179, 190, 0.268);
+  color: var(--white) ;
   font-size: 0.95rem;
+  text-transform: uppercase;
+  z-index: 1;
+}
+
+input::placeholder {
+  color: var(--white);
+  padding-left: 3.5rem ;
+  text-transform: capitalize;
 }
 
 label {
-  color: #171443;
+  color: var(--picton-blue);
   font-weight: 600;
   font-size: larger;
 }
 
 input:focus,
 select:focus {
-  border-color: #6c6d85;
+  border-color: var(--picton-blue);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(108, 133, 115, 0.25);
+  box-shadow: 0 0 0 2px rgba(0, 168, 232, 0.4);
 }
 
 button {
-  background-color: #6c6f85;
-  color: white;
+  background-color: var(--cerulean);
+  color: var(--white);
   padding: 0.6rem 1rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 16px;
   font-size: 0.95rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #171443;
+  background-color: var(--picton-blue);
+}
+.botones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
 }
 
 .botones {
@@ -107,25 +131,46 @@ button:hover {
 }
 
 .input-error-msg {
-  color: #b30000;
+  color: #ff4d4d;
   font-size: 0.95rem;
   margin-top: 0.3rem;
-
 }
 
 .historial-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.1rem;
-  list-style:none;
+  list-style: none;
   padding: 0;
   margin: 0.4rem;
   font-size: small;
 }
 
 .historial-grid li {
-  background-color: #f8f9fa;
-  border: 1px solid #ccc;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--cerulean);
   border-radius: 0.75rem;
   text-align: center;
+  color: var(--white);
+}
+
+.input-buton {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.btn-input {
+  height: 40px;
+  padding: 1px;
+  margin: 1px;
+  margin-top: 0.5rem;
+}
+
+.edad-manual,
+.edad-inputs {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
 }

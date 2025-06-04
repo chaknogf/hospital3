@@ -76,16 +76,7 @@ export class PacientesComponent implements OnInit {
       skip: 0,
       limit: 10
     };
-    // if (
-    //   !this.buscarIdentificador &&
-    //   !this.buscarNombre &&
-    //   !this.buscarApellido &&
-    //   !this.buscarNombreCompleto &&
-    //   !this.buscarFechaNacimiento
-    // ) {
-    //   alert('Por favor, ingresa al menos un criterio de búsqueda.');
-    //   return;
-    // }
+
     this.cargando = true;
     try {
       const response = await this.api.getPacientes(filtros);
@@ -104,7 +95,8 @@ export class PacientesComponent implements OnInit {
 
   eliminarPaciente(pacienteId: number) {
     if (confirm('¿Está seguro de que desea eliminar este paciente?')) {
-      // llamada a la API para eliminarlo
+      this.api.deletePaciente(pacienteId);
+
     }
   }
   agregar() {

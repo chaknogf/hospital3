@@ -237,7 +237,7 @@ export class ApiService {
     try {
       const response = await this.api.delete(`/paciente/eliminar/${pacienteId}`);
       console.log('👤 Paciente eliminado correctamente');
-      return response.data;
+      return response.data[0];
     } catch (error) {
       console.error('❌ Error al eliminar paciente:', error);
       throw error;

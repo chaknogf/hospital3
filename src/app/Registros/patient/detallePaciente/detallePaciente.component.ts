@@ -14,7 +14,11 @@ import { ApiService } from '../../../service/api.service';
 export class DetallePacienteComponent implements OnInit, OnChanges {
   @Input() pacienteId: number | null = null;
 
-  patient!: Paciente;
+  paciente!: Paciente;
+
+  referenciaKeys: string[] = [];
+  datosExtraKeys: string[] = [];
+  metadatosKeys: string[] = [];
   cargando: boolean = true;
   error: string | null = null;
   constructor(
@@ -23,11 +27,14 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     private router: Router
   ) { }
 
-  async ngOnInit(): Promise<void> {
-    // Optionally, you can load data here if pacienteId is available at init
-    if (this.pacienteId !== null) {
-      await this.cargarPaciente();
-    }
+  ngOnInit(): void {
+    const id = Number(this.ruta.snapshot.paramMap.get('id'));
+    this.api.getPaciente(id).then((data) => {
+      this.paciente = data;
+      this.referenciaKeys = Object.keys(this.paciente.referencias || {});
+      this.datosExtraKeys = Object.keys(this.paciente.datos_extra || {});
+      this.metadatosKeys = Object.keys(this.paciente.metadatos || {});
+    });
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -39,7 +46,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   private async cargarPaciente(): Promise<void> {
     this.cargando = true;
     try {
-      this.patient = await this.api.getPaciente(this.pacienteId!);
+      this.paciente = await this.api.getPaciente(this.pacienteId!);
       this.error = null;
     } catch (err) {
       console.error('❌ Error al cargar paciente:', err);

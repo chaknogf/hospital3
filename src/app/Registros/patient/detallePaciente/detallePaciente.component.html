@@ -1,67 +1,71 @@
-<div class="card-detalle-paciente">
-  <h2>🧍‍♂️ Detalle del Paciente</h2>
+<div class="card-detalle-paciente" *ngIf="paciente">
+  <h2>🧍 Detalle del Paciente</h2>
 
+  <!-- Identificadores -->
   <section>
     <h3>🆔 Identificadores</h3>
-    <p><strong>CUI:</strong> {{ patient.identificadores[0].valor || '—' }}</p>
-    <p><strong>Expediente:</strong> {{ patient.identificadores[1].valor || '—' }}</p>
+    <p><strong>CUI:</strong> {{ paciente.identificadores?.cui }}</p>
+    <p><strong>Expediente:</strong> {{ paciente.identificadores?.expediente }}</p>
+    <p><strong>Pasaporte:</strong> {{ paciente.identificadores?.pasaporte }}</p>
+    <p><strong>Otro:</strong> {{ paciente.identificadores?.otro }}</p>
   </section>
 
+  <!-- Nombre -->
   <section>
-    <h3>📛 Nombre Completo</h3>
+    <h3>🪪 Nombre Completo</h3>
     <p>
-      {{ patient.nombre.primer || '' }} {{ patient.nombre.segundo || '' }} {{ patient.nombre.otro || '' }}
-      {{ patient.nombre.apellido_primero || '' }} {{ patient.nombre.apellido_segundo || '' }}
-      <span *ngIf="patient.sexo === 'F' && patient.nombre.casada">de {{ patient.nombre.casada }}</span>
+      {{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}
+      {{ paciente.nombre.apellido_primero }} {{ paciente.nombre.apellido_segundo }}
+      <span *ngIf="paciente.nombre.casada"> de {{ paciente.nombre.casada }}</span>
     </p>
   </section>
 
+  <!-- Información Básica -->
   <section>
-    <h3>🗓️ Información Básica</h3>
-    <p><strong>Sexo:</strong> {{ patient.sexo === 'M' ? 'Masculino' : 'Femenino' }}</p>
-    <p><strong>Fecha de Nacimiento:</strong> {{ patient.fecha_nacimiento | date:'longDate' }}</p>
+    <h3>🎂 Información Básica</h3>
+    <p><strong>Sexo:</strong> {{ paciente.sexo }}</p>
+    <p><strong>Fecha de nacimiento:</strong> {{ paciente.fecha_nacimiento }}</p>
   </section>
 
-  <section *ngIf="(patient.contacto?.length ?? 0) > 0">
+  <!-- Contacto -->
+  <section>
     <h3>📞 Contacto</h3>
-    <ul>
-      <li *ngFor="let c of patient.contacto">
-        <strong>{{ c?.clave | titlecase }}:</strong> {{ c?.valor || '—' }}
-      </li>
-    </ul>
+    <p><strong>Dirección:</strong> {{ paciente.contacto?.direccion }}</p>
+    <p><strong>Municipio:</strong> {{ paciente.contacto?.municipio }}</p>
+    <p><strong>Teléfonos:</strong>
+      {{ paciente.contacto?.telefono }},
+      {{ paciente.contacto?.telefono2 }},
+      {{ paciente.contacto?.telefono3 }}
+    </p>
   </section>
 
-  <section *ngIf="patient.referencias?.length ?? 0">
-    <h3>👥 Referencias</h3>
-    <ul>
-      <li *ngFor="let r of patient.referencias">
-        {{ r?.nombre || '—' }} ({{ r?.parentesco || '—' }}): {{ r?.telefono || '—' }}
-      </li>
-    </ul>
-  </section>
-
-  <section *ngIf="patient.datos_extra?.length ?? 0">
-    <h3>📎 Datos Extra</h3>
-    <ul>
-      <li *ngFor="let d of patient.datos_extra">
-        <strong>{{ d?.tipo | titlecase }}:</strong> {{ d?.valor || '—' }}
-      </li>
-    </ul>
-  </section>
-
+  <!-- Referencias -->
   <section>
-    <h3>⚕️ Estado</h3>
-    <p>{{ patient.estado === 'V' ? '🟢 Vivo' : '⚫ Fallecido' }}</p>
+    <h3>👥 Referencias</h3>
+    <div *ngFor="let ref of paciente.referencias | keyvalue">
+      <p><strong>{{ ref }}:</strong> {{ ref.key }}:  {{ ref.value }}</p>
+    </div>
   </section>
 
-  <section *ngIf="patient.metadatos?.length ?? 0">
-    <h3>📜 Historial de Actualizaciones</h3>
-    <ul>
-      <li *ngFor="let meta of patient.metadatos">
-        {{ meta?.usuario || '—' }} — <em>{{ meta?.registro | date:'short' }}</em>
-      </li>
-    </ul>
+  <!-- Datos Extra -->
+  <section>
+    <h3>📄 Datos Extra</h3>
+    <div *ngFor="let ref of paciente.datos_extra | keyvalue">
+      <p><strong>{{ ref }}:</strong> {{ ref.key}}:  {{ ref.value }}</p>
+    </div>
   </section>
 
+  <!-- Estado -->
+  <section>
+    <h3>🩺 Estado</h3>
+    <p><strong>Código de estado:</strong> {{ paciente.estado }}</p>
+  </section>
 
+  <!-- Metadatos -->
+  <section>
+    <h3>📌 Metadatos</h3>
+    <div *ngFor="let ref of paciente.metadatos | keyvalue">
+      <p><strong>{{ ref }}:</strong> {{ ref.key }}:  {{ ref.value }}</p>
+    </div>
+  </section>
 </div>
