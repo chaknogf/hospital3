@@ -659,6 +659,11 @@ tr:hover .bg-ghost {
   filter: drop-shadow( 0px 6px 6px  #2b2b2b56) drop-shadow( 0px 2px 10px  #b1b1b296);
 }
 
+tr:hover .svg-icon {
+  color: var(--white);
+  filter: drop-shadow( 0px 6px 6px  #2b2b2b56) drop-shadow( 0px 2px 10px  #b1b1b296);
+}
+
 /* Animación de la niebla */
 @keyframes fog-move {
   0% {
@@ -671,3 +676,10 @@ tr:hover .bg-ghost {
     transform: translateX(-15%) translateY(-15%) scale(1.1);
   }
 }
+
+.m-p-0 {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+

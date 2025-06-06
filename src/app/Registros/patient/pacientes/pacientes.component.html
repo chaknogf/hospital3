@@ -70,7 +70,8 @@
           </td>
           <td>
             <ng-container *ngIf="paciente.sexo === 'M'">
-              <span [innerHTML]="hombreIcon" class="img-shadow"></span> <br>
+              <span [innerHTML]="hombreIcon" class="img-shadow svg-icon"></span> <br>
+
               Masculino
             </ng-container>
             <ng-container *ngIf="paciente.sexo === 'F'">
@@ -79,11 +80,12 @@
             </ng-container>
           <td>
             <ng-container *ngIf="paciente.estado === 'V'" >
-              <!-- <span [innerHTML]="beatIcon"></span> -->
-                <span [innerHTML]="ghostIcon"></span>
+              <span [innerHTML]="heartIcon"></span>
+              <p class="m-p-0">Vivo</p>
             </ng-container>
             <ng-container *ngIf="paciente.estado === 'F'">
               <span [innerHTML]="ghostIcon"></span>
+              <p class="m-p-0">Fallecido</p>
             </ng-container>
           </td>
           <td>

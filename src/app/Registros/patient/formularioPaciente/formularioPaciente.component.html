@@ -38,7 +38,7 @@
 </div>
 
     <label *ngIf="enEdicion == true" for="expediente" >Expediente</label>
-    <div class="input-buton" *ngIf="form.get('identificadores.expediente')?.value === ''">
+    <div class="input-buton" *ngIf="form.get('identificadores.expediente')?.value">
       <input
         id="expediente"
         type="text"

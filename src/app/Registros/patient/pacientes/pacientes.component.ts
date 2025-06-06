@@ -1,4 +1,4 @@
-import { createIcon, deletInput, searchIcon, editIcon, trashIcon, tablaShanonIcon, medicalServiceIcon, hombreIcon, mujerIcon, beatIcon, ghostIcon } from './../../../shared/icons/svg-icon';
+import { heartIcon, createIcon, deletInput, searchIcon, editIcon, trashIcon, tablaShanonIcon, medicalServiceIcon, hombreIcon, mujerIcon, beatIcon, ghostIcon } from './../../../shared/icons/svg-icon';
 import { Component, OnInit, NgModule } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
@@ -41,6 +41,7 @@ export class PacientesComponent implements OnInit {
   mujerIcon: SafeHtml = mujerIcon;
   beatIcon: SafeHtml = beatIcon;
   ghostIcon: SafeHtml = ghostIcon;
+  heartIcon: SafeHtml = heartIcon;
 
   //variables de detallePaciente Modal
   pacienteSeleccionadoId: number | null = null;
@@ -63,6 +64,7 @@ export class PacientesComponent implements OnInit {
     this.mujerIcon = this.sanitizer.bypassSecurityTrustHtml(mujerIcon);
     this.beatIcon = this.sanitizer.bypassSecurityTrustHtml(beatIcon);
     this.ghostIcon = this.sanitizer.bypassSecurityTrustHtml(ghostIcon);
+    this.heartIcon = this.sanitizer.bypassSecurityTrustHtml(heartIcon);
   }
 
   ngOnInit() {

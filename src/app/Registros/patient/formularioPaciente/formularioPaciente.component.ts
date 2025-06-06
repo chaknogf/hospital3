@@ -103,23 +103,23 @@ export class FormularioPacienteComponent implements OnInit {
         }),
         r6: this.fb.group({
           tipo: ['peso_nacimiento'],
-          valor: ['0', [Validators.min(0)]]
+          valor: ['', [Validators.min(0)]]
         }),
         r7: this.fb.group({
           tipo: ['edad_gestacional'],
-          valor: ['0', [Validators.min(20), Validators.max(44)]]
+          valor: ['', [Validators.min(20), Validators.max(44)]]
         }),
         r8: this.fb.group({
           tipo: ['parto'],
-          valor: ['0']
+          valor: ['']
         }),
         r9: this.fb.group({
           tipo: ['gemelo'],
-          valor: ['0']
+          valor: ['']
         }),
         r10: this.fb.group({
           tipo: ['expediente_madre'],
-          valor: ['0']
+          valor: ['']
         })
       }),
       estado: ['V'],
@@ -133,45 +133,77 @@ export class FormularioPacienteComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.usuarioActual = localStorage.getItem('username') || '';
+
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       const id = Number(idParam);
       if (!isNaN(id)) {
         this.api.getPaciente(id)
           .then(data => {
-            if (data.referencias) {
-              this.cargarReferencias(data.referencias);
-            }
-
-            const { referencias, datos_extra, ...resto } = data;
-            this.form.patchValue(resto);
-
-            if (resto.fecha_nacimiento) {
-              this.form.get('fecha_nacimiento')?.setValue(resto.fecha_nacimiento);
-              this.calcularEdadDesdeFecha();
-            }
-
             this.enEdicion = true;
             console.log('👤 Paciente obtenido correctamente');
+
+            // Cargar referencias (pueden tener claves dinámicas)
+            if (data.referencias) {
+              const referenciasGroup = this.fb.group({});
+              Object.entries(data.referencias).forEach(([key, ref]: [string, any]) => {
+                referenciasGroup.addControl(key, this.fb.group({
+                  nombre: [ref.nombre || ''],
+                  telefono: [ref.telefono || ''],
+                  parentesco: [ref.parentesco || '']
+                }));
+              });
+              this.form.setControl('referencias', referenciasGroup);
+            }
+
+            // Cargar datos_extra
+            if (data.datos_extra) {
+              const datosExtraGroup = this.fb.group({});
+              Object.entries(data.datos_extra).forEach(([key, dato]: [string, any]) => {
+                datosExtraGroup.addControl(key, this.fb.group({
+                  tipo: [dato.tipo || ''],
+                  valor: [dato.valor || '']
+                }));
+              });
+              this.form.setControl('datos_extra', datosExtraGroup);
+            }
+
+            // Cargar metadatos
+            if (data.metadatos) {
+              const metadatosGroup = this.fb.group({});
+              Object.entries(data.metadatos).forEach(([key, meta]: [string, any]) => {
+                metadatosGroup.addControl(key, this.fb.group({
+                  usuario: [meta.usuario || ''],
+                  registro: [meta.registro || '']
+                }));
+              });
+              this.form.setControl('metadatos', metadatosGroup);
+            }
+
+            // Cargar el resto del formulario
+            const { referencias, datos_extra, metadatos, ...resto } = data;
+            this.form.patchValue(resto);
+
+            // Calcular edad si hay fecha
+            if (data.fecha_nacimiento) {
+              this.form.get('fecha_nacimiento')?.setValue(data.fecha_nacimiento);
+              this.calcularEdadDesdeFecha();
+            }
           })
           .catch(error => this.mostrarError('obtener paciente', error));
       }
-      ['anios', 'meses', 'dias'].forEach(campo => {
-        this.form.get(['edad', campo])?.valueChanges.subscribe(() => {
-          if (!this.actualizandoEdad) this.calcularFechaDesdeEdad();
-        });
-      });
-
-      this.form.get('fecha_nacimiento')?.valueChanges.subscribe(() => {
-        if (!this.actualizandoFecha) this.calcularEdadDesdeFecha();
-      });
     }
 
-    this.usuarioActual = localStorage.getItem('username') || '';
+    // Suscripciones reactivas para sincronizar edad y fecha
+    ['anios', 'meses', 'dias'].forEach(campo => {
+      this.form.get(['edad', campo])?.valueChanges.subscribe(() => {
+        if (!this.actualizandoEdad) this.calcularFechaDesdeEdad();
+      });
+    });
 
-    // Suscripción reactiva para calcular edad automáticamente
     this.form.get('fecha_nacimiento')?.valueChanges.subscribe(() => {
-      this.calcularEdadDesdeFecha();
+      if (!this.actualizandoFecha) this.calcularEdadDesdeFecha();
     });
   }
 
