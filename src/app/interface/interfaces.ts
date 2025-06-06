@@ -56,18 +56,24 @@ export interface Metadata {
 
 
 export interface DatosExtra {
-  nacionalidad?: string;
-  estado_civil?: string;
-  pueblo?: string;
-  idioma?: string;
-  ocupacion?: string;
-  nivel_educativo?: string;
-  peso_nacimiento?: string;
-  edad_gestacional?: string;
-  parto?: string;
-  gemelo?: string;
-  expediente_madre?: string;
+  tipo: string;
+  valor: string
 }
+
+
+// export interface DatosExtraKey {
+//   nacionalidad?: string;
+//   estado_civil?: string;
+//   pueblo?: string;
+//   idioma?: string;
+//   ocupacion?: string;
+//   nivel_educativo?: string;
+//   peso_nacimiento?: string;
+//   edad_gestacional?: string;
+//   parto?: string;
+//   gemelo?: string;
+//   expediente_madre?: string;
+// }
 
 export interface Paciente {
   id: number
@@ -82,6 +88,13 @@ export interface Paciente {
   estado?: string;
   metadatos?: { [key: string]: Metadata };
 }
+
+
+
+
+
+
+
 export interface Correlativo {
   correlativo: number
 }

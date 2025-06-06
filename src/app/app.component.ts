@@ -3,16 +3,16 @@ import { Router, NavigationEnd } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from './principal/navbar/navbar.component';
-import { HomeComponent } from './principal/home/home.component';
 import { ApiService } from './service/api.service';
 import { filter } from 'rxjs/operators';
-
+import { ViewEncapsulation } from '@angular/core';
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, NavbarComponent, CommonModule],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
   title = 'medicalApp';

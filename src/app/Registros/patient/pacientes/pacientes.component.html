@@ -39,34 +39,57 @@
           <td>{{ paciente.id }}</td>
             <td>
             <ng-container *ngIf="paciente.identificadores?.cui ">
-              {{ paciente.identificadores?.cui }}
-            </ng-container>
+              CUI: {{ paciente.identificadores?.cui }}
+            </ng-container> <br>
             <ng-container *ngIf="paciente.identificadores?.expediente ">
-              {{ paciente.identificadores?.expediente }}
-            </ng-container>
+              Expediente: {{ paciente.identificadores?.expediente }}
+            </ng-container> <br>
             <ng-container *ngIf="paciente.identificadores?.pasaporte ">
-              {{ paciente.identificadores?.pasaporte }}
-            </ng-container>
+              Pasaporte {{ paciente.identificadores?.pasaporte }}
+            </ng-container> <br>
             <ng-container *ngIf="paciente.identificadores?.otro ">
-              {{ paciente.identificadores?.otro }}
+              otro: {{ paciente.identificadores?.otro }}
             </ng-container>
             </td>
           <td>
             <ng-container >
                {{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}
-            </ng-container>
+            </ng-container> <br>
             <ng-container >
              {{ paciente.nombre.apellido_primero }} {{ paciente.nombre.apellido_segundo }} {{ paciente.nombre.casada }}
             </ng-container>
            </td>
 
-          <td>{{ paciente.fecha_nacimiento | date: 'shortDate' }}</td>
-          <td>{{ paciente.sexo === 'M' ? 'Masculino' : 'Femenino' }}</td>
-          <td>{{ paciente.estado === 'V' ? 'Vivo' : 'Fallido' }}</td>
+          <td>
+            <ng-container >
+              {{ paciente.fecha_nacimiento | date: 'dd/MM/yyyy' }}
+            </ng-container> <br>
+            <ng-container >
+              {{ paciente.fecha_nacimiento | edad }}
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="paciente.sexo === 'M'">
+              <span [innerHTML]="hombreIcon" class="img-shadow"></span> <br>
+              Masculino
+            </ng-container>
+            <ng-container *ngIf="paciente.sexo === 'F'">
+              <span [innerHTML]="mujerIcon" class="img-shadow"></span> <br>
+              Femenino
+            </ng-container>
+          <td>
+            <ng-container *ngIf="paciente.estado === 'V'" >
+              <!-- <span [innerHTML]="beatIcon"></span> -->
+                <span [innerHTML]="ghostIcon"></span>
+            </ng-container>
+            <ng-container *ngIf="paciente.estado === 'F'">
+              <span [innerHTML]="ghostIcon"></span>
+            </ng-container>
+          </td>
           <td>
             <button class="table-button" (click)="editarPaciente(paciente.id)" [innerHTML]="editIcon">Editar</button>
             <button class="table-button"  [innerHTML]="medicalServiceIcon">Consulta</button>
-            <button class="table-button" (click)="eliminarPaciente(paciente.id)" [innerHTML]="trashIcon">Eliminar</button>
+            <!-- <button class="table-button" (click)="eliminarPaciente(paciente.id)" [innerHTML]="trashIcon">Eliminar</button> -->
             <button
               class="table-button"
               [innerHTML]="tablaShanonIcon"

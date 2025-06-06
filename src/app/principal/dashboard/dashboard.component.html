@@ -1,4 +1,5 @@
 
+
 <div class="layout-container">
   <a *ngFor="let app of modulos" [routerLink]="app.ruta" class="card">
     <span [innerHTML]="app.icon"></span>
@@ -6,3 +7,4 @@
     <p>{{app.descripcion}}</p>
   </a>
 </div>
+

@@ -1,4 +1,4 @@
-import { createIcon, deletInput, searchIcon, editIcon, trashIcon, tablaShanonIcon, medicalServiceIcon } from './../../../shared/icons/svg-icon';
+import { createIcon, deletInput, searchIcon, editIcon, trashIcon, tablaShanonIcon, medicalServiceIcon, hombreIcon, mujerIcon, beatIcon, ghostIcon } from './../../../shared/icons/svg-icon';
 import { Component, OnInit, NgModule } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
@@ -7,13 +7,14 @@ import { Paciente } from '../../../interface/interfaces';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { DetallePacienteComponent } from '../detallePaciente/detallePaciente.component';
+import { EdadPipe } from "../../../pipes/edad.pipe";
 
 @Component({
   selector: 'app-pacientes',
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, DetallePacienteComponent]
+  imports: [CommonModule, FormsModule, DetallePacienteComponent, EdadPipe]
 })
 export class PacientesComponent implements OnInit {
 
@@ -36,6 +37,11 @@ export class PacientesComponent implements OnInit {
   trashIcon: SafeHtml = trashIcon;
   tablaShanonIcon: SafeHtml = tablaShanonIcon;
   medicalServiceIcon: SafeHtml = medicalServiceIcon;
+  hombreIcon: SafeHtml = hombreIcon;
+  mujerIcon: SafeHtml = mujerIcon;
+  beatIcon: SafeHtml = beatIcon;
+  ghostIcon: SafeHtml = ghostIcon;
+
   //variables de detallePaciente Modal
   pacienteSeleccionadoId: number | null = null;
   mostrarDetallePaciente: boolean = false;
@@ -53,6 +59,10 @@ export class PacientesComponent implements OnInit {
     this.trashIcon = this.sanitizer.bypassSecurityTrustHtml(trashIcon);
     this.tablaShanonIcon = this.sanitizer.bypassSecurityTrustHtml(tablaShanonIcon);
     this.medicalServiceIcon = this.sanitizer.bypassSecurityTrustHtml(medicalServiceIcon);
+    this.hombreIcon = this.sanitizer.bypassSecurityTrustHtml(hombreIcon);
+    this.mujerIcon = this.sanitizer.bypassSecurityTrustHtml(mujerIcon);
+    this.beatIcon = this.sanitizer.bypassSecurityTrustHtml(beatIcon);
+    this.ghostIcon = this.sanitizer.bypassSecurityTrustHtml(ghostIcon);
   }
 
   ngOnInit() {

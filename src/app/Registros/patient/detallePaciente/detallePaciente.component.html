@@ -4,68 +4,86 @@
   <!-- Identificadores -->
   <section>
     <h3>🆔 Identificadores</h3>
-    <p><strong>CUI:</strong> {{ paciente.identificadores?.cui }}</p>
-    <p><strong>Expediente:</strong> {{ paciente.identificadores?.expediente }}</p>
-    <p><strong>Pasaporte:</strong> {{ paciente.identificadores?.pasaporte }}</p>
-    <p><strong>Otro:</strong> {{ paciente.identificadores?.otro }}</p>
+    <div *ngIf="paciente.identificadores?.cui" class="datos-detalle"><strong>CUI:</strong><p> {{ paciente.identificadores?.cui }}</p></div>
+    <div *ngIf="paciente.identificadores?.expediente" class="datos-detalle"><strong>Expediente:</strong><p> {{ paciente.identificadores?.expediente }} </p></div>
+    <div *ngIf="paciente.identificadores?.pasaporte" class="datos-detalle"><strong>Pasaporte:</strong> <p> {{ paciente.identificadores?.pasaporte }} </p></div>
+    <div *ngIf="paciente.identificadores?.otro" class="datos-detalle"><strong>Otro:</strong> <p>{{ paciente.identificadores?.otro }} </p></div>
   </section>
 
   <!-- Nombre -->
   <section>
     <h3>🪪 Nombre Completo</h3>
-    <p>
-      {{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}
-      {{ paciente.nombre.apellido_primero }} {{ paciente.nombre.apellido_segundo }}
-      <span *ngIf="paciente.nombre.casada"> de {{ paciente.nombre.casada }}</span>
-    </p>
+    <div class="datos-detalle"> <p>
+      {{ paciente.nombre.primer | titlecase }} {{ paciente.nombre.segundo | titlecase }} {{ paciente.nombre.otro | titlecase }}
+      {{ paciente.nombre.apellido_primero | titlecase }} {{ paciente.nombre.apellido_segundo  | titlecase }}
+      <span *ngIf="paciente.nombre.casada"> de {{ paciente.nombre.casada | titlecase }}</span> </p>
+    </div>
   </section>
 
   <!-- Información Básica -->
   <section>
     <h3>🎂 Información Básica</h3>
-    <p><strong>Sexo:</strong> {{ paciente.sexo }}</p>
-    <p><strong>Fecha de nacimiento:</strong> {{ paciente.fecha_nacimiento }}</p>
+    <div class="datos-detalle"><strong>Sexo:</strong>
+      <ng-container *ngIf="paciente.sexo === 'M'">
+        <span [innerHTML]="hombreIcon">Masculino</span>
+      </ng-container>
+      <ng-container *ngIf="paciente.sexo === 'F'">
+        <span [innerHTML]="mujerIcon">Feminino</span>
+      </ng-container>
+    </div>
+    <div class="datos-detalle"><strong>Fecha de nacimiento:</strong> <p> {{ paciente.fecha_nacimiento | date: 'dd/MM/yyyy' }} </p> </div>
+      <br>
+    <div class="datos-detalle"><strong class="datos-detalle">Edad:</strong> <p> {{paciente.fecha_nacimiento | edad}} </p></div>
   </section>
 
   <!-- Contacto -->
   <section>
     <h3>📞 Contacto</h3>
-    <p><strong>Dirección:</strong> {{ paciente.contacto?.direccion }}</p>
-    <p><strong>Municipio:</strong> {{ paciente.contacto?.municipio }}</p>
-    <p><strong>Teléfonos:</strong>
+    <div class="datos-detalle"><strong>Dirección:</strong> <p>{{ paciente.contacto?.direccion }} </p></div>
+    <div class="datos-detalle"><strong>Municipio:</strong><p> {{ paciente.contacto?.municipio }}</p></div>
+    <div class="datos-detalle"><strong>Teléfonos:</strong> <p>
       {{ paciente.contacto?.telefono }},
       {{ paciente.contacto?.telefono2 }},
       {{ paciente.contacto?.telefono3 }}
-    </p>
+      </p>
+    </div>
   </section>
 
   <!-- Referencias -->
-  <section>
-    <h3>👥 Referencias</h3>
-    <div *ngFor="let ref of paciente.referencias | keyvalue">
-      <p><strong>{{ ref }}:</strong> {{ ref.key }}:  {{ ref.value }}</p>
+<section *ngIf="referenciaKeys.length">
+  <h3>👥 Referencias</h3>
+  <div *ngFor="let refKey of referenciaKeys">
+    <div class="referencia">
+      <div class="datos-detalle"><strong>Nombre:</strong> <p>{{ paciente.referencias?.[refKey]?.nombre || 'Sin dato' }} </p></div>
+      <div class="datos-detalle"><strong>Parentesco:</strong> <p> {{ paciente.referencias?.[refKey]?.parentesco || 'No especificado' }} </p></div>
+      <div class="datos-detalle"><strong>Teléfono:</strong> <p> {{ paciente.referencias?.[refKey]?.telefono || 'No disponible' }} </p></div>
+      <hr />
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Datos Extra -->
-  <section>
-    <h3>📄 Datos Extra</h3>
-    <div *ngFor="let ref of paciente.datos_extra | keyvalue">
-      <p><strong>{{ ref }}:</strong> {{ ref.key}}:  {{ ref.value }}</p>
+<!-- Datos Extra -->
+<section *ngIf="datosExtraKeys.length > 0 && paciente?.datos_extra">
+  <h3>📄 Datos Extra</h3>
+  <div *ngFor="let key of datosExtraKeys">
+    <div class="datos-extra" >
+      <div class="datos-detalle"><strong>{{convertirTipo(paciente.datos_extra?.[key]?.tipo )  }}: </strong> <p> {{ paciente.datos_extra?.[key]?.valor }} </p></div>
     </div>
-  </section>
+    <hr />
+  </div>
+</section>
 
   <!-- Estado -->
   <section>
     <h3>🩺 Estado</h3>
-    <p><strong>Código de estado:</strong> {{ paciente.estado }}</p>
+    <div class="datos-detalle"><strong>Código de estado:</strong>  {{ paciente.estado }}</div>
   </section>
 
   <!-- Metadatos -->
   <section>
     <h3>📌 Metadatos</h3>
-    <div *ngFor="let ref of paciente.metadatos | keyvalue">
-      <p><strong>{{ ref }}:</strong> {{ ref.key }}:  {{ ref.value }}</p>
+    <div *ngFor="let key of metadatosKeys">
+      <div class="datos-detalle"><strong>{{paciente.metadatos?.[key]?.usuario}}</strong> <p>{{ paciente.metadatos?.[key]?.registro | date: 'medium' }}</p></div>
     </div>
   </section>
 </div>
