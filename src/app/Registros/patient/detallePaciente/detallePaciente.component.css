@@ -12,11 +12,13 @@
   color: azure;
 
   h2 {
-    text-align: center;
-    margin-bottom: 1rem;
-    color: #dcd9d9;
-    font-size: 1.4rem;
-  }
+  display: flex;
+  align-items: center;     /* centra verticalmente */
+  gap: 0.5rem;              /* espacio entre ícono y texto */
+  text-align: start;
+  margin-bottom: 1rem;
+  color: #dcd9d9;
+}
 
   .datos-detalle {
     display: flex;

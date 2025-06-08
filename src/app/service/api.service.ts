@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
-import { Paciente, Usuarios, Correlativo } from '../interface/interfaces';
+import { Paciente, Usuarios, Correlativo, Municipio } from '../interface/interfaces';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
@@ -278,6 +278,65 @@ export class ApiService {
     }
   }
 
+  // municipios
+
+  async getMunicipios(filtros: any): Promise<any> {
+    try {
+      const response = await this.api.get('/municipios/', {
+        params: filtros
+      });
+      console.log('👤 Municipios obtenidos correctamente');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener municipios:', error);
+      throw error;
+    }
+  }
+
+  async getCodigoMunicipio(codigo: string): Promise<any> {
+    try {
+      const response = await this.api.get<Municipio>(`/municipios/?codigo=${codigo}&skip=0&limit=1`);
+      console.log('👤 Municipio obtenido correctamente');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener municipio:', error);
+      throw error;
+    }
+  }
+
+
+  async createMunicipio(municipio: any): Promise<any> {
+    try {
+      const response = await this.api.post('/municipio/crear', municipio);
+      console.log('👤 Municipio creado correctamente');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al crear municipio:', error);
+      throw error;
+    }
+  }
+
+  async updateMunicipio(codigo: string, municipio: any): Promise<any> {
+    try {
+      const response = await this.api.put(`/municipio/actualizar/${codigo}`, municipio);
+      console.log('👤 Municipio actualizado correctamente');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al actualizar municipio:', error);
+      throw error;
+    }
+  }
+
+  async deleteMunicipio(codigo: string): Promise<any> {
+    try {
+      const response = await this.api.delete(`/municipio/eliminar/${codigo}`);
+      console.log('👤 Municipio eliminado correctamente');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al eliminar municipio:', error);
+      throw error;
+    }
+  }
 
 
 }

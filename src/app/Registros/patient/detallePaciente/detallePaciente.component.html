@@ -1,5 +1,5 @@
 <div class="card-detalle-paciente" *ngIf="paciente">
-  <h2>🧍 Detalle del Paciente</h2>
+  <h2><span [innerHTML]="personFicha"></span> Detalle del Paciente</h2>
 
   <!-- Identificadores -->
   <section>
@@ -25,10 +25,10 @@
     <h3>🎂 Información Básica</h3>
     <div class="datos-detalle"><strong>Sexo:</strong>
       <ng-container *ngIf="paciente.sexo === 'M'">
-        <span [innerHTML]="hombreIcon">Masculino</span>
+        <span [innerHTML]="manIcon">Masculino</span>
       </ng-container>
       <ng-container *ngIf="paciente.sexo === 'F'">
-        <span [innerHTML]="mujerIcon">Feminino</span>
+        <span [innerHTML]="womanIcon">Feminino</span>
       </ng-container>
     </div>
     <div class="datos-detalle"><strong>Fecha de nacimiento:</strong> <p> {{ paciente.fecha_nacimiento | date: 'dd/MM/yyyy' }} </p> </div>
@@ -76,7 +76,14 @@
   <!-- Estado -->
   <section>
     <h3>🩺 Estado</h3>
-    <div class="datos-detalle"><strong>Código de estado:</strong>  {{ paciente.estado }}</div>
+    <div class="datos-detalle svg-icon-on"><strong>Código de estado:</strong>
+      <ng-container *ngIf="paciente.estado === 'V'">
+        <span [innerHTML]="heartIcon" class="svg-icon-on"> Vivo</span>
+      </ng-container>
+      <ng-container *ngIf="paciente.estado === 'F'">
+        <span [innerHTML]="ghostIcon"> Fallecido</span >
+      </ng-container>
+    </div>
   </section>
 
   <!-- Metadatos -->

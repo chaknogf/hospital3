@@ -6,6 +6,7 @@ import { NavbarComponent } from './principal/navbar/navbar.component';
 import { ApiService } from './service/api.service';
 import { filter } from 'rxjs/operators';
 import { ViewEncapsulation } from '@angular/core';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -19,6 +20,7 @@ export class AppComponent implements OnInit {
   estaAutenticado = false;
   username = '';
   role = '';
+  modalActivo = false;
 
   constructor(private router: Router, private api: ApiService) { }
 
@@ -53,4 +55,8 @@ export class AppComponent implements OnInit {
     this.api.logOut();
 
   }
+
+
+
+
 }

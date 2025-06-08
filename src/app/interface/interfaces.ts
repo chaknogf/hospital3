@@ -60,21 +60,6 @@ export interface DatosExtra {
   valor: string
 }
 
-
-// export interface DatosExtraKey {
-//   nacionalidad?: string;
-//   estado_civil?: string;
-//   pueblo?: string;
-//   idioma?: string;
-//   ocupacion?: string;
-//   nivel_educativo?: string;
-//   peso_nacimiento?: string;
-//   edad_gestacional?: string;
-//   parto?: string;
-//   gemelo?: string;
-//   expediente_madre?: string;
-// }
-
 export interface Paciente {
   id: number
   unidad?: number;
@@ -90,11 +75,15 @@ export interface Paciente {
 }
 
 
-
-
-
-
-
 export interface Correlativo {
   correlativo: number
+}
+
+// municipios
+
+export interface Municipio {
+  codigo: string;
+  vecindad: string;
+  municipio: string;
+  departamento: string;
 }

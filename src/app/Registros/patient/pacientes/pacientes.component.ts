@@ -1,4 +1,4 @@
-import { heartIcon, createIcon, deletInput, searchIcon, editIcon, trashIcon, tablaShanonIcon, medicalServiceIcon, hombreIcon, mujerIcon, beatIcon, ghostIcon } from './../../../shared/icons/svg-icon';
+import { heartIcon, createIcon, deletInput, searchIcon, editIcon, trashIcon, tablaShanonIcon, medicalServiceIcon, beatIcon, ghostIcon, huellitaIcon, manIcon, womanIcon } from './../../../shared/icons/svg-icon';
 import { Component, OnInit, NgModule } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
@@ -8,6 +8,7 @@ import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-brows
 import { FormsModule } from '@angular/forms';
 import { DetallePacienteComponent } from '../detallePaciente/detallePaciente.component';
 import { EdadPipe } from "../../../pipes/edad.pipe";
+
 
 @Component({
   selector: 'app-pacientes',
@@ -29,6 +30,11 @@ export class PacientesComponent implements OnInit {
   public buscarFechaNacimiento: string = '';
   public buscarNombreCompleto: string = '';
   public cargando: boolean = false;
+  modalActivo = false;
+  private sanitizarSvg(svg: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(svg);
+  }
+
   //iconos
   searchIcon: SafeHtml = searchIcon;
   deletInput: SafeHtml = deletInput;
@@ -37,11 +43,14 @@ export class PacientesComponent implements OnInit {
   trashIcon: SafeHtml = trashIcon;
   tablaShanonIcon: SafeHtml = tablaShanonIcon;
   medicalServiceIcon: SafeHtml = medicalServiceIcon;
-  hombreIcon: SafeHtml = hombreIcon;
-  mujerIcon: SafeHtml = mujerIcon;
+  manIcon: SafeHtml = manIcon;
+  womanIcon: SafeHtml = womanIcon;
   beatIcon: SafeHtml = beatIcon;
   ghostIcon: SafeHtml = ghostIcon;
   heartIcon: SafeHtml = heartIcon;
+  huellitaIcon: SafeHtml = huellitaIcon;
+
+
 
   //variables de detallePaciente Modal
   pacienteSeleccionadoId: number | null = null;
@@ -53,18 +62,20 @@ export class PacientesComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) {
 
-    this.searchIcon = this.sanitizer.bypassSecurityTrustHtml(searchIcon);
-    this.deletInput = this.sanitizer.bypassSecurityTrustHtml(deletInput);
-    this.createIcon = this.sanitizer.bypassSecurityTrustHtml(createIcon);
-    this.editIcon = this.sanitizer.bypassSecurityTrustHtml(editIcon);
-    this.trashIcon = this.sanitizer.bypassSecurityTrustHtml(trashIcon);
-    this.tablaShanonIcon = this.sanitizer.bypassSecurityTrustHtml(tablaShanonIcon);
-    this.medicalServiceIcon = this.sanitizer.bypassSecurityTrustHtml(medicalServiceIcon);
-    this.hombreIcon = this.sanitizer.bypassSecurityTrustHtml(hombreIcon);
-    this.mujerIcon = this.sanitizer.bypassSecurityTrustHtml(mujerIcon);
-    this.beatIcon = this.sanitizer.bypassSecurityTrustHtml(beatIcon);
-    this.ghostIcon = this.sanitizer.bypassSecurityTrustHtml(ghostIcon);
-    this.heartIcon = this.sanitizer.bypassSecurityTrustHtml(heartIcon);
+    this.searchIcon = this.sanitizarSvg(searchIcon);
+    this.deletInput = this.sanitizarSvg(deletInput);
+    this.createIcon = this.sanitizarSvg(createIcon);
+    this.editIcon = this.sanitizarSvg(editIcon);
+    this.trashIcon = this.sanitizarSvg(trashIcon);
+    this.tablaShanonIcon = this.sanitizarSvg(tablaShanonIcon);
+    this.medicalServiceIcon = this.sanitizarSvg(medicalServiceIcon);
+    this.manIcon = this.sanitizarSvg(manIcon);
+    this.womanIcon = this.sanitizarSvg(womanIcon);
+    this.beatIcon = this.sanitizarSvg(beatIcon);
+    this.ghostIcon = this.sanitizarSvg(ghostIcon);
+    this.heartIcon = this.sanitizarSvg(heartIcon);
+    this.huellitaIcon = this.sanitizarSvg(huellitaIcon);
+
   }
 
   ngOnInit() {
@@ -117,11 +128,13 @@ export class PacientesComponent implements OnInit {
   verDetallesPaciente(pacienteId: number): void {
     this.pacienteSeleccionadoId = pacienteId;
     this.mostrarDetallePaciente = true;
+    this.modalActivo = true;
   }
 
   cerrarDetallePaciente(): void {
     this.mostrarDetallePaciente = false;
     this.pacienteSeleccionadoId = null;
+    this.modalActivo = false;
   }
   navegarARegistroMedico(pacienteId: number) {
     this.router.navigate(['/registro-medico', pacienteId]);
@@ -136,6 +149,10 @@ export class PacientesComponent implements OnInit {
     this.ObtenerPacientes();
   }
 
+
+  volver() {
+    this.router.navigate(['/registros']);
+  }
 
 
 

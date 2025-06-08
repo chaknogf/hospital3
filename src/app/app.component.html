@@ -9,7 +9,7 @@
   [usuario]="username"
   [rol]="role"
   (cerrarSesion)="desconectarUsuario()"
-  *ngIf="estaAutenticado"
+  *ngIf="estaAutenticado" [class.hidden]="modalActivo"
 ></app-navbar>
 
 <router-outlet></router-outlet>

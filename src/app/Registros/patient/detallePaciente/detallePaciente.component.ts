@@ -1,3 +1,4 @@
+import { heartIcon, ghostIcon, manIcon, womanIcon, personFicha } from './../../../shared/icons/svg-icon';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,8 +26,11 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   error: string | null = null;
 
   //svg
-  hombreIcon: SafeHtml = hombreIcon;
-  mujerIcon: SafeHtml = mujerIcon;
+  heartIcon: SafeHtml = heartIcon;
+  manIcon: SafeHtml = manIcon;
+  womanIcon: SafeHtml = womanIcon;
+  ghostIcon: SafeHtml = ghostIcon;
+  personFicha: SafeHtml = personFicha;
 
 
   constructor(
@@ -36,15 +40,18 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     private sanitizer: DomSanitizer
   ) {
 
-    this.hombreIcon = this.sanitizer.bypassSecurityTrustHtml(hombreIcon);
-    this.mujerIcon = this.sanitizer.bypassSecurityTrustHtml(mujerIcon);
+    this.heartIcon = this.sanitizer.bypassSecurityTrustHtml(heartIcon);
+    this.manIcon = this.sanitizer.bypassSecurityTrustHtml(manIcon);
+    this.womanIcon = this.sanitizer.bypassSecurityTrustHtml(womanIcon);
+    this.ghostIcon = this.sanitizer.bypassSecurityTrustHtml(ghostIcon);
+    this.personFicha = this.sanitizer.bypassSecurityTrustHtml(personFicha);
   }
 
   ngOnInit(): void {
     const id = Number(this.ruta.snapshot.paramMap.get('id'));
     this.api.getPaciente(id).then((data) => {
       this.paciente = data;
-      console.table(this.paciente);
+      // console.table(this.paciente);
       this.referenciaKeys = Object.keys(this.paciente.referencias || {});
       this.datosExtraKeys = Object.keys(this.paciente.datos_extra || {});
       console.log(this.datosExtraKeys);

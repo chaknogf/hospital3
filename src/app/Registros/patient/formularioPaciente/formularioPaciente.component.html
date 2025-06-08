@@ -1,4 +1,4 @@
-<form [formGroup]="form" class="formulario-paciente" (ngSubmit)="guardar()">
+<form [formGroup]="form" class="formulario-moderno" (ngSubmit)="guardar()">
   <!-- Anti-autocompletado -->
   <input type="text" name="fakeusernameremembered" style="display: none;" />
   <input type="password" name="fakepasswordremembered" style="display: none;" />
@@ -37,7 +37,7 @@
   Te faltan {{ form.get('identificadores.cui')?.errors?.['validarDPI'].faltantes }} dígito(s).
 </div>
 
-    <label *ngIf="enEdicion == true" for="expediente" >Expediente</label>
+    <label *ngIf="form.get('identificadores.expediente')?.value" for="expediente" >Expediente</label>
     <div class="input-buton" *ngIf="form.get('identificadores.expediente')?.value">
       <input
         id="expediente"
@@ -52,7 +52,7 @@
       <!-- <button type="button" (click)="generarExpediente()" class="btn-input">Generar Expediente</button> -->
     </div>
 
-    <label for="pasaporte" *ngIf="form.get('datos_extra.r0.nacionalidad')?.value !== 'GTM'">Pasaporte</label>
+    <label for="pasaporte" *ngIf="form.get('datos_extra.r0.valor')?.value !== 'GTM'">Pasaporte</label>
     <input
       id="pasaporte"
       type="text"
@@ -108,9 +108,22 @@
     <label for="telefono_c">Teléfono C</label>
     <input type="text" formControlName="telefono3" placeholder="Teléfono C" name="telefono_c"  autocomplete="new-tel" />
     <label for="municipio">Municipio</label>
-    <input type="text" formControlName="municipio" placeholder="Municipio" name="municipio" autocomplete="new-tel" />
+    <select formControlName="municipio" name="municipio">
+      <option *ngFor="let municipio of municipios" [value]="municipio.codigo">{{ municipio.vecindad }}</option>
+    </select>
+    <div *ngIf="form.get('municipio')?.value">
+       <label for="direccion">Comunidad</label>
+      <select formControlName="direccion" id="direccion">
+        <option value="" disabled selected>Seleccione una comunidad</option>
+        <option *ngFor="let c of comunidades" [value]="c.comunidad">
+          {{ c.comunidad }}
+        </option>
+      </select>
+    </div>
+
     <label for="direccion">Dirección domicilio</label>
-    <input type="text" formControlName="direccion" placeholder="Dirección" name="direccion" autocomplete="new-tel" />
+    <input type="text" formControlName="direccionInput" placeholder="Dirección" name="direccion" autocomplete="new-name" value="municipio.vecindad"  />
+    <p><strong>Dirección final guardada:</strong> {{ form.get('direccion')?.value }}</p>
   </fieldset>
 
   <!-- Referencias -->
@@ -121,11 +134,20 @@
     <input formControlName="nombre" placeholder="Nombre de referencia">
     <input formControlName="telefono" placeholder="Teléfono">
     <input formControlName="parentesco" placeholder="Parentesco">
-    <button type="button" (click)="eliminarReferencia(key)">Eliminar</button>
+    <div class="ref-btn">
+      <button type="button" (click)="eliminarReferencia(key)" class="btn-remove">
+    <span [innerHTML]="removeIcon"></span>
+  </button>
+  <button type="button" (click)="agregarReferencia()" class="btn-add">
+    <span [innerHTML]="addIcon"></span>
+  </button>
+    </div>
+
   </div>
+
 </div>
 
-<button type="button" (click)="agregarReferencia()">Agregar referencia</button>
+
   </fieldset>
 
  <fieldset class="grupo datos-extra">
@@ -164,33 +186,42 @@
     </div>
 
     <!-- Subtítulo visual -->
-    <legend class="subtitulo">Datos de nacimiento</legend>
+
 
     <!-- Datos de nacimiento con condición -->
-    <div formGroupName="r6" *ngIf="mostrarDatosNacimiento">
+     <div *ngIf="mosatrarInputNacimiento == true">
+       <legend class="subtitulo">Datos de nacimiento</legend>
+      <div formGroupName="r6" >
       <label for="peso_nacimiento">Peso nacimiento</label>
-      <input type="number" id="peso_nacimiento" formControlName="valor" />
+      <input type="text" id="peso_nacimiento" formControlName="valor" soloNumero />
     </div>
 
-    <div formGroupName="r7" *ngIf="mostrarDatosNacimiento">
+    <div formGroupName="r7">
       <label for="edad_gestacional">Edad gestacional</label>
-      <input type="text" id="edad_gestacional" formControlName="valor" />
+      <input type="text" id="edad_gestacional" formControlName="valor" soloNumero />
     </div>
 
-    <div formGroupName="r8" *ngIf="mostrarDatosNacimiento">
+    <div formGroupName="r8" >
       <label for="parto">Parto</label>
-      <input type="text" id="parto" formControlName="valor" />
+      <select id="parto" formControlName="valor">
+        <option value=""></option>
+        <option value="P">Parto</option>
+        <option value="C">Cesareo</option>
+      </select>
     </div>
 
-    <div formGroupName="r9" *ngIf="mostrarDatosNacimiento">
+    <div formGroupName="r9">
       <label for="gemelo">Número de Gemelo</label>
-      <input type="text" id="gemelo" formControlName="valor" />
+      <input type="text" id="gemelo" formControlName="valor" soloNumero />
     </div>
 
-    <div formGroupName="r10" *ngIf="mostrarDatosNacimiento">
+    <div formGroupName="r10">
       <label for="expediente_madre">Expediente de la Madre</label>
-      <input type="text" id="expediente_madre" formControlName="valor" />
+      <input type="text" id="expediente_madre" formControlName="valor" unaPalabra />
     </div>
+
+     </div>
+
 
   </div>
 </fieldset>
@@ -200,7 +231,7 @@
     <legend>Estado</legend>
     <select formControlName="estado" name="estado">
       <option value="V">Vivo</option>
-      <option value="M">Muerto</option>
+      <option value="F">Muerto</option>
     </select>
   </fieldset>
 
@@ -216,7 +247,13 @@
 
   <!-- Botones -->
   <div class="botones">
-    <button type="submit">💾 Guardar</button>
-    <button type="button" (click)="volver()">↩️ Cancelar</button>
+    <button type="submit">
+      <span [innerHTML]="saveIcon"></span>
+      Guardar
+    </button>
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="cancelIcon"></span>
+      Cancelar
+    </button>
   </div>
 </form>

@@ -1,8 +1,15 @@
-<div class="layout-container">
+<div class="layout-container" [class.hidden]="modalActivo">
 
   <!-- Contenedor de búsqueda -->
+   <button type="button" class="btn-menu" (click)="volver()">
+  <span [innerHTML]="huellitaIcon"></span>
+  <p class="no-presiona">Menu</p>
+  <p class="presiona">Presiona para Ir al Menu</p>
+</button>
   <div class="search-container">
+
     <form class="search-form" (submit)="ObtenerPacientes(); $event.preventDefault()">
+
       <input type="text" placeholder="Buscar por identificador" class="search-input" [(ngModel)]="buscarIdentificador" name="identificador" unaPalabra>
       <input type="text" placeholder="Buscar por nombre completo" class="search-input" [(ngModel)]="buscarNombreCompleto" name="nombreCompleto">
       <input type="text" placeholder="Buscar por nombre" class="search-input" [(ngModel)]="buscarPrimerNombre" name="nombre" unaPalabra>
@@ -25,10 +32,11 @@
     <table class="custom-table">
       <thead>
         <tr>
-          <th>Id</th>
+
           <th>Identificador</th>
           <th>Nombre Completo</th>
           <th>Fecha Nacimiento</th>
+          <th>Direccion</th>
           <th>Género</th>
           <th>Estado</th>
           <th>Acciones</th>
@@ -36,25 +44,25 @@
       </thead>
       <tbody >
         <tr *ngFor="let paciente of pacientes">
-          <td>{{ paciente.id }}</td>
+
             <td>
             <ng-container *ngIf="paciente.identificadores?.cui ">
-              CUI: {{ paciente.identificadores?.cui }}
+             <strong>CUI:</strong> {{ paciente.identificadores?.cui }}
             </ng-container> <br>
             <ng-container *ngIf="paciente.identificadores?.expediente ">
-              Expediente: {{ paciente.identificadores?.expediente }}
+              <strong>Expediente:</strong> {{ paciente.identificadores?.expediente }}
             </ng-container> <br>
             <ng-container *ngIf="paciente.identificadores?.pasaporte ">
-              Pasaporte {{ paciente.identificadores?.pasaporte }}
+             <strong>Pasaporte:</strong> {{ paciente.identificadores?.pasaporte }}
             </ng-container> <br>
             <ng-container *ngIf="paciente.identificadores?.otro ">
-              otro: {{ paciente.identificadores?.otro }}
+             <strong>Otro:</strong> {{ paciente.identificadores?.otro }}
             </ng-container>
             </td>
           <td>
-            <ng-container >
-               {{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}
-            </ng-container> <br>
+            <span [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'">
+              {{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}
+            </span> <br>
             <ng-container >
              {{ paciente.nombre.apellido_primero }} {{ paciente.nombre.apellido_segundo }} {{ paciente.nombre.casada }}
             </ng-container>
@@ -69,19 +77,22 @@
             </ng-container>
           </td>
           <td>
+             {{ paciente.contacto?.direccion }}
+          </td>
+          <td>
             <ng-container *ngIf="paciente.sexo === 'M'">
-              <span [innerHTML]="hombreIcon" class="img-shadow svg-icon"></span> <br>
+              <span [innerHTML]="manIcon" class="img-shadow svg-icon"></span> <br>
 
               Masculino
             </ng-container>
             <ng-container *ngIf="paciente.sexo === 'F'">
-              <span [innerHTML]="mujerIcon" class="img-shadow"></span> <br>
+              <span [innerHTML]="womanIcon" class="img-shadow"></span> <br>
               Femenino
             </ng-container>
           <td>
             <ng-container *ngIf="paciente.estado === 'V'" >
-              <span [innerHTML]="heartIcon"></span>
-              <p class="m-p-0">Vivo</p>
+              <span [innerHTML]="heartIcon" class="svg-icon"></span>
+              Vivo
             </ng-container>
             <ng-container *ngIf="paciente.estado === 'F'">
               <span [innerHTML]="ghostIcon"></span>
@@ -89,15 +100,16 @@
             </ng-container>
           </td>
           <td>
-            <button class="table-button" (click)="editarPaciente(paciente.id)" [innerHTML]="editIcon">Editar</button>
+            <ng-container >
+              <button class="table-button" (click)="editarPaciente(paciente.id)" [innerHTML]="editIcon">Editar</button>
             <button class="table-button"  [innerHTML]="medicalServiceIcon">Consulta</button>
             <!-- <button class="table-button" (click)="eliminarPaciente(paciente.id)" [innerHTML]="trashIcon">Eliminar</button> -->
-            <button
-              class="table-button"
-              [innerHTML]="tablaShanonIcon"
-              (click)="verDetallesPaciente(paciente.id)">
+            <button class="table-button" [innerHTML]="tablaShanonIcon" (click)="verDetallesPaciente(paciente.id)">
               Ver Expediente
             </button>
+            </ng-container> <br>
+            <p class="m-p-0 f-small f-lowercase">id:  {{ paciente.id }}</p>
+
           </td>
         </tr>
       </tbody>
@@ -109,9 +121,8 @@
 
 
 <!-- Modal para Detalle de Paciente -->
-<div class="modal-backdrop" *ngIf="mostrarDetallePaciente" (click)="cerrarDetallePaciente()"></div>
-
 <div class="modal-detalle-paciente" *ngIf="mostrarDetallePaciente">
+  <div class="modal-outside" (click)="cerrarDetallePaciente()"></div>
   <div class="modal-content" (click)="$event.stopPropagation()">
     <button class="close-modal" (click)="cerrarDetallePaciente()">×</button>
     <detallePaciente [pacienteId]="pacienteSeleccionadoId"></detallePaciente>

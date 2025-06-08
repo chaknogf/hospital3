@@ -1,12 +1,17 @@
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
+import { addIcon, removeIcon, saveIcon, cancelIcon } from './../../../shared/icons/svg-icon';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, AbstractControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, AbstractControl, Validators, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { DpiValidadorDirective } from '../../../directives/dpi-validador.directive';
 import { UnaPalabraDirective } from '../../../directives/unaPalabra.directive';
-import { Paciente, Metadata, DatosExtra } from '../../../interface/interfaces';
+import { Paciente, Metadata, Municipio } from '../../../interface/interfaces';
+import { comunidadChimaltenango, Keys } from '../../../interface/comunidadChimaltenango';
 import { validarCui } from '../../../validators/dpi.validator';
+import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
+import { combineLatest, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-formularioPaciente',
@@ -18,26 +23,50 @@ import { validarCui } from '../../../validators/dpi.validator';
     ReactiveFormsModule,
     FormsModule,
     DpiValidadorDirective,
-    UnaPalabraDirective
+    UnaPalabraDirective,
+    SoloNumeroDirective
   ]
 })
 export class FormularioPacienteComponent implements OnInit {
+  options: { nombre: string; descripcion: string; ruta: string; icon?: SafeResourceUrl }[] = [];
   public enEdicion = false;
   public usuarioActual = '';
   edadAnios = 0;
   edadMeses = 0;
   edadDias = 0;
   esGemelo = false;
+  mosatrarInputNacimiento = false;
   form: FormGroup;
   private actualizandoFecha = false;
   private actualizandoEdad = false;
+  public municipios: Municipio[] = [];
+  public comunidades: Keys[] = [];
+  public todasLasComunidades = comunidadChimaltenango;
+  direccionInput: string = '';
+
+  private sanitizarSvg(svg: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(svg);
+  }
+
+  // svg
+  addIcon: SafeHtml = addIcon;
+  removeIcon: SafeHtml = removeIcon;
+  saveIcon: SafeHtml = saveIcon;
+  cancelIcon: SafeHtml = saveIcon;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly api: ApiService,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+
   ) {
+    this.addIcon = this.sanitizarSvg(addIcon);
+    this.removeIcon = this.sanitizarSvg(removeIcon);
+    this.saveIcon = this.sanitizarSvg(saveIcon);
+    this.cancelIcon = this.sanitizarSvg(cancelIcon);
+
     this.form = this.fb.group({
       id: [0],
       unidad: [287],
@@ -61,7 +90,8 @@ export class FormularioPacienteComponent implements OnInit {
         telefono2: [''],
         telefono3: [''],
         municipio: [''],
-        direccion: ['']
+        direccion: [''],
+        direccionInput: ['']
       }),
       referencias: this.fb.group({
         referencia1: this.fb.group({
@@ -103,11 +133,11 @@ export class FormularioPacienteComponent implements OnInit {
         }),
         r6: this.fb.group({
           tipo: ['peso_nacimiento'],
-          valor: ['', [Validators.min(0)]]
+          valor: ['', [Validators.required, Validators.min(0), Validators.pattern(/^\d+(\.\d{1,2})?$/)]]
         }),
         r7: this.fb.group({
           tipo: ['edad_gestacional'],
-          valor: ['', [Validators.min(20), Validators.max(44)]]
+          valor: ['', [Validators.required, Validators.min(20), Validators.max(44), Validators.pattern(/^\d+(\.\d{1,2})?$/)]]
         }),
         r8: this.fb.group({
           tipo: ['parto'],
@@ -115,7 +145,7 @@ export class FormularioPacienteComponent implements OnInit {
         }),
         r9: this.fb.group({
           tipo: ['gemelo'],
-          valor: ['']
+          valor: ['', [Validators.required, Validators.min(1), Validators.max(5), Validators.pattern(/^\d+(\.\d{1,2})?$/)]]
         }),
         r10: this.fb.group({
           tipo: ['expediente_madre'],
@@ -134,7 +164,8 @@ export class FormularioPacienteComponent implements OnInit {
 
   ngOnInit(): void {
     this.usuarioActual = localStorage.getItem('username') || '';
-
+    this.form.setValidators(this.validarEdadYFecha());
+    this.obtenerMunicipios();
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       const id = Number(idParam);
@@ -195,11 +226,45 @@ export class FormularioPacienteComponent implements OnInit {
       }
     }
 
+    // 1. Cuando cambia el municipio: actualiza comunidades y limpia direccionInput
+    this.form.get('contacto.municipio')?.valueChanges.subscribe(codigoMunicipio => {
+      this.comunidades = this.todasLasComunidades.filter(c => c.codigo === codigoMunicipio);
+
+      // Limpiar direccion y direccionInput
+      this.form.get('contacto.direccion')?.setValue('', { emitEvent: false });
+      this.form.get('contacto.direccionInput')?.setValue('', { emitEvent: false });
+    });
+
+    // 2. Cuando cambia la comunidad seleccionada (direccion), actualizar direccionInput
+    this.form.get('contacto.direccion')?.valueChanges.subscribe(comunidad => {
+      if (comunidad) {
+        this.form.get('contacto.direccionInput')?.setValue(comunidad, { emitEvent: false });
+      }
+    });
+
+    // 3. Cuando cambia direccionInput o municipio, actualizar la dirección final
+    combineLatest([
+      this.form.get('contacto.direccionInput')!.valueChanges.pipe(startWith(this.form.get('contacto.direccionInput')!.value)),
+      this.form.get('contacto.municipio')!.valueChanges.pipe(startWith(this.form.get('contacto.municipio')!.value))
+    ]).subscribe(([direccionInput, codigoMunicipio]) => {
+      const municipio = this.municipios.find(m => m.codigo === codigoMunicipio);
+      const comunidad = direccionInput?.trim() || '';
+      const vecindad = municipio?.vecindad?.trim() || '';
+
+      const direccionFinal = comunidad && vecindad
+        ? `${comunidad}, ${vecindad}`
+        : comunidad || vecindad;
+
+      this.form.get('contacto.direccion')?.setValue(direccionFinal, { emitEvent: false });
+    });
+
     // Suscripciones reactivas para sincronizar edad y fecha
-    ['anios', 'meses', 'dias'].forEach(campo => {
-      this.form.get(['edad', campo])?.valueChanges.subscribe(() => {
-        if (!this.actualizandoEdad) this.calcularFechaDesdeEdad();
-      });
+    combineLatest([
+      this.form.get(['edad', 'anios'])!.valueChanges,
+      this.form.get(['edad', 'meses'])!.valueChanges,
+      this.form.get(['edad', 'dias'])!.valueChanges
+    ]).subscribe(() => {
+      if (!this.actualizandoEdad) this.calcularFechaDesdeEdad();
     });
 
     this.form.get('fecha_nacimiento')?.valueChanges.subscribe(() => {
@@ -296,30 +361,41 @@ export class FormularioPacienteComponent implements OnInit {
     const fechaNacimientoStr = this.form.get('fecha_nacimiento')?.value;
     if (!fechaNacimientoStr) return;
     this.actualizandoEdad = true;
-
     const hoy = new Date();
     const nacimiento = new Date(fechaNacimientoStr);
-
     let anios = hoy.getFullYear() - nacimiento.getFullYear();
     let meses = hoy.getMonth() - nacimiento.getMonth();
     let dias = hoy.getDate() - nacimiento.getDate();
-
     if (dias < 0) {
       meses--;
       const diasEnMesAnterior = new Date(hoy.getFullYear(), hoy.getMonth(), 0).getDate();
       dias += diasEnMesAnterior;
     }
-
     if (meses < 0) {
       anios--;
       meses += 12;
     }
-
     this.form.get(['edad', 'anios'])?.setValue(anios);
     this.form.get(['edad', 'meses'])?.setValue(meses);
     this.form.get(['edad', 'dias'])?.setValue(dias);
 
+    if (this.form.get('edad')?.value.anios === 0 && this.form.get('edad')?.value.meses === 0 && this.form.get('edad')?.value.dias < 28) {
+      this.mosatrarInputNacimiento = true;
+    }
+
     this.actualizandoEdad = false;
+  }
+
+  validarEdadYFecha(): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const edad = group.get('edad');
+      const fecha = group.get('fecha_nacimiento')?.value;
+      if (!edad || !fecha) return null;
+
+      // Validar que los valores coincidan (puedes usar tu lógica existente aquí)
+      // Retorna null si es válido, o un objeto de error si no lo es
+      return null;
+    };
   }
 
 
@@ -378,18 +454,45 @@ export class FormularioPacienteComponent implements OnInit {
 
   getDatosParaGuardar(): any {
     const formularioCompleto = this.form.getRawValue();
-    // Excluimos 'edad' del objeto
-    const { edad, ...datosSinEdad } = formularioCompleto;
-    return datosSinEdad;
+
+    // Excluir múltiples campos
+    const { edad, direccionInput, ...datosLimpios } = formularioCompleto;
+
+    return datosLimpios;
   }
 
   get mostrarDatosNacimiento(): boolean {
     const edad = this.form.get('edad');
-    return this.enEdicion === true ||
-      (edad?.get('anios')?.value === 0 &&
-        edad?.get('meses')?.value === 0 &&
-        edad?.get('dias')?.value < 2);
+
+    if (
+      edad?.get('anios')?.value === 0 &&
+      edad?.get('meses')?.value === 0 &&
+      edad?.get('dias')?.value < 28
+    ) {
+      this.mosatrarInputNacimiento = true;
+      return true;
+    }
+
+    this.mosatrarInputNacimiento = false;
+    return false;
   }
+
+  // municipios
+  obtenerMunicipios(): void {
+    this.api.getMunicipios({
+      limit: 390
+    })
+      .then((municipios) => {
+        this.municipios = municipios;
+        console.log('👤 Municipios obtenidos correctamente');
+      })
+      .catch((error) => {
+        console.error('❌ Error al obtener municipios:', error);
+        this.mostrarError('obtener municipios', error);
+      });
+  }
+
+
 
 
 }
