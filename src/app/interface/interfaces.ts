@@ -63,7 +63,11 @@ export interface DatosExtra {
 export interface Paciente {
   id: number
   unidad?: number;
-  identificadores?: Identificadores;
+  cui?: number;
+  expediente?: string;
+  pasaporte?: string;
+  otro?: string;
+  // identificadores?: Identificadores;
   nombre: Nombre;
   sexo?: string;
   fecha_nacimiento?: string;

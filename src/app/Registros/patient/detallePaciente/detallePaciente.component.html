@@ -4,10 +4,10 @@
   <!-- Identificadores -->
   <section>
     <h3>🆔 Identificadores</h3>
-    <div *ngIf="paciente.identificadores?.cui" class="datos-detalle"><strong>CUI:</strong><p> {{ paciente.identificadores?.cui }}</p></div>
-    <div *ngIf="paciente.identificadores?.expediente" class="datos-detalle"><strong>Expediente:</strong><p> {{ paciente.identificadores?.expediente }} </p></div>
-    <div *ngIf="paciente.identificadores?.pasaporte" class="datos-detalle"><strong>Pasaporte:</strong> <p> {{ paciente.identificadores?.pasaporte }} </p></div>
-    <div *ngIf="paciente.identificadores?.otro" class="datos-detalle"><strong>Otro:</strong> <p>{{ paciente.identificadores?.otro }} </p></div>
+    <div *ngIf="paciente?.cui" class="datos-detalle"><strong>CUI:</strong><p> {{ paciente.cui }}</p></div>
+    <div *ngIf="paciente?.expediente" class="datos-detalle"><strong>Expediente:</strong><p> {{ paciente.expediente }} </p></div>
+    <div *ngIf="paciente?.pasaporte" class="datos-detalle"><strong>Pasaporte:</strong> <p> {{ paciente.pasaporte }} </p></div>
+    <div *ngIf="paciente?.otro" class="datos-detalle"><strong>Otro:</strong> <p>{{ paciente.otro }} </p></div>
   </section>
 
   <!-- Nombre -->

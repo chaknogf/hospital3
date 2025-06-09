@@ -46,17 +46,17 @@
         <tr *ngFor="let paciente of pacientes">
 
             <td>
-            <ng-container *ngIf="paciente.identificadores?.cui ">
-             <strong>CUI:</strong> {{ paciente.identificadores?.cui }}
+            <ng-container *ngIf="paciente?.cui ">
+             <strong>CUI:</strong> {{ paciente?.cui }}
             </ng-container> <br>
-            <ng-container *ngIf="paciente.identificadores?.expediente ">
-              <strong>Expediente:</strong> {{ paciente.identificadores?.expediente }}
+            <ng-container *ngIf="paciente?.expediente ">
+              <strong>Expediente:</strong> {{ paciente?.expediente }}
             </ng-container> <br>
-            <ng-container *ngIf="paciente.identificadores?.pasaporte ">
-             <strong>Pasaporte:</strong> {{ paciente.identificadores?.pasaporte }}
+            <ng-container *ngIf="paciente?.pasaporte ">
+             <strong>Pasaporte:</strong> {{ paciente?.pasaporte }}
             </ng-container> <br>
-            <ng-container *ngIf="paciente.identificadores?.otro ">
-             <strong>Otro:</strong> {{ paciente.identificadores?.otro }}
+            <ng-container *ngIf="paciente?.otro ">
+             <strong>Otro:</strong> {{ paciente?.otro }}
             </ng-container>
             </td>
           <td>

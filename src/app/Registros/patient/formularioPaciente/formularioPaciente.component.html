@@ -18,7 +18,7 @@
   </div>
 
   <!-- Identificadores -->
-  <fieldset class="grupo identificadores" formGroupName="identificadores">
+  <fieldset class="grupo identificadores" >
     <legend>Identificadores</legend>
 
     <label for="cui">CUI</label>
@@ -32,13 +32,13 @@
       required
       autocomplete="new-name"
     />
-  <div *ngIf="form.get('identificadores.cui')?.errors?.['validarDPI']">
+  <div *ngIf="form.get('cui')?.errors?.['validarDPI']">
   El CUI debe tener exactamente 13 dígitos.
-  Te faltan {{ form.get('identificadores.cui')?.errors?.['validarDPI'].faltantes }} dígito(s).
+  Te faltan {{ form.get('cui')?.errors?.['validarDPI'].faltantes }} dígito(s).
 </div>
 
-    <label *ngIf="form.get('identificadores.expediente')?.value" for="expediente" >Expediente</label>
-    <div class="input-buton" *ngIf="form.get('identificadores.expediente')?.value">
+    <label *ngIf="form.get('expediente')?.value" for="expediente" >Expediente</label>
+    <div class="input-buton" *ngIf="form.get('expediente')?.value">
       <input
         id="expediente"
         type="text"

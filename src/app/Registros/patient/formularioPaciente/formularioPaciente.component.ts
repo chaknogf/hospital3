@@ -70,6 +70,10 @@ export class FormularioPacienteComponent implements OnInit {
     this.form = this.fb.group({
       id: [0],
       unidad: [287],
+      cui: ['', [validarCui()]],
+      expediente: [''],
+      pasaporte: [''],
+      otro: [''],
       nombre: this.fb.group({
         primer: [''],
         segundo: [''],
@@ -101,12 +105,12 @@ export class FormularioPacienteComponent implements OnInit {
           parentesco: ['']
         })
       }),
-      identificadores: this.fb.group({
-        cui: ['', [validarCui()]],
-        expediente: [''],
-        pasaporte: [''],
-        otro: ['']
-      }),
+      // identificadores: this.fb.group({
+      //   cui: ['', [validarCui()]],
+      //   expediente: [''],
+      //   pasaporte: [''],
+      //   otro: ['']
+      // }),
       datos_extra: this.fb.group({
         r0: this.fb.group({
           tipo: ['nacionalidad'],
