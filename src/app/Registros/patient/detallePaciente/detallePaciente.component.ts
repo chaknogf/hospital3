@@ -48,15 +48,20 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    const id = Number(this.ruta.snapshot.paramMap.get('id'));
-    this.api.getPaciente(id).then((data) => {
-      this.paciente = data;
-      // console.table(this.paciente);
-      this.referenciaKeys = Object.keys(this.paciente.referencias || {});
-      this.datosExtraKeys = Object.keys(this.paciente.datos_extra || {});
-      console.log(this.datosExtraKeys);
-      this.metadatosKeys = Object.keys(this.paciente.metadatos || {});
-    });
+    if (this.pacienteId) {
+      this.cargarPaciente();
+    } else {
+      const id = Number(this.ruta.snapshot.paramMap.get('id'));
+      this.api.getPaciente(id).then((data) => {
+        this.paciente = data;
+        // console.table(this.paciente);
+        this.referenciaKeys = Object.keys(this.paciente.referencias || {});
+        this.datosExtraKeys = Object.keys(this.paciente.datos_extra || {});
+        console.log(this.datosExtraKeys);
+        this.metadatosKeys = Object.keys(this.paciente.metadatos || {});
+      });
+    }
+
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -69,6 +74,10 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     this.cargando = true;
     try {
       this.paciente = await this.api.getPaciente(this.pacienteId!);
+      this.referenciaKeys = Object.keys(this.paciente.referencias || {});
+      this.datosExtraKeys = Object.keys(this.paciente.datos_extra || {});
+
+      this.metadatosKeys = Object.keys(this.paciente.metadatos || {});
       this.error = null;
     } catch (err) {
       console.error('❌ Error al cargar paciente:', err);

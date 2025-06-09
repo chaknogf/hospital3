@@ -103,10 +103,10 @@
             <ng-container >
               <button class="table-button" (click)="editarPaciente(paciente.id)" [innerHTML]="editIcon">Editar</button>
             <button class="table-button"  [innerHTML]="medicalServiceIcon">Consulta</button>
+            <button class="table-button" [innerHTML]="tablaShanonIcon" (click)="verDetallesPaciente(paciente.id)"></button>
             <!-- <button class="table-button" (click)="eliminarPaciente(paciente.id)" [innerHTML]="trashIcon">Eliminar</button> -->
-            <button class="table-button" [innerHTML]="tablaShanonIcon" (click)="verDetallesPaciente(paciente.id)">
-              Ver Expediente
-            </button>
+
+
             </ng-container> <br>
             <p class="m-p-0 f-small f-lowercase">id:  {{ paciente.id }}</p>
 

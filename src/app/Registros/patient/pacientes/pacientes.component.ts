@@ -62,19 +62,19 @@ export class PacientesComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) {
 
-    this.searchIcon = this.sanitizarSvg(searchIcon);
-    this.deletInput = this.sanitizarSvg(deletInput);
-    this.createIcon = this.sanitizarSvg(createIcon);
-    this.editIcon = this.sanitizarSvg(editIcon);
-    this.trashIcon = this.sanitizarSvg(trashIcon);
-    this.tablaShanonIcon = this.sanitizarSvg(tablaShanonIcon);
-    this.medicalServiceIcon = this.sanitizarSvg(medicalServiceIcon);
-    this.manIcon = this.sanitizarSvg(manIcon);
-    this.womanIcon = this.sanitizarSvg(womanIcon);
-    this.beatIcon = this.sanitizarSvg(beatIcon);
-    this.ghostIcon = this.sanitizarSvg(ghostIcon);
-    this.heartIcon = this.sanitizarSvg(heartIcon);
-    this.huellitaIcon = this.sanitizarSvg(huellitaIcon);
+    this.searchIcon = this.sanitizer.bypassSecurityTrustHtml(searchIcon);
+    this.deletInput = this.sanitizer.bypassSecurityTrustHtml(deletInput);
+    this.createIcon = this.sanitizer.bypassSecurityTrustHtml(createIcon);
+    this.editIcon = this.sanitizer.bypassSecurityTrustHtml(editIcon);
+    this.trashIcon = this.sanitizer.bypassSecurityTrustHtml(trashIcon);
+    this.tablaShanonIcon = this.sanitizer.bypassSecurityTrustHtml(tablaShanonIcon);
+    this.medicalServiceIcon = this.sanitizer.bypassSecurityTrustHtml(medicalServiceIcon);
+    this.manIcon = this.sanitizer.bypassSecurityTrustHtml(manIcon);
+    this.womanIcon = this.sanitizer.bypassSecurityTrustHtml(womanIcon);
+    this.beatIcon = this.sanitizer.bypassSecurityTrustHtml(beatIcon);
+    this.ghostIcon = this.sanitizer.bypassSecurityTrustHtml(ghostIcon);
+    this.heartIcon = this.sanitizer.bypassSecurityTrustHtml(heartIcon);
+    this.huellitaIcon = this.sanitizer.bypassSecurityTrustHtml(huellitaIcon);
 
   }
 
@@ -129,6 +129,7 @@ export class PacientesComponent implements OnInit {
     this.pacienteSeleccionadoId = pacienteId;
     this.mostrarDetallePaciente = true;
     this.modalActivo = true;
+    console.log('Paciente seleccionado ID:', this.pacienteSeleccionadoId);
   }
 
   cerrarDetallePaciente(): void {

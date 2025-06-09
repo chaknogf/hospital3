@@ -11,7 +11,7 @@ import { Paciente, Metadata, Municipio } from '../../../interface/interfaces';
 import { comunidadChimaltenango, Keys } from '../../../interface/comunidadChimaltenango';
 import { validarCui } from '../../../validators/dpi.validator';
 import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
-import { combineLatest, startWith } from 'rxjs';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-formularioPaciente',
@@ -89,6 +89,7 @@ export class FormularioPacienteComponent implements OnInit {
         telefono: [''],
         telefono2: [''],
         telefono3: [''],
+        departamento: [''],
         municipio: [''],
         direccion: [''],
         direccionInput: ['']
@@ -165,7 +166,7 @@ export class FormularioPacienteComponent implements OnInit {
   ngOnInit(): void {
     this.usuarioActual = localStorage.getItem('username') || '';
     this.form.setValidators(this.validarEdadYFecha());
-    this.obtenerMunicipios();
+    this.obtenerMunicipios('');
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       const id = Number(idParam);
@@ -224,39 +225,22 @@ export class FormularioPacienteComponent implements OnInit {
           })
           .catch(error => this.mostrarError('obtener paciente', error));
       }
+
+
+
+      this.form.valueChanges.subscribe(values => {
+        const depto = values.contacto?.departamento;
+        this.obtenerMunicipios(depto);
+        const municipioCodigo = values.contacto?.municipio;
+        const municipio = this.municipios.find(m => m.codigo === municipioCodigo);
+        const direccionInput = values.contacto?.direccionInput || '';
+        const direccionFinal = `${direccionInput}${municipio?.vecindad ? ', ' + municipio.vecindad : ''}`;
+        this.form.get('contacto.direccion')?.setValue(direccionFinal, { emitEvent: false });
+      });
+
+
+
     }
-
-    // 1. Cuando cambia el municipio: actualiza comunidades y limpia direccionInput
-    this.form.get('contacto.municipio')?.valueChanges.subscribe(codigoMunicipio => {
-      this.comunidades = this.todasLasComunidades.filter(c => c.codigo === codigoMunicipio);
-
-      // Limpiar direccion y direccionInput
-      this.form.get('contacto.direccion')?.setValue('', { emitEvent: false });
-      this.form.get('contacto.direccionInput')?.setValue('', { emitEvent: false });
-    });
-
-    // 2. Cuando cambia la comunidad seleccionada (direccion), actualizar direccionInput
-    this.form.get('contacto.direccion')?.valueChanges.subscribe(comunidad => {
-      if (comunidad) {
-        this.form.get('contacto.direccionInput')?.setValue(comunidad, { emitEvent: false });
-      }
-    });
-
-    // 3. Cuando cambia direccionInput o municipio, actualizar la dirección final
-    combineLatest([
-      this.form.get('contacto.direccionInput')!.valueChanges.pipe(startWith(this.form.get('contacto.direccionInput')!.value)),
-      this.form.get('contacto.municipio')!.valueChanges.pipe(startWith(this.form.get('contacto.municipio')!.value))
-    ]).subscribe(([direccionInput, codigoMunicipio]) => {
-      const municipio = this.municipios.find(m => m.codigo === codigoMunicipio);
-      const comunidad = direccionInput?.trim() || '';
-      const vecindad = municipio?.vecindad?.trim() || '';
-
-      const direccionFinal = comunidad && vecindad
-        ? `${comunidad}, ${vecindad}`
-        : comunidad || vecindad;
-
-      this.form.get('contacto.direccion')?.setValue(direccionFinal, { emitEvent: false });
-    });
 
     // Suscripciones reactivas para sincronizar edad y fecha
     combineLatest([
@@ -456,7 +440,7 @@ export class FormularioPacienteComponent implements OnInit {
     const formularioCompleto = this.form.getRawValue();
 
     // Excluir múltiples campos
-    const { edad, direccionInput, ...datosLimpios } = formularioCompleto;
+    const { edad, direccionInput, departamento, ...datosLimpios } = formularioCompleto;
 
     return datosLimpios;
   }
@@ -478,13 +462,17 @@ export class FormularioPacienteComponent implements OnInit {
   }
 
   // municipios
-  obtenerMunicipios(): void {
+  obtenerMunicipios(valor: any): void {
+    this.municipios = [];
     this.api.getMunicipios({
-      limit: 390
+      limit: 25,
+      departamento: valor
     })
+
       .then((municipios) => {
         this.municipios = municipios;
-        console.log('👤 Municipios obtenidos correctamente');
+        // console.log(valor);
+        // console.log('👤 Municipios obtenidos correctamente');
       })
       .catch((error) => {
         console.error('❌ Error al obtener municipios:', error);
@@ -492,6 +480,29 @@ export class FormularioPacienteComponent implements OnInit {
       });
   }
 
+  public departamentos = [
+    'Guatemala',
+    'El Progreso',
+    'Sacatepéquez',
+    'Chimaltenango',
+    'Escuintla',
+    'Santa Rosa',
+    'Sololá',
+    'Totonicapán',
+    'Quetzaltenango',
+    'Suchitepéquez',
+    'Retalhuleu',
+    'San Marcos',
+    'Huehuetenango',
+    'Baja Verapaz',
+    'Alta Verapaz',
+    'Petén',
+    'Izabal',
+    'Zacapa',
+    'Chiquimula',
+    'Jalapa',
+    'Jutiapa'
+  ];
 
 
 

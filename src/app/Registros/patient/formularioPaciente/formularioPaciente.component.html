@@ -107,6 +107,10 @@
     <input type="text" formControlName="telefono2" placeholder="Teléfono B" name="telefono_b" autocomplete="new-tel" />
     <label for="telefono_c">Teléfono C</label>
     <input type="text" formControlName="telefono3" placeholder="Teléfono C" name="telefono_c"  autocomplete="new-tel" />
+    <label for="departmento">Departamento</label>
+   <select name="departamento" formControlName="departamento" (change)="obtenerMunicipios(form.get('contacto.departamento')?.value)">
+  <option *ngFor="let dep of departamentos" [value]="dep">{{ dep }}</option>
+</select>
     <label for="municipio">Municipio</label>
     <select formControlName="municipio" name="municipio">
       <option *ngFor="let municipio of municipios" [value]="municipio.codigo">{{ municipio.vecindad }}</option>
