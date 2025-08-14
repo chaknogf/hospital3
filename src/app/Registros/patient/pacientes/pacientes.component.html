@@ -1,130 +1,210 @@
-<div class="layout-container" [class.hidden]="modalActivo">
+<div class="container-fluid py-3 aurora-paciente-container" [class.d-none]="modalActivo">
 
-  <!-- Contenedor de búsqueda -->
-   <button type="button" class="btn-menu" (click)="volver()">
-  <span [innerHTML]="huellitaIcon"></span>
-  <p class="no-presiona">Menu</p>
-  <p class="presiona">Presiona para Ir al Menu</p>
-</button>
-  <div class="search-container">
+  <!-- Botón Volver al Menú -->
+  <div class="mb-3 text-start">
+    <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-2" (click)="volver()">
+      <span [innerHTML]="huellitaIcon"></span>
+      <div>
+        <p class="mb-0 fw-bold">Menu</p>
+        <small class="text-muted">Presiona para ir al Menú</small>
+      </div>
+    </button>
+    <button type="button" class="btn btn-outline-secondary float-end d-flex align-items-center gap-2"
+            (click)="toggleFiltrar()">
+      Filtrar
+    </button>
+  </div>
 
-    <form class="search-form" (submit)="ObtenerPacientes(); $event.preventDefault()">
+  <!-- Contenedor de Búsqueda -->
+  <div class="mb-4" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
+    <form class="row g-2 align-items-end aurora-form" (submit)="ObtenerPacientes(); $event.preventDefault()">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <label class="form-label">Identificador</label>
+        <input type="text" class="form-control aurora-input" placeholder="Buscar por identificador"
+               [(ngModel)]="buscarIdentificador" name="identificador" unaPalabra>
+      </div>
 
-      <input type="text" placeholder="Buscar por identificador" class="search-input" [(ngModel)]="buscarIdentificador" name="identificador" unaPalabra>
-      <input type="text" placeholder="Buscar por nombre completo" class="search-input" [(ngModel)]="buscarNombreCompleto" name="nombreCompleto">
-      <input type="text" placeholder="Buscar por nombre" class="search-input" [(ngModel)]="buscarPrimerNombre" name="nombre" unaPalabra>
-      <input type="text" placeholder="Buscar por apellido" class="search-input" [(ngModel)]="buscarPrimerApellido" name="apellido" unPalabra>
-      <input type="date" class="search-input" [(ngModel)]="buscarFechaNacimiento" name="fechaNacimiento">
-      <button type="button" class="btn btn-submit" (click)="ObtenerPacientes()">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <label class="form-label">Nombre completo</label>
+        <input type="text" class="form-control aurora-input" placeholder="Buscar por nombre completo"
+               [(ngModel)]="buscarNombreCompleto" name="nombreCompleto">
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <label class="form-label">Primer nombre</label>
+        <input type="text" class="form-control aurora-input" placeholder="Buscar por nombre"
+               [(ngModel)]="buscarPrimerNombre" name="nombre" unaPalabra>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <label class="form-label">Primer apellido</label>
+        <input type="text" class="form-control aurora-input" placeholder="Buscar por apellido"
+               [(ngModel)]="buscarPrimerApellido" name="apellido" unPalabra>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <label class="form-label">Fecha de nacimiento</label>
+        <input type="date" class="form-control aurora-input"
+               [(ngModel)]="buscarFechaNacimiento" name="fechaNacimiento">
+      </div>
+
+      <!-- Botones -->
+      <div class="col-12 mt-3 d-flex flex-wrap gap-2">
+        <button type="button" class="btn btn-primary aurora-btn" (click)="ObtenerPacientes()">
           <span [innerHTML]="searchIcon"></span> Buscar Pacientes
         </button>
-      <button type="button" class="btn btn-delete" (click)="limpiarCampos()" >
-        <span [innerHTML]="deletInput"></span>Limpiar Campos
-      </button>
-      <button type="button" class="btn btn-create"  (click)="agregar()" >
-        <span [innerHTML]="createIcon"></span>Agregar Paciente
-      </button>
+        <button type="button" class="btn btn-outline-secondary aurora-btn" (click)="limpiarCampos()">
+          <span [innerHTML]="deletInput"></span> Limpiar Campos
+        </button>
+        <button type="button" class="btn btn-success aurora-btn" (click)="agregar()">
+          <span [innerHTML]="createIcon"></span> Agregar Paciente
+        </button>
+      </div>
     </form>
   </div>
 
-  <!-- Tabla personalizada -->
-  <div class="custom-table-wrapper">
-    <table class="custom-table">
-      <thead>
-        <tr>
-
-          <th>Identificador</th>
-          <th>Nombre Completo</th>
-          <th>Fecha Nacimiento</th>
-          <th>Direccion</th>
-          <th>Género</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody >
-        <tr *ngFor="let paciente of pacientes">
-
-            <td>
-            <ng-container *ngIf="paciente?.cui ">
-             <strong>CUI:</strong> {{ paciente?.cui }}
-            </ng-container> <br>
-            <ng-container *ngIf="paciente?.expediente ">
-              <strong>Expediente:</strong> {{ paciente?.expediente }}
-            </ng-container> <br>
-            <ng-container *ngIf="paciente?.pasaporte ">
-             <strong>Pasaporte:</strong> {{ paciente?.pasaporte }}
-            </ng-container> <br>
-            <ng-container *ngIf="paciente?.otro ">
-             <strong>Otro:</strong> {{ paciente?.otro }}
-            </ng-container>
-            </td>
-          <td>
-            <span [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'">
-              {{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}
-            </span> <br>
-            <ng-container >
-             {{ paciente.nombre.apellido_primero }} {{ paciente.nombre.apellido_segundo }} {{ paciente.nombre.casada }}
-            </ng-container>
-           </td>
-
-          <td>
-            <ng-container >
-              {{ paciente.fecha_nacimiento | date: 'dd/MM/yyyy' }}
-            </ng-container> <br>
-            <ng-container >
-              {{ paciente.fecha_nacimiento | edad }}
-            </ng-container>
-          </td>
-          <td>
-             {{ paciente.contacto?.direccion }}
-          </td>
-          <td>
-            <ng-container *ngIf="paciente.sexo === 'M'">
-              <span [innerHTML]="manIcon" class="img-shadow svg-icon"></span> <br>
-
-              Masculino
-            </ng-container>
-            <ng-container *ngIf="paciente.sexo === 'F'">
-              <span [innerHTML]="womanIcon" class="img-shadow"></span> <br>
-              Femenino
-            </ng-container>
-          <td>
-            <ng-container *ngIf="paciente.estado === 'V'" >
-              <span [innerHTML]="heartIcon" class="svg-icon"></span>
-              Vivo
-            </ng-container>
-            <ng-container *ngIf="paciente.estado === 'F'">
-              <span [innerHTML]="ghostIcon"></span>
-              <p class="m-p-0">Fallecido</p>
-            </ng-container>
-          </td>
-          <td>
-            <ng-container >
-              <button class="table-button" (click)="editarPaciente(paciente.id)" [innerHTML]="editIcon">Editar</button>
-            <button class="table-button"  [innerHTML]="medicalServiceIcon">Consulta</button>
-            <button class="table-button" [innerHTML]="tablaShanonIcon" (click)="verDetallesPaciente(paciente.id)"></button>
-            <!-- <button class="table-button" (click)="eliminarPaciente(paciente.id)" [innerHTML]="trashIcon">Eliminar</button> -->
-
-
-            </ng-container> <br>
-            <p class="m-p-0 f-small f-lowercase">id:  {{ paciente.id }}</p>
-
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
+  <!-- Vista TABLA (pantalla mediana en adelante) -->
+<div class=" table-responsive d-none d-md-block aurora-table-container">
+  <table class="table align-middle aurora-table">
+    <thead class="aurora-table-header">
+      <tr>
+        <th>Identificador</th>
+        <th>Nombre Completo</th>
+        <th>Fecha Nacimiento</th>
+        <th>Dirección</th>
+        <th>Género</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let paciente of pacientes" class="aurora-table-row">
+        <td>
+          <div *ngIf="paciente?.cui"><strong>CUI:</strong> {{ paciente.cui }}</div>
+          <div *ngIf="paciente?.expediente"><strong>Expediente:</strong> {{ paciente.expediente }}</div>
+          <div *ngIf="paciente?.pasaporte"><strong>Pasaporte:</strong> {{ paciente.pasaporte }}</div>
+          <div *ngIf="paciente?.otro"><strong>Otro:</strong> {{ paciente.otro }}</div>
+        </td>
+        <td>
+          <span [ngClass]="paciente.sexo === 'M' ? 'text-light' : 'text-danger'">
+            {{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}
+          </span><br>
+          {{ paciente.nombre.apellido_primero }} {{ paciente.nombre.apellido_segundo }} {{ paciente.nombre.casada }}
+        </td>
+        <td>
+          {{ paciente.fecha_nacimiento | date: 'dd/MM/yyyy' }}<br>
+          <small class="text-muted">{{ paciente.fecha_nacimiento | edad }}</small>
+        </td>
+        <td>{{ paciente.contacto?.direccion }}</td>
+        <td>
+          <div *ngIf="paciente.sexo === 'M'">
+            <span [innerHTML]="manIcon" class="d-block"></span> Masculino
+          </div>
+          <div *ngIf="paciente.sexo === 'F'">
+            <span [innerHTML]="womanIcon" class="d-block"></span> Femenino
+          </div>
+        </td>
+        <td>
+          <div *ngIf="paciente.estado === 'V'">
+            <span [innerHTML]="heartIcon"></span> Vivo
+          </div>
+          <div *ngIf="paciente.estado === 'F'">
+            <span [innerHTML]="ghostIcon"></span> Fallecido
+          </div>
+        </td>
+        <td>
+          <div class="d-flex flex-wrap gap-1">
+            <button class="btn btn-sm btn-warning" (click)="editarPaciente(paciente.id)">
+              <span [innerHTML]="editIcon"></span>
+            </button>
+            <button class="btn btn-sm btn-info text-white">
+              <span [innerHTML]="medicalServiceIcon"></span>
+            </button>
+            <button class="btn btn-sm btn-secondary" (click)="verDetallesPaciente(paciente.id)">
+              <span [innerHTML]="tablaShanonIcon"></span>
+            </button>
+          </div>
+          <small class="text-muted d-block mt-1">id: {{ paciente.id }}</small>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
+<!-- Vista TARJETAS (pantalla pequeña) -->
+<div class="d-block d-md-none">
+  <div class="row gy-3">
+    <div class="col-12" *ngFor="let paciente of pacientes">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title aurora-card-title">
+            {{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}
+            {{ paciente.nombre.apellido_primero }} {{ paciente.nombre.apellido_segundo }} {{ paciente.nombre.casada }}
+          </h5>
 
+          <p class="mb-1">
+            <strong>Identificadores:</strong><br>
+            <span *ngIf="paciente.cui">CUI: {{ paciente.cui }}<br></span>
+            <span *ngIf="paciente.expediente">Exp: {{ paciente.expediente }}<br></span>
+            <span *ngIf="paciente.pasaporte">Pasaporte: {{ paciente.pasaporte }}<br></span>
+            <span *ngIf="paciente.otro">Otro: {{ paciente.otro }}<br></span>
+          </p>
 
-<!-- Modal para Detalle de Paciente -->
-<div class="modal-detalle-paciente" *ngIf="mostrarDetallePaciente">
-  <div class="modal-outside" (click)="cerrarDetallePaciente()"></div>
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <button class="close-modal" (click)="cerrarDetallePaciente()">×</button>
-    <detallePaciente [pacienteId]="pacienteSeleccionadoId"></detallePaciente>
+          <p class="mb-1">
+            <strong>Fecha Nac.:</strong> {{ paciente.fecha_nacimiento | date: 'dd/MM/yyyy' }}<br>
+            <small class="text-muted">{{ paciente.fecha_nacimiento | edad }}</small>
+          </p>
+
+          <p class="mb-1">
+            <strong>Dirección:</strong> {{ paciente.contacto?.direccion }}
+          </p>
+
+          <p class="mb-1">
+            <strong>Género:</strong>
+            <span *ngIf="paciente.sexo === 'M'">
+              <span [innerHTML]="manIcon"></span> Masculino
+            </span>
+            <span *ngIf="paciente.sexo === 'F'">
+              <span [innerHTML]="womanIcon"></span> Femenino
+            </span>
+          </p>
+
+          <p class="mb-3">
+            <strong>Estado:</strong>
+            <span *ngIf="paciente.estado === 'V'"><span [innerHTML]="heartIcon"></span> Vivo</span>
+            <span *ngIf="paciente.estado === 'F'"><span [innerHTML]="ghostIcon"></span> Fallecido</span>
+          </p>
+
+          <div class="d-flex gap-2 flex-wrap">
+            <button class="btn btn-sm btn-warning" (click)="editarPaciente(paciente.id)">
+              <span [innerHTML]="editIcon"></span>
+            </button>
+            <button class="btn btn-sm btn-info text-white">
+              <span [innerHTML]="medicalServiceIcon"></span>
+            </button>
+            <button class="btn btn-sm btn-secondary" (click)="verDetallesPaciente(paciente.id)">
+              <span [innerHTML]="tablaShanonIcon"></span>
+            </button>
+          </div>
+          <small class="text-muted d-block mt-2">id: {{ paciente.id }}</small>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
+
+<!-- Modal Detalle de Paciente -->
+<div class="modal fade show d-block" *ngIf="mostrarDetallePaciente" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Detalle del Paciente</h5>
+        <button type="button" class="btn-close" (click)="cerrarDetallePaciente()"></button>
+      </div>
+      <div class="modal-body">
+        <detallePaciente [pacienteId]="pacienteSeleccionadoId"></detallePaciente>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" (click)="cerrarDetallePaciente()"></div>
 </div>

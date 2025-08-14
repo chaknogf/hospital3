@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../service/api.service';
 import { Router } from '@angular/router';
+import { WordConectComponent } from "../loaders/wordConect/wordConect.component";
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, WordConectComponent],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  // styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -43,6 +44,7 @@ export class LoginComponent {
         this.loading = false;
         localStorage.setItem('token', res.token); // Guarda el token JWT
         console.log('inicio de sesión exitoso');
+        this.loading = true;
         console.log('Redirigiendo al dashboard...');
         this.router.navigate(['/dash']);
       })
@@ -80,4 +82,11 @@ export class LoginComponent {
         return `Error inesperado (código ${status}).`;
     }
   }
+
+  verLoader() {
+    this.loading = true
+  }
+
+
+
 }

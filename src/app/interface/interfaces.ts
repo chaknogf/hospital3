@@ -35,6 +35,8 @@ export interface Nombre {
 
 export interface Contacto {
   direccion?: string;
+  localidad?: string;
+  departamento?: string;
   municipio?: string;
   telefono?: string;
   telefono2?: string;
@@ -90,4 +92,9 @@ export interface Municipio {
   vecindad: string;
   municipio: string;
   departamento: string;
+}
+
+export interface PaisesIso {
+  nombre: string;
+  codigo_iso3: string;
 }

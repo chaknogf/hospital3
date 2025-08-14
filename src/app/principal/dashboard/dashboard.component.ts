@@ -1,3 +1,4 @@
+import { logoicon } from './../../shared/icons/svg-icon';
 
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -20,6 +21,7 @@ export class DashboardComponent implements OnInit {
   // svg
   tarjetaPaciente: SafeHtml = tarjetaPaciente;
   datosIcon: SafeHtml = datosIcon;
+  logoicon: SafeHtml = logoicon;
   constructor(
     private route: Router,
     private sanitizer: DomSanitizer
@@ -27,6 +29,7 @@ export class DashboardComponent implements OnInit {
 
     this.tarjetaPaciente = this.sanitizer.bypassSecurityTrustHtml(tarjetaPaciente);
     this.datosIcon = this.sanitizer.bypassSecurityTrustHtml(datosIcon);
+    this.logoicon = this.sanitizer.bypassSecurityTrustHtml(logoicon);
 
   }
 

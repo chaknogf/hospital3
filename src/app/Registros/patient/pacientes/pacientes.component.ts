@@ -30,6 +30,7 @@ export class PacientesComponent implements OnInit {
   public buscarFechaNacimiento: string = '';
   public buscarNombreCompleto: string = '';
   public cargando: boolean = false;
+  public filtrar: boolean = false;
   modalActivo = false;
   private sanitizarSvg(svg: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(svg);
@@ -156,7 +157,10 @@ export class PacientesComponent implements OnInit {
   }
 
 
-
+  // Métodos
+  public toggleFiltrar() {
+    this.filtrar = !this.filtrar;
+  }
 
 }
 

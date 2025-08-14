@@ -338,5 +338,17 @@ export class ApiService {
     }
   }
 
+  // paises_iso
+
+  async getPaisesIso(): Promise<any> {
+    try {
+      const response = await this.api.get('/paises_iso/');
+      console.log('👤 Municipios obtenidos correctamente');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener municipios:', error);
+      throw error;
+    }
+  }
 
 }

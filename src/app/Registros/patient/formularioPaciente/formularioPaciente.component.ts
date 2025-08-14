@@ -1,3 +1,5 @@
+import { Departamento, departamentos } from './../../../enum/departamentos';
+import { estadoCivil } from './../../../enum/estados_civil';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { addIcon, removeIcon, saveIcon, cancelIcon } from './../../../shared/icons/svg-icon';
 import { CommonModule } from '@angular/common';
@@ -7,11 +9,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { DpiValidadorDirective } from '../../../directives/dpi-validador.directive';
 import { UnaPalabraDirective } from '../../../directives/unaPalabra.directive';
-import { Paciente, Metadata, Municipio } from '../../../interface/interfaces';
+import { Paciente, Metadata, Municipio, PaisesIso } from '../../../interface/interfaces';
 import { comunidadChimaltenango, Keys } from '../../../interface/comunidadChimaltenango';
 import { validarCui } from '../../../validators/dpi.validator';
 import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
 import { combineLatest } from 'rxjs';
+import { Enumeradores } from '../../../interface/enumsIterfaces';
+import { gradoAcademicos } from '../../../enum/gradoAcademico';
+import { idiomas } from '../../../enum/idiomas';
+import { pueblos } from '../../../enum/pueblos';
+import { parentescos } from '../../../enum/parentescos';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-formularioPaciente',
@@ -39,10 +47,22 @@ export class FormularioPacienteComponent implements OnInit {
   form: FormGroup;
   private actualizandoFecha = false;
   private actualizandoEdad = false;
-  public municipios: Municipio[] = [];
+  public municipios_direccion: Municipio[] = [];
+  public municipios_nacimiento: Municipio[] = [];
   public comunidades: Keys[] = [];
+  public paisesIso: PaisesIso[] = [];
   public todasLasComunidades = comunidadChimaltenango;
   direccionInput: string = '';
+
+  enums: Enumeradores = {
+    estadocivil: estadoCivil,
+    gradoacademico: gradoAcademicos,
+    idiomas: idiomas,
+    parentescos: parentescos,
+    pueblos: pueblos,
+    departamentos: departamentos
+  };
+
 
   private sanitizarSvg(svg: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(svg);
@@ -96,7 +116,7 @@ export class FormularioPacienteComponent implements OnInit {
         departamento: [''],
         municipio: [''],
         direccion: [''],
-        direccionInput: ['']
+        localidad: ['']
       }),
       referencias: this.fb.group({
         referencia1: this.fb.group({
@@ -105,12 +125,6 @@ export class FormularioPacienteComponent implements OnInit {
           parentesco: ['']
         })
       }),
-      // identificadores: this.fb.group({
-      //   cui: ['', [validarCui()]],
-      //   expediente: [''],
-      //   pasaporte: [''],
-      //   otro: ['']
-      // }),
       datos_extra: this.fb.group({
         r0: this.fb.group({
           tipo: ['nacionalidad'],
@@ -155,6 +169,14 @@ export class FormularioPacienteComponent implements OnInit {
         r10: this.fb.group({
           tipo: ['expediente_madre'],
           valor: ['']
+        }),
+        r11: this.fb.group({
+          tipo: ['municipio_nacimiento'],
+          valor: ['']
+        }),
+        r12: this.fb.group({
+          tipo: ['departamento_nacimiento'],
+          valor: ['']
         })
       }),
       estado: ['V'],
@@ -170,7 +192,11 @@ export class FormularioPacienteComponent implements OnInit {
   ngOnInit(): void {
     this.usuarioActual = localStorage.getItem('username') || '';
     this.form.setValidators(this.validarEdadYFecha());
+    this.suscribirUltimos4Cui();
+    this.form.get('contacto.direccion')?.disable();
+    this.form.get('expediente')?.disable();
     this.obtenerMunicipios('');
+    this.obtenerPaisesIso();
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       const id = Number(idParam);
@@ -232,15 +258,30 @@ export class FormularioPacienteComponent implements OnInit {
 
 
 
-      this.form.valueChanges.subscribe(values => {
-        const depto = values.contacto?.departamento;
-        this.obtenerMunicipios(depto);
-        const municipioCodigo = values.contacto?.municipio;
-        const municipio = this.municipios.find(m => m.codigo === municipioCodigo);
-        const direccionInput = values.contacto?.direccionInput || '';
-        const direccionFinal = `${direccionInput}${municipio?.vecindad ? ', ' + municipio.vecindad : ''}`;
-        this.form.get('contacto.direccion')?.setValue(direccionFinal, { emitEvent: false });
-      });
+      this.form.valueChanges.pipe(debounceTime(200))
+        .subscribe(values => {
+          const contacto = this.form.get('contacto') as FormGroup;
+          if (!contacto) return;
+          const depto = values.contacto?.departamento;
+          this.api.getMunicipios({ limit: 20, departamento: depto }).then(munis => {
+            this.municipios_direccion = munis;
+            console.log(this.municipios_direccion);
+          });
+          const municipioCodigo = values.contacto?.municipio;
+
+
+          const nacimiento = this.form.get('datos_extra') as FormGroup;
+          if (!nacimiento) return;
+          const depto2 = values.datos_extra?.r12?.valor;
+          this.api.getMunicipios({ limit: 20, departamento: depto2 }).then(munis => {
+            this.municipios_nacimiento = munis;
+            console.log(this.municipios_nacimiento);
+          });
+          const municipioCodigo2 = values.datos_extra?.r11?.valor;
+
+
+
+        });
 
 
 
@@ -281,7 +322,7 @@ export class FormularioPacienteComponent implements OnInit {
   }
 
   tieneExpediente(): boolean {
-    return !!this.form.get('identificadores.expediente')?.value;
+    return !!this.form.get('expediente')?.value;
   }
 
   continuarGuardado(): void {
@@ -327,7 +368,7 @@ export class FormularioPacienteComponent implements OnInit {
   confirmarGenerarExpediente(): void {
     if (confirm('¿Desea generar un nuevo expediente para este paciente?')) {
       this.generarExpediente().then(expediente => {
-        this.form.get('identificadores.expediente')?.setValue(expediente);
+        this.form.get('expediente')?.setValue(expediente);
         this.continuarGuardado();
       });
     } else {
@@ -444,7 +485,7 @@ export class FormularioPacienteComponent implements OnInit {
     const formularioCompleto = this.form.getRawValue();
 
     // Excluir múltiples campos
-    const { edad, direccionInput, departamento, ...datosLimpios } = formularioCompleto;
+    const { edad, ...datosLimpios } = formularioCompleto;
 
     return datosLimpios;
   }
@@ -466,47 +507,48 @@ export class FormularioPacienteComponent implements OnInit {
   }
 
   // municipios
-  obtenerMunicipios(valor: any): void {
-    this.municipios = [];
-    this.api.getMunicipios({
-      limit: 25,
-      departamento: valor
-    })
+  async obtenerMunicipios(codigo?: any, depto?: any, muni?: any): Promise<any[]> {
+    try {
+      const municipios = await this.api.getMunicipios({
+        limit: 25,
+        departamento: depto,
+        municipio: muni,
+        codigo: codigo
+      });
+      const data = municipios;
+      return [...data];
+    } catch (error) {
+      console.error('❌ Error al obtener municipios:', error);
+      this.mostrarError('obtener municipios', error);
+      return [];
+    }
+  }
 
-      .then((municipios) => {
-        this.municipios = municipios;
-        // console.log(valor);
-        // console.log('👤 Municipios obtenidos correctamente');
+  obtenerPaisesIso(): void {
+    this.api.getPaisesIso()
+      .then((paises) => {
+        this.paisesIso = paises;
+        // console.log('👤 Paises obtenidos correctamente');
       })
       .catch((error) => {
-        console.error('❌ Error al obtener municipios:', error);
-        this.mostrarError('obtener municipios', error);
+        console.error('❌ Error al obtener paises:', error);
+        this.mostrarError('obtener paises', error);
       });
   }
 
-  public departamentos = [
-    'Guatemala',
-    'El Progreso',
-    'Sacatepéquez',
-    'Chimaltenango',
-    'Escuintla',
-    'Santa Rosa',
-    'Sololá',
-    'Totonicapán',
-    'Quetzaltenango',
-    'Suchitepéquez',
-    'Retalhuleu',
-    'San Marcos',
-    'Huehuetenango',
-    'Baja Verapaz',
-    'Alta Verapaz',
-    'Petén',
-    'Izabal',
-    'Zacapa',
-    'Chiquimula',
-    'Jalapa',
-    'Jutiapa'
-  ];
+
+  private suscribirUltimos4Cui(): void {
+    this.form.get('cui')?.valueChanges.subscribe((cui: string) => {
+      const ultimos4 = cui?.slice(-4) || '';
+
+      const datosExtra = this.form.get('datos_extra') as FormGroup;
+      const r11 = datosExtra?.get('r11') as FormGroup;
+
+      if (r11 && r11.get('valor')?.value !== ultimos4) {
+        r11.get('valor')?.setValue(ultimos4, { emitEvent: false });
+      }
+    });
+  }
 
 
 

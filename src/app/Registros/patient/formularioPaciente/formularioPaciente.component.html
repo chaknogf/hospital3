@@ -96,6 +96,18 @@
         <input type="number" formControlName="dias" placeholder="Días" min="0" max="30" (input)="calcularFechaDesdeEdad()" />
       </div>
     </div>
+    <label for="lugarNacimiento">Lugar de nacimiento</label>
+    <div class="input-50" formGroupName="datos_extra">
+       <select name="departamentoNacimiento" >
+        <option *ngFor="let dep of enums.departamentos" [value]="dep.value">{{ dep.label }}</option>
+      </select>
+      <select name="municipioNacimiento" >
+        <option *ngFor="let municipio of municipios_nacimiento" [value]="municipio.codigo">{{ municipio.vecindad }}</option>
+      </select>
+
+    </div>
+
+
   </fieldset>
 
   <!-- Contacto -->
@@ -109,25 +121,15 @@
     <input type="text" formControlName="telefono3" placeholder="Teléfono C" name="telefono_c"  autocomplete="new-tel" />
     <label for="departmento">Departamento</label>
    <select name="departamento" formControlName="departamento" (change)="obtenerMunicipios(form.get('contacto.departamento')?.value)">
-  <option *ngFor="let dep of departamentos" [value]="dep">{{ dep }}</option>
+  <option *ngFor="let dep of enums.departamentos" [value]="dep.label">{{ dep.label }}</option>
 </select>
     <label for="municipio">Municipio</label>
     <select formControlName="municipio" name="municipio">
-      <option *ngFor="let municipio of municipios" [value]="municipio.codigo">{{ municipio.vecindad }}</option>
+      <option *ngFor="let municipio of municipios_direccion" [value]="municipio.codigo">{{ municipio.vecindad }}</option>
     </select>
-    <div *ngIf="form.get('municipio')?.value">
-       <label for="direccion">Comunidad</label>
-      <select formControlName="direccion" id="direccion">
-        <option value="" disabled selected>Seleccione una comunidad</option>
-        <option *ngFor="let c of comunidades" [value]="c.comunidad">
-          {{ c.comunidad }}
-        </option>
-      </select>
-    </div>
-
     <label for="direccion">Dirección domicilio</label>
-    <input type="text" formControlName="direccionInput" placeholder="Dirección" name="direccion" autocomplete="new-name" value="municipio.vecindad"  />
-    <p><strong>Dirección final guardada:</strong> {{ form.get('direccion')?.value }}</p>
+    <input type="text" formControlName="localidad" placeholder="Dirección" name="localidad" autocomplete="new-name"   />
+    <input type="text" formControlName="direccion" [value]="form.get('contacto.localidad')?.value + ' ' + form.get('contacto.municipio')?.value" placeholder="Dirección" name="direccion" >
   </fieldset>
 
   <!-- Referencias -->
@@ -137,7 +139,9 @@
   <div *ngFor="let key of referenciasKeys(); let i = index" [formGroupName]="key">
     <input formControlName="nombre" placeholder="Nombre de referencia">
     <input formControlName="telefono" placeholder="Teléfono">
-    <input formControlName="parentesco" placeholder="Parentesco">
+    <select formControlName="parentesco" name="parentesco">
+      <option *ngFor="let p of enums.parentescos" [value]="p">{{ p.label }}</option>
+    </select>
     <div class="ref-btn">
       <button type="button" (click)="eliminarReferencia(key)" class="btn-remove">
     <span [innerHTML]="removeIcon"></span>
@@ -161,22 +165,30 @@
     <!-- Datos generales -->
     <div formGroupName="r0">
       <label for="nacionalidad">Nacionalidad</label>
-      <input type="text" id="nacionalidad" formControlName="valor" />
+      <select name="nacionalidad" formControlName="valor" >
+          <option *ngFor="let n of paisesIso" [value]="n.codigo_iso3">{{ n.nombre }}</option>
+      </select>
     </div>
 
     <div formGroupName="r1">
       <label for="estado_civil">Estado civil</label>
-      <input type="text" id="estado_civil" formControlName="valor" />
+      <select name="estado_civil" formControlName="valor" >
+        <option *ngFor="let ec of enums.estadocivil" [value]="ec.value">{{ec.label}}</option>
+      </select>
     </div>
 
     <div formGroupName="r2">
       <label for="pueblo">Pueblo</label>
-      <input type="text" id="pueblo" formControlName="valor" />
+      <select name="pueblo" formControlName="valor">
+        <option *ngFor="let p of enums.pueblos" [value]="p.value">{{p.label}}</option>
+      </select>
     </div>
 
     <div formGroupName="r3">
       <label for="idioma">Idioma</label>
-      <input type="text" id="idioma" formControlName="valor" />
+      <select name="idioma" formControlName="valor">
+        <option *ngFor="let i of enums.idiomas" [value]="i.value">{{i.label}}</option>
+      </select>
     </div>
 
     <div formGroupName="r4">
@@ -186,7 +198,9 @@
 
     <div formGroupName="r5">
       <label for="nivel_educativo">Nivel educativo</label>
-      <input type="text" id="nivel_educativo" formControlName="valor" />
+      <select name="nivel_educativo" formControlName="valor">
+        <option *ngFor="let ne of enums.gradoacademico" [value]="ne.value">{{ne.label}}</option>
+      </select>
     </div>
 
     <!-- Subtítulo visual -->

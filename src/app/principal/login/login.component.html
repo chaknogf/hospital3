@@ -1,32 +1,25 @@
-<div class="container-login">
-  <!-- From Uiverse.io by alexruix -->
-<div class="form-box">
-<form class="form" [formGroup]="loginForm" onsubmit="">
-    <span class="title">Login</span>
-    <span class="subtitle">Ingresa tus credenciales</span>
-    <div class="form-container">
-      <input
-          type="text"
-          class="input-login"
-          formControlName="username"
-          placeholder="Username"
-          autocomplete="off"
-        />
+<div class="container min-vh-100 d-flex justify-content-center align-items-center rounded-4"
+     style="background: radial-gradient(circle at top left, #5b59af, #162447, #1f4068, #473fe4);">
+  <div class="w-100" style="max-width: 350px;">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="glass-login-dark p-4 rounded-4 shadow-lg">
 
-			<input
-          type="password"
-          class="input-login"
-          formControlName="password"
-          placeholder="Password"
-        />
+      <h3 class="text-center mb-2 fw-bold text-white">Login</h3>
+      <p class="text-center text-white-50 mb-4 small">Ingresa tus credenciales</p>
 
-    </div>
-    <button (click)="onSubmit()">Iniciar Sesión</button>
-</form>
+      <div class="mb-3">
+        <input type="text" class="form-control rounded-pill bg-dark text-white border-white-25"
+               formControlName="username" placeholder="Usuario" autocomplete="off"/>
+      </div>
+      <div class="mb-3">
+        <input type="password" class="form-control rounded-pill bg-dark text-white border-white-25"
+               formControlName="password" placeholder="Contraseña"/>
+      </div>
 
+      <button type="submit" class="btn btn-gradient w-100 rounded-pill shadow-sm">Iniciar Sesión</button>
+    </form>
+  </div>
 </div>
 
-
-
+<div *ngIf="loading">
+  <app-wordConect></app-wordConect>
 </div>
-
