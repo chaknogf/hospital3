@@ -43,6 +43,18 @@ export class ApiService {
    * @param username Usuario
    * @param password Contraseña
    */
+
+
+  limpiarParametros(filtros: any): any {
+    const filtrosLimpiados: any = {};
+    for (const key in filtros) {
+      if (filtros[key] !== null && filtros[key] !== undefined && filtros[key] !== '') {
+        filtrosLimpiados[key] = filtros[key];
+      }
+    }
+    return filtrosLimpiados;
+  }
+
   async login(username: string, password: string): Promise<void> {
     const response = await this.api.post('/auth/login', new URLSearchParams({ username, password }), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -244,15 +256,7 @@ export class ApiService {
     }
   }
 
-  limpiarParametros(filtros: any): any {
-    const filtrosLimpiados: any = {};
-    for (const key in filtros) {
-      if (filtros[key] !== null && filtros[key] !== undefined && filtros[key] !== '') {
-        filtrosLimpiados[key] = filtros[key];
-      }
-    }
-    return filtrosLimpiados;
-  }
+
 
   // correlativos
 
@@ -347,6 +351,20 @@ export class ApiService {
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener municipios:', error);
+      throw error;
+    }
+  }
+
+  async getRenapITD(filtros: any): Promise<any> {
+    try {
+      const filtrosLimpiados = this.limpiarParametros(filtros);
+      const response = await this.api.get('/renap-persona', {
+        params: filtros
+      });
+      console.log('👤 Datos del servidor obtenidos con exito');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener datos:', error);
       throw error;
     }
   }

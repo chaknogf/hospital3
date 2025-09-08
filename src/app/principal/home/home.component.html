@@ -1,49 +1,51 @@
-<div class="container-fluid p-0 bg-landing"
-     >
+<div class="container-fluid p-0 bg-landing">
 
   <!-- Header / Navbar -->
-  <header class="navbar navbar-expand-lg px-4 py-3 shadow-sm"
-          style="background-color: rgba(20, 20, 30, 0.75); backdrop-filter: blur(10px);">
+  <header class="navbar navbar-expand-lg px-3 py-2 shadow-sm backdrop-blur">
     <div class="d-flex align-items-center gap-2">
       <span [innerHTML]="logoicon" style="width: 32px; height: 32px;"></span>
-      <span class="navbar-brand fw-bold fs-4 text-white m-0">MedicalApp</span>
+      <span class="navbar-brand fw-bold fs-5 text-white m-0">MedicalApp</span>
     </div>
 
-    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+    <button class="navbar-toggler border-0 shadow-none text-white" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse justify-content-end" id="navMenu">
       <ul class="navbar-nav gap-3">
-        <li class="nav-item">
-          <a class="nav-link text-white fw-semibold" href="#">Inicio</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white-50 fw-semibold" href="#">Servicios</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white-50 fw-semibold" href="#">Créditos</a>
-        </li>
+        <li class="nav-item"><a class="nav-link text-white fw-semibold" href="#">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link text-white-50 fw-semibold" href="#">Servicios</a></li>
+        <li class="nav-item"><a class="nav-link text-white-50 fw-semibold" href="#">Créditos</a></li>
       </ul>
     </div>
   </header>
 
   <!-- Hero Section -->
-  <section class="row g-0 align-items-center py-5 px-4 px-lg-5">
+  <section class="row g-0 align-items-center py-4 px-3 px-md-5">
+
+    <!-- Texto -->
     <div class="col-12 col-md-6 mb-4 mb-md-0">
-      <div class="p-4 rounded-4 shadow-lg"
-           style="background-color: rgba(20, 20, 30, 0.75); backdrop-filter: blur(12px);">
-        <h1 class="display-4 fw-bold mb-3 text-white">Bienvenido a <span class="text-warning">MedicalApp</span></h1>
-        <p class="lead text-white-50 mb-4">Gestiona pacientes y expedientes electrónicos con rapidez y seguridad.</p>
+      <div class="p-4 rounded-4 shadow-lg backdrop-blur bg-dark">
+        <h1 class="display-4 fw-bold mb-3 text-white">
+          Bienvenido a <span class="text-warning">MedicalApp</span>
+        </h1>
+        <p class="lead text-white-50 mb-4">
+          Gestiona pacientes y expedientes electrónicos con rapidez y seguridad.
+        </p>
         <button class="btn btn-gradient btn-lg rounded-pill px-4" (click)="open()">Iniciar Sesión</button>
       </div>
     </div>
 
+    <!-- SVG -->
     <div class="col-12 col-md-6 d-flex justify-content-center align-items-center">
-      <div class="img-fluid" [innerHTML]="svgHome" style="max-width: 480px;"></div>
+      <div class="w-100" style="max-width: 480px;">
+        <div class="img-fluid" [innerHTML]="svgHome"></div>
+      </div>
     </div>
   </section>
 </div>
+
 
 <!-- Modal Login -->
 <div class="modal fade show d-block" *ngIf="visible()" tabindex="-1"
@@ -56,5 +58,3 @@
     </div>
   </div>
 </div>
-
-<div class="modal-backdrop fade show" *ngIf="visible()"></div>

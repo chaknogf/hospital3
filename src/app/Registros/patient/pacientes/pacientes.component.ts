@@ -1,14 +1,14 @@
-import { heartIcon, createIcon, deletInput, searchIcon, editIcon, trashIcon, tablaShanonIcon, medicalServiceIcon, beatIcon, ghostIcon, huellitaIcon, manIcon, womanIcon } from './../../../shared/icons/svg-icon';
-import { Component, OnInit, NgModule } from '@angular/core';
+// pacientes.component.ts
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
+import { Paciente, Renap } from '../../../interface/interfaces';
+import { IconService } from '../../../service/icon.service';
+import { PacienteFiltros } from '../../../interface/paciente-filtros.model';
 import { CommonModule } from '@angular/common';
-import { Paciente } from '../../../interface/interfaces';
-import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { DetallePacienteComponent } from '../detallePaciente/detallePaciente.component';
 import { EdadPipe } from "../../../pipes/edad.pipe";
-
 
 @Component({
   selector: 'app-pacientes',
@@ -20,97 +20,77 @@ import { EdadPipe } from "../../../pipes/edad.pipe";
 export class PacientesComponent implements OnInit {
 
   pacientes: Paciente[] = [];
-  public porcentajeDeCarga = 0;
-  public totalDeRegistros = 0;
-  public buscarIdentificador: string = '';
-  public buscarPrimerNombre: string = '';
-  public buscarSegundoNombre: string = '';
-  public buscarPrimerApellido: string = '';
-  public buscarSegundoApellido: string = '';
-  public buscarFechaNacimiento: string = '';
-  public buscarNombreCompleto: string = '';
-  public cargando: boolean = false;
-  public filtrar: boolean = false;
+  enRenap: Renap[] = [];
+  existePaciente: boolean = false;
+  cargando = false;
+  filtrar = false;
   modalActivo = false;
-  private sanitizarSvg(svg: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
-  }
 
-  //iconos
-  searchIcon: SafeHtml = searchIcon;
-  deletInput: SafeHtml = deletInput;
-  createIcon: SafeHtml = createIcon;
-  editIcon: SafeHtml = editIcon;
-  trashIcon: SafeHtml = trashIcon;
-  tablaShanonIcon: SafeHtml = tablaShanonIcon;
-  medicalServiceIcon: SafeHtml = medicalServiceIcon;
-  manIcon: SafeHtml = manIcon;
-  womanIcon: SafeHtml = womanIcon;
-  beatIcon: SafeHtml = beatIcon;
-  ghostIcon: SafeHtml = ghostIcon;
-  heartIcon: SafeHtml = heartIcon;
-  huellitaIcon: SafeHtml = huellitaIcon;
+  totalDeRegistros = 0;
+  porcentajeDeCarga = 0;
 
+  filtros: PacienteFiltros = {
+    skip: 0,
+    limit: 10
+  };
 
-
-  //variables de detallePaciente Modal
   pacienteSeleccionadoId: number | null = null;
-  mostrarDetallePaciente: boolean = false;
+  mostrarDetallePaciente = false;
+
+  // iconos (ahora inyectados por servicio)
+  icons: { [key: string]: any } = {};
 
   constructor(
     private api: ApiService,
     private router: Router,
-    private sanitizer: DomSanitizer
+    private iconService: IconService
   ) {
-
-    this.searchIcon = this.sanitizer.bypassSecurityTrustHtml(searchIcon);
-    this.deletInput = this.sanitizer.bypassSecurityTrustHtml(deletInput);
-    this.createIcon = this.sanitizer.bypassSecurityTrustHtml(createIcon);
-    this.editIcon = this.sanitizer.bypassSecurityTrustHtml(editIcon);
-    this.trashIcon = this.sanitizer.bypassSecurityTrustHtml(trashIcon);
-    this.tablaShanonIcon = this.sanitizer.bypassSecurityTrustHtml(tablaShanonIcon);
-    this.medicalServiceIcon = this.sanitizer.bypassSecurityTrustHtml(medicalServiceIcon);
-    this.manIcon = this.sanitizer.bypassSecurityTrustHtml(manIcon);
-    this.womanIcon = this.sanitizer.bypassSecurityTrustHtml(womanIcon);
-    this.beatIcon = this.sanitizer.bypassSecurityTrustHtml(beatIcon);
-    this.ghostIcon = this.sanitizer.bypassSecurityTrustHtml(ghostIcon);
-    this.heartIcon = this.sanitizer.bypassSecurityTrustHtml(heartIcon);
-    this.huellitaIcon = this.sanitizer.bypassSecurityTrustHtml(huellitaIcon);
-
+    this.icons = {
+      search: this.iconService.getIcon("searchIcon"),
+      delete: this.iconService.getIcon("deletInput"),
+      create: this.iconService.getIcon("createIcon"),
+      edit: this.iconService.getIcon("editIcon"),
+      trash: this.iconService.getIcon("trashIcon"),
+      tabla: this.iconService.getIcon("tablaShanonIcon"),
+      medical: this.iconService.getIcon("medicalServiceIcon"),
+      man: this.iconService.getIcon("manIcon"),
+      woman: this.iconService.getIcon("womanIcon"),
+      beat: this.iconService.getIcon("beatIcon"),
+      ghost: this.iconService.getIcon("ghostIcon"),
+      heart: this.iconService.getIcon("heartIcon"),
+      paw: this.iconService.getIcon("huellitaIcon"),
+      find: this.iconService.getIcon("findIcon")
+    };
   }
 
   ngOnInit() {
-    this.ObtenerPacientes();
+    this.cargarPacientes();
   }
 
-
-  async ObtenerPacientes() {
-    const filtros = {
-      id: '',
-      identificador: this.buscarIdentificador,
-      primer_nombre: this.buscarPrimerNombre,
-      segundo_nombre: this.buscarSegundoNombre,
-      primer_apellido: this.buscarPrimerApellido,
-      segundo_apellido: this.buscarSegundoApellido,
-      nombre_completo: this.buscarNombreCompleto,
-      sexo: '',
-      fecha_nacimiento: this.buscarFechaNacimiento,
-      referencias: '',
-      estado: '',
-      skip: 0,
-      limit: 10
-    };
-
+  async cargarPacientes() {
     this.cargando = true;
     try {
-      const response = await this.api.getPacientes(filtros);
-      this.pacientes = response;
-      this.totalDeRegistros = response.length;
+      if (this.existePaciente) {
+        this.enRenap = await this.api.getRenapITD(this.filtros);
+        this.totalDeRegistros = this.enRenap.length;
+      } else {
+        this.pacientes = await this.api.getPacientes(this.filtros);
+        this.totalDeRegistros = this.pacientes.length;
+      }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     } finally {
       this.cargando = false;
     }
+  }
+
+  buscar() {
+    this.cargarPacientes();
+  }
+
+  limpiarFiltros() {
+    this.filtros = { skip: 0, limit: 10 };
+    this.cargarPacientes();
   }
 
   editarPaciente(pacienteId: number) {
@@ -120,49 +100,30 @@ export class PacientesComponent implements OnInit {
   eliminarPaciente(pacienteId: number) {
     if (confirm('¿Está seguro de que desea eliminar este paciente?')) {
       this.api.deletePaciente(pacienteId);
-
     }
   }
+
   agregar() {
     this.router.navigate(['/paciente']);
   }
-  verDetallesPaciente(pacienteId: number): void {
+
+  verDetallesPaciente(pacienteId: number) {
     this.pacienteSeleccionadoId = pacienteId;
     this.mostrarDetallePaciente = true;
     this.modalActivo = true;
-    console.log('Paciente seleccionado ID:', this.pacienteSeleccionadoId);
   }
 
-  cerrarDetallePaciente(): void {
+  cerrarDetallePaciente() {
     this.mostrarDetallePaciente = false;
     this.pacienteSeleccionadoId = null;
     this.modalActivo = false;
   }
-  navegarARegistroMedico(pacienteId: number) {
-    this.router.navigate(['/registro-medico', pacienteId]);
-  }
-
-  limpiarCampos() {
-    this.buscarIdentificador = '';
-    this.buscarPrimerNombre = '';
-    this.buscarPrimerApellido = '';
-    this.buscarFechaNacimiento = '';
-    this.buscarNombreCompleto = '';
-    this.ObtenerPacientes();
-  }
-
 
   volver() {
     this.router.navigate(['/registros']);
   }
 
-
-  // Métodos
-  public toggleFiltrar() {
+  toggleFiltrar() {
     this.filtrar = !this.filtrar;
   }
-
 }
-
-
-

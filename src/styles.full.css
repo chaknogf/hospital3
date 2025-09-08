@@ -150,7 +150,7 @@
   --bs-tertiary-bg: #2b3035;
   --bs-tertiary-bg-rgb: 43, 48, 53;
   --bs-primary-text-emphasis: #859bf0;
-  --bs-secondary-text-emphasis: white;
+  --bs-secondary-text-emphasis: rgb(201, 241, 243);
   --bs-success-text-emphasis: #82d1b3;
   --bs-info-text-emphasis: #7eb0d3;
   --bs-warning-text-emphasis: #f8d7a0;
@@ -6948,12 +6948,17 @@ textarea.form-control-lg {
 
 .text-bg-danger {
   color: #fff !important;
-  background-color: RGBA(var(--bs-danger-rgb), var(--bs-bg-opacity, 1)) !important;
+  background-color: RGBA(var(--bs-danger-rgb), var(--bs-bg-opacity, 1)) s!important;
 }
 
 .text-bg-light {
   color: #000 !important;
   background-color: RGBA(var(--bs-light-rgb), var(--bs-bg-opacity, 1)) !important;
+}
+
+.bg-light-opacity {
+
+  background-color: #81f20913 !important;
 }
 
 .text-bg-dark {
@@ -8668,6 +8673,11 @@ textarea.form-control-lg {
   color: var(--bs-emphasis-color) !important;
 }
 
+.text-blue-emphasis {
+  --bs-text-opacity: 1;
+  color: var(--bs-primary-border-subtle) !important;
+}
+
 .text-reset {
   --bs-text-opacity: 1;
   color: inherit !important;
@@ -8934,6 +8944,11 @@ textarea.form-control-lg {
 
 .bg-white {
   --bs-bg-opacity: 1;
+  background-color: rgba(var(--bs-white-rgb), var(--bs-bg-opacity)) !important;
+}
+
+.bg-white-opacity {
+  --bs-bg-opacity: 2;
   background-color: rgba(var(--bs-white-rgb), var(--bs-bg-opacity)) !important;
 }
 
@@ -12421,7 +12436,8 @@ thead th {
   }
 
   h5 {
-  font-size: clamp(1rem, 2vw + 0.5rem, 1.5rem); /* Escala según pantalla */
+  font-size: clamp(0.8rem, 2ch, 1.5rem);
+  text-wrap: balance;
   margin-bottom: 0.5rem;
   color: #ffffff;
   word-wrap: break-word; /* Rompe palabra si es necesario */

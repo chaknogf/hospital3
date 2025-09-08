@@ -98,3 +98,18 @@ export interface PaisesIso {
   nombre: string;
   codigo_iso3: string;
 }
+
+
+export interface Renap {
+  CUI?: string;
+  PRIMER_NOMBRE?: string;
+  SEGUNDO_NOMBRE?: string;
+  TERCER_NOMBRE?: string;
+  PRIMER_APELLIDO?: string;
+  SEGUNDO_APELLIDO?: string;
+  APELLIDO_CASADA?: string;
+  SEXO?: string;
+  ESTADO_CIVIL?: string;
+  FECHA_NACIMIENTO?: string;
+}
+
