@@ -1,37 +1,37 @@
-import { heartIcon, ghostIcon, manIcon, womanIcon, personFicha } from './../../../shared/icons/svg-icon';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Paciente } from '../../../interface/interfaces'; // Definir según su modelo real
 import { ApiService } from '../../../service/api.service';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
-import { hombreIcon, mujerIcon } from '../../../shared/icons/svg-icon';
 import { EdadPipe } from "../../../pipes/edad.pipe";
+import { Paciente } from '../../../interface/interfaces';
+import { heartIcon, ghostIcon, manIcon, womanIcon, personFicha, regresarIcon } from './../../../shared/icons/svg-icon';
+import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
+
 @Component({
   selector: 'detallePaciente',
   templateUrl: './detallePaciente.component.html',
   styleUrls: ['./detallePaciente.component.css'],
   standalone: true,
-  imports: [CommonModule, EdadPipe]
+  imports: [CommonModule, EdadPipe, DatosExtraPipe]
 })
 export class DetallePacienteComponent implements OnInit, OnChanges {
   @Input() pacienteId: number | null = null;
-  options: { nombre: string; descripcion: string; ruta: string; icon?: SafeResourceUrl }[] = [];
   paciente!: Paciente;
 
   referenciaKeys: string[] = [];
-  datosExtraKeys: string[] = [];
+  datosExtraKeys: string[] = [];   // ✅ ahora son solo strings
   metadatosKeys: string[] = [];
   cargando: boolean = true;
   error: string | null = null;
 
-  //svg
-  heartIcon: SafeHtml = heartIcon;
-  manIcon: SafeHtml = manIcon;
-  womanIcon: SafeHtml = womanIcon;
-  ghostIcon: SafeHtml = ghostIcon;
-  personFicha: SafeHtml = personFicha;
-
+  // SVGs
+  heartIcon: SafeHtml;
+  manIcon: SafeHtml;
+  womanIcon: SafeHtml;
+  ghostIcon: SafeHtml;
+  personFicha: SafeHtml;
+  regresarIcon: SafeHtml;
 
   constructor(
     private ruta: ActivatedRoute,
@@ -39,12 +39,12 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     private router: Router,
     private sanitizer: DomSanitizer
   ) {
-
     this.heartIcon = this.sanitizer.bypassSecurityTrustHtml(heartIcon);
     this.manIcon = this.sanitizer.bypassSecurityTrustHtml(manIcon);
     this.womanIcon = this.sanitizer.bypassSecurityTrustHtml(womanIcon);
     this.ghostIcon = this.sanitizer.bypassSecurityTrustHtml(ghostIcon);
     this.personFicha = this.sanitizer.bypassSecurityTrustHtml(personFicha);
+    this.regresarIcon = this.sanitizer.bypassSecurityTrustHtml(regresarIcon);
   }
 
   ngOnInit(): void {
@@ -54,14 +54,12 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
       const id = Number(this.ruta.snapshot.paramMap.get('id'));
       this.api.getPaciente(id).then((data) => {
         this.paciente = data;
-        // console.table(this.paciente);
         this.referenciaKeys = Object.keys(this.paciente.referencias || {});
-        this.datosExtraKeys = Object.keys(this.paciente.datos_extra || {});
-        console.log(this.datosExtraKeys);
+        this.datosExtraKeys = Object.keys(this.paciente.datos_extra || {});  // ✅ dinámico
         this.metadatosKeys = Object.keys(this.paciente.metadatos || {});
+        console.table(this.datosExtraKeys)
       });
     }
-
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -75,8 +73,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     try {
       this.paciente = await this.api.getPaciente(this.pacienteId!);
       this.referenciaKeys = Object.keys(this.paciente.referencias || {});
-      this.datosExtraKeys = Object.keys(this.paciente.datos_extra || {});
-
+      this.datosExtraKeys = Object.keys(this.paciente.datos_extra || {});  // ✅ dinámico
       this.metadatosKeys = Object.keys(this.paciente.metadatos || {});
       this.error = null;
     } catch (err) {
@@ -89,6 +86,15 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
 
   convertirTipo(tipo: string | undefined): string {
     const mapaTipos: { [key: string]: string } = {
+      EstadoCivil: 'Estado civil',
+      Ocupacion: 'Ocupación',
+      Nacionalidad: 'Nacionalidad',
+      LugarNacimiento: 'Lugar de nacimiento',
+      NivelEducativo: 'Nivel educativo',
+      Religion: 'Religión',
+      GrupoEtnico: 'Grupo étnico',
+      Idioma: 'Idioma',
+      // También puedes incluir los que tenías en snake_case si llegan así desde la API
       nacionalidad: 'Nacionalidad',
       estado_civil: 'Estado civil',
       pueblo: 'Grupo étnico',
@@ -106,5 +112,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     return mapaTipos[tipo] || tipo;
   }
 
-
+  regresar(): void {
+    this.router.navigate(['/pacientes']);
+  }
 }

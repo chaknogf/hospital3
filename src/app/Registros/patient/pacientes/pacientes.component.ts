@@ -25,6 +25,7 @@ export class PacientesComponent implements OnInit {
   cargando = false;
   filtrar = false;
   modalActivo = false;
+  espacio: string = ' ';
 
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
@@ -108,9 +109,10 @@ export class PacientesComponent implements OnInit {
   }
 
   verDetallesPaciente(pacienteId: number) {
-    this.pacienteSeleccionadoId = pacienteId;
-    this.mostrarDetallePaciente = true;
-    this.modalActivo = true;
+    // this.pacienteSeleccionadoId = pacienteId;
+    // this.mostrarDetallePaciente = true;
+    // this.modalActivo = true;
+    this.router.navigate(['/detallePaciente', pacienteId]);
   }
 
   cerrarDetallePaciente() {

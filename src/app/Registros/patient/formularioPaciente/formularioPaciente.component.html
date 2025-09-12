@@ -1,44 +1,44 @@
+
 <form [formGroup]="form" class="formulario-moderno" (ngSubmit)="guardar()">
+
+  <div class="botones">
+    <button type="button" class="text-white"  (click)="irRenap()">
+    <span [innerHTML]="findIcon"></span>
+    Buscar en RENAP
+  </button>
+  </div>
+
   <!-- Anti-autocompletado -->
   <input type="text" name="fakeusernameremembered" style="display: none;" />
   <input type="password" name="fakepasswordremembered" style="display: none;" />
 
 
-  <h2>{{ enEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
+  <h2 class="text-center text-white">{{ enEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
 
   <!-- Unidad -->
-  <div class="campo unidad">
+  <fieldset class="campo unidad d-none">
     <label for="unidad">Unidad</label>
     <input
       id="unidad"
       type="number"
       formControlName="unidad"
-      style="width: 35px; height: 10px; font-size: 12px;"
+
     />
-  </div>
+  </fieldset>
 
   <!-- Identificadores -->
   <fieldset class="grupo identificadores" >
     <legend>Identificadores</legend>
 
     <label for="cui">CUI</label>
-    <input
-      id="cui"
-      type="number"
-      formControlName="cui"
-      placeholder="Ingresa el número de CUI"
-      validarDPI
-      maxlength="13"
-      required
-      autocomplete="new-name"
-    />
+    <input id="cui" type="number" formControlName="cui" placeholder="Ingresa el número de CUI" />
   <div *ngIf="form.get('cui')?.errors?.['validarDPI']">
   El CUI debe tener exactamente 13 dígitos.
   Te faltan {{ form.get('cui')?.errors?.['validarDPI'].faltantes }} dígito(s).
 </div>
 
     <label *ngIf="form.get('expediente')?.value" for="expediente" >Expediente</label>
-    <div class="input-buton" *ngIf="form.get('expediente')?.value">
+    <div class="input-buton" >
       <input
         id="expediente"
         type="text"
@@ -66,12 +66,12 @@
   <!-- Nombre -->
   <fieldset class="grupo nombres" formGroupName="nombre">
     <legend>Nombre</legend>
-    <input formControlName="primer" placeholder="Primer nombre" name="nombre1" unaPalabra autocomplete="new-name" />
-    <input formControlName="segundo" placeholder="Segundo nombre" name="nombre2" unaPalabra autocomplete="new-name" />
-    <input formControlName="otro" placeholder="Otro nombre" name="nombre3" *ngIf="form.get('nombre.segundo')?.value" autocomplete="new-name" />
-    <input formControlName="apellido_primero" placeholder="Apellido primero" name="apellido1" unaPalabra autocomplete="new-name" />
-    <input formControlName="apellido_segundo" placeholder="Apellido segundo" name="apellido2" unaPalabra autocomplete="new-name" />
-    <input formControlName="casada" placeholder="Apellido casada" name="casada" *ngIf="form.get('sexo')?.value === 'F'" autocomplete="new-name" />
+    <input formControlName="primer_nombre" placeholder="Primer nombre" name="nombre1" unaPalabra autocomplete="new-name" />
+    <input formControlName="segundo_nombre" placeholder="Segundo nombre" name="nombre2" unaPalabra autocomplete="new-name" />
+    <input formControlName="otro_nombre" placeholder="Otro nombre" name="nombre3" *ngIf="form.get('nombre.segundo')?.value" autocomplete="new-name" />
+    <input formControlName="primer_apellido" placeholder="Apellido primero" name="apellido1" unaPalabra autocomplete="new-name" />
+    <input formControlName="segundo_apellido" placeholder="Apellido segundo" name="apellido2" unaPalabra autocomplete="new-name" />
+    <input formControlName="apellido_casada" placeholder="Apellido casada" name="casada" *ngIf="form.get('sexo')?.value === 'F'" autocomplete="new-name" />
   </fieldset>
 
   <!-- Información Básica -->
@@ -91,9 +91,9 @@
     <div class="edad-manual" formGroupName="edad">
       <p><strong>O calcula la fecha con la edad:</strong></p>
       <div class="edad-inputs">
-        <input type="number" formControlName="anios" placeholder="Años" min="0" (input)="calcularFechaDesdeEdad()" />
-        <input type="number" formControlName="meses" placeholder="Meses" min="0" max="11" (input)="calcularFechaDesdeEdad()" />
-        <input type="number" formControlName="dias" placeholder="Días" min="0" max="30" (input)="calcularFechaDesdeEdad()" />
+        <input type="number" formControlName="anios" placeholder="Años" min="0" (input)="calcularFecha()" />
+        <input type="number" formControlName="meses" placeholder="Meses" min="0" max="11" (input)="calcularEdad()" />
+        <input type="number" formControlName="dias" placeholder="Días" min="0" max="30" (input)="calcularFecha()" />
       </div>
     </div>
     <label for="lugarNacimiento">Lugar de nacimiento</label>
@@ -133,9 +133,9 @@
   </fieldset>
 
   <!-- Referencias -->
-  <fieldset class="grupo referencias" >
+  <!-- <fieldset class="grupo referencias" >
     <legend>Referencias</legend>
-    <div formGroupName="referencias">
+    <div formGroupName="r0">
   <div *ngFor="let key of referenciasKeys(); let i = index" [formGroupName]="key">
     <input formControlName="nombre" placeholder="Nombre de referencia">
     <input formControlName="telefono" placeholder="Teléfono">
@@ -156,7 +156,7 @@
 </div>
 
 
-  </fieldset>
+  </fieldset> -->
 
  <fieldset class="grupo datos-extra">
   <legend>Datos extra</legend>

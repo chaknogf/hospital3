@@ -68,8 +68,8 @@
   </div>
 
   <!-- Tabla principal (desktop) -->
-  <div class="table-responsive d-none d-md-block aurora-table-container">
-    <table class="table align-middle aurora-table">
+  <div class="table-responsive d-none d-md-block aurora-table-container ">
+    <table class="table align-middle aurora-table text-uppercase">
       <thead class="aurora-table-header">
         <tr>
           <th>Identificador</th>
@@ -91,10 +91,18 @@
               <div *ngIf="paciente?.pasaporte"><strong>Pasaporte:</strong> {{ paciente.pasaporte }}</div>
               <div *ngIf="paciente?.otro"><strong>Otro:</strong> {{ paciente.otro }}</div>
             </td>
-            <td>
-              {{ paciente.nombre.primer }} {{ paciente.nombre.segundo }} {{ paciente.nombre.otro }}
-              <br>
-              {{ paciente.nombre.apellido_primero }} {{ paciente.nombre.apellido_segundo }} {{ paciente.nombre.casada }}
+            <td >
+              <p class="p-0 m-0">
+                {{ paciente.nombre.primer_nombre }}
+                {{ paciente.nombre.segundo_nombre }}
+                {{ paciente.nombre.otro_nombre }}
+              </p>
+              <p class="p-1 m-0 fw-bold"
+                [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'">
+                {{ paciente.nombre.primer_apellido }}
+                {{ paciente.nombre.segundo_apellido }}
+                {{ paciente.nombre.apellido_casada }}
+              </p>
             </td>
             <td>
               {{ paciente.fecha_nacimiento | date:'dd/MM/yyyy' }}
@@ -119,7 +127,7 @@
               </div>
             </td>
             <td>
-              <div class="d-flex flex-wrap gap-1">
+              <div class="p-2 align-items-center d-flex flex-wrap gap-2">
                 <button class="btn btn-sm btn-warning" (click)="editarPaciente(paciente.id)">
                   <span [innerHTML]="icons['edit']"></span>
                 </button>
@@ -169,11 +177,91 @@
     </table>
   </div>
 
-  <!-- Tarjetas (mobile) -->
-  <div class="d-block d-md-none">
-    <div class="row gy-3">
-      <!    </div>
-  </div>
+<!-- Tarjetas (mobile) -->
+<div class="row g-3 aurora-card-container text-uppercase d-md-none">
+
+  <!-- Pacientes locales -->
+  <ng-container>
+    <div class="col-12" *ngFor="let paciente of pacientes">
+      <div class="card aurora-card shadow-sm rounded-3 h-100">
+        <div class="card-body d-flex flex-column justify-content-between">
+
+          <!-- Encabezado: Nombre -->
+          <div class="mb-3 border-bottom pb-2">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <h5 class="card-title m-0">
+                {{ paciente.nombre.primer_nombre }}
+                {{ paciente.nombre.segundo_nombre }}
+                {{ paciente.nombre.otro_nombre }}
+              </h5>
+              <h5 class="fw-bold m-0" [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'">
+                {{ paciente.nombre.primer_apellido }}
+                {{ paciente.nombre.segundo_apellido }}
+                {{ paciente.nombre.apellido_casada }}
+              </h5>
+            </div>
+          </div>
+
+          <!-- Identificadores -->
+          <div class=" small text-muted">
+            <div *ngIf="paciente?.cui"><strong>CUI:</strong> {{ paciente.cui }}</div>
+            <div *ngIf="paciente?.expediente"><strong>Expediente:</strong> {{ paciente.expediente }}</div>
+            <div *ngIf="paciente?.pasaporte"><strong>Pasaporte:</strong> {{ paciente.pasaporte }}</div>
+            <div *ngIf="paciente?.otro"><strong>Otro:</strong> {{ paciente.otro }}</div>
+          </div>
+
+          <!-- Datos principales -->
+          <div class="lm-3">
+            <div class="d-flex align-items-center">
+              <ng-container *ngIf="paciente.estado === 'V'">
+                <span [innerHTML]="icons['heart']"></span> Vivo
+              </ng-container>
+              <ng-container *ngIf="paciente.estado === 'F'">
+                <span [innerHTML]="icons['ghost']"></span> Fallecido
+              </ng-container>
+            </div>
+            <p class="mb-1">
+              <strong>Fecha Nac.:</strong> {{ paciente.fecha_nacimiento | date:'dd/MM/yyyy' }}
+            </p>
+            <p class="text-muted mb-2"><small>{{ paciente.fecha_nacimiento | edad }}</small></p>
+
+            <p *ngIf="paciente.contacto?.direccion" class="mb-2">
+              <strong>Dirección:</strong> {{ paciente.contacto?.direccion }}
+            </p>
+
+            <div class="mb-2 d-flex align-items-center">
+              <ng-container *ngIf="paciente.sexo === 'M'">
+                <span [innerHTML]="icons['man']"></span> Masculino
+              </ng-container>
+              <ng-container *ngIf="paciente.sexo === 'F'">
+                <span [innerHTML]="icons['woman']"></span> Femenino
+              </ng-container>
+            </div>
+
+
+          </div>
+
+          <!-- Acciones -->
+          <div class="mt-auto pt-2 border-top d-flex flex-wrap gap-2 align-items-center justify-content-center">
+            <button class="btn btn-sm btn-warning" (click)="editarPaciente(paciente.id)">
+              <span [innerHTML]="icons['edit']"></span>
+            </button>
+            <button class="btn btn-sm btn-info text-white">
+              <span [innerHTML]="icons['medical']"></span>
+            </button>
+            <button class="btn btn-sm btn-secondary" (click)="verDetallesPaciente(paciente.id)">
+              <span [innerHTML]="icons['tabla']"></span>
+            </button>
+
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+</div>
 
   <!-- Modal detalle -->
   <div class="modal fade show d-block" *ngIf="mostrarDetallePaciente" tabindex="-1" role="dialog">

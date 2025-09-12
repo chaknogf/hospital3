@@ -1,0 +1,109 @@
+<!-- renap.componente.html -->
+<div >
+  <h2 class="text-light text-center">Consulta RENAP</h2>
+
+  <div class="botones">
+    <button type="button" (click)="regresar()" class="text-white">
+    <span [innerHTML]="regresarIcon"></span>
+  </button>
+
+  </div>
+
+    <legend class="text-light">Filtros de búsqueda</legend>
+  <form (ngSubmit)="buscarPersona()" class="formulario-moderno-busqueda">
+    <fieldset class="grupo">
+
+
+  <div class="campo">
+    <input type="text" id="cui" name="cui" [(ngModel)]="filtros.cui" placeholder="Ingrese CUI" />
+    <label for="cui">CUI</label>
+  </div>
+
+  <div class="campo">
+    <input type="text" id="primer_nombre" name="primer_nombre" [(ngModel)]="filtros.primer_nombre" placeholder="Ingrese Primer Nombre" />
+    <label for="primer_nombre">Primer Nombre</label>
+  </div>
+
+  <div class="campo">
+    <input type="text" id="segundo_nombre" name="segundo_nombre" [(ngModel)]="filtros.segundo_nombre" placeholder="Ingrese Segundo Nombre" />
+    <label for="segundo_nombre">Segundo Nombre</label>
+  </div>
+
+  <div class="campo">
+    <input type="text" id="primer_apellido" name="primer_apellido" [(ngModel)]="filtros.primer_apellido" placeholder="Ingrese Primer Apellido" />
+    <label for="primer_apellido">Primer Apellido</label>
+  </div>
+
+  <div class="campo">
+    <input type="text" id="segundo_apellido" name="segundo_apellido" [(ngModel)]="filtros.segundo_apellido" placeholder="Ingrese Segundo Apellido" />
+    <label for="segundo_apellido">Segundo Apellido</label>
+  </div>
+
+  <div class="campo">
+    <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" [(ngModel)]="filtros.fecha_nacimiento" />
+    <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+  </div>
+</fieldset>
+
+    <div class="botones">
+      <button type="submit">Buscar</button>
+      <button type="button" (click)="limpiarFiltros()">Limpiar</button>
+    </div>
+  </form>
+
+  <!-- Mensaje de carga -->
+  <div *ngIf="cargando" class="mt-3 text-center">
+    <p>Cargando información...</p>
+  </div>
+
+  <!-- Resultados -->
+  <div *ngIf="!cargando && enRenap.length > 0" class="mt-3">
+    <h3 class="text-light text-center">Resultados</h3>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-info">
+        <thead>
+          <tr>
+            <th>CUI</th>
+            <th>Primer Nombre</th>
+            <th>Segundo Nombre</th>
+            <th>Tercer Nombre</th>
+            <th>Primer Apellido</th>
+            <th>Segundo Apellido</th>
+            <th>Apellido Casada</th>
+            <th>Sexo</th>
+            <th>Estado Civil</th>
+            <th>Fecha Nacimiento</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="text-uppercase">
+          <tr *ngFor="let persona of enRenap">
+            <td>{{ persona.CUI }}</td>
+            <td>{{ persona.PRIMER_NOMBRE }}</td>
+            <td>{{ persona.SEGUNDO_NOMBRE }}</td>
+            <td>{{ persona.TERCER_NOMBRE }}</td>
+            <td>{{ persona.PRIMER_APELLIDO }}</td>
+            <td>{{ persona.SEGUNDO_APELLIDO }}</td>
+            <td>{{ persona.APELLIDO_CASADA }}</td>
+            <td>{{ persona.SEXO }}</td>
+            <td>{{ persona.ESTADO_CIVIL }}</td>
+            <td>{{ persona.FECHA_NACIMIENTO }}</td>
+            <td>
+              <div class="d-flex">
+                <button class="btn btn-sm btn-success" (click)="agregarPaciente(persona)">
+                  <span [innerHTML]="agregarPersona"></span>
+                </button>
+
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Sin resultados -->
+  <div *ngIf="!cargando && enRenap.length === 0">
+    <p>No se encontraron resultados.</p>
+  </div>
+</div>

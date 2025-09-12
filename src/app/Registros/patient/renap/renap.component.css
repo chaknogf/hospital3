@@ -1,0 +1,45 @@
+/* Grid dinámico */
+fieldset.grupo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 25px;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Contenedor de cada campo */
+fieldset.grupo .campo {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Inputs */
+fieldset.grupo input {
+  order: 1; /* Input primero */
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 15px;
+  border: 1px solid var(--cerulean);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
+  font-weight: 300; /* más claro */
+}
+
+fieldset.grupo input:focus {
+  border-color: var(--picton-blue);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 168, 232, 0.4);
+}
+
+/* Labels */
+fieldset.grupo label {
+  order: 2; /* Label debajo del input */
+  margin-top: 0.4rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+  text-align: left;
+}
+

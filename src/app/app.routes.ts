@@ -13,6 +13,8 @@ import { RecepcionComponent } from './Registros/adminsion/recepcion/recepcion.co
 import { PrestamoComponent } from './Registros/adminsion/prestamo/prestamo.component';
 import { FormConsultaComponent } from './Registros/adminsion/formConsulta/formConsulta.component';
 import { RegistrosMedicosComponent } from './Registros/registrosMedicos/registrosMedicos.component';
+import { DetallePacienteComponent } from './Registros/patient/detallePaciente/detallePaciente.component';
+import { RenapComponent } from './Registros/patient/renap/renap.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -21,6 +23,7 @@ export const routes: Routes = [
   { path: 'registros', component: RegistrosMedicosComponent, canActivate: [AuthGuard] },
   { path: 'pacientes', component: PacientesComponent, canActivate: [AuthGuard] },
   { path: 'paciente', component: FormularioPacienteComponent, canActivate: [AuthGuard] },
+  { path: 'detallePaciente/:id', component: DetallePacienteComponent, canActivate: [AuthGuard] },
   { path: 'paciente/:id', component: FormularioPacienteComponent, canActivate: [AuthGuard] },
   { path: 'coex', component: CoexComponent, canActivate: [AuthGuard] },
   { path: 'emergencia', component: EmergenciaComponent, canActivate: [AuthGuard] },
@@ -29,4 +32,5 @@ export const routes: Routes = [
   { path: 'recepcion', component: RecepcionComponent, canActivate: [AuthGuard] },
   { path: 'prestamos', component: PrestamoComponent, canActivate: [AuthGuard] },
   { path: 'registro', component: FormConsultaComponent, canActivate: [AuthGuard] },
+  { path: 'renap', component: RenapComponent, canActivate: [AuthGuard] },
 ];

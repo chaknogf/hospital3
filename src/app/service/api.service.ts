@@ -267,6 +267,7 @@ export class ApiService {
       return response.data['correlativo'];
     } catch (error) {
       console.error('❌ Error al obtener correlativo:', error);
+      console.log(error);
       throw error;
     }
   }
@@ -362,7 +363,8 @@ export class ApiService {
         params: filtros
       });
       console.log('👤 Datos del servidor obtenidos con exito');
-      return response.data;
+      //console.table(response.data.resultado);
+      return response.data.resultado;
     } catch (error) {
       console.error('❌ Error al obtener datos:', error);
       throw error;

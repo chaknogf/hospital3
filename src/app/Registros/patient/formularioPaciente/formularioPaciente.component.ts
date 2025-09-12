@@ -1,25 +1,31 @@
-import { Departamento, departamentos } from './../../../enum/departamentos';
-import { estadoCivil } from './../../../enum/estados_civil';
-import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
-import { addIcon, removeIcon, saveIcon, cancelIcon } from './../../../shared/icons/svg-icon';
+// formulario-paciente.component.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, AbstractControl, Validators, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService } from '../../../service/api.service';
-import { DpiValidadorDirective } from '../../../directives/dpi-validador.directive';
-import { UnaPalabraDirective } from '../../../directives/unaPalabra.directive';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
+import { combineLatest } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
 import { Paciente, Metadata, Municipio, PaisesIso } from '../../../interface/interfaces';
 import { comunidadChimaltenango, Keys } from '../../../interface/comunidadChimaltenango';
-import { validarCui } from '../../../validators/dpi.validator';
-import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
-import { combineLatest } from 'rxjs';
 import { Enumeradores } from '../../../interface/enumsIterfaces';
+import { estadoCivil } from './../../../enum/estados_civil';
 import { gradoAcademicos } from '../../../enum/gradoAcademico';
 import { idiomas } from '../../../enum/idiomas';
 import { pueblos } from '../../../enum/pueblos';
 import { parentescos } from '../../../enum/parentescos';
-import { debounceTime } from 'rxjs/operators';
+import { departamentos } from './../../../enum/departamentos';
+
+import { validarCui } from '../../../validators/dpi.validator';
+import { DpiValidadorDirective } from '../../../directives/dpi-validador.directive';
+import { UnaPalabraDirective } from '../../../directives/unaPalabra.directive';
+import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
+
+import { ApiService } from '../../../service/api.service';
+import { PacienteUtilService } from '../../../service/paciente-util.service';
+
+import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon } from './../../../shared/icons/svg-icon';
 
 @Component({
   selector: 'app-formularioPaciente',
@@ -63,44 +69,36 @@ export class FormularioPacienteComponent implements OnInit {
     departamentos: departamentos
   };
 
-
-  private sanitizarSvg(svg: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
-  }
-
   // svg
-  addIcon: SafeHtml = addIcon;
-  removeIcon: SafeHtml = removeIcon;
-  saveIcon: SafeHtml = saveIcon;
-  cancelIcon: SafeHtml = saveIcon;
+  addIcon!: SafeHtml;
+  removeIcon!: SafeHtml;
+  saveIcon!: SafeHtml;
+  cancelIcon!: SafeHtml;
+  findIcon!: SafeHtml;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly api: ApiService,
     private readonly fb: FormBuilder,
-    private sanitizer: DomSanitizer,
+    private readonly sanitizer: DomSanitizer,
+    private readonly pacienteUtil: PacienteUtilService
 
   ) {
-    this.addIcon = this.sanitizarSvg(addIcon);
-    this.removeIcon = this.sanitizarSvg(removeIcon);
-    this.saveIcon = this.sanitizarSvg(saveIcon);
-    this.cancelIcon = this.sanitizarSvg(cancelIcon);
-
     this.form = this.fb.group({
       id: [0],
       unidad: [287],
-      cui: ['', [validarCui()]],
+      cui: ['',],
       expediente: [''],
       pasaporte: [''],
       otro: [''],
       nombre: this.fb.group({
-        primer: [''],
-        segundo: [''],
-        otro: [''],
-        apellido_primero: [''],
-        apellido_segundo: [''],
-        casada: ['']
+        primer_nombre: [''],
+        segundo_nombre: [''],
+        otro_nombre: [''],
+        primer_apellido: [''],
+        segundo_apellido: [''],
+        apellido_casada: ['']
       }),
       sexo: [''],
       fecha_nacimiento: [''],
@@ -119,66 +117,13 @@ export class FormularioPacienteComponent implements OnInit {
         localidad: ['']
       }),
       referencias: this.fb.group({
-        referencia1: this.fb.group({
+        r0: this.fb.group({
           nombre: [''],
           telefono: [''],
           parentesco: ['']
         })
       }),
-      datos_extra: this.fb.group({
-        r0: this.fb.group({
-          tipo: ['nacionalidad'],
-          valor: ['GTM']
-        }),
-        r1: this.fb.group({
-          tipo: ['estado_civil'],
-          valor: ['']
-        }),
-        r2: this.fb.group({
-          tipo: ['pueblo'],
-          valor: ['']
-        }),
-        r3: this.fb.group({
-          tipo: ['idioma'],
-          valor: ['español']
-        }),
-        r4: this.fb.group({
-          tipo: ['ocupacion'],
-          valor: ['']
-        }),
-        r5: this.fb.group({
-          tipo: ['nivel_educativo'],
-          valor: ['']
-        }),
-        r6: this.fb.group({
-          tipo: ['peso_nacimiento'],
-          valor: ['', [Validators.required, Validators.min(0), Validators.pattern(/^\d+(\.\d{1,2})?$/)]]
-        }),
-        r7: this.fb.group({
-          tipo: ['edad_gestacional'],
-          valor: ['', [Validators.required, Validators.min(20), Validators.max(44), Validators.pattern(/^\d+(\.\d{1,2})?$/)]]
-        }),
-        r8: this.fb.group({
-          tipo: ['parto'],
-          valor: ['']
-        }),
-        r9: this.fb.group({
-          tipo: ['gemelo'],
-          valor: ['', [Validators.required, Validators.min(1), Validators.max(5), Validators.pattern(/^\d+(\.\d{1,2})?$/)]]
-        }),
-        r10: this.fb.group({
-          tipo: ['expediente_madre'],
-          valor: ['']
-        }),
-        r11: this.fb.group({
-          tipo: ['municipio_nacimiento'],
-          valor: ['']
-        }),
-        r12: this.fb.group({
-          tipo: ['departamento_nacimiento'],
-          valor: ['']
-        })
-      }),
+      datos_extra: this.fb.group({}),
       estado: ['V'],
       metadatos: this.fb.group({
         r0: this.fb.group({
@@ -187,6 +132,13 @@ export class FormularioPacienteComponent implements OnInit {
         })
       })
     });
+
+    // svg icon initialization after sanitizer is available
+    this.addIcon = this.sanitizer.bypassSecurityTrustHtml(addIcon);
+    this.removeIcon = this.sanitizer.bypassSecurityTrustHtml(removeIcon);
+    this.saveIcon = this.sanitizer.bypassSecurityTrustHtml(saveIcon);
+    this.cancelIcon = this.sanitizer.bypassSecurityTrustHtml(cancelIcon);
+    this.findIcon = this.sanitizer.bypassSecurityTrustHtml(findIcon);
   }
 
   ngOnInit(): void {
@@ -197,6 +149,19 @@ export class FormularioPacienteComponent implements OnInit {
     this.form.get('expediente')?.disable();
     this.obtenerMunicipios('');
     this.obtenerPaisesIso();
+
+    // Si vienen datos desde RENAP
+    const pacienteRenap = history.state.paciente;
+    if (pacienteRenap) {
+      this.form.patchValue(this.pacienteUtil.normalizarPaciente(pacienteRenap));
+
+      if (pacienteRenap.fecha_nacimiento) {
+        const edad = this.pacienteUtil.calcularEdad(pacienteRenap.fecha_nacimiento);
+        this.form.get('edad')?.patchValue(edad);
+      }
+    }
+
+    // Si viene ID desde la ruta → modo edición
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       const id = Number(idParam);
@@ -204,100 +169,30 @@ export class FormularioPacienteComponent implements OnInit {
         this.api.getPaciente(id)
           .then(data => {
             this.enEdicion = true;
-            console.log('👤 Paciente obtenido correctamente');
-
-            // Cargar referencias (pueden tener claves dinámicas)
-            if (data.referencias) {
-              const referenciasGroup = this.fb.group({});
-              Object.entries(data.referencias).forEach(([key, ref]: [string, any]) => {
-                referenciasGroup.addControl(key, this.fb.group({
-                  nombre: [ref.nombre || ''],
-                  telefono: [ref.telefono || ''],
-                  parentesco: [ref.parentesco || '']
-                }));
-              });
-              this.form.setControl('referencias', referenciasGroup);
-            }
-
-            // Cargar datos_extra
-            if (data.datos_extra) {
-              const datosExtraGroup = this.fb.group({});
-              Object.entries(data.datos_extra).forEach(([key, dato]: [string, any]) => {
-                datosExtraGroup.addControl(key, this.fb.group({
-                  tipo: [dato.tipo || ''],
-                  valor: [dato.valor || '']
-                }));
-              });
-              this.form.setControl('datos_extra', datosExtraGroup);
-            }
-
-            // Cargar metadatos
-            if (data.metadatos) {
-              const metadatosGroup = this.fb.group({});
-              Object.entries(data.metadatos).forEach(([key, meta]: [string, any]) => {
-                metadatosGroup.addControl(key, this.fb.group({
-                  usuario: [meta.usuario || ''],
-                  registro: [meta.registro || '']
-                }));
-              });
-              this.form.setControl('metadatos', metadatosGroup);
-            }
-
-            // Cargar el resto del formulario
-            const { referencias, datos_extra, metadatos, ...resto } = data;
-            this.form.patchValue(resto);
-
-            // Calcular edad si hay fecha
-            if (data.fecha_nacimiento) {
-              this.form.get('fecha_nacimiento')?.setValue(data.fecha_nacimiento);
-              this.calcularEdadDesdeFecha();
-            }
+            this.form.patchValue(this.pacienteUtil.normalizarPaciente(data));
           })
           .catch(error => this.mostrarError('obtener paciente', error));
       }
-
-
-
-      this.form.valueChanges.pipe(debounceTime(200))
-        .subscribe(values => {
-          const contacto = this.form.get('contacto') as FormGroup;
-          if (!contacto) return;
-          const depto = values.contacto?.departamento;
-          this.api.getMunicipios({ limit: 20, departamento: depto }).then(munis => {
-            this.municipios_direccion = munis;
-            console.log(this.municipios_direccion);
-          });
-          const municipioCodigo = values.contacto?.municipio;
-
-
-          const nacimiento = this.form.get('datos_extra') as FormGroup;
-          if (!nacimiento) return;
-          const depto2 = values.datos_extra?.r12?.valor;
-          this.api.getMunicipios({ limit: 20, departamento: depto2 }).then(munis => {
-            this.municipios_nacimiento = munis;
-            console.log(this.municipios_nacimiento);
-          });
-          const municipioCodigo2 = values.datos_extra?.r11?.valor;
-
-
-
-        });
-
-
-
     }
 
-    // Suscripciones reactivas para sincronizar edad y fecha
+    // Suscripciones reactivas edad/fecha
     combineLatest([
       this.form.get(['edad', 'anios'])!.valueChanges,
       this.form.get(['edad', 'meses'])!.valueChanges,
       this.form.get(['edad', 'dias'])!.valueChanges
     ]).subscribe(() => {
-      if (!this.actualizandoEdad) this.calcularFechaDesdeEdad();
+      if (!this.actualizandoEdad) {
+        const edad = this.form.get('edad')?.value;
+        const fecha = this.pacienteUtil.calcularFechaDesdeEdad(edad);
+        this.form.get('fecha_nacimiento')?.setValue(fecha, { emitEvent: false });
+      }
     });
 
-    this.form.get('fecha_nacimiento')?.valueChanges.subscribe(() => {
-      if (!this.actualizandoFecha) this.calcularEdadDesdeFecha();
+    this.form.get('fecha_nacimiento')?.valueChanges.subscribe(fechaStr => {
+      if (!this.actualizandoFecha && fechaStr) {
+        const edad = this.pacienteUtil.calcularEdad(fechaStr);
+        this.form.get('edad')?.patchValue(edad, { emitEvent: false });
+      }
     });
   }
 
@@ -306,113 +201,61 @@ export class FormularioPacienteComponent implements OnInit {
   }
 
   guardar(): void {
-    const timestamp = new Date().toISOString();
-    const metadata: Metadata = { usuario: this.usuarioActual, registro: timestamp };
+    const paciente: Paciente = this.form.getRawValue();
+    const normalizado = this.pacienteUtil.normalizarPaciente(paciente);
+    normalizado.metadatos = this.pacienteUtil.agregarMetadato(normalizado.metadatos, this.usuarioActual);
 
-    const metadatosGroup = this.form.get('metadatos') as FormGroup;
-
-    // Obtener la cantidad actual de registros (r0, r1, etc.)
-    const total = Object.keys(metadatosGroup.controls).length;
-    const nuevaClave = `r${total}`;
-    // Agregar el nuevo grupo
-    metadatosGroup.addControl(nuevaClave, this.fb.group(metadata));
-    this.tieneExpediente()
-      ? this.continuarGuardado()
-      : this.confirmarGenerarExpediente();
+    this.enEdicion
+      ? this.actualizar(normalizado)
+      : this.crear(normalizado);
   }
 
-  tieneExpediente(): boolean {
-    return !!this.form.get('expediente')?.value;
-  }
-
-  continuarGuardado(): void {
-    const paciente: Paciente = this.form.value;
-    this.enEdicion ? this.actualizar(paciente) : this.crear(paciente);
-  }
-
-  async crear(paciente: Paciente): Promise<void> {
+  async crear(paciente: Paciente): Promise<any> {
     try {
-      const datos = this.getDatosParaGuardar();
-      console.table(datos);
-      await this.api.createPaciente(datos); // Usamos await, ya que el método es async
-      console.log('👤 Paciente creado correctamente');
-      this.volver();
+      const correlativo = await this.api.corExpediente();
+      paciente.expediente = correlativo;
+      const response = await this.api.createPaciente(paciente);
+      console.log('✅ Paciente creado correctamente:', response.data);
+      return response.data;
     } catch (error) {
-      this.mostrarError('generar expediente', error);
+      this.mostrarError('crear paciente', error);
       throw error;
     }
   }
+
   async actualizar(paciente: Paciente): Promise<void> {
     try {
-      const datos = this.getDatosParaGuardar();
-      await this.api.updatePaciente(paciente.id, datos);
+      await this.api.updatePaciente(paciente.id, paciente);
       console.log('👤 Paciente actualizado correctamente');
       this.volver();
     } catch (error) {
       this.mostrarError('actualizar paciente', error);
-      console.table(paciente);
     }
   }
 
-  async generarExpediente(): Promise<string> {
+  obtenerPaisesIso(): void {
+    this.api.getPaisesIso()
+      .then((paises) => this.paisesIso = paises)
+      .catch(error => this.mostrarError('obtener paises', error));
+  }
+
+  async obtenerMunicipios(codigo?: any, depto?: any, muni?: any): Promise<any[]> {
     try {
-      const expediente = await this.api.corExpediente();
-      console.log('📄 Correlativo obtenido:', expediente);
-      return expediente;
+      return await this.api.getMunicipios({ limit: 25, departamento: depto, municipio: muni, codigo });
     } catch (error) {
-      this.mostrarError('generar expediente', error);
-      throw error;
+      this.mostrarError('obtener municipios', error);
+      return [];
     }
   }
 
-  confirmarGenerarExpediente(): void {
-    if (confirm('¿Desea generar un nuevo expediente para este paciente?')) {
-      this.generarExpediente().then(expediente => {
-        this.form.get('expediente')?.setValue(expediente);
-        this.continuarGuardado();
-      });
-    } else {
-      this.continuarGuardado();
-    }
-  }
-
-  calcularFechaDesdeEdad(): void {
-    this.actualizandoFecha = true;
-    const edad = this.form.get('edad')?.value;
-    if (edad) {
-      const ahora = new Date();
-      const fecha = new Date(ahora.getFullYear() - (edad.anios || 0), ahora.getMonth() - (edad.meses || 0), ahora.getDate() - (edad.dias || 0));
-      this.form.get('fecha_nacimiento')?.setValue(fecha.toISOString().substring(0, 10)); // formato YYYY-MM-DD
-    }
-    this.actualizandoFecha = false;
-  }
-  calcularEdadDesdeFecha(): void {
-    const fechaNacimientoStr = this.form.get('fecha_nacimiento')?.value;
-    if (!fechaNacimientoStr) return;
-    this.actualizandoEdad = true;
-    const hoy = new Date();
-    const nacimiento = new Date(fechaNacimientoStr);
-    let anios = hoy.getFullYear() - nacimiento.getFullYear();
-    let meses = hoy.getMonth() - nacimiento.getMonth();
-    let dias = hoy.getDate() - nacimiento.getDate();
-    if (dias < 0) {
-      meses--;
-      const diasEnMesAnterior = new Date(hoy.getFullYear(), hoy.getMonth(), 0).getDate();
-      dias += diasEnMesAnterior;
-    }
-    if (meses < 0) {
-      anios--;
-      meses += 12;
-    }
-    this.form.get(['edad', 'anios'])?.setValue(anios);
-    this.form.get(['edad', 'meses'])?.setValue(meses);
-    this.form.get(['edad', 'dias'])?.setValue(dias);
-
-    if (this.form.get('edad')?.value.anios === 0 && this.form.get('edad')?.value.meses === 0 && this.form.get('edad')?.value.dias < 28) {
-      this.mosatrarInputNacimiento = true;
-    }
-
-    this.actualizandoEdad = false;
+  private suscribirUltimos4Cui(): void {
+    this.form.get('cui')?.valueChanges.subscribe((cui: string) => {
+      const ultimos4 = cui?.slice(-4) || '';
+      const datosExtra = this.form.get('datos_extra') as FormGroup;
+      if (datosExtra.get('r11')) {
+        datosExtra.get('r11.valor')?.setValue(ultimos4, { emitEvent: false });
+      }
+    });
   }
 
   validarEdadYFecha(): ValidatorFn {
@@ -420,13 +263,9 @@ export class FormularioPacienteComponent implements OnInit {
       const edad = group.get('edad');
       const fecha = group.get('fecha_nacimiento')?.value;
       if (!edad || !fecha) return null;
-
-      // Validar que los valores coincidan (puedes usar tu lógica existente aquí)
-      // Retorna null si es válido, o un objeto de error si no lo es
       return null;
     };
   }
-
 
   get sortedMetadatos(): Metadata[] {
     const metadatos = this.form.get('metadatos')?.value || {};
@@ -436,120 +275,23 @@ export class FormularioPacienteComponent implements OnInit {
   }
 
   private mostrarError(accion: string, error: any): void {
-    console.error(`❌ Error al ${accion}:`, error);
+    console.error(`Error al ${accion}:`, error);
     alert(`Error al ${accion}. Consulte la consola para más detalles.`);
   }
 
-  get referenciasControls(): { [key: string]: AbstractControl } {
-    return (this.form.get('referencias') as FormGroup).controls;
+  irRenap() {
+    this.router.navigate(['/renap']);
   }
 
-  referenciasKeys(): string[] {
-    return Object.keys(this.referenciasControls);
+  calcularFecha(): void {
+    const edad = this.form.get('edad')?.value;
+    const fecha = this.pacienteUtil.calcularFechaDesdeEdad(edad);
+    this.form.get('fecha_nacimiento')?.setValue(fecha);
   }
 
-  private crearReferencia(): FormGroup {
-    return this.fb.group({
-      nombre: [''],
-      telefono: [''],
-      parentesco: ['']
-    });
+  calcularEdad(): void {
+    const fechaNacimiento = this.form.get('fecha_nacimiento')?.value;
+    const edad = this.pacienteUtil.calcularEdad(fechaNacimiento);
+    this.form.get('edad')?.patchValue(edad, { emitEvent: false });
   }
-
-  agregarReferencia(): void {
-    const referencias = this.form.get('referencias') as FormGroup;
-    const indice = Object.keys(referencias.controls).length;
-    const clave = `r${indice}`;
-    referencias.addControl(clave, this.crearReferencia());
-  }
-
-  eliminarReferencia(clave: string): void {
-    const referencias = this.form.get('referencias') as FormGroup;
-    referencias.removeControl(clave);
-  }
-
-  cargarReferencias(referenciasData: { [key: string]: any }): void {
-    const referenciasGroup = this.fb.group({});
-    Object.entries(referenciasData).forEach(([clave, valor]) => {
-      referenciasGroup.addControl(clave, this.fb.group({
-        nombre: [valor.nombre || ''],
-        telefono: [valor.telefono || ''],
-        parentesco: [valor.parentesco || '']
-      }));
-    });
-    this.form.setControl('referencias', referenciasGroup);
-  }
-
-
-  getDatosParaGuardar(): any {
-    const formularioCompleto = this.form.getRawValue();
-
-    // Excluir múltiples campos
-    const { edad, ...datosLimpios } = formularioCompleto;
-
-    return datosLimpios;
-  }
-
-  get mostrarDatosNacimiento(): boolean {
-    const edad = this.form.get('edad');
-
-    if (
-      edad?.get('anios')?.value === 0 &&
-      edad?.get('meses')?.value === 0 &&
-      edad?.get('dias')?.value < 28
-    ) {
-      this.mosatrarInputNacimiento = true;
-      return true;
-    }
-
-    this.mosatrarInputNacimiento = false;
-    return false;
-  }
-
-  // municipios
-  async obtenerMunicipios(codigo?: any, depto?: any, muni?: any): Promise<any[]> {
-    try {
-      const municipios = await this.api.getMunicipios({
-        limit: 25,
-        departamento: depto,
-        municipio: muni,
-        codigo: codigo
-      });
-      const data = municipios;
-      return [...data];
-    } catch (error) {
-      console.error('❌ Error al obtener municipios:', error);
-      this.mostrarError('obtener municipios', error);
-      return [];
-    }
-  }
-
-  obtenerPaisesIso(): void {
-    this.api.getPaisesIso()
-      .then((paises) => {
-        this.paisesIso = paises;
-        // console.log('👤 Paises obtenidos correctamente');
-      })
-      .catch((error) => {
-        console.error('❌ Error al obtener paises:', error);
-        this.mostrarError('obtener paises', error);
-      });
-  }
-
-
-  private suscribirUltimos4Cui(): void {
-    this.form.get('cui')?.valueChanges.subscribe((cui: string) => {
-      const ultimos4 = cui?.slice(-4) || '';
-
-      const datosExtra = this.form.get('datos_extra') as FormGroup;
-      const r11 = datosExtra?.get('r11') as FormGroup;
-
-      if (r11 && r11.get('valor')?.value !== ultimos4) {
-        r11.get('valor')?.setValue(ultimos4, { emitEvent: false });
-      }
-    });
-  }
-
-
-
 }

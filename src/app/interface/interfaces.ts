@@ -25,12 +25,12 @@ export interface Identificadores {
 }
 
 export interface Nombre {
-  primer: string;
-  segundo?: string;
-  otro?: string;
-  apellido_primero: string;
-  apellido_segundo?: string;
-  casada?: string;
+  primer_nombre: string;
+  segundo_nombre?: string;
+  otro_nombre?: string;
+  primer_apellido: string;
+  segundo_apellido?: string;
+  apellido_casada?: string;
 }
 
 export interface Contacto {
@@ -55,27 +55,28 @@ export interface Metadata {
   registro?: string;
 }
 
-
+export interface KeysValue {
+  tipo: string;
+  valor: string;
+}
 
 export interface DatosExtra {
-  tipo: string;
-  valor: string
+  [key: string]: KeysValue;   // dinámico: r0, r1, r2...
 }
 
 export interface Paciente {
-  id: number
+  id: number;
   unidad?: number;
   cui?: number;
   expediente?: string;
   pasaporte?: string;
   otro?: string;
-  // identificadores?: Identificadores;
   nombre: Nombre;
   sexo?: string;
   fecha_nacimiento?: string;
   contacto?: Contacto;
   referencias?: { [key: string]: Referencia };
-  datos_extra?: { [key: string]: DatosExtra };
+  datos_extra?: DatosExtra;   // ya no es objeto de objetos
   estado?: string;
   metadatos?: { [key: string]: Metadata };
 }
