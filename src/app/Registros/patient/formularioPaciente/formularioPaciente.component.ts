@@ -36,7 +36,7 @@ import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon } from './../../../
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    DpiValidadorDirective,
+    // DpiValidadorDirective,
     UnaPalabraDirective,
     SoloNumeroDirective
   ]
@@ -172,6 +172,7 @@ export class FormularioPacienteComponent implements OnInit {
             this.form.patchValue(this.pacienteUtil.normalizarPaciente(data));
           })
           .catch(error => this.mostrarError('obtener paciente', error));
+
       }
     }
 

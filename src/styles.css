@@ -2040,11 +2040,6 @@ legend + * {
 
 /* rtl:end:remove */
 
-.text-info {
-  --bs-text-opacity: 1;
-  color: rgba(var(--bs-info-rgb), var(--bs-text-opacity)) !important;
-}
-
 .text-warning {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-warning-rgb), var(--bs-text-opacity)) !important;
@@ -2490,100 +2485,157 @@ p {
   }
 }
 
+
+
 .formulario-moderno {
-  max-width: 900px;
-  margin: 0.8rem auto;
+  margin: 1.5rem auto;
   padding: 2rem;
+  background: var(--prussian-blue);
   font-family: 'Segoe UI', sans-serif;
   color: var(--white);
+  border-radius: 42px;
+  box-shadow: 0 4px 16px rgba(0, 168, 232, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   line-height: 1.5;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem; /* separación entre fieldsets */
+}
 
-/* formulario moderno */
+.formulario-moderno {
+
+  .formulario-moderno:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 168, 232, 0.35);
+}
+
 .formulario-moderno h2 {
   text-align: center;
-  color: var(-vivid-sky-blue);
-  margin: 0;
+  color: var(--picton-blue);
+  margin: 0 0 1.5rem 0;
   font-weight: 600;
+  font-size: 1.8rem;
 }
 
 fieldset {
+  border: 1px solid rgba(255, 254, 254, 0.1);
   padding: 1.2rem;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.8rem;
   border-radius: 12px;
-  /* background-color: var(--dark-blue); */
-  border: 1px solid var(--neon-blue);
+  background-color: rgba(182, 215, 227, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 0 12px #4ccaf07b;
   color: white !important;
+  flex-grow: 1;
+  flex-basis: 260px;
+}
+
+fieldset:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
 }
 
 legend {
+  padding: 0 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: var(--mindaro);
-  padding: 0 0.5rem;
-  font-size: 1.2rem;
-}
+  color: var(--picton-blue);
+  text-align: center;
+  border-bottom: white 1px solid;
+  margin-top: 2px;
+  padding-top: 2px;
 
-input,
-select {
-  display: block;
-  width: 97%;
-  padding: 0.6rem;
-  margin-top: 0.5rem;
-  border: none;
-  box-shadow: var(--french-gray-2) 0 0 0 1px inset, var(--outer-space) 0 0 0 2px, var(--neon-blue) 0 0 0 4px inset;
-  border-radius: 16px;
-  background-color: var(--indigo-dye-2);
-  color: white;
-  font-size: 0.95rem;
-  text-transform: uppercase;
-}
-
-.unidad {
-  width: 45px;
-  height: 10px;
-  font-size: 12px;
-  padding: 20px;
-
-}
-
-input:focus,
-select:focus {
-  outline: none;
-  border-color: var(--rose);
-  background-color: var(--tiffany-blue);
-  color: lightcyan;
 }
 
 input::-moz-placeholder {
-  color: var(--vivid-sky-blue);
-  padding-left: 3.5rem;
-  text-transform: capitalize;
+  color: rgba(116, 245, 73, 0.844);
 }
 
 input::placeholder {
-  color: var(--vivid-sky-blue);
-  padding-left: 3.5rem;
-  text-transform: capitalize;
+  color: rgba(116, 245, 73, 0.844);
+}input, select {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  margin-top: 0.4rem;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
+  font-size: 1rem;
+  outline: none;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-label {
-  color: var(--aquamarine);
-  font-weight: 600;
-  font-size: 1rem;
+input::-moz-placeholder {
+  color: rgba(116, 245, 73, 0.844);
 }
+
+input::placeholder {
+  color: rgba(116, 245, 73, 0.844);
+}
+
+/* Si el input está vacío → más oscuro */
+input:-moz-placeholder {
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.6);
+}
+input:placeholder-shown,
+select:invalid {
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Si tiene texto → más claro */
+input:not(:-moz-placeholder) {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  font-weight: 600;
+  text-align: center;
+  font-size: 18px;
+}
+input:not(:placeholder-shown),
+select:valid {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  font-weight: 600;
+  text-align: center;
+  font-size: 18px;
+}
+
+/* Cuando hace foco */
+input:focus, select:focus {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 10px var(--picton-blue);
+  color: var(--white);
+}
+
+
+
+
+
+}
+
 
 button {
-  background-color: var(--antiflash-white);
-  color: var(--rich-black);
-  padding: 0.6rem 1rem;
+  padding: 0.8rem 1.6rem;
   border: none;
-  border-radius: 16px;
-  font-size: 0.95rem;
+  border-radius: 20px;
+  background: var(--picton-blue);
+  color: var(--white);
+  font-weight: bold;
+  font-size: 1rem;
   cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-  background-color: var(--bondi-blue);
+  background: var(--cyan);
+  transform: translateY(-2px);
 }
 
 .botones {
@@ -2594,9 +2646,58 @@ button:hover {
 
 .botones button {
   flex: 1;
-  margin: 0.5rem;
-
+  margin: 0 0.5rem;
 }
+
+@media (max-width: 600px) {
+  .formulario-moderno {
+    padding: 1rem;
+  }
+
+  .botones {
+    flex-direction: column;
+  }
+
+  .botones button {
+    margin: 0.5rem 0;
+  }
+
+  input, select {
+    width: 95%;
+  }
+}
+
+.historial-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.4rem;
+  font-size: small;
+}
+
+.historial-grid li {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--cerulean);
+  border-radius: 0.75rem;
+  text-align: center;
+  color: var(--white);
+}
+
+.input-buton {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.btn-input {
+  height: 40px;
+  padding: 1px;
+  margin: 1px;
+  margin-top: 0.5rem;
+}
+
 
 .ref-btn {
   display: flex;
@@ -2622,7 +2723,6 @@ button {
 
 
 }
-
 
 
 
@@ -2676,15 +2776,7 @@ button {
   margin-top: 0.5rem;
 }
 
-.edad-manual,
-.edad-inputs {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: space-between;
-}
 
-}
 
 .hombre {
   color: #8fbffa;
@@ -2701,7 +2793,7 @@ button {
   margin-top: 1.5rem;
 
   button {
-    background: linear-gradient(135deg, #3a8dde 60%, #00f0ff 100%);
+    /* background: linear-gradient(135deg, #3a8dde 60%, #00f0ff 100%); */
     color: var(--white);
     padding: 0.6rem 1rem;
     border: 2px solid rgba(0,255,255,0.25);

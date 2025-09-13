@@ -1,19 +1,21 @@
 
-<form [formGroup]="form" class="formulario-moderno" (ngSubmit)="guardar()">
-
-  <div class="botones">
+<div class="botones">
     <button type="button" class="text-white"  (click)="irRenap()">
     <span [innerHTML]="findIcon"></span>
     Buscar en RENAP
   </button>
   </div>
+<h2 class="text-center text-white">{{ enEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
+<form [formGroup]="form" class="formulario-moderno" (ngSubmit)="guardar()">
+
+
 
   <!-- Anti-autocompletado -->
   <input type="text" name="fakeusernameremembered" style="display: none;" />
   <input type="password" name="fakepasswordremembered" style="display: none;" />
 
 
-  <h2 class="text-center text-white">{{ enEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
+
 
   <!-- Unidad -->
   <fieldset class="campo unidad d-none">
@@ -66,11 +68,18 @@
   <!-- Nombre -->
   <fieldset class="grupo nombres" formGroupName="nombre">
     <legend>Nombre</legend>
+    <label for="primer_nombre">Primer Nombre</label>
     <input formControlName="primer_nombre" placeholder="Primer nombre" name="nombre1" unaPalabra autocomplete="new-name" />
+    <label for="segundo_nombre">Segundo Nombre</label>
     <input formControlName="segundo_nombre" placeholder="Segundo nombre" name="nombre2" unaPalabra autocomplete="new-name" />
-    <input formControlName="otro_nombre" placeholder="Otro nombre" name="nombre3" *ngIf="form.get('nombre.segundo')?.value" autocomplete="new-name" />
+    <label for="otro_nombre" >Otro Nombre</label>
+    <input formControlName="otro_nombre" placeholder="Otro nombre" name="nombre3"  autocomplete="new-name" />
+
+    <label for="primer_apellido">Primer Apellido</label>
     <input formControlName="primer_apellido" placeholder="Apellido primero" name="apellido1" unaPalabra autocomplete="new-name" />
+    <label for="segundo_apellido">Segundo Apellido</label>
     <input formControlName="segundo_apellido" placeholder="Apellido segundo" name="apellido2" unaPalabra autocomplete="new-name" />
+    <label for="casada">Apellido de casada</label>
     <input formControlName="apellido_casada" placeholder="Apellido casada" name="casada" *ngIf="form.get('sexo')?.value === 'F'" autocomplete="new-name" />
   </fieldset>
 
@@ -88,15 +97,31 @@
     <label for="fechaNacimiento">Fecha de nacimiento</label>
     <input type="date" formControlName="fecha_nacimiento" name="fechaNacimiento" />
 
-    <div class="edad-manual" formGroupName="edad">
-      <p><strong>O calcula la fecha con la edad:</strong></p>
-      <div class="edad-inputs">
+    <legend>Edad</legend>
+    <div class="edad" formGroupName="edad">
+
+      <!-- Fila 1 -->
+      <div class="edad-grupo fila-completa">
+        <label for="anios">Años</label>
         <input type="number" formControlName="anios" placeholder="Años" min="0" (input)="calcularFecha()" />
-        <input type="number" formControlName="meses" placeholder="Meses" min="0" max="11" (input)="calcularEdad()" />
-        <input type="number" formControlName="dias" placeholder="Días" min="0" max="30" (input)="calcularFecha()" />
       </div>
+
+      <!-- Fila 2 -->
+      <div class="edad-fila">
+        <div class="edad-grupo">
+          <label for="meses">Meses</label>
+          <input type="number" formControlName="meses" placeholder="Meses" min="0" max="11" (input)="calcularEdad()" />
+        </div>
+
+        <div class="edad-grupo">
+          <label for="dias">Días</label>
+          <input type="number" formControlName="dias" placeholder="Días" min="0" max="30" (input)="calcularFecha()" />
+        </div>
+      </div>
+
     </div>
-    <label for="lugarNacimiento">Lugar de nacimiento</label>
+
+    <legend>Lugar de Nacimiento</legend>
     <div class="input-50" formGroupName="datos_extra">
        <select name="departamentoNacimiento" >
         <option *ngFor="let dep of enums.departamentos" [value]="dep.value">{{ dep.label }}</option>
