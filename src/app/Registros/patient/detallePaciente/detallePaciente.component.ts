@@ -57,7 +57,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
         this.referenciaKeys = Object.keys(this.paciente.referencias || {});
         this.datosExtraKeys = Object.keys(this.paciente.datos_extra || {});  // ✅ dinámico
         this.metadatosKeys = Object.keys(this.paciente.metadatos || {});
-        console.table(this.datosExtraKeys)
+        console.table(this.datosExtraKeys.map(key => ({ key, value: this.paciente.datos_extra?.[key]?.valor })));
       });
     }
   }

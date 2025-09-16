@@ -86,9 +86,16 @@ export class RenapComponent implements OnInit {
   }
 
   agregarPaciente(persona: Renap) {
-    const fechaNormalizada = persona.FECHA_NACIMIENTO
-      ? formatDate(persona.FECHA_NACIMIENTO, 'yyyy-MM-dd', 'en-US')
-      : '';
+    let fechaNormalizada = '';
+    if (persona.FECHA_NACIMIENTO) {
+      const partes = persona.FECHA_NACIMIENTO.split('/');
+      if (partes.length === 3) {
+        const [dia, mes, anio] = partes;
+        const fechaObj = new Date(Number(anio), Number(mes) - 1, Number(dia));
+        fechaNormalizada = formatDate(fechaObj, 'yyyy-MM-dd', 'en-US');
+      }
+    }
+
     const datos = {
       cui: persona.CUI,
       nombre: {
@@ -102,12 +109,13 @@ export class RenapComponent implements OnInit {
       fecha_nacimiento: fechaNormalizada,
       sexo: persona.SEXO === 'Hombre' ? 'M' : 'F',
       datos_extra: {
-        r1: { tipo: 'estado_civil', valor: persona.ESTADO_CIVIL }
+        r1: { tipo: 'estado_civil', valor: persona.ESTADO_CIVIL || '' },
+        r11: { tipo: 'municipio_nacimiento', valor: persona.CUI?.slice(-4) || '' },
+        r12: { tipo: 'departamento_nacimiento', valor: persona.CUI?.slice(9, 11) || '' },
       }
     };
 
     console.log('Datos a enviar:', datos);
-
     this.router.navigate(['/paciente'], { state: { paciente: datos } });
   }
 

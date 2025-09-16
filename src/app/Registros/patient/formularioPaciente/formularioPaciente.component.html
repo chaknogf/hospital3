@@ -1,15 +1,25 @@
 
-<div class="botones">
-    <button type="button" class="text-white"  (click)="irRenap()">
-    <span [innerHTML]="findIcon"></span>
-    Buscar en RENAP
-  </button>
-  </div>
+
 <h2 class="text-center text-white">{{ enEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
+  <div class="container">
+    <div class="botones">
+      <button type="button" (click)="volver()">
+        <span [innerHTML]="cancelIcon"></span>
+        Cancelar
+      </button>
+      <button type="button"   (click)="irRenap()">
+      <span [innerHTML]="findIcon"></span>
+      Buscar en RENAP
+    </button>
+    <button type="submit" (click)="guardar()">
+        <span [innerHTML]="saveIcon"></span>
+        Guardar
+      </button>
+
+    </div>
+  </div>
+
 <form [formGroup]="form" class="formulario-moderno" (ngSubmit)="guardar()">
-
-
-
   <!-- Anti-autocompletado -->
   <input type="text" name="fakeusernameremembered" style="display: none;" />
   <input type="password" name="fakepasswordremembered" style="display: none;" />
@@ -33,11 +43,17 @@
     <legend>Identificadores</legend>
 
     <label for="cui">CUI</label>
-    <input id="cui" type="number" formControlName="cui" placeholder="Ingresa el número de CUI" />
-  <div *ngIf="form.get('cui')?.errors?.['validarDPI']">
-  El CUI debe tener exactamente 13 dígitos.
-  Te faltan {{ form.get('cui')?.errors?.['validarDPI'].faltantes }} dígito(s).
-</div>
+    <input
+      id="cui"
+      type="text"
+      formControlName="cui"
+      placeholder="1234 56789 9999"
+      mask="0000 00000 0000"
+    />
+    <div *ngIf="form.get('cui')?.errors?.['validarDPI']">
+    El CUI debe tener exactamente 13 dígitos.
+    Te faltan {{ form.get('cui')?.errors?.['validarDPI'].faltantes }} dígito(s).
+  </div>
 
     <label *ngIf="form.get('expediente')?.value" for="expediente" >Expediente</label>
     <div class="input-buton" >
@@ -63,7 +79,49 @@
       *ngIf="form.get('datos_extra.r0.valor')?.value !== 'GTM'"
       autocomplete="new-name"
     />
-  </fieldset>
+
+    <label for="otra" *ngIf="!form.get('cui')?.value">Otra Identificación</label>
+    <input
+      id="otro"
+      type="text"
+      formControlName="otro"
+      placeholder="Constancia de Nacimiento"
+      *ngIf="!form.get('cui')?.value"
+      autocomplete="new-name"
+    />
+
+
+     <legend>Estado</legend>
+    <select formControlName="estado" name="estado">
+      <option value="V">Vivo</option>
+      <option value="F">Muerto</option>
+    </select>
+ <legend >Biométricos</legend>
+    <div class="biometricos">
+
+
+  <div class="biometricos-contenedor">
+    <!-- Contenedor de Foto -->
+    <div class="biometrico-foto">
+      <!-- <img
+        src="https://via.placeholder.com/300x300.png?text=Foto"
+        alt="Foto biométrica"
+      /> -->
+      <h6 class="biometrico-label">Foto</h6>
+    </div>
+
+    <!-- Contenedor de Huella -->
+    <div class="biometrico-huella">
+      <!-- <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="#0d6efd" viewBox="0 0 16 16">
+        <path d="M8 1a7 7 0 0 0-7 7 13.67 13.67 0 0 0 2.558 7.975.5.5 0 0 0 .832-.554A12.67 12.67 0 0 1 2 8a6 6 0 1 1 12 0c0 2.112-.37 4.034-1.056 5.595a.5.5 0 1 0 .912.41A13.67 13.67 0 0 0 15 8a7 7 0 0 0-7-7z"/>
+        <path d="M8 3a5 5 0 0 0-5 5c0 2.516 1.064 4.574 2.445 6.12a.5.5 0 0 0 .728-.686C5.05 11.94 4 10.108 4 8a4 4 0 1 1 8 0c0 1.795-.69 3.405-1.813 4.63a.5.5 0 0 0 .736.678A5.97 5.97 0 0 0 13 8a5 5 0 0 0-5-5z"/>
+        <path d="M8 5a3 3 0 0 0-3 3c0 .841.337 1.588.88 2.126a.5.5 0 1 0 .707-.708A1.993 1.993 0 0 1 6 8a2 2 0 1 1 4 0c0 .548-.226 1.045-.592 1.404a.5.5 0 1 0 .707.708A2.99 2.99 0 0 0 11 8a3 3 0 0 0-3-3z"/>
+      </svg> -->
+      <h6 class="biometrico-label">Huella</h6>
+    </div>
+  </div>
+</div>
+</fieldset>
 
   <!-- Nombre -->
   <fieldset class="grupo nombres" formGroupName="nombre">
@@ -88,49 +146,102 @@
     <legend>Información básica</legend>
 
     <label for="sexo">Sexo</label>
-    <select formControlName="sexo" name="sexo">
+    <select formControlName="sexo" name="sexo"
+            [class.is-null]="!form.get('sexo')?.value">
       <option value="">Seleccione sexo</option>
       <option value="M">Masculino</option>
       <option value="F">Femenino</option>
     </select>
 
     <label for="fechaNacimiento">Fecha de nacimiento</label>
-    <input type="date" formControlName="fecha_nacimiento" name="fechaNacimiento" />
-
+    <input type="date"
+       formControlName="fecha_nacimiento"
+       name="fechaNacimiento"
+       [ngClass]="form.get('fecha_nacimiento')?.value ? 'is-valid' : 'is-null'" />
     <legend>Edad</legend>
     <div class="edad" formGroupName="edad">
 
-      <!-- Fila 1 -->
       <div class="edad-grupo fila-completa">
-        <label for="anios">Años</label>
-        <input type="number" formControlName="anios" placeholder="Años" min="0" (input)="calcularFecha()" />
-      </div>
+  <label for="anios">Años</label>
+  <input type="number"
+         formControlName="anios"
+         placeholder="Años"
+         min="0"
+         (input)="calcularFecha()"
+         [ngClass]="form.get('fecha_nacimiento')?.value ? 'is-valid' : 'is-null'"  />
+</div>
 
-      <!-- Fila 2 -->
-      <div class="edad-fila">
-        <div class="edad-grupo">
-          <label for="meses">Meses</label>
-          <input type="number" formControlName="meses" placeholder="Meses" min="0" max="11" (input)="calcularEdad()" />
-        </div>
+<div class="edad-fila">
+  <div class="edad-grupo">
+    <label for="meses">Meses</label>
+    <input type="number"
+           formControlName="meses"
+           placeholder="Meses"
+           min="0" max="11"
+           (input)="calcularEdad()"
+           [ngClass]="form.get('fecha_nacimiento')?.value ? 'is-valid' : 'is-null'"  />
+  </div>
 
-        <div class="edad-grupo">
-          <label for="dias">Días</label>
-          <input type="number" formControlName="dias" placeholder="Días" min="0" max="30" (input)="calcularFecha()" />
-        </div>
-      </div>
+  <div class="edad-grupo">
+    <label for="dias">Días</label>
+    <input type="number"
+           formControlName="dias"
+           placeholder="Días"
+           min="0" max="30"
+           (input)="calcularFecha()"
+           [ngClass]="form.get('fecha_nacimiento')?.value ? 'is-valid' : 'is-null'"  />
+  </div>
+</div>
 
     </div>
 
     <legend>Lugar de Nacimiento</legend>
-    <div class="input-50" formGroupName="datos_extra">
-       <select name="departamentoNacimiento" >
-        <option *ngFor="let dep of enums.departamentos" [value]="dep.value">{{ dep.label }}</option>
-      </select>
-      <select name="municipioNacimiento" >
-        <option *ngFor="let municipio of municipios_nacimiento" [value]="municipio.codigo">{{ municipio.vecindad }}</option>
-      </select>
-
+    <ng-container *ngIf="form.get('cui')?.value && form.get('datos_extra.r0.valor')?.value === 'GTM'" >
+      <div class="input-50" formGroupName="datos_extra">
+      <!-- Departamento -->
+      <div formGroupName="r12">
+        <select formControlName="valor" name="departamento"  >
+          <option *ngFor="let dep of enums.departamentos" [value]="dep.value" [disabled]="true">
+            {{ dep.label }}
+          </option>
+        </select>
+      </div>
+      <!-- Municipio -->
+      <div formGroupName="r11">
+        <select formControlName="valor" name="municipio">
+          <option *ngFor="let municipio of municipios_nacimiento" [value]="municipio.codigo" [disabled]="true">
+            {{ municipio.municipio }}
+          </option>
+        </select>
+      </div>
     </div>
+    </ng-container>
+    <ng-container *ngIf="!form.get('cui')?.value && form.get('datos_extra.r0.valor')?.value === 'GTM'">
+      <div class="input-50" formGroupName="datos_extra">
+      <!-- Departamento -->
+      <div formGroupName="r12">
+        <select formControlName="valor" name="departamento" (change)="listarMunicipiosNacimiento()" >
+          <option *ngFor="let dep of enums.departamentos" [value]="dep.value">
+            {{ dep.label }}
+          </option>
+        </select>
+      </div>
+      <!-- Municipio -->
+      <div formGroupName="r11">
+        <select formControlName="valor" name="municipio">
+          <option *ngFor="let municipio of municipios_nacimiento" [value]="municipio.codigo" >
+            {{ municipio.municipio }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    </ng-container>
+    <ng-container *ngIf="form.get('datos_extra.r0.valor')?.value !== 'GTM'">
+      <input type="text" formControlName="lugar_nacimiento" placeholder="Lugar de Nacimiento" name="lugar_nacimiento">
+    </ng-container>
+
+
 
 
   </fieldset>
@@ -144,44 +255,61 @@
     <input type="text" formControlName="telefono2" placeholder="Teléfono B" name="telefono_b" autocomplete="new-tel" />
     <label for="telefono_c">Teléfono C</label>
     <input type="text" formControlName="telefono3" placeholder="Teléfono C" name="telefono_c"  autocomplete="new-tel" />
-    <label for="departmento">Departamento</label>
-   <select name="departamento" formControlName="departamento" (change)="obtenerMunicipios(form.get('contacto.departamento')?.value)">
-  <option *ngFor="let dep of enums.departamentos" [value]="dep.label">{{ dep.label }}</option>
-</select>
+        <!-- Dirección Departamento -->
+    <label for="departamento">Departamento</label>
+    <select
+      name="departamento"
+      formControlName="departamento"
+      (change)="listarMunicipiosDireccion()"
+      [class.is-null]="!form.get('contacto.departamento')?.value"
+    >
+      <option *ngFor="let dep of enums.departamentos" [value]="dep.value">
+        {{ dep.label }}
+      </option>
+    </select>
+
+    <!-- Dirección Municipio -->
     <label for="municipio">Municipio</label>
-    <select formControlName="municipio" name="municipio">
-      <option *ngFor="let municipio of municipios_direccion" [value]="municipio.codigo">{{ municipio.vecindad }}</option>
+    <select
+      formControlName="municipio"
+      name="municipio"
+      [class.is-null]="!form.get('contacto.municipio')?.value"
+    >
+      <option *ngFor="let municipio of municipios_direccion" [value]="municipio.codigo">
+        {{ municipio.vecindad }}
+      </option>
     </select>
     <label for="direccion">Dirección domicilio</label>
     <input type="text" formControlName="localidad" placeholder="Dirección" name="localidad" autocomplete="new-name"   />
-    <input type="text" formControlName="direccion" [value]="form.get('contacto.localidad')?.value + ' ' + form.get('contacto.municipio')?.value" placeholder="Dirección" name="direccion" >
+    <!-- <input type="text" formControlName="direccion" [value]="form.get('contacto.localidad')?.value + ' ' + form.get('contacto.municipio')?.value" placeholder="Dirección" name="direccion" > -->
   </fieldset>
 
   <!-- Referencias -->
-  <!-- <fieldset class="grupo referencias" >
+  <fieldset class="grupo referencias" >
     <legend>Referencias</legend>
-    <div formGroupName="r0">
-  <div *ngFor="let key of referenciasKeys(); let i = index" [formGroupName]="key">
+    <div formArrayName="referencias">
+  <div *ngFor="let ref of referencias.controls; let i = index" [formGroupName]="i">
     <input formControlName="nombre" placeholder="Nombre de referencia">
     <input formControlName="telefono" placeholder="Teléfono">
-    <select formControlName="parentesco" name="parentesco">
-      <option *ngFor="let p of enums.parentescos" [value]="p">{{ p.label }}</option>
+    <select formControlName="parentesco">
+      <option *ngFor="let p of enums.parentescos" [value]="p.value">{{ p.label }}</option>
     </select>
-    <div class="ref-btn">
-      <button type="button" (click)="eliminarReferencia(key)" class="btn-remove">
-    <span [innerHTML]="removeIcon"></span>
-  </button>
-  <button type="button" (click)="agregarReferencia()" class="btn-add">
-    <span [innerHTML]="addIcon"></span>
-  </button>
+
+    <div class="botones justify-content-between">
+      <button class="p-1 m-0" type="button" (click)="eliminarReferencia(i)">
+        <span  [innerHTML]="addIcon"></span>
+        Eliminar</button>
+    <button class="p-1 m-0" type="button" (click)="agregarReferencia()">
+      <span [innerHTML]="removeIcon"></span>
+      Agregar</button>
+
     </div>
 
   </div>
-
 </div>
 
 
-  </fieldset> -->
+  </fieldset>
 
  <fieldset class="grupo datos-extra">
   <legend>Datos extra</legend>
@@ -190,113 +318,187 @@
     <!-- Datos generales -->
     <div formGroupName="r0">
       <label for="nacionalidad">Nacionalidad</label>
-      <select name="nacionalidad" formControlName="valor" >
+      <select name="nacionalidad" formControlName="valor"
+      [ngClass]="form.get('datos_extra.r0.valor')?.value ? 'is-valid' : 'is-null'">
+          <option value="">Nacionalidad</option>
           <option *ngFor="let n of paisesIso" [value]="n.codigo_iso3">{{ n.nombre }}</option>
       </select>
     </div>
 
     <div formGroupName="r1">
       <label for="estado_civil">Estado civil</label>
-      <select name="estado_civil" formControlName="valor" >
-        <option *ngFor="let ec of enums.estadocivil" [value]="ec.value">{{ec.label}}</option>
+      <select name="estado_civil" formControlName="valor"
+        [ngClass]="form.get('datos_extra.r1.valor')?.value ? 'is-valid' : 'is-null'">
+        <option value="">Estado civil</option>
+        <option *ngFor="let ec of enums.estadocivil" [value]="ec.value">{{ ec.label }}</option>
       </select>
     </div>
 
     <div formGroupName="r2">
       <label for="pueblo">Pueblo</label>
-      <select name="pueblo" formControlName="valor">
+      <select name="pueblo" formControlName="valor"
+        [ngClass]="form.get('datos_extra.r2.valor')?.value ? 'is-valid' : 'is-null'">
+        <option value="">Pueblo</option>
         <option *ngFor="let p of enums.pueblos" [value]="p.value">{{p.label}}</option>
       </select>
     </div>
 
     <div formGroupName="r3">
       <label for="idioma">Idioma</label>
-      <select name="idioma" formControlName="valor">
+      <select name="idioma" formControlName="valor"
+        [ngClass]="form.get('datos_extra.r3.valor')?.value ? 'is-valid' : 'is-null'">
+        <option value="" [defaultSelected]="true">Idioma</option>
         <option *ngFor="let i of enums.idiomas" [value]="i.value">{{i.label}}</option>
       </select>
     </div>
 
     <div formGroupName="r4">
       <label for="ocupacion">Ocupación</label>
-      <input type="text" id="ocupacion" formControlName="valor" />
+      <input type="text"
+      id="ocupacion"
+      formControlName="valor"
+      [ngClass]="form.get('datos_extra.r4.valor')?.value ? 'is-valid' : 'is-null'"
+      placeholder="Ocupación"
+      />
+
+
     </div>
+
+
 
     <div formGroupName="r5">
       <label for="nivel_educativo">Nivel educativo</label>
-      <select name="nivel_educativo" formControlName="valor">
+      <select name="nivel_educativo" formControlName="valor"
+      [ngClass]="form.get('datos_extra.r5.valor')?.value ? 'is-valid' : 'is-null'">
+        <option value="">Nivel educativo</option>
         <option *ngFor="let ne of enums.gradoacademico" [value]="ne.value">{{ne.label}}</option>
       </select>
     </div>
 
-    <!-- Subtítulo visual -->
 
 
-    <!-- Datos de nacimiento con condición -->
-     <div *ngIf="mosatrarInputNacimiento == true">
-       <legend class="subtitulo">Datos de nacimiento</legend>
-      <div formGroupName="r6" >
-      <label for="peso_nacimiento">Peso nacimiento</label>
-      <input type="text" id="peso_nacimiento" formControlName="valor" soloNumero />
+    <div class="d-flex gap-3">
+      <!-- Estudiante Público -->
+      <div formGroupName="r14" class="toggle-group">
+        <label for="estudiante_publico">Estudiante Público</label>
+        <div class="toggle-buttons">
+          <button type="button" [class.active]="form.get('datos_extra.r14.valor')?.value === 'SI'"
+                  (click)="form.get('datos_extra.r14.valor')?.setValue('SI')">Sí</button>
+          <button type="button" [class.active]="form.get('datos_extra.r14.valor')?.value === 'NO'"
+                  (click)="form.get('datos_extra.r14.valor')?.setValue('NO')">No</button>
+        </div>
+      </div>
+
+      <div formGroupName="r15" class="toggle-group">
+        <label for="empleado_publico">Empleado Público</label>
+        <div class="toggle-buttons">
+          <button type="button" [class.active]="form.get('datos_extra.r15.valor')?.value === 'SI'"
+                  (click)="form.get('datos_extra.r15.valor')?.setValue('SI')">Sí</button>
+          <button type="button" [class.active]="form.get('datos_extra.r15.valor')?.value === 'NO'"
+                  (click)="form.get('datos_extra.r15.valor')?.setValue('NO')">No</button>
+        </div>
+      </div>
+
+
     </div>
 
+    <div class="d-flex gap-3">
+      <div formGroupName="r16" class="toggle-group">
+        <label for="discapacidad">Discapacidad</label>
+        <div class="toggle-buttons">
+          <button type="button" [class.active]="form.get('datos_extra.r16.valor')?.value === 'SI'"
+                  (click)="form.get('datos_extra.r16.valor')?.setValue('SI')">Sí</button>
+          <button type="button" [class.active]="form.get('datos_extra.r16.valor')?.value === 'NO'"
+                  (click)="form.get('datos_extra.r16.valor')?.setValue('NO')">No</button>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+</fieldset>
+
+<fieldset *ngIf="esRecienNacido" class="grupo datos-extra">
+  <legend class="subtitulo">Datos de nacimiento</legend>
+  <div formGroupName="datos_extra">
+
+    <!-- Peso de nacimiento -->
+    <div formGroupName="r6">
+      <label for="peso_nacimiento">Peso nacimiento (libras.onzas)</label>
+      <input
+        type="text"
+        id="peso_nacimiento"
+        formControlName="valor"
+        name="peso_nacimiento"
+        peso
+        placeholder="Ej: 3.08"
+      />
+    </div>
+
+    <!-- Edad gestacional -->
     <div formGroupName="r7">
       <label for="edad_gestacional">Edad gestacional</label>
-      <input type="text" id="edad_gestacional" formControlName="valor" soloNumero />
+      <input
+        type="text"
+        id="edad_gestacional"
+        formControlName="valor"
+        name="edad_gestacional"
+        soloNumero
+        placeholder="Ej: 40"
+      />
     </div>
 
-    <div formGroupName="r8" >
+    <!-- Parto -->
+    <div formGroupName="r8">
       <label for="parto">Parto</label>
       <select id="parto" formControlName="valor">
         <option value=""></option>
-        <option value="P">Parto</option>
-        <option value="C">Cesareo</option>
+        <option value="P">Vaginal</option>
+        <option value="C">Cesárea</option>
       </select>
     </div>
 
+    <!-- Número de gemelo -->
     <div formGroupName="r9">
       <label for="gemelo">Número de Gemelo</label>
-      <input type="text" id="gemelo" formControlName="valor" soloNumero />
+      <input
+        type="text"
+        id="gemelo"
+        formControlName="valor"
+        soloNumero
+        placeholder="Ej: 1"
+      />
     </div>
 
+    <!-- Expediente de la madre -->
     <div formGroupName="r10">
       <label for="expediente_madre">Expediente de la Madre</label>
-      <input type="text" id="expediente_madre" formControlName="valor" unaPalabra />
+      <input
+        type="text"
+        id="expediente_madre"
+        formControlName="valor"
+        unaPalabra
+        placeholder="Ej: 12345"
+      />
     </div>
-
-     </div>
-
 
   </div>
 </fieldset>
 
-  <!-- Estado -->
-  <fieldset class="grupo estado">
-    <legend>Estado</legend>
-    <select formControlName="estado" name="estado">
-      <option value="V">Vivo</option>
-      <option value="F">Muerto</option>
-    </select>
-  </fieldset>
+
 
   <!-- Metadatos -->
-  <fieldset class="grupo metadatos">
+  <fieldset >
     <legend>Historial de registros</legend>
-    <ul class="historial-grid">
-      <li *ngFor="let meta of sortedMetadatos; let i = index">
-        {{ meta.usuario }} — {{ meta.registro | date:'short' }}
+
+    <ul class="historial-grid" formGroupName="metadatos" *ngFor="let meta of sortedMetadatos; let i = index">
+      <li class="meta"  *ngIf="meta.registro" >
+        {{ meta.usuario }}:
+        <br>
+        [{{ meta.registro | date:'short' }}]
       </li>
     </ul>
   </fieldset>
 
-  <!-- Botones -->
-  <div class="botones">
-    <button type="submit">
-      <span [innerHTML]="saveIcon"></span>
-      Guardar
-    </button>
-    <button type="button" (click)="volver()">
-      <span [innerHTML]="cancelIcon"></span>
-      Cancelar
-    </button>
-  </div>
+
 </form>

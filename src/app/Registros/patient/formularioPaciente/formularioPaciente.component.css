@@ -1,44 +1,119 @@
-.edad {
-  display: flex;
-  flex-direction: column; /* apilamos las filas */
-  gap: 1rem;
-
-  label {
-    text-align: center;
-    margin: 0;
-    padding: 0;
-  }
-}
-
-.edad-grupo {
-  display: flex;
-  flex-direction: column;
-}
 
 .edad-fila {
   display: flex;
-  gap: 1rem; /* espacio entre meses y días */
+  gap: 0.2rem; /* espacio entre meses y días */
 }
 
 .edad-fila .edad-grupo {
-  flex: 1; /* que ambos ocupen mismo ancho */
+  flex: 1; /* que ambos ocupen igual ancho */
   min-width: 120px;
-}
-
-.edad-grupo label {
-
-  font-weight: 600;
-  color: var(--picton-blue);
-}
-
-.edad-grupo input {
-  padding: 0.5rem;
-  border-radius: 8px;
-  border: none;
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--white);
-  outline: none;
   margin: 0;
 }
 
+/* CUI monospace */
+.cui-input, #cui {
+  font-family: monospace;
+  letter-spacing: 2px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
 
+.toggle-group {
+  margin: 0.5rem 0;
+}
+
+.toggle-buttons {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.toggle-buttons button {
+  padding: 0.3rem 0.8rem;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(6px);
+}
+
+.toggle-buttons button.active {
+  background: rgba(255, 255, 255, 0.854);
+  color: darkblue;
+  font-weight: 800;
+  transform: scale(1.09);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.toggle-buttons button:not(.active) {
+  background: rgba(255, 255, 255, 0.2);
+  color: #dddddd2e;
+  transform: blur(1px);
+}
+
+
+.toggle-buttons button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.meta {
+  background-color: rgba(70, 2, 74, 0.759);
+  padding: 0.3rem;
+  text-wrap: nowrap;
+  border-radius: 8px;
+  margin: 0.4rem 0;
+  width: fit-content;
+  box-sizing: border-box;
+  word-break: break-all;
+}
+
+.biometricos {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+  background: #fafafa0a;
+}
+
+
+
+.biometricos-contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 220px;
+  gap: 0.5rem;
+}
+
+/* Contenedor foto (80%) */
+.biometrico-foto {
+  flex: 8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.biometrico-foto img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Contenedor huella (20%) */
+.biometrico-huella {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.biometrico-label {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 0.3rem;
+}

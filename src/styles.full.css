@@ -12520,6 +12520,8 @@ thead th {
 }
 
 .module-card {
+  display: flex;
+  flex-wrap: wrap;
   position: relative;
   width: 10rem;
   height: 8rem;
@@ -12561,6 +12563,8 @@ thead th {
     position: relative;
     z-index: 2; /* encima del blur */
     padding: 1.5rem;
+    flex-grow: 1;
+    flex-basis: 200;
   }
 
   h5 {
@@ -12778,7 +12782,7 @@ p {
 .formulario-moderno {
   margin: 1.5rem auto;
   padding: 2rem;
-  background: var(--prussian-blue);
+  background: #01031820;
   font-family: 'Segoe UI', sans-serif;
   color: var(--white);
   border-radius: 42px;
@@ -12786,29 +12790,26 @@ p {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  line-height: 1.5;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 1rem; /* separación entre fieldsets */
 }
 
-.formulario-moderno {
-
-  .formulario-moderno:hover {
+.formulario-moderno:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(0, 168, 232, 0.35);
 }
 
 .formulario-moderno h2 {
   text-align: center;
-  color: var(--picton-blue);
+  color: #4ccaf0; /* picton blue */
   margin: 0 0 1.5rem 0;
   font-weight: 600;
   font-size: 1.8rem;
 }
 
-fieldset {
+.formulario-moderno fieldset {
   border: 1px solid rgba(255, 254, 254, 0.1);
   padding: 1.2rem;
   margin-bottom: 0.8rem;
@@ -12818,120 +12819,151 @@ fieldset {
   -webkit-backdrop-filter: blur(8px);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 0 12px #4ccaf07b;
-  color: white !important;
+  color: #ffffff !important;
   flex-grow: 1;
-  flex-basis: 260px;
+  flex-basis: 250px;
 }
 
-fieldset:hover {
+.formulario-moderno fieldset:hover {
   transform: scale(1.02);
   box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
 }
 
-legend {
+.formulario-moderno legend {
   padding: 0 1rem;
   font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--picton-blue);
+  font-weight: 800;
+  color: white;
   text-align: center;
-  border-bottom: white 1px solid;
+  border-bottom: #ffffff 1px solid;
   margin-top: 2px;
   padding-top: 2px;
-
+  text-transform: capitalize;
+  letter-spacing: 3px;
+  line-height: 1.1rem;
 }
 
-input::placeholder {
-  color: rgba(116, 245, 73, 0.844);
-}input, select, textarea {
+
+/* Estilos base */
+.formulario-moderno input, select, textarea {
   width: 100%;
-  padding: 0.6rem 1rem;
-  margin-top: 0.4rem;
+  padding: 0.2rem;
+  margin-top: 0.1rem;
+  margin-bottom: 0.3rem;
   border: none;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--white);
   font-size: 1rem;
   outline: none;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-}
-
-input::placeholder {
-  color: rgba(116, 245, 73, 0.844);
-}
-
-/* Si el input está vacío → más oscuro */
-input:placeholder-shown,
-textarea:placeholder-shown,
-select:invalid {
-  background: rgba(0, 0, 0, 0.35);
-  color: rgba(255, 255, 255, 0.6);
-}
-
-/* Si tiene texto → más claro */
-input:not(:placeholder-shown),
-textarea:not(:placeholder-shown),
-select:valid {
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--white);
-  font-weight: 600;
   text-align: center;
-  font-size: 18px;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Cuando hace foco */
-input:focus, select:focus, textarea:focus {
+/* Cuando el placeholder está visible (campo vacío) */
+.formulario-moderno input:placeholder-shown,
+.formulario-moderno textarea:placeholder-shown,
+.formulario-moderno select:has(option[value=""]:checked) {
+  background: rgba(0, 0, 0, 0.35) !important;
+  color: #74f549d7 !important;
+  font-weight: normal;
+}
+
+/* Color del texto del placeholder */
+.formulario-moderno input:placeholder-shown::placeholder,
+.formulario-moderno textarea:placeholder-shown::placeholder {
+  color: #74f549d7 !important;
+  opacity: 1; /* necesario en algunos navegadores */
+}
+
+/* Cuando el campo ya tiene valor */
+.formulario-moderno input:not(:placeholder-shown),
+.formulario-moderno textarea:not(:placeholder-shown),
+.formulario-moderno select:not(:has(option[value=""]:checked)) {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.formulario-moderno input.is-null,
+.formulario-moderno select.is-null {
+  background: rgba(0, 0, 0, 0.35) !important;
+  color: #74f549d7 !important;
+}
+
+/* Foco */
+.formulario-moderno input:focus, select:focus {
   background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 10px var(--picton-blue);
-  color: var(--white);
+  box-shadow: 0 0 10px #4ccaf0;
+  color: #ffffff;
 }
 
-
-
-
+.formulario-moderno label {
+  line-height: normal;
+  font-weight: 400;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 2px;
+  color: #c3e5f7;
+  text-transform: capitalize;
 
 }
 
-
-button {
-  padding: 0.8rem 1.6rem;
-  border: none;
-  border-radius: 20px;
-  background: var(--picton-blue);
-  color: var(--white);
-  font-weight: bold;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-button:hover {
-  background: var(--cyan);
-  transform: translateY(-2px);
-}
-
+/* Contenedor de botones */
 .botones {
   display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
+  flex-wrap: nowrap;           /* permite que los botones se envuelvan */
+  justify-content: center;   /* centra horizontalmente */
+  align-items: center;
+  gap: 0.2rem;                 /* separación entre botones */
+  margin: 0.5rem;
 }
 
+/* Botones */
 .botones button {
-  flex: 1;
-  margin: 0 0.5rem;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 20px;
+  background: rgba(76, 202, 240, 0.15); /* picton-blue con transparencia */
+  color: white !important;
+  font-weight: bold;
+  font-size: 0.8rem;
+  cursor: pointer;
+  flex: 1 1 250px;          /* crece, se encoge y base de 250px */
+  max-width: 140px;          /* limita ancho máximo */
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(6px); /* sutil efecto glass */
 }
+
+.botones button:hover {
+  background: rgba(0, 255, 255, 0.75); /* cyan translúcido */
+  color: #000 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.4);
+}
+
+/* Media query para móviles: fila horizontal */
+@media (max-width: 600px) {
+  .botones {
+    align-items: stretch;
+    flex-direction: row;       /* permite ajuste si no caben */
+  }
+  .botones button {
+    flex: 1 1 45%;         /* cada botón ocupa ~45% del ancho */
+    max-width: none;
+    width: auto;
+    flex-wrap: wrap;
+  }
+}
+
+
+
+
+
 
 @media (max-width: 600px) {
   .formulario-moderno {
     padding: 1rem;
   }
 
-  .botones {
-    flex-direction: column;
-  }
-
-  .botones button {
-    margin: 0.5rem 0;
-  }
 
   input, select {
     width: 95%;
@@ -12946,7 +12978,7 @@ button:hover {
 
 .historial-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 0.1rem;
   list-style: none;
   padding: 0;
@@ -12954,13 +12986,7 @@ button:hover {
   font-size: small;
 }
 
-.historial-grid li {
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--cerulean);
-  border-radius: 0.75rem;
-  text-align: center;
-  color: var(--white);
-}
+
 
 .input-buton {
   display: flex;
@@ -12990,38 +13016,9 @@ button:hover {
   padding: 0.2rem;
 }
 
-button {
-  padding: 0.2rem;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-
-  .btn-add {
-  font-size: xx-small;
-}
-
-.btn-remove {
-  font-size: xx-small;
-}
-
-
-
-
-}
-
-
-
 @media (max-width: 600px) {
   .formulario-moderno {
     padding: 1rem;
-  }
-
-  .botones {
-    flex-direction: column;
-  }
-
-  .botones button {
-    margin: 0.5rem 0;
   }
 
   input,
@@ -13052,6 +13049,8 @@ button {
   border-radius: 0.75rem;
   text-align: center;
   color: var(--white);
+  width: fit-content;
+  padding: 0.8rem;
 }
 
 .input-buton {
@@ -13084,42 +13083,5 @@ button {
 .mujer {
   color: #c52867;
 }
-
-
-.botones {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-
-  button {
-    /* background: linear-gradient(135deg, #3a8dde 60%, #00f0ff 100%); */
-    color: var(--white);
-    padding: 0.6rem 1rem;
-    border: 2px solid rgba(0,255,255,0.25);
-    border-radius: 16px;
-    font-size: 0.95rem;
-    cursor: pointer;
-    box-shadow:
-      0 2px 12px 0 rgba(0,255,255,0.18),
-      0 0 0 2px #00f0ff33 inset;
-    transition:
-      background 0.3s,
-      box-shadow 0.3s,
-      transform 0.2s;
-  }
-
-  button:hover {
-    background: linear-gradient(135deg, #00f0ff 60%, #3a8dde 100%);
-    box-shadow:
-      0 4px 24px 0 rgba(0,255,255,0.28),
-      0 0 0 2px #00f0ff66 inset;
-    transform: translateY(-2px) scale(1.03);
-  }
-}
-
-button:hover {
-  background-color: var(--picton-blue);
-}
-
 
 

@@ -64,7 +64,7 @@ export class ApiService {
     if (token) {
       localStorage.setItem('access_token', token);
       this.getCurrentUser();
-      console.log('🔑 Atenticado');
+      // console.log('🔑 Atenticado');
       this.router.navigate(['/dash']);
     } else {
       throw new Error('No se recibió el token.');
@@ -129,7 +129,7 @@ export class ApiService {
       const response = await this.api.get<Usuarios[]>('/user/', {
         params: filtros
       });
-      console.log('👤 Usuarios obtenidos correctamente', response);
+      // console.log('👤 Usuarios obtenidos correctamente', response);
       return response.data;
 
     } catch (error) {
@@ -141,7 +141,7 @@ export class ApiService {
   async getUser(id: number): Promise<any> {
     try {
       const response = await this.api.get<Usuarios[]>(`/user/?id=${id}&skip=0&limit=1`);
-      console.log('👤 Usuarios obtenidos correctamente', response);
+      // console.log('👤 Usuarios obtenidos correctamente', response);
       return response.data;
 
     } catch (error) {
@@ -153,7 +153,7 @@ export class ApiService {
   async createUser(user: any): Promise<any> {
     try {
       const response = await this.api.post('/user/crear', user);
-      console.log('👤 Usuario creado correctamente');
+      // console.log('👤 Usuario creado correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al crear usuario:', error);
@@ -164,7 +164,7 @@ export class ApiService {
   async updateUser(userId: number, user: any): Promise<any> {
     try {
       const response = await this.api.put(`/user/actualizar/${userId}`, user);
-      console.log('👤 Usuario actualizado correctamente');
+      // console.log('👤 Usuario actualizado correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al actualizar usuario:', error);
@@ -175,7 +175,7 @@ export class ApiService {
   async deleteUser(userId: number | string): Promise<any> {
     try {
       const response = await this.api.delete(`/user/eliminar/${userId}`);
-      console.log('👤 Usuario eliminado correctamente');
+      // console.log('👤 Usuario eliminado correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al eliminar usuario:', error);
@@ -191,7 +191,7 @@ export class ApiService {
       const response = await this.api.get<Paciente[]>('/pacientes/', {
         params: filtrosLimpiados
       });
-      console.log('👤 Pacientes obtenidos correctamente');
+      // console.log('👤 Pacientes obtenidos correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener pacientes:', error);
@@ -202,7 +202,7 @@ export class ApiService {
   async getPaciente(id: number): Promise<Paciente> {
     try {
       const response = await this.api.get<Paciente[]>(`/pacientes/?id=${id}&skip=0&limit=1`);
-      console.log('👤 Paciente obtenido correctamente');
+      // console.log('👤 Paciente obtenido correctamente');
       return response.data[0];
 
     } catch (error) {
@@ -220,7 +220,7 @@ export class ApiService {
           }
         }
       );
-      console.log('👤 Paciente creado correctamente');
+      // console.log('👤 Paciente creado correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al crear paciente:', error);
@@ -237,7 +237,7 @@ export class ApiService {
             'Content-Type': 'application/json'
           }
         });
-      console.log('👤 Paciente actualizado correctamente');
+      // console.log('👤 Paciente actualizado correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al actualizar paciente:', error);
@@ -248,7 +248,7 @@ export class ApiService {
   async deletePaciente(pacienteId: number): Promise<any> {
     try {
       const response = await this.api.delete(`/paciente/eliminar/${pacienteId}`);
-      console.log('👤 Paciente eliminado correctamente');
+      // console.log('👤 Paciente eliminado correctamente');
       return response.data[0];
     } catch (error) {
       console.error('❌ Error al eliminar paciente:', error);
@@ -263,7 +263,7 @@ export class ApiService {
   async corExpediente(): Promise<string> {
     try {
       const response = await this.api.post<{ 'correlativo': string }>('/generar/expediente');
-      console.log('👤 Correlativo obtenido correctamente:', response.data['correlativo']);
+      // console.log('👤 Correlativo obtenido correctamente:', response.data['correlativo']);
       return response.data['correlativo'];
     } catch (error) {
       console.error('❌ Error al obtener correlativo:', error);
@@ -275,7 +275,7 @@ export class ApiService {
   async corEmergencia(): Promise<any> {
     try {
       const response = await this.api.post<{ 'correlativo': string }>('/generar/emergencia');
-      console.log('👤 Correlativo obtenido correctamente:', response.data['correlativo']);
+      // console.log('👤 Correlativo obtenido correctamente:', response.data['correlativo']);
       return response.data['correlativo'];
     } catch (error) {
       console.error('❌ Error al obtener correlativo:', error);
@@ -290,7 +290,7 @@ export class ApiService {
       const response = await this.api.get('/municipios/', {
         params: filtros
       });
-      console.log('👤 Municipios obtenidos correctamente');
+      // console.log('👤 Municipios obtenidos correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener municipios:', error);
@@ -301,7 +301,7 @@ export class ApiService {
   async getCodigoMunicipio(codigo: string): Promise<any> {
     try {
       const response = await this.api.get<Municipio>(`/municipios/?codigo=${codigo}&skip=0&limit=1`);
-      console.log('👤 Municipio obtenido correctamente');
+      // console.log('👤 Municipio obtenido correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener municipio:', error);
@@ -313,7 +313,7 @@ export class ApiService {
   async createMunicipio(municipio: any): Promise<any> {
     try {
       const response = await this.api.post('/municipio/crear', municipio);
-      console.log('👤 Municipio creado correctamente');
+      // console.log('👤 Municipio creado correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al crear municipio:', error);
@@ -324,7 +324,7 @@ export class ApiService {
   async updateMunicipio(codigo: string, municipio: any): Promise<any> {
     try {
       const response = await this.api.put(`/municipio/actualizar/${codigo}`, municipio);
-      console.log('👤 Municipio actualizado correctamente');
+      // console.log('👤 Municipio actualizado correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al actualizar municipio:', error);
@@ -335,7 +335,7 @@ export class ApiService {
   async deleteMunicipio(codigo: string): Promise<any> {
     try {
       const response = await this.api.delete(`/municipio/eliminar/${codigo}`);
-      console.log('👤 Municipio eliminado correctamente');
+      // console.log('👤 Municipio eliminado correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al eliminar municipio:', error);
@@ -348,7 +348,7 @@ export class ApiService {
   async getPaisesIso(): Promise<any> {
     try {
       const response = await this.api.get('/paises_iso/');
-      console.log('👤 Municipios obtenidos correctamente');
+      // console.log('👤 paises obtenidos correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener municipios:', error);
@@ -362,7 +362,7 @@ export class ApiService {
       const response = await this.api.get('/renap-persona', {
         params: filtros
       });
-      console.log('👤 Datos del servidor obtenidos con exito');
+      // console.log('👤 Datos del servidor obtenidos con exito');
       //console.table(response.data.resultado);
       return response.data.resultado;
     } catch (error) {

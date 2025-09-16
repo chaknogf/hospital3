@@ -1,18 +1,14 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export function validarCui(): ValidatorFn {
+export function dpiValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const valor = control.value?.toString().replace(/\D/g, '') || '';
-    const longitud = valor.length;
+    const valor = control.value ? control.value.toString().trim() : '';
 
-    if (longitud === 13) return null
-    if (longitud === 0) return null;
+    // Solo válido si tiene exactamente 13 números
+    if (!/^\d{13}$/.test(valor)) {
+      return { dpiInvalido: true };
+    }
 
-    return {
-      validarDPI: {
-        mensaje: `El CUI debe tener exactamente 13 dígitos. Te faltan ${13 - longitud} dígito(s).`,
-        faltantes: 13 - longitud
-      }
-    };
+    return null;
   };
 }
