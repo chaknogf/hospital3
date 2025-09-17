@@ -108,10 +108,13 @@
     display: block;
     width: 100%;
     padding: 0 ;
-    margin: 0;;
+    margin: 0;
+    flex-direction: column;
   }
 
-  .aurora-tb tr:hover {
+  .aurora-tb tr:hover
+   {
+
     margin-bottom: 1rem;
     border-radius: 0.8rem;
     background: rgba(0, 255, 255, 0.05);
@@ -123,6 +126,21 @@
     }
 
   }
+
+  /* Para móviles (clase touch) */
+.aurora-tb tr.touch-active {
+  margin-bottom: 1rem;
+  border-radius: 0.8rem;
+  background: rgba(0, 255, 255, 0.05);
+  box-shadow: 0 2px 12px rgba(0, 255, 255, 0.15);
+  padding: 1.6rem;
+}
+
+.aurora-tb tr.touch-active .secundario {
+  display: block;
+}
+
+
 
   .aurora-tb tr {
     display: flex;

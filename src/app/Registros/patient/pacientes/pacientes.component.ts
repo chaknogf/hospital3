@@ -27,6 +27,7 @@ export class PacientesComponent implements OnInit {
   existePaciente: boolean = false;
   cargando = false;
   filtrar = false;
+  visible = false;
   modalActivo = false;
   espacio: string = ' ';
   page: number = 1;
@@ -147,5 +148,15 @@ export class PacientesComponent implements OnInit {
       this.filtros.skip = (this.page - 1) * this.pageSize;
       this.cargarPacientes();
     }
+  }
+
+  mostrar(): void {
+    this.visible = !this.visible;
+  }
+
+  rowActiva: number | null = null;
+
+  activarFila(id: number) {
+    this.rowActiva = this.rowActiva === id ? null : id; // toggle
   }
 }

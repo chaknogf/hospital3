@@ -79,7 +79,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let paciente of pacientes" >
+        <tr *ngFor="let paciente of pacientes" class="aurora-table-row"
+    [class.touch-active]="rowActiva === paciente.id"
+    (click)="activarFila(paciente.id)" >
             <td>
               <div *ngIf="paciente?.cui"><strong>CUI:</strong> {{ paciente.cui }}</div>
               <div *ngIf="paciente?.expediente"><strong>Expediente:</strong> {{ paciente.expediente }}</div>
