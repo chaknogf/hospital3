@@ -2,26 +2,29 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
-import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { EdadPipe } from "../../../pipes/edad.pipe";
+import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { Paciente } from '../../../interface/interfaces';
 import { heartIcon, ghostIcon, manIcon, womanIcon, personFicha, regresarIcon } from './../../../shared/icons/svg-icon';
-import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
+import { CuiPipe } from '../../../pipes/cui.pipe';
 
 @Component({
   selector: 'detallePaciente',
   templateUrl: './detallePaciente.component.html',
   styleUrls: ['./detallePaciente.component.css'],
   standalone: true,
-  imports: [CommonModule, EdadPipe, DatosExtraPipe]
+  imports: [CommonModule, EdadPipe, DatosExtraPipe, CuiPipe]
 })
 export class DetallePacienteComponent implements OnInit, OnChanges {
   @Input() pacienteId: number | null = null;
   paciente!: Paciente;
 
+  // Listas filtradas para iteración
   referenciaKeys: string[] = [];
-  datosExtraKeys: string[] = [];   // ✅ ahora son solo strings
+  datosExtraFiltrados: { key: string; valor: any; tipo: string }[] = [];
   metadatosKeys: string[] = [];
+
   cargando: boolean = true;
   error: string | null = null;
 
@@ -52,29 +55,30 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
       this.cargarPaciente();
     } else {
       const id = Number(this.ruta.snapshot.paramMap.get('id'));
-      this.api.getPaciente(id).then((data) => {
-        this.paciente = data;
-        this.referenciaKeys = Object.keys(this.paciente.referencias || {});
-        this.datosExtraKeys = Object.keys(this.paciente.datos_extra || {});  // ✅ dinámico
-        this.metadatosKeys = Object.keys(this.paciente.metadatos || {});
-        console.table(this.datosExtraKeys.map(key => ({ key, value: this.paciente.datos_extra?.[key]?.valor })));
-      });
+      if (id) {
+        this.api.getPaciente(id).then((data) => {
+          this.paciente = data;
+          this.procesarPaciente();
+        }).catch(err => {
+          console.error('❌ Error al cargar paciente:', err);
+          this.error = 'Error al cargar el expediente del paciente.';
+        });
+      }
     }
   }
 
-  async ngOnChanges(changes: SimpleChanges): Promise<void> {
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['pacienteId'] && this.pacienteId) {
-      await this.cargarPaciente();
+      this.cargarPaciente();
     }
   }
 
   private async cargarPaciente(): Promise<void> {
     this.cargando = true;
     try {
-      this.paciente = await this.api.getPaciente(this.pacienteId!);
-      this.referenciaKeys = Object.keys(this.paciente.referencias || {});
-      this.datosExtraKeys = Object.keys(this.paciente.datos_extra || {});  // ✅ dinámico
-      this.metadatosKeys = Object.keys(this.paciente.metadatos || {});
+      if (!this.pacienteId) return;
+      this.paciente = await this.api.getPaciente(this.pacienteId);
+      this.procesarPaciente();
       this.error = null;
     } catch (err) {
       console.error('❌ Error al cargar paciente:', err);
@@ -84,6 +88,25 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     }
   }
 
+  /** Prepara listas filtradas y claves para iterar en HTML */
+  private procesarPaciente(): void {
+    // Referencias
+    this.referenciaKeys = Object.keys(this.paciente?.referencias || {});
+
+    // Metadatos
+    this.metadatosKeys = Object.keys(this.paciente?.metadatos || {});
+
+    // Datos Extra filtrados: excluir lo que no queremos mostrar
+    this.datosExtraFiltrados = Object.keys(this.paciente?.datos_extra || {})
+      .map(key => ({
+        key,
+        valor: this.paciente?.datos_extra?.[key]?.valor ?? '',
+        tipo: this.paciente?.datos_extra?.[key]?.tipo ?? ''
+      }))
+      .filter(item => item.valor && !['departamento_nacimiento', 'municipio_nacimiento'].includes(item.tipo));
+  }
+
+  /** Mapa de tipos para mostrar nombres legibles en HTML */
   convertirTipo(tipo: string | undefined): string {
     const mapaTipos: { [key: string]: string } = {
       EstadoCivil: 'Estado civil',
@@ -94,10 +117,14 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
       Religion: 'Religión',
       GrupoEtnico: 'Grupo étnico',
       Idioma: 'Idioma',
-      // También puedes incluir los que tenías en snake_case si llegan así desde la API
+      municipio_nacimiento: 'Municipio de nacimiento',
+      departamento_nacimiento: 'Departamento de nacimiento',
+      estudiante_publico: 'Estudiante publico',
+      empleado_publico: 'Empleado publico',
+      // Snake case
       nacionalidad: 'Nacionalidad',
       estado_civil: 'Estado civil',
-      pueblo: 'Grupo étnico',
+      pueblo: 'Pueblo',
       idioma: 'Idioma',
       ocupacion: 'Ocupación',
       nivel_educativo: 'Nivel educativo',
@@ -108,8 +135,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
       expediente_madre: 'Expediente de la madre',
     };
 
-    if (!tipo) return 'Desconocido';
-    return mapaTipos[tipo] || tipo;
+    return tipo ? (mapaTipos[tipo] || tipo) : 'Desconocido';
   }
 
   regresar(): void {

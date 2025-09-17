@@ -1,11 +1,20 @@
 import { Pipe, PipeTransform } from '@angular/core';
-
+import { departamentos, municipios } from '../enum/departamentos';
+import { pueblos } from '../enum/pueblos';
+import { idiomas } from '../enum/idiomas';
+import { parentescos } from '../enum/parentescos';
+import { partos, gradoAcademicos } from '../enum/diccionarios';
 @Pipe({
   name: 'datosExtra'
 })
 export class DatosExtraPipe implements PipeTransform {
   transform(valor: any, tipo: string): any {
-    if (!valor) return 'No especificado';
+    if (valor === null || valor === undefined || valor === '') {
+      return 'No especificado';
+    }
+
+    // 🔹 Convertir todo a string
+    valor = valor.toString();
 
     switch (tipo) {
       case 'estado_civil':
@@ -44,87 +53,72 @@ export class DatosExtraPipe implements PipeTransform {
         };
         return nacionalidades[valor] || valor;
 
-      case 'idioma':
-        const idiomas: { [key: string]: string } = {
-          '1': 'Achi',
-          '2': 'Akateka',
-          '3': 'Awakateka',
-          '4': 'Chorti',
-          '5': 'Chalchiteka',
-          '6': 'Chuj',
-          '7': 'Itza',
-          '8': 'Ixil',
-          '9': 'Jakalteka',
-          '10': 'Kaqchikel',
-          '11': 'Kiche',
-          '12': 'Mam',
-          '13': 'Mopan',
-          '14': 'Poqomam',
-          '15': 'Pocomchi',
-          '16': 'Qanjobal',
-          '17': 'Qeqchi',
-          '18': 'Sakapulteka',
-          '19': 'Sipakapensa',
-          '20': 'Tektiteka',
-          '21': 'Tzutujil',
-          '22': 'Uspanteka',
-          '23': 'No indica',
-          '24': 'Español',
-          '25': 'Otro'
-        };
-        return idiomas[valor] || valor;
+      case 'idioma': {
+        const idioma = idiomas.find(i => i.value === valor);
+        return idioma ? idioma.label : valor;
+      }
 
-      case 'pueblo':
-        const pueblos: { [key: string]: string } = {
-          '1': 'Ladino',
-          '2': 'Maya',
-          '3': 'Garífuna',
-          '4': 'Xinca',
-          '5': 'Otros',
-          '6': 'No indica'
-        };
-        return pueblos[valor] || valor;
+      case 'pueblo': {
+        const pue = pueblos.find(p => p.value === valor);
+        return pue ? pue.label : valor;
+      }
 
-      case 'nivel_educativo':
-        const niveles: { [key: string]: string } = {
-          '1': 'No aplica',
-          '2': 'Pre Primaria',
-          '3': 'Primaria',
-          '4': 'Básicos',
-          '5': 'Diversificado',
-          '6': 'Universidad',
-          '7': 'Ninguno',
-          '8': 'Otro',
-          '9': 'No indica'
-        };
-        return niveles[valor] || valor;
-      case 'parto':
-        const partos: { [key: string]: string } = {
-          '1': 'Vaginal',
-          '2': 'Cesárea',
-          '3': 'No indica'
-        };
-        return partos[valor] || valor;
-      case 'gemelo':
-        const gemelos: { [key: string]: string } = {
-          '1': 'Sí',
-          '2': 'No',
-        };
-        return gemelos[valor] || valor;
+      case 'nivel_educativo': {
+        const nivel = gradoAcademicos.find(n => n.value === valor);
+        return nivel ? nivel.label : valor;
+      }
 
+      case 'parto': {
+        const parto = partos.find(p => p.value === valor);
+        return parto ? parto.label : valor;
+      }
 
-      case 'municipio_nacimiento':
-        const municipios: { [key: string]: string } = {
-          '001': 'Guatemala'
-        };
-        return municipios[valor] || valor;
+      case 'municipio_nacimiento': {
+        const muni = municipios.find(m => m.codigo === valor);
+        return muni ? muni.vecindad : valor;
+      }
 
-      case 'departamento_nacimiento':
-        const departamentos: { [key: string]: string } = {
-          '01': 'Guatemala'
-        };
-        return departamentos[valor] || valor;
+      case 'departamento_nacimiento': {
+        const depto = departamentos.find(d => d.value === valor);
+        return depto ? depto.label : valor;
+      }
 
+      case 'vecindad': {
+        const muni = municipios.find(m => m.codigo === valor);
+        return muni ? muni.vecindad : valor;
+      }
+
+      case 'parentesco': {
+        const parentesco = parentescos.find(p => p.value === valor);
+        return parentesco ? parentesco.label : valor;
+      }
+
+      case 'estudiante_publico':
+        {
+          if (valor === 'S') {
+            return 'Si';
+          } else {
+            return 'No';
+          }
+        }
+
+      case 'empleado_publico':
+        {
+          if (valor === 'S') {
+            return 'Si';
+          } else {
+            return 'No';
+          }
+        }
+
+      case 'discapacitado':
+        {
+          if (valor === 'S') {
+            return 'Si';
+          } else {
+            return 'No';
+          }
+        }
 
 
       // Puedes agregar más casos según tus catálogos

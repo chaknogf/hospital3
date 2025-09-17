@@ -288,27 +288,25 @@
   <fieldset class="grupo referencias" >
     <legend>Referencias</legend>
     <div formArrayName="referencias">
-  <div *ngFor="let ref of referencias.controls; let i = index" [formGroupName]="i">
-    <input formControlName="nombre" placeholder="Nombre de referencia">
-    <input formControlName="telefono" placeholder="Teléfono">
-    <select formControlName="parentesco">
-      <option *ngFor="let p of enums.parentescos" [value]="p.value">{{ p.label }}</option>
-    </select>
+      <div *ngFor="let ref of referencias.controls; let i = index" [formGroupName]="i" class="referencia-item">
+        <input formControlName="nombre" placeholder="Nombre de referencia">
+        <input formControlName="telefono" placeholder="Teléfono">
+        <select formControlName="parentesco">
+          <option *ngFor="let p of enums.parentescos" [value]="p.value">{{ p.label }}</option>
+        </select>
 
-    <div class="botones justify-content-between">
-      <button class="p-1 m-0" type="button" (click)="eliminarReferencia(i)">
-        <span  [innerHTML]="addIcon"></span>
-        Eliminar</button>
-    <button class="p-1 m-0" type="button" (click)="agregarReferencia()">
-      <span [innerHTML]="removeIcon"></span>
-      Agregar</button>
-
+        <div class="botones justify-content-between">
+          <button class="p-1 m-0" type="button" (click)="eliminarReferencia(i)">
+            <span [innerHTML]="removeIcon"></span>
+            Eliminar
+          </button>
+          <button class="p-1 m-0" type="button" (click)="agregarReferencia()">
+            <span  [innerHTML]="addIcon"></span>
+            Agregar
+          </button>
+        </div>
+      </div>
     </div>
-
-  </div>
-</div>
-
-
   </fieldset>
 
  <fieldset class="grupo datos-extra">

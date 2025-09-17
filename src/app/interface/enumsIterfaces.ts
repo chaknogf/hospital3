@@ -1,7 +1,7 @@
 import { Departamento } from './../enum/departamentos';
 import { Municipio } from './../interface/interfaces';
 import { Estadocivil } from "../enum/estados_civil";
-import { GradoAcademico } from "../enum/gradoAcademico";
+import { GradoAcademico } from "../enum/diccionarios";
 import { Idioma } from "../enum/idiomas";
 import { Parentesco } from "../enum/parentescos";
 import { Pueblo } from "../enum/pueblos";

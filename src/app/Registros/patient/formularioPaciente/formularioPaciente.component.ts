@@ -12,7 +12,7 @@ import { Paciente, Metadata, Municipio, PaisesIso } from '../../../interface/int
 import { comunidadChimaltenango, Keys } from '../../../interface/comunidadChimaltenango';
 import { Enumeradores } from '../../../interface/enumsIterfaces';
 import { estadoCivil } from './../../../enum/estados_civil';
-import { gradoAcademicos } from '../../../enum/gradoAcademico';
+import { gradoAcademicos } from '../../../enum/diccionarios';
 import { idiomas } from '../../../enum/idiomas';
 import { pueblos } from '../../../enum/pueblos';
 import { parentescos } from '../../../enum/parentescos';
@@ -85,6 +85,9 @@ export class FormularioPacienteComponent implements OnInit {
   saveIcon!: SafeHtml;
   cancelIcon!: SafeHtml;
   findIcon!: SafeHtml;
+
+
+
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -212,6 +215,8 @@ export class FormularioPacienteComponent implements OnInit {
       })
     });
 
+
+
     // svg icon initialization after sanitizer is available
     this.addIcon = this.sanitizer.bypassSecurityTrustHtml(addIcon);
     this.removeIcon = this.sanitizer.bypassSecurityTrustHtml(removeIcon);
@@ -240,6 +245,8 @@ export class FormularioPacienteComponent implements OnInit {
         ...pacienteRenap,
         CUI: pacienteRenap.CUI ? String(pacienteRenap.CUI) : '',
 
+
+
       };
       this.form.patchValue(this.pacienteUtil.normalizarPaciente(pacienteSeguro));
 
@@ -249,7 +256,10 @@ export class FormularioPacienteComponent implements OnInit {
         this.form.get('edad')?.patchValue(edad);
         this.esRecienNacido = rn.recienNacido;
       }
+
     }
+
+
 
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
@@ -257,7 +267,7 @@ export class FormularioPacienteComponent implements OnInit {
       if (!isNaN(id)) {
         this.api.getPaciente(id)
           .then(data => {
-            // console.log('✅ Paciente obtenido:', data);
+            console.log('✅ Paciente obtenido:', data);
             this.enEdicion = true;
 
             // Cargar metadatos
@@ -270,10 +280,26 @@ export class FormularioPacienteComponent implements OnInit {
                 }));
               });
               this.form.setControl('metadatos', metadatosGroup);
+
+            }
+
+            if (data.referencias) {
+              this.referencias.clear();
+              Object.values(data.referencias).forEach((ref: any) => {
+                this.referencias.push(
+                  this.fb.group({
+                    nombre: [ref.nombre || ''],
+                    telefono: [ref.telefono || ''],
+                    parentesco: [ref.parentesco || '']
+                  })
+                );
+              });
             }
 
             // Patch sin disparar valueChanges de inmediato
             this.form.patchValue(this.pacienteUtil.normalizarPaciente(data), { emitEvent: false });
+
+
 
             // Llenar combos dependientes
             setTimeout(() => {
@@ -321,6 +347,7 @@ export class FormularioPacienteComponent implements OnInit {
 
   get referencias(): FormArray {
     return this.form.get('referencias') as FormArray;
+
   }
 
   agregarReferencia(): void {
@@ -396,8 +423,6 @@ export class FormularioPacienteComponent implements OnInit {
       .then((paises) => this.paisesIso = paises)
       .catch(error => this.mostrarError('obtener paises', error));
   }
-
-
   listarMunicipiosNacimiento(): void {
     try {
       const depto = this.form.get('datos_extra.r12.valor')?.value;
@@ -416,7 +441,6 @@ export class FormularioPacienteComponent implements OnInit {
       this.municipios_nacimiento = [];
     }
   }
-
   listarMunicipiosDireccion(): void {
     try {
       const depto = this.form.get('contacto.departamento')?.value;
@@ -434,9 +458,6 @@ export class FormularioPacienteComponent implements OnInit {
       this.municipios_direccion = [];
     }
   }
-
-
-
   async obtenerMunicipios(codigo?: any, depto?: any, muni?: any): Promise<any[]> {
     try {
       return await this.api.getMunicipios({ limit: 25, departamento: depto, municipio: muni, codigo });
@@ -445,7 +466,6 @@ export class FormularioPacienteComponent implements OnInit {
       return [];
     }
   }
-
   private suscribirUltimos4Cui(): void {
     this.form.get('cui')?.valueChanges.subscribe((cui) => {
       // Convertir a string seguro
@@ -458,7 +478,6 @@ export class FormularioPacienteComponent implements OnInit {
       }
     });
   }
-
 
   onPasteCUI(event: ClipboardEvent) {
     event.preventDefault();
@@ -555,8 +574,6 @@ export class FormularioPacienteComponent implements OnInit {
 
 
   }
-
-
 
   verificarEdad(): void {
     const edad = this.form.get('edad')?.value || {};

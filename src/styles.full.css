@@ -12580,17 +12580,7 @@ thead th {
   }
   }
 
-p {
-  font-size: 0.95rem;
-  color: #edf7fa;
-  text-shadow:
-    0 0 1px #a9cae1,
-    0 0 1px #00f0ff,
-    0 0 2px #00f0ffb3;
 
-  /* Hover con más contraste */
-  transition: transform 0.3s ease, box-shadow 0.3s ease
-}
 
 /* Animación borde */
 @keyframes pulseBorder {
@@ -12821,7 +12811,7 @@ p {
   box-shadow: 0 0 12px #4ccaf07b;
   color: #ffffff !important;
   flex-grow: 1;
-  flex-basis: 250px;
+  flex-basis: clamp(250px, 50%, 370px);
 }
 
 .formulario-moderno fieldset:hover {
