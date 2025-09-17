@@ -692,14 +692,6 @@ legend + * {
   --bs-gutter-y: 0;
 }
 
-.g-2 {
-  --bs-gutter-x: 0.5rem;
-}
-
-.g-2 {
-  --bs-gutter-y: 0.5rem;
-}
-
 .g-3 {
   --bs-gutter-x: 1rem;
 }
@@ -713,19 +705,11 @@ legend + * {
     flex: 0 0 auto;
     width: 33.33333333%;
   }
-  .col-sm-6 {
-    flex: 0 0 auto;
-    width: 50%;
-  }
 }
 @media (min-width: 768px) {
   .col-md-3 {
     flex: 0 0 auto;
     width: 25%;
-  }
-  .col-md-4 {
-    flex: 0 0 auto;
-    width: 33.33333333%;
   }
   .col-md-6 {
     flex: 0 0 auto;
@@ -736,10 +720,6 @@ legend + * {
   .col-lg-2 {
     flex: 0 0 auto;
     width: 16.66666667%;
-  }
-  .col-lg-3 {
-    flex: 0 0 auto;
-    width: 25%;
   }
 }
 .table {
@@ -805,10 +785,6 @@ legend + * {
 .table-responsive {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-}
-.form-label {
-  margin-bottom: 0.5rem;
-  font-weight: 500;
 }
 
 .form-control {
@@ -1043,23 +1019,6 @@ legend + * {
   box-shadow: none;
 }
 
-.btn-primary {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: #3459e6;
-  --bs-btn-border-color: #3459e6;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #2c4cc4;
-  --bs-btn-hover-border-color: #2a47b8;
-  --bs-btn-focus-shadow-rgb: 82, 114, 234;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #2a47b8;
-  --bs-btn-active-border-color: #2743ad;
-  --bs-btn-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #3459e6;
-  --bs-btn-disabled-border-color: #3459e6;
-}
-
 .btn-success {
   --bs-btn-color: #fff;
   --bs-btn-bg: #2fb380;
@@ -1075,40 +1034,6 @@ legend + * {
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #2fb380;
   --bs-btn-disabled-border-color: #2fb380;
-}
-
-.btn-outline-primary {
-  --bs-btn-color: #3459e6;
-  --bs-btn-border-color: #3459e6;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #3459e6;
-  --bs-btn-hover-border-color: #3459e6;
-  --bs-btn-focus-shadow-rgb: 52, 89, 230;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #3459e6;
-  --bs-btn-active-border-color: #3459e6;
-  --bs-btn-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --bs-btn-disabled-color: #3459e6;
-  --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #3459e6;
-  --bs-gradient: none;
-}
-
-.btn-outline-secondary {
-  --bs-btn-color: #fff;
-  --bs-btn-border-color: #fff;
-  --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: #fff;
-  --bs-btn-hover-border-color: #fff;
-  --bs-btn-focus-shadow-rgb: 255, 255, 255;
-  --bs-btn-active-color: #000;
-  --bs-btn-active-bg: #fff;
-  --bs-btn-active-border-color: #fff;
-  --bs-btn-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #fff;
-  --bs-gradient: none;
 }
 
 .btn-outline-danger {
@@ -1615,53 +1540,6 @@ legend + * {
   outline: 0;
 }
 
-.modal-backdrop {
-  --bs-backdrop-zindex: 1050;
-  --bs-backdrop-bg: #000;
-  --bs-backdrop-opacity: 0.5;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: var(--bs-backdrop-zindex);
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--bs-backdrop-bg);
-}
-.modal-backdrop.fade {
-  opacity: 0;
-}
-.modal-backdrop.show {
-  opacity: var(--bs-backdrop-opacity);
-}
-
-.modal-header {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  padding: var(--bs-modal-header-padding);
-  border-bottom: var(--bs-modal-header-border-width) solid var(--bs-modal-header-border-color);
-  border-top-left-radius: var(--bs-modal-inner-border-radius);
-  border-top-right-radius: var(--bs-modal-inner-border-radius);
-}
-.modal-header .btn-close {
-  padding: calc(var(--bs-modal-header-padding-y) * 0.5) calc(var(--bs-modal-header-padding-x) * 0.5);
-  margin-top: calc(-0.5 * var(--bs-modal-header-padding-y));
-  margin-right: calc(-0.5 * var(--bs-modal-header-padding-x));
-  margin-bottom: calc(-0.5 * var(--bs-modal-header-padding-y));
-  margin-left: auto;
-}
-
-.modal-title {
-  margin-bottom: 0;
-  line-height: var(--bs-modal-title-line-height);
-}
-
-.modal-body {
-  position: relative;
-  flex: 1 1 auto;
-  padding: var(--bs-modal-padding);
-}
-
 @media (min-width: 576px) {
   .modal {
     --bs-modal-margin: 1.75rem;
@@ -1671,11 +1549,6 @@ legend + * {
     max-width: var(--bs-modal-width);
     margin-right: auto;
     margin-left: auto;
-  }
-}
-@media (min-width: 992px) {
-  .modal-lg {
-    --bs-modal-width: 800px;
   }
 }
 
@@ -1749,11 +1622,6 @@ legend + * {
   }
 }
 
-.bg-light-opacity {
-
-  background-color: #81f20913 !important;
-}
-
 .overflow-hidden {
   overflow: hidden !important;
 }
@@ -1818,10 +1686,6 @@ legend + * {
   flex-direction: column !important;
 }
 
-.flex-wrap {
-  flex-wrap: wrap !important;
-}
-
 .justify-content-end {
   justify-content: flex-end !important;
 }
@@ -1832,10 +1696,6 @@ legend + * {
 
 .justify-content-between {
   justify-content: space-between !important;
-}
-
-.align-items-end {
-  align-items: flex-end !important;
 }
 
 .align-items-center {
@@ -1948,10 +1808,6 @@ legend + * {
   font-weight: 700 !important;
 }
 
-.text-start {
-  text-align: left !important;
-}
-
 .text-center {
   text-align: center !important;
 }
@@ -1995,11 +1851,6 @@ legend + * {
 .text-white-50 {
   --bs-text-opacity: 1;
   color: rgba(255, 255, 255, 0.5) !important;
-}
-
-.text-blue-emphasis {
-  --bs-text-opacity: 1;
-  color: var(--bs-primary-border-subtle) !important;
 }
 
 .bg-dark {
@@ -2060,27 +1911,6 @@ legend + * {
 
 .navbar-nav {
   --bs-nav-link-padding-x: .5rem;
-}
-
-
-.btn-outline-secondary {
-  color: #212529;
-}
-
-.btn-outline-secondary:disabled,
-.btn-outline-secondary.disabled {
-  border: 1px solid #e6e6e6;
-}
-
-
-.btn-outline-secondary {
-  border-color: #e6e6e6;
-}
-
-.btn-outline-secondary:hover,
-.btn-outline-secondary:active {
-  background-color: #e6e6e6;
-  border-color: #e6e6e6;
 }
 
 .table {
@@ -2282,20 +2112,6 @@ thead th {
   padding: 1.2rem;
   margin: 1rem;
   border-radius: 12px
-}
-
-.aurora-btn {
-  transition: all 0.3s ease;
-  text-shadow: 0 0 4px rgba(0,255,255,0.6)
-}
-
-.aurora-form .aurora-input {
-  background: rgba(30,30,40,0.75);
-  color: #e0ffff;
-  border: 1px solid rgba(0,255,255,0.2);
-  border-radius: 0.5rem;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
 }
 
 @media (max-width: 600px) {
@@ -2609,5 +2425,12 @@ thead th {
   color: #ea357e;
   text-shadow: 0 0 2px rgba(103, 10, 10, 0.278);
   font-weight: 600;
+}
+
+.vivo {
+  color: #f64e7e;
+}
+.fallecido {
+  color: #fff;
 }
 

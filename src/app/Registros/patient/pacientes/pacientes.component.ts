@@ -10,13 +10,15 @@ import { FormsModule } from '@angular/forms';
 import { DetallePacienteComponent } from '../detallePaciente/detallePaciente.component';
 import { EdadPipe } from "../../../pipes/edad.pipe";
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
+import { arrowDown, skipLeft, skipRight } from '../../../shared/icons/svg-icon';
+import { skip } from 'rxjs';
 
 @Component({
   selector: 'app-pacientes',
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, DetallePacienteComponent, EdadPipe, DatosExtraPipe]
+  imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe]
 })
 export class PacientesComponent implements OnInit {
 
@@ -27,7 +29,8 @@ export class PacientesComponent implements OnInit {
   filtrar = false;
   modalActivo = false;
   espacio: string = ' ';
-
+  page: number = 1;
+  pageSize: number = 10;
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
 
@@ -61,7 +64,11 @@ export class PacientesComponent implements OnInit {
       ghost: this.iconService.getIcon("ghostIcon"),
       heart: this.iconService.getIcon("heartIcon"),
       paw: this.iconService.getIcon("huellitaIcon"),
-      find: this.iconService.getIcon("findIcon")
+      find: this.iconService.getIcon("findIcon"),
+      menu: this.iconService.getIcon("menuPuntos"),
+      arrowDown: this.iconService.getIcon("arrowDown"),
+      skipLeft: this.iconService.getIcon("skipLeft"),
+      skipRight: this.iconService.getIcon("skipRight"),
     };
   }
 
@@ -128,5 +135,17 @@ export class PacientesComponent implements OnInit {
 
   toggleFiltrar() {
     this.filtrar = !this.filtrar;
+  }
+  get totalPaginas(): number {
+    return Math.ceil(this.totalDeRegistros / this.pageSize) || 1;
+  }
+
+  cambiarPagina(direccion: number) {
+    const nuevaPagina = this.page + direccion;
+    if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas) {
+      this.page = nuevaPagina;
+      this.filtros.skip = (this.page - 1) * this.pageSize;
+      this.cargarPacientes();
+    }
   }
 }

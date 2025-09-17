@@ -1,72 +1,69 @@
-<div class="container-fluid py-3 aurora-paciente-container" [class.d-none]="modalActivo">
+<div class="aurora-paciente-container" [class.d-none]="modalActivo">
 
   <!-- Botones superiores -->
-  <div class="mb-3 text-start align-items-center gap-2 d-flex flex-wrap ">
-    <button type="button" class="btn btn-outline-primary d-flex bg-light-opacity" (click)="volver()">
-      <span [innerHTML]="icons['paw']" class="text-blue-emphasis"></span>
-      <div>
-        <p class="mb-0 fw-bold">Menu</p>
-        <small class="text-muted">Presiona para ir al Menú</small>
-      </div>
+  <div class="botones justify-content-between" [ngClass]="{ 'd-none': filtrar  }">
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="icons['menu']"></span>
+     Menu
     </button>
 
-    <button type="button" class="btn btn-outline-primary d-flex justify-content-center align-items-center"
-            (click)="toggleFiltrar()">
-             <span [innerHTML]="icons['find']" [ngClass]="{ 'text-blue-emphasis': filtrar, 'text-white': !filtrar }"></span>
-             <div><p class="mb-0 fw-bold">Filtrar</p></div>
+    <h1 class="text-white">Pacientes</h1>
+
+    <button type="button" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['find']"></span>
+      Filtrar
     </button>
   </div>
 
   <!-- Contenedor de Búsqueda -->
-  <div class="mb-4" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
-    <form class="row g-2 align-items-end aurora-form" (submit)="buscar(); $event.preventDefault()">
+<div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
+  <form class="" (submit)="buscar(); $event.preventDefault()">
 
-      <!-- Campos -->
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <label class="form-label">Identificador</label>
-        <input type="text" class="form-control aurora-input"
-               [(ngModel)]="filtros.identificador" name="identificador" placeholder="Buscar por identificador">
-      </div>
+    <!-- Campos -->
+    <fieldset>
+      <label>Identificador</label>
+      <input type="text" [(ngModel)]="filtros.identificador" name="identificador" placeholder="Buscar por identificador">
+    </fieldset>
 
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <label class="form-label">Nombre completo</label>
-        <input type="text" class="form-control aurora-input"
-               [(ngModel)]="filtros.nombre_completo" name="nombreCompleto" placeholder="Buscar por nombre completo">
-      </div>
+    <fieldset>
+      <label>Nombre completo</label>
+      <input type="text" [(ngModel)]="filtros.nombre_completo" name="nombreCompleto" placeholder="Buscar por nombre completo">
+    </fieldset>
 
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <label class="form-label">Primer nombre</label>
-        <input type="text" class="form-control aurora-input"
-               [(ngModel)]="filtros.primer_nombre" name="primerNombre" placeholder="Buscar por nombre">
-      </div>
+    <fieldset>
+      <label>Primer nombre</label>
+      <input type="text" [(ngModel)]="filtros.primer_nombre" name="primerNombre" placeholder="Buscar por nombre">
+    </fieldset>
 
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <label class="form-label">Primer apellido</label>
-        <input type="text" class="form-control aurora-input"
-               [(ngModel)]="filtros.primer_apellido" name="primerApellido" placeholder="Buscar por apellido">
-      </div>
+    <fieldset>
+      <label>Primer apellido</label>
+      <input type="text" [(ngModel)]="filtros.primer_apellido" name="primerApellido" placeholder="Buscar por apellido">
+    </fieldset>
 
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <label class="form-label">Fecha de nacimiento</label>
-        <input type="date" class="form-control aurora-input"
-               [(ngModel)]="filtros.fecha_nacimiento" name="fechaNacimiento">
-      </div>
+    <fieldset>
+      <label>Fecha de nacimiento</label>
+      <input type="date" [(ngModel)]="filtros.fecha_nacimiento" name="fechaNacimiento">
+    </fieldset>
 
-      <!-- Botones -->
-      <div class="col-12 mt-3 d-flex flex-wrap gap-2">
-        <button type="submit" class="btn btn-primary aurora-btn">
-          <span [innerHTML]="icons['search']"></span> Buscar
-        </button>
-        <button type="button" class="btn btn-outline-secondary aurora-btn" (click)="limpiarFiltros()">
-          <span [innerHTML]="icons['delete']"></span> Limpiar
-        </button>
-        <button type="button" class="btn btn-success aurora-btn" (click)="agregar()">
-          <span [innerHTML]="icons['create']"></span> Agregar
-        </button>
-      </div>
-    </form>
+    <!-- Botones -->
+    <div class="botones">
+      <button type="submit">
+        <span [innerHTML]="icons['search']"></span> Buscar
+      </button>
+      <button type="button" (click)="limpiarFiltros()">
+        <span [innerHTML]="icons['delete']"></span> Limpiar
+      </button>
+      <button type="button" (click)="agregar()">
+        <span [innerHTML]="icons['create']"></span> Agregar
+      </button>
+    </div>
+  </form>
+  <div class="d-flex justify-content-center m-0 p-0">
+    <button class="btn m-0 p-0" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['arrowDown']"></span>
+    </button>
   </div>
-
+</div>
   <!-- Tabla principal (desktop) -->
   <div class="aurora-container">
     <table class="aurora-tb" >
@@ -142,21 +139,25 @@
     </table>
   </div>
 
+  <!-- paginación -->
+<div class="d-flex justify-content-center align-items-center">
+  <!-- Botón anterior -->
+  <button class="btn"
+          [disabled]="page === 1"
+          (click)="cambiarPagina(-1)">
+    <span [innerHTML]="icons['skipLeft']"></span>
+  </button>
 
-
-  <!-- Modal detalle -->
-  <div class="modal fade show d-block" *ngIf="mostrarDetallePaciente" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Detalle del Paciente</h5>
-          <button type="button" class="btn-close" (click)="cerrarDetallePaciente()"></button>
-        </div>
-        <div class="modal-body">
-          <detallePaciente [pacienteId]="pacienteSeleccionadoId"></detallePaciente>
-        </div>
-      </div>
-    </div>
-    <div class="modal-backdrop fade show" (click)="cerrarDetallePaciente()"></div>
+  <!-- Página actual -->
+  <div>
+    <strong>{{ page }}</strong>
+    <small class="text-muted">/ {{ totalPaginas }}</small>
   </div>
+
+  <!-- Botón siguiente -->
+  <button class="btn"
+          [disabled]="page === totalPaginas"
+          (click)="cambiarPagina(1)">
+    <span [innerHTML]="icons['skipRight']"></span>
+  </button>
 </div>
