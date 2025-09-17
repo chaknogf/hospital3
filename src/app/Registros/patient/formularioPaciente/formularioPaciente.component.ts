@@ -267,7 +267,7 @@ export class FormularioPacienteComponent implements OnInit {
       if (!isNaN(id)) {
         this.api.getPaciente(id)
           .then(data => {
-            console.log('✅ Paciente obtenido:', data);
+            // console.log('✅ Paciente obtenido:', data);
             this.enEdicion = true;
 
             // Cargar metadatos

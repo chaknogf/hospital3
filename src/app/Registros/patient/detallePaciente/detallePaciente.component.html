@@ -9,9 +9,10 @@
       <p class="subtitulo">
          {{ paciente.nombre.primer_nombre | titlecase }} {{ paciente.nombre.segundo_nombre | titlecase }}
       </p>
-      <p class="estado" [ngClass]="paciente.estado === 'V' ? 'vivo' : 'fallecido'">
-        {{ paciente.estado === 'V' ? '🟢 Vivo' : '⚫ Fallecido' }}
+      <p class="estado_" [ngClass]="paciente.estado === 'V' ? 'vivo' : 'fallecido'">
         <span class="icon" [innerHTML]="paciente.estado === 'V' ? heartIcon : ghostIcon"></span>
+        {{ paciente.estado === 'V' ? ' Vivo' : ' Fallecido' }}
+
       </p>
     </div>
     <button class="btn-volver" (click)="regresar()">
@@ -84,11 +85,11 @@
   <!-- Referencias -->
   <section class="section" *ngIf="referenciaKeys.length">
     <h2>👥 Referencias</h2>
-    <div class="section-grid grid-3">
-      <div class="section-card" *ngFor="let key of referenciaKeys" class="card-mini">
-        <label>Nombre:</label><p> {{ paciente.referencias?.[key]?.nombre }}</p>
-        <label>Parentesco:</label> <p>{{ paciente.referencias?.[key]?.parentesco |datosExtra: 'parentesco'}}</p>
-        <label>Teléfono:</label><p> {{ paciente.referencias?.[key]?.telefono }}</p>
+    <div class="section-grid grid-2">
+      <div class="section-card" *ngFor="let key of referenciaKeys">
+        <label class="card-mini">Nombre:</label> {{ paciente.referencias?.[key]?.nombre | uppercase}}
+        <label class="card-mini">Parentesco:</label>{{ paciente.referencias?.[key]?.parentesco |datosExtra: 'parentesco' | uppercase}}
+        <label class="card-mini">Teléfono:</label>{{ paciente.referencias?.[key]?.telefono }}
       </div>
     </div>
   </section>

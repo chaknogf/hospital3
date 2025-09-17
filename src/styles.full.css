@@ -12649,80 +12649,6 @@ thead th {
   backdrop-filter: blur(10px);
 }
 
-.aurora-table-container {
-  overflow: hidden;
-  border-radius: 1rem;
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
-  margin: 0.8rem;
-}
-
-.aurora-table {
-  width: 100%;
-  background: linear-gradient(135deg, #553fe4c6, #06f1ed81, #553fe4c6);
-  -webkit-backdrop-filter: blur(15px);
-  backdrop-filter: blur(15px);
-  color: #e0ffff;
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: 1rem;
-}
-
-.aurora-table th,
-.aurora-table td {
-  vertical-align: middle;
-  padding: 0.75rem 1rem;
-  text-align: center;
-  border: none;
-}
-
-.aurora-table th {
-  background: rgba(0, 255, 255, 0.2);
-  color: #ffffff;
-  text-shadow: 0 0 2px #00ffff;
-}
-
-.aurora-table tbody tr {
-  background: rgba(0, 0, 0, 0.3);
-  transition: all 0.25s ease;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-}
-
-.aurora-table tbody tr:hover {
-  background: rgba(0, 255, 255, 0.1);
-  transform: scale(1.01);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
-}
-
-.aurora-table-header {
-  background: rgba(1, 24, 24, 0.302);
-  color: #ffffff;
-  text-shadow: 0 0 1px #00ffff;
-}
-
-.aurora-table tbody td span {
-  text-shadow: 0 0 4px rgba(0, 255, 255, 0.6);
-}
-
-.aurora-table tbody td strong {
-  color: #00ffff;
-  text-shadow: 0 0 3px #06f1ed;
-}
-
-.aurora-table tbody td .btn {
-  min-width: 40px;
-  height: 36px;
-  font-size: 0.9rem;
-  padding: 0.25rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
-  transition: all 0.25s ease;
-}
-
-.aurora-table tbody td .btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
-}
-
 .aurora-card-container {
   display: grid;
   border-radius: 2px;
@@ -13066,12 +12992,16 @@ thead th {
 
 
 
+
 .hombre {
   color: #8fbffa;
+  text-shadow: 0 0 2px rgba(103, 10, 10, 0.278);
+  font-weight: 600;
 }
 
 .mujer {
-  color: #c52867;
+  color: #ea357e;
+  text-shadow: 0 0 2px rgba(103, 10, 10, 0.278);
+  font-weight: 600;
 }
-
 

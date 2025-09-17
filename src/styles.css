@@ -1060,23 +1060,6 @@ legend + * {
   --bs-btn-disabled-border-color: #3459e6;
 }
 
-.btn-secondary {
-  --bs-btn-color: #000;
-  --bs-btn-bg: #fff;
-  --bs-btn-border-color: #fff;
-  --bs-btn-hover-color: #000;
-  --bs-btn-hover-bg: white;
-  --bs-btn-hover-border-color: white;
-  --bs-btn-focus-shadow-rgb: 217, 217, 217;
-  --bs-btn-active-color: #000;
-  --bs-btn-active-bg: white;
-  --bs-btn-active-border-color: white;
-  --bs-btn-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --bs-btn-disabled-color: #000;
-  --bs-btn-disabled-bg: #fff;
-  --bs-btn-disabled-border-color: #fff;
-}
-
 .btn-success {
   --bs-btn-color: #fff;
   --bs-btn-bg: #2fb380;
@@ -1092,40 +1075,6 @@ legend + * {
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #2fb380;
   --bs-btn-disabled-border-color: #2fb380;
-}
-
-.btn-info {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: #287bb5;
-  --bs-btn-border-color: #287bb5;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #22699a;
-  --bs-btn-hover-border-color: #206291;
-  --bs-btn-focus-shadow-rgb: 72, 143, 192;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #206291;
-  --bs-btn-active-border-color: #1e5c88;
-  --bs-btn-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #287bb5;
-  --bs-btn-disabled-border-color: #287bb5;
-}
-
-.btn-warning {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: #f4bd61;
-  --bs-btn-border-color: #f4bd61;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #cfa152;
-  --bs-btn-hover-border-color: #c3974e;
-  --bs-btn-focus-shadow-rgb: 246, 199, 121;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #c3974e;
-  --bs-btn-active-border-color: #b78e49;
-  --bs-btn-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #f4bd61;
-  --bs-btn-disabled-border-color: #f4bd61;
 }
 
 .btn-outline-primary {
@@ -1805,20 +1754,12 @@ legend + * {
   background-color: #81f20913 !important;
 }
 
-.align-middle {
-  vertical-align: middle !important;
-}
-
 .overflow-hidden {
   overflow: hidden !important;
 }
 
 .d-block {
   display: block !important;
-}
-
-.d-grid {
-  display: grid !important;
 }
 
 .d-flex {
@@ -1855,14 +1796,6 @@ legend + * {
 
 .border-0 {
   border: 0 !important;
-}
-
-.border-top {
-  border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
-}
-
-.border-bottom {
-  border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
 }
 
 .w-100 {
@@ -1921,16 +1854,8 @@ legend + * {
   margin-top: 1rem !important;
 }
 
-.mt-auto {
-  margin-top: auto !important;
-}
-
 .mb-0 {
   margin-bottom: 0 !important;
-}
-
-.mb-1 {
-  margin-bottom: 0.25rem !important;
 }
 
 .mb-2 {
@@ -1955,10 +1880,6 @@ legend + * {
 
 .p-1 {
   padding: 0.25rem !important;
-}
-
-.p-2 {
-  padding: 0.5rem !important;
 }
 
 .p-4 {
@@ -1993,14 +1914,6 @@ legend + * {
 .py-4 {
   padding-top: 1.5rem !important;
   padding-bottom: 1.5rem !important;
-}
-
-.pt-2 {
-  padding-top: 0.5rem !important;
-}
-
-.pb-2 {
-  padding-bottom: 0.5rem !important;
 }
 
 .gap-1 {
@@ -2098,10 +2011,6 @@ legend + * {
   border-radius: var(--bs-border-radius) !important;
 }
 
-.rounded-3 {
-  border-radius: var(--bs-border-radius-lg) !important;
-}
-
 .rounded-4 {
   border-radius: var(--bs-border-radius-xl) !important;
 }
@@ -2114,12 +2023,6 @@ legend + * {
   visibility: visible !important;
 }
 @media (min-width: 768px) {
-  .d-md-block {
-    display: block !important;
-  }
-  .d-md-none {
-    display: none !important;
-  }
   .mb-md-0 {
     margin-bottom: 0 !important;
   }
@@ -2159,21 +2062,21 @@ legend + * {
   --bs-nav-link-padding-x: .5rem;
 }
 
-.btn-secondary,
+
 .btn-outline-secondary {
   color: #212529;
 }
-.btn-secondary:disabled, .btn-secondary.disabled,
+
 .btn-outline-secondary:disabled,
 .btn-outline-secondary.disabled {
   border: 1px solid #e6e6e6;
 }
 
-.btn-secondary,
+
 .btn-outline-secondary {
   border-color: #e6e6e6;
 }
-.btn-secondary:hover, .btn-secondary:active,
+
 .btn-outline-secondary:hover,
 .btn-outline-secondary:active {
   background-color: #e6e6e6;
@@ -2393,96 +2296,6 @@ thead th {
   border-radius: 0.5rem;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-}
-
-.aurora-table-container {
-  overflow: hidden;
-  border-radius: 1rem;
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
-  margin: 0.8rem;
-}
-
-.aurora-table {
-  width: 100%;
-  background: linear-gradient(135deg, #553fe4c6, #06f1ed81, #553fe4c6);
-  -webkit-backdrop-filter: blur(15px);
-  backdrop-filter: blur(15px);
-  color: #e0ffff;
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: 1rem;
-}
-
-.aurora-table th,
-.aurora-table td {
-  vertical-align: middle;
-  padding: 0.75rem 1rem;
-  text-align: center;
-  border: none;
-}
-
-.aurora-table th {
-  background: rgba(0, 255, 255, 0.2);
-  color: #ffffff;
-  text-shadow: 0 0 2px #00ffff;
-}
-
-.aurora-table tbody tr {
-  background: rgba(0, 0, 0, 0.3);
-  transition: all 0.25s ease;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-}
-
-.aurora-table tbody tr:hover {
-  background: rgba(0, 255, 255, 0.1);
-  transform: scale(1.01);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
-}
-
-.aurora-table-header {
-  background: rgba(1, 24, 24, 0.302);
-  color: #ffffff;
-  text-shadow: 0 0 1px #00ffff;
-}
-
-.aurora-table tbody td span {
-  text-shadow: 0 0 4px rgba(0, 255, 255, 0.6);
-}
-
-.aurora-table tbody td strong {
-  color: #00ffff;
-  text-shadow: 0 0 3px #06f1ed;
-}
-
-.aurora-table tbody td .btn {
-  min-width: 40px;
-  height: 36px;
-  font-size: 0.9rem;
-  padding: 0.25rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
-  transition: all 0.25s ease;
-}
-
-.aurora-table tbody td .btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
-}
-
-.aurora-card-container {
-  display: grid;
-  border-radius: 2px;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  padding: 1.5rem;
-}
-.aurora-card {
-  color: #e0ffff;
-
-  -webkit-backdrop-filter: blur(15px);
-  backdrop-filter: blur(15px);
-  transition: all 0.3s ease;
-  text-align: left
 }
 
 @media (max-width: 600px) {
@@ -2785,12 +2598,16 @@ thead th {
 
 
 
+
 .hombre {
   color: #8fbffa;
+  text-shadow: 0 0 2px rgba(103, 10, 10, 0.278);
+  font-weight: 600;
 }
 
 .mujer {
-  color: #c52867;
+  color: #ea357e;
+  text-shadow: 0 0 2px rgba(103, 10, 10, 0.278);
+  font-weight: 600;
 }
-
 

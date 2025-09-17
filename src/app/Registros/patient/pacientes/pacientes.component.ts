@@ -9,13 +9,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DetallePacienteComponent } from '../detallePaciente/detallePaciente.component';
 import { EdadPipe } from "../../../pipes/edad.pipe";
+import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 
 @Component({
   selector: 'app-pacientes',
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, DetallePacienteComponent, EdadPipe]
+  imports: [CommonModule, FormsModule, DetallePacienteComponent, EdadPipe, DatosExtraPipe]
 })
 export class PacientesComponent implements OnInit {
 

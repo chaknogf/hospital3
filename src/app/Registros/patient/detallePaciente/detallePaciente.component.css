@@ -16,6 +16,7 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 2rem;
+  padding: 1rem;
 }
 
 .ficha-paciente .foto-perfil .avatar {
@@ -34,37 +35,36 @@
 }
 
 .ficha-paciente .info-header h1 {
-  font-size: 2rem;
+  font-size: 1.9rem;
   margin: 0;
   color: #4ccaf0;
 }
 
 .ficha-paciente .info-header .subtitulo {
-  font-size: 1rem;
+  font-size: 1.8rem;
   color: #cbd5e1;
 }
 
-.ficha-paciente .estado.vivo {
-  color: #22c55e;
-  font-weight: bold;
-}
-.ficha-paciente .estado.fallecido {
-  color: #ef4444;
-  font-weight: bold;
-}
+
 
 .ficha-paciente .btn-volver {
-  background: rgba(76, 202, 240, 0.8);
+  padding: 0.8rem;
   border: none;
-  color: #fff;
-  padding: 0.6rem 1rem;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
+  border-radius: 20px;
+  background: rgba(76, 202, 240, 0.15); /* picton-blue con transparencia */
+  color: white !important;
+  font-weight: bold;
+  font-size: 0.8rem;
+  cursor: pointer;         /* limita ancho máximo */
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(6px); /* sutil efecto glass */
 }
 .ficha-paciente .btn-volver:hover {
-  background: #22d3ee;
-  color: #0f172a;
+  background: rgba(0, 255, 255, 0.75); /* cyan translúcido */
+  color: #000 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.4);
+
 }
 
 .ficha-paciente .section {
@@ -128,13 +128,13 @@
 
 .section-card {
   flex: 1 1 200px; /* mínimo 200px, crecer según espacio */
-  padding: 1rem;
+  padding: 0.4rem;
   border-radius: 12px;
   text-align: center;
-  /* backdrop-filter: blur(8px); */
   box-shadow: 0 0 12px rgba(76, 202, 240, 0.2);
   color: #fff;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  font-size: 0.85rem;
 }
 
 .contacto-card:hover {
@@ -149,26 +149,25 @@
   margin-bottom: 0.2rem;
   font-weight: 600;
   letter-spacing: 0.2rem;
-  transform: translateY(10%);
-
-
+  transform: translateY(20%);
+  line-height: 0.8rem;
 }
 
 .section-card.sexo-card {
   position: relative;
   text-align: center;   /* mantiene el texto centrado */
   padding-left: 2.5rem; /* deja espacio para el ícono */
-
 }
 .section-card p {
+  font-size: 1rem;
   transform: translateY(50%)
 }
 
 .sexo-card .sexo-icon {
   position: absolute;
-  left: 0.8rem;    /* pegado a la izquierda */
+  left: 0.8rem;
   top: 50%;
-  transform: translateY(-50%); /* centrado verticalmente */
+  transform: translateY(-50%);
   width: 22px;
   height: 22px;
 }
@@ -177,4 +176,92 @@
   width: 100%;
   height: 100%;
   fill: currentColor;
+}
+
+/* ----------- 📱 Responsividad para móviles pequeños ----------- */
+@media (max-width: 576px) {
+  .ficha-paciente {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .ficha-paciente .ficha-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .ficha-paciente .info-header {
+    margin-left: 0;
+    margin-top: 2rem;
+  }
+
+  .ficha-paciente .info-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .ficha-paciente .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .ficha-paciente .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .section-card {
+    flex: 1 1 100%;
+  }
+
+  .ficha-paciente .timeline li {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+}
+
+
+/* Grid de referencias */
+.section-grid .grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* Tarjetas de referencia */
+.section-card.card-mini {
+  background: rgba(121, 163, 253, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: left;
+  box-shadow: 0 0 12px rgba(76, 202, 240, 0.2);
+  color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.section-card.card-mini:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px rgba(76, 202, 240, 0.7);
+}
+
+.section-card.card-mini p {
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+}
+
+/* Mobile first: apilado vertical */
+@media (max-width: 640px) {
+  .section-grid.grid-2 {
+    grid-template-columns: 1fr; /* Una tarjeta por fila */
+  }
+
+  .section-card.card-mini {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Tablets */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .section-grid.grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
 }

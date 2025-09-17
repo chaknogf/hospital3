@@ -1,0 +1,153 @@
+/* Contenedor general */
+.aurora-container {
+  background: rgba(1, 12, 30, 0.76);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+
+  padding: 0.6rem;
+  margin: 0.3rem;
+  box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15);
+}
+
+/* Tabla */
+.aurora-container .aurora-tb {
+  width: 100%;
+  border-collapse:separate;
+  border-spacing: 0;
+  color: #f8fafc;
+  font-size: 0.95rem;
+  border-radius: 16px;
+  overflow: hidden;
+  border: none;
+
+}
+
+/* Cabecera */
+.aurora-tb thead th {
+  background: rgba(0, 255, 255, 0.15);
+  color: #e0ffff;
+  font-weight: 600;
+  padding: 0.3rem 0.4rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  text-shadow: 0 0 1px #00f7ff;
+
+}
+
+/* Filas */
+.aurora-tb tr {
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.aurora-tb tr:hover {
+  background: rgba(0, 255, 255, 0.08);
+  transform: scale(1.01);
+  z-index: 1;
+  padding: 0.3rem 0.4rem;
+  box-shadow: 0 0 18px rgba(0, 255, 255, 0.3);
+}
+
+/* Celdas */
+.aurora-tb td {
+  padding: 0.2rem 0.4rem;
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* Texto */
+.aurora-tb td strong {
+  color: #00ffff;
+  text-shadow: 0 0 1px #06f1ed;
+}
+.aurora-tb td small {
+  color: #b2c2d7;
+  font-size: 0.8rem;
+}
+
+/* Íconos */
+.aurora-tb td span {
+  display: block;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
+}
+
+/* Botones de acción */
+.aurora-tb button {
+
+  font-size: 0.9rem;
+  padding: 0.2rem;
+  border-radius: 0.6rem;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.25);
+  transition: all 0.25s ease;
+}
+
+.aurora-tb button:hover {
+  transform: translateY(-2px) scale(1.05);
+  background: rgba(216, 223, 246, 0.871);
+  box-shadow: 0 0 14px rgba(0, 255, 255, 0.6);
+  color: #0f172a;
+}
+
+/* Responsive first-mobile */
+@media (max-width: 768px) {
+  .aurora-tb thead {
+    display: none;
+  }
+
+  .aurora-tb,
+  .aurora-tb tbody,
+  .aurora-tb tr,
+  .aurora-tb td {
+    display: block;
+    width: 100%;
+    padding: 0 ;
+    margin: 0;;
+  }
+
+  .aurora-tb tr:hover {
+    margin-bottom: 1rem;
+    border-radius: 0.8rem;
+    background: rgba(0, 255, 255, 0.05);
+    box-shadow: 0 2px 12px rgba(0, 255, 255, 0.15);
+    padding: 1.6rem;
+
+    .secundario {
+      display: block;
+    }
+
+  }
+
+  .aurora-tb tr {
+    display: flex;
+  }
+
+  .aurora-tb td {
+    text-align:center;
+    padding: 0.2rem;
+    border: none;
+    position: relative;
+    letter-spacing: 1px;
+  }
+
+  .aurora-tb_ td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #00ffff;
+    display: block;
+    margin-bottom: 0.2rem;
+    font-size: 0.85rem;
+  }
+
+  .aurora-tb .secundario {
+    display: none;
+  }
+
+
+}
