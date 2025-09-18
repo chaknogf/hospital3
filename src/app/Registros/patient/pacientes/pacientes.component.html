@@ -145,21 +145,23 @@
 <div class="d-flex justify-content-center align-items-center">
   <!-- Botón anterior -->
   <button class="btn"
-          [disabled]="page === 1"
+          [disabled]="filtros.skip === 0"
           (click)="cambiarPagina(-1)">
     <span [innerHTML]="icons['skipLeft']"></span>
   </button>
 
   <!-- Página actual -->
   <div>
-    <strong>{{ page }}</strong>
-    <small class="text-muted">/ {{ totalPaginas }}</small>
+    <strong>{{ filtros.skip }}</strong>
+
   </div>
 
   <!-- Botón siguiente -->
   <button class="btn"
-          [disabled]="page === totalPaginas"
+          [disabled]="finPagina"
           (click)="cambiarPagina(1)">
     <span [innerHTML]="icons['skipRight']"></span>
   </button>
 </div>
+
+

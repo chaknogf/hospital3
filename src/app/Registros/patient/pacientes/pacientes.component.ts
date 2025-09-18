@@ -30,14 +30,14 @@ export class PacientesComponent implements OnInit {
   visible = false;
   modalActivo = false;
   espacio: string = ' ';
-  page: number = 1;
-  pageSize: number = 10;
+  pageSize: number = 8;
+  finPagina: boolean = false;
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
 
   filtros: PacienteFiltros = {
     skip: 0,
-    limit: 10
+    limit: this.pageSize
   };
 
   pacienteSeleccionadoId: number | null = null;
@@ -74,19 +74,16 @@ export class PacientesComponent implements OnInit {
   }
 
   ngOnInit() {
+
     this.cargarPacientes();
   }
 
   async cargarPacientes() {
     this.cargando = true;
     try {
-      if (this.existePaciente) {
-        this.enRenap = await this.api.getRenapITD(this.filtros);
-        this.totalDeRegistros = this.enRenap.length;
-      } else {
-        this.pacientes = await this.api.getPacientes(this.filtros);
-        this.totalDeRegistros = this.pacientes.length;
-      }
+      this.pacientes = await this.api.getPacientes(this.filtros);
+      this.totalDeRegistros = this.pacientes.length;
+
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -99,7 +96,7 @@ export class PacientesComponent implements OnInit {
   }
 
   limpiarFiltros() {
-    this.filtros = { skip: 0, limit: 10 };
+    this.filtros = { skip: 0, limit: this.pageSize };
     this.cargarPacientes();
   }
 
@@ -141,13 +138,12 @@ export class PacientesComponent implements OnInit {
     return Math.ceil(this.totalDeRegistros / this.pageSize) || 1;
   }
 
-  cambiarPagina(direccion: number) {
-    const nuevaPagina = this.page + direccion;
-    if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas) {
-      this.page = nuevaPagina;
-      this.filtros.skip = (this.page - 1) * this.pageSize;
-      this.cargarPacientes();
-    }
+  cambiarPagina(skip: any) {
+    this.filtros.skip += skip;
+    console.log(this.filtros);
+    this.buscar();
+    this.finPagina = Number(this.filtros.skip) <= this.totalDeRegistros;
+    console.log(this.finPagina);
   }
 
   mostrar(): void {

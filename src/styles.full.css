@@ -12519,67 +12519,6 @@ thead th {
 
 }
 
-.module-card {
-  display: flex;
-  flex-wrap: wrap;
-  position: relative;
-  width: 10rem;
-  height: 8rem;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  text-align: center;
-  text-decoration: none;
-  color: #e0ffff;
-  z-index: 1;
-  overflow: hidden; /* Para que el pseudo-elemento no se salga */
-
-  /* Pseudo-elemento con fondo vibrante y blur */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(180deg, #508bf2f1, #10067c, #10067c, #2407dfd5, #3379f1c4);
-    -webkit-backdrop-filter: blur(22px);
-    backdrop-filter: blur(22px);
-    font-size: clamp(1rem, 2vw + 0.5rem, 1.5rem);
-    z-index: 0; /* detrás del contenido */
-  }
-
-  /* Borde animado */
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    border: 1px dashed #00ffff1a;
-    pointer-events: none;
-    animation: pulseBorder 4s infinite ease-in-out;
-    z-index: 1; /* encima del fondo pero detrás del texto */
-  }
-
-  /* Contenido */
-  .card-body {
-    position: relative;
-    z-index: 2; /* encima del blur */
-    padding: 1.5rem;
-    flex-grow: 1;
-    flex-basis: 200;
-  }
-
-  h5 {
-  font-size: clamp(0.8rem, 2ch, 1.5rem);
-  text-wrap: balance;
-  margin-bottom: 0.5rem;
-  color: #ffffff;
-  word-wrap: break-word; /* Rompe palabra si es necesario */
-  overflow-wrap: break-word;
-  text-align: center;
-  white-space: normal;
-  text-shadow: rgb(77, 42, 42) 0 0 1px, #00f0ff 0 0 4px, #00f0ffb3 0 0 4px;
-  }
-  }
-
 
 
 /* Animación borde */
@@ -13012,3 +12951,107 @@ thead th {
   color: #fff;
 }
 
+.module-card {
+  display: flex;
+  flex-direction: column; /* mobile-first */
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  position: relative;
+  width: 100%;
+  max-width: 11rem; /* control en desktop */
+  min-height: 7rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  text-align: center;
+  text-decoration: none;
+  color: #e0ffff;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  /* Fondo blur */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      160deg,
+       #f3f3f52d,
+      #1a2843ac,
+      #2893c8ed
+    );
+    background-size: 200% 200%;
+    animation: auroraMove 10s infinite alternate ease-in-out;
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    z-index: 0;
+  }
+
+  /* Borde animado */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    animation: pulseBorder 5s infinite ease-in-out;
+    z-index: 1;
+  }
+
+  /* Contenido */
+  .card-body {
+    position: relative;
+    z-index: 2;
+    padding: 0.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  h5 {
+    font-size: clamp(0.85rem, 2.5vw, 1.4rem);
+    margin-bottom: 0.25rem;
+    color: #ffffff;
+    overflow-wrap: break-word;
+    text-align: center;
+    text-shadow: 0 0 2px #000, 0 0 2px #00f0ff, 0 0 1px #00ffffaa;
+  }
+
+  /* Hover en pantallas grandes */
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 6px 18px rgba(0, 255, 255, 0.35);
+    }
+  }
+}
+
+/* Keyframes */
+@keyframes pulseBorder {
+  0% { border-color: rgba(0, 255, 255, 0.15); }
+  50% { border-color: rgba(0, 255, 255, 0.55); }
+  100% { border-color: rgba(0, 255, 255, 0.15); }
+}
+
+@keyframes auroraMove {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Responsivo */
+@media (min-width: 768px) {
+  .module-card {
+    flex-direction: row; /* en pantallas grandes, paralelo */
+    justify-content: flex-start;
+    text-align: left;
+    max-width: 15rem;
+    min-height: 9rem;
+    padding: 1.2rem;
+  }
+
+  .module-card .card-body {
+    padding: 1rem;
+  }
+}
