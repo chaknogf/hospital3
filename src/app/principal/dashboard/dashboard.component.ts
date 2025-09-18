@@ -23,7 +23,7 @@ export class DashboardComponent implements OnInit {
   datosIcon: SafeHtml = datosIcon;
   logoicon: SafeHtml = logoicon;
   constructor(
-    private route: Router,
+    private router: Router,
     private sanitizer: DomSanitizer
   ) {
 
@@ -109,8 +109,9 @@ export class DashboardComponent implements OnInit {
   }
 
 
-
-
+  navegar(ruta: string) {
+    this.router.navigate([ruta]);
+  }
 
 }
 

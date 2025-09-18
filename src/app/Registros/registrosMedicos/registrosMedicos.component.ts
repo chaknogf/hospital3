@@ -64,6 +64,9 @@ export class RegistrosMedicosComponent implements OnInit {
 
   }
 
+  navegar(ruta: string) {
+    this.router.navigate([ruta]);
+  }
 
 
 }

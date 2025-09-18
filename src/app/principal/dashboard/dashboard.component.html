@@ -1,15 +1,16 @@
-<div class="container py-4"
-     >
-  <div class="row g-3 justify-content-center">
-    <div class="col-6 col-sm-4 col-md-3 col-lg-2 d-flex" *ngFor="let app of modulos">
-      <a [routerLink]="app.ruta"
-         class="card module-card text-center text-decoration-none border-0 shadow-lg flex-fill h-100 rounded-4 overflow-hidden">
-        <div class="card-body px-2 py-4 d-flex flex-column justify-content-center align-items-center">
-          <span class="fs-1 text-warning mb-3" [innerHTML]="app.icon"></span>
-          <h5 class="card-title mb-2 fw-bold text-white text-wrap">{{ app.nombre }}</h5>
-          <p class="card-text text-white-50 small mb-0 text-wrap">{{ app.descripcion }}</p>
+
+  <div class="aurora-container">
+    <div class="aurora-cards"
+      *ngFor="let app of modulos"
+      (click)="navegar(app.ruta)">
+      <div
+         class="aurora-items">
+        <div class="">
+          <span class="" [innerHTML]="app.icon"></span>
+          <h2 class="">{{ app.nombre }}</h2>
+          <p class="">{{ app.descripcion }}</p>
         </div>
-      </a>
+      </div>
     </div>
   </div>
-</div>
+

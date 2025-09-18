@@ -13030,3 +13030,70 @@ thead th {
     padding: 1rem;
   }
 }
+
+.aurora-container {
+  background: radial-gradient(circle at top left, #553fe4c6, #06f1ed81, #553fe4c6);
+  -webkit-backdrop-filter: blur(6px); /* más blur para efecto glass real */
+  backdrop-filter: blur(6px);
+  padding: 1.5rem;
+  margin: 1rem auto;
+  border-radius: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem; /* mayor respiro visual */
+  justify-content: center; /* centra elementos */
+  max-width: 98dvw; /* evita que se estire infinito en pantallas grandes */
+}
+
+.aurora-container .aurora-cards {
+  flex: 1 1 260px;
+  padding: 1.2rem;
+  border: 1px solid rgba(6, 241, 237, 0.4);
+  border-radius: 20px;
+  background: rgba(0, 0, 139, 0.55); /* más sutil */
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centra contenido */
+  justify-content: center;
+  height: 240px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease;
+}
+
+
+
+.aurora-items {
+  text-align: center;
+  color: var(--bs-light);
+  font-style: none;
+  font-weight: 600;
+  word-wrap: break-word;
+}
+
+.aurora-container .aurora-cards:hover {
+  background: linear-gradient(135deg, #00eaff, #0099ff);
+  box-shadow: 0 0 15px rgba(0,255,255,0.4), 0 0 40px rgba(0,255,255,0.6), 0 0 80px rgba(0,255,255,0.8);
+  border-radius: 2rem;
+  transform: translateY(-6px) scale(1.02);
+}
+
+.aurora-container .aurora-cards:hover p,
+.aurora-container .aurora-cards:hover h2,
+.aurora-container .aurora-cards:hover a {
+  color: #082e2e !important;
+  font-weight: 700;
+}
+
+.aurora-container a {
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.aurora-container p {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  opacity: 0.9;
+}
+
+
