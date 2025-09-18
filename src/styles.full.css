@@ -4136,7 +4136,7 @@ textarea.form-control-lg {
 
 .navbar {
   --bs-navbar-padding-x: 0;
-  --bs-navbar-padding-y: 0.85rem;
+  --bs-navbar-padding-y: 0.35rem;
   --bs-navbar-color: rgba(var(--bs-emphasis-color-rgb), 0.65);
   --bs-navbar-hover-color: rgba(var(--bs-emphasis-color-rgb), 0.8);
   --bs-navbar-disabled-color: rgba(var(--bs-emphasis-color-rgb), 0.3);
@@ -4155,7 +4155,7 @@ textarea.form-control-lg {
   --bs-navbar-toggler-border-radius: var(--bs-border-radius);
   --bs-navbar-toggler-focus-width: 0.25rem;
   --bs-navbar-toggler-transition: box-shadow 0.15s ease-in-out;
-  position: relative;
+  position: fixed;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -12531,34 +12531,9 @@ thead th {
 /* Aurora Navbar Theme */
 .aurora-navbar {
   background: radial-gradient(circle at top center, #f4f3f6c6, #ffffff, #fffffffe);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  color: #000 ;
-
-  .navbar-brand {
-    color: #000 !important;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
-    transition: color 0.3s ease, text-shadow 0.3s ease;
-    &:hover {
-      color: #00ffff !important;
-      text-shadow: 0 0 12px rgba(0, 255, 255, 0.9);
-    }
-  }
-
-  .navbar-text {
-    color: #000;
-
-
-  .btn-outline-danger {
-    border-color: rgba(255, 100, 100, 0.6);
-    color: #ff6464;
-    &:hover {
-      background-color: rgba(255, 100, 100, 0.1);
-      box-shadow: 0 0 8px rgba(255, 100, 100, 0.6);
-    }
-  }
-}
+  color: #000 !important;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+  transition: color 0.3s ease, text-shadow 0.3s ease
 }
 
 .aurora-paciente-container {

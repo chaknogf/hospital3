@@ -1,9 +1,9 @@
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm py-3 aurora-navbar">
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm aurora-navbar sticky-top">
   <div class="container">
     <!-- Logo + Marca -->
     <a class="navbar-brand d-flex align-items-center gap-2" role="button" (click)="menu()">
       <i class="bi bi-hospital fs-4"></i>
-      <span class="fw-bold fs-5">MedicalApp</span>
+      <span class="fw-bold fs-5 text-dark p-3">MedicalApp</span>
     </a>
 
     <!-- Botón responsive -->
@@ -17,7 +17,7 @@
       <ul class="navbar-nav ms-auto align-items-center gap-3">
         <li class="nav-item">
           <span class="navbar-text">
-            <strong>{{ usuario }}</strong> 
+            <strong>{{ usuario }}</strong>
             <span class="text-muted bg-dark rounded p-1">[{{ rol }}]</span>
           </span>
         </li>
