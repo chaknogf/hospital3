@@ -1502,7 +1502,7 @@ legend + * {
 
 .modal-dialog {
   position: relative;
-  width: auto;
+  width: 100dvw;
   margin: var(--bs-modal-margin);
   pointer-events: none;
 }
@@ -1529,7 +1529,7 @@ legend + * {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 100dvw;
   color: var(--bs-modal-color);
   pointer-events: auto;
   background-color: var(--bs-modal-bg);

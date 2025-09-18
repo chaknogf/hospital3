@@ -5702,7 +5702,7 @@ textarea.form-control-lg {
 
 .modal-dialog {
   position: relative;
-  width: auto;
+  width: 100dvw;
   margin: var(--bs-modal-margin);
   pointer-events: none;
 }
@@ -5743,7 +5743,7 @@ textarea.form-control-lg {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 100dvw;
   color: var(--bs-modal-color);
   pointer-events: auto;
   background-color: var(--bs-modal-bg);
