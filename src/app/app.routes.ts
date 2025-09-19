@@ -6,7 +6,7 @@ import { HomeComponent } from './principal/home/home.component';
 import { PacientesComponent } from './Registros/patient/pacientes/pacientes.component';
 import { FormularioPacienteComponent } from './Registros/patient/formularioPaciente/formularioPaciente.component';
 import { CoexComponent } from './Registros/adminsion/coex/coex.component';
-import { EmergenciaComponent } from './Registros/adminsion/emergencia/emergencia.component';
+import { EmergenciaComponent } from './Registros/adminsion/emergencias/emergencia/emergencia.component';
 import { HospitalizacionComponent } from './Registros/adminsion/hospitalizacion/hospitalizacion.component';
 import { ConsultasComponent } from './Registros/adminsion/consultas/consultas.component';
 import { RecepcionComponent } from './Registros/adminsion/recepcion/recepcion.component';
