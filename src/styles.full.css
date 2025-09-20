@@ -12530,11 +12530,16 @@ thead th {
 
 /* Aurora Navbar Theme */
 .aurora-navbar {
-  background: radial-gradient(circle at top center, #f4f3f6c6, #ffffff, #fffffffe);
+  background: radial-gradient(circle at top center, #f4f3f6, #ffffff, #ffffff);
   color: #000 !important;
   text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
-  transition: color 0.3s ease, text-shadow 0.3s ease
+  box-shadow: white 0 0 12px, #06f1ed 0 0 24px;
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  border-bottom: 4px solid rgba(255, 255, 255, 0.2);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
+
 
 .aurora-paciente-container {
   background: radial-gradient(circle at top left, #553fe4c6, #06f1ed81, #553fe4c6);
@@ -13074,7 +13079,7 @@ thead th {
 .aurora-container .aurora-cards:hover {
   background: linear-gradient(135deg, #00eaff, #0099ff);
   box-shadow: 0 0 15px rgba(0,255,255,0.4), 0 0 40px rgba(0,255,255,0.6), 0 0 80px rgba(0,255,255,0.8);
-  border-radius: 2rem;
+  border-radius: 2.5rem;
   transform: translateY(-6px) scale(1.02);
 }
 

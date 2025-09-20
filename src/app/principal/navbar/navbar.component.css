@@ -1,73 +1,72 @@
-/* .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 10;
+/* Importar una fuente moderna (opcional, pero recomendado) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  position: relative;
-  z-index: 10;
-  border-radius: 8px;
-  text-wrap: wrap;
+/* Estilo general para el cuerpo para el fondo del degradado */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #1A2938, #0C151F);
+  min-height: 100vh;
 }
 
-.navbar .logo {
-  display: flex;
-  align-items: center;
+/* Estilo para el navbar con clases de Bootstrap */
+.aurora-navbar {
+  background: rgba(249, 2, 2, 0.061); /* Fondo semitransparente */
+  backdrop-filter: blur(10px); /* Efecto de desenfoque */
+  border-radius: 0 0 15px 15px; /* Bordes inferiores redondeados */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
 }
 
-.navbar .logo img {
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-}
-
-.navbar .logo span {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #333;
-}
-
-.navbar .nav-links ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-}
-
-.navbar .nav-links li {
-  margin-left: 30px;
-}
-
-.navbar .nav-links a {
-  text-decoration: none;
-  color: #666;
-  font-weight: 500;
+/* Marca y logo */
+.navbar-brand .text-dark {
+  font-weight: 600;
+  color: #E0E6F0 !important; /* Texto del logo en blanco */
   transition: color 0.3s ease;
 }
 
-.navbar .nav-links a:hover {
-  color: #6985ff;
+.navbar-brand .text-dark:hover {
+  color: #8da9d3 !important; /* Un azul más claro al pasar el cursor */
 }
 
-button {
-  padding: 4px 8px;
+/* Icono del logo */
+.navbar-brand .bi-hospital {
+  color: #92b0e3; /* Color distintivo para el ícono */
+}
+
+/* Botón de Salir */
+.btn-outline-danger {
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-danger:hover {
+  background-color: #ff6b6b;
+  color: #fff;
+}
+
+/* Texto del usuario y rol */
+.navbar-text .text-bold {
+  font-weight: 600;
+  color: #e0e6f0 !important; /* Texto del nombre del usuario en blanco */
+}
+
+.navbar-text .bg-dark {
+  background-color: rgba(255, 255, 255, 0.1) !important; /* Fondo semitransparente para el rol */
   border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  padding: 2px 8px;
+  color: #9aa8b5 !important;
 }
 
-.role {
-  font-size: small;
-  padding: 0.4rem;
+/* Ajustes para el botón responsive del navbar (toggler) */
+.navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
-.user-info {
-  font-weight: bold;
-  text-transform: uppercase;
-} */
+.medicalapp {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #E0E6F0 !important; /* Texto del logo en blanco */
+
+}
