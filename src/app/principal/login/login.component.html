@@ -1,25 +1,33 @@
-<div class="min-vh-100 d-flex justify-content-center align-items-center rounded-4"
-     >
-  <div class="w-100" >
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="glass-login-dark p-4 rounded-4 shadow-lg">
+<div class="aurora-login">
+  <div class="min-vh-100 d-flex justify-content-center align-items-center rounded-4">
+    <div class="w-100">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="glass-login-dark p-4 rounded-4 shadow-lg">
 
-      <h3 class="text-center mb-2 fw-bold text-white">Login</h3>
-      <p class="text-center text-white-50 mb-4 small">Ingresa tus credenciales</p>
+        <h3 class="text-center mb-2 fw-bold text-white">Login</h3>
+        <p class="text-center text-white-50 mb-4 small">Ingresa tus credenciales</p>
 
-      <div class="mb-3">
-        <input type="text" class="form-control rounded-pill bg-dark text-white border-white-25"
-               formControlName="username" placeholder="Usuario" autocomplete="off"/>
-      </div>
-      <div class="mb-3">
-        <input type="password" class="form-control rounded-pill bg-dark text-white border-white-25"
-               formControlName="password" placeholder="Contraseña"/>
-      </div>
+        <div class="mb-3">
+          <input type="text"
+                 class="form-control rounded-pill"
+                 formControlName="username"
+                 placeholder="Usuario"
+                 autocomplete="off"/>
+        </div>
 
-      <button type="submit" class="btn btn-gradient w-100 rounded-pill shadow-sm">Iniciar Sesión</button>
-    </form>
+        <div class="mb-3">
+          <input type="password"
+                 class="form-control rounded-pill"
+                 formControlName="password"
+                 placeholder="Contraseña"/>
+        </div>
+
+        <button type="submit" class="btn btn-gradient w-100 rounded-pill shadow-sm">
+          Iniciar Sesión
+        </button>
+      </form>
+    </div>
   </div>
-</div>
 
-<div *ngIf="loading">
-  <app-wordConect></app-wordConect>
-</div>
+  <div *ngIf="loading">
+    <app-wordConect></app-wordConect>
+  </div>

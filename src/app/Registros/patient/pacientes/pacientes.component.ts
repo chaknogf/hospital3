@@ -1,5 +1,6 @@
 // pacientes.component.ts
 import { Component, OnInit } from '@angular/core';
+import { ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { Paciente, Renap } from '../../../interface/interfaces';
@@ -7,11 +8,9 @@ import { IconService } from '../../../service/icon.service';
 import { PacienteFiltros } from '../../../interface/paciente-filtros.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DetallePacienteComponent } from '../detallePaciente/detallePaciente.component';
 import { EdadPipe } from "../../../pipes/edad.pipe";
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
-import { arrowDown, skipLeft, skipRight } from '../../../shared/icons/svg-icon';
-import { skip } from 'rxjs';
+
 
 @Component({
   selector: 'app-pacientes',
@@ -34,7 +33,8 @@ export class PacientesComponent implements OnInit {
   finPagina: boolean = false;
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
-
+  pacienteSeleccionado: number = 0;
+  @ViewChild('dialogAdmision') dialog!: ElementRef<HTMLDialogElement>;
   filtros: PacienteFiltros = {
     skip: 0,
     limit: this.pageSize
@@ -155,4 +155,38 @@ export class PacientesComponent implements OnInit {
   activarFila(id: number) {
     this.rowActiva = this.rowActiva === id ? null : id; // toggle
   }
+
+  options = [
+    { nombre: 'Coex', valor: 1 },
+    { nombre: 'Emergencia', valor: 2 }, // Cambiado para ser consistente
+    { nombre: 'Ingreso', valor: 3 }
+  ];
+
+
+  abrirModalAdmision(id: number) {
+    this.pacienteSeleccionado = id;
+    this.dialog.nativeElement.showModal();
+  }
+
+  admision(opt: number, id: number) {
+    if (opt === 1) {
+      this.router.navigate(
+        ['/admision', 'coex', id],
+        { queryParams: { esCoex: true } }
+      );
+    } else if (opt === 2) {
+      this.router.navigate(
+        ['/admision', 'emergencia', id],
+        { queryParams: { esEmergencia: true } }
+      );
+    } else if (opt === 3) {
+      this.router.navigate(
+        ['/admision', 'ingreso', id],
+        { queryParams: { esIngreso: true } }
+      );
+    }
+
+    this.dialog.nativeElement.close();
+  }
+
 }

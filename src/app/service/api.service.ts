@@ -272,16 +272,7 @@ export class ApiService {
     }
   }
 
-  async corEmergencia(): Promise<any> {
-    try {
-      const response = await this.api.post<{ 'correlativo': string }>('/generar/emergencia');
-      // console.log('👤 Correlativo obtenido correctamente:', response.data['correlativo']);
-      return response.data['correlativo'];
-    } catch (error) {
-      console.error('❌ Error al obtener correlativo:', error);
-      throw error;
-    }
-  }
+
 
   // municipios
 

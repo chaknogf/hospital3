@@ -1,3 +1,4 @@
+
 <div class="aurora-paciente-container" [class.d-none]="modalActivo">
 
   <!-- Botones superiores -->
@@ -7,7 +8,7 @@
      Menu
     </button>
 
-    <h1 class="text-white">Pacientes</h1>
+    <h1 class="text-white">Emergencias</h1>
 
     <button type="button" (click)="toggleFiltrar()">
       <span [innerHTML]="icons['find']"></span>
@@ -72,67 +73,70 @@
           <th>Identificador</th>
           <th>Nombre Completo</th>
           <th>Fecha Nacimiento</th>
-          <th *ngIf="!existePaciente">Dirección</th>
+          <th >Ciclo</th>
           <th>Género</th>
-          <th *ngIf="!existePaciente">Estado</th>
+          <th >Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let paciente of pacientes" class="aurora-table-row"
-    [class.touch-active]="rowActiva === paciente.id"
-    (click)="activarFila(paciente.id)" >
+        <tr *ngFor="let data of consultas" class="aurora-table-row"
+    [class.touch-active]="rowActiva === data.id_consulta"
+    (click)="activarFila(data.id_consulta)" >
             <td>
-              <div *ngIf="paciente?.cui"><strong>CUI:</strong> {{ paciente.cui }}</div>
-              <div *ngIf="paciente?.expediente"><strong>Expediente:</strong> {{ paciente.expediente }}</div>
-              <div *ngIf="paciente?.pasaporte"><strong>Pasaporte:</strong> {{ paciente.pasaporte }}</div>
-              <div *ngIf="paciente?.otro"><strong>Otro:</strong> {{ paciente.otro }}</div>
+              <div *ngIf="data?.cui"><strong>CUI:</strong> {{ data.cui }}</div>
+              <div *ngIf="data?.pasaporte"><strong>Pasaporte:</strong> {{ data.pasaporte }}</div>
+              <div *ngIf="data?.expediente"><strong>Expediente:</strong> {{ data.expediente }}</div>
+              <div *ngIf="data?.documento"><strong>Hoja de Emergencia:</strong> {{ data.documento }}</div>
             </td>
             <td >
               <p class="p-0 m-0 text-uppercase">
-                {{ paciente.nombre.primer_nombre }}
-                {{ paciente.nombre.segundo_nombre }}
-                {{ paciente.nombre.otro_nombre }}
+                {{ data.nombre.primer_nombre }}
+                {{ data.nombre.segundo_nombre }}
+                {{ data.nombre.otro_nombre }}
               </p>
               <p class="p-0 m-0 text-uppercase"
-                [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'">
-                {{ paciente.nombre.primer_apellido }}
-                {{ paciente.nombre.segundo_apellido }}
-                {{ paciente.nombre.apellido_casada }}
+                [ngClass]="data.sexo === 'M' ? 'hombre' : 'mujer'">
+                {{ data.nombre.primer_apellido }}
+                {{ data.nombre.segundo_apellido }}
+                {{ data.nombre.apellido_casada }}
               </p>
             </td>
             <td class="secundario">
-              {{ paciente.fecha_nacimiento | date:'dd/MM/yyyy' }}
+              {{ data.fecha_nacimiento | date:'dd/MM/yyyy' }}
               <br>
-              <small >{{ paciente.fecha_nacimiento | edad }}</small>
+              <small >{{ data.fecha_nacimiento | edad }}</small>
             </td>
-            <td class="secundario">{{ paciente.contacto?.localidad }} {{ paciente.contacto?.municipio | datosExtra: 'vecindad'  }}</td>
+           <td>{{ getLastCiclo(data.ciclo)?.valor }}</td>
             <td class="secundario">
-              <div *ngIf="paciente.sexo === 'M'">
+              <div *ngIf="data.sexo === 'M'">
                 <span [innerHTML]="icons['man']"></span> Masculino
               </div>
-              <div *ngIf="paciente.sexo === 'F'">
+              <div *ngIf="data.sexo === 'F'">
                 <span [innerHTML]="icons['woman']"></span> Femenino
               </div>
             </td>
             <td class="secundario">
-              <div *ngIf="paciente.estado === 'V'">
+              <div *ngIf="data.estado === 'V'">
                 <span [innerHTML]="icons['heart']"></span> Vivo
               </div>
-              <div *ngIf="paciente.estado === 'F'">
+              <div *ngIf="data.estado === 'F'">
                 <span [innerHTML]="icons['ghost']"></span> Fallecido
               </div>
             </td>
             <td class="secundario">
-              <div class="d-flex gap-1" >
-                <button  (click)="editarPaciente(paciente.id)">
+              <div class="botones-opt" >
+                <button  (click)="editar(data.id_consulta)">
                   <span [innerHTML]="icons['edit']"></span>
                 </button>
-                <button (click)="abrirModalAdmision(paciente.id)">
+                <button  >
                   <span [innerHTML]="icons['medical']"></span>
                 </button>
-                <button  (click)="verDetallesPaciente(paciente.id)">
+                <button  (click)="verDetalle(data.id_consulta)">
                   <span [innerHTML]="icons['tabla']"></span>
+                </button>
+                <button (click)="imprimir(data.id_consulta)" >
+                  <span [innerHTML]="icons['print']"></span>
                 </button>
               </div>
             </td>
@@ -142,7 +146,7 @@
   </div>
 
   <!-- paginación -->
-<div class="d-flex justify-content-center align-items-center">
+<div class="d-flex justify-content-center align-items-center p-0">
   <!-- Botón anterior -->
   <button class="btn"
           [disabled]="filtros.skip === 0"
@@ -165,20 +169,3 @@
 </div>
 
 
-<!-- Modal -->
-<dialog #dialogAdmision>
-<div class="aurora-container">
-  <div class="aurora-cards"
-       *ngFor="let opt of options"
-       (click)="admision(opt.valor, pacienteSeleccionado)">
-    <div class="aurora-items">
-      <!-- <span [innerHTML]="opt.icon"></span> -->
-      <h2>{{ opt.nombre }}</h2>
-
-    </div>
-  </div>
-
-</div>
-
-
-</dialog>

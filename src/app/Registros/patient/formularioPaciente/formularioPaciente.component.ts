@@ -25,6 +25,7 @@ import { ApiService } from '../../../service/api.service';
 import { PacienteUtilService } from '../../../service/paciente-util.service';
 
 import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon } from './../../../shared/icons/svg-icon';
+import { TipoConsulta } from '../../../enum/consultas';
 
 @Component({
   selector: 'app-formularioPaciente',
@@ -66,6 +67,8 @@ export class FormularioPacienteComponent implements OnInit {
   direccionInput: string = '';
   estudianteControl!: FormControl;
   empleadoControl!: FormControl;
+
+  tipoConsulta = TipoConsulta;
 
 
 

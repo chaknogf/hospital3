@@ -1,21 +1,17 @@
-/* Importar una fuente moderna (opcional, pero recomendado) */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
-/* Estilo general para el cuerpo para el fondo del degradado */
-body {
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #1A2938, #0C151F);
-  min-height: 100vh;
-}
 
 /* Estilo para el navbar con clases de Bootstrap */
 .aurora-navbar {
   background: rgba(249, 2, 2, 0.061); /* Fondo semitransparente */
-  backdrop-filter: blur(10px); /* Efecto de desenfoque */
-  border-radius: 0 0 15px 15px; /* Bordes inferiores redondeados */
+  backdrop-filter: blur(24px); /* Efecto de desenfoque */
+  border-radius: 0 0 8px 8px; /* Bordes inferiores redondeados */
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(63, 63, 63, 0.2);
   transition: all 0.3s ease-in-out;
+}
+
+.aurora-navbar:hover {
+background-color: #6bf3e121;
 }
 
 /* Marca y logo */
@@ -64,9 +60,31 @@ body {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-.medicalapp {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #E0E6F0 !important; /* Texto del logo en blanco */
+.title {
+  line-height: 1rem;
+  text-align: center;
+}
+.institucion-title {
+  font-family: altivo;
+  font-weight: 400;
+  color: white;
+  margin: 0;
+  padding: 0.2rem;
+  font-size: 1.3rem;
 
+}
+
+.institucion-subtitle {
+  font-family: altivo;
+  font-weight: 400;
+  color: white;
+  margin: 0;
+  padding: 0.2rem;
+  font-size: 1rem;
+}
+
+@media screen and (max-width: 429px) {
+  .title {
+    display: none;
+  }
 }

@@ -8,7 +8,7 @@ import { partos, gradoAcademicos } from '../enum/diccionarios';
   name: 'datosExtra'
 })
 export class DatosExtraPipe implements PipeTransform {
-  transform(valor: any, tipo: string): any {
+  transform(valor: any, tipo: any): any {
     if (valor === null || valor === undefined || valor === '') {
       return 'No especificado';
     }
@@ -117,6 +117,14 @@ export class DatosExtraPipe implements PipeTransform {
             return 'Si';
           } else {
             return 'No';
+          }
+        }
+      case 'sexo':
+        {
+          if (valor === 'M') {
+            return 'Masculino';
+          } else {
+            return 'Femenino';
           }
         }
 

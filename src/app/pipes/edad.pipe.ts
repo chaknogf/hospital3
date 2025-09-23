@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class EdadPipe implements PipeTransform {
 
-  transform(value: any | string): string {
+  transform(value: any | any): any {
     if (!value) return '';
 
     const birthDate = new Date(value);

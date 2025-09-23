@@ -64,3 +64,65 @@ h1 {
 .btn-gradient:hover {
   opacity: 0.85;
 }
+
+/* Estilo para el navbar con clases de Bootstrap */
+.aurora-navbar {
+  background: rgba(249, 2, 2, 0.061); /* Fondo semitransparente */
+  backdrop-filter: blur(24px); /* Efecto de desenfoque */
+  border-radius: 0 0 8px 8px; /* Bordes inferiores redondeados */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(63, 63, 63, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+.aurora-navbar:hover {
+background-color: #6bf3e121;
+}
+
+/* Marca y logo */
+.navbar-brand .text-dark {
+  font-weight: 600;
+  color: #E0E6F0 !important; /* Texto del logo en blanco */
+  transition: color 0.3s ease;
+}
+
+.navbar-brand .text-dark:hover {
+  color: #8da9d3 !important; /* Un azul más claro al pasar el cursor */
+}
+
+/* Icono del logo */
+.navbar-brand .bi-hospital {
+  color: #92b0e3; /* Color distintivo para el ícono */
+}
+
+/* Botón de Salir */
+.btn-outline-danger {
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-danger:hover {
+  background-color: #ff6b6b;
+  color: #fff;
+}
+
+/* Texto del usuario y rol */
+.navbar-text .text-bold {
+  font-weight: 600;
+  color: #e0e6f0 !important; /* Texto del nombre del usuario en blanco */
+}
+
+.navbar-text .bg-dark {
+  background-color: rgba(255, 255, 255, 0.1) !important; /* Fondo semitransparente para el rol */
+  border-radius: 5px;
+  padding: 2px 8px;
+  color: #9aa8b5 !important;
+}
+
+/* Ajustes para el botón responsive del navbar (toggler) */
+.navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+

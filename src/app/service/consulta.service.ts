@@ -76,7 +76,14 @@ export class ConsultaService {
 
   async crearConsulta(consulta: any): Promise<any> {
     try {
-      const response = await this.api.post('/consulta/crear', consulta);
+      const response = await this.api.post(
+        '/consulta/crear', consulta,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      );
       // console.log('👤 Consulta creada correctamente');
       return response.data;
     } catch (error) {
@@ -85,9 +92,16 @@ export class ConsultaService {
     }
   }
 
-  async updateConsulta(consulta: any): Promise<any> {
+  async updateConsulta(consultaId: number, consulta: any): Promise<any> {
     try {
-      const response = await this.api.put('/consulta/actualizar', consulta);
+      const response = await this.api.put(
+        `/consulta/actualizar/${consultaId}`
+        , consulta,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
       // console.log('👤 Consulta actualizada correctamente');
       return response.data;
     } catch (error) {
@@ -103,6 +117,17 @@ export class ConsultaService {
       return response.data;
     } catch (error) {
       console.error('❌ Error al eliminar consulta:', error);
+      throw error;
+    }
+  }
+
+  async corEmergencia(): Promise<any> {
+    try {
+      const response = await this.api.post<{ 'correlativo': string }>('/generar/emergencia');
+      // console.log('👤 Correlativo obtenido correctamente:', response.data['correlativo']);
+      return response.data['correlativo'];
+    } catch (error) {
+      console.error('❌ Error al obtener correlativo:', error);
       throw error;
     }
   }

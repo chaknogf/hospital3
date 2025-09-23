@@ -1,0 +1,33 @@
+.resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  justify-content: end;
+  letter-spacing: 3px;
+ background: rgba(0, 0, 0, 0.489) !important;
+ transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  padding: 4px 20px 4px 8px;
+  border-radius: 10px;
+  margin: 0;
+   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(218, 249, 178, 0.687);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  align-items: center;
+
+}
+
+
+
+.resumen:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+
+span svg {
+  height: 24;
+  width: 24;
+  align-items: center;
+  transform: scale(0.6);
+}
