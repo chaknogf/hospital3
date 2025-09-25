@@ -12527,18 +12527,36 @@ thead th {
   50% { opacity: 0.5; }
 }
 
-
-/* Aurora Navbar Theme */
+/* Estilo para el navbar con clases de Bootstrap */
 .aurora-navbar {
-  background: radial-gradient(circle at top center, #f4f3f6, #ffffff, #ffffff);
-  color: #000 !important;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
-  box-shadow: white 0 0 12px, #06f1ed 0 0 24px;
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
-  border-bottom: 4px solid rgba(255, 255, 255, 0.2);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  background: rgba(249, 2, 2, 0.061); /* Fondo semitransparente */
+  backdrop-filter: blur(24px); /* Efecto de desenfoque */
+  border-radius: 0 0 8px 8px; /* Bordes inferiores redondeados */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(63, 63, 63, 0.2);
+  transition: all 0.3s ease-in-out;
 }
+
+.aurora-navbar:hover {
+background-color: #6bf3e121;
+}
+
+/* Marca y logo */
+.navbar-brand .text-dark {
+  font-weight: 600;
+  color: #E0E6F0 !important; /* Texto del logo en blanco */
+  transition: color 0.3s ease;
+}
+
+.navbar-brand .text-dark:hover {
+  color: #8da9d3 !important; /* Un azul más claro al pasar el cursor */
+}
+
+/* Icono del logo */
+.navbar-brand .bi-hospital {
+  color: #92b0e3; /* Color distintivo para el ícono */
+}
+
 
 
 .aurora-paciente-container {
@@ -13499,4 +13517,50 @@ box-shadow: 0 1px 8px rgba(5, 75, 75, 0.512);
   opacity: 1;
 }
 
+/* Estilo Aurora para checkboxes */
+.aurora-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 8px;
+  position: relative;
+}
 
+.aurora-checkbox input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #6c63ff; /* color primario */
+  border-radius: 5px;
+  background-color: #fff;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.aurora-checkbox input[type="checkbox"]:checked {
+  background-color: #6c63ff;
+  border-color: #6c63ff;
+}
+
+.aurora-checkbox input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 6px;
+  height: 12px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.aurora-checkbox span {
+  color: white;
+  transition: color 0.2s ease;
+}

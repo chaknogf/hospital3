@@ -5347,6 +5347,13 @@ ngx-mask@^20.0.3:
   dependencies:
     tslib "^2.3.0"
 
+ngx-material-timepicker@^13.1.1:
+  version "13.1.1"
+  resolved "https://registry.yarnpkg.com/ngx-material-timepicker/-/ngx-material-timepicker-13.1.1.tgz#1dade06660c6a7b9689840396b4ea5681ac0eb35"
+  integrity sha512-GST4IBFXrPSBB5VP5LVxoOk1yHbdSnaB293tjuyu+vusg+pQ/3+AtcxQEIadk6Nmsdt8zKsbXNgvLrI4nbYRKQ==
+  dependencies:
+    tslib "^2.0.0"
+
 node-addon-api@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-6.1.0.tgz#ac8470034e58e67d0c6f1204a18ae6995d9c0d76"

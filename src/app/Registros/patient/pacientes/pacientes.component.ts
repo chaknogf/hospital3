@@ -70,6 +70,8 @@ export class PacientesComponent implements OnInit {
       arrowDown: this.iconService.getIcon("arrowDown"),
       skipLeft: this.iconService.getIcon("skipLeft"),
       skipRight: this.iconService.getIcon("skipRight"),
+
+
     };
   }
 
@@ -171,17 +173,17 @@ export class PacientesComponent implements OnInit {
   admision(opt: number, id: number) {
     if (opt === 1) {
       this.router.navigate(
-        ['/admision', 'coex', id],
+        ['/admisionPaciente', 'coex', id],
         { queryParams: { esCoex: true } }
       );
     } else if (opt === 2) {
       this.router.navigate(
-        ['/admision', 'emergencia', id],
+        ['/admisionPaciente', 'emergencia', id],
         { queryParams: { esEmergencia: true } }
       );
     } else if (opt === 3) {
       this.router.navigate(
-        ['/admision', 'ingreso', id],
+        ['/admisionPaciente', 'ingreso', id],
         { queryParams: { esIngreso: true } }
       );
     }

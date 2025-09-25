@@ -69,6 +69,7 @@
     <table class="aurora-tb" >
       <thead >
         <tr>
+          <th>Id</th>
           <th>Identificador</th>
           <th>Nombre Completo</th>
           <th>Fecha Nacimiento</th>
@@ -82,6 +83,7 @@
         <tr *ngFor="let paciente of pacientes" class="aurora-table-row"
     [class.touch-active]="rowActiva === paciente.id"
     (click)="activarFila(paciente.id)" >
+            <td>{{ paciente.id }}</td>
             <td>
               <div *ngIf="paciente?.cui"><strong>CUI:</strong> {{ paciente.cui }}</div>
               <div *ngIf="paciente?.expediente"><strong>Expediente:</strong> {{ paciente.expediente }}</div>

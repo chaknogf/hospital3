@@ -103,8 +103,8 @@ export class EmergenciasListComponent implements OnInit {
     this.cargarConsultas();
   }
 
-  editar(consultaId: number) {
-    this.router.navigate(['/editarAdmision', consultaId, 'emergencia']);
+  editar(id: number) {
+    this.router.navigate(['/editarAdmision', id, 'emergencia']);
   }
   agregar() {
     this.router.navigate(['/admision', 'emergencia']);

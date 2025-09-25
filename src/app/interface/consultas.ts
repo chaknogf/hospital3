@@ -1,3 +1,4 @@
+import { servicios } from './../enum/consultas';
 
 // app/models/consultas.interface.ts
 
@@ -158,20 +159,9 @@ export interface Indicador {
 export interface Ciclo {
   estado: string;
   registro: string;
-}
-
-export interface ConsultaBase {
-  id?: number;
-  expediente?: string;
-  paciente_id: number;
-  tipo_consulta?: number;
-  especialidad?: number;
-  servicio?: number;
-  documento?: string;
-  fecha_consulta?: string; // ISO string
-  hora_consulta?: string; // HH:MM
-  ciclo?: { [key: string]: Ciclo };
-  indicadores?: Indicador;
+  usuario: string;
+  especialidad?: string;
+  servicio: string;
   detalle_clinico?: { [key: string]: Datos };
   sistema?: { [key: string]: Sistema };
   signos_vitales?: { [key: string]: SignosVitales };
@@ -188,9 +178,23 @@ export interface ConsultaBase {
   egreso?: { [key: string]: Egreso };
 }
 
+export interface ConsultaBase {
+  id: number;
+  expediente?: string;
+  paciente_id: number;
+  tipo_consulta?: number;
+  especialidad?: number;
+  servicio?: number;
+  documento?: string;
+  fecha_consulta?: string; // ISO string
+  hora_consulta?: string; // HH:MM
+  indicadores?: Indicador;
+  ciclo?: { [key: string]: Ciclo };
+}
+
 export interface ConsultaCreate extends ConsultaBase { }
 export interface ConsultaUpdate extends ConsultaBase {
-  id?: number;
+  id: number;
 }
 export interface ConsultaOut extends ConsultaBase {
   id: number;

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
+import { ConsultaBase } from '../interface/consultas';
 
 
 @Injectable({
@@ -63,11 +64,15 @@ export class ConsultaService {
     }
   }
 
-  async getConsulta(id: number): Promise<any> {
+  async getConsulta(filtros: any): Promise<any> {
     try {
-      const response = await this.api.get(`/consulta/?id=${id}&skip=0&limit=1`);
+      const filtrosLimpiados = this.limpiarParametros(filtros);
+      const response = await this.api.get<ConsultaBase[]>('/consulta/', {
+        params: filtrosLimpiados
+
+      })
       // console.log('👤 Consulta obtenida correctamente');
-      return response.data[0];
+      return response.data;
     } catch (error) {
       console.error('❌ Error al obtener consulta:', error);
       throw error;
@@ -77,7 +82,7 @@ export class ConsultaService {
   async crearConsulta(consulta: any): Promise<any> {
     try {
       const response = await this.api.post(
-        '/consulta/crear', consulta,
+        '/consulta/crear/', consulta,
         {
           headers: {
             'Content-Type': 'application/json',

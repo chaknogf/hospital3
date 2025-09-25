@@ -27,9 +27,9 @@ export const routes: Routes = [
   { path: 'registros', component: RegistrosMedicosComponent, canActivate: [AuthGuard] },
   { path: 'admision', component: AdmisionComponent, canActivate: [AuthGuard] },
   { path: 'admision/:origen', component: AdmisionComponent, canActivate: [AuthGuard] },
-  { path: 'admision/:origen/:pacienteId', component: AdmisionComponent, canActivate: [AuthGuard] },
-  { path: 'editarAdmision/:consultaId/:origen', component: AdmisionComponent, canActivate: [AuthGuard] },
-  { path: 'editarAdmision/:consultaId', component: AdmisionComponent, canActivate: [AuthGuard] },
+  { path: 'admisionPaciente/:origen/:pacienteId', component: AdmisionComponent, canActivate: [AuthGuard] },
+  { path: 'editarAdmision/:id/:origen', component: AdmisionComponent, canActivate: [AuthGuard] },
+  { path: 'editarAdmision/:id', component: AdmisionComponent, canActivate: [AuthGuard] },
   { path: 'detalleAdmision/:id', component: DetalleConsultaComponent, canActivate: [AuthGuard] },
   // Pacientes
   { path: 'pacientes', component: PacientesComponent, canActivate: [AuthGuard] },
