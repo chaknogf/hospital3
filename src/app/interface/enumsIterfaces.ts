@@ -1,19 +1,16 @@
 import { Departamento } from './../enum/departamentos';
 import { Municipio } from './../interface/interfaces';
-import { Estadocivil } from "../enum/estados_civil";
-import { GradoAcademico } from "../enum/diccionarios";
-import { Idioma } from "../enum/idiomas";
-import { Parentesco } from "../enum/parentescos";
-import { Pueblo } from "../enum/pueblos";
+import { Dict } from "../enum/diccionarios";
+
 
 
 
 export interface Enumeradores {
-  estadocivil: Estadocivil[],
-  gradoacademico: GradoAcademico[],
-  idiomas: Idioma[],
-  parentescos: Parentesco[],
-  pueblos: Pueblo[],
+  estadocivil: Dict[],
+  gradoacademico: Dict[],
+  idiomas: Dict[],
+  parentescos: Dict[],
+  pueblos: Dict[],
   departamentos: Departamento[],
   municipios: Municipio[]
 }

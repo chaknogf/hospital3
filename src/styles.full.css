@@ -14,6 +14,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
 :root,
 [data-bs-theme=light] {
+  --urgente: rgba(255, 0, 0, 1); /* Rojo */
+  --moderado: rgba(255, 255, 0, 1); /* Amarillo */
+  --estable: rgba(0, 128, 0, 1); /* Verde */
+  --muerto: rgba(0, 0, 0, 1); /* Negro */
+  --standar: rgba(173, 216, 230, 1); /* Celeste */
   --bs-blue: #3459e6;
   --bs-indigo: #6610f2;
   --bs-purple: #6f42c1;
@@ -8665,6 +8670,12 @@ textarea.form-control-lg {
   line-height: 2 !important;
 }
 
+.text-justify {
+  text-align: justify;
+  letter-spacing: 2px;
+  word-wrap: break-word; /* o overflow-wrap: break-word; */
+  overflow-wrap: break-word; /* opcional, más moderno */
+}
 .text-start {
   text-align: left !important;
 }
@@ -12463,6 +12474,50 @@ thead th {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
+@keyframes faro {
+  0% {
+    box-shadow: 0 0 5px rgba(var(--color-activo), 0.3);
+    background-color: rgba(var(--color-activo), 0.1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(var(--color-activo), 1);
+    background-color: rgba(var(--color-activo), 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(var(--color-activo), 0.3);
+    background-color: rgba(var(--color-activo), 0.1);
+  }
+}
+
+.faro-efecto {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  animation: faro 2s infinite ease-in-out;
+}
+
+/* Colores dinámicos según estado */
+.urgente {
+  --color-activo: 255, 0, 0; /* Rojo */
+}
+
+.moderado {
+  --color-activo: 255, 255, 0; /* Amarillo */
+}
+
+.estable {
+  --color-activo: 0, 128, 0; /* Verde */
+}
+
+.muerto {
+  --color-activo: 0, 0, 0; /* Negro */
+}
+
+.standar {
+  --color-activo: 173, 216, 230; /* Celeste */
+}
+
+
 .glass-login-dark {
   background-color: #1e1e28bf;
   -webkit-backdrop-filter: blur(12px);
@@ -12775,22 +12830,29 @@ background-color: #6bf3e121;
   padding: 0.4rem;
   border: none;
   border-radius: 20px;
-  background: rgba(76, 202, 240, 0.15); /* picton-blue con transparencia */
+  background: rgba(76, 202, 240, 0.15);
   color: white !important;
   font-weight: bold;
   font-size: 0.8rem;
   cursor: pointer;
-  flex: 1 1 250px;          /* crece, se encoge y base de 250px */
-  max-width: 140px;          /* limita ancho máximo */
+  flex: 1 1 250px;
+  max-width: 140px;
   transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-  backdrop-filter: blur(6px); /* sutil efecto glass */
+  backdrop-filter: blur(6px);
 }
 
 .botones button:hover {
-  background: rgba(0, 255, 255, 0.75); /* cyan translúcido */
+  background: rgba(0, 255, 255, 0.75);
   color: #000 !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 255, 255, 0.4);
+}
+
+.botones button.activo {
+ background: rgba(0, 255, 255, 0.75);
+  color: #000 !important;
+  box-shadow: 0 2px 6px rgba(0, 255, 255, 0.4);
+  transform: translateY(2px);
 }
 
 /* Media query para móviles: fila horizontal */

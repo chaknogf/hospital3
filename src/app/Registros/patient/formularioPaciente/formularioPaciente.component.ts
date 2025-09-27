@@ -7,15 +7,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { combineLatest } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-
 import { Paciente, Metadata, Municipio, PaisesIso } from '../../../interface/interfaces';
 import { comunidadChimaltenango, Keys } from '../../../interface/comunidadChimaltenango';
 import { Enumeradores } from '../../../interface/enumsIterfaces';
-import { estadoCivil } from './../../../enum/estados_civil';
-import { gradoAcademicos } from '../../../enum/diccionarios';
-import { idiomas } from '../../../enum/idiomas';
-import { pueblos } from '../../../enum/pueblos';
-import { parentescos } from '../../../enum/parentescos';
+import { estadoCivil, parentescos, pueblos, idiomas, gradoAcademicos } from './../../../enum/diccionarios';
 import { departamentos } from './../../../enum/departamentos';
 import { dpiValidator } from '../../../validators/dpi.validator';
 import { UnaPalabraDirective } from '../../../directives/unaPalabra.directive';
@@ -23,9 +18,8 @@ import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
 import { provideNgxMask, NgxMaskDirective } from 'ngx-mask';
 import { ApiService } from '../../../service/api.service';
 import { PacienteUtilService } from '../../../service/paciente-util.service';
-
 import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon } from './../../../shared/icons/svg-icon';
-import { tipoConsulta } from '../../../enum/consultas';
+import { tipoConsulta } from '../../../enum/diccionarios';
 
 @Component({
   selector: 'app-formularioPaciente',

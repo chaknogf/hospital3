@@ -1,9 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { departamentos, municipios } from '../enum/departamentos';
-import { pueblos } from '../enum/pueblos';
-import { idiomas } from '../enum/idiomas';
-import { parentescos } from '../enum/parentescos';
-import { partos, gradoAcademicos } from '../enum/diccionarios';
+import { idiomas } from '../enum/diccionarios';
+import { partos, gradoAcademicos, pueblos, parentescos, especialidades } from '../enum/diccionarios';
 @Pipe({
   name: 'datosExtra'
 })
@@ -127,6 +125,10 @@ export class DatosExtraPipe implements PipeTransform {
             return 'Femenino';
           }
         }
+      case 'especialidad': {
+        const especialidad = especialidades.find(e => e.value === valor);
+        return especialidad ? especialidad.label : valor;
+      }
 
 
       // Puedes agregar más casos según tus catálogos

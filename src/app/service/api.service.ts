@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
-import { Paciente, Usuarios, Correlativo, Municipio } from '../interface/interfaces';
-import { ConsultaBase } from '../interface/consultas';
+import { Paciente, Usuarios, Correlativo, Municipio, Totales } from '../interface/interfaces';
+import { ConsultaBase, ConsultaResponse } from '../interface/consultas';
+import { BehaviorSubject } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
@@ -10,6 +11,17 @@ export class ApiService {
   public token: string | null = null;
   public username: string | null = null;
   public role: string | null = null;
+  private ultimoFiltroPaciente: any = { skip: 0, limit: 6 };
+  private ultimoFiltroConsulta: any = { skip: 0, limit: 6 };
+  private pacientesSubject = new BehaviorSubject<Paciente[]>([]);
+  pacientes$ = this.pacientesSubject.asObservable();
+  private consultasSubject = new BehaviorSubject<ConsultaResponse[]>([]);
+  consultas$ = this.consultasSubject.asObservable();
+  private ordenesSubject = new BehaviorSubject<any>({});
+  public ordenes$ = this.ordenesSubject.asObservable();
+
+
+
 
   constructor(
     private router: Router,
@@ -189,17 +201,25 @@ export class ApiService {
   ///////////////////
   async getPacientes(filtros: any): Promise<any> {
     try {
+      this.ultimoFiltroPaciente = filtros; // 👈 guardar el filtro actual
       const filtrosLimpiados = this.limpiarParametros(filtros);
+
       const response = await this.api.get<Paciente[]>('/pacientes/', {
         params: filtrosLimpiados
       });
-      // console.log('👤 Pacientes obtenidos correctamente');
+
+      this.pacientesSubject.next(response.data);
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener pacientes:', error);
       throw error;
     }
   }
+
+  async refreshPacientes() {   // 👈 nueva función
+    return this.getPacientes(this.ultimoFiltroPaciente);
+  }
+
 
   async getPaciente(id: number): Promise<Paciente> {
     try {
@@ -213,51 +233,28 @@ export class ApiService {
     }
   }
   async createPaciente(paciente: any): Promise<any> {
-    try {
-      const response = await this.api.post(
-        '/paciente/crear/', paciente,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      // console.log('👤 Paciente creado correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al crear paciente:', error);
-      throw error;
-    }
+    const response = await this.api.post('/paciente/crear/', paciente, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+    await this.refreshPacientes();  // 👈 refrescar lista
+    return response.data;
   }
 
 
   async updatePaciente(pacienteId: number, paciente: any): Promise<any> {
-    try {
-      const response = await this.api.put(
-        `/paciente/actualizar/${pacienteId}`,
-        paciente,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-      // console.log('👤 Paciente actualizado correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al actualizar paciente:', error);
-      throw error;
-    }
+    const response = await this.api.put(
+      `/paciente/actualizar/${pacienteId}`,
+      paciente,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+    await this.refreshPacientes();  // 👈 refrescar lista
+    return response.data;
   }
 
   async deletePaciente(pacienteId: number): Promise<any> {
-    try {
-      const response = await this.api.delete(`/paciente/eliminar/${pacienteId}`);
-      // console.log('👤 Paciente eliminado correctamente');
-      return response.data[0];
-    } catch (error) {
-      console.error('❌ Error al eliminar paciente:', error);
-      throw error;
-    }
+    const response = await this.api.delete(`/paciente/eliminar/${pacienteId}`);
+    await this.refreshPacientes();  // 👈 refrescar lista
+    return response.data[0];
   }
 
 
@@ -371,19 +368,29 @@ export class ApiService {
   // consultas
   ///////////////////
 
+  enviarOrdenes(ordenes: any) {
+    this.ordenesSubject.next(ordenes);
+  }
 
   async getConsultas(filtros: any): Promise<any> {
     try {
+      this.ultimoFiltroConsulta = filtros;
       const filtrosLimpiados = this.limpiarParametros(filtros);
-      const response = await this.api.get('/consultas/', {
+
+      const response = await this.api.get<ConsultaResponse[]>('/consultas/', {
         params: filtrosLimpiados
       });
-      // console.log('👤 Consultas obtenidas correctamente');
+
+      this.consultasSubject.next(response.data);
+
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener consultas:', error);
       throw error;
     }
+  }
+  async refreshConsultas() {
+    return this.getConsultas(this.ultimoFiltroConsulta);
   }
 
   async getConsulta(filtros: any): Promise<any> {
@@ -413,50 +420,29 @@ export class ApiService {
   }
 
   async crearConsulta(consulta: any): Promise<any> {
-    try {
-      const response = await this.api.post(
-        '/consulta/crear/', consulta,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      );
-      // console.log('👤 Consulta creada correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al crear consulta:', error);
-      throw error;
-    }
+    const response = await this.api.post('/consulta/crear/', consulta, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+    await this.refreshConsultas();
+    //console.log(response.data);
+    return response.data;
+
   }
 
   async updateConsulta(consultaId: any, consulta: any): Promise<any> {
-    try {
-      const response = await this.api.put(
-        `/consulta/actualizar/${consultaId}`
-        , consulta,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        });
-      // console.log('👤 Consulta actualizada correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al actualizar consulta:', error);
-      throw error;
-    }
+    const response = await this.api.put(
+      `/consulta/actualizar/${consultaId}`,
+      consulta,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+    await this.refreshConsultas();
+    return response.data;
   }
 
-  async deleteConsulta(id: number): Promise<any> {
-    try {
-      const response = await this.api.delete(`/consulta/eliminar/${id}`);
-      // console.log('👤 Consulta eliminada correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al eliminar consulta:', error);
-      throw error;
-    }
+  async deleteConsulta(consultaId: number): Promise<any> {
+    const response = await this.api.delete(`/consulta/eliminar/${consultaId}`);
+    await this.refreshConsultas();
+    return response.data[0];
   }
 
   async corEmergencia(): Promise<any> {
@@ -470,7 +456,21 @@ export class ApiService {
     }
   }
 
+  ///////////////////////
+  // totales
+  //////////////////////
 
 
+
+
+  async getTotales(): Promise<Totales[]> {
+    try {
+      const response = await this.api.get<Totales[]>('/totales/');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener totales:', error);
+      throw error;
+    }
+  }
 
 }

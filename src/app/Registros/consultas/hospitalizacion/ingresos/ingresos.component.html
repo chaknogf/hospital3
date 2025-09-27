@@ -8,7 +8,7 @@
      Menu
     </button>
 
-    <h1 class="text-white">Emergencias</h1>
+    <h1 class="text-white">Hospitalización</h1>
 
     <button type="button" (click)="toggleFiltrar()">
       <span [innerHTML]="icons['find']"></span>
@@ -73,11 +73,12 @@
           <th>Id</th>
           <th>Identificador</th>
           <th>Nombre Completo</th>
-          <th>Fecha Nacimiento</th>
+          <th>Especialidad</th>
           <th >Ciclo</th>
           <th>Género</th>
           <th >Estado</th>
           <th>Acciones</th>
+
         </tr>
       </thead>
       <tbody>
@@ -105,9 +106,7 @@
               </p>
             </td>
             <td class="secundario">
-              {{ data.fecha_nacimiento | date:'dd/MM/yyyy' }}
-              <br>
-              <small >{{ data.fecha_nacimiento | edad }}</small>
+              {{data.especialidad | datosExtra: 'especialidad'}}
             </td>
            <td>{{ estadoUltimoCiclo(data.ciclo) }}</td>
             <td class="secundario">

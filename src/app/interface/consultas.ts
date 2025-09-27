@@ -1,4 +1,4 @@
-import { servicios } from './../enum/consultas';
+
 
 // app/models/consultas.interface.ts
 
@@ -183,13 +183,14 @@ export interface ConsultaBase {
   expediente?: string;
   paciente_id: number;
   tipo_consulta?: number;
-  especialidad?: number;
-  servicio?: number;
+  especialidad?: string;
+  servicio?: string;
   documento?: string;
   fecha_consulta?: string; // ISO string
   hora_consulta?: string; // HH:MM
   indicadores?: Indicador;
   ciclo?: { [key: string]: Ciclo };
+  orden?: number;
 }
 
 export interface ConsultaCreate extends ConsultaBase { }
@@ -220,10 +221,11 @@ export interface ConsultaResponse {
   estado: string;
   id_consulta: number;
   tipo_consulta: number;
-  especialidad: number;
-  servicio: number;
+  especialidad: string;
+  servicio: string;
   documento: string;
   fecha_consulta: string; // ISO date string
   hora_consulta: string; // ISO time string
   ciclo: Record<string, any>;
+  orden?: number;
 }

@@ -9,7 +9,7 @@ import { ApiService } from '../../../service/api.service';
 import { ConsultaService } from '../../../service/consulta.service';
 import { ConsultaUtilService } from '../../../service/consulta-util.service';
 
-import { Dictionary, ciclos, tipoConsulta, especialidades, servicios, DictionaryServicios } from '../../../enum/consultas';
+import { Dict, ciclos, tipoConsulta, especialidades, servicios } from '../../../enum/diccionarios';
 import { Paciente } from '../../../interface/interfaces';
 import { ConsultaUpdate } from './../../../interface/consultas';
 
@@ -56,10 +56,10 @@ export class AdmisionComponent implements OnInit {
   private horaActual: string = '';
 
   // 🔹 Listas y enums
-  tipoConsulta: Dictionary[] = tipoConsulta;
-  ciclos: Dictionary[] = ciclos;
-  especialidades: DictionaryServicios[] = [];
-  servicios: DictionaryServicios[] = [];
+  tipoConsulta: Dict[] = tipoConsulta;
+  ciclos: Dict[] = ciclos;
+  especialidades: Dict[] = [];
+  servicios: Dict[] = [];
 
   // 🔹 SVG Icons
   addIcon!: SafeHtml;
@@ -111,8 +111,8 @@ export class AdmisionComponent implements OnInit {
       expediente: [''],
       paciente_id: [0],
       tipo_consulta: [0],
-      especialidad: [0],
-      servicio: [0],
+      especialidad: [''],
+      servicio: [''],
       documento: [''],
       fecha_consulta: [''],
       hora_consulta: [''],
@@ -127,7 +127,8 @@ export class AdmisionComponent implements OnInit {
         ambulancia: [false],
         embarazo: [false]
       }),
-      ciclo: this.fb.group({})
+      ciclo: this.fb.group({}),
+
     });
 
     // Ciclos dinámicos
@@ -221,7 +222,7 @@ export class AdmisionComponent implements OnInit {
               estado: [ciclo.estado],
               registro: [ciclo.registro],
               usuario: [ciclo.usuario],
-              servicio: [ciclo.servicio || 31]
+              servicio: [ciclo.servicio || 'REME'],
             }));
           });
         }
@@ -301,7 +302,7 @@ export class AdmisionComponent implements OnInit {
   volver(): void {
     if (this.esEmergencia) this.router.navigate(['/emergencias']);
     else if (this.esCoesx) this.router.navigate(['/coex']);
-    else if (this.esIngreso) this.router.navigate(['/ingreso']);
+    else if (this.esIngreso) this.router.navigate(['/ingresos']);
     else this.router.navigate(['/pacientes']);
   }
 
@@ -331,35 +332,19 @@ export class AdmisionComponent implements OnInit {
     this.servicios = servicios.filter(s => s.ref === 'coex');
     this.form.patchValue({
       tipo_consulta: 1,
-      servicio: 1,
+      servicio: 'COEX',
 
     });
   }
 
-  // ==========================
-  // 🔹 Helpers
-  // ==========================
 
-  // private agregarNuevoCiclo(): void {
-  //   const ciclosForm = this.form.get('ciclo') as FormGroup;
-  //   const keys = Object.keys(ciclosForm.controls);
-
-  //   // Encontrar el siguiente número
-  //   const nextIndex = keys.length > 0
-  //     ? Math.max(...keys.map(k => Number(k.replace('ciclo', '')))) + 1
-  //     : 1;
-
-  //   const nuevoKey = `ciclo${nextIndex}`;
-
-  //   ciclosForm.addControl(nuevoKey, this.crearCiclo());
-  // }
 
   private crearCiclo(): FormGroup {
     return this.fb.group({
-      estado: [this.enEdicion ? 13 : 1],
+      estado: [this.enEdicion ? 'ACTU' : 'ADMI'],
       registro: [new Date().toISOString()],
       usuario: [this.usuarioActual],
-      servicio: [31],
+      servicio: ['REME'],
       // especialidad: [''],
       // detalle_clinico: this.fb.group({}),
       // sistema: this.fb.group({}),
@@ -386,8 +371,8 @@ export class AdmisionComponent implements OnInit {
           ...ciclo,
           usuario: ciclo.usuario || this.usuarioActual,
           registro: ciclo.registro || new Date().toISOString(),
-          servicio: ciclo.servicio || 31,
-          estado: ciclo.estado || (this.enEdicion ? 13 : 1),
+          servicio: ciclo.servicio || 'REME',
+          estado: ciclo.estado || (this.enEdicion ? 'ACTU' : 'ADMI'),
           // especialidad: ciclo.especialidad || null,
           // detalle_clinico: ciclo.detalle_clinico || {},
           // signos_vitales: ciclo.signos_vitales || {},

@@ -1,3 +1,6 @@
+import { filter } from 'rxjs/operators';
+
+
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -9,20 +12,30 @@ import { Router } from '@angular/router';
 import { IconService } from '../../../../service/icon.service';
 import { ConsultaResponse, Ciclo } from '../../../../interface/consultas';
 import { ciclos } from '../../../../enum/diccionarios';
+import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
 
 
 @Component({
-  selector: 'app-emergenciasList',
-  templateUrl: './emergenciasList.component.html',
-  styleUrls: ['./emergenciasList.component.css'],
+  selector: 'app-coexLista',
+  templateUrl: './coexLista.component.html',
+  styleUrls: ['./coexLista.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe]
+  imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe]
 })
-export class EmergenciasListComponent implements OnInit {
+export class CoexListaComponent implements OnInit {
 
   esEmergencia = true;
   consultas: ConsultaResponse[] = [];
+  medi: ConsultaResponse[] = [];
+  pedia: ConsultaResponse[] = [];
+  gine: ConsultaResponse[] = [];
+  ciru: ConsultaResponse[] = [];
+  trauma: ConsultaResponse[] = [];
+  psico: ConsultaResponse[] = [];
+  nutri: ConsultaResponse[] = [];
+  odonto: ConsultaResponse[] = [];
+
   totales: Totales[] = [];
   paciente: Paciente | null = null;
   public status: 'activo' | 'inactivo' | 'none' = 'none';
@@ -31,17 +44,20 @@ export class EmergenciasListComponent implements OnInit {
   visible = false;
   modalActivo = false;
   espacio: string = ' ';
-  pageSize: number = 8;
+  pageSize: number = 200;
   paginaActual: number = 1;
   finPagina: boolean = false;
+  fechaActual: Date = new Date();
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
+  especialidadSeleccionada: string = '';
 
 
   filtros: any = {
     skip: 0,
     limit: this.pageSize,
-    tipo_consulta: 3
+    tipo_consulta: 1,
+    fecha_consulta: this.fechaActual
   };
 
   // iconos (ahora inyectados por servicio)
@@ -55,6 +71,14 @@ export class EmergenciasListComponent implements OnInit {
 
   ) {
     this.icons = {
+      odont: this.iconService.getIcon("odontoIcon"),
+      nutri: this.iconService.getIcon("nutriIcon"),
+      psico: this.iconService.getIcon("psicoIcon"),
+      trauma: this.iconService.getIcon("traumaIcon"),
+      ciru: this.iconService.getIcon("ciruIcon"),
+      gine: this.iconService.getIcon("gineIcon"),
+      pedia: this.iconService.getIcon("pediaIcon"),
+      medicina: this.iconService.getIcon("medicinaIcon"),
       docuento: this.iconService.getIcon("documentoIcon"),
       activo: this.iconService.getIcon("activoIcon"),
       search: this.iconService.getIcon("searchIcon"),
@@ -80,23 +104,35 @@ export class EmergenciasListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Suscribirse a las consultas (observable único de la app)
     this.api.consultas$.subscribe((data) => {
       this.consultas = data;
     });
 
+    // Totales
     this.api.getTotales().then((data) => {
       this.totales = data;
-      // 👇 si la vista devuelve en orden pacientes, consultas
       this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
     });
 
-    this.api.getConsultas({ skip: 0, limit: 6 });
+    // 👇 Aquí sí usamos filtros desde el inicio
+    this.api.getConsultas(this.filtros);
   }
 
   async cargarConsultas() {
     this.cargando = true;
     try {
       this.consultas = await this.api.getConsultas(this.filtros);
+
+      this.medi = await this.api.getConsultas({ ...this.filtros, especialidad: 'MEDI' });
+      this.pedia = await this.api.getConsultas({ ...this.filtros, especialidad: 'PEDIA' });
+      this.gine = await this.api.getConsultas({ ...this.filtros, especialidad: 'GINE' });
+      this.ciru = await this.api.getConsultas({ ...this.filtros, especialidad: 'CIRU' });
+      this.trauma = await this.api.getConsultas({ ...this.filtros, especialidad: 'TRAU' });
+      this.psico = await this.api.getConsultas({ ...this.filtros, especialidad: 'PSIC' });
+      this.nutri = await this.api.getConsultas({ ...this.filtros, especialidad: 'NUTR' });
+      this.odonto = await this.api.getConsultas({ ...this.filtros, especialidad: 'ODON' });
+
       this.totalDeRegistros = this.consultas.length;
     } catch (error) {
       console.error("Error:", error);
@@ -104,6 +140,27 @@ export class EmergenciasListComponent implements OnInit {
       this.cargando = false;
     }
   }
+
+  async filtrarPorEspecialidad(especialidad: string) {
+    this.especialidadSeleccionada = especialidad; // 👉 marcar el botón activo
+    this.cargando = true;
+    try {
+      const consultasFiltradas = await this.api.getConsultas({ ...this.filtros, especialidad });
+      consultasFiltradas.sort((a: ConsultaResponse, b: ConsultaResponse) =>
+        new Date(a.fecha_consulta).getTime() - new Date(b.fecha_consulta).getTime()
+      );
+      this.consultas = consultasFiltradas.map((c: ConsultaResponse, i: number) => ({
+        ...c,
+        orden: i + 1
+      }));
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      this.cargando = false;
+    }
+  }
+
+
 
   buscar() {
     this.filtros.skip = 0;
@@ -122,10 +179,10 @@ export class EmergenciasListComponent implements OnInit {
   }
 
   editar(id: number) {
-    this.router.navigate(['/editarAdmision', id, 'emergencia']);
+    this.router.navigate(['/editarAdmision', id, 'coex']);
   }
   agregar() {
-    this.router.navigate(['/admision', 'emergencia']);
+    this.router.navigate(['/admision', 'coex']);
   }
 
   verDetalle(consultaId: number) {
@@ -133,7 +190,7 @@ export class EmergenciasListComponent implements OnInit {
   }
 
   imprimir(consultaId: number) {
-    this.router.navigate(['/hojaEmergencia', consultaId]);
+    this.router.navigate(['/hojaCoex', consultaId]);
   }
 
   volver() {

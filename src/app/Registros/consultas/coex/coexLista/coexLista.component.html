@@ -8,7 +8,7 @@
      Menu
     </button>
 
-    <h1 class="text-white">Emergencias</h1>
+    <h1 class="text-white">Consulta Externa</h1>
 
     <button type="button" (click)="toggleFiltrar()">
       <span [innerHTML]="icons['find']"></span>
@@ -65,31 +65,86 @@
     </button>
   </div>
 </div>
+
+<div class="botones justify-content-stretch">
+  <button
+    (click)="filtrarPorEspecialidad('MEDI')"
+    [class.activo]="especialidadSeleccionada === 'MEDI'">
+    Medi <span [innerHTML]="icons['medicina']"></span>
+  </button>
+
+  <button
+    (click)="filtrarPorEspecialidad('PEDI')"
+    [class.activo]="especialidadSeleccionada === 'PEDI'">
+    Pedia <span [innerHTML]="icons['pedia']"></span>
+  </button>
+
+  <button
+    (click)="filtrarPorEspecialidad('GINE')"
+    [class.activo]="especialidadSeleccionada === 'GINE'">
+    Gine <span [innerHTML]="icons['gine']"></span>
+  </button>
+
+  <button
+    (click)="filtrarPorEspecialidad('CIRU')"
+    [class.activo]="especialidadSeleccionada === 'CIRU'">
+    Ciru <span [innerHTML]="icons['ciru']"></span>
+  </button>
+
+  <button
+    (click)="filtrarPorEspecialidad('TRAU')"
+    [class.activo]="especialidadSeleccionada === 'TRAU'">
+    Trauma <span [innerHTML]="icons['trauma']"></span>
+  </button>
+
+  <button
+    (click)="filtrarPorEspecialidad('PSIC')"
+    [class.activo]="especialidadSeleccionada === 'PSIC'">
+    Psico <span [innerHTML]="icons['psico']"></span>
+  </button>
+
+  <button
+    (click)="filtrarPorEspecialidad('NUTR')"
+    [class.activo]="especialidadSeleccionada === 'NUTR'">
+    Nutri <span [innerHTML]="icons['nutri']"></span>
+  </button>
+
+  <button
+    (click)="filtrarPorEspecialidad('ODON')"
+    [class.activo]="especialidadSeleccionada === 'ODON'">
+    Odonto <span [innerHTML]="icons['odont']"></span>
+  </button>
+</div>
+
+<div>
+  <h3></h3>
+</div>
   <!-- Tabla principal (desktop) -->
   <div class="aurora-container">
     <table class="aurora-tb" >
       <thead >
         <tr>
-          <th>Id</th>
           <th>Identificador</th>
           <th>Nombre Completo</th>
-          <th>Fecha Nacimiento</th>
+           <th>Orde</th>
+          <th>Especialidad</th>
           <th >Ciclo</th>
           <th>Género</th>
           <th >Estado</th>
           <th>Acciones</th>
+          <th>Id</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let data of consultas" class="aurora-table-row"
     [class.touch-active]="rowActiva === data.id_consulta"
     (click)="activarFila(data.id_consulta)" >
-            <td>{{ data.id_consulta }}</td>
+
             <td class="text-justify">
-              <div *ngIf="data?.cui"><strong>CUI:</strong> {{ data.cui | cui }}</div>
-              <div *ngIf="data?.pasaporte"><strong>Pasaporte:</strong> {{ data.pasaporte }}</div>
-              <div *ngIf="data?.expediente"><strong>Expediente:</strong> {{ data.expediente }}</div>
-              <div *ngIf="data?.documento"><strong>Hoja de Emergencia:</strong> {{ data.documento }}</div>
+              <div class="ms-4" *ngIf="data?.cui"><strong>CUI:</strong> {{ data.cui | cui }}</div>
+              <div class="ms-4" *ngIf="data?.pasaporte"><strong>Pasaporte:</strong> {{ data.pasaporte }}</div>
+              <div class="ms-4" *ngIf="data?.expediente"><strong>Expediente:</strong> {{ data.expediente }}</div>
+              <div class="ms-4" *ngIf="data?.documento"><strong>Hoja de Emergencia:</strong> {{ data.documento }}</div>
             </td>
             <td >
               <p class="p-0 m-0 text-uppercase">
@@ -104,10 +159,9 @@
                 {{ data.nombre.apellido_casada }}
               </p>
             </td>
+            <td>{{ data.orden }}</td>
             <td class="secundario">
-              {{ data.fecha_nacimiento | date:'dd/MM/yyyy' }}
-              <br>
-              <small >{{ data.fecha_nacimiento | edad }}</small>
+             {{ data.especialidad | datosExtra: 'especialidad' }}
             </td>
            <td>{{ estadoUltimoCiclo(data.ciclo) }}</td>
             <td class="secundario">
@@ -139,6 +193,7 @@
                 </button>
               </div>
             </td>
+            <td>{{ data.id_consulta }}</td>
           </tr>
       </tbody>
     </table>

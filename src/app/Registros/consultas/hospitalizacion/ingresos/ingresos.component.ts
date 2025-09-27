@@ -4,22 +4,22 @@ import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { Paciente, Totales } from '../../../../interface/interfaces';
 import { ApiService } from '../../../../service/api.service';
-import { ConsultaService } from '../../../../service/consulta.service';
 import { Router } from '@angular/router';
 import { IconService } from '../../../../service/icon.service';
 import { ConsultaResponse, Ciclo } from '../../../../interface/consultas';
 import { ciclos } from '../../../../enum/diccionarios';
+import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
 
 
 @Component({
-  selector: 'app-emergenciasList',
-  templateUrl: './emergenciasList.component.html',
-  styleUrls: ['./emergenciasList.component.css'],
+  selector: 'app-ingresos',
+  templateUrl: './ingresos.component.html',
+  styleUrls: ['./ingresos.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe]
+  imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe]
 })
-export class EmergenciasListComponent implements OnInit {
+export class IngresosComponent implements OnInit {
 
   esEmergencia = true;
   consultas: ConsultaResponse[] = [];
@@ -32,6 +32,8 @@ export class EmergenciasListComponent implements OnInit {
   modalActivo = false;
   espacio: string = ' ';
   pageSize: number = 8;
+  skip: number = 0;
+  tipoConsultas: number = 2;
   paginaActual: number = 1;
   finPagina: boolean = false;
   totalDeRegistros = 0;
@@ -39,9 +41,9 @@ export class EmergenciasListComponent implements OnInit {
 
 
   filtros: any = {
-    skip: 0,
+    skip: this.skip,
     limit: this.pageSize,
-    tipo_consulta: 3
+    tipo_consulta: this.tipoConsultas
   };
 
   // iconos (ahora inyectados por servicio)
@@ -80,17 +82,19 @@ export class EmergenciasListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Suscribirse a las consultas (observable único de la app)
     this.api.consultas$.subscribe((data) => {
       this.consultas = data;
     });
 
+    // Totales
     this.api.getTotales().then((data) => {
       this.totales = data;
-      // 👇 si la vista devuelve en orden pacientes, consultas
       this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
     });
 
-    this.api.getConsultas({ skip: 0, limit: 6 });
+    // 👇 Aquí sí usamos filtros desde el inicio
+    this.api.getConsultas(this.filtros);
   }
 
   async cargarConsultas() {
@@ -108,6 +112,7 @@ export class EmergenciasListComponent implements OnInit {
   buscar() {
     this.filtros.skip = 0;
     this.cargarConsultas();
+
   }
   toggleFiltrar() {
     this.filtrar = !this.filtrar;
@@ -115,17 +120,18 @@ export class EmergenciasListComponent implements OnInit {
 
   limpiarFiltros() {
     this.filtros = {
-      skip: 0,
-      limit: this.pageSize
+      skip: this.skip = 0,
+      limit: this.pageSize,
+      tipo_consulta: this.tipoConsultas
     };
     this.cargarConsultas();
   }
 
   editar(id: number) {
-    this.router.navigate(['/editarAdmision', id, 'emergencia']);
+    this.router.navigate(['/editarAdmision', id, 'ingreso']);
   }
   agregar() {
-    this.router.navigate(['/admision', 'emergencia']);
+    this.router.navigate(['/admision', 'ingreso']);
   }
 
   verDetalle(consultaId: number) {
@@ -133,7 +139,7 @@ export class EmergenciasListComponent implements OnInit {
   }
 
   imprimir(consultaId: number) {
-    this.router.navigate(['/hojaEmergencia', consultaId]);
+    this.router.navigate(['/ingreso', consultaId]);
   }
 
   volver() {

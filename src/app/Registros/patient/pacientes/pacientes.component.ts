@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
-import { Paciente, Renap } from '../../../interface/interfaces';
+import { Paciente, Renap, Totales } from '../../../interface/interfaces';
 import { IconService } from '../../../service/icon.service';
 import { PacienteFiltros } from '../../../interface/paciente-filtros.model';
 import { CommonModule } from '@angular/common';
@@ -23,13 +23,15 @@ export class PacientesComponent implements OnInit {
 
   pacientes: Paciente[] = [];
   enRenap: Renap[] = [];
+  totales: Totales[] = [];
   existePaciente: boolean = false;
   cargando = false;
   filtrar = false;
   visible = false;
   modalActivo = false;
   espacio: string = ' ';
-  pageSize: number = 8;
+  pageSize: number = 6;
+  paginaActual: number = 1;
   finPagina: boolean = false;
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
@@ -75,16 +77,28 @@ export class PacientesComponent implements OnInit {
     };
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // Suscripción pacientes
+    this.api.pacientes$.subscribe((data) => {
+      this.pacientes = data;
+    });
 
-    this.cargarPacientes();
+    // Cargar totales
+    this.api.getTotales().then((data) => {
+      this.totales = data;
+      // 👇 si la vista devuelve en orden pacientes, consultas
+      this.totalDeRegistros = this.totales.find(t => t.entidad === 'pacientes')?.total || 0;
+
+      // Primera carga de pacientes con paginación
+      this.api.getPacientes({ skip: 0, limit: this.pageSize });
+    });
   }
 
   async cargarPacientes() {
     this.cargando = true;
     try {
       this.pacientes = await this.api.getPacientes(this.filtros);
-      this.totalDeRegistros = this.pacientes.length;
+
 
     } catch (error) {
       console.error("Error:", error);
@@ -92,6 +106,8 @@ export class PacientesComponent implements OnInit {
       this.cargando = false;
     }
   }
+
+
 
   buscar() {
     this.cargarPacientes();
@@ -136,17 +152,25 @@ export class PacientesComponent implements OnInit {
   toggleFiltrar() {
     this.filtrar = !this.filtrar;
   }
+
   get totalPaginas(): number {
     return Math.ceil(this.totalDeRegistros / this.pageSize) || 1;
   }
 
-  cambiarPagina(skip: any) {
-    this.filtros.skip += skip;
-    console.log(this.filtros);
+  cambiarPagina(paso: number) {
+    this.paginaActual += paso;
+
+    if (this.paginaActual < 1) this.paginaActual = 1;
+    if (this.paginaActual > this.totalPaginas) this.paginaActual = this.totalPaginas;
+
+    this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
+
+    // console.log("🔄 Filtros:", this.filtros);
+
     this.buscar();
-    this.finPagina = Number(this.filtros.skip) <= this.totalDeRegistros;
-    console.log(this.finPagina);
   }
+
 
   mostrar(): void {
     this.visible = !this.visible;
@@ -176,15 +200,15 @@ export class PacientesComponent implements OnInit {
         ['/admisionPaciente', 'coex', id],
         { queryParams: { esCoex: true } }
       );
-    } else if (opt === 2) {
-      this.router.navigate(
-        ['/admisionPaciente', 'emergencia', id],
-        { queryParams: { esEmergencia: true } }
-      );
     } else if (opt === 3) {
       this.router.navigate(
         ['/admisionPaciente', 'ingreso', id],
         { queryParams: { esIngreso: true } }
+      );
+    } else if (opt === 2) {
+      this.router.navigate(
+        ['/admisionPaciente', 'emergencia', id],
+        { queryParams: { esEmergencia: true } }
       );
     }
 

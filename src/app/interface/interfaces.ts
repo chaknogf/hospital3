@@ -114,5 +114,9 @@ export interface Renap {
   FECHA_NACIMIENTO?: string;
 }
 
+export interface Totales {
+  entidad: string;
+  total: number;
+}
 
 
