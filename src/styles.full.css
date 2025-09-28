@@ -13300,7 +13300,7 @@ background-color: #6bf3e121;
   .aurora-tb tr {
     display: block;
     width: 100%;
-    margin: 0 0 1rem 0;
+    /* margin: 0 0 1rem 0; */
     padding: 0;
   }
 
@@ -13315,23 +13315,32 @@ background-color: #6bf3e121;
   }
 
   .aurora-tb tr {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0.1rem;
-    padding: 0;
-    border-radius: 0.6rem;
-    background: rgba(0, 255, 255, 0.05);
-    box-shadow: 0 2px 8px rgba(0, 255, 255, 0.1);
-    align-items: start;
-    cursor: pointer;
-    font-size: 1rem;
-    justify-items: stretch;
-    transform: scale(1) 1s ease;
-  }
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.25rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.6rem;
+  background: rgba(0, 255, 255, 0.05);
+  box-shadow: 0 2px 6px rgba(0, 255, 255, 0.1);
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.95rem;
+  justify-items: anchor-center;
+  transition: transform 0.2s ease;
+}
 
-  .aurora-tb tr:hover {
-    gap: 0.5rem;
-  }
+.aurora-tb tr:hover {
+  background: rgba(0, 255, 255, 0.12);
+  transform: scale(1.01);
+}
+
+/* Celdas (td) internas */
+.aurora-tb td {
+  padding: 0.3rem 0.4rem;
+  white-space: nowrap; /* evita saltos innecesarios */
+  overflow: hidden;
+  text-overflow: ellipsis; /* corta si es muy largo */
+}
 
   .aurora-tb  tr .secundario:hover {
     display: visible;
