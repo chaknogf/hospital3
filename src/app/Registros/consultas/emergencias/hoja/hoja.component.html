@@ -1,3 +1,447 @@
-<p>
-  hoja works!
-</p>
+
+<div class="div-btn-opt no-imprimir">
+
+  <button (click)="regresar()"> </button>
+  <button (click)="imprimir()"></button>
+
+</div>
+<div class="container-impresion imprimir-esto blanco">
+  <!-- titulo -->
+  <img src="assets/logo.jpg" alt="Logo" class="marca-agua">
+  <div class="d-flex justify-content-center">
+    <ng-container >
+
+      <h3 class="text-center">Hoja de Atención en Emergencias</h3>
+    </ng-container>
+
+  </div>
+
+  <div>
+    <h5 class="text-center">Hospital General Tipo I de Tecpán Guatemala</h5>
+    <h6 class="text-end mr-3">No. consultaS: {{consulta?.documento}}</h6>
+  </div>
+  <!-- servicios -->
+ <div class="d-flex justify-content-between doc-section" >
+  <h6>SERVICIOS:</h6>
+  <div>
+    <label>Medicina Interna</label>
+    <cuadroBlancoIcon  ngClass="text-black" *ngIf="!(consulta?.especialidad == 'MEDI')"  />
+    <cuadroLlenoIcon  ngClass="text-black"*ngIf="consulta?.especialidad == 'MEDI'" />
+  </div>
+  <div>
+    <label>Pediatria</label>
+    <cuadroBlancoIcon  ngClass="text-black" *ngIf="!(consulta?.especialidad == 'PEDI')"  />
+    <cuadroLlenoIcon  ngClass="text-black"*ngIf="consulta?.especialidad == 'PEDI'" />
+  </div>
+  <div>
+    <label>Ginecologia</label>
+    <cuadroBlancoIcon  ngClass="text-black" *ngIf="!(consulta?.especialidad == 'GINE')"  />
+    <cuadroLlenoIcon  ngClass="text-black"*ngIf="consulta?.especialidad == 'GINE'" />
+  </div>
+  <div>
+    <label>Cirugia</label>
+    <cuadroBlancoIcon  ngClass="text-black" *ngIf="!(consulta?.especialidad == 'CIRU')"  />
+    <cuadroLlenoIcon  ngClass="text-black"*ngIf="consulta?.especialidad == 'CIRU'" />
+  </div>
+  <div class="mx-2">
+    <label>Traumatologia</label>
+    <cuadroBlancoIcon  ngClass="text-black" *ngIf="!(consulta?.especialidad == 'TRAU')"  />
+    <cuadroLlenoIcon  ngClass="text-black"*ngIf="consulta?.especialidad == 'TRAU'" />
+  </div>
+ </div>
+<!-- fecha y hora -->
+ <div class="d-flex justify-content-between doc-section">
+  <div>
+    <label>Fecha:</label>
+    <p>{{consulta?.fecha_consulta | date: 'dd/MM/yyyy'}}</p>
+  </div>
+  <div>
+    <label>Hora:</label>
+    <p>{{consulta?.hora_consulta | date: 'HH:mm'}}</p>
+  </div>
+  <div>
+    <label>Expediente:</label>
+    <p>{{consulta?.expediente}}</p>
+  </div>
+
+ </div>
+ <!-- Datos Generales -->
+  <div class="doc-section ">
+    <h6>DATOS GENERALES</h6>
+    <div class="d-flex justify-content-between p-0 m-0 borderline" >
+      <div class="mx-2">
+        <label>Nombre del Paciente:</label>
+        <p>{{paciente?.nombre?.primer_nombre}} {{paciente?.nombre?.segundo_nombre}} {{paciente?.nombre?.otro_nombre}} {{paciente?.nombre?.primer_apellido}} {{paciente?.nombre?.segundo_apellido}}</p>
+      </div>
+      <div>
+        <label>Fecha de Nacimiento:</label>
+        <p>{{paciente?.fecha_nacimiento | date: 'dd/MM/yyyy'}}</p>
+      </div>
+      <div class="mx-2">
+        <label>Edad:</label>
+        <p>{{paciente?.fecha_nacimiento| edad}}</p>
+      </div>
+
+    </div>
+    <div class="d-flex justify-content-between p-0 m-0 borderline">
+      <div class="mx-2">
+        <label>Sexo:</label>
+        <p>{{paciente?.sexo| datosExtra: 'sexo'}}</p>
+      </div>
+      <div>
+        <label>DPI:</label>
+        <p>{{paciente?.cui | cui}}</p>
+      </div>
+      <div class="mx-2">
+        <label>Dirección:</label>
+        <p>{{paciente?.contacto?.localidad}} {{paciente?.contacto?.municipio | datosExtra:'vecindad'}}</p>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between p-0 m-0 borderline">
+      <div class="mx-2">
+        <label>Responsable</label>
+        <p>{{paciente?.referencias?.['r4']?.nombre}}</p>
+      </div>
+      <div>
+        <label>Parentesco:</label>
+        <p>{{paciente?.referencias?.['r4']?.parentesco |datosExtra:'parentesco'}}</p>
+      </div>
+      <div class="mx-2">
+        <label>Telefono:</label>
+        <p>{{paciente?.contacto?.telefono}} / {{paciente?.contacto?.telefono2}} </p>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between doc-section" >
+    <h6></h6>
+    <div class="centered-container" >
+      <label>Traido por Bomberos</label>
+      <cuadroBlancoIcon  ngClass="text-black"  />
+      <cuadroLlenoIcon  ngClass="text-black" />
+    </div>
+    <div class="centered-container">
+      <label>Accidente Transito</label>
+      <cuadroBlancoIcon  ngClass="text-black" />
+      <cuadroLlenoIcon  ngClass="text-black" />
+    </div>
+    <div class="centered-container">
+      <label>Arma Blanca</label>
+      <cuadroBlancoIcon  ngClass="text-black"  />
+      <cuadroLlenoIcon  ngClass="text-black" />
+
+    </div>
+    <div class="centered-container">
+      <label>Arma de Fuego</label>
+      <cuadroBlancoIcon  ngClass="text-black"  />
+      <cuadroLlenoIcon  ngClass="text-black" />
+    </div>
+    <div class="centered-container">
+      <label>Estudiante Escuela Publica</label>
+      <cuadroBlancoIcon  ngClass="text-black"  />
+      <cuadroLlenoIcon  ngClass="text-black" />
+
+    </div>
+    <div class="centered-container">
+      <label>Accidente Laboral</label>
+      <cuadroBlancoIcon  ngClass="text-black"  />
+      <cuadroLlenoIcon  ngClass="text-black" />
+
+    </div>
+    <div class="mx-2 centered-container">
+      <label>Personal de Hospital</label>
+      <cuadroBlancoIcon  ngClass="text-black"  />
+      <cuadroLlenoIcon  ngClass="text-black" />
+
+    </div>
+   </div>
+  <!-- Motivo de la consulta -->
+  <div class="doc-section_">
+    <div class="d-flex justify-content-between ">
+      <div class="borderline">
+        <h6>MOTIVO DE LA CONSULTA:</h6>
+
+         <p class=" line"></p>
+         <p class=" line"></p>
+      </div>
+
+    </div>
+  </div>
+  <div class="doc-section d-flex justify-content-between">
+    <div>
+      <label>Historia de la enfermedad actual:</label>
+      <p></p>
+    </div>
+  </div>
+  <!-- Antecedentes -->
+   <div class="doc-section">
+    <h6>ANTECEDENTES</h6>
+    <div class="d-flex justify-content-between ">
+      <div class="borderline">
+        <label>Familiares:</label>
+        <p></p>
+      </div>
+      <div class="borderline">
+        <label>Medicos:</label>
+        <p></p>
+      </div>
+
+      <div class="borderline">
+        <label>Traumaticos:</label>
+        <p></p>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between ">
+      <div class="borderline">
+        <label>Quirurgicos:</label>
+        <p></p>
+      </div>
+      <div class="borderline">
+        <label>Alergicos:</label>
+        <p></p>
+      </div>
+
+    </div>
+    <div class="d-flex justify-content-between ">
+      <div class="borderline">
+        <label>Ginecologicos:</label>
+        <div class="d-flex justify-content-between">
+          <p class="mx-2">G:_________</p>
+          <P>P:_________</P>
+          <P>C:_________</P>
+          <P>A:_________</P>
+          <p>HV:_________</p>
+          <P>HM:_________</P>
+          <P>FUR:_________</P>
+          <P class="mx-2">FPP:_________</P>
+        </div>
+        <div class="d-flex justify-content-between">
+          <p class="mx-3">Menarquía:______________</p>
+          <p>Ciclos:________________</p>
+          <p>FUP:_______________</p>
+          <p class="mx-3">Control_PN:___________</p>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between ">
+      <div class="borderline">
+        <label>Otros Antecedentes de importancia:</label>
+        <p></p>
+      </div>
+
+    </div>
+
+   </div>
+   <!-- Examen Fisico -->
+   <div class="doc-section_">
+      <div class="d-flex justify-content-between ">
+        <div class="borderline">
+          <h6>EXAMÉN FISICO:</h6>
+          <div class="d-flex justify-content-between">
+            <p class="mx-2">P/A:_________mmHg</p>
+            <P>FC:_________lpm</P>
+            <P>FR:_________rpm</P>
+            <P>SatO2:_________%</P>
+            <p class="mx-2">Temp:_________°C</p>
+
+          </div>
+          <div class="d-flex justify-content-between">
+            <P class="mx-2">Peso:_________</P>
+            <P>Talla/longitud:_________cm</P>
+            <P>P/T:_________</P>
+            <P>P/T:_________</P>
+            <P>T/E:_________</P>
+            <P class="mx-2">P/E:_________</P>
+          </div>
+           <p class=" line"></p>
+           <p class=" line"></p>
+           <p class=" line"></p>
+        </div>
+
+      </div>
+
+
+    </div>
+    <!-- Impresion Clinica -->
+    <div class="doc-section">
+      <div class="d-flex justify-content-between ">
+        <div class="">
+          <h6>IMPRESIÓN CLINICA:</h6>
+          </div>
+
+        </div>
+        <p class=" line"></p>
+           <p class=" line"></p>
+    </div>
+    <!-- Impresion Clinica -->
+    <div class="doc-section">
+      <div class="d-flex justify-content-between ">
+        <div class="">
+          <h6>ORDENES MÉDICAS:</h6>
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="borderline">
+
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+          </div>
+          <div class="borderline">
+
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+          </div>
+          <div class="borderline">
+
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <div class="d-flex justify-content-between">
+              <p class="p-0 m-0">Fecha:</p>
+              <p class="p-0 m-0">Hora:</p>
+              <p class="p-0 m-0">Firma y Sello:</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+    </div>
+    <div class="doc-section">
+      <div class="d-flex justify-content-around">
+        <div>
+          <label>Ingreso:</label>
+          <cuadroBlancoIcon ngClass="text-black" />
+        </div>
+        <div>
+          <label>Servicio a donde ingresa:</label>
+          <p></p>
+        </div>
+        <div>
+          <label>Egreso:</label>
+          <cuadroBlancoIcon ngClass="text-black" />
+        </div>
+
+      </div>
+
+    </div>
+    <div class="doc-section">
+      <div class="d-flex justify-content-between ">
+        <div class="">
+          <h6>ORDENES DE EGRESO:</h6>
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="borderline">
+
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <div class="d-flex justify-content-between">
+              <p class="p-0 m-0">Fecha:</p>
+              <p class="p-0 m-0">Hora:</p>
+              <p class="p-0 m-0">Firma y Sello:</p>
+              <p></p>
+            </div>
+          </div>
+          <div class="borderline">
+
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <div class="d-flex justify-content-between">
+              <p class="p-0 m-0">Fecha:</p>
+              <p class="p-0 m-0">Hora:</p>
+              <p class="p-0 m-0">Firma y Sello:</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+    </div>
+    <div class="doc-section">
+      <div class="d-flex justify-content-between ">
+        <div class="">
+          <h6>OBSERVACIONES:</h6>
+          </div>
+        </div>
+        <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+        <div class="d-flex">
+
+        </div>
+
+    </div>
+    <div class="doc-section">
+      <div class="d-flex justify-content-between ">
+        <div class="">
+          <h6>NOTAS DE ENFERMERIA:</h6>
+          </div>
+        </div>
+        <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <div class="d-flex justify-content-between">
+              <p class="p-0 m-0">Fecha:</p>
+              <p class="p-0 m-0">Hora:</p>
+              <p class="p-0 m-0">Firma y Sello:</p>
+              <p></p>
+            </div>
+
+    </div>
+    <div class="doc-section">
+      <div class="d-flex justify-content-between ">
+        <div class="">
+          <h6>EGRESO CONTRAINDICADO:</h6>
+          </div>
+        </div>
+        <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class=""></p>
+            <p class=""></p>
+            <div class="d-flex justify-content-between align-items-start">
+              <p class="line">Firma del Paciente</p>
+              <p class="line">Firma del Testigo</p>
+              <p class="line">Firma y sello del Medico</p>
+            </div>
+
+    </div>
+    <div class="doc-section">
+      <div class="d-flex justify-content-between ">
+        <div class="">
+          <h6>NOTA DE DESCARGO:</h6>
+          </div>
+        </div>
+        <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class="line"></p>
+            <p class=""></p>
+            <p class=""></p>
+
+
+    </div>
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+</div>
+

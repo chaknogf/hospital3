@@ -1,0 +1,124 @@
+h1, h2, h3, h4, h5, h6 {
+  color: black;
+  padding: 0;
+  margin: 0;
+}
+
+@media print {
+  /* Estilos de impresión */
+  body {
+    font-size: 12pt; /* Tamaño de fuente, márgenes, etc. */
+  }
+
+  /* Ocultar elementos que no se deben imprimir */
+  .no-print {
+    display: none;
+  }
+}
+@media print {
+  .imprimir-esto {
+    color: black;
+    display: block; /* Mostrar el elemento en la impresión */
+  }
+
+  /* Ocultar otros elementos que no deseas imprimir */
+  .no-imprimir {
+    display: none;
+  }
+
+  /* Estilos de impresión generales */
+  body {
+    font-size: 12pt;
+    margin: 0;
+    padding: 0;
+    color: black;
+  }
+}
+
+
+label, p, span {
+  color: black;
+  font-size: 1rem;
+  text-align: center;
+
+}
+
+label, span {
+  font-weight: bolder;
+  text-transform: uppercase;
+
+}
+
+
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+
+/* estilo-de-tu-vista.css o estilo-de-tu-vista.scss */
+
+body {
+  background-color: white;
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+}
+
+.blanco{
+
+  background-color: white;
+}
+.border-primary {
+  --bs-border-opacity: 1;
+  border-color: black !important;
+}
+.borderline {
+  border: solid 1.5px black;
+  border-radius: 4px;
+  margin: 0.3px;
+  padding: 1.5px;
+  z-index: 1;
+  width: 100%;
+}
+
+.rounded {
+  border-radius: var(--bs-border-radius) !important;
+}
+
+.p-2 {
+  padding: 0.5rem !important;
+}
+
+.w-50 {
+  width: 50% !important;
+}
+
+.doc-section {
+  border: solid 1.5px black;
+  border-radius: 6px;
+  padding: 2px;
+  margin: 2px;
+}
+
+.line {
+  padding: 0.9rem;
+  border-top: solid 1.5px black;
+  margin-bottom: 0;
+}
+
+.container-impresion {
+  width: 100%;
+}
+
+.marca-agua {
+  position: absolute;
+  top: 25%;
+  left: 15%;
+  width: 700px;
+  height: 700px;
+  opacity: 0.1;
+}
