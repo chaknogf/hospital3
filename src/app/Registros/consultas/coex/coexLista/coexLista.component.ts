@@ -275,4 +275,7 @@ export class CoexListaComponent implements OnInit {
     return date.toTimeString().slice(0, 5); // "HH:mm"
   }
 
+  hoja(consultaId: number) {
+    this.router.navigate(['/coexHoja/', consultaId]);
+  }
 }

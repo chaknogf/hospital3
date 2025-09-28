@@ -1,3 +1,124 @@
-<p>
-  HojaCoex works!
-</p>
+<div class="d-flex justify-content-center bg-white no-print">
+  <button class="btn btn-dark no-print mx-2 my-3 w-30" (click)="regresar()" >
+    Regresar</button>
+  <button class="btn btn-info no-print mx-2 my-3 w-30" (click)="imprimir()">Imprimir</button>
+</div>
+<hr class="mt-2">
+<body id="pdf-content" class="imprimir-esto text-black bg-light p-0 w-100"  >
+  <div id="pdfs-content" class="container-fluid hoja-medica">
+
+  <!-- Encabezado principal -->
+  <header class="text-center mb-4">
+    <h2 class="titulo">HISTORIA CLÍNICA</h2>
+  </header>
+
+  <!-- Datos de la consulta -->
+  <section class="datos-consulta m-2">
+    <div class="orden">
+      <h1>{{ consulta?.orden }}</h1>
+      <h3>{{ consulta?.especialidad | datosExtra: 'especialidad' }}</h3>
+    </div>
+    <div class="info row">
+      <div class="col border p-2">
+        <strong>Fecha de Consulta:</strong>
+        <span> {{ consulta?.fecha_consulta | date: 'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="col border p-2">
+        <strong>Expediente:</strong>
+        <span>{{ consulta?.expediente }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Datos del paciente -->
+  <section class="datos-paciente m-2">
+    <h3 class="subtitulo">DATOS DEL PACIENTE</h3>
+    <div class="row">
+      <div class="col-6 border p-2">
+        <strong>Nombre:</strong>
+        <span>
+          {{paciente?.nombre?.primer_nombre}} {{paciente?.nombre?.segundo_nombre}}
+          {{paciente?.nombre?.otro_nombre}} {{paciente?.nombre?.primer_apellido}}
+          {{paciente?.nombre?.segundo_apellido}}
+        </span>
+      </div>
+      <div class="col-3 border p-2">
+        <strong>Sexo:</strong> <span> {{ paciente?.sexo |datosExtra:'sexo'}}</span>
+      </div>
+      <div class="col-3 border p-2">
+        <strong>Edad:</strong> <span> {{ paciente?.fecha_nacimiento | edad}}</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-4 border p-2">
+        <strong>Fecha de nacimiento:</strong> <span> {{paciente?.fecha_nacimiento}}</span>
+      </div>
+      <div class="col-4 border p-2">
+        <strong>DPI:</strong> <span> {{paciente?.cui | cui }}</span>
+      </div>
+      <div class="col-4 border p-2">
+        <strong>Tel:</strong> <span> {{paciente?.contacto?.telefono}} /{{paciente?.contacto?.telefono2}}</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-6 border p-2">
+        <strong>Dirección:</strong> <span> {{paciente?.contacto?.localidad}} {{paciente?.contacto?.municipio | datosExtra:'vecindad'}}</span>
+      </div>
+      <div class="col-3 border p-2">
+        <strong>Ocupación:</strong> <span> {{paciente?.datos_extra?.['r4']?.valor}}</span>
+      </div>
+      <div class="col-3 border p-2">
+        <strong>Educación:</strong> <span> {{paciente?.datos_extra?.['r5']?.valor | datosExtra:'educacion'}}</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-6 border p-2">
+        <strong>Responsable:</strong> <span>{{paciente?.referencias?.['referencia1']?.nombre}}</span>
+      </div>
+      <div class="col-6 border p-2">
+        <strong>Parentesco:</strong> <span>{{paciente?.referencias?.['referencia1']?.parentesco | datosExtra:'parentesco'}}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Signos vitales -->
+  <section class="signos-vitales m-2">
+    <h3 class="subtitulo">SIGNOS VITALES <small class="hora">Hora: ____________</small></h3>
+    <div class="tabla-vitales border p-2">
+      <span>P/A:</span> <span>FC:</span> <span>FR:</span> <span>T:</span>
+      <span>P:</span> <span>Talla:</span> <span>SO2:</span> <span>GMT:</span>
+    </div>
+  </section>
+
+  <!-- Consulta -->
+  <section class="consulta m-2">
+    <h3 class="subtitulo">DATOS DE LA CONSULTA <small class="hora">Hora: ____________</small></h3>
+    <div class="campo border p-2"><strong>Motivo de la consulta:</strong></div>
+    <div class="campo border p-2"><strong>Historia Clínica:</strong></div>
+    <div class="campo border p-2"><strong>Antecedentes:</strong></div>
+    <div class="campo border p-2"><strong>Examen físico:</strong></div>
+    <div class="campo border p-2"><strong>Diagnósticos:</strong></div>
+    <div class="campo border p-2"><strong>Tratamiento:</strong></div>
+    <div class="campo border p-2"><strong>Estudios Complementarios:</strong></div>
+  </section>
+
+  <!-- Seguimiento -->
+  <section class="seguimiento m-2">
+    <h3 class="subtitulo">SEGUIMIENTO DE CASO</h3>
+    <div class="campo border p-2"><strong>Fecha:</strong></div>
+    <div class="campo border p-2"><strong>Datos Subjetivos:</strong></div>
+    <div class="campo border p-2"><strong>Datos Objetivos:</strong></div>
+  </section>
+
+  <!-- Pie -->
+  <footer class="text-center mt-4">
+    <h5>Ministerio de Salud Pública y Asistencia Social</h5>
+    <h5>Hospital General Tipo I de Tecpán Guatemala</h5>
+  </footer>
+
+</div>
+</body>
+

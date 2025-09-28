@@ -61,7 +61,7 @@ export class DatosExtraPipe implements PipeTransform {
         return pue ? pue.label : valor;
       }
 
-      case 'nivel_educativo': {
+      case 'educacion': {
         const nivel = gradoAcademicos.find(n => n.value === valor);
         return nivel ? nivel.label : valor;
       }

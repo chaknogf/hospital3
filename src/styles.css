@@ -368,7 +368,7 @@ hr {
   opacity: 0.25;
 }
 
-h6, .h6, h3, .h3, h2, .h2, h1, .h1 {
+h6, .h6, h5, .h5, h3, .h3, h2, .h2, h1, .h1 {
   margin-top: 0;
   margin-bottom: 0.5rem;
   font-weight: 500;
@@ -401,6 +401,10 @@ h3, .h3 {
   h3, .h3 {
     font-size: 1.75rem;
   }
+}
+
+h5, .h5 {
+  font-size: 1.25rem;
 }
 
 h6, .h6 {
@@ -683,6 +687,25 @@ legend + * {
   padding-right: calc(var(--bs-gutter-x) * 0.5);
   padding-left: calc(var(--bs-gutter-x) * 0.5);
   margin-top: var(--bs-gutter-y);
+}
+
+.col {
+  flex: 1 0 0;
+}
+
+.col-3 {
+  flex: 0 0 auto;
+  width: 25%;
+}
+
+.col-4 {
+  flex: 0 0 auto;
+  width: 33.33333333%;
+}
+
+.col-6 {
+  flex: 0 0 auto;
+  width: 50%;
 }
 
 .col-12 {
@@ -1015,6 +1038,40 @@ legend + * {
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #2fb380;
   --bs-btn-disabled-border-color: #2fb380;
+}
+
+.btn-info {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #287bb5;
+  --bs-btn-border-color: #287bb5;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #22699a;
+  --bs-btn-hover-border-color: #206291;
+  --bs-btn-focus-shadow-rgb: 72, 143, 192;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #206291;
+  --bs-btn-active-border-color: #1e5c88;
+  --bs-btn-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #287bb5;
+  --bs-btn-disabled-border-color: #287bb5;
+}
+
+.btn-dark {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #212529;
+  --bs-btn-border-color: #212529;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #424649;
+  --bs-btn-hover-border-color: #373b3e;
+  --bs-btn-focus-shadow-rgb: 66, 70, 73;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #4d5154;
+  --bs-btn-active-border-color: #373b3e;
+  --bs-btn-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #212529;
+  --bs-btn-disabled-border-color: #212529;
 }
 
 .btn-lg {
@@ -1528,6 +1585,10 @@ legend + * {
   right: 0 !important;
 }
 
+.border {
+  border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+}
+
 .border-0 {
   border: 0 !important;
 }
@@ -1572,12 +1633,34 @@ legend + * {
   margin: 0 !important;
 }
 
+.m-2 {
+  margin: 0.5rem !important;
+}
+
 .m-3 {
   margin: 1rem !important;
 }
 
+.mx-2 {
+  margin-right: 0.5rem !important;
+  margin-left: 0.5rem !important;
+}
+
+.my-3 {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.mt-2 {
+  margin-top: 0.5rem !important;
+}
+
 .mt-3 {
   margin-top: 1rem !important;
+}
+
+.mt-4 {
+  margin-top: 1.5rem !important;
 }
 
 .me-1 {
@@ -1606,6 +1689,10 @@ legend + * {
 
 .p-1 {
   padding: 0.25rem !important;
+}
+
+.p-2 {
+  padding: 0.5rem !important;
 }
 
 .p-4 {
@@ -1681,6 +1768,11 @@ legend + * {
   color: rgba(var(--bs-light-rgb), var(--bs-text-opacity)) !important;
 }
 
+.text-black {
+  --bs-text-opacity: 1;
+  color: rgba(var(--bs-black-rgb), var(--bs-text-opacity)) !important;
+}
+
 .text-white {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-white-rgb), var(--bs-text-opacity)) !important;
@@ -1701,9 +1793,19 @@ legend + * {
   background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
 }
 
+.bg-light {
+  --bs-bg-opacity: 1;
+  background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;
+}
+
 .bg-dark {
   --bs-bg-opacity: 1;
   background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
+}
+
+.bg-white {
+  --bs-bg-opacity: 1;
+  background-color: rgba(var(--bs-white-rgb), var(--bs-bg-opacity)) !important;
 }
 
 .rounded {
@@ -2794,3 +2896,65 @@ box-shadow: 0 1px 8px rgba(5, 75, 75, 0.512);
   color: white;
   transition: color 0.2s ease;
 }
+
+@media print {
+  /* Ajuste general */
+  body {
+    font-size: 11pt;
+    margin: 10mm;              /* margen estándar */
+    line-height: 1.3;
+    color: #000;               /* asegurar buen contraste */
+  }
+
+  /* Ajuste de la hoja */
+  @page {
+    size: A4 portrait;         /* puedes usar landscape si tu hoja es horizontal */
+    margin: 10mm;
+  }
+
+  /* Evitar que el contenido se corte */
+  * {
+    box-sizing: border-box;
+    max-width: 100% !important;
+    overflow: visible !important;
+    word-wrap: break-word;
+  }
+
+  /* Tablas y grids */
+  table, .table, .aurora-tb {
+    width: 100% !important;
+    border-collapse: collapse;
+  }
+
+  table td, table th {
+    padding: 2px4px;
+    border: 1px solid #444;
+    font-size: 10pt;
+    text-align: left;
+  }
+
+  /* Ocultar lo innecesario */
+  .no-print, nav, .navbar, .btn {
+    display: none !important;
+  }
+
+  /* Evitar que colapse mucho a la derecha */
+  .container, .content {
+    max-width: 100% !important;
+    padding: 0;
+    margin: 0 auto;
+  }
+
+  /* Ajustar títulos */
+  h1, h2, h3, h5 {
+    margin: 4px 0;
+    font-weight: bold;
+    page-break-after: avoid;
+  }
+
+  /* Evitar cortes en medio de tablas o secciones */
+  table, tr, td, th, div, section {
+    page-break-inside: avoid;
+  }
+}
+

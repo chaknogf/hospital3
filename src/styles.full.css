@@ -13658,3 +13658,65 @@ box-shadow: 0 1px 8px rgba(5, 75, 75, 0.512);
   color: white;
   transition: color 0.2s ease;
 }
+
+@media print {
+  /* Ajuste general */
+  body {
+    font-size: 11pt;
+    margin: 10mm;              /* margen estándar */
+    line-height: 1.3;
+    color: #000;               /* asegurar buen contraste */
+  }
+
+  /* Ajuste de la hoja */
+  @page {
+    size: A4 portrait;         /* puedes usar landscape si tu hoja es horizontal */
+    margin: 10mm;
+  }
+
+  /* Evitar que el contenido se corte */
+  * {
+    box-sizing: border-box;
+    max-width: 100% !important;
+    overflow: visible !important;
+    word-wrap: break-word;
+  }
+
+  /* Tablas y grids */
+  table, .table, .aurora-tb {
+    width: 100% !important;
+    border-collapse: collapse;
+  }
+
+  table td, table th {
+    padding: 2px4px;
+    border: 1px solid #444;
+    font-size: 10pt;
+    text-align: left;
+  }
+
+  /* Ocultar lo innecesario */
+  .no-print, nav, .navbar, .btn, .actions {
+    display: none !important;
+  }
+
+  /* Evitar que colapse mucho a la derecha */
+  .container, .content, .main-wrapper {
+    max-width: 100% !important;
+    padding: 0;
+    margin: 0 auto;
+  }
+
+  /* Ajustar títulos */
+  h1, h2, h3, h4, h5 {
+    margin: 4px 0;
+    font-weight: bold;
+    page-break-after: avoid;
+  }
+
+  /* Evitar cortes en medio de tablas o secciones */
+  table, tr, td, th, div, section {
+    page-break-inside: avoid;
+  }
+}
+
