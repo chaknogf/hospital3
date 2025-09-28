@@ -47,7 +47,9 @@ export class CoexListaComponent implements OnInit {
   pageSize: number = 200;
   paginaActual: number = 1;
   finPagina: boolean = false;
-  fechaActual: string = '';
+  private ahora = new Date();
+  fechaActual = this.ahora.toLocaleDateString('en-CA');
+
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
   especialidadSeleccionada: string = '';
@@ -106,6 +108,7 @@ export class CoexListaComponent implements OnInit {
   ngOnInit(): void {
     const ahora = new Date();
     this.fechaActual = ahora.toLocaleDateString('en-CA');
+
     // Suscribirse a las consultas (observable único de la app)
     this.api.consultas$.subscribe((data) => {
       this.consultas = data;
@@ -118,7 +121,7 @@ export class CoexListaComponent implements OnInit {
     });
 
     // 👇 Aquí sí usamos filtros desde el inicio
-    this.cargarConsultas();
+    this.api.getConsultas(this.filtros);
 
   }
 
@@ -149,14 +152,7 @@ export class CoexListaComponent implements OnInit {
     this.cargando = true;
     try {
       const consultasFiltradas = await this.api.getConsultas({ ...this.filtros, especialidad });
-      consultasFiltradas.sort((a: ConsultaResponse, b: ConsultaResponse) =>
-        new Date(a.fecha_consulta).getTime() - new Date(b.fecha_consulta).getTime()
-      );
 
-      this.consultas = consultasFiltradas.map((c: ConsultaResponse, i: number) => ({
-        ...c,
-        orden: i + 1
-      }));
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -174,12 +170,13 @@ export class CoexListaComponent implements OnInit {
     this.filtrar = !this.filtrar;
   }
 
-  limpiarFiltros() {
+  async limpiarFiltros() {
     this.filtros = {
       skip: 0,
-      limit: this.pageSize
+      limit: this.pageSize,
+      especialidad: '',
     };
-    this.cargarConsultas();
+    this.consultas = await this.api.getConsultas(this.filtros);
   }
 
   editar(id: number) {
@@ -264,6 +261,15 @@ export class CoexListaComponent implements OnInit {
 
     // Retornamos inactivo solo si el ref del ciclo es 'inactivo'
     return encontrado?.ref === 'inactivo' ? 'inactivo' : 'activo';
+  }
+
+  // En tu componente
+  formatHora(hora: string): string {
+    if (!hora) return '';
+    const [h, m, s] = hora.split(':');
+    const date = new Date();
+    date.setHours(+h, +m, +s);
+    return date.toTimeString().slice(0, 5); // "HH:mm"
   }
 
 }

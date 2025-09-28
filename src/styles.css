@@ -2328,9 +2328,9 @@ background-color: #6bf3e121;
 .aurora-container .aurora-tb {
   width: 100%;
   border-collapse:separate;
-  border-spacing: 0;
+  border-spacing: 3;
   color: #f8fafc;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   border-radius: 16px;
   overflow: hidden;
   border: none;
@@ -2355,6 +2355,7 @@ background-color: #6bf3e121;
   background: rgba(3, 13, 79, 0.981);
   transition: all 0.3s ease;
   border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+  font-size: 1.1rem;
 }
 
 .aurora-tb tr:hover {
@@ -2424,62 +2425,82 @@ background-color: #6bf3e121;
 
   .aurora-tb,
   .aurora-tb tbody,
-  .aurora-tb tr,
-  .aurora-tb td {
+  .aurora-tb tr {
     display: block;
     width: 100%;
-    padding: 0 ;
-    margin: 0;
-    flex-direction: column;
+    margin: 0 0 1rem 0;
+    padding: 0;
   }
 
-  .aurora-tb tr:hover
-   {
 
-    margin-bottom: 1rem;
-    border-radius: 0.8rem;
-    background: rgba(0, 255, 255, 0.05);
-    box-shadow: 0 2px 12px rgba(0, 255, 255, 0.15);
-    padding: 1.6rem;
 
-    .secundario {
-      display: block;
-    }
-
+  .aurora-tb tr .orden {
+    font-size: 1.5rem;
+    font-weight: 600;
+    background-color: #0072ff;
+    border-radius: 120px;
+    width: -moz-fit-content;
+    width: fit-content;
   }
-
-  /* Para móviles (clase touch) */
-.aurora-tb tr.touch-active {
-  margin-bottom: 1rem;
-  border-radius: 0.8rem;
-  background: rgba(0, 255, 255, 0.05);
-  box-shadow: 0 2px 12px rgba(0, 255, 255, 0.15);
-  padding: 1.6rem;
-}
-
-.aurora-tb tr.touch-active .secundario {
-  display: block;
-}
-
-
 
   .aurora-tb tr {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.1rem;
+    padding: 0;
+    border-radius: 0.6rem;
+    background: rgba(0, 255, 255, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 255, 255, 0.1);
+    align-items: start;
+    cursor: pointer;
+    font-size: 1rem;
+    justify-items: stretch;
+    transform: scale(1) 1s ease;
   }
 
+  .aurora-tb tr:hover {
+    gap: 0.5rem;
+  }
+
+  .aurora-tb  tr .secundario:hover {
+    display: visible;
+  }
+
+
+
   .aurora-tb td {
-    text-align:center;
-    padding: 0.2rem;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    padding: 0.2rem 0.5rem;
     border: none;
-    position: relative;
     letter-spacing: 1px;
   }
 
+
+
   .aurora-tb .secundario {
-    display: none;
+    display: block; /* opcional: mostrar siempre en mobile */
   }
 
+  /* Botones de acción estilo grid/flex */
+  .botones-opt {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
 
+  .botones-opt button {
+    flex: 1 1 30%;
+    min-width: 40px;
+    text-align: center;
+  }
+
+  /* Fila activa (touch) */
+  .aurora-tb tr.touch-active {
+    background: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 2px 12px rgba(0, 255, 255, 0.15);
+  }
 }
 
 

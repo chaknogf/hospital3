@@ -126,10 +126,10 @@
         <tr>
           <th>Identificador</th>
           <th>Nombre Completo</th>
-           <th>Orde</th>
+           <th>Orden</th>
           <th>Especialidad</th>
           <th >Ciclo</th>
-          <th>Género</th>
+          <th>Hora</th>
           <th >Estado</th>
           <th>Acciones</th>
           <th>Id</th>
@@ -140,7 +140,7 @@
     [class.touch-active]="rowActiva === data.id_consulta"
     (click)="activarFila(data.id_consulta)" >
 
-            <td class="text-justify">
+            <td class="text-justify identificador secundario">
               <div class="ms-4" *ngIf="data?.cui"><strong>CUI:</strong> {{ data.cui | cui }}</div>
               <div class="ms-4" *ngIf="data?.pasaporte"><strong>Pasaporte:</strong> {{ data.pasaporte }}</div>
               <div class="ms-4" *ngIf="data?.expediente"><strong>Expediente:</strong> {{ data.expediente }}</div>
@@ -159,20 +159,15 @@
                 {{ data.nombre.apellido_casada }}
               </p>
             </td>
-            <td>{{ data.orden }}</td>
-            <td class="secundario">
+            <td class="orden">{{ data.orden }}</td>
+            <td class="">
              {{ data.especialidad | datosExtra: 'especialidad' }}
             </td>
            <td>{{ estadoUltimoCiclo(data.ciclo) }}</td>
-            <td class="secundario">
-              <div *ngIf="data.sexo === 'M'">
-                <span [innerHTML]="icons['man']"></span> Masculino
-              </div>
-              <div *ngIf="data.sexo === 'F'">
-                <span [innerHTML]="icons['woman']"></span> Femenino
-              </div>
-            </td>
-            <td class="secundario">
+           <td>
+           {{ formatHora(data.hora_consulta) }}
+           </td>
+            <td class="">
               <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
                 <span [innerHTML]="icons['activo']"></span>
               </ng-container>
@@ -180,7 +175,7 @@
                 <span [innerHTML]="icons['documento']"></span>
               </ng-container>
             </td>
-            <td class="secundario">
+            <td class="">
               <div class="botones-opt" >
                 <button  (click)="editar(data.id_consulta)">
                   <span [innerHTML]="icons['edit']"></span>
@@ -193,7 +188,7 @@
                 </button>
               </div>
             </td>
-            <td>{{ data.id_consulta }}</td>
+            <td class="secundario">{{ data.id_consulta }}</td>
           </tr>
       </tbody>
     </table>
