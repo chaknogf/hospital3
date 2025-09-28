@@ -47,7 +47,7 @@ export class CoexListaComponent implements OnInit {
   pageSize: number = 200;
   paginaActual: number = 1;
   finPagina: boolean = false;
-  fechaActual: Date = new Date();
+  fechaActual: string = '';
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
   especialidadSeleccionada: string = '';
@@ -104,6 +104,8 @@ export class CoexListaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const ahora = new Date();
+    this.fechaActual = ahora.toLocaleDateString('en-CA');
     // Suscribirse a las consultas (observable único de la app)
     this.api.consultas$.subscribe((data) => {
       this.consultas = data;
@@ -116,23 +118,22 @@ export class CoexListaComponent implements OnInit {
     });
 
     // 👇 Aquí sí usamos filtros desde el inicio
-    this.api.getConsultas(this.filtros);
+    this.cargarConsultas();
+
   }
 
   async cargarConsultas() {
     this.cargando = true;
     try {
       this.consultas = await this.api.getConsultas(this.filtros);
-
       this.medi = await this.api.getConsultas({ ...this.filtros, especialidad: 'MEDI' });
-      this.pedia = await this.api.getConsultas({ ...this.filtros, especialidad: 'PEDIA' });
+      this.pedia = await this.api.getConsultas({ ...this.filtros, especialidad: 'PEDI' });
       this.gine = await this.api.getConsultas({ ...this.filtros, especialidad: 'GINE' });
       this.ciru = await this.api.getConsultas({ ...this.filtros, especialidad: 'CIRU' });
       this.trauma = await this.api.getConsultas({ ...this.filtros, especialidad: 'TRAU' });
       this.psico = await this.api.getConsultas({ ...this.filtros, especialidad: 'PSIC' });
       this.nutri = await this.api.getConsultas({ ...this.filtros, especialidad: 'NUTR' });
       this.odonto = await this.api.getConsultas({ ...this.filtros, especialidad: 'ODON' });
-
       this.totalDeRegistros = this.consultas.length;
     } catch (error) {
       console.error("Error:", error);
@@ -140,6 +141,8 @@ export class CoexListaComponent implements OnInit {
       this.cargando = false;
     }
   }
+
+
 
   async filtrarPorEspecialidad(especialidad: string) {
     this.especialidadSeleccionada = especialidad; // 👉 marcar el botón activo
@@ -149,6 +152,7 @@ export class CoexListaComponent implements OnInit {
       consultasFiltradas.sort((a: ConsultaResponse, b: ConsultaResponse) =>
         new Date(a.fecha_consulta).getTime() - new Date(b.fecha_consulta).getTime()
       );
+
       this.consultas = consultasFiltradas.map((c: ConsultaResponse, i: number) => ({
         ...c,
         orden: i + 1
