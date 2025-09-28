@@ -7,6 +7,8 @@ import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { CommonModule, DatePipe, NgClass } from '@angular/common';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
+import { DomSanitizer } from '@angular/platform-browser';
+import { IconService } from '../../../../service/icon.service';
 
 
 @Component({
@@ -26,11 +28,25 @@ export class HojaComponent implements OnInit {
   public e: any = '';
   public detalleVisible: boolean = false;
 
+
+  options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
+
+  // iconos
+  icons: { [key: string]: any } = {};
+
   constructor(
     private api: ApiService,
     private router: Router,
-    private route: ActivatedRoute   // ✅ inyectamos ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+    private sanitizer: DomSanitizer,
+    private iconService: IconService
+
+  ) {
+    this.icons = {
+      back: this.iconService.getIcon("regresarIcon"),
+      print: this.iconService.getIcon("printIcon"),
+    }
+  }
 
   ngOnInit() {
     // 👇 obtenemos el id de la URL

@@ -1,8 +1,12 @@
 
-<div class="div-btn-opt no-imprimir">
+<div class=" botones bg-white no-imprimir">
 
-  <button (click)="regresar()"> </button>
-  <button (click)="imprimir()"></button>
+  <button (click)="regresar()">
+    <span [innerHTML]="icons['back']"></span>
+  </button>
+  <button (click)="imprimir()">
+    <span [innerHTML]="icons['print']"></span>
+  </button>
 
 </div>
 <div class="container-impresion imprimir-esto blanco">
