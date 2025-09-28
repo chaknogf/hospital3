@@ -1,87 +1,121 @@
-
-
+/* 🎨 Estilos generales hoja clínica */
 .hoja-medica {
-  font-family: Altivo;
-  color: #000;
   background: #fff;
-  padding: 1rem;
-  margin: 4px 4px 4px 4px;
-  border-radius: 8px;
+  color: #000;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.4;
+  padding: 1.5rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
+/* Encabezados */
 .titulo {
-  font-weight: 700;
-  text-decoration: underline;
-  letter-spacing: 1px;
-}
-
-.subtitulo {
-  font-weight: 600;
-  margin: 1rem 0 0.5rem 0;
-}
-
-.orden {
-  text-align: center;
+  font-size: 18pt;
+  font-weight: bold;
+  text-transform: uppercase;
   margin-bottom: 1rem;
 }
 
-.orden h1 {
-  font-size: 2.5rem;
+.subtitulo {
+  font-size: 12pt;
   font-weight: bold;
+  margin: 1rem 0 0.5rem;
+  border-bottom: 1px solid #999;
+  padding-bottom: 0.2rem;
 }
 
-.orden h3 {
-  font-size: 1.2rem;
-  color: #444;
+.orden h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0;
 }
 
-.border {
-  border: 1px solid #444 !important;
-  border-radius: 8px;
-  width: 100%;
-  margin: 0.1rem;
+
+/* Tablas y filas */
+.datos-consulta .info,
+.datos-paciente .row {
+  margin-bottom: 0.3rem;
 }
 
-.row {
-  display: flex;
-  flex-wrap: nowrap;
+.datos-consulta .col,
+.datos-paciente .col,
+.signos-vitales .campo,
+.consulta .campo,
+.seguimiento .campo {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 0.3rem;
+  background: #fafafa;
+  padding-top: 0.1rem;
+  padding-bottom: 6rem;
+
 }
 
-.col, .col-3, .col-4, .col-6 {
-  flex: 1;
-  border-right: 1px solid #444;
-  border-radius: 8px;
-  width: 100%;
-  margin: 0.1rem;
-
+.col-3, .border {
+  border-radius: 6px;
 }
 
-.col:last-child {
-  border-right: none;
-}
-
+/* Campos */
 .campo {
-  min-height: 60px;
+  min-height: 2rem;
+  padding: 6px;
 }
 
+/* Vitales como grilla */
+.tabla-vitales {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
 .tabla-vitales span {
-  display: inline-block;
-  width: 10%;
-  font-weight: 500;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px;
+  text-align: center;
+  font-size: 10pt;
+  background: #fff;
 }
 
+/* Footer */
 footer {
-  border-top: 2px solid #444;
-  padding-top: 1rem;
-  font-size: 0.9rem;
+  border-top: 1px solid #999;
+  margin-top: 2rem;
+  padding-top: 0.5rem;
+  font-size: 10pt;
+  color: #333;
 }
 
+/* Ocultar botones y navbar en impresión */
 @media print {
-  .hoja-medica {
-    padding: 0;
-    font-size: 11pt;
+  .no-print, nav, .navbar, .btn {
+    display: none !important;
   }
-  .titulo {
-    font-size: 1.4rem;
+
+  body {
+    background: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+
+  .hoja-medica {
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 10.5pt;
+  }
+
+  h1, h2, h3, h4, h5 {
+    page-break-after: avoid;
+  }
+
+  section, table, tr, td, th, div {
+    page-break-inside: avoid;
   }
 }

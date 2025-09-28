@@ -10,13 +10,15 @@
   <!-- Encabezado principal -->
   <header class="text-center mb-4">
     <h2 class="titulo">HISTORIA CLÍNICA</h2>
+     <h4 class="m-0">Ministerio de Salud Pública y Asistencia Social</h4>
+    <h4 class="m-0">Hospital General Tipo I de Tecpán Guatemala</h4>
   </header>
 
   <!-- Datos de la consulta -->
   <section class="datos-consulta m-2">
     <div class="orden">
-      <h1>{{ consulta?.orden }}</h1>
-      <h3>{{ consulta?.especialidad | datosExtra: 'especialidad' }}</h3>
+      <h1 class="border-bottom w-25"> {{ consulta?.orden }}</h1>
+      <h3 class="text-center"> {{ consulta?.especialidad | datosExtra: 'especialidad' }}</h3>
     </div>
     <div class="info row">
       <div class="col border p-2">
@@ -25,7 +27,7 @@
       </div>
       <div class="col border p-2">
         <strong>Expediente:</strong>
-        <span>{{ consulta?.expediente }}</span>
+        <span> {{ consulta?.expediente }}</span>
       </div>
     </div>
   </section>
@@ -96,27 +98,26 @@
   <!-- Consulta -->
   <section class="consulta m-2">
     <h3 class="subtitulo">DATOS DE LA CONSULTA <small class="hora">Hora: ____________</small></h3>
-    <div class="campo border p-2"><strong>Motivo de la consulta:</strong></div>
-    <div class="campo border p-2"><strong>Historia Clínica:</strong></div>
-    <div class="campo border p-2"><strong>Antecedentes:</strong></div>
-    <div class="campo border p-2"><strong>Examen físico:</strong></div>
-    <div class="campo border p-2"><strong>Diagnósticos:</strong></div>
-    <div class="campo border p-2"><strong>Tratamiento:</strong></div>
-    <div class="campo border p-2"><strong>Estudios Complementarios:</strong></div>
+    <div class="campo border"><strong>Motivo de la consulta:</strong></div>
+    <div class="campo border"><strong>Historia Clínica:</strong></div>
+    <div class="campo border"><strong>Antecedentes:</strong></div>
+    <div class="campo border"><strong>Examen físico:</strong></div>
+    <div class="campo border"><strong>Diagnósticos:</strong></div>
+    <div class="campo border"><strong>Tratamiento:</strong></div>
+    <div class="campo border"><strong>Estudios Complementarios:</strong></div>
   </section>
 
   <!-- Seguimiento -->
   <section class="seguimiento m-2">
     <h3 class="subtitulo">SEGUIMIENTO DE CASO</h3>
-    <div class="campo border p-2"><strong>Fecha:</strong></div>
-    <div class="campo border p-2"><strong>Datos Subjetivos:</strong></div>
-    <div class="campo border p-2"><strong>Datos Objetivos:</strong></div>
+    <div class="campo border"><strong>Fecha:</strong></div>
+    <div class="campo border"><strong>Datos Subjetivos:</strong></div>
+    <div class="campo border"><strong>Datos Objetivos:</strong></div>
   </section>
 
   <!-- Pie -->
   <footer class="text-center mt-4">
-    <h5>Ministerio de Salud Pública y Asistencia Social</h5>
-    <h5>Hospital General Tipo I de Tecpán Guatemala</h5>
+
   </footer>
 
 </div>
