@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { departamentos, municipios } from '../enum/departamentos';
-import { idiomas } from '../enum/diccionarios';
-import { partos, gradoAcademicos, pueblos, parentescos, especialidades } from '../enum/diccionarios';
+import { idiomas, servicios } from '../enum/diccionarios';
+import { partos, gradoAcademicos, pueblos, parentescos, especialidades, tipoConsulta } from '../enum/diccionarios';
 @Pipe({
   name: 'datosExtra'
 })
@@ -128,6 +128,15 @@ export class DatosExtraPipe implements PipeTransform {
       case 'especialidad': {
         const especialidad = especialidades.find(e => e.value === valor);
         return especialidad ? especialidad.label : valor;
+      }
+
+      case 'servicio': {
+        const servicio = servicios.find(s => s.value === valor);
+        return servicio ? servicio.label : valor;
+      }
+      case 'tipo_consulta': {
+        const consulta = tipoConsulta.find(c => c.value == valor);
+        return consulta ? consulta.label : valor;
       }
 
 

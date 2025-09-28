@@ -85,7 +85,7 @@
     (click)="activarFila(paciente.id)" >
             <td>{{ paciente.id }}</td>
             <td>
-              <div *ngIf="paciente?.cui"><strong>CUI:</strong> {{ paciente.cui }}</div>
+             <div class="ms-4" *ngIf="paciente?.cui"><strong>CUI:</strong> <small> {{ paciente.cui | cui }}</small></div>
               <div *ngIf="paciente?.expediente"><strong>Expediente:</strong> {{ paciente.expediente }}</div>
               <div *ngIf="paciente?.pasaporte"><strong>Pasaporte:</strong> {{ paciente.pasaporte }}</div>
               <div *ngIf="paciente?.otro"><strong>Otro:</strong> {{ paciente.otro }}</div>

@@ -86,7 +86,7 @@
     (click)="activarFila(data.id_consulta)" >
             <td>{{ data.id_consulta }}</td>
             <td class="text-justify">
-              <div *ngIf="data?.cui"><strong>CUI:</strong> {{ data.cui | cui }}</div>
+              <div class="ms-4" *ngIf="data?.cui"><strong>CUI:</strong> <small> {{ data.cui | cui }}</small></div>
               <div *ngIf="data?.pasaporte"><strong>Pasaporte:</strong> {{ data.pasaporte }}</div>
               <div *ngIf="data?.expediente"><strong>Expediente:</strong> {{ data.expediente }}</div>
               <div *ngIf="data?.documento"><strong>Hoja de Emergencia:</strong> {{ data.documento }}</div>

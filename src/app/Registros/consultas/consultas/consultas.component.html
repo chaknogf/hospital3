@@ -1,3 +1,169 @@
-<p>
-  consultas works!
-</p>
+
+<div class="aurora-paciente-container" [class.d-none]="modalActivo">
+
+  <!-- Botones superiores -->
+  <div class="botones justify-content-between" [ngClass]="{ 'd-none': filtrar  }">
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="icons['menu']"></span>
+     Menu
+    </button>
+
+    <h1 class="text-white">Consultas</h1>
+
+    <button type="button" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['find']"></span>
+      Filtrar
+    </button>
+  </div>
+
+  <!-- Contenedor de Búsqueda -->
+<div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
+  <form class="" (submit)="buscar(); $event.preventDefault()">
+
+    <!-- Campos -->
+    <fieldset>
+      <label>Identificador</label>
+      <input type="text" [(ngModel)]="filtros.identificador" name="identificador" placeholder="Buscar por identificador">
+    </fieldset>
+
+    <fieldset>
+      <label>Nombre completo</label>
+      <input type="text" [(ngModel)]="filtros.nombre_completo" name="nombreCompleto" placeholder="Buscar por nombre completo">
+    </fieldset>
+
+    <fieldset>
+      <label>Primer nombre</label>
+      <input type="text" [(ngModel)]="filtros.primer_nombre" name="primerNombre" placeholder="Buscar por nombre">
+    </fieldset>
+
+    <fieldset>
+      <label>Primer apellido</label>
+      <input type="text" [(ngModel)]="filtros.primer_apellido" name="primerApellido" placeholder="Buscar por apellido">
+    </fieldset>
+
+    <fieldset>
+      <label>Fecha de nacimiento</label>
+      <input type="date" [(ngModel)]="filtros.fecha_nacimiento" name="fechaNacimiento">
+    </fieldset>
+
+    <!-- Botones -->
+    <div class="botones">
+      <button type="submit">
+        <span [innerHTML]="icons['search']"></span> Buscar
+      </button>
+      <button type="button" (click)="limpiarFiltros()">
+        <span [innerHTML]="icons['delete']"></span> Limpiar
+      </button>
+      <button type="button" (click)="agregar()">
+        <span [innerHTML]="icons['create']"></span> Agregar
+      </button>
+    </div>
+  </form>
+  <div class="d-flex justify-content-center m-0 p-0">
+    <button class="btn m-0 p-0" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['arrowDown']"></span>
+    </button>
+  </div>
+</div>
+  <!-- Tabla principal (desktop) -->
+  <div class="aurora-container">
+    <table class="aurora-tb" >
+      <thead >
+        <tr>
+          <th>Id</th>
+          <th>Identificador</th>
+          <th>Nombre Completo</th>
+          <th>Tipo Consulta</th>
+          <th >Ciclo</th>
+          <th>Género</th>
+          <th >Estado</th>
+          <th>Acciones</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of consultas" class="aurora-table-row"
+    [class.touch-active]="rowActiva === data.id_consulta"
+    (click)="activarFila(data.id_consulta)" >
+            <td>{{ data.id_consulta }}</td>
+            <td class="text-justify">
+              <div class="ms-4" *ngIf="data?.cui"><strong>CUI:</strong> <small> {{ data.cui | cui }}</small></div>
+              <div *ngIf="data?.pasaporte"><strong>Pasaporte:</strong> {{ data.pasaporte }}</div>
+              <div *ngIf="data?.expediente"><strong>Expediente:</strong> {{ data.expediente }}</div>
+              <div *ngIf="data?.documento"><strong>Hoja de Emergencia:</strong> {{ data.documento }}</div>
+            </td>
+            <td >
+              <p class="p-0 m-0 text-uppercase">
+                {{ data.nombre.primer_nombre }}
+                {{ data.nombre.segundo_nombre }}
+                {{ data.nombre.otro_nombre }}
+              </p>
+              <p class="p-0 m-0 text-uppercase"
+                [ngClass]="data.sexo === 'M' ? 'hombre' : 'mujer'">
+                {{ data.nombre.primer_apellido }}
+                {{ data.nombre.segundo_apellido }}
+                {{ data.nombre.apellido_casada }}
+              </p>
+            </td>
+            <td class="secundario">
+              {{data.tipo_consulta | datosExtra: 'tipo_consulta'}}
+            </td>
+           <td>{{ estadoUltimoCiclo(data.ciclo) }}</td>
+            <td class="secundario">
+              <div *ngIf="data.sexo === 'M'">
+                <span [innerHTML]="icons['man']"></span> Masculino
+              </div>
+              <div *ngIf="data.sexo === 'F'">
+                <span [innerHTML]="icons['woman']"></span> Femenino
+              </div>
+            </td>
+            <td class="secundario">
+              <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
+                <span [innerHTML]="icons['activo']"></span>
+              </ng-container>
+              <ng-container *ngIf="getCicloStatus(data.ciclo) === 'inactivo'">
+                <span [innerHTML]="icons['documento']"></span>
+              </ng-container>
+            </td>
+            <td class="secundario">
+              <div class="botones-opt" >
+                <button  (click)="editar(data.id_consulta)">
+                  <span [innerHTML]="icons['edit']"></span>
+                </button>
+                <button  (click)="verDetalle(data.id_consulta)">
+                  <span [innerHTML]="icons['tabla']"></span>
+                </button>
+                <button (click)="imprimir(data.id_consulta, data.tipo_consulta)" >
+                  <span [innerHTML]="icons['print']"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- paginación -->
+<div class="d-flex justify-content-center align-items-center p-0">
+  <!-- Botón anterior -->
+  <button class="btn"
+          [disabled]="filtros.skip === 0"
+          (click)="cambiarPagina(-1)">
+    <span [innerHTML]="icons['skipLeft']"></span>
+  </button>
+
+  <!-- Página actual -->
+  <div>
+    <strong>{{ filtros.skip }}</strong>
+
+  </div>
+
+  <!-- Botón siguiente -->
+  <button class="btn"
+          [disabled]="finPagina"
+          (click)="cambiarPagina(1)">
+    <span [innerHTML]="icons['skipRight']"></span>
+  </button>
+</div>
+
+
