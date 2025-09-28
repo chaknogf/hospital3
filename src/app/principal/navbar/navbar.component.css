@@ -1,90 +1,286 @@
 
 
-/* Estilo para el navbar con clases de Bootstrap */
+/* ---------- NAVBAR BASE ---------- */
 .aurora-navbar {
-  background: rgba(249, 2, 2, 0.061); /* Fondo semitransparente */
-  backdrop-filter: blur(24px); /* Efecto de desenfoque */
-  border-radius: 0 0 8px 8px; /* Bordes inferiores redondeados */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 20px rgba(63, 63, 63, 0.2);
-  transition: all 0.3s ease-in-out;
+  background: linear-gradient(180deg, rgba(10,14,18,0.25), rgba(10,14,18,0.18));
+  backdrop-filter: blur(8px);
+  border-radius: 0 0 8px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+  transition: background-color .25s ease, box-shadow .25s ease, padding .2s ease;
+  padding: .45rem;
+  margin: 3px;
+  z-index: 1030;
 }
 
-.aurora-navbar:hover {
-background-color: #6bf3e121;
+/* Container inside navbar: keep it flexible (works with .container o .container-fluid) */
+.aurora-navbar .container,
+.aurora-navbar .container-fluid {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: space-between;
+  padding: 0;
 }
 
-/* Marca y logo */
-.navbar-brand .text-dark {
+/* ---------- BRAND / LOGO ---------- */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  color: #e6eef6;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
   font-weight: 600;
-  color: #E0E6F0 !important; /* Texto del logo en blanco */
-  transition: color 0.3s ease;
 }
 
-.navbar-brand .text-dark:hover {
-  color: #8da9d3 !important; /* Un azul más claro al pasar el cursor */
+.navbar-brand .bi-hospital,
+.navbar-brand svg,
+.navbar-brand img {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--aurora-brand);
+  display: inline-block;
+  vertical-align: middle;
 }
 
-/* Icono del logo */
-.navbar-brand .bi-hospital {
-  color: #92b0e3; /* Color distintivo para el ícono */
+/* Nombre "MedicalApp" visible en desktop */
+.medicalapp {
+  color: #e6eef6;
+  font-size: 1.4rem;
+  margin-left: .25rem;
+  letter-spacing: .4px;
+  display: inline-block;
+  text-align: start;
 }
 
-/* Botón de Salir */
-.btn-outline-danger {
-  color: #ff6b6b;
-  border-color: #ff6b6b;
-  transition: all 0.3s ease;
-}
-
-.btn-outline-danger:hover {
-  background-color: #ff6b6b;
+/* abreviatura para mobile (oculta desktop) */
+.abreviatura {
+  display: none;
   color: #fff;
+  font-weight: 500;
+  margin-left: .25rem;
 }
 
-/* Texto del usuario y rol */
-.navbar-text .text-bold {
-  font-weight: 600;
-  color: #e0e6f0 !important; /* Texto del nombre del usuario en blanco */
-}
-
-.navbar-text .bg-dark {
-  background-color: rgba(255, 255, 255, 0.1) !important; /* Fondo semitransparente para el rol */
-  border-radius: 5px;
-  padding: 2px 8px;
-  color: #9aa8b5 !important;
-}
-
-/* Ajustes para el botón responsive del navbar (toggler) */
-.navbar-toggler {
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
+/* ---------- TITULO CENTRAL (desktop) ---------- */
 .title {
-  line-height: 1rem;
+  flex: 1 1 auto;
   text-align: center;
+  line-height: 1;
+  pointer-events: none; /* no interfiere con click del brand */
 }
-.institucion-title {
-  font-family: altivo;
-  font-weight: 400;
-  color: white;
-  margin: 0;
-  padding: 0.2rem;
-  font-size: 1.3rem;
 
+.institucion-title {
+  font-family: "Altivo", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-weight: 500;
+  color: #fff;
+  margin: 0;
+  font-size: 1.25rem;
 }
 
 .institucion-subtitle {
-  font-family: altivo;
+  font-family: "Altivo", system-ui, -apple-system, "Segoe UI", Roboto;
   font-weight: 400;
-  color: white;
+  color: rgba(230,240,255,0.9);
   margin: 0;
-  padding: 0.2rem;
-  font-size: 1rem;
+  font-size: .92rem;
+  opacity: .95;
 }
 
-@media screen and (max-width: 429px) {
-  .title {
-    display: none;
+/* ---------- USUARIO / BOTON SALIR ---------- */
+.navbar-text {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  color: var(--muted);
+  font-size: .95rem;
+  white-space: nowrap;
+}
+
+.navbar-text .text-bold {
+  color: #e6eef6;
+  font-weight: 600;
+}
+
+.navbar-text .bg-dark {
+  background-color: rgba(255,255,255,0.06);
+  border-radius: 6px;
+  padding: 3px 8px;
+  color: var(--muted);
+  font-size: .85rem;
+}
+
+/* Botón salir */
+.btn-outline-danger {
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+  background: transparent;
+  padding: .32rem .6rem;
+  border-radius: .45rem;
+  font-weight: 500;
+  transition: background-color .18s, color .18s, box-shadow .18s, transform .12s;
+}
+
+.btn-outline-danger i,
+.btn-outline-danger svg {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* hover / focus del btn salir */
+.btn-outline-danger:hover,
+.btn-outline-danger:focus {
+  background-color: #ff6b6b;
+  color: #fff;
+  border-color:#ff6b6b;
+  box-shadow: 0 8px 20px rgba(255,107,107,0.14);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* navbar toggler (si usas) */
+.navbar-toggler {
+  border-color: rgba(255,255,255,0.12);
+  color: #fff;
+}
+
+/* ---------- ACCESIBILITY FOCUS ---------- */
+.navbar-brand:focus,
+.btn-outline-danger:focus,
+.navbar-toggler:focus {
+  outline: 3px solid rgba(0,255,255,0.12);
+  outline-offset: 2px;
+}
+
+/* ---------- ADAPTIVE / MOBILE ---------- */
+@media (max-width: 992px) {
+  .institucion-title { font-size: 1rem; }
+  .institucion-subtitle { font-size: .9rem; }
+}
+
+@media (max-width: 768px) {
+  .aurora-navbar {
+    padding: .35rem .6rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.32);
   }
+
+  /* Brand compacto: oculta texto largo y muestra abreviatura */
+  /* .medicalapp { display: none; } */
+  .abreviatura { display: inline-block; font-size: .98rem; color: #fff; }
+
+  /* Oculta el bloque central con textos largos para ganar espacio */
+  .title { display: none; }
+
+  /* Navbar text reducido: mostramos solo nombre corto si cabe */
+  .navbar-text {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .9rem;
+    max-width: 45%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* En pantallas muy pequeñas escondemos el texto del usuario y solo dejamos el icono */
+  @media (max-width: 576px) {
+    .navbar-text { display: none; }
+
+    /* Si tus botones incluyen <span class="btn-text">Salir</span>, lo ocultamos */
+    .btn-outline-danger span,
+    .btn-outline-danger .btn-text {
+      display: none !important;
+    }
+
+    /* reducir padding del btn para ser icon-only */
+    .btn-outline-danger { padding: .28rem .38rem; border-radius: .45rem; }
+  }
+
+  /* empaca el contenido y evita wrap */
+  .aurora-navbar .container,
+  .aurora-navbar .container-fluid {
+    gap: .5rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* ---------- PEQUEÑOS AJUSTES VISUALES ---------- */
+.aurora-navbar:hover { background-color: rgba(107,243,225,0.03); }
+
+.aurora-navbar .nav-item { list-style: none; }
+
+.aurora-navbar .badge-role {
+  background: rgba(255,255,255,0.06);
+  color: var(--muted);
+  padding: .2rem .5rem;
+  border-radius: 6px;
+  font-size: .85rem;
+}
+
+/* Si quieres que el logo ocupe menos espacio cuando el usuario pega en mobile */
+@media (max-width: 420px) {
+  .navbar-brand .bi-hospital,
+  .navbar-brand svg { width: 1.25rem; height: 1.25rem; }
+  .abreviatura { font-size: .92rem; }
+}
+
+.aurora-navbar {
+  background: rgba(20,20,30,0.85);
+  backdrop-filter: blur(6px);
+  border-radius: 0 0 8px 8px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+.app-abbr {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.title .institucion-title {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.title .institucion-subtitle {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #ddd;
+}
+
+.navbar-text {
+  font-size: 0.95rem;
+  color: #eee;
+}
+
+.btn-outline {
+  border: 1px solid #eee;
+  color: #eee;
+  padding: 0.25rem 0.6rem;
+  font-weight: 500;
+}
+
+.btn-outline:hover {
+  background-color: #eee;
+  color: #111;
+}
+
+@media (max-width: 768px) {
+  .title { display: none; }
 }

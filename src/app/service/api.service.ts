@@ -376,7 +376,7 @@ export class ApiService {
     try {
       this.ultimoFiltroConsulta = filtros;
       const filtrosLimpiados = this.limpiarParametros(filtros);
-
+      // console.log(filtrosLimpiados)
       const response = await this.api.get<ConsultaResponse[]>('/consultas/', {
         params: filtrosLimpiados
       });

@@ -1017,23 +1017,6 @@ legend + * {
   --bs-btn-disabled-border-color: #2fb380;
 }
 
-.btn-outline-danger {
-  --bs-btn-color: #da292e;
-  --bs-btn-border-color: #da292e;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #da292e;
-  --bs-btn-hover-border-color: #da292e;
-  --bs-btn-focus-shadow-rgb: 218, 41, 46;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #da292e;
-  --bs-btn-active-border-color: #da292e;
-  --bs-btn-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --bs-btn-disabled-color: #da292e;
-  --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #da292e;
-  --bs-gradient: none;
-}
-
 .btn-lg {
   --bs-btn-padding-y: 0.5rem;
   --bs-btn-padding-x: 1rem;
@@ -1311,7 +1294,7 @@ legend + * {
   }
 }
 
-.navbar-dark,
+
 .navbar[data-bs-theme=dark] {
   --bs-navbar-color: rgba(255, 255, 255, 0.55);
   --bs-navbar-hover-color: rgba(255, 255, 255, 0.75);
@@ -1557,6 +1540,14 @@ legend + * {
   min-height: 100vh !important;
 }
 
+.flex-column {
+  flex-direction: column !important;
+}
+
+.flex-grow-1 {
+  flex-grow: 1 !important;
+}
+
 .justify-content-end {
   justify-content: flex-end !important;
 }
@@ -1585,6 +1576,10 @@ legend + * {
   margin-top: 1rem !important;
 }
 
+.me-1 {
+  margin-right: 0.25rem !important;
+}
+
 .mb-2 {
   margin-bottom: 0.5rem !important;
 }
@@ -1601,10 +1596,6 @@ legend + * {
   margin-left: 1.5rem !important;
 }
 
-.ms-auto {
-  margin-left: auto !important;
-}
-
 .p-0 {
   padding: 0 !important;
 }
@@ -1615,6 +1606,11 @@ legend + * {
 
 .p-4 {
   padding: 1.5rem !important;
+}
+
+.px-2 {
+  padding-right: 0.5rem !important;
+  padding-left: 0.5rem !important;
 }
 
 .px-3 {
@@ -1634,6 +1630,10 @@ legend + * {
 
 .gap-1 {
   gap: 0.25rem !important;
+}
+
+.gap-2 {
+  gap: 0.5rem !important;
 }
 
 .gap-3 {
@@ -1681,11 +1681,6 @@ legend + * {
   color: rgba(var(--bs-light-rgb), var(--bs-text-opacity)) !important;
 }
 
-.text-dark {
-  --bs-text-opacity: 1;
-  color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important;
-}
-
 .text-white {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-white-rgb), var(--bs-text-opacity)) !important;
@@ -1726,7 +1721,25 @@ legend + * {
 .visible {
   visibility: visible !important;
 }
+
+@media (min-width: 576px) {
+  .d-sm-inline {
+    display: inline !important;
+  }
+  .d-sm-block {
+    display: block !important;
+  }
+}
 @media (min-width: 768px) {
+  .d-md-inline {
+    display: inline !important;
+  }
+  .d-md-flex {
+    display: flex !important;
+  }
+  .d-md-none {
+    display: none !important;
+  }
   .mb-md-0 {
     margin-bottom: 0 !important;
   }
@@ -1750,13 +1763,6 @@ legend + * {
 }
 .navbar .navbar-nav .nav-link {
   border-radius: 0.375rem;
-}
-
-.navbar-dark .navbar-nav .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-.navbar-dark .navbar-nav .nav-link.active {
-  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .navbar-nav {
@@ -1893,15 +1899,6 @@ background-color: #6bf3e121;
 }
 
 /* Marca y logo */
-.navbar-brand .text-dark {
-  font-weight: 600;
-  color: #E0E6F0 !important; /* Texto del logo en blanco */
-  transition: color 0.3s ease;
-}
-
-.navbar-brand .text-dark:hover {
-  color: #8da9d3 !important; /* Un azul más claro al pasar el cursor */
-}
 
 /* Icono del logo */
 .navbar-brand .bi-hospital {
@@ -2321,6 +2318,8 @@ background-color: #6bf3e121;
   opacity: 0.9;
 }
 
+
+
 /* Contenedor general */
 
 
@@ -2419,6 +2418,16 @@ background-color: #6bf3e121;
 
 /* Responsive first-mobile */
 @media (max-width: 768px) {
+
+
+
+    .aurora-container .aurora-cards {
+      flex: 1 1 90px;
+      height: 180px;
+      font-size: 0.8rem ! important;
+    }
+
+
   .aurora-tb thead {
     display: none;
   }
@@ -2501,8 +2510,8 @@ background-color: #6bf3e121;
     background: rgba(0, 255, 255, 0.1);
     box-shadow: 0 2px 12px rgba(0, 255, 255, 0.15);
   }
-}
 
+}
 
 .find-form {
   margin: 0.6rem;

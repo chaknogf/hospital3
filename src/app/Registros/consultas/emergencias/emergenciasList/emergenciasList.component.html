@@ -109,7 +109,9 @@
               <br>
               <small >{{ data.fecha_nacimiento | edad }}</small>
             </td>
-           <td>{{ estadoUltimoCiclo(data.ciclo) }}</td>
+           <td>{{ estadoUltimoCiclo(data.ciclo) }}
+            {{data.tipo_consulta | datosExtra: 'tipo_consulta'}}
+           </td>
             <td class="secundario">
               <div *ngIf="data.sexo === 'M'">
                 <span [innerHTML]="icons['man']"></span> Masculino

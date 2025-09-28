@@ -13181,6 +13181,8 @@ background-color: #6bf3e121;
   opacity: 0.9;
 }
 
+
+
 /* Contenedor general */
 
 
@@ -13279,6 +13281,16 @@ background-color: #6bf3e121;
 
 /* Responsive first-mobile */
 @media (max-width: 768px) {
+
+
+
+    .aurora-container .aurora-cards {
+      flex: 1 1 90px;
+      height: 180px;
+      font-size: 0.8rem ! important;
+    }
+
+
   .aurora-tb thead {
     display: none;
   }
@@ -13360,8 +13372,8 @@ background-color: #6bf3e121;
     background: rgba(0, 255, 255, 0.1);
     box-shadow: 0 2px 12px rgba(0, 255, 255, 0.15);
   }
-}
 
+}
 
 .find-form {
   margin: 0.6rem;

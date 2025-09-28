@@ -1,3 +1,4 @@
+import { tipoConsulta } from './../../../../enum/diccionarios';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -10,6 +11,7 @@ import { IconService } from '../../../../service/icon.service';
 import { ConsultaResponse, Ciclo } from '../../../../interface/consultas';
 import { ciclos } from '../../../../enum/diccionarios';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
+import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 
 
 @Component({
@@ -17,7 +19,7 @@ import { CuiPipe } from '../../../../pipes/cui.pipe';
   templateUrl: './emergenciasList.component.html',
   styleUrls: ['./emergenciasList.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe]
+  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe, DatosExtraPipe]
 })
 export class EmergenciasListComponent implements OnInit {
 
@@ -80,17 +82,25 @@ export class EmergenciasListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // 1️⃣ Suscribirse al observable de consultas
     this.api.consultas$.subscribe((data) => {
       this.consultas = data;
     });
 
+    // 2️⃣ Obtener totales
     this.api.getTotales().then((data) => {
       this.totales = data;
-      // 👇 si la vista devuelve en orden pacientes, consultas
       this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
     });
 
-    this.api.getConsultas({ skip: 0, limit: 6 });
+    // 3️⃣ Llamar getConsultas con filtros iniciales
+    const filtrosIniciales = {
+      skip: 0,
+      limit: 6,
+      tipo_consulta: 3
+    };
+
+    this.api.getConsultas(filtrosIniciales);
   }
 
   async cargarConsultas() {

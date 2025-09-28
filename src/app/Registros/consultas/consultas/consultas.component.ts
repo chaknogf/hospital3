@@ -32,7 +32,7 @@ export class ConsultasComponent implements OnInit {
   visible = false;
   modalActivo = false;
   espacio: string = ' ';
-  pageSize: number = 8;
+  pageSize: number = 20;
   skip: number = 0;
   paginaActual: number = 1;
   finPagina: boolean = false;
@@ -43,7 +43,6 @@ export class ConsultasComponent implements OnInit {
   filtros: any = {
     skip: this.skip,
     limit: this.pageSize,
-    tipo_consulta: ''
 
   };
 
@@ -101,7 +100,9 @@ export class ConsultasComponent implements OnInit {
   async cargarConsultas() {
     this.cargando = true;
     try {
+
       this.consultas = await this.api.getConsultas(this.filtros);
+      console.log(this.filtros)
       this.totalDeRegistros = this.consultas.length;
     } catch (error) {
       console.error("Error:", error);
@@ -111,7 +112,7 @@ export class ConsultasComponent implements OnInit {
   }
 
   buscar() {
-    this.filtros.skip = 0;
+
 
     this.cargarConsultas();
 

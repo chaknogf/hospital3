@@ -1,38 +1,43 @@
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm aurora-navbar sticky-top">
-  <div class="container">
-    <!-- Logo + Marca -->
+<nav class="navbar navbar-expand-lg sticky-top aurora-navbar">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+
+    <!-- LOGO / MARCA -->
     <a class="navbar-brand d-flex align-items-center" role="button" (click)="menu()">
-      <i class="bi bi-hospital fs-4"></i>
-       <span [innerHTML]="logoicon"></span>
-      <span class="medicalapp">MedicalApp</span>
+      <i class="bi bi-hospital fs-4 me-1"></i>
+      <span [innerHTML]="logoicon"></span>
+      <span class=" d-md-inline app-name">MedicalApp</span>
 
     </a>
 
-    <div class="title">
-       <span class="institucion-title">Ministerio de Salud y Asistencia Social</span>
-       <br>
-       <span class="institucion-subtitle">Hospital General Tipo I
-        de Tecpán Guatemala</span>
+    <!-- TÍTULO CENTRAL (solo desktop) -->
+    <div class="title d-none d-md-flex flex-column text-center flex-grow-1">
+      <span class="institucion-title">Ministerio de Salud y Asistencia Social</span>
+      <span class="institucion-subtitle">Hospital General Tipo I de Tecpán Guatemala</span>
     </div>
 
-
-
-    <!-- Contenido colapsable -->
-    <div class=" justify-content-end" id="navbarNav">
-      <ul class="navbar-nav ms-auto align-items-center gap-3">
-        <li class="nav-item">
-          <span class="navbar-text">
-            <span class="text-bold text-dark"> {{ usuario }} </span>
-            <span class="text-muted bg-dark rounded p-1"> [ {{ rol }} ] </span>
-          </span>
-        </li>
-        <li class="nav-item">
-        <div class="collapse navbar-collapse" id="navbarNav">  <button class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1" (click)="logout()">
-            <i class="bi bi-box-arrow-right"></i> Salir
-          </button></div>
-
-        </li>
-      </ul>
+    <!-- MENU / USUARIO (desktop) -->
+    <div class="d-none d-md-flex align-items-center gap-3">
+      <span class="navbar-text">
+        <span class="text-bold">{{ usuario }}</span>
+        <span class="text-muted rounded px-2">[ {{ rol }} ]</span>
+      </span>
+      <button class="btn btn-sm btn-outline" (click)="logout()">
+        <i class="bi bi-box-arrow-right"></i> Salir
+      </button>
     </div>
+
+  </div>
+
+  <!-- BARRA INFERIOR MOBILE -->
+  <div class="mobile-bottom-bar d-flex d-md-none justify-content-around align-items-center">
+    <button class="btn" (click)="menu()">
+      <i class="bi bi-list fs-4"></i>
+    </button>
+    <button class="btn">
+      <i class="bi bi-person-circle fs-4"></i>
+    </button>
+    <button class="btn" (click)="logout()">
+      <i class="bi bi-box-arrow-right fs-4"></i>
+    </button>
   </div>
 </nav>

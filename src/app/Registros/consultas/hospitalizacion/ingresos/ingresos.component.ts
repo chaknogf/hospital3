@@ -82,19 +82,25 @@ export class IngresosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Suscribirse a las consultas (observable único de la app)
+    // 1️⃣ Suscribirse al observable de consultas
     this.api.consultas$.subscribe((data) => {
       this.consultas = data;
     });
 
-    // Totales
+    // 2️⃣ Obtener totales
     this.api.getTotales().then((data) => {
       this.totales = data;
       this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
     });
 
-    // 👇 Aquí sí usamos filtros desde el inicio
-    this.api.getConsultas(this.filtros);
+    // 3️⃣ Llamar getConsultas con filtros iniciales
+    const filtrosIniciales = {
+      skip: 0,
+      limit: 6,
+      tipo_consulta: 2
+    };
+
+    this.api.getConsultas(filtrosIniciales);
   }
 
   async cargarConsultas() {
