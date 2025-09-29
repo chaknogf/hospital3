@@ -11,47 +11,33 @@
 </div>
 <div class="container-impresion imprimir-esto blanco">
   <!-- titulo -->
-  <img src="assets/logo.jpg" alt="Logo" class="marca-agua">
-  <div class="d-flex justify-content-center">
-    <ng-container >
 
-      <h3 class="text-center">Hoja de Atención en Emergencias</h3>
-    </ng-container>
 
+  <div class="aurora-header">
+  <div class="aurora-textos">
+    <h3>Hoja de Atención en Emergencias</h3>
+    <h4>Ministerio de Salud Pública y Asistencia Social</h4>
+    <h5>Hospital General Tipo I de Tecpán Guatemala</h5>
   </div>
-
+  <span class="logo" [innerHTML]="icons['logo']"></span>
+</div>
   <div>
-    <h5 class="text-center">Hospital General Tipo I de Tecpán Guatemala</h5>
-    <h6 class="text-end mr-3">No. consultaS: {{consulta?.documento}}</h6>
+
+    <h4>Hoja de Emergencia: {{consulta?.documento}}</h4>
+
+    <h6 class="text-end mr-5">No. consulta: {{consulta?.id}}</h6>
   </div>
   <!-- servicios -->
- <div class="d-flex justify-content-between doc-section" >
+ <div class="d-flex  doc-section" >
   <h6>SERVICIOS:</h6>
-  <div>
-    <label>Medicina Interna</label>
-    <cuadroBlancoIcon  ngClass="text-black" *ngIf="!(consulta?.especialidad == 'MEDI')"  />
-    <cuadroLlenoIcon  ngClass="text-black"*ngIf="consulta?.especialidad == 'MEDI'" />
+  <div class="especialidades-hoja d-flex justify-content-between flex-wrap gap-4 ms-3">
+  <div *ngFor="let esp of especialidades" class="especialidad-cuadro d-flex flex-column align-items-center">
+    <label>{{ esp.label }}</label>
+    <span *ngIf="consulta?.especialidad !== esp.value" class="text-black" [innerHTML]="icons['cuadroBlanco']"></span>
+    <span *ngIf="consulta?.especialidad === esp.value" class="text-black" [innerHTML]="icons['cuadroNegro']"></span>
+
   </div>
-  <div>
-    <label>Pediatria</label>
-    <cuadroBlancoIcon  ngClass="text-black" *ngIf="!(consulta?.especialidad == 'PEDI')"  />
-    <cuadroLlenoIcon  ngClass="text-black"*ngIf="consulta?.especialidad == 'PEDI'" />
-  </div>
-  <div>
-    <label>Ginecologia</label>
-    <cuadroBlancoIcon  ngClass="text-black" *ngIf="!(consulta?.especialidad == 'GINE')"  />
-    <cuadroLlenoIcon  ngClass="text-black"*ngIf="consulta?.especialidad == 'GINE'" />
-  </div>
-  <div>
-    <label>Cirugia</label>
-    <cuadroBlancoIcon  ngClass="text-black" *ngIf="!(consulta?.especialidad == 'CIRU')"  />
-    <cuadroLlenoIcon  ngClass="text-black"*ngIf="consulta?.especialidad == 'CIRU'" />
-  </div>
-  <div class="mx-2">
-    <label>Traumatologia</label>
-    <cuadroBlancoIcon  ngClass="text-black" *ngIf="!(consulta?.especialidad == 'TRAU')"  />
-    <cuadroLlenoIcon  ngClass="text-black"*ngIf="consulta?.especialidad == 'TRAU'" />
-  </div>
+</div>
  </div>
 <!-- fecha y hora -->
  <div class="d-flex justify-content-between doc-section">
@@ -61,7 +47,7 @@
   </div>
   <div>
     <label>Hora:</label>
-    <p>{{consulta?.hora_consulta | date: 'HH:mm'}}</p>
+    <p>{{consulta?.hora_consulta | time}}</p>
   </div>
   <div>
     <label>Expediente:</label>

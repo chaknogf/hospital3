@@ -127,12 +127,10 @@
           <th>Identificador</th>
           <th>Nombre Completo</th>
            <th>Orden</th>
-          <th>Especialidad</th>
-          <th >Ciclo</th>
           <th>Hora</th>
-          <th >Estado</th>
+          <th>Ciclo & Estado</th>
           <th>Acciones</th>
-          <th>Id</th>
+
         </tr>
       </thead>
       <tbody>
@@ -160,20 +158,25 @@
               </p>
             </td>
             <td class="orden">{{ data.orden }}</td>
-            <td class="oculto">
-             {{ data.especialidad | datosExtra: 'especialidad' }}
-            </td>
-           <td class="oculto">{{ estadoUltimoCiclo(data.ciclo) }}</td>
+
            <td class="oculto">
-           {{ formatHora(data.hora_consulta) }}
-           </td>
-            <td class="oculto">
+              <ng-container >
+              {{data.fecha_consulta | date: 'dd/MM/yy'}}
+              </ng-container>
+              <br>
+            <ng-container >
+              {{data.hora_consulta | time}}
+            </ng-container>
+            </td>
+           <td class="oculto">
+              {{ estadoUltimoCiclo(data.ciclo) }}
               <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
                 <span [innerHTML]="icons['activo']"></span>
               </ng-container>
               <ng-container *ngIf="getCicloStatus(data.ciclo) === 'inactivo'">
                 <span [innerHTML]="icons['documento']"></span>
               </ng-container>
+               {{data.tipo_consulta | datosExtra: 'tipo_consulta'}}
             </td>
             <td class="secundario">
               <div class="botones-opt" >
@@ -188,7 +191,6 @@
                 </button>
               </div>
             </td>
-            <td class="secundario">{{ data.id_consulta }}</td>
           </tr>
       </tbody>
     </table>

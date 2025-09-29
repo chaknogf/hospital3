@@ -23,10 +23,10 @@ export const estadoCivil: Dict[] = [
 
 export const tipoConsulta: Dict[] = [
   { label: 'COEX', value: 1 },
-  { label: 'HOSPITALIZACIÓN', value: 2 },
-  { label: 'EMERGENCIA', value: 3 },
-  { label: 'INTERCONSULTA', value: 4 },
-  { label: 'OTRO', value: 99 },
+  { label: 'Hospitalización', value: 2 },
+  { label: 'Emergencia', value: 3 },
+  { label: 'Interconsulta', value: 4 },
+  { label: 'Otro', value: 99 },
 ];
 
 export const idiomas: Dict[] = [
@@ -177,3 +177,17 @@ export const servicios: Dict[] = [
 
 
 
+export interface OpcionBoolean {
+  label: string;
+  field: string; // nombre de la propiedad en tu modelo
+}
+
+export const opcionesIngreso: OpcionBoolean[] = [
+  { label: 'Traído por Bomberos', field: 'traidoBomberos' },
+  { label: 'Accidente Tránsito', field: 'accidenteTransito' },
+  { label: 'Arma Blanca', field: 'armaBlanca' },
+  { label: 'Arma de Fuego', field: 'armaFuego' },
+  { label: 'Estudiante Escuela Pública', field: 'estudiantePublica' },
+  { label: 'Accidente Laboral', field: 'accidenteLaboral' },
+  { label: 'Personal de Hospital', field: 'personalHospital' },
+];

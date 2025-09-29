@@ -70,13 +70,10 @@
     <table class="aurora-tb" >
       <thead >
         <tr>
-          <th>Id</th>
           <th>Identificador</th>
           <th>Nombre Completo</th>
-          <th>Especialidad</th>
-          <th >Ciclo</th>
-          <th>Género</th>
-          <th >Estado</th>
+          <th>Fecha</th>
+          <th >Ciclo & Estado</th>
           <th>Acciones</th>
 
         </tr>
@@ -85,7 +82,6 @@
         <tr *ngFor="let data of consultas" class="aurora-table-row"
     [class.touch-active]="rowActiva === data.id_consulta"
     (click)="activarFila(data.id_consulta)" >
-            <td class="oculto">{{ data.id_consulta }}</td>
             <td class="text-justify">
               <div class="ms-4" *ngIf="data?.cui"><strong>CUI:</strong> <small> {{ data.cui | cui }}</small></div>
               <div *ngIf="data?.pasaporte"><strong>Pasaporte:</strong> {{ data.pasaporte }}</div>
@@ -106,24 +102,23 @@
               </p>
             </td>
             <td class="oculto">
-              {{data.especialidad | datosExtra: 'especialidad'}}
-            </td>
-           <td class="oculto">{{ estadoUltimoCiclo(data.ciclo) }}</td>
-            <td class="secundario">
-              <div *ngIf="data.sexo === 'M'">
-                <span [innerHTML]="icons['man']"></span> Masculino
-              </div>
-              <div *ngIf="data.sexo === 'F'">
-                <span [innerHTML]="icons['woman']"></span> Femenino
-              </div>
+              <ng-container >
+              {{data.fecha_consulta | date: 'dd/MM/yy'}}
+              </ng-container>
+              <br>
+            <ng-container >
+              {{data.hora_consulta | time}}
+            </ng-container>
             </td>
             <td class="oculto">
+              {{ estadoUltimoCiclo(data.ciclo) }}
               <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
                 <span [innerHTML]="icons['activo']"></span>
               </ng-container>
               <ng-container *ngIf="getCicloStatus(data.ciclo) === 'inactivo'">
                 <span [innerHTML]="icons['documento']"></span>
               </ng-container>
+               {{data.tipo_consulta | datosExtra: 'tipo_consulta'}}
             </td>
             <td class="secundario">
               <div class="botones-opt" >

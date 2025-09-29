@@ -1,3 +1,4 @@
+import { Dict, especialidades, OpcionBoolean, opcionesIngreso } from './../../../../enum/diccionarios';
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../../service/api.service';
 import { Paciente } from '../../../../interface/interfaces';
@@ -9,6 +10,8 @@ import { CommonModule, DatePipe, NgClass } from '@angular/common';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { IconService } from '../../../../service/icon.service';
+import { TimePipe } from '../../../../pipes/time.pipe';
+import { cuadroBlanco, cuadroNegro } from '../../../../shared/icons/svg-icon';
 
 
 @Component({
@@ -16,7 +19,7 @@ import { IconService } from '../../../../service/icon.service';
   templateUrl: './hoja.component.html',
   styleUrls: ['./hoja.component.css'],
   standalone: true,
-  imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, NgClass, CommonModule],
+  imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, NgClass, CommonModule, TimePipe],
 })
 export class HojaComponent implements OnInit {
   public paciente: Paciente | undefined;
@@ -27,6 +30,11 @@ export class HojaComponent implements OnInit {
   public contador: number = 0;
   public e: any = '';
   public detalleVisible: boolean = false;
+  especialidades: Dict[] = especialidades;
+
+  opcionesIngreso: OpcionBoolean[] = opcionesIngreso;
+
+
 
 
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
@@ -45,6 +53,9 @@ export class HojaComponent implements OnInit {
     this.icons = {
       back: this.iconService.getIcon("regresarIcon"),
       print: this.iconService.getIcon("printIcon"),
+      logo: this.iconService.getIcon("logoicon2"),
+      cuadroBlanco: this.iconService.getIcon("cuadroBlanco"),
+      cuadroNegro: this.iconService.getIcon("cuadroNegro")
     }
   }
 
@@ -71,7 +82,9 @@ export class HojaComponent implements OnInit {
       console.error("❌ Error cargando datos:", error);
     }
   }
-
+  getIndicador(field: string): boolean {
+    return this.consulta?.indicadores?.accidente_laboral ?? false;
+  }
   imprimir() {
     window.print();
   }

@@ -122,3 +122,45 @@ body {
   height: 700px;
   opacity: 0.1;
 }
+
+.aurora-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  position: relative;
+  padding: 1rem;
+}
+
+/* Contenedor de textos centrados */
+.aurora-textos {
+  text-align: center;
+  flex: 1;
+}
+
+/* Logo alineado a la derecha */
+.aurora-header .logo {
+  flex: 0 0 auto;
+  margin-left: auto;
+  right: 1rem;
+  width: 80px;
+  height: auto;
+}
+
+.especialidades-hoja {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.especialidad-cuadro label {
+  font-size: 0.75rem;
+  text-align: center;
+  margin-bottom: 0.2rem;
+}
+
+.especialidad-cuadro cuadroBlancoIcon,
+.especialidad-cuadro cuadroLlenoIcon {
+  width: 20px;
+  height: 20px;
+}

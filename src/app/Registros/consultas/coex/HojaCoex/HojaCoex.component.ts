@@ -7,13 +7,16 @@ import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { DatePipe } from '@angular/common';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
+import { TimePipe } from '../../../../pipes/time.pipe';
+import { IconService } from '../../../../service/icon.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-HojaCoex',
   templateUrl: './HojaCoex.component.html',
   styleUrls: ['./HojaCoex.component.css'],
   standalone: true,
-  imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe],
+  imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, TimePipe],
 })
 export class HojaCoexComponent implements OnInit {
   public paciente: Paciente | undefined;
@@ -25,14 +28,32 @@ export class HojaCoexComponent implements OnInit {
   public e: any = '';
   public detalleVisible: boolean = false;
 
+  options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
+
+  // iconos
+  icons: { [key: string]: any } = {};
+
+
+
   constructor(
     private api: ApiService,
     private router: Router,
-    private route: ActivatedRoute   // ✅ inyectamos ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+    private sanitizer: DomSanitizer,
+    private iconService: IconService
+
+  ) {
+    this.icons = {
+      logo: this.iconService.getIcon("logoicon2"),
+      back: this.iconService.getIcon("regresarIcon"),
+      print: this.iconService.getIcon("printIcon")
+    }
+  }
 
   ngOnInit() {
-    // 👇 obtenemos el id de la URL
+
+    this.horaActual = new Date().toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit', hour12: false });
+    this.fechaActual = new Date().toLocaleDateString('es-GT', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
       this.cargarDatos(id);

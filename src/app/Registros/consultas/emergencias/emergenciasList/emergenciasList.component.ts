@@ -12,6 +12,7 @@ import { ConsultaResponse, Ciclo } from '../../../../interface/consultas';
 import { ciclos } from '../../../../enum/diccionarios';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
+import { TimePipe } from '../../../../pipes/time.pipe';
 
 
 @Component({
@@ -19,7 +20,7 @@ import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
   templateUrl: './emergenciasList.component.html',
   styleUrls: ['./emergenciasList.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe, DatosExtraPipe]
+  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe, DatosExtraPipe, TimePipe]
 })
 export class EmergenciasListComponent implements OnInit {
 

@@ -14,6 +14,7 @@ import { ConsultaResponse, Ciclo } from '../../../../interface/consultas';
 import { ciclos } from '../../../../enum/diccionarios';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
+import { TimePipe } from '../../../../pipes/time.pipe';
 
 
 @Component({
@@ -21,7 +22,7 @@ import { CuiPipe } from '../../../../pipes/cui.pipe';
   templateUrl: './coexLista.component.html',
   styleUrls: ['./coexLista.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe]
+  imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe]
 })
 export class CoexListaComponent implements OnInit {
 

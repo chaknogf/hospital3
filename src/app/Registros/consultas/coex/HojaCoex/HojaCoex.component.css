@@ -26,10 +26,16 @@
   padding-bottom: 0.2rem;
 }
 
-.orden h1 {
+.orden{
   font-size: 3rem;
   font-weight: bold;
   margin: 0;
+  color: #000;
+}
+
+.orden h1, h3 {
+
+  color: #000;
 }
 
 
@@ -118,4 +124,16 @@ footer {
   section, table, tr, td, th, div {
     page-break-inside: avoid;
   }
+}
+
+
+
+.logoDerecho{
+  position: absolute;
+  top: 36px;
+  left: 375px;
+  width: 100%;
+  height: 100%;
+
+
 }

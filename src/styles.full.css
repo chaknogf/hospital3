@@ -13194,7 +13194,7 @@ background-color: #6bf3e121;
   border-collapse:separate;
   border-spacing: 0;
   color: #f8fafc;
-  font-size: 0.85rem;
+  font-size: 1rem;
   border-radius: 16px;
   overflow: hidden;
   border: none;
@@ -13238,7 +13238,7 @@ background-color: #6bf3e121;
 .aurora-tb td strong {
   color: #00ffff;
   text-shadow: 0 0 1px #06f1ed;
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 .aurora-tb td small {
   color: #b2c2d7;
