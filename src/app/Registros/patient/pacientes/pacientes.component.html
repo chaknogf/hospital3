@@ -83,7 +83,7 @@
         <tr *ngFor="let paciente of pacientes" class="aurora-table-row"
     [class.touch-active]="rowActiva === paciente.id"
     (click)="activarFila(paciente.id)" >
-            <td>{{ paciente.id }}</td>
+            <td class="oculto">{{ paciente.id }}</td>
             <td>
              <div class="ms-4" *ngIf="paciente?.cui"><strong>CUI:</strong> <small> {{ paciente.cui | cui }}</small></div>
               <div *ngIf="paciente?.expediente"><strong>Expediente:</strong> {{ paciente.expediente }}</div>
@@ -103,13 +103,13 @@
                 {{ paciente.nombre.apellido_casada }}
               </p>
             </td>
-            <td class="secundario">
+            <td class="oculto">
               {{ paciente.fecha_nacimiento | date:'dd/MM/yyyy' }}
               <br>
               <small >{{ paciente.fecha_nacimiento | edad }}</small>
             </td>
-            <td class="secundario">{{ paciente.contacto?.localidad }} {{ paciente.contacto?.municipio | datosExtra: 'vecindad'  }}</td>
-            <td class="secundario">
+            <td class="oculto">{{ paciente.contacto?.localidad }} {{ paciente.contacto?.municipio | datosExtra: 'vecindad'  }}</td>
+            <td class="oculto">
               <div *ngIf="paciente.sexo === 'M'">
                 <span [innerHTML]="icons['man']"></span> Masculino
               </div>
@@ -117,7 +117,7 @@
                 <span [innerHTML]="icons['woman']"></span> Femenino
               </div>
             </td>
-            <td class="secundario">
+            <td class="oculto">
               <div *ngIf="paciente.estado === 'V'">
                 <span [innerHTML]="icons['heart']"></span> Vivo
               </div>

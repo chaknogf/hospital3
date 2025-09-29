@@ -368,7 +368,7 @@ hr {
   opacity: 0.25;
 }
 
-h6, .h6, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
+h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   margin-top: 0;
   margin-bottom: 0.5rem;
   font-weight: 500;
@@ -410,6 +410,10 @@ h4, .h4 {
   h4, .h4 {
     font-size: 1.5rem;
   }
+}
+
+h5, .h5 {
+  font-size: 1.25rem;
 }
 
 h6, .h6 {
@@ -1638,6 +1642,10 @@ legend + * {
   justify-content: space-around !important;
 }
 
+.align-items-start {
+  align-items: flex-start !important;
+}
+
 .align-items-center {
   align-items: center !important;
 }
@@ -1657,6 +1665,11 @@ legend + * {
 .mx-2 {
   margin-right: 0.5rem !important;
   margin-left: 0.5rem !important;
+}
+
+.mx-3 {
+  margin-right: 1rem !important;
+  margin-left: 1rem !important;
 }
 
 .my-3 {
@@ -1754,9 +1767,13 @@ legend + * {
 
 .text-justify {
   text-align: justify;
-  letter-spacing: 2px;
+  letter-spacing: 0.1rem;
   word-wrap: break-word; /* o overflow-wrap: break-word; */
   overflow-wrap: break-word; /* opcional, más moderno */
+}
+
+.text-end {
+  text-align: right !important;
 }
 
 .text-center {
@@ -2362,11 +2379,13 @@ background-color: #6bf3e121;
 /* Responsivo */
 
 .aurora-container {
-  background: radial-gradient(circle at top left, #553fe4c6, #06f1ed81, #553fe4c6); /* más blur para efecto glass real */
-  backdrop-filter: blur(6px);
-  padding: 1.5rem;
-  margin: 1rem auto;
-  border-radius: 16px;
+  background: radial-gradient(circle at top left, #553fe4c6, #06f1ed81, #553fe4c6);
+  /* background: rgba(1, 12, 30, 0.76); */ /* más blur para efecto glass real */
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15);
+  padding: 0.6rem;
+  margin: 0.3rem;
+  border-radius: 25px;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem; /* mayor respiro visual */
@@ -2433,7 +2452,7 @@ background-color: #6bf3e121;
 .aurora-container .aurora-tb {
   width: 100%;
   border-collapse:separate;
-  border-spacing: 3;
+  border-spacing: 0;
   color: #f8fafc;
   font-size: 0.85rem;
   border-radius: 16px;
@@ -2458,17 +2477,14 @@ background-color: #6bf3e121;
 /* Filas */
 .aurora-tb tr {
   background: rgba(3, 13, 79, 0.981);
-  transition: all 0.3s ease;
   border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-  font-size: 1.1rem;
+
 }
 
 .aurora-tb tr:hover {
-  background: rgba(0, 255, 255, 0.08);
-  transform: scale(1.01);
-  z-index: 1;
-  padding: 0.3rem 0.4rem;
+   background: radial-gradient(circle at top left, #271d6098, #5cf3f0c3, #170e508f); background: radial-gradient(circle at top left, #271d6098, #10b4b179, #170e508f);
   box-shadow: 0 0 18px rgba(0, 255, 255, 0.3);
+  /* border-radius: 24px; */
 }
 
 /* Celdas */
@@ -2482,11 +2498,18 @@ background-color: #6bf3e121;
 .aurora-tb td strong {
   color: #00ffff;
   text-shadow: 0 0 1px #06f1ed;
+  font-size: 1rem;
 }
 .aurora-tb td small {
   color: #b2c2d7;
   font-size: 0.8rem;
 }
+
+.orden {
+    font-weight: 600;
+    font-size: 1.9rem;
+    color: orange
+  }
 
 /* Íconos */
 .aurora-tb td span {
@@ -2523,107 +2546,64 @@ background-color: #6bf3e121;
 }
 
 /* Responsive first-mobile */
+/* Mobile: Agenda tipo contactos */
 @media (max-width: 768px) {
 
-
-
-    .aurora-container .aurora-cards {
-      flex: 1 1 90px;
-      height: 180px;
-      font-size: 0.8rem ! important;
-    }
-
-
+  /* Ocultar encabezados de tabla */
   .aurora-tb thead {
     display: none;
   }
 
+  /* Filas y celdas */
   .aurora-tb,
   .aurora-tb tbody,
   .aurora-tb tr {
     display: block;
     width: 100%;
-    /* margin: 0 0 1rem 0; */
+    border: none;
     padding: 0;
+    margin: 0;
+  }
+
+  .oculto {
+    display: none;
   }
 
 
-
-  .aurora-tb tr .orden {
-    font-size: 1.5rem;
-    font-weight: 600;
-    background-color: #0072ff;
-    border-radius: 120px;
-    width: -moz-fit-content;
-    width: fit-content;
-  }
 
   .aurora-tb tr {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 0.25rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 0.6rem;
-  background: rgba(0, 255, 255, 0.05);
-  box-shadow: 0 2px 6px rgba(0, 255, 255, 0.1);
-  align-items: center;
-  cursor: pointer;
-  font-size: 0.95rem;
-  justify-items: anchor-center;
-  transition: transform 0.2s ease;
-}
-
-.aurora-tb tr:hover {
-  background: rgba(0, 255, 255, 0.12);
-  transform: scale(1.01);
-}
-
-/* Celdas (td) internas */
-.aurora-tb td {
-  padding: 0.3rem 0.4rem;
-  white-space: nowrap; /* evita saltos innecesarios */
-  overflow: hidden;
-  text-overflow: ellipsis; /* corta si es muy largo */
-}
-
-  .aurora-tb  tr .secundario:hover {
-    display: visible;
+    display: flex;
+    flex-direction: row; /* nombre a la izquierda, acciones a la derecha */
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+    cursor: pointer;
+    transition: background 0.2s ease;
   }
 
+  /* Celdas principales (nombre/identificador) */
 
-
-  .aurora-tb td {
-    display: flex;
+  /* Celdas secundarias ocultas por defecto */
+  .aurora-tb td.secundario {
+    display: none;
     flex-direction: column;
-    text-align: left;
-    padding: 0.2rem 0.5rem;
-    border: none;
-    letter-spacing: 1px;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    color: #aaa;
   }
 
-
-
-  .aurora-tb .secundario {
-    display: block; /* opcional: mostrar siempre en mobile */
-  }
-
-  /* Botones de acción estilo grid/flex */
-  .botones-opt {
+  /* Mostrar secundario si fila activa */
+  .aurora-tb tr.touch-active td.secundario {
     display: flex;
-    gap: 0.4rem;
-    flex-wrap: wrap;
   }
 
-  .botones-opt button {
-    flex: 1 1 30%;
-    min-width: 40px;
-    text-align: center;
-  }
+  /* Botones de acción */
 
-  /* Fila activa (touch) */
+  /* Opcional: efecto fila activa */
   .aurora-tb tr.touch-active {
-    background: rgba(0, 255, 255, 0.1);
-    box-shadow: 0 2px 12px rgba(0, 255, 255, 0.15);
+    border-radius: 0.4rem;
   }
 
 }
@@ -2959,7 +2939,7 @@ box-shadow: 0 1px 8px rgba(5, 75, 75, 0.512);
   }
 
   /* Ajustar títulos */
-  h1, h2, h3, h4 {
+  h1, h2, h3, h4, h5 {
     margin: 4px 0;
     font-weight: bold;
     page-break-after: avoid;

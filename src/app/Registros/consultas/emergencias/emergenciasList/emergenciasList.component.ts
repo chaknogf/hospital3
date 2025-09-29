@@ -175,7 +175,7 @@ export class EmergenciasListComponent implements OnInit {
   rowActiva: number | null = null;
 
   activarFila(id: number) {
-    this.rowActiva = this.rowActiva === id ? null : id; // toggle
+    this.rowActiva = this.rowActiva === id ? null : id;
   }
 
   estadoUltimoCiclo(ciclo: Record<string, Ciclo> | null): string | null {

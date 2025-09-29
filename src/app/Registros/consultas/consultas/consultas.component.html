@@ -73,7 +73,6 @@
           <th>Id</th>
           <th>Identificador</th>
           <th>Nombre Completo</th>
-          <th>Tipo Consulta</th>
           <th >Ciclo</th>
           <th>Género</th>
           <th >Estado</th>
@@ -85,7 +84,7 @@
         <tr *ngFor="let data of consultas" class="aurora-table-row"
     [class.touch-active]="rowActiva === data.id_consulta"
     (click)="activarFila(data.id_consulta)" >
-            <td>{{ data.id_consulta }}</td>
+            <td class="oculto">{{ data.id_consulta }}</td>
             <td class="text-justify">
               <div class="ms-4" *ngIf="data?.cui"><strong>CUI:</strong> <small> {{ data.cui | cui }}</small></div>
               <div *ngIf="data?.pasaporte"><strong>Pasaporte:</strong> {{ data.pasaporte }}</div>
@@ -105,19 +104,20 @@
                 {{ data.nombre.apellido_casada }}
               </p>
             </td>
+           <td class="oculto">{{ estadoUltimoCiclo(data.ciclo) }}</td>
+            <td class="oculto">
+
+              <ng-container >
+              {{data.fecha_consulta | date: 'dd/MM/yy'}}
+              </ng-container>
+              <br>
+            <ng-container >
+              {{data.hora_consulta | time}}
+            </ng-container>
+
+            </td>
             <td class="secundario">
               {{data.tipo_consulta | datosExtra: 'tipo_consulta'}}
-            </td>
-           <td>{{ estadoUltimoCiclo(data.ciclo) }}</td>
-            <td class="secundario">
-              <div *ngIf="data.sexo === 'M'">
-                <span [innerHTML]="icons['man']"></span> Masculino
-              </div>
-              <div *ngIf="data.sexo === 'F'">
-                <span [innerHTML]="icons['woman']"></span> Femenino
-              </div>
-            </td>
-            <td class="secundario">
               <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
                 <span [innerHTML]="icons['activo']"></span>
               </ng-container>

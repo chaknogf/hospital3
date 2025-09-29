@@ -83,8 +83,8 @@
       <tbody>
         <tr *ngFor="let data of consultas" class="aurora-table-row"
     [class.touch-active]="rowActiva === data.id_consulta"
-    (click)="activarFila(data.id_consulta)" >
-            <td>{{ data.id_consulta }}</td>
+      (click)="activarFila(data.id_consulta)" >
+            <td class="secundario">{{ data.id_consulta }}</td>
             <td class="text-justify">
               <div class="ms-4" *ngIf="data?.cui"><strong>CUI:</strong> <small> {{ data.cui | cui }}</small></div>
               <div *ngIf="data?.pasaporte"><strong>Pasaporte:</strong> {{ data.pasaporte }}</div>
@@ -104,15 +104,15 @@
                 {{ data.nombre.apellido_casada }}
               </p>
             </td>
-            <td class="secundario">
+            <td class="oculto">
               {{ data.fecha_nacimiento | date:'dd/MM/yyyy' }}
               <br>
               <small >{{ data.fecha_nacimiento | edad }}</small>
             </td>
-           <td>{{ estadoUltimoCiclo(data.ciclo) }}
+           <td class="oculto">{{ estadoUltimoCiclo(data.ciclo) }}
             {{data.tipo_consulta | datosExtra: 'tipo_consulta'}}
            </td>
-            <td class="secundario">
+            <td class="oculto">
               <div *ngIf="data.sexo === 'M'">
                 <span [innerHTML]="icons['man']"></span> Masculino
               </div>
@@ -120,7 +120,7 @@
                 <span [innerHTML]="icons['woman']"></span> Femenino
               </div>
             </td>
-            <td class="secundario">
+            <td class="oculto">
               <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
                 <span [innerHTML]="icons['activo']"></span>
               </ng-container>
@@ -129,18 +129,18 @@
               </ng-container>
             </td>
             <td class="secundario">
-              <div class="botones-opt" >
-                <button  (click)="editar(data.id_consulta)">
-                  <span [innerHTML]="icons['edit']"></span>
-                </button>
-                <button  (click)="verDetalle(data.id_consulta)">
-                  <span [innerHTML]="icons['tabla']"></span>
-                </button>
-                <button (click)="imprimir(data.id_consulta)" >
-                  <span [innerHTML]="icons['print']"></span>
-                </button>
-              </div>
-            </td>
+      <div class="botones-opt">
+        <button (click)="editar(data.id_consulta); $event.stopPropagation()">
+          <span [innerHTML]="icons['edit']"></span>
+        </button>
+        <button (click)="verDetalle(data.id_consulta); $event.stopPropagation()">
+          <span [innerHTML]="icons['tabla']"></span>
+        </button>
+        <button (click)="imprimir(data.id_consulta); $event.stopPropagation()">
+          <span [innerHTML]="icons['print']"></span>
+        </button>
+      </div>
+    </td>
           </tr>
       </tbody>
     </table>
