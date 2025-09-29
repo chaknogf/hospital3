@@ -2557,6 +2557,20 @@ background-color: #6bf3e121;
 /* Mobile: Agenda tipo contactos */
 @media (max-width: 768px) {
 
+  .aurora-container {
+    padding: 1.3rem;
+    margin: 0.8rem;
+    gap: 0.5rem;
+
+  }
+
+
+  .aurora-container .aurora-cards {
+  flex: 1 1 150px;
+  font-size: 0.8rem;
+  height: 180px;
+
+}
   /* Ocultar encabezados de tabla */
   .aurora-tb thead {
     display: none;
