@@ -206,7 +206,7 @@ export class CoexListaComponent implements OnInit {
     this.router.navigate(['/editarAdmision', id, 'coex']);
   }
   agregar() {
-    this.router.navigate(['/admision', 'coex']);
+    this.router.navigate(['/pacientes']);
   }
 
   verDetalle(consultaId: number) {

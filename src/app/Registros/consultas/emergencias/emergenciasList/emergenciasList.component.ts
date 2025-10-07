@@ -152,7 +152,7 @@ export class EmergenciasListComponent implements OnInit {
     this.router.navigate(['/editarAdmision', id, 'emergencia']);
   }
   agregar() {
-    this.router.navigate(['/admision', 'emergencia']);
+    this.router.navigate(['/pacientes']);
   }
 
   verDetalle(consultaId: number) {

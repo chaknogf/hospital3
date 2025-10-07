@@ -155,7 +155,7 @@ export class IngresosComponent implements OnInit {
     this.router.navigate(['/editarAdmision', id, 'ingreso']);
   }
   agregar() {
-    this.router.navigate(['/admision', 'ingreso']);
+    this.router.navigate(['/pacientes']);
   }
 
   verDetalle(consultaId: number) {
