@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { EdadPipe } from "../../../pipes/edad.pipe";
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
+import { addExpediente, addPerson } from '../../../shared/icons/svg-icon';
 
 
 @Component({
@@ -21,6 +22,10 @@ import { CuiPipe } from '../../../pipes/cui.pipe';
   imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe]
 })
 export class PacientesComponent implements OnInit {
+  options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
+
+  // iconos
+  icons: { [key: string]: any } = {};
 
   pacientes: Paciente[] = [];
   enRenap: Renap[] = [];
@@ -40,21 +45,36 @@ export class PacientesComponent implements OnInit {
   @ViewChild('dialogAdmision') dialog!: ElementRef<HTMLDialogElement>;
   filtros: PacienteFiltros = {
     skip: 0,
-    limit: this.pageSize
+    limit: this.pageSize,
+    primer_nombre: '',
+    segundo_nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
+    nombre_completo: '',
+    sexo: '',
+    fecha_nacimiento: '',
+    referencias: '',
+    estado: ''
   };
+
+  // busquedas
+
+
+  public cui: string = '';
 
   pacienteSeleccionadoId: number | null = null;
   mostrarDetallePaciente = false;
 
   // iconos (ahora inyectados por servicio)
-  icons: { [key: string]: any } = {};
-
   constructor(
     private api: ApiService,
     private router: Router,
     private iconService: IconService
   ) {
     this.icons = {
+      editPerson: this.iconService.getIcon("editPerson"),
+      addExpediente: this.iconService.getIcon("addExpediente"),
+      addPerson: this.iconService.getIcon("addPerson"),
       search: this.iconService.getIcon("searchIcon"),
       delete: this.iconService.getIcon("deletInput"),
       create: this.iconService.getIcon("createIcon"),
@@ -120,7 +140,7 @@ export class PacientesComponent implements OnInit {
   }
 
   editarPaciente(pacienteId: number) {
-    this.router.navigate(['/paciente', pacienteId]);
+    this.router.navigate(['/pacienteEdit', pacienteId]);
   }
 
   eliminarPaciente(pacienteId: number) {
@@ -131,6 +151,10 @@ export class PacientesComponent implements OnInit {
 
   agregar() {
     this.router.navigate(['/paciente']);
+  }
+
+  agregarConExpediente() {
+    this.router.navigate(['/paciente', true]);
   }
 
   verDetallesPaciente(pacienteId: number) {
@@ -183,7 +207,7 @@ export class PacientesComponent implements OnInit {
     this.rowActiva = this.rowActiva === id ? null : id; // toggle
   }
 
-  options = [
+  optionsTipoConsulta = [
     { nombre: 'Coex', valor: 1 },
     { nombre: 'Emergencia', valor: 2 }, // Cambiado para ser consistente
     { nombre: 'Ingreso', valor: 3 }

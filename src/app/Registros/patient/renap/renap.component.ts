@@ -115,7 +115,7 @@ export class RenapComponent implements OnInit {
       }
     };
 
-    console.log('Datos a enviar:', datos);
+    // console.log('Datos a enviar:', datos);
     this.router.navigate(['/paciente'], { state: { paciente: datos } });
   }
 

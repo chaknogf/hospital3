@@ -1,4 +1,4 @@
-import { tipoConsulta } from './../../../../enum/diccionarios';
+import { tipoConsulta, ciclos, Dict } from './../../../../enum/diccionarios';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -9,10 +9,10 @@ import { ConsultaService } from '../../../../service/consulta.service';
 import { Router } from '@angular/router';
 import { IconService } from '../../../../service/icon.service';
 import { ConsultaResponse, Ciclo } from '../../../../interface/consultas';
-import { ciclos } from '../../../../enum/diccionarios';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { TimePipe } from '../../../../pipes/time.pipe';
+
 
 
 @Component({
@@ -39,12 +39,22 @@ export class EmergenciasListComponent implements OnInit {
   finPagina: boolean = false;
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
+  ciclos: Dict[] = ciclos;
 
 
   filtros: any = {
     skip: 0,
     limit: this.pageSize,
-    tipo_consulta: 3
+    tipo_consulta: 3,
+    primer_nombre: '',
+    segundo_nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
+    fecha_consulta: '',
+    ciclo: '',
+    especialidad: '',
+    servicio: '',
+    identificador: '',
   };
 
   // iconos (ahora inyectados por servicio)
@@ -94,20 +104,17 @@ export class EmergenciasListComponent implements OnInit {
       this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
     });
 
-    // 3️⃣ Llamar getConsultas con filtros iniciales
-    const filtrosIniciales = {
-      skip: 0,
-      limit: 6,
-      tipo_consulta: 3
-    };
 
-    this.api.getConsultas(filtrosIniciales);
+
+    this.api.getConsultas(this.filtros);
   }
 
   async cargarConsultas() {
     this.cargando = true;
     try {
       this.consultas = await this.api.getConsultas(this.filtros);
+      //
+      // console.log(this.consultas);
       this.totalDeRegistros = this.consultas.length;
     } catch (error) {
       console.error("Error:", error);
@@ -117,9 +124,10 @@ export class EmergenciasListComponent implements OnInit {
   }
 
   buscar() {
-    this.filtros.skip = 0;
+    this.filtros
     this.cargarConsultas();
   }
+
   toggleFiltrar() {
     this.filtrar = !this.filtrar;
   }
@@ -127,7 +135,15 @@ export class EmergenciasListComponent implements OnInit {
   limpiarFiltros() {
     this.filtros = {
       skip: 0,
-      limit: this.pageSize
+      limit: this.pageSize,
+      tipo_consulta: 3,
+      primer_nombre: '',
+      segundo_nombre: '',
+      primer_apellido: '',
+      segundo_apellido: '',
+      fecha_consulta: '',
+      ciclo: '',
+      identificador: ''
     };
     this.cargarConsultas();
   }

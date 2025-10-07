@@ -36,8 +36,9 @@ export const routes: Routes = [
   // Pacientes
   { path: 'pacientes', component: PacientesComponent, canActivate: [AuthGuard] },
   { path: 'paciente', component: FormularioPacienteComponent, canActivate: [AuthGuard] },
+  { path: 'paciente/:modo', component: FormularioPacienteComponent, canActivate: [AuthGuard] },
   { path: 'detallePaciente/:id', component: DetallePacienteComponent, canActivate: [AuthGuard] },
-  { path: 'paciente/:id', component: FormularioPacienteComponent, canActivate: [AuthGuard] },
+  { path: 'pacienteEdit/:id', component: FormularioPacienteComponent, canActivate: [AuthGuard] },
   // Emergencias
   { path: 'emergencias', component: EmergenciasListComponent, canActivate: [AuthGuard] },
   { path: 'hojaEmergencia/:id', component: HojaComponent, canActivate: [AuthGuard] },

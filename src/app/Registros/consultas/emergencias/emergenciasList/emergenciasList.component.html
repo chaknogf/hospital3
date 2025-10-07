@@ -27,13 +27,13 @@
     </fieldset>
 
     <fieldset>
-      <label>Nombre completo</label>
-      <input type="text" [(ngModel)]="filtros.nombre_completo" name="nombreCompleto" placeholder="Buscar por nombre completo">
+      <label>Primer nombre</label>
+      <input type="text" [(ngModel)]="filtros.primer_nombre" name="primerNombre" placeholder="Buscar por nombre">
     </fieldset>
 
     <fieldset>
-      <label>Primer nombre</label>
-      <input type="text" [(ngModel)]="filtros.primer_nombre" name="primerNombre" placeholder="Buscar por nombre">
+      <label>Segundo nombre</label>
+      <input type="text" [(ngModel)]="filtros.segundo_nombre" name="segundoNombre" placeholder="Buscar por nombre">
     </fieldset>
 
     <fieldset>
@@ -42,13 +42,27 @@
     </fieldset>
 
     <fieldset>
-      <label>Fecha de nacimiento</label>
-      <input type="date" [(ngModel)]="filtros.fecha_nacimiento" name="fechaNacimiento">
+      <label>Segundo apellido</label>
+      <input type="text" [(ngModel)]="filtros.segundo_apellido" name="segundoApellido" placeholder="Buscar por apellido">
+    </fieldset>
+
+    <fieldset>
+      <label>Fecha de consulta</label>
+      <input type="date" [(ngModel)]="filtros.fecha_consulta" name="fechaConsulta">
+    </fieldset>
+
+    <fieldset>
+     <label for="">ciclo</label>
+     <select name="ciclo" [(ngModel)]="filtros.ciclo" id="cilo">
+      <option *ngFor="let ciclo of ciclos" [value]="ciclo.value" >
+        {{ ciclo.label }}
+      </option>
+     </select>
     </fieldset>
 
     <!-- Botones -->
     <div class="botones">
-      <button type="submit">
+      <button type="submit" >
         <span [innerHTML]="icons['search']"></span> Buscar
       </button>
       <button type="button" (click)="limpiarFiltros()">
@@ -120,8 +134,8 @@
               {{data.hora_consulta | time}}
             </ng-container>
             </td>
-            <td class="oculto">
-              {{ estadoUltimoCiclo(data.ciclo) }}
+              <td class="oculto">
+              <small>{{ estadoUltimoCiclo(data.ciclo) }}</small>
               <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
                 <span [innerHTML]="icons['activo']"></span>
               </ng-container>

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Paciente, Usuarios, Correlativo, Municipio, Totales } from '../interface/interfaces';
 import { ConsultaBase, ConsultaResponse } from '../interface/consultas';
 import { BehaviorSubject } from 'rxjs';
+import { __param } from 'tslib';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
@@ -232,18 +233,21 @@ export class ApiService {
       throw error;
     }
   }
-  async createPaciente(paciente: any): Promise<any> {
-    const response = await this.api.post('/paciente/crear/', paciente, {
+  async crearPaciente(paciente: Paciente, generar_expediente: boolean = false): Promise<any> {
+    const url = generar_expediente ? '/paciente/crear/?gen_expediente=true' : '/paciente/crear/';
+    const response = await this.api.post(url, paciente, {
       headers: { 'Content-Type': 'application/json' }
     });
-    await this.refreshPacientes();  // 👈 refrescar lista
+
+    // Refrescar lista de pacientes después de crear
+    await this.refreshPacientes();
+
     return response.data;
   }
 
-
-  async updatePaciente(pacienteId: number, paciente: any): Promise<any> {
+  async updatePaciente(pacienteId: number, paciente: any, accion: string): Promise<any> {
     const response = await this.api.put(
-      `/paciente/actualizar/${pacienteId}`,
+      `/paciente/actualizar/${pacienteId}?accion_expediente=${accion}`,
       paciente,
       { headers: { 'Content-Type': 'application/json' } }
     );
@@ -379,6 +383,8 @@ export class ApiService {
       // console.log(filtrosLimpiados)
       const response = await this.api.get<ConsultaResponse[]>('/consultas/', {
         params: filtrosLimpiados
+
+
       });
 
       this.consultasSubject.next(response.data);

@@ -11,7 +11,7 @@ import { ConsultaService } from '../../../../service/consulta.service';
 import { Router } from '@angular/router';
 import { IconService } from '../../../../service/icon.service';
 import { ConsultaResponse, Ciclo } from '../../../../interface/consultas';
-import { ciclos } from '../../../../enum/diccionarios';
+import { ciclos, Dict } from '../../../../enum/diccionarios';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
 import { TimePipe } from '../../../../pipes/time.pipe';
@@ -54,14 +54,26 @@ export class CoexListaComponent implements OnInit {
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
   especialidadSeleccionada: string = '';
+  ciclos: Dict[] = ciclos;
 
 
   filtros: any = {
     skip: 0,
     limit: this.pageSize,
     tipo_consulta: 1,
-    fecha_consulta: this.fechaActual
+    primer_nombre: '',
+    segundo_nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
+    fecha_consulta: '',
+    ciclo: '',
+    especialidad: '',
+    servicio: '',
+    identificador: '',
   };
+
+
+
 
   // iconos (ahora inyectados por servicio)
   icons: { [key: string]: any } = {};
@@ -174,13 +186,20 @@ export class CoexListaComponent implements OnInit {
     this.filtrar = !this.filtrar;
   }
 
-  async limpiarFiltros() {
+  limpiarFiltros() {
     this.filtros = {
       skip: 0,
       limit: this.pageSize,
-      especialidad: '',
+      tipo_consulta: 1,
+      primer_nombre: '',
+      segundo_nombre: '',
+      primer_apellido: '',
+      segundo_apellido: '',
+      fecha_consulta: '',
+      ciclo: '',
+      identificador: ''
     };
-    this.consultas = await this.api.getConsultas(this.filtros);
+    this.cargarConsultas();
   }
 
   editar(id: number) {

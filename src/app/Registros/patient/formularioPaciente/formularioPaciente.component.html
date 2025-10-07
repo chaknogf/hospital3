@@ -40,6 +40,24 @@
 
   <!-- Identificadores -->
   <fieldset class="grupo identificadores" >
+    <legend >Opciones del Expediente</legend>
+    <div class="toggle-buttons justify-content-center" *ngIf="enEdicion">
+        <button [class.active]="accionExpediente === 'mantener'" type="button" class="btn" (click)="accionExpediente = 'mantener'">Mantener</button>
+        <button [class.active]="accionExpediente === 'generar'" type="button" class="btn" (click)="accionExpediente = 'generar'">Generar</button>
+        <button [class.active]="accionExpediente === 'sobrescribir'" type="button" class="btn" (click)="accionExpediente = 'sobrescribir'">Sobrescribir</button>
+        <!-- Mostrar la acción seleccionada -->
+      <!-- <p>Acción seleccionada: {{ accionExpediente }}</p> -->
+    </div>
+
+    <div *ngIf="!enEdicion" class="toggle-buttons justify-content-center">
+      <button [class.active]="!crearExpediente" type="button" class="btn" (click)="crearExpediente = false">Sin Expediente</button>
+      <button [class.active]="crearExpediente" type="button" class="btn" (click)="crearExpediente = true">Con Expediente</button>
+
+    </div>
+
+
+
+
     <legend>Identificadores</legend>
 
     <label for="cui">CUI</label>

@@ -7,7 +7,7 @@ import { ApiService } from '../../../../service/api.service';
 import { Router } from '@angular/router';
 import { IconService } from '../../../../service/icon.service';
 import { ConsultaResponse, Ciclo } from '../../../../interface/consultas';
-import { ciclos } from '../../../../enum/diccionarios';
+import { ciclos, Dict } from '../../../../enum/diccionarios';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
 import { TimePipe } from '../../../../pipes/time.pipe';
@@ -39,12 +39,22 @@ export class IngresosComponent implements OnInit {
   finPagina: boolean = false;
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
+  ciclos: Dict[] = ciclos;
 
 
   filtros: any = {
-    skip: this.skip,
+    skip: 0,
     limit: this.pageSize,
-    tipo_consulta: this.tipoConsultas
+    tipo_consulta: 2,
+    primer_nombre: '',
+    segundo_nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
+    fecha_consulta: '',
+    ciclo: '',
+    especialidad: '',
+    servicio: '',
+    identificador: '',
   };
 
   // iconos (ahora inyectados por servicio)
@@ -127,9 +137,16 @@ export class IngresosComponent implements OnInit {
 
   limpiarFiltros() {
     this.filtros = {
-      skip: this.skip = 0,
+      skip: 0,
       limit: this.pageSize,
-      tipo_consulta: this.tipoConsultas
+      tipo_consulta: 2,
+      primer_nombre: '',
+      segundo_nombre: '',
+      primer_apellido: '',
+      segundo_apellido: '',
+      fecha_consulta: '',
+      ciclo: '',
+      identificador: ''
     };
     this.cargarConsultas();
   }

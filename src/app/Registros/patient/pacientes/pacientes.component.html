@@ -22,7 +22,7 @@
     <!-- Campos -->
     <fieldset>
       <label>Identificador</label>
-      <input type="text" [(ngModel)]="filtros.identificador" name="identificador" placeholder="Buscar por identificador">
+      <input type="text" [(ngModel)]="filtros.identificador" name="identificador" placeholder="CUI, Expediente, Pasaporte">
     </fieldset>
 
     <fieldset>
@@ -32,12 +32,22 @@
 
     <fieldset>
       <label>Primer nombre</label>
-      <input type="text" [(ngModel)]="filtros.primer_nombre" name="primerNombre" placeholder="Buscar por nombre">
+      <input type="text" [(ngModel)]="filtros.primer_nombre" name="primerNombre" placeholder="1er nombre">
+    </fieldset>
+
+    <fieldset>
+      <label>Primer nombre</label>
+      <input type="text" [(ngModel)]="filtros.segundo_nombre" name="segundoNombre" placeholder="2do nombre">
     </fieldset>
 
     <fieldset>
       <label>Primer apellido</label>
-      <input type="text" [(ngModel)]="filtros.primer_apellido" name="primerApellido" placeholder="Buscar por apellido">
+      <input type="text" [(ngModel)]="filtros.primer_apellido" name="primerApellido" placeholder="1er apellido">
+    </fieldset>
+
+    <fieldset>
+      <label>Primer nombre</label>
+      <input type="text" [(ngModel)]="filtros.segundo_apellido" name="segundoApellido" placeholder="2do apellido">
     </fieldset>
 
     <fieldset>
@@ -47,14 +57,15 @@
 
     <!-- Botones -->
     <div class="botones">
+       <button type="button" (click)="agregar()">
+        <span [innerHTML]="icons['addPerson']"></span> Agregar Persona
+      </button>
+
       <button type="submit">
         <span [innerHTML]="icons['search']"></span> Buscar
       </button>
       <button type="button" (click)="limpiarFiltros()">
         <span [innerHTML]="icons['delete']"></span> Limpiar
-      </button>
-      <button type="button" (click)="agregar()">
-        <span [innerHTML]="icons['create']"></span> Agregar
       </button>
     </div>
   </form>
@@ -86,7 +97,7 @@
             <td class="oculto">{{ paciente.id }}</td>
             <td>
              <div class="ms-4" *ngIf="paciente?.cui"><strong>CUI:</strong> <small> {{ paciente.cui | cui }}</small></div>
-              <div *ngIf="paciente?.expediente"><strong>Expediente:</strong> {{ paciente.expediente }}</div>
+              <div *ngIf="paciente?.expediente" class="text-alert"><strong>Expediente:</strong> {{ paciente.expediente }}</div>
               <div *ngIf="paciente?.pasaporte"><strong>Pasaporte:</strong> {{ paciente.pasaporte }}</div>
               <div *ngIf="paciente?.otro"><strong>Otro:</strong> {{ paciente.otro }}</div>
             </td>
@@ -128,7 +139,7 @@
             <td class="secundario">
               <div class="d-flex gap-1" >
                 <button  (click)="editarPaciente(paciente.id)">
-                  <span [innerHTML]="icons['edit']"></span>
+                  <span [innerHTML]="icons['editPerson']"></span>
                 </button>
                 <button (click)="abrirModalAdmision(paciente.id)">
                   <span [innerHTML]="icons['medical']"></span>
@@ -171,7 +182,7 @@
 <dialog #dialogAdmision>
 <div class="aurora-container">
   <div class="aurora-cards"
-       *ngFor="let opt of options"
+       *ngFor="let opt of optionsTipoConsulta"
        (click)="admision(opt.valor, pacienteSeleccionado)">
     <div class="aurora-items">
       <!-- <span [innerHTML]="opt.icon"></span> -->

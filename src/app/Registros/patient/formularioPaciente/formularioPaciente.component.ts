@@ -42,6 +42,8 @@ import { tipoConsulta } from '../../../enum/diccionarios';
 export class FormularioPacienteComponent implements OnInit {
   options: { nombre: string; descripcion: string; ruta: string; icon?: SafeResourceUrl }[] = [];
   public enEdicion = false;
+  public accionExpediente = 'mantener';
+  public crearExpediente = false;
   public edadPaciente: boolean = false;
   public usuarioActual = '';
   edadAnios = 0;
@@ -98,7 +100,7 @@ export class FormularioPacienteComponent implements OnInit {
     this.form = this.fb.group({
       id: [0],
       unidad: [287],
-      cui: ['', [dpiValidator()]],
+      cui: [''],
       expediente: [''],
       pasaporte: [''],
       otro: [''],
@@ -257,8 +259,12 @@ export class FormularioPacienteComponent implements OnInit {
     }
 
 
-
+    const modo = this.route.snapshot.paramMap.get('modo');
+    // console.log('modo', modo);
+    this.crearExpediente = !!modo;
+    console.log('this.crearExpediente', this.crearExpediente);
     const idParam = this.route.snapshot.paramMap.get('id');
+
     if (idParam) {
       const id = Number(idParam);
       if (!isNaN(id)) {
@@ -394,26 +400,46 @@ export class FormularioPacienteComponent implements OnInit {
   }
   async crear(paciente: Paciente): Promise<any> {
     try {
-      const correlativo = await this.api.corExpediente();
-      paciente.expediente = correlativo;
-      const response = await this.api.createPaciente(paciente);
-      // console.log('✅ Paciente creado correctamente:', response.data);
-      return response.data;
+      const generarExpediente = !!this.crearExpediente; // aseguramos booleano
+      // console.log(`👤 Creando paciente ${generarExpediente ? 'con' : 'sin'} expediente`);
+
+      // Llama a la función unificada según generarExpediente
+      const response = await this.api.crearPaciente(paciente, generarExpediente);
+
+      // Retorna los datos del paciente creado
+      return response;
+
     } catch (error) {
       this.mostrarError('crear paciente', error);
+      console.error('Error al crear paciente:', error);
+
+      // Muestra la respuesta del servidor si existe
+      if (error && typeof error === 'object' && 'response' in error) {
+        console.log('Respuesta del servidor:', (error as any).response?.data);
+      }
+
       throw error;
     }
   }
 
   async actualizar(paciente: Paciente): Promise<void> {
     try {
-      await this.api.updatePaciente(paciente.id, paciente);
+
+      await this.api.updatePaciente(paciente.id, paciente, this.accionExpediente);
       // console.log('👤 Paciente actualizado correctamente');
       this.volver();
     } catch (error) {
       this.mostrarError('actualizar paciente', error);
     }
   }
+
+  public accionesPut = [
+    { value: 'mantener', label: 'Sin Expediente' },
+    { value: 'generar', label: 'Asignar Expediente' },
+    { value: 'sobrescribir', label: 'Cambiar Expediente' }
+
+  ]
+
 
   obtenerPaisesIso(): void {
     this.api.getPaisesIso()

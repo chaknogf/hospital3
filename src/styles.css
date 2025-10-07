@@ -1801,6 +1801,12 @@ legend + * {
   color: rgba(var(--bs-warning-rgb), var(--bs-text-opacity)) !important;
 }
 
+.text-alert {
+  color: yellow !important;
+  letter-spacing: 1px;
+
+}
+
 .text-light {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-light-rgb), var(--bs-text-opacity)) !important;

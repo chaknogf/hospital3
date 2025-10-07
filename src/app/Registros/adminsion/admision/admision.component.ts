@@ -264,7 +264,7 @@ export class AdmisionComponent implements OnInit {
 
     const consulta = this.form.getRawValue();
     consulta.ciclo = this.filtrarCiclos(consulta.ciclo);
-
+    // console.log(consulta);
     if (this.enEdicion) this.actualizar(consulta);
     else this.crear(consulta);
 
@@ -273,16 +273,12 @@ export class AdmisionComponent implements OnInit {
 
   async crear(consulta: any) {
     try {
-      if (this.esEmergencia) {
-        const correlativo = await this.api.corEmergencia();
-        consulta.documento = correlativo;
-        this.form.get('documento')?.setValue(correlativo);
-      }
+
       const resp = await this.api.crearConsulta(consulta);
       // console.log('Consulta creada', resp);
       return resp.data;
     } catch (error) {
-      console.error('Error crear consulta', error);
+      console.error('Error al crear consulta', error);
       throw error;
     }
   }

@@ -8,7 +8,7 @@ import { ApiService } from './../../../service/api.service';
 import { Router } from '@angular/router';
 import { IconService } from './../../../service/icon.service';
 import { ConsultaResponse, Ciclo } from './../../../interface/consultas';
-import { ciclos } from './../../../enum/diccionarios';
+import { ciclos, Dict, tipoConsulta } from './../../../enum/diccionarios';
 import { DatosExtraPipe } from './../../../pipes/datos-extra.pipe';
 import { CuiPipe } from './../../../pipes/cui.pipe';
 import { TimePipe } from '../../../pipes/time.pipe';
@@ -39,13 +39,27 @@ export class ConsultasComponent implements OnInit {
   finPagina: boolean = false;
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
+  ciclos: Dict[] = ciclos;
+  tipos: Dict[] = tipoConsulta;
 
 
   filtros: any = {
-    skip: this.skip,
+    skip: 0,
     limit: this.pageSize,
-
+    tipo_consulta: '',
+    primer_nombre: '',
+    segundo_nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
+    fecha_consulta: '',
+    ciclo: '',
+    especialidad: '',
+    servicio: '',
+    identificador: '',
   };
+
+
+
 
   // iconos (ahora inyectados por servicio)
   icons: { [key: string]: any } = {};
@@ -103,7 +117,7 @@ export class ConsultasComponent implements OnInit {
     try {
 
       this.consultas = await this.api.getConsultas(this.filtros);
-      console.log(this.filtros)
+      // console.log(this.filtros)
       this.totalDeRegistros = this.consultas.length;
     } catch (error) {
       console.error("Error:", error);
@@ -124,9 +138,16 @@ export class ConsultasComponent implements OnInit {
 
   limpiarFiltros() {
     this.filtros = {
-      skip: this.skip = 0,
+      skip: 0,
       limit: this.pageSize,
-
+      tipo_consulta: '',
+      primer_nombre: '',
+      segundo_nombre: '',
+      primer_apellido: '',
+      segundo_apellido: '',
+      fecha_consulta: '',
+      ciclo: '',
+      identificador: ''
     };
     this.cargarConsultas();
   }
