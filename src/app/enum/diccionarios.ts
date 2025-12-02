@@ -99,14 +99,13 @@ export const parentescos: Dict[] = [
 ];
 
 export const gradoAcademicos: Dict[] = [
-  { label: 'No aplica', value: 1 },
+
   { label: 'Pre Primaria', value: 2 },
   { label: 'Primaria', value: 3 },
   { label: 'Básicos', value: 4 },
   { label: 'Diversificado', value: 5 },
   { label: 'Universidad', value: 6 },
   { label: 'Ninguno', value: 7 },
-  { label: 'Otro', value: 8 },
   { label: 'No indica', value: 9 },
 ]
 
@@ -191,3 +190,10 @@ export const opcionesIngreso: OpcionBoolean[] = [
   { label: 'Accidente Laboral', field: 'accidenteLaboral' },
   { label: 'Personal de Hospital', field: 'personalHospital' },
 ];
+
+export const Sector_Laboral: Dict[] = [
+  { label: 'Sector Público', value: 'PUB' },
+  { label: 'Sector Privado', value: 'PRI' },
+  { label: 'Cuenta Propia', value: 'COP' },
+  { label: 'No trabaja', value: 'NOT' },
+]
