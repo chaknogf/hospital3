@@ -8,7 +8,8 @@ import { __param } from 'tslib';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
-  public readonly baseUrl = 'https://hgtecpan.duckdns.org/fah';
+  // public readonly baseUrl = 'https://hgtecpan.duckdns.org/fah';
+  public readonly baseUrl = 'http://localhost:8000';
   public token: string | null = null;
   public username: string | null = null;
   public role: string | null = null;
