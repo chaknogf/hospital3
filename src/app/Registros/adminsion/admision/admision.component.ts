@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angul
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 import { ApiService } from '../../../service/api.service';
 import { ConsultaService } from '../../../service/consulta.service';
@@ -194,43 +196,57 @@ export class AdmisionComponent implements OnInit {
   // ==========================
   cargarPaciente(idP: number): void {
     this.api.getPaciente(idP)
-      .then(data => {
-
-        this.paciente = data;
-        // console.log(idP, data, this.paciente);
-        this.form.patchValue({
-          paciente_id: idP,
-          expediente: data.expediente,
-          fecha_nacimiento: data.fecha_nacimiento
-        });
-      })
-      .catch(err => console.error('Error cargar paciente', err));
+      .pipe(
+        catchError(err => {
+          console.error('Error cargar paciente', err);
+          return of(null);
+        })
+      )
+      .subscribe(data => {
+        if (data) {
+          this.paciente = data;
+          // console.log(idP, data, this.paciente);
+          this.form.patchValue({
+            paciente_id: idP,
+            expediente: data.expediente,
+            fecha_nacimiento: data.fecha_nacimiento
+          });
+        }
+      });
   }
 
   cargarConsulta(id: number): void {
     this.api.getConsultaId(id)
-      .then(data => {
-        this.form.patchValue(data);
-        if (data.paciente_id) this.cargarPaciente(data.paciente_id);
+      .pipe(
+        catchError(err => {
+          console.error('Error cargar consulta', err);
+          return of(null);
+        })
+      )
+      .subscribe(data => {
+        if (data) {
+          const consulta = Array.isArray(data) ? data[0] : data;
+          this.form.patchValue(consulta);
+          if (consulta.paciente_id) this.cargarPaciente(consulta.paciente_id);
 
-        // 🔹 Reconstruir FormGroup ciclo con los ciclos existentes
-        const ciclosForm = this.form.get('ciclo') as FormGroup;
-        ciclosForm.reset(); // limpia cualquier ciclo temporal
-        if (data.ciclo) {
-          Object.entries(data.ciclo).forEach(([key, ciclo]: [string, any]) => {
-            ciclosForm.addControl(key, this.fb.group({
-              estado: [ciclo.estado],
-              registro: [ciclo.registro],
-              usuario: [ciclo.usuario],
-              servicio: [ciclo.servicio || 'REME'],
-            }));
-          });
+          // 🔹 Reconstruir FormGroup ciclo con los ciclos existentes
+          const ciclosForm = this.form.get('ciclo') as FormGroup;
+          ciclosForm.reset(); // limpia cualquier ciclo temporal
+          if (consulta.ciclo) {
+            Object.entries(consulta.ciclo).forEach(([key, ciclo]: [string, any]) => {
+              ciclosForm.addControl(key, this.fb.group({
+                estado: [ciclo.estado],
+                registro: [ciclo.registro],
+                usuario: [ciclo.usuario],
+                servicio: [ciclo.servicio || 'REME'],
+              }));
+            });
+          }
+
+          // 🔹 Historial de ciclos
+          this.historialCiclos = this.cargarCiclos(consulta.ciclo);
         }
-
-        // 🔹 Historial de ciclos
-        this.historialCiclos = this.cargarCiclos(data.ciclo);
-      })
-      .catch(err => console.error('Error cargar consulta', err));
+      });
   }
 
   private agregarNuevoCiclo(): void {
@@ -274,9 +290,16 @@ export class AdmisionComponent implements OnInit {
   async crear(consulta: any) {
     try {
 
-      const resp = await this.api.crearConsulta(consulta);
-      // console.log('Consulta creada', resp);
-      return resp.data;
+      this.api.crearConsulta(consulta).pipe(
+        catchError(err => {
+          this.mostrarError('crear consulta', err);
+          return of(null);
+        })
+      ).subscribe(resp => {
+        if (resp) {
+          // console.log('Consulta creada', resp);
+        }
+      });
     } catch (error) {
       console.error('Error al crear consulta', error);
       throw error;
@@ -288,7 +311,16 @@ export class AdmisionComponent implements OnInit {
       if (!consulta.id || consulta.id === 0) {
         throw new Error("❌ Falta el ID de la consulta para actualizar");
       }
-      await this.api.updateConsulta(this.consultaId, consulta);
+      this.api.updateConsulta(this.consultaId as number, consulta).pipe(
+        catchError(err => {
+          this.mostrarError('actualizar consulta', err);
+          return of(null);
+        })
+      ).subscribe(data => {
+        if (data) {
+          // console.log('Consulta actualizada', data);
+        }
+      });
       console.log('Consulta actualizada');
     } catch (error) {
       this.mostrarError('actualizar consulta', error);

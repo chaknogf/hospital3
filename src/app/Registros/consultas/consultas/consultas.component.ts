@@ -103,7 +103,7 @@ export class ConsultasComponent implements OnInit {
     });
 
     // Totales
-    this.api.getTotales().then((data) => {
+    this.api.getTotales().subscribe((data) => {
       this.totales = data;
       this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
     });
@@ -116,7 +116,9 @@ export class ConsultasComponent implements OnInit {
     this.cargando = true;
     try {
 
-      this.consultas = await this.api.getConsultas(this.filtros);
+      this.api.getConsultas(this.filtros).subscribe((data) => {
+        this.consultas = data;
+      });
       // console.log(this.filtros)
       this.totalDeRegistros = this.consultas.length;
     } catch (error) {

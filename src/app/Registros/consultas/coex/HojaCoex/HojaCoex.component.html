@@ -1,130 +1,209 @@
+<!-- Botones de control -->
 <div class="d-flex justify-content-center bg-white no-print">
-  <button class="btn btn-dark no-print mx-2 my-3 w-30" (click)="regresar()" >
+  <button
+    class="btn btn-dark no-print mx-2 my-3 w-30"
+    (click)="regresar()"
+    [disabled]="isLoading()"
+  >
     <span [innerHTML]="icons['back']"></span>
   </button>
-  <button class="btn btn-info no-print mx-2 my-3 w-30" (click)="imprimir()">
+  <button
+    class="btn btn-info no-print mx-2 my-3 w-30"
+    (click)="imprimir()"
+    [disabled]="isLoading()"
+  >
     <span [innerHTML]="icons['print']"></span>
   </button>
 </div>
-<hr class="mt-2">
-<body id="pdf-content" class="imprimir-esto text-black bg-light p-0 w-100"  >
-  <div id="pdfs-content" class="container-fluid hoja-medica">
-    <small>Print: {{horaActual | time}} - {{fechaActual }}</small>
 
-  <!-- Encabezado principal -->
-  <header class="text-center mb-4">
-    <h2 class="titulo">HISTORIA CLÍNICA</h2>
-    <span class="logoDerecho" [innerHTML]="icons['logo']"></span>
-     <h4 class="m-0">Ministerio de Salud Pública y Asistencia Social</h4>
-    <h4 class="m-0">Hospital General Tipo I de Tecpán Guatemala</h4>
-  </header>
+<hr class="mt-2" />
 
-  <!-- Datos de la consulta -->
-  <section class="datos-consulta m-2">
-    <div class="orden d-flex gap-1">
-      <h1 class="border-bottom w-10 "> {{ consulta?.orden }} / </h1>
-      <h3 class="border-bottom w-10 ">  {{ consulta?.especialidad | datosExtra: 'especialidad' }} </h3>
-    </div>
-    <div class="info row">
-      <div class="col border p-2">
-        <strong>Fecha de Consulta:</strong>
-        <span> {{ consulta?.fecha_consulta | date: 'dd/MM/yyyy' }} - {{ consulta?.hora_consulta | time}} </span>
-      </div>
-      <div class="col border p-2">
-        <strong>Expediente:</strong>
-        <span> {{ consulta?.expediente }}</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Datos del paciente -->
-  <section class="datos-paciente m-2">
-    <h3 class="subtitulo">DATOS DEL PACIENTE</h3>
-    <div class="row">
-      <div class="col-6 border p-2">
-        <strong>Nombre:</strong>
-        <span>
-          {{paciente?.nombre?.primer_nombre}} {{paciente?.nombre?.segundo_nombre}}
-          {{paciente?.nombre?.otro_nombre}} {{paciente?.nombre?.primer_apellido}}
-          {{paciente?.nombre?.segundo_apellido}}
-        </span>
-      </div>
-      <div class="col-3 border p-2">
-        <strong>Sexo:</strong> <span> {{ paciente?.sexo |datosExtra:'sexo'}}</span>
-      </div>
-      <div class="col-3 border p-2">
-        <strong>Edad:</strong> <span> {{ paciente?.fecha_nacimiento | edad}}</span>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-4 border p-2">
-        <strong>Fecha de nacimiento:</strong> <span> {{paciente?.fecha_nacimiento}}</span>
-      </div>
-      <div class="col-4 border p-2">
-        <strong>DPI:</strong> <span> {{paciente?.cui | cui }}</span>
-      </div>
-      <div class="col-4 border p-2">
-        <strong>Tel:</strong> <span> {{paciente?.contacto?.telefono}} /{{paciente?.contacto?.telefono2}}</span>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-6 border p-2">
-        <strong>Dirección:</strong> <span> {{paciente?.contacto?.localidad}} {{paciente?.contacto?.municipio | datosExtra:'vecindad'}}</span>
-      </div>
-      <div class="col-3 border p-2">
-        <strong>Ocupación:</strong> <span> {{paciente?.datos_extra?.['r4']?.valor}}</span>
-      </div>
-      <div class="col-3 border p-2">
-        <strong>Educación:</strong> <span> {{paciente?.datos_extra?.['r5']?.valor | datosExtra:'educacion'}}</span>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-6 border p-2">
-        <strong>Responsable:</strong> <span>{{paciente?.referencias?.['referencia1']?.nombre}}</span>
-      </div>
-      <div class="col-6 border p-2">
-        <strong>Parentesco:</strong> <span>{{paciente?.referencias?.['referencia1']?.parentesco | datosExtra:'parentesco'}}</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Signos vitales -->
-  <section class="signos-vitales m-2">
-    <h3 class="subtitulo">SIGNOS VITALES <small class="hora">Hora: ____________</small></h3>
-    <div class="tabla-vitales border p-2">
-      <span>P/A:</span> <span>FC:</span> <span>FR:</span> <span>T:</span>
-      <span>P:</span> <span>Talla:</span> <span>SO2:</span> <span>GMT:</span>
-    </div>
-  </section>
-
-  <!-- Consulta -->
-  <section class="consulta m-2">
-    <h3 class="subtitulo">DATOS DE LA CONSULTA <small class="hora">Hora: ____________</small></h3>
-    <div class="campo border"><strong>Motivo de la consulta:</strong></div>
-    <div class="campo border"><strong>Historia Clínica:</strong></div>
-    <div class="campo border"><strong>Antecedentes:</strong></div>
-    <div class="campo border"><strong>Examen físico:</strong></div>
-    <div class="campo border"><strong>Diagnósticos:</strong></div>
-    <div class="campo border"><strong>Tratamiento:</strong></div>
-    <div class="campo border"><strong>Estudios Complementarios:</strong></div>
-  </section>
-
-  <!-- Seguimiento -->
-  <section class="seguimiento m-2">
-    <h3 class="subtitulo">SEGUIMIENTO DE CASO</h3>
-    <div class="campo border"><strong>Fecha:</strong></div>
-    <div class="campo border"><strong>Datos Subjetivos:</strong></div>
-    <div class="campo border"><strong>Datos Objetivos:</strong></div>
-  </section>
-
-  <!-- Pie -->
-  <footer class="text-center mt-4">
-
-  </footer>
-
+<!-- Mostrar errores -->
+<div *ngIf="error()" class="alert alert-danger no-print mx-3">
+  {{ error() }}
 </div>
+
+<!-- Loading -->
+<div *ngIf="isLoading()" class="alert alert-info no-print mx-3">
+  Cargando información...
+</div>
+
+<!-- Contenido principal para imprimir -->
+<body
+  id="pdf-content"
+  class="imprimir-esto text-black bg-light p-0 w-100"
+  *ngIf="detalleVisible() && consulta() && paciente()"
+>
+  <div id="pdfs-content" class="container-fluid hoja-medica">
+    <small>Print: {{ horaActual | time }} - {{ fechaActual }}</small>
+
+    <!-- ======= ENCABEZADO PRINCIPAL ======= -->
+    <header class="text-center mb-4">
+      <h2 class="titulo">HISTORIA CLÍNICA</h2>
+      <span class="logoDerecho" [innerHTML]="icons['logo']"></span>
+      <h4 class="m-0">Ministerio de Salud Pública y Asistencia Social</h4>
+      <h4 class="m-0">Hospital General Tipo I de Tecpán Guatemala</h4>
+    </header>
+
+    <!-- ======= DATOS DE LA CONSULTA ======= -->
+    <section class="datos-consulta m-2">
+      <div class="orden d-flex gap-1">
+        <h1 class="border-bottom w-10">{{ consulta()?.orden }} /</h1>
+        <h3 class="border-bottom w-10">
+          {{ consulta()?.especialidad | datosExtra : "especialidad" }}
+        </h3>
+      </div>
+      <div class="info row">
+        <div class="col border p-2">
+          <strong>Fecha de Consulta:</strong>
+          <span>
+            {{ consulta()?.fecha_consulta | date : "dd/MM/yyyy" }} -
+            {{ consulta()?.hora_consulta | time }}
+          </span>
+        </div>
+        <div class="col border p-2">
+          <strong>Expediente:</strong>
+          <span>{{ consulta()?.expediente }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= DATOS DEL PACIENTE ======= -->
+    <section class="datos-paciente m-2">
+      <h3 class="subtitulo">DATOS DEL PACIENTE</h3>
+
+      <!-- Fila 1: Nombre, Sexo, Edad -->
+      <div class="row">
+        <div class="col-6 border p-2">
+          <strong>Nombre:</strong>
+          <span>{{ nombreCompleto() }}</span>
+        </div>
+        <div class="col-3 border p-2">
+          <strong>Sexo:</strong>
+          <span>{{ paciente()?.sexo | datosExtra : "sexo" }}</span>
+        </div>
+        <div class="col-3 border p-2">
+          <strong>Edad:</strong>
+          <span>{{ paciente()?.fecha_nacimiento | edad }}</span>
+        </div>
+      </div>
+
+      <!-- Fila 2: Fecha Nacimiento, DPI, Teléfono -->
+      <div class="row">
+        <div class="col-4 border p-2">
+          <strong>Fecha de nacimiento:</strong>
+          <span>{{ paciente()?.fecha_nacimiento | date : "dd/MM/yyyy" }}</span>
+        </div>
+        <div class="col-4 border p-2">
+          <strong>DPI:</strong>
+          <span>{{ paciente()?.cui | cui }}</span>
+        </div>
+        <div class="col-4 border p-2">
+          <strong>Tel:</strong>
+          <span>{{ paciente()?.contacto?.telefonos || "N/A" }}</span>
+        </div>
+      </div>
+
+      <!-- Fila 3: Dirección, Ocupación, Educación -->
+      <div class="row">
+        <div class="col-6 border p-2">
+          <strong>Dirección:</strong>
+          <span>{{ direccionCompleta() }}</span>
+        </div>
+        <div class="col-3 border p-2">
+          <strong>Ocupación:</strong>
+          <span>{{ paciente()?.datos_extra?.['r4']?.valor || 'N/A' }}</span>
+        </div>
+        <div class="col-3 border p-2">
+          <strong>Educación:</strong>
+          <span>
+            {{ paciente()?.datos_extra?.['r5']?.valor | datosExtra: 'educacion' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Fila 4: Responsable, Parentesco -->
+      <div class="row">
+        <div class="col-6 border p-2">
+          <strong>Responsable:</strong>
+          <span>{{ responsable()?.nombre || "N/A" }}</span>
+        </div>
+        <div class="col-6 border p-2">
+          <strong>Parentesco:</strong>
+          <span>{{
+            responsable()?.parentesco | datosExtra : "parentesco"
+          }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= SIGNOS VITALES ======= -->
+    <section class="signos-vitales m-2">
+      <h3 class="subtitulo">
+        SIGNOS VITALES
+        <small class="hora">Hora: ____________</small>
+      </h3>
+      <div class="tabla-vitales border p-2">
+        <span>P/A:</span>
+        <span>FC:</span>
+        <span>FR:</span>
+        <span>T:</span>
+        <span>P:</span>
+        <span>Talla:</span>
+        <span>SO2:</span>
+        <span>GMT:</span>
+      </div>
+    </section>
+
+    <!-- ======= DATOS DE LA CONSULTA ======= -->
+    <section class="consulta m-2">
+      <h3 class="subtitulo">
+        DATOS DE LA CONSULTA
+        <small class="hora">Hora: ____________</small>
+      </h3>
+      <div class="campo border">
+        <strong>Motivo de la consulta:</strong>
+      </div>
+      <div class="campo border">
+        <strong>Historia Clínica:</strong>
+      </div>
+      <div class="campo border">
+        <strong>Antecedentes:</strong>
+      </div>
+      <div class="campo border">
+        <strong>Examen físico:</strong>
+      </div>
+      <div class="campo border">
+        <strong>Diagnósticos:</strong>
+      </div>
+      <div class="campo border">
+        <strong>Tratamiento:</strong>
+      </div>
+      <div class="campo border">
+        <strong>Estudios Complementarios:</strong>
+      </div>
+    </section>
+
+    <!-- ======= SEGUIMIENTO DE CASO ======= -->
+    <section class="seguimiento m-2">
+      <h3 class="subtitulo">SEGUIMIENTO DE CASO</h3>
+      <div class="campo border">
+        <strong>Fecha:</strong>
+      </div>
+      <div class="campo border">
+        <strong>Datos Subjetivos:</strong>
+      </div>
+      <div class="campo border">
+        <strong>Datos Objetivos:</strong>
+      </div>
+    </section>
+
+    <!-- ======= PIE ======= -->
+    <footer class="text-center mt-4"></footer>
+  </div>
 </body>
 
+<!-- Mensaje cuando no hay datos -->
+<div *ngIf="!detalleVisible() && !isLoading()" class="alert alert-warning mx-3">
+  Cargando documento...
+</div>

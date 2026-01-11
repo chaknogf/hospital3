@@ -56,15 +56,19 @@ export class RenapComponent implements OnInit {
     limit: 10
   }
 
-  async buscarPersona() {
+  buscarPersona() {
     this.cargando = true;
-    try {
-      this.enRenap = await this.api.getRenapITD(this.filtros);
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      this.cargando = false;
-    }
+    this.api.getRenapITD(this.filtros).subscribe({
+      next: (data) => {
+        this.enRenap = data;
+      },
+      error: (error) => {
+        console.error("Error:", error);
+      },
+      complete: () => {
+        this.cargando = false;
+      }
+    });
   }
 
   limpiarFiltros() {

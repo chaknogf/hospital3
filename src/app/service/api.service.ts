@@ -1,483 +1,384 @@
-import { Injectable } from '@angular/core';
-import axios, { AxiosInstance } from 'axios';
+import { Injectable, signal, computed } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Paciente, Usuarios, Correlativo, Municipio, Totales } from '../interface/interfaces';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { tap, catchError, finalize } from 'rxjs/operators';
+import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse } from '../interface/interfaces';
 import { ConsultaBase, ConsultaResponse } from '../interface/consultas';
-import { BehaviorSubject } from 'rxjs';
-import { __param } from 'tslib';
+
+interface PaginationState {
+  filtro: any;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  private api: AxiosInstance;
-  // public readonly baseUrl = 'https://hgtecpan.duckdns.org/fah';
-  public readonly baseUrl = 'http://localhost:8000';
-  public token: string | null = null;
-  public username: string | null = null;
-  public role: string | null = null;
-  private ultimoFiltroPaciente: any = { skip: 0, limit: 6 };
-  private ultimoFiltroConsulta: any = { skip: 0, limit: 6 };
+  private readonly baseUrl = 'http://localhost:8000';
+
+  // ======= SIGNALS =======
+  token = signal<string | null>(null);
+  username = signal<string | null>(null);
+  role = signal<string | null>(null);
+  isLoading = signal(false);
+
+  // ======= BEHAVIOR SUBJECTS (para datos complejos) =======
   private pacientesSubject = new BehaviorSubject<Paciente[]>([]);
   pacientes$ = this.pacientesSubject.asObservable();
+
   private consultasSubject = new BehaviorSubject<ConsultaResponse[]>([]);
   consultas$ = this.consultasSubject.asObservable();
+
   private ordenesSubject = new BehaviorSubject<any>({});
-  public ordenes$ = this.ordenesSubject.asObservable();
+  ordenes$ = this.ordenesSubject.asObservable();
 
-
-
+  // ======= ESTADO DE PAGINACIÓN =======
+  private ultimoFiltroPaciente: PaginationState = { filtro: { skip: 0, limit: 6 } };
+  private ultimoFiltroConsulta: PaginationState = { filtro: { skip: 0, limit: 6 } };
 
   constructor(
-    private router: Router,
+    private http: HttpClient,
+    private router: Router
   ) {
-
-
-
-    this.api = axios.create({
-      baseURL: this.baseUrl,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-
-    this.api.interceptors.request.use(
-      config => {
-        const token = localStorage.getItem('access_token');
-
-        if (token) {
-          config.headers['Authorization'] = `Bearer ${token}`;
-        }
-        //console.log('🛰️ Interceptor ejecutado:', config);
-        return config;
-      },
-      error => Promise.reject(error)
-    );
+    this.cargarTokenDelStorage();
   }
 
-  /**
-   * Inicia sesión con las credenciales del usuario.
-   * @param username Usuario
-   * @param password Contraseña
-   */
-
-
-  limpiarParametros(filtros: any): any {
-    const filtrosLimpiados: any = {};
-    for (const key in filtros) {
-      if (filtros[key] !== null && filtros[key] !== undefined && filtros[key] !== '') {
-        filtrosLimpiados[key] = filtros[key];
-      }
-    }
-    return filtrosLimpiados;
-  }
-
-  async login(username: string, password: string): Promise<void> {
-    const response = await this.api.post('/auth/login', new URLSearchParams({ username, password }), {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    });
-
-    const token = response.data.access_token;
-    if (token) {
-      localStorage.setItem('access_token', token);
-      this.getCurrentUser();
-      // console.log('🔑 Atenticado');
-      this.router.navigate(['/dash']);
-    } else {
-      throw new Error('No se recibió el token.');
-
-    }
-  }
-
-  /**
-   * Obtiene la información del usuario autenticado.
-   */
-  async getCurrentUser(): Promise<any> {
+  // ======= UTILITARIOS =======
+  private cargarTokenDelStorage(): void {
     const token = localStorage.getItem('access_token');
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
 
-
-    if (!token) {
-      throw new Error('🔒 No estás autenticado.');
-    }
-
-    try {
-      const response = await this.api.get('/auth/me', {
-        headers: {
-          usuario: username || '',
-          rol: role || ''
-        }
-      });
-
-      const { username: nombreUsuario, role: rolUsuario } = response.data;
-
-      localStorage.setItem('username', nombreUsuario);
-      localStorage.setItem('role', rolUsuario);
-      //window.location.reload();
-
-      // console.log('✅ Usuario autenticado:', response.data);
-      //console.log(username, role);
-      return response.data;
-
-    } catch (error) {
-      console.error('❌ Error al obtener usuario actual:', error);
-      throw error;
+    if (token) {
+      this.token.set(token);
+      this.username.set(username);
+      this.role.set(role);
     }
   }
 
-  logOut() {
+  private limpiarParametros(filtros: any): HttpParams {
+    let params = new HttpParams();
+    Object.entries(filtros).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        params = params.set(key, String(value));
+      }
+    });
+    return params;
+  }
+
+  private manejarError(error: any, operacion: string) {
+    console.error(`❌ Error al ${operacion}:`, error);
+    return throwError(() => new Error(`Error al ${operacion}: ${error.message}`));
+  }
+
+  // ======= AUTENTICACIÓN =======
+  login(username: string, password: string): Observable<any> {
+    this.isLoading.set(true);
+    const body = new HttpParams()
+      .set('username', username)
+      .set('password', password);
+
+    return this.http.post<{ access_token: string }>(
+      `${this.baseUrl}/auth/login`,
+      body
+    ).pipe(
+      tap(response => {
+        if (response.access_token) {
+          localStorage.setItem('access_token', response.access_token);
+          this.token.set(response.access_token);
+          this.getCurrentUser().subscribe();
+          this.router.navigate(['/dash']);
+        } else {
+          throw new Error('No se recibió el token.');
+        }
+      }),
+      catchError(error => this.manejarError(error, 'iniciar sesión')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  getCurrentUser(): Observable<any> {
+    return this.http.get<{ username: string; role: string }>(
+      `${this.baseUrl}/auth/me`,
+      {
+        headers: {
+          usuario: this.username() || '',
+          rol: this.role() || ''
+        }
+      }
+    ).pipe(
+      tap(response => {
+        localStorage.setItem('username', response.username);
+        localStorage.setItem('role', response.role);
+        this.username.set(response.username);
+        this.role.set(response.role);
+      }),
+      catchError(error => this.manejarError(error, 'obtener usuario actual'))
+    );
+  }
+
+  logOut(): void {
     localStorage.removeItem('access_token');
     localStorage.removeItem('username');
     localStorage.removeItem('role');
-    // window.location.reload();
+    this.token.set(null);
+    this.username.set(null);
+    this.role.set(null);
     this.router.navigate(['/inicio']);
-
-
-
-  }
-  ///////////////////
-  // ======= USERS =======
-  ///////////////////
-
-
-  async getUsers(filtros: any): Promise<any> {
-    try {
-      const response = await this.api.get<Usuarios[]>('/user/', {
-        params: filtros
-      });
-      // console.log('👤 Usuarios obtenidos correctamente', response);
-      return response.data;
-
-    } catch (error) {
-      console.error('❌ Error al obtener usuarios:', error);
-      throw error;
-    }
   }
 
-  async getUser(id: number): Promise<any> {
-    try {
-      const response = await this.api.get<Usuarios[]>(`/user/?id=${id}&skip=0&limit=1`);
-      // console.log('👤 Usuarios obtenidos correctamente', response);
-      return response.data;
-
-    } catch (error) {
-      console.error('❌ Error al obtener usuarios:', error)
-      throw error;
-    }
-  }
-
-  async createUser(user: any): Promise<any> {
-    try {
-      const response = await this.api.post('/user/crear', user);
-      // console.log('👤 Usuario creado correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al crear usuario:', error);
-      throw error;
-    }
-  }
-
-  async updateUser(userId: number, user: any): Promise<any> {
-    try {
-      const response = await this.api.put(`/user/actualizar/${userId}`, user);
-      // console.log('👤 Usuario actualizado correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al actualizar usuario:', error);
-      throw error;
-    }
-  }
-
-  async deleteUser(userId: number | string): Promise<any> {
-    try {
-      const response = await this.api.delete(`/user/eliminar/${userId}`);
-      // console.log('👤 Usuario eliminado correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al eliminar usuario:', error);
-      throw error;
-    }
-  }
-
-  ///////////////////
-  // pacientes
-  ///////////////////
-  async getPacientes(filtros: any): Promise<any> {
-    try {
-      this.ultimoFiltroPaciente = filtros; // 👈 guardar el filtro actual
-      const filtrosLimpiados = this.limpiarParametros(filtros);
-
-      const response = await this.api.get<Paciente[]>('/pacientes/', {
-        params: filtrosLimpiados
-      });
-
-      this.pacientesSubject.next(response.data);
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al obtener pacientes:', error);
-      throw error;
-    }
-  }
-
-  async refreshPacientes() {   // 👈 nueva función
-    return this.getPacientes(this.ultimoFiltroPaciente);
-  }
-
-
-  async getPaciente(id: number): Promise<Paciente> {
-    try {
-      const response = await this.api.get<Paciente[]>(`/pacientes/?id=${id}&skip=0&limit=1`);
-      // console.log('👤 Paciente obtenido correctamente');
-      return response.data[0];
-
-    } catch (error) {
-      console.error('❌ Error al obtener paciente:', error);
-      throw error;
-    }
-  }
-  async crearPaciente(paciente: Paciente, generar_expediente: boolean = false): Promise<any> {
-    const url = generar_expediente ? '/paciente/crear/?gen_expediente=true' : '/paciente/crear/';
-    const response = await this.api.post(url, paciente, {
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-    // Refrescar lista de pacientes después de crear
-    await this.refreshPacientes();
-
-    return response.data;
-  }
-
-  async updatePaciente(pacienteId: number, paciente: any, accion: string): Promise<any> {
-    const response = await this.api.put(
-      `/paciente/actualizar/${pacienteId}?accion_expediente=${accion}`,
-      paciente,
-      { headers: { 'Content-Type': 'application/json' } }
+  // ======= USUARIOS =======
+  getUsers(filtros: any): Observable<Usuarios[]> {
+    const params = this.limpiarParametros(filtros);
+    return this.http.get<Usuarios[]>(`${this.baseUrl}/user/`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'obtener usuarios'))
     );
-    await this.refreshPacientes();  // 👈 refrescar lista
-    return response.data;
   }
 
-  async deletePaciente(pacienteId: number): Promise<any> {
-    const response = await this.api.delete(`/paciente/eliminar/${pacienteId}`);
-    await this.refreshPacientes();  // 👈 refrescar lista
-    return response.data[0];
+  getUser(id: number): Observable<Usuarios> {
+    const params = new HttpParams()
+      .set('id', id.toString())
+      .set('skip', '0')
+      .set('limit', '1');
+
+    return this.http.get<Usuarios>(`${this.baseUrl}/user/`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'obtener usuario'))
+    );
   }
 
-
-  ///////////////////
-  // correlativos
-  /////////////////
-  async corExpediente(): Promise<string> {
-    try {
-      const response = await this.api.post<{ 'correlativo': string }>('/generar/expediente');
-      // console.log('👤 Correlativo obtenido correctamente:', response.data['correlativo']);
-      return response.data['correlativo'];
-    } catch (error) {
-      console.error('❌ Error al obtener correlativo:', error);
-      console.log(error);
-      throw error;
-    }
+  createUser(user: any): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.post<any>(`${this.baseUrl}/user/crear`, user).pipe(
+      catchError(error => this.manejarError(error, 'crear usuario')),
+      finalize(() => this.isLoading.set(false))
+    );
   }
 
-
-  ///////////////////
-  // municipios
-  ///////////////////
-  async getMunicipios(filtros: any): Promise<any> {
-    try {
-      const response = await this.api.get('/municipios/', {
-        params: filtros
-      });
-      // console.log('👤 Municipios obtenidos correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al obtener municipios:', error);
-      throw error;
-    }
+  updateUser(userId: number, user: any): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.put<any>(`${this.baseUrl}/user/actualizar/${userId}`, user).pipe(
+      catchError(error => this.manejarError(error, 'actualizar usuario')),
+      finalize(() => this.isLoading.set(false))
+    );
   }
 
-  async getCodigoMunicipio(codigo: string): Promise<any> {
-    try {
-      const response = await this.api.get<Municipio>(`/municipios/?codigo=${codigo}&skip=0&limit=1`);
-      // console.log('👤 Municipio obtenido correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al obtener municipio:', error);
-      throw error;
-    }
+  deleteUser(userId: number | string): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.delete<any>(`${this.baseUrl}/user/eliminar/${userId}`).pipe(
+      catchError(error => this.manejarError(error, 'eliminar usuario')),
+      finalize(() => this.isLoading.set(false))
+    );
   }
 
+  // ======= PACIENTES =======
+  getPacientes(filtros: any): Observable<PacienteListResponse> {
+    this.ultimoFiltroPaciente.filtro = filtros;
+    const params = this.limpiarParametros(filtros);
 
-  async createMunicipio(municipio: any): Promise<any> {
-    try {
-      const response = await this.api.post('/municipio/crear', municipio);
-      // console.log('👤 Municipio creado correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al crear municipio:', error);
-      throw error;
-    }
+    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/`, { params }).pipe(
+      tap(response => this.pacientesSubject.next(response.pacientes)),
+      catchError(error => this.manejarError(error, 'obtener pacientes'))
+    );
   }
 
-  async updateMunicipio(codigo: string, municipio: any): Promise<any> {
-    try {
-      const response = await this.api.put(`/municipio/actualizar/${codigo}`, municipio);
-      // console.log('👤 Municipio actualizado correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al actualizar municipio:', error);
-      throw error;
-    }
+  buscarpaciente(q: any): Observable<PacienteListResponse> {
+    const params = this.limpiarParametros(q);
+    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/buscar/`, { params }).pipe(
+      tap(response => this.pacientesSubject.next(response.pacientes)),
+      catchError(error => this.manejarError(error, 'buscar pacientes'))
+    );
   }
 
-  async deleteMunicipio(codigo: string): Promise<any> {
-    try {
-      const response = await this.api.delete(`/municipio/eliminar/${codigo}`);
-      // console.log('👤 Municipio eliminado correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al eliminar municipio:', error);
-      throw error;
-    }
-  }
-  ///////////////////
-  // paises_iso
-  ///////////////////
-  async getPaisesIso(): Promise<any> {
-    try {
-      const response = await this.api.get('/paises_iso/');
-      // console.log('👤 paises obtenidos correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al obtener municipios:', error);
-      throw error;
-    }
+  getPaciente(id: number): Observable<Paciente> {
+    return this.http.get<Paciente>(`${this.baseUrl}/pacientes/${id}`).pipe(
+      catchError(error => this.manejarError(error, 'obtener paciente'))
+    );
   }
 
-  async getRenapITD(filtros: any): Promise<any> {
-    try {
-      const filtrosLimpiados = this.limpiarParametros(filtros);
-      const response = await this.api.get('/renap-persona', {
-        params: filtros
-      });
-      // console.log('👤 Datos del servidor obtenidos con exito');
-      //console.table(response.data.resultado);
-      return response.data.resultado;
-    } catch (error) {
-      console.error('❌ Error al obtener datos:', error);
-      throw error;
-    }
+  crearPaciente(paciente: Paciente, generar_expediente: boolean = false): Observable<any> {
+    this.isLoading.set(true);
+    const url = generar_expediente
+      ? `${this.baseUrl}/paciente/crear/?gen_expediente=true`
+      : `${this.baseUrl}/paciente/crear/`;
+
+    return this.http.post<any>(url, paciente).pipe(
+      tap(() => this.refrescarPacientes()),
+      catchError(error => this.manejarError(error, 'crear paciente')),
+      finalize(() => this.isLoading.set(false))
+    );
   }
 
+  updatePaciente(
+    pacienteId: number,
+    paciente: any,
+    accion: string = 'mantener'
+  ): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.patch<any>(
+      `${this.baseUrl}/pacientes/${pacienteId}?accion_expediente=${accion}`,
+      paciente
+    ).pipe(
+      tap(() => this.refrescarPacientes()),
+      catchError(error => this.manejarError(error, 'actualizar paciente')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
 
-  ///////////////////
-  // consultas
-  ///////////////////
+  deletePaciente(pacienteId: number): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.delete<any>(`${this.baseUrl}/paciente/eliminar/${pacienteId}`).pipe(
+      tap(() => this.refrescarPacientes()),
+      catchError(error => this.manejarError(error, 'eliminar paciente')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
 
-  enviarOrdenes(ordenes: any) {
+  private refrescarPacientes(): void {
+    this.getPacientes(this.ultimoFiltroPaciente.filtro).subscribe();
+  }
+
+  // ======= CORRELATIVOS =======
+  corExpediente(): Observable<{ correlativo: string }> {
+    return this.http.post<{ correlativo: string }>(
+      `${this.baseUrl}/generar/expediente`,
+      {}
+    ).pipe(
+      catchError(error => this.manejarError(error, 'obtener correlativo de expediente'))
+    );
+  }
+
+  corEmergencia(): Observable<{ correlativo: string }> {
+    return this.http.post<{ correlativo: string }>(
+      `${this.baseUrl}/generar/emergencia`,
+      {}
+    ).pipe(
+      catchError(error => this.manejarError(error, 'obtener correlativo de emergencia'))
+    );
+  }
+
+  // ======= MUNICIPIOS =======
+  getMunicipios(filtros: any): Observable<any> {
+    const params = this.limpiarParametros(filtros);
+    return this.http.get<any>(`${this.baseUrl}/municipios/`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'obtener municipios'))
+    );
+  }
+
+  getCodigoMunicipio(codigo: string): Observable<Municipio> {
+    const params = new HttpParams()
+      .set('codigo', codigo)
+      .set('skip', '0')
+      .set('limit', '1');
+
+    return this.http.get<Municipio>(`${this.baseUrl}/municipios/`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'obtener municipio'))
+    );
+  }
+
+  createMunicipio(municipio: any): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.post<any>(`${this.baseUrl}/municipio/crear`, municipio).pipe(
+      catchError(error => this.manejarError(error, 'crear municipio')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  updateMunicipio(codigo: string, municipio: any): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.put<any>(`${this.baseUrl}/municipio/actualizar/${codigo}`, municipio).pipe(
+      catchError(error => this.manejarError(error, 'actualizar municipio')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  deleteMunicipio(codigo: string): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.delete<any>(`${this.baseUrl}/municipio/eliminar/${codigo}`).pipe(
+      catchError(error => this.manejarError(error, 'eliminar municipio')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  // ======= PAÍSES ISO =======
+  getPaisesIso(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/paises/`).pipe(
+      catchError(error => this.manejarError(error, 'obtener países'))
+    );
+  }
+
+  getRenapITD(filtros: any): Observable<any> {
+    const params = this.limpiarParametros(filtros);
+    return this.http.get<{ resultado: any }>(`${this.baseUrl}/renap-persona`, { params }).pipe(
+      tap(response => response.resultado),
+      catchError(error => this.manejarError(error, 'obtener datos RENAP'))
+    );
+  }
+
+  // ======= CONSULTAS =======
+  enviarOrdenes(ordenes: any): void {
     this.ordenesSubject.next(ordenes);
   }
 
-  async getConsultas(filtros: any): Promise<any> {
-    try {
-      this.ultimoFiltroConsulta = filtros;
-      const filtrosLimpiados = this.limpiarParametros(filtros);
-      // console.log(filtrosLimpiados)
-      const response = await this.api.get<ConsultaResponse[]>('/consultas/', {
-        params: filtrosLimpiados
+  getConsultas(filtros: any): Observable<ConsultaResponse[]> {
+    this.ultimoFiltroConsulta.filtro = filtros;
+    const params = this.limpiarParametros(filtros);
 
-
-      });
-
-      this.consultasSubject.next(response.data);
-
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al obtener consultas:', error);
-      throw error;
-    }
-  }
-  async refreshConsultas() {
-    return this.getConsultas(this.ultimoFiltroConsulta);
-  }
-
-  async getConsulta(filtros: any): Promise<any> {
-    try {
-      const filtrosLimpiados = this.limpiarParametros(filtros);
-      const response = await this.api.get<ConsultaBase[]>('/consulta/', {
-        params: filtrosLimpiados
-
-      })
-      // console.log('👤 Consulta obtenida correctamente');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al obtener consulta:', error);
-      throw error;
-    }
-  }
-
-  async getConsultaId(id_consulta: number): Promise<any> {
-    try {
-      const response = await this.api.get<ConsultaBase[]>('/consulta/?id_consulta=' + id_consulta);
-      // console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al obtener consulta:', error);
-      throw error;
-    }
-  }
-
-  async crearConsulta(consulta: any): Promise<any> {
-    const response = await this.api.post('/consulta/crear/', consulta, {
-      headers: { 'Content-Type': 'application/json' }
-    });
-    await this.refreshConsultas();
-    //console.log(response.data);
-    return response.data;
-
-  }
-
-  async updateConsulta(consultaId: any, consulta: any): Promise<any> {
-    const response = await this.api.put(
-      `/consulta/actualizar/${consultaId}`,
-      consulta,
-      { headers: { 'Content-Type': 'application/json' } }
+    return this.http.get<ConsultaResponse[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
+      tap(response => this.consultasSubject.next(response)),
+      catchError(error => this.manejarError(error, 'obtener consultas'))
     );
-    await this.refreshConsultas();
-    return response.data;
   }
 
-  async deleteConsulta(consultaId: number): Promise<any> {
-    const response = await this.api.delete(`/consulta/eliminar/${consultaId}`);
-    await this.refreshConsultas();
-    return response.data[0];
+  getConsulta(filtros: any): Observable<ConsultaBase[]> {
+    const params = this.limpiarParametros(filtros);
+    return this.http.get<ConsultaBase[]>(`${this.baseUrl}/consulta/`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'obtener consulta'))
+    );
   }
 
-  async corEmergencia(): Promise<any> {
-    try {
-      const response = await this.api.post<{ 'correlativo': string }>('/generar/emergencia');
-      // console.log('👤 Correlativo obtenido correctamente:', response.data['correlativo']);
-      return response.data['correlativo'];
-    } catch (error) {
-      console.error('❌ Error al obtener correlativo:', error);
-      throw error;
-    }
+  getConsultaId(id_consulta: number): Observable<ConsultaBase[]> {
+    const params = new HttpParams().set('id_consulta', id_consulta.toString());
+    return this.http.get<ConsultaBase[]>(`${this.baseUrl}/consulta/`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'obtener consulta por ID'))
+    );
   }
 
-  ///////////////////////
-  // totales
-  //////////////////////
-
-
-
-
-  async getTotales(): Promise<Totales[]> {
-    try {
-      const response = await this.api.get<Totales[]>('/totales/');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al obtener totales:', error);
-      throw error;
-    }
+  crearConsulta(consulta: any): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.post<any>(`${this.baseUrl}/consulta/crear/`, consulta).pipe(
+      tap(() => this.refrescarConsultas()),
+      catchError(error => this.manejarError(error, 'crear consulta')),
+      finalize(() => this.isLoading.set(false))
+    );
   }
 
+  updateConsulta(consultaId: number, consulta: any): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.put<any>(
+      `${this.baseUrl}/consulta/actualizar/${consultaId}`,
+      consulta
+    ).pipe(
+      tap(() => this.refrescarConsultas()),
+      catchError(error => this.manejarError(error, 'actualizar consulta')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  deleteConsulta(consultaId: number): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.delete<any>(`${this.baseUrl}/consulta/eliminar/${consultaId}`).pipe(
+      tap(() => this.refrescarConsultas()),
+      catchError(error => this.manejarError(error, 'eliminar consulta')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  private refrescarConsultas(): void {
+    this.getConsultas(this.ultimoFiltroConsulta.filtro).subscribe();
+  }
+
+  // ======= TOTALES =======
+  getTotales(): Observable<Totales[]> {
+    return this.http.get<Totales[]>(`${this.baseUrl}/totales/`).pipe(
+      catchError(error => this.manejarError(error, 'obtener totales'))
+    );
+  }
 }

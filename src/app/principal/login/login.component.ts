@@ -40,17 +40,19 @@ export class LoginComponent {
     const { username, password } = this.loginForm.value;
 
     this.apiService.login(username, password)
-      .then((res: any) => {
-        this.loading = false;
-        localStorage.setItem('token', res.token); // Guarda el token JWT
-        console.log('inicio de sesión exitoso');
-        this.loading = true;
-        console.log('Redirigiendo al dashboard...');
-        this.router.navigate(['/dash']);
-      })
-      .catch((error) => {
-        this.loading = false;
-        this.errorMessage = this.getErrorMessage(error);
+      .subscribe({
+        next: (res: any) => {
+          this.loading = false;
+          localStorage.setItem('token', res.token); // Guarda el token JWT
+          console.log('inicio de sesión exitoso');
+          this.loading = true;
+          console.log('Redirigiendo al dashboard...');
+          this.router.navigate(['/dash']);
+        },
+        error: (error) => {
+          this.loading = false;
+          this.errorMessage = this.getErrorMessage(error);
+        }
       });
   }
 

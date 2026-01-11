@@ -17,68 +17,101 @@ export interface Currentuser {
 }
 
 // pacientes
-export interface Identificadores {
-  cui?: number;
-  expediente?: string;
-  pasaporte?: string;
-  otro?: string;
-}
-
 export interface Nombre {
   primer_nombre: string;
-  segundo_nombre?: string;
-  otro_nombre?: string;
+  segundo_nombre?: string | null;
+  otro_nombre?: string | null;
   primer_apellido: string;
-  segundo_apellido?: string;
-  apellido_casada?: string;
+  segundo_apellido?: string | null;
+  apellido_casada?: string | null;
 }
 
 export interface Contacto {
-  direccion?: string;
-  localidad?: string;
-  departamento?: string;
-  municipio?: string;
-  telefono?: string;
-  telefono2?: string;
-  telefono3?: string;
+  domicilio?: string | null;
+  vecindad?: string | null;
+  municipio?: string | null;
+  telefonos?: string | null;
 }
 
 export interface Referencia {
   nombre: string;
-  parentesco?: string;
-  telefono?: string;
+  parentesco?: string | null;
+  telefono?: string | null;
+  expediente?: string | null;
+  idpersona?: string | null;
+  responsable?: boolean | false;
 }
 
+// ========== DATOS EXTRA ==========
 
-export interface Metadata {
-  usuario?: string;
-  registro?: string;
+export interface Demograficos {
+  idioma?: number | null;
+  pueblo?: number | null;
+  nacionalidad?: string | null;
+  lugar_nacimiento?: number | null;
+  departamento_nacimiento?: number | null;
 }
 
-export interface KeysValue {
-  tipo: string;
-  valor: string;
+export interface Socioeconomicos {
+  estado_civil?: number | null;
+  ocupacion?: string | null;
+  educacion?: number | null;
+  estudiante_publico?: 'S' | 'N';
+  empleado_publico?: 'S' | 'N';
+  discapacidad?: 'S' | 'N';
+}
+
+export interface Neonatales {
+  peso_nacimiento?: string | null;
+  edad_gestacional?: string | null;
+  parto?: 'P' | 'C' | null; // P = Vaginal, C = Cesárea
+  gemelo?: string | null;
+  expediente_madre?: string | null;
 }
 
 export interface DatosExtra {
-  [key: string]: KeysValue;   // dinámico: r0, r1, r2...
+  defuncion?: string | null;
+  cuipersona?: string | null;
+  demograficos?: Demograficos;
+  socioeconomicos?: Socioeconomicos;
+  neonatales?: Neonatales;
+  [key: string]: any; // Para campos adicionales dinámicos
 }
+
+// ========== METADATOS ==========
+
+export interface Metadata {
+
+  creado_por?: string;
+  creado_en?: string;
+  logs?: string[];
+  expediente_duplicado?: boolean;
+  [key: string]: any; // Para campos adicionales
+}
+
+// ========== PACIENTE ==========
 
 export interface Paciente {
   id: number;
-  unidad?: number;
-  cui?: number;
-  expediente?: string;
-  pasaporte?: string;
-  otro?: string;
+  cui?: number | null;
+  expediente?: string | null;
+  pasaporte?: string | null;
   nombre: Nombre;
-  sexo?: string;
+  nombre_completo?: string;
+  sexo?: 'F' | 'M' | 'O'; // F = Femenino, M = Masculino, O = Otro
   fecha_nacimiento?: string;
   contacto?: Contacto;
-  referencias?: { [key: string]: Referencia };
-  datos_extra?: DatosExtra;   // ya no es objeto de objetos
-  estado?: string;
-  metadatos?: { [key: string]: Metadata };
+  referencias?: Referencia[];
+  datos_extra?: DatosExtra;
+  estado?: 'V' | 'F'; // V = Vivo, F = Fallecido
+  metadatos?: Metadata;
+  creado_en?: string | null;
+  actualizado_en?: string | null;
+}
+
+export interface PacienteListResponse {
+  total: number;
+  pacientes: Paciente[];
 }
 
 

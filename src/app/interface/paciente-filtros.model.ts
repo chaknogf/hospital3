@@ -1,5 +1,6 @@
 // paciente-filtros.model.ts
 export interface PacienteFiltros {
+  q?: any;
   id?: string;
   cui?: string;
   identificador?: string;

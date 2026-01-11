@@ -99,7 +99,7 @@ export class EmergenciasListComponent implements OnInit {
     });
 
     // 2️⃣ Obtener totales
-    this.api.getTotales().then((data) => {
+    this.api.getTotales().subscribe((data) => {
       this.totales = data;
       this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
     });
@@ -112,7 +112,9 @@ export class EmergenciasListComponent implements OnInit {
   async cargarConsultas() {
     this.cargando = true;
     try {
-      this.consultas = await this.api.getConsultas(this.filtros);
+      this.api.getConsultas(this.filtros).subscribe((data) => {
+        this.consultas = data;
+      });
       //
       // console.log(this.consultas);
       this.totalDeRegistros = this.consultas.length;

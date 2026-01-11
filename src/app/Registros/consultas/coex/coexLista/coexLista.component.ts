@@ -125,7 +125,7 @@ export class CoexListaComponent implements OnInit {
     });
 
     // 2️⃣ Obtener totales
-    this.api.getTotales().then((data) => {
+    this.api.getTotales().subscribe((data) => {
       this.totales = data;
       this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
     });
@@ -144,15 +144,19 @@ export class CoexListaComponent implements OnInit {
   async cargarConsultas() {
     this.cargando = true;
     try {
-      this.consultas = await this.api.getConsultas(this.filtros);
-      this.medi = await this.api.getConsultas({ ...this.filtros, especialidad: 'MEDI' });
-      this.pedia = await this.api.getConsultas({ ...this.filtros, especialidad: 'PEDI' });
-      this.gine = await this.api.getConsultas({ ...this.filtros, especialidad: 'GINE' });
-      this.ciru = await this.api.getConsultas({ ...this.filtros, especialidad: 'CIRU' });
-      this.trauma = await this.api.getConsultas({ ...this.filtros, especialidad: 'TRAU' });
-      this.psico = await this.api.getConsultas({ ...this.filtros, especialidad: 'PSIC' });
-      this.nutri = await this.api.getConsultas({ ...this.filtros, especialidad: 'NUTR' });
-      this.odonto = await this.api.getConsultas({ ...this.filtros, especialidad: 'ODON' });
+      this.api.getConsultas(this.filtros).subscribe((data) => {
+        this.consultas = data;
+        this.medi = data.filter(c => c.especialidad === 'MEDI');
+        this.pedia = data.filter(c => c.especialidad === 'PEDI');
+        this.gine = data.filter(c => c.especialidad === 'GINE');
+        this.ciru = data.filter(c => c.especialidad === 'CIRU');
+        this.trauma = data.filter(c => c.especialidad === 'TRAU');
+        this.psico = data.filter(c => c.especialidad === 'PSIC');
+        this.nutri = data.filter(c => c.especialidad === 'NUTR');
+        this.odonto = data.filter(c => c.especialidad === 'ODON');
+      });
+      //
+
       this.totalDeRegistros = this.consultas.length;
     } catch (error) {
       console.error("Error:", error);

@@ -1,10 +1,12 @@
 <div class="aurora-paciente-container" [class.d-none]="modalActivo">
-
   <!-- Botones superiores -->
-  <div class="botones justify-content-between" [ngClass]="{ 'd-none': filtrar  }">
+  <div
+    class="botones justify-content-between"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
     <button type="button" (click)="volver()">
       <span [innerHTML]="icons['menu']"></span>
-     Menu
+      Menu
     </button>
 
     <h1 class="text-white">Pacientes</h1>
@@ -16,69 +18,102 @@
   </div>
 
   <!-- Contenedor de Búsqueda -->
-<div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
-  <form class="" (submit)="buscar(); $event.preventDefault()">
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
+    <form class="" (submit)="buscar(); $event.preventDefault()">
+      <!-- Campos -->
+      <fieldset>
+        <label>Identificador</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.identificador"
+          name="identificador"
+          placeholder="CUI, Expediente, Pasaporte"
+        />
+      </fieldset>
 
-    <!-- Campos -->
-    <fieldset>
-      <label>Identificador</label>
-      <input type="text" [(ngModel)]="filtros.identificador" name="identificador" placeholder="CUI, Expediente, Pasaporte">
-    </fieldset>
+      <fieldset>
+        <label>Nombre completo</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.nombre_completo"
+          name="nombreCompleto"
+          placeholder="Buscar por nombre completo"
+        />
+      </fieldset>
 
-    <fieldset>
-      <label>Nombre completo</label>
-      <input type="text" [(ngModel)]="filtros.nombre_completo" name="nombreCompleto" placeholder="Buscar por nombre completo">
-    </fieldset>
+      <fieldset>
+        <label>Primer nombre</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.primer_nombre"
+          name="primerNombre"
+          placeholder="1er nombre"
+        />
+      </fieldset>
 
-    <fieldset>
-      <label>Primer nombre</label>
-      <input type="text" [(ngModel)]="filtros.primer_nombre" name="primerNombre" placeholder="1er nombre">
-    </fieldset>
+      <fieldset>
+        <label>Primer nombre</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.segundo_nombre"
+          name="segundoNombre"
+          placeholder="2do nombre"
+        />
+      </fieldset>
 
-    <fieldset>
-      <label>Primer nombre</label>
-      <input type="text" [(ngModel)]="filtros.segundo_nombre" name="segundoNombre" placeholder="2do nombre">
-    </fieldset>
+      <fieldset>
+        <label>Primer apellido</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.primer_apellido"
+          name="primerApellido"
+          placeholder="1er apellido"
+        />
+      </fieldset>
 
-    <fieldset>
-      <label>Primer apellido</label>
-      <input type="text" [(ngModel)]="filtros.primer_apellido" name="primerApellido" placeholder="1er apellido">
-    </fieldset>
+      <fieldset>
+        <label>Primer nombre</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.segundo_apellido"
+          name="segundoApellido"
+          placeholder="2do apellido"
+        />
+      </fieldset>
 
-    <fieldset>
-      <label>Primer nombre</label>
-      <input type="text" [(ngModel)]="filtros.segundo_apellido" name="segundoApellido" placeholder="2do apellido">
-    </fieldset>
+      <fieldset>
+        <label>Fecha de nacimiento</label>
+        <input
+          type="date"
+          [(ngModel)]="filtros.fecha_nacimiento"
+          name="fechaNacimiento"
+        />
+      </fieldset>
 
-    <fieldset>
-      <label>Fecha de nacimiento</label>
-      <input type="date" [(ngModel)]="filtros.fecha_nacimiento" name="fechaNacimiento">
-    </fieldset>
+      <!-- Botones -->
+      <div class="botones">
+        <button type="button" (click)="agregar()">
+          <span [innerHTML]="icons['addPerson']"></span> Agregar Persona
+        </button>
 
-    <!-- Botones -->
-    <div class="botones">
-       <button type="button" (click)="agregar()">
-        <span [innerHTML]="icons['addPerson']"></span> Agregar Persona
-      </button>
-
-      <button type="submit">
-        <span [innerHTML]="icons['search']"></span> Buscar
-      </button>
-      <button type="button" (click)="limpiarFiltros()">
-        <span [innerHTML]="icons['delete']"></span> Limpiar
+        <button type="submit" (click)="buscar()">
+          <span [innerHTML]="icons['search']"></span> Buscar
+        </button>
+        <button type="button" (click)="limpiarFiltros()">
+          <span [innerHTML]="icons['delete']"></span> Limpiar
+        </button>
+      </div>
+    </form>
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="btn m-0 p-0" (click)="toggleFiltrar()">
+        <span [innerHTML]="icons['arrowDown']"></span>
       </button>
     </div>
-  </form>
-  <div class="d-flex justify-content-center m-0 p-0">
-    <button class="btn m-0 p-0" (click)="toggleFiltrar()">
-      <span [innerHTML]="icons['arrowDown']"></span>
-    </button>
   </div>
-</div>
   <!-- Tabla principal (desktop) -->
   <div class="aurora-container">
-    <table class="aurora-tb" >
-      <thead >
+    <table class="aurora-tb">
+      <thead>
         <tr>
           <th>Id</th>
           <th>Identificador</th>
@@ -91,107 +126,117 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let paciente of pacientes" class="aurora-table-row"
-    [class.touch-active]="rowActiva === paciente.id"
-    (click)="activarFila(paciente.id)" >
-            <td class="oculto">{{ paciente.id }}</td>
-            <td>
-             <div class="ms-4" *ngIf="paciente?.cui"><strong>CUI:</strong> <small> {{ paciente.cui | cui }}</small></div>
-              <div *ngIf="paciente?.expediente" class="text-alert"><strong>Expediente:</strong> {{ paciente.expediente }}</div>
-              <div *ngIf="paciente?.pasaporte"><strong>Pasaporte:</strong> {{ paciente.pasaporte }}</div>
-              <div *ngIf="paciente?.otro"><strong>Otro:</strong> {{ paciente.otro }}</div>
-            </td>
-            <td >
-              <p class="p-0 m-0 text-uppercase">
-                {{ paciente.nombre.primer_nombre }}
-                {{ paciente.nombre.segundo_nombre }}
-                {{ paciente.nombre.otro_nombre }}
-              </p>
-              <p class="p-0 m-0 text-uppercase"
-                [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'">
-                {{ paciente.nombre.primer_apellido }}
-                {{ paciente.nombre.segundo_apellido }}
-                {{ paciente.nombre.apellido_casada }}
-              </p>
-            </td>
-            <td class="oculto">
-              {{ paciente.fecha_nacimiento | date:'dd/MM/yyyy' }}
-              <br>
-              <small >{{ paciente.fecha_nacimiento | edad }}</small>
-            </td>
-            <td class="oculto">{{ paciente.contacto?.localidad }} {{ paciente.contacto?.municipio | datosExtra: 'vecindad'  }}</td>
-            <td class="oculto">
-              <div *ngIf="paciente.sexo === 'M'">
-                <span [innerHTML]="icons['man']"></span> Masculino
-              </div>
-              <div *ngIf="paciente.sexo === 'F'">
-                <span [innerHTML]="icons['woman']"></span> Femenino
-              </div>
-            </td>
-            <td class="oculto">
-              <div *ngIf="paciente.estado === 'V'">
-                <span [innerHTML]="icons['heart']"></span> Vivo
-              </div>
-              <div *ngIf="paciente.estado === 'F'">
-                <span [innerHTML]="icons['ghost']"></span> Fallecido
-              </div>
-            </td>
-            <td class="secundario">
-              <div class="d-flex gap-1" >
-                <button  (click)="editarPaciente(paciente.id)">
-                  <span [innerHTML]="icons['editPerson']"></span>
-                </button>
-                <button (click)="abrirModalAdmision(paciente.id)">
-                  <span [innerHTML]="icons['medical']"></span>
-                </button>
-                <button  (click)="verDetallesPaciente(paciente.id)">
-                  <span [innerHTML]="icons['tabla']"></span>
-                </button>
-              </div>
-            </td>
-          </tr>
+        <tr
+          *ngFor="let paciente of pacientes"
+          class="aurora-table-row"
+          [class.touch-active]="rowActiva === paciente.id"
+          (click)="activarFila(paciente.id)"
+        >
+          <td class="oculto">{{ paciente.id }}</td>
+          <td>
+            <div class="ms-4" *ngIf="paciente?.cui">
+              <strong>CUI:</strong> <small> {{ paciente.cui | cui }}</small>
+            </div>
+            <div *ngIf="paciente?.expediente" class="text-alert">
+              <strong>Expediente:</strong> {{ paciente.expediente }}
+            </div>
+            <div *ngIf="paciente?.pasaporte">
+              <strong>Pasaporte:</strong> {{ paciente.pasaporte }}
+            </div>
+          </td>
+          <td>
+            <p class="p-0 m-0 text-uppercase">
+              {{ paciente.nombre.primer_nombre }}
+              {{ paciente.nombre.segundo_nombre }}
+              {{ paciente.nombre.otro_nombre }}
+            </p>
+            <p
+              class="p-0 m-0 text-uppercase"
+              [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+            >
+              {{ paciente.nombre.primer_apellido }}
+              {{ paciente.nombre.segundo_apellido }}
+              {{ paciente.nombre.apellido_casada }}
+            </p>
+          </td>
+          <td class="oculto">
+            {{ paciente.fecha_nacimiento | date : "dd/MM/yyyy" }}
+            <br />
+            <small>{{ paciente.fecha_nacimiento | edad }}</small>
+          </td>
+          <td class="oculto">
+            {{ paciente.contacto?.domicilio }}
+            {{ paciente.contacto?.municipio | datosExtra : "vecindad" }}
+          </td>
+          <td class="oculto">
+            <div *ngIf="paciente.sexo === 'M'">
+              <span [innerHTML]="icons['man']"></span> Masculino
+            </div>
+            <div *ngIf="paciente.sexo === 'F'">
+              <span [innerHTML]="icons['woman']"></span> Femenino
+            </div>
+          </td>
+          <td class="oculto">
+            <div *ngIf="paciente.estado === 'V'">
+              <span [innerHTML]="icons['heart']"></span> Vivo
+            </div>
+            <div *ngIf="paciente.estado === 'F'">
+              <span [innerHTML]="icons['ghost']"></span> Fallecido
+            </div>
+          </td>
+          <td class="secundario">
+            <div class="d-flex gap-1">
+              <button (click)="editarPaciente(paciente.id)">
+                <span [innerHTML]="icons['editPerson']"></span>
+              </button>
+              <button (click)="abrirModalAdmision(paciente.id)">
+                <span [innerHTML]="icons['medical']"></span>
+              </button>
+              <button (click)="verDetallesPaciente(paciente.id)">
+                <span [innerHTML]="icons['tabla']"></span>
+              </button>
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
 
   <!-- paginación -->
-<div class="d-flex justify-content-center align-items-center">
-  <!-- Botón anterior -->
-  <button class="btn"
-          [disabled]="filtros.skip === 0"
-          (click)="cambiarPagina(-1)">
-    <span [innerHTML]="icons['skipLeft']"></span>
-  </button>
+  <div class="d-flex justify-content-center align-items-center">
+    <!-- Botón anterior -->
+    <button
+      class="btn"
+      [disabled]="filtros.skip === 0"
+      (click)="cambiarPagina(-1)"
+    >
+      <span [innerHTML]="icons['skipLeft']"></span>
+    </button>
 
-  <!-- Página actual -->
-  <div>
-    <strong>{{ filtros.skip }}</strong>
-
-  </div>
-
-  <!-- Botón siguiente -->
-  <button class="btn"
-          [disabled]="finPagina"
-          (click)="cambiarPagina(1)">
-    <span [innerHTML]="icons['skipRight']"></span>
-  </button>
-</div>
-
-
-<!-- Modal -->
-<dialog #dialogAdmision>
-<div class="aurora-container">
-  <div class="aurora-cards"
-       *ngFor="let opt of optionsTipoConsulta"
-       (click)="admision(opt.valor, pacienteSeleccionado)">
-    <div class="aurora-items">
-      <!-- <span [innerHTML]="opt.icon"></span> -->
-      <h2>{{ opt.nombre }}</h2>
-
+    <!-- Página actual -->
+    <div>
+      <strong>{{ filtros.skip }}</strong>
     </div>
+
+    <!-- Botón siguiente -->
+    <button class="btn" [disabled]="finPagina" (click)="cambiarPagina(1)">
+      <span [innerHTML]="icons['skipRight']"></span>
+    </button>
   </div>
 
+  <!-- Modal -->
+  <dialog #dialogAdmision>
+    <div class="aurora-container">
+      <div
+        class="aurora-cards"
+        *ngFor="let opt of optionsTipoConsulta"
+        (click)="admision(opt.valor, pacienteSeleccionado)"
+      >
+        <div class="aurora-items">
+          <!-- <span [innerHTML]="opt.icon"></span> -->
+          <h2>{{ opt.nombre }}</h2>
+        </div>
+      </div>
+    </div>
+  </dialog>
 </div>
-
-
-</dialog>

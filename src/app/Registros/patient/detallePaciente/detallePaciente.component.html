@@ -1,118 +1,192 @@
-<div class="ficha-paciente" *ngIf="paciente">
+<div class="ficha-paciente" *ngIf="paciente && !cargando">
   <!-- Encabezado -->
   <header class="ficha-header">
     <div class="foto-perfil">
-      <span class="avatar">{{ paciente.nombre.primer_nombre[0] }}{{ paciente.nombre.primer_apellido[0] }}</span>
+      <span class="avatar"> </span>
     </div>
-    <div class="info-header">
-      <h1> {{ paciente.nombre.primer_apellido | uppercase }} {{ paciente.nombre.segundo_apellido | uppercase }} </h1>
-      <p class="subtitulo">
-         {{ paciente.nombre.primer_nombre | titlecase }} {{ paciente.nombre.segundo_nombre | titlecase }}
-      </p>
-      <p class="estado_" [ngClass]="paciente.estado === 'V' ? 'vivo' : 'fallecido'">
-        <span class="icon" [innerHTML]="paciente.estado === 'V' ? heartIcon : ghostIcon"></span>
-        {{ paciente.estado === 'V' ? ' Vivo' : ' Fallecido' }}
 
+    <div class="info-header">
+      <h1>
+        {{ paciente.nombre.primer_apellido | uppercase }}
+        {{ paciente.nombre.segundo_apellido | uppercase }}
+      </h1>
+      <p class="subtitulo">
+        {{ paciente.nombre.primer_nombre | titlecase }}
+        {{ paciente.nombre.segundo_nombre | titlecase }}
+      </p>
+
+      <p
+        class="estado_"
+        [ngClass]="paciente.estado === 'V' ? 'vivo' : 'fallecido'"
+      >
+        <span
+          class="icon"
+          [innerHTML]="paciente.estado === 'V' ? heartIcon : ghostIcon"
+        ></span>
+        {{ estadoPaciente }}
       </p>
     </div>
+
     <button class="btn-volver" (click)="regresar()">
-      <span [innerHTML]="regresarIcon"></span> Regresar</button>
+      <span [innerHTML]="regresarIcon"></span> Regresar
+    </button>
   </header>
 
-  <!-- Identificadores -->
-  <section class="section">
+  <!-- Identificación -->
+  <section class="section section-cv">
     <h2>🆔 Identificación</h2>
-    <div class="grid-2 section-grid">
-      <div class="section-card"><label>CUI:</label> {{ paciente.cui | cui }}</div>
-      <div class="section-card"><label>Expediente:</label> {{ paciente.expediente }}</div>
-      <div class="section-card"><label>Pasaporte:</label> {{ paciente.pasaporte || 'No aplica' }}</div>
-      <div class="section-card"><label>Otro ID:</label> {{ paciente.otro || 'N/A' }}</div>
+
+    <div class="cv-row">
+      <span class="cv-label">CUI</span>
+      <span class="cv-value">{{ paciente.cui | cui }}</span>
+    </div>
+
+    <div class="cv-row">
+      <span class="cv-label">Expediente</span>
+      <span class="cv-value">
+        {{ paciente.expediente || "Sin expediente" }}
+      </span>
+    </div>
+
+    <div class="cv-row">
+      <span class="cv-label">Pasaporte</span>
+      <span class="cv-value">
+        {{ paciente.pasaporte || "No aplica" }}
+      </span>
     </div>
   </section>
 
   <!-- Información personal -->
-  <section class="section">
-    <h2>🎂 Datos Personales</h2>
-    <div class="section-grid">
-      <div class="section-card sexo-card"><label>Sexo:</label>
-       <span class="sexo-icon" [innerHTML]="paciente.sexo === 'M' ? manIcon : womanIcon"></span>
-      <p>{{ paciente.sexo === 'M' ? 'Masculino' : 'Femenino' }}</p>
-      </div>
-      <div class="section-card"><label>Fecha de nacimiento:</label> {{ paciente.fecha_nacimiento | date:'dd/MM/yyyy' }}</div>
-      <div class="section-card"><label>Edad:</label> {{ paciente.fecha_nacimiento | edad }}</div>
-     <div class="section-card" *ngIf="paciente.datos_extra?.['r11']">
-  <label>Lugar de nacimiento:</label>
-  {{ paciente.datos_extra?.['r11']?.valor | datosExtra:(paciente.datos_extra?.['r11']?.tipo || '') }}
-</div>
+  <section class="section section-cv">
+    <h2>🧬 Datos Vitales</h2>
+
+    <div class="cv-row">
+      <span class="cv-label">Sexo</span>
+      <span class="cv-value">
+        {{ paciente.sexo?.trim() === "M" ? "Masculino" : "Femenino" }}
+      </span>
+    </div>
+
+    <div class="cv-row">
+      <span class="cv-label">Fecha de nacimiento</span>
+      <span class="cv-value">
+        {{ paciente.fecha_nacimiento | date : "dd/MM/yyyy" }}
+      </span>
+    </div>
+
+    <div class="cv-row">
+      <span class="cv-label">Edad</span>
+      <span class="cv-value">
+        {{ paciente.fecha_nacimiento | edad }}
+      </span>
+    </div>
+
+    <div class="cv-row" *ngIf="fechaDefuncion">
+      <span class="cv-label">Fecha de defunción</span>
+      <span class="cv-value">
+        {{ formatearFecha(fechaDefuncion) }}
+      </span>
     </div>
   </section>
 
   <!-- Contacto -->
-<section class="section">
-  <h2>📞 Contacto</h2>
-  <div class="section-grid">
-    <div class="section-card" *ngIf="paciente.contacto?.municipio">
-      <label>Dirección:</label>
-      <p>{{ paciente.contacto?.localidad}} {{ paciente.contacto?.municipio | datosExtra:'vecindad' }}</p>
+  <section class="section section-cv">
+    <h2>📞 Información de Contacto</h2>
+
+    <div class="cv-row" *ngIf="paciente.contacto?.domicilio">
+      <span class="cv-label">Domicilio</span>
+      <span class="cv-value">{{
+        paciente.contacto?.domicilio | titlecase
+      }}</span>
     </div>
 
-
-
-    <div class="section-card" *ngIf="paciente.contacto?.telefono">
-      <label>Teléfono 1:</label>
-      <p>
-        <span *ngIf="paciente.contacto?.telefono">{{ paciente.contacto?.telefono }}</span>
-
-      </p>
+    <div class="cv-row" *ngIf="paciente.contacto?.vecindad">
+      <span class="cv-label">Vecindad</span>
+      <span class="cv-value">{{ paciente.contacto?.vecindad }}</span>
     </div>
-    <div class="section-card" *ngIf="paciente.contacto?.telefono2">
-      <label>Teléfono 2:</label>
-      <p>
 
-        <span *ngIf="paciente.contacto?.telefono2">{{ paciente.contacto?.telefono2 }}</span>
+    <div class="cv-row" *ngIf="paciente.contacto?.municipio">
+      <span class="cv-label">Municipio</span>
+      <span class="cv-value">
+        {{ paciente.contacto?.municipio | datosExtra : "municipio" }}
+      </span>
+    </div>
 
-      </p>
+    <div class="cv-row" *ngIf="paciente.contacto?.telefonos">
+      <span class="cv-label">Teléfonos</span>
+      <span class="cv-value">{{ paciente.contacto?.telefonos }}</span>
     </div>
-    <div class="section-card" *ngIf="paciente.contacto?.telefono3">
-      <label>Teléfono 3:</label>
-      <p>
-        <span *ngIf="paciente.contacto?.telefono3">{{ paciente.contacto?.telefono3 }}</span>
-      </p>
-    </div>
-  </div>
-</section>
+  </section>
 
   <!-- Referencias -->
-  <section class="section" *ngIf="referenciaKeys.length">
+  <section class="section section-cv" *ngIf="tieneReferencias">
     <h2>👥 Referencias</h2>
-    <div class="section-grid grid-2">
-      <div class="section-card" *ngFor="let key of referenciaKeys">
-        <label class="card-mini">Nombre:</label> {{ paciente.referencias?.[key]?.nombre | uppercase}}
-        <label class="card-mini">Parentesco:</label>{{ paciente.referencias?.[key]?.parentesco |datosExtra: 'parentesco' | uppercase}}
-        <label class="card-mini">Teléfono:</label>{{ paciente.referencias?.[key]?.telefono }}
-      </div>
+
+    <div
+      class="cv-reference"
+      *ngFor="let ref of paciente.referencias; let i = index"
+    >
+      <strong>Referencia {{ i + 1 }}</strong
+      ><br />
+      {{ ref.nombre | titlecase }} — {{ ref.parentesco | titlecase }} —
+      {{ ref.telefono || "Sin teléfono" }} - {{ ref.expediente }} -
+      {{ ref.idpersona }}
     </div>
   </section>
 
-  <!-- Datos Extra -->
- <section class="section" *ngIf="datosExtraFiltrados.length">
-  <h2>📄 Datos Extra</h2>
-  <div class="section-grid grid-3">
-    <div class="section-card " *ngFor="let dato of datosExtraFiltrados">
-      <p class="card-mini"><label>{{ convertirTipo(dato.tipo) }}:</label></p>
-      <p>{{ dato.valor | datosExtra:dato.tipo }}</p>
+  <!-- Datos Demográficos -->
+  <section class="section section-cv" *ngIf="demograficosFiltrados.length > 0">
+    <h2>🌍 Datos Demográficos</h2>
+
+    <div class="cv-row" *ngFor="let dato of demograficosFiltrados">
+      <span class="cv-label">
+        {{ convertirClave(dato.key) }}
+      </span>
+      <span class="cv-value">
+        {{ dato.valor | datosExtra : dato.key }}
+      </span>
     </div>
+  </section>
+
+  <!-- Datos Socioeconómicos -->
+  <section
+    class="section section-cv"
+    *ngIf="socioeconomicosFiltrados.length > 0"
+  >
+    <h2>💼 Datos Socioeconómicos</h2>
+
+    <div class="cv-row" *ngFor="let dato of socioeconomicosFiltrados">
+      <span class="cv-label">
+        {{ convertirClave(dato.key) }}
+      </span>
+      <span class="cv-value">
+        {{ dato.valor | datosExtra : dato.key }}
+      </span>
+    </div>
+  </section>
+
+  <!-- Metadatos / Historial -->
+  <section class="section section-cv" *ngIf="metadatosKeys.length > 0">
+    <h2>📌 Información del Sistema</h2>
+
+    <div class="cv-row" *ngFor="let key of metadatosKeys">
+      <span class="cv-label">
+        {{ convertirClave(key) }}
+      </span>
+      <span class="cv-value">
+        {{ paciente.metadatos![key] }}
+      </span>
+    </div>
+  </section>
+
+  <!-- Estado de carga -->
+  <div class="loading" *ngIf="cargando">
+    <p>Cargando información del paciente...</p>
   </div>
-</section>
 
-  <!-- Metadatos -->
-  <section class="section">
-    <h2>📌 Historial de cambios</h2>
-    <ul class="timeline">
-      <li *ngFor="let key of metadatosKeys">
-        <span class="usuario">{{ paciente.metadatos?.[key]?.usuario }}</span>
-        <span class="fecha">{{ paciente.metadatos?.[key]?.registro | date:'medium' }}</span>
-      </li>
-    </ul>
-  </section>
+  <!-- Error -->
+  <div class="error" *ngIf="error && !cargando">
+    <p>{{ error }}</p>
+    <button (click)="regresar()">Regresar</button>
+  </div>
 </div>

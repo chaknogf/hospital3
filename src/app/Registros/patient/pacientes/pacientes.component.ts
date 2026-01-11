@@ -29,7 +29,8 @@ export class PacientesComponent implements OnInit {
 
   pacientes: Paciente[] = [];
   enRenap: Renap[] = [];
-  totales: Totales[] = [];
+  total: number = 0;
+  totales: any[] = []; // Si necesitas totales de otra fuente
   existePaciente: boolean = false;
   cargando = false;
   filtrar = false;
@@ -46,6 +47,7 @@ export class PacientesComponent implements OnInit {
   filtros: PacienteFiltros = {
     skip: 0,
     limit: this.pageSize,
+    q: '',
     primer_nombre: '',
     segundo_nombre: '',
     primer_apellido: '',
@@ -100,42 +102,47 @@ export class PacientesComponent implements OnInit {
 
   ngOnInit(): void {
     // Suscripción pacientes
+    // Suscripción pacientes (solo para actualizar la tabla)
     this.api.pacientes$.subscribe((data) => {
       this.pacientes = data;
     });
 
-    // Cargar totales
-    this.api.getTotales().then((data) => {
-      this.totales = data;
-      // 👇 si la vista devuelve en orden pacientes, consultas
-      this.totalDeRegistros = this.totales.find(t => t.entidad === 'pacientes')?.total || 0;
+    // Cargar primera página
+    this.cargarPacientes();
 
-      // Primera carga de pacientes con paginación
-      this.api.getPacientes({ skip: 0, limit: this.pageSize });
+  }
+
+  cargarPacientes() {
+    this.cargando = true;
+    // getPacientes ahora retorna { total: number, pacientes: Paciente[] }
+    this.api.getPacientes(this.filtros).subscribe({
+      next: (resultado) => {
+        // Actualizar total de registros para la paginación
+        this.totalDeRegistros = resultado.total;
+
+        // Los pacientes ya están en el BehaviorSubject vía la suscripción
+        // pero también puedes asignarlos directamente si prefieres:
+        // this.pacientes = resultado.pacientes;
+      },
+      error: (error) => {
+        console.error("Error:", error);
+      },
+      complete: () => {
+        this.cargando = false;
+      }
     });
   }
 
-  async cargarPacientes() {
-    this.cargando = true;
-    try {
-      this.pacientes = await this.api.getPacientes(this.filtros);
-
-
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      this.cargando = false;
-    }
-  }
-
-
-
   buscar() {
+    // Resetear a la primera página al buscar
+    this.paginaActual = 1;
+    this.filtros.skip = 0;
     this.cargarPacientes();
   }
 
   limpiarFiltros() {
     this.filtros = { skip: 0, limit: this.pageSize };
+    this.paginaActual = 1;
     this.cargarPacientes();
   }
 
@@ -183,19 +190,19 @@ export class PacientesComponent implements OnInit {
   }
 
   cambiarPagina(paso: number) {
-    this.paginaActual += paso;
+    const nuevaPagina = this.paginaActual + paso;
 
-    if (this.paginaActual < 1) this.paginaActual = 1;
-    if (this.paginaActual > this.totalPaginas) this.paginaActual = this.totalPaginas;
+    // Validar límites
+    if (nuevaPagina < 1 || nuevaPagina > this.totalPaginas) {
+      return;
+    }
 
+    this.paginaActual = nuevaPagina;
     this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
     this.filtros.limit = this.pageSize;
 
-    // console.log("🔄 Filtros:", this.filtros);
-
-    this.buscar();
+    this.cargarPacientes();
   }
-
 
   mostrar(): void {
     this.visible = !this.visible;
@@ -239,5 +246,7 @@ export class PacientesComponent implements OnInit {
 
     this.dialog.nativeElement.close();
   }
+
+
 
 }
