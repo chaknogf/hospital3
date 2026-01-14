@@ -28,15 +28,15 @@ export interface Nombre {
 
 export interface Contacto {
   domicilio?: string | null;
-  vecindad?: string | null;
   municipio?: string | null;
   telefonos?: string | null;
+  email?: string | null;
 }
 
 export interface Referencia {
   nombre: string;
   parentesco?: string | null;
-  telefono?: string | null;
+  telefonos?: string | null;
   expediente?: string | null;
   idpersona?: string | null;
   responsable?: boolean | false;
@@ -48,8 +48,8 @@ export interface Demograficos {
   idioma?: number | null;
   pueblo?: number | null;
   nacionalidad?: string | null;
-  lugar_nacimiento?: number | null;
-  departamento_nacimiento?: number | null;
+  lugar_nacimiento?: string | null;
+  vecindad?: string | null;
 }
 
 export interface Socioeconomicos {
@@ -67,11 +67,12 @@ export interface Neonatales {
   parto?: 'P' | 'C' | null; // P = Vaginal, C = Cesárea
   gemelo?: string | null;
   expediente_madre?: string | null;
+  extrahositalario?: 'S' | 'N';
 }
 
 export interface DatosExtra {
   defuncion?: string | null;
-  cuipersona?: string | null;
+  personaid?: string | null;
   demograficos?: Demograficos;
   socioeconomicos?: Socioeconomicos;
   neonatales?: Neonatales;
@@ -99,7 +100,7 @@ export interface Paciente {
   nombre: Nombre;
   nombre_completo?: string;
   sexo?: 'F' | 'M' | 'O'; // F = Femenino, M = Masculino, O = Otro
-  fecha_nacimiento?: string;
+  fecha_nacimiento?: string | null;
   contacto?: Contacto;
   referencias?: Referencia[];
   datos_extra?: DatosExtra;

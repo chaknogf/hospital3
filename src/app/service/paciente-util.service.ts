@@ -10,8 +10,6 @@ export class PacienteUtilService {
 
   /**
    * Convierte el paciente del BACKEND al formato del FORMULARIO
-   * Backend: { contacto: { telefonos: "123, 456, 789", municipio: "0801", domicilio: "" } }
-   * Formulario: { contacto: { telefono: "123", telefono2: "456", telefono3: "789", ... } }
    */
   convertirPacienteDesdeBackend(paciente: any): any {
     return {
@@ -23,8 +21,6 @@ export class PacienteUtilService {
 
   /**
    * Convierte el paciente del FORMULARIO al formato del BACKEND
-   * Formulario: { contacto: { telefono: "123", telefono2: "456", ... } }
-   * Backend: { contacto: { telefonos: "123, 456, 789", municipio: "0801", domicilio: "" } }
    */
   convertirPacienteParaBackend(paciente: any): any {
     return {
@@ -46,26 +42,24 @@ export class PacienteUtilService {
     }
 
     return {
-      telefono: this.extraerTelefono(contacto.telefonos, 0),
-      telefono2: this.extraerTelefono(contacto.telefonos, 1),
-      telefono3: this.extraerTelefono(contacto.telefonos, 2),
-      departamento: contacto.municipio?.slice(0, 2) || '',
+      domicilio: contacto.domicilio || '',
       municipio: contacto.municipio || '',
-      localidad: contacto.domicilio || '',
-      vecindad: contacto.vecindad || '',
-      direccion: ''
+      telefonos: contacto.telefonos || '',
+      email: contacto.email || ''
     };
   }
 
   /**
    * Convierte contacto del FORMULARIO al BACKEND
    */
+  // EN convertirContactoParaBackend() - ELIMINA departamento_nacimiento de aquí
   private convertirContactoParaBackend(contacto: any): Contacto {
     return {
-      domicilio: contacto?.localidad || null,
-      vecindad: contacto?.vecindad || null,
+      domicilio: contacto?.domicilio || null,
       municipio: contacto?.municipio || null,
-      telefonos: this.combinarTelefonos(contacto)
+      telefonos: this.limpiarTelefono(contacto?.telefonos) || null,
+      email: contacto?.email || null
+      // ❌ NO incluyas departamento_nacimiento aquí - va en demograficos
     };
   }
 
@@ -74,30 +68,22 @@ export class PacienteUtilService {
    */
   private crearContactoFormVacio(): any {
     return {
-      telefono: '',
-      telefono2: '',
-      telefono3: '',
-      departamento: '',
+      domicilio: '',
       municipio: '',
-      localidad: '',
-      vecindad: '',
-      direccion: ''
+      telefonos: '',
+      email: ''
     };
   }
 
   // ========== HELPERS CONTACTO (PÚBLICOS) ==========
 
   /**
-   * Combina los 3 teléfonos en una cadena separada por comas
+   * Limpia y normaliza un número de teléfono (solo dígitos)
    */
-  combinarTelefonos(contacto: any): string | null {
-    const telefonos = [
-      contacto?.telefono,
-      contacto?.telefono2,
-      contacto?.telefono3
-    ].filter(t => t && t.trim());
-
-    return telefonos.length > 0 ? telefonos.join(', ') : null;
+  limpiarTelefono(telefono: string | undefined): string | null {
+    if (!telefono) return null;
+    const limpio = telefono.replace(/[^\d]/g, '');
+    return limpio.length > 0 ? limpio : null;
   }
 
   /**
@@ -112,117 +98,104 @@ export class PacienteUtilService {
   // ========== CONVERSIÓN REFERENCIAS ==========
 
   /**
-   * Convierte referencias para enviar al backend (array simple)
+   * Convierte referencias para enviar al backend
    */
   convertirReferenciasParaBackend(referencias: any): any[] | null {
-    if (!referencias) return null;
+    if (!referencias || !Array.isArray(referencias)) return null;
 
-    if (Array.isArray(referencias)) {
-      return referencias
-        .filter(ref => ref?.nombre && ref?.nombre.trim())
-        .map(ref => ({
-          nombre: ref.nombre.trim(),
-          parentesco: ref.parentesco || null,
-          telefono: ref.telefono || null,
-          expediente: ref.expediente || null,
-          idpersona: ref.idpersona || null,
-          responsable: ref.responsable === true
-        }));
-    }
+    const filtradas = referencias
+      .filter(ref => ref?.nombre && ref.nombre.trim())
+      .map(ref => ({
+        nombre: ref.nombre.trim(),
+        parentesco: ref.parentesco || null,
+        telefonos: this.limpiarTelefono(ref.telefonos) || null,
+        expediente: ref.expediente || null,
+        idpersona: ref.idpersona || null,
+        responsable: ref.responsable === true
+      }));
 
-    return null;
+    return filtradas.length > 0 ? filtradas : null;
   }
 
   // ========== CONVERSIÓN DATOS EXTRA ==========
 
   /**
-   * Convierte datos_extra del BACKEND (demograficos/socioeconomicos/neonatales) al FORMULARIO
+   * Convierte datos_extra del BACKEND al FORMULARIO
    */
   convertirDatosExtraDesdeBackend(datosExtra: DatosExtra | undefined): any {
     if (!datosExtra) {
       return this.crearDatosExtraFormularioVacio();
     }
 
-    // Si tiene estructura de backend (con _id), convertir a estructura de formulario
-    if (datosExtra.demograficos && datosExtra.socioeconomicos) {
-      return this.convertirDatosExtraEstructuradoAFormulario(datosExtra);
-    }
-
-    return this.crearDatosExtraFormularioVacio();
+    return this.convertirDatosExtraBackendAFormulario(datosExtra);
   }
 
-  /**
-   * Convierte datos_extra del FORMULARIO al formato del BACKEND
-   */
+  // EN convertirDatosExtraParaBackend() - ASEGÚRATE QUE departamento_nacimiento esté aquí
   convertirDatosExtraParaBackend(datosExtra: any): DatosExtra {
     if (!datosExtra) {
       return this.crearDatosExtraBackendVacio();
     }
 
-    // Si ya tiene estructura de backend, retornarla
-    if (datosExtra.demograficos && datosExtra.demograficos.idioma_id !== undefined) {
-      return {
-        defuncion: datosExtra.defuncion || null,
-        cuipersona: datosExtra.cuipersona || null,
-        demograficos: datosExtra.demograficos as Demograficos,
-        socioeconomicos: datosExtra.socioeconomicos as Socioeconomicos,
-        neonatales: datosExtra.neonatales as Neonatales
-      };
-    }
+    const demo: any = datosExtra.demograficos || {};
+    const socio: any = datosExtra.socioeconomicos || {};
+    const neo: any = datosExtra.neonatales || {};
 
-    // Convertir desde estructura de formulario
     return {
       defuncion: datosExtra.defuncion || null,
-      cuipersona: datosExtra.cuipersona || null,
+      personaid: datosExtra.personaid || null,
       demograficos: {
-        idioma: datosExtra.demograficos?.idioma ? Number(datosExtra.demograficos.idioma) : null,
-        pueblo: datosExtra.demograficos?.pueblo ? Number(datosExtra.demograficos.pueblo) : null,
-        nacionalidad: datosExtra.demograficos?.nacionalidad || 'GTM',
-        lugar_nacimiento: datosExtra.demograficos?.lugar_nacimiento || null,
-        departamento_nacimiento: datosExtra.demograficos?.departamento_nacimiento ? Number(datosExtra.demograficos.departamento_nacimiento) : null
+        idioma: demo.idioma ? Number(demo.idioma) : null,
+        pueblo: demo.pueblo ? Number(demo.pueblo) : null,
+        nacionalidad: demo.nacionalidad || 'GTM',
+        lugar_nacimiento: demo.lugar_nacimiento || null,
+        vecindad: demo.vecindad || null
+        // ✅ ASEGÚRATE QUE departamento_nacimiento NO esté en demograficos si es solo para filtrado
+        // O agrega esto si debe guardarse:
+        // departamento_nacimiento: demo.departamento_nacimiento || null,
       },
       socioeconomicos: {
-        estado_civil: datosExtra.demograficos?.estado_civil ? Number(datosExtra.demograficos.estado_civil) : null,
-        ocupacion: datosExtra.socioeconomicos?.ocupacion || null,
-        educacion: datosExtra.socioeconomicos?.nivel_educativo ? Number(datosExtra.socioeconomicos.nivel_educativo) : null,
-        estudiante_publico: datosExtra.socioeconomicos?.estudiante_publico === 'SI' ? 'S' : 'N',
-        empleado_publico: datosExtra.socioeconomicos?.empleado_publico === 'SI' ? 'S' : 'N',
-        discapacidad: datosExtra.socioeconomicos?.discapacidad === 'SI' ? 'S' : 'N'
+        estado_civil: socio.estado_civil ? Number(socio.estado_civil) : null,
+        ocupacion: socio.ocupacion || null,
+        educacion: socio.educacion ? Number(socio.educacion) : null,
+        estudiante_publico: socio.estudiante_publico === 'SI' ? 'S' : 'N',
+        empleado_publico: socio.empleado_publico === 'SI' ? 'S' : 'N',
+        discapacidad: socio.discapacidad === 'SI' ? 'S' : 'N'
       },
       neonatales: {
-        peso_nacimiento: datosExtra.neonatales?.peso_nacimiento || null,
-        edad_gestacional: datosExtra.neonatales?.edad_gestacional || null,
-        parto: datosExtra.neonatales?.parto || null,
-        gemelo: datosExtra.neonatales?.gemelo || null,
-        expediente_madre: datosExtra.neonatales?.expediente_madre || null
+        peso_nacimiento: neo.peso_nacimiento || null,
+        edad_gestacional: neo.edad_gestacional || null,
+        parto: neo.parto || null,
+        gemelo: neo.gemelo || null,
+        expediente_madre: neo.expediente_madre || null
       }
     };
   }
 
   /**
-   * Convierte estructura de backend a estructura de formulario
+   * Convierte estructura de BACKEND a estructura de FORMULARIO
    * @private
    */
-  private convertirDatosExtraEstructuradoAFormulario(datosExtra: DatosExtra): any {
-    const demo = datosExtra.demograficos || {};
-    const socio = datosExtra.socioeconomicos || {};
-    const neo = datosExtra.neonatales || {};
+  // EN convertirDatosExtraBackendAFormulario()
+  private convertirDatosExtraBackendAFormulario(datosExtra: DatosExtra): any {
+    const demo: Demograficos = datosExtra.demograficos || {};
+    const socio: Socioeconomicos = datosExtra.socioeconomicos || {};
+    const neo: Neonatales = datosExtra.neonatales || {};
 
     return {
       defuncion: datosExtra.defuncion || '',
-      cuipersona: datosExtra.cuipersona || '',
+      personaid: datosExtra.personaid || '',
       demograficos: {
+        idioma: demo.idioma ? String(demo.idioma) : '24',
+        pueblo: demo.pueblo ? String(demo.pueblo) : '',
         nacionalidad: demo.nacionalidad || 'GTM',
-        pueblo: demo.pueblo?.toString() || '',
-        idioma: demo.idioma?.toString() || '24',
+        departamento_nacimiento: '', // ✅ INICIALIZAR VACÍO para que se llene con select
         lugar_nacimiento: demo.lugar_nacimiento || '',
-        departamento_nacimiento: demo.departamento_nacimiento?.toString() || '',
-        municipio_nacimiento: ''
+        vecindad: demo.vecindad || ''
       },
       socioeconomicos: {
-        estado_civil: socio.estado_civil?.toString() || '',
+        estado_civil: socio.estado_civil ? String(socio.estado_civil) : '',
         ocupacion: socio.ocupacion || '',
-        nivel_educativo: socio.educacion?.toString() || '',
+        educacion: socio.educacion ? String(socio.educacion) : '',
         estudiante_publico: socio.estudiante_publico === 'S' ? 'SI' : 'NO',
         empleado_publico: socio.empleado_publico === 'S' ? 'SI' : 'NO',
         discapacidad: socio.discapacidad === 'S' ? 'SI' : 'NO'
@@ -241,23 +214,23 @@ export class PacienteUtilService {
    * Crea un objeto datos_extra vacío para formulario
    * @private
    */
+  // EN crearDatosExtraFormularioVacio()
   private crearDatosExtraFormularioVacio(): any {
     return {
       defuncion: '',
-      cuipersona: '',
+      personaid: '',
       demograficos: {
-        nacionalidad: 'GTM',
-
-        pueblo: '',
         idioma: '24',
+        pueblo: '',
+        nacionalidad: 'GTM',
+        departamento_nacimiento: '', // ✅ AGREGAR AQUÍ
         lugar_nacimiento: '',
-        departamento_nacimiento: '',
-        municipio_nacimiento: ''
+        vecindad: ''
       },
       socioeconomicos: {
         estado_civil: '',
         ocupacion: '',
-        nivel_educativo: '',
+        educacion: '',
         estudiante_publico: 'NO',
         empleado_publico: 'NO',
         discapacidad: 'NO'
@@ -279,14 +252,13 @@ export class PacienteUtilService {
   private crearDatosExtraBackendVacio(): DatosExtra {
     return {
       defuncion: null,
-      cuipersona: null,
+      personaid: null,
       demograficos: {
-        nacionalidad: 'GTM',
-
+        idioma: null,
         pueblo: null,
-        idioma: 24,
+        nacionalidad: 'GTM',
         lugar_nacimiento: null,
-        departamento_nacimiento: null
+        vecindad: null
       },
       socioeconomicos: {
         estado_civil: null,
@@ -309,11 +281,39 @@ export class PacienteUtilService {
   // ========== MÉTODOS DE UTILIDAD (PÚBLICOS) ==========
 
   /**
-   * Normalización completa para backend y formulario
-   * @deprecated Usar convertirPacienteDesdeBackend() o convertirPacienteParaBackend()
+   * Crea un paciente vacío con estructura completa
+   */
+  crearPacienteVacio(): Paciente {
+    return {
+      id: 0,
+      cui: null,
+      expediente: null,
+      pasaporte: null,
+      nombre: {
+        primer_nombre: '',
+        segundo_nombre: '',
+        otro_nombre: '',
+        primer_apellido: '',
+        segundo_apellido: '',
+        apellido_casada: ''
+      },
+      sexo: 'O',
+      fecha_nacimiento: null,
+      contacto: this.crearContactoFormVacio(),
+      referencias: [],
+      datos_extra: this.crearDatosExtraFormularioVacio(),
+      estado: 'V',
+      metadatos: {}
+    };
+  }
+
+  /**
+   * Normalización completa del paciente desde cualquier fuente
    */
   normalizarPaciente(raw: any): Paciente {
-    let referencias: any = [];
+    if (!raw) return this.crearPacienteVacio();
+
+    let referencias: any[] = [];
 
     if (raw.referencias) {
       if (Array.isArray(raw.referencias)) {
@@ -322,12 +322,6 @@ export class PacienteUtilService {
         referencias = Object.values(raw.referencias).filter((ref: any) => ref?.nombre);
       }
     }
-
-    if (referencias.length === 0) {
-      referencias = [{ nombre: '', telefono: '', parentesco: '' }];
-    }
-
-    const metadatos = raw.metadatos || {};
 
     return {
       id: raw.id ?? 0,
@@ -340,20 +334,35 @@ export class PacienteUtilService {
         otro_nombre: raw.nombre?.otro_nombre ?? null,
         primer_apellido: raw.nombre?.primer_apellido ?? '',
         segundo_apellido: raw.nombre?.segundo_apellido ?? null,
-        apellido_casada: raw.nombre?.apellido_casada ?? null,
+        apellido_casada: raw.nombre?.apellido_casada ?? null
       },
-      sexo: raw.sexo ?? '',
-      fecha_nacimiento: raw.fecha_nacimiento ?? '',
-      contacto: raw.contacto ?? this.crearContactoFormVacio(),
+      sexo: raw.sexo ?? null,
+      fecha_nacimiento: raw.fecha_nacimiento ?? null,
+      contacto: this.convertirContactoDesdeBackend(raw.contacto),
       referencias,
-      datos_extra: raw.datos_extra ?? {},
+      datos_extra: this.convertirDatosExtraDesdeBackend(raw.datos_extra),
       estado: raw.estado ?? 'V',
-      metadatos,
+      metadatos: raw.metadatos ?? {}
     };
   }
 
   /**
-   * Calcular edad desde fecha de nacimiento
+   * Obtiene el nombre completo del paciente
+   */
+  obtenerNombreCompleto(nombre: any): string {
+    const partes = [
+      nombre?.primer_nombre,
+      nombre?.segundo_nombre,
+      nombre?.otro_nombre,
+      nombre?.primer_apellido,
+      nombre?.segundo_apellido
+    ].filter(p => p && p.trim());
+
+    return partes.join(' ').trim();
+  }
+
+  /**
+   * Calcula edad desde fecha de nacimiento
    */
   calcularEdad(fechaStr: string): { anios: number, meses: number, dias: number } {
     if (!fechaStr) return { anios: 0, meses: 0, dias: 0 };
@@ -386,16 +395,14 @@ export class PacienteUtilService {
   /**
    * Valida si es recién nacido (menor de 28 días)
    */
-  validarRecienNacido(fechaStr: string): { recienNacido: boolean } {
-    if (!fechaStr) return { recienNacido: false };
+  esRecienNacido(fechaStr: string): boolean {
+    if (!fechaStr) return false;
 
     const nacimiento = new Date(fechaStr);
-    if (isNaN(nacimiento.getTime())) return { recienNacido: false };
+    if (isNaN(nacimiento.getTime())) return false;
 
     const edad = this.calcularEdad(fechaStr);
-    const recienNacido = edad.anios === 0 && edad.meses === 0 && edad.dias >= 0 && edad.dias <= 28;
-
-    return { recienNacido };
+    return edad.anios === 0 && edad.meses === 0 && edad.dias >= 0 && edad.dias <= 28;
   }
 
   /**
@@ -414,7 +421,7 @@ export class PacienteUtilService {
   /**
    * Agrega un metadato de registro
    */
-  agregarMetadato(metadatos: any, usuario: string): Metadata {
+  agregarMetadato(metadatos: any, usuario: string, accion: string = 'CREATE'): Metadata {
     const timestamp = new Date().toISOString();
 
     if (!metadatos) metadatos = {};
@@ -422,7 +429,51 @@ export class PacienteUtilService {
     return {
       ...metadatos,
       creado_por: usuario || 'Sistema',
-      creado_en: timestamp
+      creado_en: timestamp,
+      ultima_accion: accion,
+      actualizado_en: timestamp
+    };
+  }
+
+  /**
+  * Valida si es recién nacido (menor de 28 días)
+  */
+  validarRecienNacido(fechaStr: string): { recienNacido: boolean } {
+    if (!fechaStr) return { recienNacido: false };
+
+    const nacimiento = new Date(fechaStr);
+    if (isNaN(nacimiento.getTime())) return { recienNacido: false };
+
+    const edad = this.calcularEdad(fechaStr);
+    const recienNacido = edad.anios === 0 && edad.meses === 0 && edad.dias >= 0 && edad.dias <= 28;
+
+    return { recienNacido };
+  }
+  /**
+   * Valida si un paciente tiene datos mínimos para ser guardado
+   */
+  validarPacienteMinimo(paciente: any): { valido: boolean, errores: string[] } {
+    const errores: string[] = [];
+
+    if (!paciente.nombre?.primer_nombre?.trim()) {
+      errores.push('El primer nombre es obligatorio');
+    }
+
+    if (!paciente.nombre?.primer_apellido?.trim()) {
+      errores.push('El primer apellido es obligatorio');
+    }
+
+    if (!paciente.fecha_nacimiento) {
+      errores.push('La fecha de nacimiento es obligatoria');
+    }
+
+    if (!paciente.sexo) {
+      errores.push('El sexo es obligatorio');
+    }
+
+    return {
+      valido: errores.length === 0,
+      errores
     };
   }
 }

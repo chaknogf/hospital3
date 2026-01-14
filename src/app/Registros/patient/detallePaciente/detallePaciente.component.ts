@@ -279,7 +279,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
 
   /** Verificar si tiene CUI persona en datos extra */
   get cuiPersona(): string | null {
-    return this.paciente?.datos_extra?.cuipersona || null;
+    return this.paciente?.datos_extra?.personaid || null;
   }
 
   /** Verificar si tiene fecha de defunción */

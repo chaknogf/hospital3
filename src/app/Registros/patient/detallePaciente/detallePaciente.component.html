@@ -100,11 +100,6 @@
       }}</span>
     </div>
 
-    <div class="cv-row" *ngIf="paciente.contacto?.vecindad">
-      <span class="cv-label">Vecindad</span>
-      <span class="cv-value">{{ paciente.contacto?.vecindad }}</span>
-    </div>
-
     <div class="cv-row" *ngIf="paciente.contacto?.municipio">
       <span class="cv-label">Municipio</span>
       <span class="cv-value">
@@ -129,7 +124,7 @@
       <strong>Referencia {{ i + 1 }}</strong
       ><br />
       {{ ref.nombre | titlecase }} — {{ ref.parentesco | titlecase }} —
-      {{ ref.telefono || "Sin teléfono" }} - {{ ref.expediente }} -
+      {{ ref.telefonos || "Sin teléfono" }} - {{ ref.expediente }} -
       {{ ref.idpersona }}
     </div>
   </section>
