@@ -110,24 +110,24 @@
 }
 
 /* Cuando el campo ya tiene valor */
-.formulario-moderno input:not(:-moz-placeholder) {
+/* .formulario-moderno input:not(:-moz-placeholder) {
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff !important;
   font-weight: 600;
-}
-.formulario-moderno input:not(:placeholder-shown),
+} */
+/* .formulario-moderno input:not(:placeholder-shown),
 .formulario-moderno select:not(:has(option[value=""]:checked)) {
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff !important;
   font-weight: 600;
-}
+} */
 
-.formulario-moderno input.is-null,
+/* .formulario-moderno input.is-null,
 .formulario-moderno select.is-null {
   background: rgba(0, 0, 0, 0.35) !important;
   color: #ffffff !important;
 
-}
+} */
 
 /* Foco */
 .formulario-moderno input:focus, select:focus {

@@ -169,12 +169,12 @@
 
     <!-- Otra identificación (solo si no tiene CUI) -->
     @if (!form.get('cui')?.value) {
-    <div style="flex: 1" formGroupName="datos_extra">
+    <div style="flex: 1">
       <label for="personaid">Otra Identificación</label>
       <input
         id="personaid"
         type="text"
-        formControlName="personaid"
+        formControlName="datos_extra.personaid"
         placeholder="otra forma de identificación"
         autocomplete="off"
       />
@@ -371,15 +371,8 @@
 
     <!-- Ubicación geográfica -->
     <label for="departamento">Departamento</label>
-    <input
-      type="text"
-      [value]="deptoDireccion()"
-      (input)="deptoDireccion.set($any($event.target).value)"
-      name="depto"
-    />
-    <label for="municipio">Municipio</label>
-    <input type="text" formControlName="municipio" />
-    <!-- <select
+
+    <select
       id="departamento"
       formControlName="departamento"
       name="departamento"
@@ -388,15 +381,15 @@
       <option *ngFor="let dep of enums.departamentos" [value]="dep.value">
         {{ dep.label }}
       </option>
-    </select> -->
+    </select>
 
-    <!-- <label for="municipio">Municipio</label>
+    <label for="municipio">Municipio</label>
     <select id="municipio" formControlName="municipio" name="municipio">
       <option value="">Seleccione municipio</option>
       <option *ngFor="let mun of municipios_direccion()" [value]="mun.codigo">
         {{ mun.vecindad }}
       </option>
-    </select> -->
+    </select>
 
     <!-- Dirección -->
     <label for="domicilio">Dirección domicilio</label>
@@ -491,284 +484,229 @@
 
   <!-- ================ BLOQUE 6: DATOS EXTRA ESTRUCTURADO ================ -->
 
-  <!-- -------- DEMOGRÁFICOS -------- -->
-  <fieldset formGroupName="datos_extra.demograficos" class="sub-fieldset">
+  <fieldset formGroupName="datos_extra" class="sub-fieldset">
     <legend>Información Demográfica</legend>
 
-    <!-- Nacionalidad -->
-    <div>
-      <label for="nacionalidad">Nacionalidad</label>
-      <select
-        id="nacionalidad"
-        formControlName="nacionalidad"
-        [ngClass]="
-          form.get('datos_extra.demograficos.nacionalidad')?.value
-            ? 'is-valid'
-            : 'is-null'
-        "
-      >
-        <option value="">Seleccione nacionalidad</option>
-        <option *ngFor="let n of paisesIso()" [value]="n.codigo_iso3">
-          {{ n.nombre }}
-        </option>
-      </select>
-    </div>
-
-    <!-- Pueblo -->
-    <div>
-      <label for="pueblo">Pueblo</label>
-      <select
-        id="pueblo"
-        formControlName="pueblo"
-        [ngClass]="
-          form.get('datos_extra.demograficos.pueblo')?.value
-            ? 'is-valid'
-            : 'is-null'
-        "
-      >
-        <option value="">Seleccione</option>
-        <option *ngFor="let p of enums.pueblos" [value]="p.value">
-          {{ p.label }}
-        </option>
-      </select>
-    </div>
-
-    <!-- Idioma -->
-    <div>
-      <label for="idioma">Idioma</label>
-      <select
-        id="idioma"
-        formControlName="idioma"
-        [ngClass]="
-          form.get('datos_extra.demograficos.idioma')?.value
-            ? 'is-valid'
-            : 'is-null'
-        "
-      >
-        <option value="">Seleccione</option>
-        <option *ngFor="let i of enums.idiomas" [value]="i.value">
-          {{ i.label }}
-        </option>
-      </select>
-    </div>
-
-    <!-- Lugar de Nacimiento (para extranjeros) -->
-    @if ( form.get('datos_extra.demograficos.nacionalidad')?.value !== 'GTM' ) {
-    <div>
-      <label for="lugar_nacimiento_demo">Lugar de Nacimiento</label>
-      <input
-        id="lugar_nacimiento_demo"
-        type="text"
-        [ngClass]="
-          form.get('datos_extra.demograficos.lugar_nacimiento')?.value
-            ? 'is-valid'
-            : 'is-null'
-        "
-        formControlName="lugar_nacimiento"
-        placeholder="País/Lugar"
-      />
-    </div>
-    }
-
-    <!-- Departamento Nacimiento (para guatemaltecos) -->
-    @if (form.get('datos_extra.demograficos.nacionalidad')?.value === 'GTM') {
-    <div>
-      <label for="departamento_nacimiento">Departamento Nacimiento</label>
-      <select
-        id="departamento_nacimiento"
-        formControlName="departamento_nacimiento"
-        (change)="listarMunicipiosNacimiento()"
-      >
-        <option value="">Seleccione</option>
-        <option *ngFor="let dep of enums.departamentos" [value]="dep.value">
-          {{ dep.label }}
-        </option>
-      </select>
-    </div>
-    }
-
-    <!-- Municipio Nacimiento (para guatemaltecos) -->
-    @if (form.get('datos_extra.demograficos.nacionalidad')?.value === 'GTM') {
-    <div>
-      <label for="municipio_nacimiento">Municipio Nacimiento</label>
-      <select id="municipio_nacimiento" formControlName="lugar_nacimiento">
-        <option value="">Seleccione</option>
-        <option
-          *ngFor="let mun of municipios_nacimiento()"
-          [value]="mun.codigo"
+    <div formGroupName="demograficos">
+      <!-- Nacionalidad -->
+      <div>
+        <label for="nacionalidad">Nacionalidad</label>
+        <select
+          id="nacionalidad"
+          formControlName="nacionalidad"
+          [ngClass]="
+            form.get('datos_extra.demograficos.nacionalidad')?.value
+              ? 'is-valid'
+              : 'is-null'
+          "
         >
-          {{ mun.municipio }}
-        </option>
-      </select>
+          <option value="">Seleccione nacionalidad</option>
+          <option *ngFor="let n of paisesIso()" [value]="n.codigo_iso3">
+            {{ n.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Pueblo -->
+      <div>
+        <label for="pueblo">Pueblo</label>
+        <select id="pueblo" formControlName="pueblo">
+          <option value="">Seleccione</option>
+          <option *ngFor="let p of enums.pueblos" [value]="p.value">
+            {{ p.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Idioma -->
+      <div>
+        <label for="idioma">Idioma</label>
+        <select id="idioma" formControlName="idioma">
+          <option value="">Seleccione</option>
+          <option *ngFor="let i of enums.idiomas" [value]="i.value">
+            {{ i.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Lugar de nacimiento extranjero -->
+      @if (form.get('datos_extra.demograficos.nacionalidad')?.value !== 'GTM') {
+      <div>
+        <label>Lugar de Nacimiento</label>
+        <input type="text" formControlName="lugar_nacimiento" />
+      </div>
+      }
+
+      <!-- Guatemala -->
+      @if (form.get('datos_extra.demograficos.nacionalidad')?.value === 'GTM') {
+      <div>
+        <label>Departamento Nacimiento</label>
+        <select formControlName="departamento_nacimiento">
+          <option value="">Seleccione</option>
+          <option *ngFor="let dep of enums.departamentos" [value]="dep.value">
+            {{ dep.label }}
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label>Municipio Nacimiento</label>
+        <select formControlName="lugar_nacimiento">
+          <option value="">Seleccione</option>
+          <option
+            *ngFor="let mun of municipios_nacimiento()"
+            [value]="mun.codigo"
+          >
+            {{ mun.municipio }}
+          </option>
+        </select>
+      </div>
+      }
     </div>
-    }
   </fieldset>
-
   <!-- -------- SOCIOECONÓMICOS -------- -->
-  <fieldset formGroupName="datos_extra.socioeconomicos" class="sub-fieldset">
-    <legend>Información Socioeconómica</legend>
+  <fieldset formGroupName="datos_extra">
+    <fieldset formGroupName="socioeconomicos" class="sub-fieldset">
+      <legend>Información Socioeconómica</legend>
 
-    <!-- Estado Civil -->
-    <div>
-      <label for="estado_civil">Estado Civil</label>
-      <select
-        id="estado_civil"
-        formControlName="estado_civil"
-        [ngClass]="
-          form.get('datos_extra.demograficos.estado_civil')?.value
-            ? 'is-valid'
-            : 'is-null'
-        "
-      >
-        <option value="">Seleccione</option>
-        <option *ngFor="let ec of enums.estadocivil" [value]="ec.value">
-          {{ ec.label }}
-        </option>
-      </select>
-    </div>
-
-    <!-- Ocupación -->
-    <div>
-      <label for="ocupacion">Ocupación</label>
-      <input
-        id="ocupacion"
-        type="text"
-        formControlName="ocupacion"
-        [ngClass]="
-          form.get('datos_extra.socioeconomicos.ocupacion')?.value
-            ? 'is-valid'
-            : 'is-null'
-        "
-        placeholder="Ocupación"
-      />
-    </div>
-
-    <!-- Nivel Educativo -->
-    <div>
-      <label for="nivel_educativo">Nivel Educativo</label>
-      <select
-        id="nivel_educativo"
-        formControlName="nivel_educativo"
-        [ngClass]="
-          form.get('datos_extra.socioeconomicos.nivel_educativo')?.value
-            ? 'is-valid'
-            : 'is-null'
-        "
-      >
-        <option value="">Seleccione</option>
-        <option *ngFor="let ne of enums.gradoacademico" [value]="ne.value">
-          {{ ne.label }}
-        </option>
-      </select>
-    </div>
-
-    <!-- Toggles de Sí/No -->
-    <div class="d-flex gap-3">
-      <!-- Estudiante Público -->
-      <div class="toggle-group" style="flex: 1">
-        <label>Estudiante Público</label>
-        <div class="toggle-buttons">
-          <button
-            type="button"
-            [class.active]="
-              form.get('datos_extra.socioeconomicos.estudiante_publico')
-                ?.value === 'SI'
-            "
-            (click)="
-              form
-                .get('datos_extra.socioeconomicos.estudiante_publico')
-                ?.setValue('SI')
-            "
-          >
-            Sí
-          </button>
-          <button
-            type="button"
-            [class.active]="
-              form.get('datos_extra.socioeconomicos.estudiante_publico')
-                ?.value === 'NO'
-            "
-            (click)="
-              form
-                .get('datos_extra.socioeconomicos.estudiante_publico')
-                ?.setValue('NO')
-            "
-          >
-            No
-          </button>
-        </div>
+      <!-- Estado Civil -->
+      <div>
+        <label for="estado_civil">Estado Civil</label>
+        <select
+          id="estado_civil"
+          formControlName="estado_civil"
+          [ngClass]="
+            form.get('datos_extra.socioeconomicos.estado_civil')?.value
+              ? 'is-valid'
+              : 'is-null'
+          "
+        >
+          <option value="">Seleccione</option>
+          <option *ngFor="let ec of enums.estadocivil" [value]="ec.value">
+            {{ ec.label }}
+          </option>
+        </select>
       </div>
 
-      <!-- Empleado Público -->
-      <div class="toggle-group" style="flex: 1">
-        <label>Empleado Público</label>
-        <div class="toggle-buttons">
-          <button
-            type="button"
-            [class.active]="
-              form.get('datos_extra.socioeconomicos.empleado_publico')
-                ?.value === 'SI'
-            "
-            (click)="
-              form
-                .get('datos_extra.socioeconomicos.empleado_publico')
-                ?.setValue('SI')
-            "
-          >
-            Sí
-          </button>
-          <button
-            type="button"
-            [class.active]="
-              form.get('datos_extra.socioeconomicos.empleado_publico')
-                ?.value === 'NO'
-            "
-            (click)="
-              form
-                .get('datos_extra.socioeconomicos.empleado_publico')
-                ?.setValue('NO')
-            "
-          >
-            No
-          </button>
-        </div>
+      <!-- Ocupación -->
+      <div>
+        <label for="ocupacion">Ocupación</label>
+        <input
+          id="ocupacion"
+          type="text"
+          formControlName="ocupacion"
+          placeholder="Ocupación"
+          [ngClass]="
+            form.get('datos_extra.socioeconomicos.ocupacion')?.value
+              ? 'is-valid'
+              : 'is-null'
+          "
+        />
       </div>
 
-      <!-- Discapacidad -->
-      <div class="toggle-group" style="flex: 1">
-        <label>Discapacidad</label>
-        <div class="toggle-buttons">
-          <button
-            type="button"
-            [class.active]="
-              form.get('datos_extra.socioeconomicos.discapacidad')?.value ===
-              'SI'
-            "
-            (click)="
-              form
-                .get('datos_extra.socioeconomicos.discapacidad')
-                ?.setValue('SI')
-            "
-          >
-            Sí
-          </button>
-          <button
-            type="button"
-            [class.active]="
-              form.get('datos_extra.socioeconomicos.discapacidad')?.value ===
-              'NO'
-            "
-            (click)="
-              form
-                .get('datos_extra.socioeconomicos.discapacidad')
-                ?.setValue('NO')
-            "
-          >
-            No
-          </button>
+      <!-- Nivel Educativo -->
+      <div>
+        <label for="nivel_educativo">Nivel Educativo</label>
+        <select
+          id="nivel_educativo"
+          formControlName="nivel_educativo"
+          [ngClass]="
+            form.get('datos_extra.socioeconomicos.nivel_educativo')?.value
+              ? 'is-valid'
+              : 'is-null'
+          "
+        >
+          <option value="">Seleccione</option>
+          <option *ngFor="let ne of enums.gradoacademico" [value]="ne.value">
+            {{ ne.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Toggles -->
+      <div class="d-flex gap-3">
+        <!-- Estudiante Público -->
+        <div class="toggle-group" style="flex: 1">
+          <label>Estudiante Público</label>
+          <div class="toggle-buttons">
+            <button
+              type="button"
+              [class.active]="
+                form.get('datos_extra.socioeconomicos.estudiante_publico')
+                  ?.value === 'SI'
+              "
+              (click)="setSocio('estudiante_publico', 'SI')"
+            >
+              Sí
+            </button>
+            <button
+              type="button"
+              [class.active]="
+                form.get('datos_extra.socioeconomicos.estudiante_publico')
+                  ?.value === 'NO'
+              "
+              (click)="setSocio('estudiante_publico', 'NO')"
+            >
+              No
+            </button>
+          </div>
+        </div>
+
+        <!-- Empleado Público -->
+        <div class="toggle-group" style="flex: 1">
+          <label>Empleado Público</label>
+          <div class="toggle-buttons">
+            <button
+              type="button"
+              [class.active]="
+                form.get('datos_extra.socioeconomicos.empleado_publico')
+                  ?.value === 'SI'
+              "
+              (click)="setSocio('empleado_publico', 'SI')"
+            >
+              Sí
+            </button>
+            <button
+              type="button"
+              [class.active]="
+                form.get('datos_extra.socioeconomicos.empleado_publico')
+                  ?.value === 'NO'
+              "
+              (click)="setSocio('empleado_publico', 'NO')"
+            >
+              No
+            </button>
+          </div>
+        </div>
+
+        <!-- Discapacidad -->
+        <div class="toggle-group" style="flex: 1">
+          <label>Discapacidad</label>
+          <div class="toggle-buttons">
+            <button
+              type="button"
+              [class.active]="
+                form.get('datos_extra.socioeconomicos.discapacidad')?.value ===
+                'SI'
+              "
+              (click)="setSocio('discapacidad', 'SI')"
+            >
+              Sí
+            </button>
+            <button
+              type="button"
+              [class.active]="
+                form.get('datos_extra.socioeconomicos.discapacidad')?.value ===
+                'NO'
+              "
+              (click)="setSocio('discapacidad', 'NO')"
+            >
+              No
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </fieldset>
   </fieldset>
 
   <!-- -------- NEONATALES (Solo para recién nacidos) -------- -->
