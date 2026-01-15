@@ -606,12 +606,12 @@
 
       <!-- Nivel Educativo -->
       <div>
-        <label for="nivel_educativo">Nivel Educativo</label>
+        <label for="educacion">Nivel Educativo</label>
         <select
-          id="nivel_educativo"
-          formControlName="nivel_educativo"
+          id="educacion"
+          formControlName="educacion"
           [ngClass]="
-            form.get('datos_extra.socioeconomicos.nivel_educativo')?.value
+            form.get('datos_extra.socioeconomicos.educacion')?.value
               ? 'is-valid'
               : 'is-null'
           "
