@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Paciente, Metadata, DatosExtra, Demograficos, Socioeconomicos, Neonatales, Contacto } from '../interface/interfaces';
+import { Paciente, DatosExtra, Demograficos, Socioeconomicos, Neonatales, Contacto } from '../interface/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class PacienteUtilService {
@@ -52,14 +52,12 @@ export class PacienteUtilService {
   /**
    * Convierte contacto del FORMULARIO al BACKEND
    */
-  // EN convertirContactoParaBackend() - ELIMINA departamento_nacimiento de aquí
   private convertirContactoParaBackend(contacto: any): Contacto {
     return {
       domicilio: contacto?.domicilio || null,
       municipio: contacto?.municipio || null,
       telefonos: this.limpiarTelefono(contacto?.telefonos) || null,
       email: contacto?.email || null
-      // ❌ NO incluyas departamento_nacimiento aquí - va en demograficos
     };
   }
 
@@ -100,21 +98,35 @@ export class PacienteUtilService {
   /**
    * Convierte referencias para enviar al backend
    */
-  convertirReferenciasParaBackend(referencias: any): any[] | null {
-    if (!referencias || !Array.isArray(referencias)) return null;
+  convertirReferenciasParaBackend(referencias: unknown): any[] | null {
+    if (!Array.isArray(referencias)) return null;
 
-    const filtradas = referencias
-      .filter(ref => ref?.nombre && ref.nombre.trim())
-      .map(ref => ({
+    const resultado = referencias
+      .filter(ref => typeof ref === 'object' && ref !== null)
+      .filter((ref: any) => ref.nombre && ref.nombre.trim())
+      .map((ref: any) => ({
         nombre: ref.nombre.trim(),
         parentesco: ref.parentesco || null,
-        telefonos: this.limpiarTelefono(ref.telefonos) || null,
+        telefono: this.limpiarTelefono(ref.telefono), // ✅ CORRECTO
         expediente: ref.expediente || null,
         idpersona: ref.idpersona || null,
         responsable: ref.responsable === true
       }));
 
-    return filtradas.length > 0 ? filtradas : null;
+    return resultado.length ? resultado : null;
+  }
+
+  convertirReferenciasDesdeBackend(referencias: any): any[] {
+    if (!Array.isArray(referencias)) return [];
+
+    return referencias.map(ref => ({
+      nombre: ref.nombre || '',
+      parentesco: ref.parentesco || '',
+      telefonos: ref.telefono || '', // ✅ AQUÍ
+      expediente: ref.expediente || null,
+      idpersona: ref.idpersona || null,
+      responsable: ref.responsable === true
+    }));
   }
 
   // ========== CONVERSIÓN DATOS EXTRA ==========
@@ -130,7 +142,9 @@ export class PacienteUtilService {
     return this.convertirDatosExtraBackendAFormulario(datosExtra);
   }
 
-  // EN convertirDatosExtraParaBackend() - ASEGÚRATE QUE departamento_nacimiento esté aquí
+  /**
+   * Convierte datos_extra del FORMULARIO al BACKEND
+   */
   convertirDatosExtraParaBackend(datosExtra: any): DatosExtra {
     if (!datosExtra) {
       return this.crearDatosExtraBackendVacio();
@@ -149,9 +163,6 @@ export class PacienteUtilService {
         nacionalidad: demo.nacionalidad || 'GTM',
         lugar_nacimiento: demo.lugar_nacimiento || null,
         vecindad: demo.vecindad || null
-        // ✅ ASEGÚRATE QUE departamento_nacimiento NO esté en demograficos si es solo para filtrado
-        // O agrega esto si debe guardarse:
-        // departamento_nacimiento: demo.departamento_nacimiento || null,
       },
       socioeconomicos: {
         estado_civil: socio.estado_civil ? Number(socio.estado_civil) : null,
@@ -173,9 +184,7 @@ export class PacienteUtilService {
 
   /**
    * Convierte estructura de BACKEND a estructura de FORMULARIO
-   * @private
    */
-  // EN convertirDatosExtraBackendAFormulario()
   private convertirDatosExtraBackendAFormulario(datosExtra: DatosExtra): any {
     const demo: Demograficos = datosExtra.demograficos || {};
     const socio: Socioeconomicos = datosExtra.socioeconomicos || {};
@@ -188,7 +197,7 @@ export class PacienteUtilService {
         idioma: demo.idioma ? String(demo.idioma) : '24',
         pueblo: demo.pueblo ? String(demo.pueblo) : '',
         nacionalidad: demo.nacionalidad || 'GTM',
-        departamento_nacimiento: '', // ✅ INICIALIZAR VACÍO para que se llene con select
+        departamento_nacimiento: '',
         lugar_nacimiento: demo.lugar_nacimiento || '',
         vecindad: demo.vecindad || ''
       },
@@ -212,9 +221,7 @@ export class PacienteUtilService {
 
   /**
    * Crea un objeto datos_extra vacío para formulario
-   * @private
    */
-  // EN crearDatosExtraFormularioVacio()
   private crearDatosExtraFormularioVacio(): any {
     return {
       defuncion: '',
@@ -223,7 +230,7 @@ export class PacienteUtilService {
         idioma: '24',
         pueblo: '',
         nacionalidad: 'GTM',
-        departamento_nacimiento: '', // ✅ AGREGAR AQUÍ
+        departamento_nacimiento: '',
         lugar_nacimiento: '',
         vecindad: ''
       },
@@ -247,7 +254,6 @@ export class PacienteUtilService {
 
   /**
    * Crea un objeto datos_extra vacío para backend
-   * @private
    */
   private crearDatosExtraBackendVacio(): DatosExtra {
     return {
@@ -419,25 +425,8 @@ export class PacienteUtilService {
   }
 
   /**
-   * Agrega un metadato de registro
+   * Valida si es recién nacido (menor de 28 días)
    */
-  agregarMetadato(metadatos: any, usuario: string, accion: string = 'CREATE'): Metadata {
-    const timestamp = new Date().toISOString();
-
-    if (!metadatos) metadatos = {};
-
-    return {
-      ...metadatos,
-      creado_por: usuario || 'Sistema',
-      creado_en: timestamp,
-      ultima_accion: accion,
-      actualizado_en: timestamp
-    };
-  }
-
-  /**
-  * Valida si es recién nacido (menor de 28 días)
-  */
   validarRecienNacido(fechaStr: string): { recienNacido: boolean } {
     if (!fechaStr) return { recienNacido: false };
 
@@ -449,6 +438,7 @@ export class PacienteUtilService {
 
     return { recienNacido };
   }
+
   /**
    * Valida si un paciente tiene datos mínimos para ser guardado
    */

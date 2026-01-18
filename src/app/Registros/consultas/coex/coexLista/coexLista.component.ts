@@ -1,21 +1,23 @@
+// coexLista.component.ts
+
 import { filter } from 'rxjs/operators';
-
-
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { EdadPipe } from '../../../../pipes/edad.pipe';
-import { Paciente, Totales } from '../../../../interface/interfaces';
-import { ApiService } from '../../../../service/api.service';
-import { ConsultaService } from '../../../../service/consulta.service';
 import { Router } from '@angular/router';
-import { IconService } from '../../../../service/icon.service';
-import { ConsultaResponse, Ciclo } from '../../../../interface/consultas';
-import { ciclos, Dict } from '../../../../enum/diccionarios';
+
+import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
 import { TimePipe } from '../../../../pipes/time.pipe';
 
+import { Paciente, } from '../../../../interface/interfaces';
+import { ConsultaResponse, Ciclo, TotalesResponse, TotalesItem } from '../../../../interface/consultas';
+import { ciclos, Dict } from '../../../../enum/diccionarios';
+
+import { ApiService } from '../../../../service/api.service';
+import { ConsultaService } from '../../../../service/consulta.service';
+import { IconService } from '../../../../service/icon.service';
 
 @Component({
   selector: 'app-coexLista',
@@ -37,7 +39,9 @@ export class CoexListaComponent implements OnInit {
   nutri: ConsultaResponse[] = [];
   odonto: ConsultaResponse[] = [];
 
-  totales: Totales[] = [];
+  // ✅ Corregido: ahora es TotalesItem[]
+  totales: TotalesItem[] = [];
+
   paciente: Paciente | null = null;
   public status: 'activo' | 'inactivo' | 'none' = 'none';
   cargando = false;
@@ -48,6 +52,7 @@ export class CoexListaComponent implements OnInit {
   pageSize: number = 200;
   paginaActual: number = 1;
   finPagina: boolean = false;
+
   private ahora = new Date();
   fechaActual = this.ahora.toLocaleDateString('en-CA');
 
@@ -55,7 +60,6 @@ export class CoexListaComponent implements OnInit {
   porcentajeDeCarga = 0;
   especialidadSeleccionada: string = '';
   ciclos: Dict[] = ciclos;
-
 
   filtros: any = {
     skip: 0,
@@ -72,9 +76,6 @@ export class CoexListaComponent implements OnInit {
     identificador: '',
   };
 
-
-
-
   // iconos (ahora inyectados por servicio)
   icons: { [key: string]: any } = {};
 
@@ -83,7 +84,6 @@ export class CoexListaComponent implements OnInit {
     private api: ApiService,
     private router: Router,
     private iconService: IconService
-
   ) {
     this.icons = {
       odont: this.iconService.getIcon("odontoIcon"),
@@ -122,12 +122,29 @@ export class CoexListaComponent implements OnInit {
     // 1️⃣ Suscribirse al observable de consultas
     this.api.consultas$.subscribe((data) => {
       this.consultas = data;
+      this.filtrarPorEspecialidadLocal();
     });
 
-    // 2️⃣ Obtener totales
-    this.api.getTotales().subscribe((data) => {
-      this.totales = data;
-      this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
+    // 2️⃣ Obtener totales - ✅ CORREGIDO
+    this.api.getTotales(this.fechaActual).subscribe({
+      next: (response: TotalesResponse) => {
+        this.totales = response.totales;
+
+        // ✅ Buscar el total de consultas COEX específicamente
+        const consultasCoex = this.totales.find(t =>
+          t.entidad.toLowerCase().includes('coex')
+        );
+
+        this.totalDeRegistros = consultasCoex?.total || 0;
+
+        console.log('📊 Totales cargados:', this.totales);
+        console.log('🔢 Total COEX:', this.totalDeRegistros);
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar totales:', err);
+        this.totales = [];
+        this.totalDeRegistros = 0;
+      }
     });
 
     // 3️⃣ Llamar getConsultas con filtros iniciales
@@ -138,54 +155,74 @@ export class CoexListaComponent implements OnInit {
       fecha_consulta: this.fechaActual
     };
 
-    this.api.getConsultas(filtrosIniciales);
+    this.api.getConsultas(filtrosIniciales).subscribe();
   }
 
   async cargarConsultas() {
     this.cargando = true;
     try {
-      this.api.getConsultas(this.filtros).subscribe((data) => {
-        this.consultas = data;
-        this.medi = data.filter(c => c.especialidad === 'MEDI');
-        this.pedia = data.filter(c => c.especialidad === 'PEDI');
-        this.gine = data.filter(c => c.especialidad === 'GINE');
-        this.ciru = data.filter(c => c.especialidad === 'CIRU');
-        this.trauma = data.filter(c => c.especialidad === 'TRAU');
-        this.psico = data.filter(c => c.especialidad === 'PSIC');
-        this.nutri = data.filter(c => c.especialidad === 'NUTR');
-        this.odonto = data.filter(c => c.especialidad === 'ODON');
+      this.api.getConsultas(this.filtros).subscribe({
+        next: (data) => {
+          this.consultas = data;
+          this.filtrarPorEspecialidadLocal();
+          this.totalDeRegistros = this.consultas.length;
+        },
+        error: (err) => {
+          console.error("Error al cargar consultas:", err);
+        },
+        complete: () => {
+          this.cargando = false;
+        }
       });
-      //
-
-      this.totalDeRegistros = this.consultas.length;
     } catch (error) {
       console.error("Error:", error);
-    } finally {
       this.cargando = false;
     }
   }
 
-
+  // ✅ Método auxiliar para filtrar localmente por especialidad
+  private filtrarPorEspecialidadLocal() {
+    this.medi = this.consultas.filter(c => c.especialidad === 'MEDI');
+    this.pedia = this.consultas.filter(c => c.especialidad === 'PEDI');
+    this.gine = this.consultas.filter(c => c.especialidad === 'GINE');
+    this.ciru = this.consultas.filter(c => c.especialidad === 'CIRU');
+    this.trauma = this.consultas.filter(c => c.especialidad === 'TRAU');
+    this.psico = this.consultas.filter(c => c.especialidad === 'PSIC');
+    this.nutri = this.consultas.filter(c => c.especialidad === 'NUTR');
+    this.odonto = this.consultas.filter(c => c.especialidad === 'ODON');
+  }
 
   async filtrarPorEspecialidad(especialidad: string) {
-    this.especialidadSeleccionada = especialidad; // 👉 marcar el botón activo
+    this.especialidadSeleccionada = especialidad;
     this.cargando = true;
-    try {
-      const consultasFiltradas = await this.api.getConsultas({ ...this.filtros, especialidad });
 
+    try {
+      this.api.getConsultas({
+        ...this.filtros,
+        especialidad
+      }).subscribe({
+        next: (data) => {
+          this.consultas = data;
+          this.filtrarPorEspecialidadLocal();
+        },
+        error: (err) => {
+          console.error("Error al filtrar por especialidad:", err);
+        },
+        complete: () => {
+          this.cargando = false;
+        }
+      });
     } catch (error) {
       console.error("Error:", error);
-    } finally {
       this.cargando = false;
     }
   }
-
-
 
   buscar() {
     this.filtros.skip = 0;
     this.cargarConsultas();
   }
+
   toggleFiltrar() {
     this.filtrar = !this.filtrar;
   }
@@ -201,6 +238,7 @@ export class CoexListaComponent implements OnInit {
       segundo_apellido: '',
       fecha_consulta: '',
       ciclo: '',
+      especialidad: '',
       identificador: ''
     };
     this.cargarConsultas();
@@ -209,6 +247,7 @@ export class CoexListaComponent implements OnInit {
   editar(id: number) {
     this.router.navigate(['/editarAdmision', id, 'coex']);
   }
+
   agregar() {
     this.router.navigate(['/pacientes']);
   }
@@ -238,8 +277,6 @@ export class CoexListaComponent implements OnInit {
     this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
     this.filtros.limit = this.pageSize;
 
-    // console.log("🔄 Filtros:", this.filtros);
-
     this.buscar();
   }
 
@@ -250,35 +287,31 @@ export class CoexListaComponent implements OnInit {
   rowActiva: number | null = null;
 
   activarFila(id: number) {
-    this.rowActiva = this.rowActiva === id ? null : id; // toggle
+    this.rowActiva = this.rowActiva === id ? null : id;
   }
 
   estadoUltimoCiclo(ciclo: Record<string, Ciclo> | null): string | null {
     if (!ciclo) return null;
 
-    // Convertimos los valores del objeto ciclo en un array
     const registros: Ciclo[] = Object.values(ciclo);
-
     if (registros.length === 0) return null;
 
-    // Ordenamos por fecha de registro descendente
-    registros.sort((a, b) => new Date(b.registro).getTime() - new Date(a.registro).getTime());
+    registros.sort((a, b) =>
+      new Date(b.registro).getTime() - new Date(a.registro).getTime()
+    );
 
     const ultimo = registros[0];
-
-    // Buscamos el label abreviado en tu diccionario ciclos según el estado
     const encontrado = ciclos.find(c => c.value === ultimo.estado);
 
     return encontrado ? encontrado.label : ultimo.estado;
   }
 
   getCicloStatus(ciclo: Record<string, any>): 'activo' | 'inactivo' {
-    if (!ciclo) return 'activo'; // si no hay ciclos, asumimos activo
+    if (!ciclo) return 'activo';
 
     const registros = Object.values(ciclo);
     if (registros.length === 0) return 'activo';
 
-    // Orden descendente por fecha
     registros.sort((a: any, b: any) =>
       new Date(b.registro).getTime() - new Date(a.registro).getTime()
     );
@@ -286,20 +319,38 @@ export class CoexListaComponent implements OnInit {
     const ultimo = registros[0];
     const encontrado = ciclos.find(c => c.value === ultimo.estado);
 
-    // Retornamos inactivo solo si el ref del ciclo es 'inactivo'
     return encontrado?.ref === 'inactivo' ? 'inactivo' : 'activo';
   }
 
-  // En tu componente
   formatHora(hora: string): string {
     if (!hora) return '';
     const [h, m, s] = hora.split(':');
     const date = new Date();
     date.setHours(+h, +m, +s);
-    return date.toTimeString().slice(0, 5); // "HH:mm"
+    return date.toTimeString().slice(0, 5);
   }
 
   hoja(consultaId: number) {
     this.router.navigate(['/coexHoja/', consultaId]);
+  }
+
+  // ✅ Métodos helper para obtener totales específicos
+  getTotalPacientes(): number {
+    return this.totales.find(t =>
+      t.entidad.toLowerCase().includes('pacientes totales')
+    )?.total || 0;
+  }
+
+  getTotalConsultasHoy(): number {
+    return this.totales.find(t =>
+      t.entidad.toLowerCase().includes('consultas') &&
+      t.entidad.toLowerCase().includes('hoy')
+    )?.total || 0;
+  }
+
+  getTotalCoexHoy(): number {
+    return this.totales.find(t =>
+      t.entidad.toLowerCase().includes('coex')
+    )?.total || 0;
   }
 }

@@ -16,6 +16,8 @@ export interface Currentuser {
   email?: string;
 }
 
+
+
 // pacientes
 export interface Nombre {
   primer_nombre: string;
@@ -48,6 +50,7 @@ export interface Demograficos {
   idioma?: number | null;
   pueblo?: number | null;
   nacionalidad?: string | null;
+  departamento_nacimiento?: string | null;
   lugar_nacimiento?: string | null;
   vecindad?: string | null;
 }
@@ -80,14 +83,17 @@ export interface DatosExtra {
 }
 
 // ========== METADATOS ==========
-
-export interface Metadata {
-
-  creado_por?: string;
-  creado_en?: string;
-  logs?: string[];
+export interface EventoMetadato {
+  usuario: string;
+  registro: string;       // ISO datetime
+  accion: 'CREADO' | 'ACTUALIZADO';
   expediente_duplicado?: boolean;
-  [key: string]: any; // Para campos adicionales
+}
+export interface Metadata {
+  usuario?: string;
+  registro?: any;       // ISO datetime
+  accion?: 'CREADO' | 'ACTUALIZADO';
+  expediente_duplicado?: boolean;
 }
 
 // ========== PACIENTE ==========

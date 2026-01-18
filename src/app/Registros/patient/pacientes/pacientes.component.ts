@@ -37,7 +37,7 @@ export class PacientesComponent implements OnInit {
   visible = false;
   modalActivo = false;
   espacio: string = ' ';
-  pageSize: number = 6;
+  pageSize: number = 8;
   paginaActual: number = 1;
   finPagina: boolean = false;
   totalDeRegistros = 0;
@@ -117,12 +117,10 @@ export class PacientesComponent implements OnInit {
     // getPacientes ahora retorna { total: number, pacientes: Paciente[] }
     this.api.getPacientes(this.filtros).subscribe({
       next: (resultado) => {
-        // Actualizar total de registros para la paginación
         this.totalDeRegistros = resultado.total;
 
-        // Los pacientes ya están en el BehaviorSubject vía la suscripción
-        // pero también puedes asignarlos directamente si prefieres:
-        // this.pacientes = resultado.pacientes;
+        const totalPaginas = Math.ceil(this.totalDeRegistros / this.pageSize);
+        this.finPagina = this.paginaActual >= totalPaginas;
       },
       error: (error) => {
         console.error("Error:", error);
@@ -192,7 +190,6 @@ export class PacientesComponent implements OnInit {
   cambiarPagina(paso: number) {
     const nuevaPagina = this.paginaActual + paso;
 
-    // Validar límites
     if (nuevaPagina < 1 || nuevaPagina > this.totalPaginas) {
       return;
     }

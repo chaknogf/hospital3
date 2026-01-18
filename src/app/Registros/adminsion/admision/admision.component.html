@@ -1,18 +1,17 @@
-<h2 class="text-center text-white">
+<h2 class="titulo-principal text-center">
   {{ enEdicion ? "Editar Admisión" : "Nueva Admisión" }}
 </h2>
-<div class="container">
-  <div class="botones">
-    <button type="button" (click)="volver()">
-      <span [innerHTML]="cancelIcon"></span>
-      Cancelar
-    </button>
 
-    <button type="submit" (click)="guardar()">
-      <span [innerHTML]="saveIcon"></span>
-      Guardar
-    </button>
-  </div>
+<div class="botonera">
+  <button type="button" class="btn btn-cancelar" (click)="volver()">
+    <span [innerHTML]="cancelIcon"></span>
+    Cancelar
+  </button>
+
+  <button type="submit" class="btn btn-guardar" (click)="guardar()">
+    <span [innerHTML]="saveIcon"></span>
+    Guardar
+  </button>
 </div>
 
 <form [formGroup]="form" class="formulario-moderno" (ngSubmit)="guardar()">
@@ -20,60 +19,51 @@
   <input type="text" name="fakeusernameremembered" style="display: none" />
   <input type="password" name="fakepasswordremembered" style="display: none" />
 
-  <!-- Datos del Paciente -->
-  <fieldset class="grupo">
+  <!-- Datos del Paciente Compacto y Centrado -->
+  <fieldset class="grupo ficha-paciente text-center">
     <legend>Datos del Paciente</legend>
-    <span
-      >Paciente: {{ paciente.id }} Consulta: {{ form.get("id")?.value }}
-    </span>
-    <label for="Nombre_completo">Nombre: </label>
-    <div class="resumen">
-      <ng-container *ngIf="paciente.nombre">
-        {{ paciente.nombre.primer_nombre || "" }}
-        {{ paciente.nombre.segundo_nombre || "" }}
-        {{ paciente.nombre.otro_nombre || "" }}
-        {{ paciente.nombre.primer_apellido || "" }}
-        {{ paciente.nombre.segundo_apellido || "" }}
-        {{ paciente.nombre.apellido_casada || "" }}
-      </ng-container>
-    </div>
-    <label for="cui">CUI:</label>
-    <div class="resumen">
-      {{ paciente.cui || "" | cui }}
+
+    <!-- Línea 1: Nombre completo -->
+    <div class="resumen linea-nombre justify-center">
+      <span class="nombre-completo">
+        {{ paciente.nombre.primer_nombre }}
+        {{ paciente.nombre.segundo_nombre }}
+        {{ paciente.nombre.otro_nombre }}
+        {{ paciente.nombre.primer_apellido }}
+        {{ paciente.nombre.segundo_apellido }}
+        {{ paciente.nombre.apellido_casada }}
+      </span>
     </div>
 
-    <label for="expediente">Expediente:</label>
-    <div class="resumen">
-      {{ paciente.expediente }}
+    <!-- Línea 2: CUI | Expediente | Fecha de nacimiento / Edad -->
+    <div class="resumen linea-identidad justify-center">
+      <span class="dato">CUI: {{ paciente.cui | cui }}</span>
+      <span class="dato">Expediente: {{ paciente.expediente }}</span>
+      <span class="dato"
+        >Nacimiento: {{ paciente.fecha_nacimiento | date : "dd/MM/yyyy" }} ({{
+          paciente.fecha_nacimiento | edad
+        }})</span
+      >
     </div>
 
-    <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
-    <div class="resumen">
-      {{ paciente.fecha_nacimiento | date : "dd/MM/yyyy" }}
-    </div>
-    <div class="resumen">
-      {{ paciente.fecha_nacimiento | edad }}
-    </div>
-    <label for="sexo">Sexo:</label>
-    <div class="resumen">
-      <ng-container *ngIf="paciente.sexo === 'M'">
-        <span [innerHTML]="manIcon"></span>
-      </ng-container>
-      <ng-container *ngIf="paciente.sexo === 'F'">
-        <span [innerHTML]="womanIcon"></span>
-      </ng-container>
-      {{ paciente.sexo | datosExtra : "sexo" }}
-    </div>
-    <label for="direccion">Direccion:</label>
-    <div class="resumen">
-      {{ paciente.contacto?.domicilio }}
-      {{ paciente.contacto?.municipio | datosExtra : "vecindad" }}
-    </div>
-    <label for="telefonos" *ngIf="paciente.contacto?.telefonos"
-      >Telefonos:</label
-    >
-    <div class="resumen">
-      {{ paciente.contacto?.telefonos }}
+    <!-- Línea 3: Sexo | Dirección | Teléfonos -->
+    <div class="resumen linea-contacto justify-center">
+      <span class="dato icono-sexo">
+        <ng-container *ngIf="paciente.sexo === 'M'">
+          <span [innerHTML]="manIcon"></span>
+        </ng-container>
+        <ng-container *ngIf="paciente.sexo === 'F'">
+          <span [innerHTML]="womanIcon"></span>
+        </ng-container>
+        {{ paciente.sexo | datosExtra : "sexo" }}
+      </span>
+      <span class="dato direccion">
+        {{ paciente.contacto?.domicilio }},
+        {{ paciente.contacto?.municipio | datosExtra : "vecindad" }}
+      </span>
+      <span class="dato telefono" *ngIf="paciente.contacto?.telefonos">
+        Tel: {{ paciente.contacto?.telefonos }}
+      </span>
     </div>
   </fieldset>
 
@@ -81,12 +71,14 @@
   <fieldset class="grupo">
     <legend>Admisión</legend>
 
-    <label
-      for="hoja_emergencia"
-      *ngIf="form.get('documento')?.value"
-      placeholder=""
-      >Hoja de Emergencia</label
-    >
+    <label>Especialidad</label>
+    <select formControlName="especialidad" class="input-select">
+      <option *ngFor="let e of especialidades" [value]="e.value">
+        {{ e.label | titlecase }}
+      </option>
+    </select>
+
+    <label *ngIf="form.get('documento')?.value">Hoja de Emergencia</label>
     <input
       type="text"
       id="documento"
@@ -95,61 +87,28 @@
       placeholder="Hoja de Emergencia"
       name="hoja_emergencia"
       autocomplete="off"
+      class="input-text"
     />
 
-    <label for="tipo_consulta">Tipo de consulta</label>
-    <select
-      formControlName="tipo_consulta"
-      placeholder="Seleccione tipo de consulta"
-      name="tipo_consulta"
-      [ngClass]="form.get('tipo_consulta')?.value ? 'is-valid' : 'is-null'"
-    >
+    <label>Tipo de consulta</label>
+    <select formControlName="tipo_consulta" class="input-select">
       <option *ngFor="let t of tipoConsulta" [value]="t.value" disabled>
         {{ t.label | titlecase }}
       </option>
     </select>
 
-    <label for="especialidad">Especialidad</label>
-    <select
-      id="especialidad"
-      formControlName="especialidad"
-      name="especialidad"
-      [ngClass]="form.get('especialidad')?.value ? 'is-valid' : 'is-null'"
-    >
-      <option *ngFor="let e of especialidades" [value]="e.value">
-        {{ e.label | titlecase }}
-      </option>
-    </select>
-
-    <label for="servicio">Servicio</label>
-    <select
-      id="servicio"
-      formControlName="servicio"
-      name="servicio"
-      [ngClass]="form.get('servicio')?.value ? 'is-valid' : 'is-null'"
-    >
+    <label>Servicio</label>
+    <select formControlName="servicio" class="input-select">
       <option *ngFor="let s of servicios" [value]="s.value">
         {{ s.label | titlecase }}
       </option>
     </select>
 
-    <label for="fecha_consulta">Fecha de Admisión</label>
-    <input
-      type="date"
-      id="fecha_consulta"
-      formControlName="fecha_consulta"
-      name="fecha_consulta"
-      [ngClass]="form.get('fecha_consulta')?.value ? 'is-valid' : 'is-null'"
-    />
+    <label>Fecha de Admisión</label>
+    <input type="date" formControlName="fecha_consulta" class="input-text" />
 
-    <label for="hora_consulta">Hora de Admisión</label>
-    <input
-      type="time"
-      id="hora_consulta"
-      formControlName="hora_consulta"
-      name="hora_consulta"
-      [ngClass]="form.get('hora_consulta')?.value ? 'is-valid' : 'is-null'"
-    />
+    <label>Hora de Admisión</label>
+    <input type="time" formControlName="hora_consulta" class="input-text" />
   </fieldset>
 
   <!-- Indicadores -->
@@ -201,22 +160,6 @@
         <input type="checkbox" formControlName="accidente_transito" />
         <span>Accidente Tránsito</span>
       </label>
-    </div>
-  </fieldset>
-  <!-- Historial -->
-  <fieldset>
-    <legend>📜 Historial de registros</legend>
-    <div class="historial-container">
-      <div class="historial-ciclos">
-        <ul>
-          <li *ngFor="let ciclo of historialCiclos" class="ciclo-item">
-            <strong>{{ ciclo.id | titlecase }}</strong> - Estado:
-            {{ ciclo.estado }} | Usuario: {{ ciclo.usuario }} | Fecha:
-            {{ ciclo.registro | date : "short" }} | Servicio:
-            {{ ciclo.servicio }}
-          </li>
-        </ul>
-      </div>
     </div>
   </fieldset>
 </form>

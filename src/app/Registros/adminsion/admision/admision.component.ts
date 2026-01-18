@@ -18,7 +18,7 @@ import { ConsultaUpdate } from './../../../interface/consultas';
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
-
+import { lastValueFrom, throwError } from 'rxjs';
 import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon, manIcon, womanIcon } from '../../../shared/icons/svg-icon';
 
 @Component({
@@ -305,25 +305,32 @@ export class AdmisionComponent implements OnInit {
       throw error;
     }
   }
-
   async actualizar(consulta: ConsultaUpdate) {
     try {
-      if (!consulta.id || consulta.id === 0) {
+      // ✅ Validación del ID
+      if (!this.consultaId || this.consultaId === 0) {
         throw new Error("❌ Falta el ID de la consulta para actualizar");
       }
-      this.api.updateConsulta(this.consultaId as number, consulta).pipe(
-        catchError(err => {
-          this.mostrarError('actualizar consulta', err);
-          return of(null);
-        })
-      ).subscribe(data => {
-        if (data) {
-          // console.log('Consulta actualizada', data);
-        }
-      });
-      console.log('Consulta actualizada');
+
+      // ✅ Usar await con lastValueFrom para código async/await limpio
+      const data = await lastValueFrom(
+        this.api.updateConsulta(this.consultaId, consulta).pipe(
+          catchError(err => {
+            this.mostrarError('actualizar consulta', err);
+            return throwError(() => err); // ✅ Propaga el error
+          })
+        )
+      );
+
+      if (data) {
+        console.log('✅ Consulta actualizada:', data);
+        // Aquí podrías actualizar el estado local si es necesario
+        // this.consultaActual.set(data);
+      }
+
     } catch (error) {
       this.mostrarError('actualizar consulta', error);
+      throw error; // ✅ Re-lanza para que el llamador pueda manejarlo
     }
   }
 

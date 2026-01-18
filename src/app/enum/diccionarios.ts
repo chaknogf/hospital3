@@ -48,6 +48,13 @@ export const idiomas: Dict[] = [
   { label: 'Q’anjob’al', value: 16 },
   { label: 'Q’eqchi’', value: 17 },
   { label: 'Sakapulteka', value: 18 },
+  { label: 'Sipakapensa', value: 19 },
+  { label: 'Tektiteka', value: 20 },
+  { label: 'Tzutujil', value: 21 },
+  { label: 'Uspanteka', value: 22 },
+  { label: 'No indica', value: 23 },
+  { label: 'Español', value: 24 },
+  { label: 'Otro', value: 25 }
 ];
 
 export const pueblos: Dict[] = [

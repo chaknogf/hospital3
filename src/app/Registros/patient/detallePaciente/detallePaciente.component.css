@@ -32,39 +32,42 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.foto-perfil .avatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
 
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.85),
-    rgba(37, 99, 235, 0.85)
-  );
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #fff;
-  font-weight: 700;
-  font-size: 1.4rem;
-
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+.ficha-header {
+  position: relative;
 }
 
+.info-header {
+  margin: 0 auto;
+}
+
+.info-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0% 4% 0% 4% ;
+  border-radius: 6px;
+}
 .info-header h1 {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #1f2937;
+  text-transform: capitalize;
+
 }
 
 .info-header .subtitulo {
-  font-size: 0.95rem;
-  color: #475569;
-  margin-top: 0.15rem;
+  margin-top: 0.2rem;
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: 0.6px;
+  text-transform: capitalize;
+  opacity: 0.75;
+  color: #1f2937;
 }
 
 .estado_ {
@@ -192,17 +195,27 @@
    ===================================================== */
 
 @media (min-width: 640px) {
-  .ficha-header {
-    flex-direction: row;
-    align-items: center;
+   .ficha-header {
+    position: relative;
+    justify-content: center;
   }
 
   .btn-volver {
-    margin-left: auto;
+    position: absolute;
+    left: 0;
   }
 
   .cv-row {
     grid-template-columns: 220px 1fr;
     gap: 1rem;
   }
+}
+.info-header h1 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.info-header .subtitulo {
+  margin: 0;
+  line-height: 1.2;
 }

@@ -427,6 +427,7 @@
         </div>
 
         <!-- Nombre -->
+        <label for="nombre">Nombre</label>
         <input
           type="text"
           formControlName="nombre"
@@ -435,6 +436,7 @@
         />
 
         <!-- Teléfono -->
+        <label for="telefono">Teléfono</label>
         <input
           type="tel"
           formControlName="telefono"
@@ -443,12 +445,31 @@
         />
 
         <!-- Parentesco -->
+        <label for="parentesco">Parentesco</label>
         <select formControlName="parentesco">
           <option value="">-- Seleccione --</option>
           <option *ngFor="let p of enums.parentescos" [value]="p.value">
             {{ p.label }}
           </option>
         </select>
+
+        <!-- idpersona -->
+        <label for="idpersona">identificación</label>
+        <input
+          type="text"
+          formControlName="idpersona"
+          placeholder="identificación"
+          autocomplete="off"
+        />
+
+        <!-- expediente -->
+        <label for="expediente">Expediente</label>
+        <input
+          type="text"
+          formControlName="expediente"
+          placeholder="expediente"
+          autocomplete="off"
+        />
 
         <!-- Botones de acción -->
         <div class="botones justify-content-between">
@@ -510,7 +531,7 @@
       <!-- Pueblo -->
       <div>
         <label for="pueblo">Pueblo</label>
-        <select id="pueblo" formControlName="pueblo">
+        <select formControlName="pueblo">
           <option value="">Seleccione</option>
           <option *ngFor="let p of enums.pueblos" [value]="p.value">
             {{ p.label }}
@@ -521,7 +542,7 @@
       <!-- Idioma -->
       <div>
         <label for="idioma">Idioma</label>
-        <select id="idioma" formControlName="idioma">
+        <select formControlName="idioma">
           <option value="">Seleccione</option>
           <option *ngFor="let i of enums.idiomas" [value]="i.value">
             {{ i.label }}
@@ -529,7 +550,7 @@
         </select>
       </div>
 
-      <!-- Lugar de nacimiento extranjero -->
+      <!-- Extranjero -->
       @if (form.get('datos_extra.demograficos.nacionalidad')?.value !== 'GTM') {
       <div>
         <label>Lugar de Nacimiento</label>
@@ -562,6 +583,21 @@
         </select>
       </div>
       }
+
+      <!-- ✅ Vecindad (AQUÍ pertenece) -->
+      <div>
+        <label for="vecindad">Vecindado en</label>
+        <select formControlName="vecindad">
+          <option value="">Seleccione</option>
+          <option
+            *ngFor="let vecino of enums.municipios"
+            [value]="vecino.codigo"
+          >
+            {{ vecino.codigo }} {{ vecino.departamento }},
+            {{ vecino.municipio }}
+          </option>
+        </select>
+      </div>
     </div>
   </fieldset>
   <!-- -------- SOCIOECONÓMICOS -------- -->
@@ -708,86 +744,69 @@
       </div>
     </fieldset>
   </fieldset>
-
-  <!-- -------- NEONATALES (Solo para recién nacidos) -------- -->
+  <!--------------- NEONATALES ------------------>
   @if (esRecienNacido()) {
-  <fieldset formGroupName="datos_extra.neonatales" class="sub-fieldset">
+  <fieldset formGroupName="datos_extra" class="sub-fieldset">
     <legend>Datos de Nacimiento (Recién Nacido)</legend>
 
-    <!-- Peso de Nacimiento -->
-    <div>
-      <label for="peso_nacimiento">Peso Nacimiento (libras.onzas)</label>
-      <input
-        id="peso_nacimiento"
-        type="text"
-        formControlName="peso_nacimiento"
-        placeholder="Ej: 3.08"
-      />
-    </div>
+    <div formGroupName="neonatales">
+      <!-- Peso de Nacimiento -->
+      <div>
+        <label for="peso_nacimiento">Peso Nacimiento (libras.onzas)</label>
+        <input
+          id="peso_nacimiento"
+          type="text"
+          formControlName="peso_nacimiento"
+          placeholder="Ej: 3.08"
+        />
+      </div>
 
-    <!-- Edad Gestacional -->
-    <div>
-      <label for="edad_gestacional">Edad Gestacional (semanas)</label>
-      <input
-        id="edad_gestacional"
-        type="text"
-        formControlName="edad_gestacional"
-        soloNumero
-        placeholder="Ej: 40"
-      />
-    </div>
+      <!-- Edad Gestacional -->
+      <div>
+        <label for="edad_gestacional">Edad Gestacional (semanas)</label>
+        <input
+          id="edad_gestacional"
+          type="text"
+          formControlName="edad_gestacional"
+          soloNumero
+          placeholder="Ej: 40"
+        />
+      </div>
 
-    <!-- Tipo de Parto -->
-    <div>
-      <label for="parto">Tipo de Parto</label>
-      <select id="parto" formControlName="parto">
-        <option value="">Seleccione</option>
-        <option value="P">Vaginal</option>
-        <option value="C">Cesárea</option>
-      </select>
-    </div>
+      <!-- Tipo de Parto -->
+      <div>
+        <label for="parto">Tipo de Parto</label>
+        <select id="parto" formControlName="parto">
+          <option value="">Seleccione</option>
+          <option value="P">Vaginal</option>
+          <option value="C">Cesárea</option>
+        </select>
+      </div>
 
-    <!-- Número de Gemelo -->
-    <div>
-      <label for="gemelo">Número de Gemelo</label>
-      <input
-        id="gemelo"
-        type="text"
-        formControlName="gemelo"
-        soloNumero
-        placeholder="Ej: 1"
-      />
-    </div>
+      <!-- Número de Gemelo -->
+      <div>
+        <label for="gemelo">Número de Gemelo</label>
+        <input
+          id="gemelo"
+          type="text"
+          formControlName="gemelo"
+          soloNumero
+          placeholder="Ej: 1"
+        />
+      </div>
 
-    <!-- Expediente de la Madre -->
-    <div>
-      <label for="expediente_madre">Expediente de la Madre</label>
-      <input
-        id="expediente_madre"
-        type="text"
-        formControlName="expediente_madre"
-        unaPalabra
-        placeholder="Ej: 12345"
-      />
+      <!-- Expediente de la Madre -->
+      <div>
+        <label for="expediente_madre">Expediente de la Madre</label>
+        <input
+          id="expediente_madre"
+          type="text"
+          formControlName="expediente_madre"
+          unaPalabra
+          placeholder="Ej: 12345"
+        />
+      </div>
     </div>
   </fieldset>
   }
-
-  <!-- ================ BLOQUE 7: HISTORIAL DE REGISTROS ================ -->
-  <!-- ================= HISTORIAL ================= -->
-  <fieldset>
-    <legend>Historial de registros</legend>
-
-    @if (sortedMetadatos().length > 0) {
-    <ul class="historial-grid">
-      <li *ngFor="let meta of sortedMetadatos()">
-        <strong>{{ meta.creado_por }}</strong
-        ><br />
-        <small>{{ meta.creado_en | date : "short" }}</small>
-      </li>
-    </ul>
-    } @else {
-    <p class="text-muted">Sin historial de registros</p>
-    }
-  </fieldset>
 </form>

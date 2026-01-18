@@ -119,9 +119,13 @@
           <th>Identificador</th>
           <th>Nombre Completo</th>
           <th>Fecha Nacimiento</th>
-          <th *ngIf="!existePaciente">Dirección</th>
+          @if (!existePaciente) {
+          <th>Dirección</th>
+          }
           <th>Género</th>
-          <th *ngIf="!existePaciente">Estado</th>
+          @if (!existePaciente) {
+          <th>Estado</th>
+          }
           <th>Acciones</th>
         </tr>
       </thead>
@@ -134,15 +138,21 @@
         >
           <td class="oculto">{{ paciente.id }}</td>
           <td>
-            <div class="ms-4" *ngIf="paciente?.cui">
+            @if (paciente?.cui) {
+            <div class="ms-4">
               <strong>CUI:</strong> <small> {{ paciente.cui | cui }}</small>
             </div>
-            <div *ngIf="paciente?.expediente" class="text-alert">
+            } @if (paciente?.expediente) {
+            <div class="text-alert">
               <strong>Expediente:</strong> {{ paciente.expediente }}
             </div>
-            <div *ngIf="paciente?.pasaporte">
-              <strong>Pasaporte:</strong> {{ paciente.pasaporte }}
+            } @if (paciente?.pasaporte) {
+            <div><strong>Pasaporte:</strong> {{ paciente.pasaporte }}</div>
+            } @if (paciente?.datos_extra?.personaid){
+            <div>
+              <strong>Otro Id:</strong> {{ paciente.datos_extra?.personaid }}
             </div>
+            }
           </td>
           <td>
             <p class="p-0 m-0 text-uppercase">
@@ -164,25 +174,23 @@
             <br />
             <small>{{ paciente.fecha_nacimiento | edad }}</small>
           </td>
-          <td class="oculto">
-            {{ paciente.contacto?.domicilio }}
+          <td class="oculto text-uppercase flex-wrap">
+            {{ paciente.contacto?.domicilio }} <br />
             {{ paciente.contacto?.municipio | datosExtra : "vecindad" }}
           </td>
           <td class="oculto">
-            <div *ngIf="paciente.sexo === 'M'">
-              <span [innerHTML]="icons['man']"></span> Masculino
-            </div>
-            <div *ngIf="paciente.sexo === 'F'">
-              <span [innerHTML]="icons['woman']"></span> Femenino
-            </div>
+            @if (paciente.sexo === 'M'){
+            <div><span [innerHTML]="icons['man']"></span> Masculino</div>
+            }@if (paciente.sexo === 'F'){
+            <div><span [innerHTML]="icons['woman']"></span> Femenino</div>
+            }
           </td>
           <td class="oculto">
-            <div *ngIf="paciente.estado === 'V'">
-              <span [innerHTML]="icons['heart']"></span> Vivo
-            </div>
-            <div *ngIf="paciente.estado === 'F'">
-              <span [innerHTML]="icons['ghost']"></span> Fallecido
-            </div>
+            @if (paciente.estado === 'V'){
+            <div><span [innerHTML]="icons['heart']"></span> Vivo</div>
+            } @if (paciente.estado === 'F') {
+            <div><span [innerHTML]="icons['ghost']"></span> Fallecido</div>
+            }
           </td>
           <td class="secundario">
             <div class="d-flex gap-1">
@@ -215,7 +223,7 @@
 
     <!-- Página actual -->
     <div>
-      <strong>{{ filtros.skip }}</strong>
+      <strong>{{ paginaActual }} / {{ totalPaginas }}</strong>
     </div>
 
     <!-- Botón siguiente -->

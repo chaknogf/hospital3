@@ -1,20 +1,20 @@
 // ======= IMPORTACIONES =======
 import { municipios } from '../../../enum/departamentos';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import {
   FormBuilder, FormGroup, ReactiveFormsModule, FormsModule,
-  AbstractControl, Validators, ValidatorFn, ValidationErrors,
-  FormControl, FormArray
+  AbstractControl, ValidatorFn, ValidationErrors,
+  FormArray
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { combineLatest, Subject, of } from 'rxjs';
 import { debounceTime, takeUntil, catchError, finalize, tap } from 'rxjs/operators';
-import { Paciente, Metadata, Municipio, PaisesIso } from '../../../interface/interfaces';
+import { Paciente, Municipio, PaisesIso } from '../../../interface/interfaces';
 import { Enumeradores } from '../../../interface/enumsIterfaces';
 import {
-  estadoCivil, parentescos, pueblos, idiomas,
+  estadoCivil, pueblos, idiomas,
   gradoAcademicos
 } from '../../../enum/diccionarios';
 import { departamentos } from '../../../enum/departamentos';
@@ -66,21 +66,12 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   deptoDireccion = signal<string | null>(null);
   municipios_direccion = signal<Municipio[]>([]);
   municipios_nacimiento = signal<Municipio[]>([]);
+  vecindades = signal<Municipio[]>([]);
   paisesIso = signal<PaisesIso[]>([]);
 
   // Variables temporales para filtrar municipios
   depto_direccion_temp = signal<string>('');
   depto_nacimiento_temp = signal<string>('');
-
-  // ======= PROPIEDADES COMPUTADAS =======
-  sortedMetadatos = computed(() => {
-    const metadatos = this.metadatos.value || {};
-    return (Object.values(metadatos) as Metadata[])
-      .filter(m => m['registro'])
-      .sort((a, b) =>
-        new Date(b['registro']!).getTime() - new Date(a['registro']!).getTime()
-      );
-  });
 
   // ======= PROPIEDADES =======
   form: FormGroup;
@@ -117,14 +108,21 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.usuarioActual.set(localStorage.getItem('username') || '');
 
-    this.configurarFormulario();      // 1️⃣ crear form
-    this.configurarSuscripciones();   // 2️⃣ suscribirse
+    this.configurarFormulario();
+    this.configurarSuscripciones();
 
     this.form.setValidators(this.validarEdadYFecha());
 
-    this.obtenerDatosIniciales();     // 3️⃣ cargar datos
+    this.obtenerDatosIniciales();
     this.manejarDatosRenap();
+
+    // 👇 AQUÍ, antes de intentar cargar edición
+    this.cargarMetadatos();
+
     this.cargarPacienteParaEdicion();
+    if (!this.enEdicion()) {
+      this.agregarReferencia();
+    }
   }
 
   ngOnDestroy(): void {
@@ -134,8 +132,8 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
   // ======= MÉTODOS PRINCIPALES =======
 
-  // Método para crear el formulario principal
   private crearFormulario(): FormGroup {
+    const { username } = this.api.getUsuarioActual();
     return this.fb.group({
       id: [0],
       unidad: [287],
@@ -171,12 +169,10 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
       referencias: this.fb.array([]),
 
-      // ======= DATOS EXTRA ESTRUCTURADO =======
       datos_extra: this.fb.group({
         defuncion: [''],
         personaid: [''],
 
-        // DEMOGRÁFICOS
         demograficos: this.fb.group({
           idioma: ['24'],
           pueblo: [''],
@@ -185,7 +181,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
           lugar_nacimiento: [''],
           vecindad: ['']
         }),
-        // SOCIOECONÓMICOS
+
         socioeconomicos: this.fb.group({
           estado_civil: [''],
           ocupacion: [''],
@@ -195,21 +191,24 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
           discapacidad: ['N']
         }),
 
-        // NEONATALES (Para recién nacidos)
         neonatales: this.fb.group({
           peso_nacimiento: [''],
           edad_gestacional: [''],
           parto: [''],
           gemelo: [''],
           expediente_madre: [''],
-          extrahositalario: ['']
+          extrahositalario: [false]
         })
       }),
 
       estado: ['V'],
-      metadatos: this.fb.group({
-        r0: this.fb.group({ usuario: [''], registro: [''] })
-      })
+      metadatos: this.fb.array([
+        this.fb.group({
+          usuario: [username],
+          registro: [new Date().toISOString()],
+          accion: ['']
+        })
+      ])
     });
   }
 
@@ -221,7 +220,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   private crearReferencia(ref?: any): FormGroup {
     return this.fb.group({
       nombre: [ref?.nombre || ''],
-      telefonos: [ref?.telefonos || ''],
+      telefono: [ref?.telefono || ''], // ⛔ AQUÍ
       parentesco: [this.normalizarParentesco(ref?.parentesco)],
       expediente: [ref?.expediente || null],
       idpersona: [ref?.idpersona || null],
@@ -243,7 +242,6 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   private configurarFormulario(): void {
     this.form.get('expediente')?.disable();
     this.suscribirUltimos4Cui();
-
   }
 
   private obtenerDatosIniciales(): void {
@@ -298,7 +296,6 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(data => {
-        console.log(data)
         if (!data) return;
 
         try {
@@ -306,47 +303,46 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
           // Convertir formato backend → form
           const pacienteParaForm = this.pacienteUtil.convertirPacienteDesdeBackend(data);
+          const referenciasForm = this.pacienteUtil.convertirReferenciasDesdeBackend(
+            data.referencias
+          );
 
           // Cargar metadatos y referencias
-          this.cargarMetadatos(data.metadatos);
+          this.cargarMetadatos();
           this.cargarReferencias(data.referencias || []);
 
           // Patch del formulario
           this.form.patchValue(pacienteParaForm, { emitEvent: false });
 
-          const deptoNac = this.form.get(
-            'datos_extra.demograficos.departamento_nacimiento'
-          )?.value;
+
+
+          const deptoNac = data?.datos_extra?.demograficos?.departamento_nacimiento;
+          const lugarNac = data?.datos_extra?.demograficos?.lugar_nacimiento;
 
           if (deptoNac) {
-            // console.log('🧠 Init edición → depto nacimiento:', deptoNac);
+            // 1️⃣ Setear departamento
+            this.form
+              .get('datos_extra.demograficos.departamento_nacimiento')
+              ?.setValue(deptoNac, { emitEvent: false });
 
-            this.depto_nacimiento_temp.set(deptoNac);
-            this.listarMunicipiosNacimiento();
+            // 2️⃣ Cargar municipios
+            const municipiosFiltrados = this.enums.municipios.filter(m =>
+              m.codigo.startsWith(deptoNac)
+            );
+            this.municipios_nacimiento.set(municipiosFiltrados);
+
+            // 3️⃣ Setear municipio solo después
+            if (lugarNac) {
+              this.form
+                .get('datos_extra.demograficos.lugar_nacimiento')
+                ?.setValue(lugarNac, { emitEvent: false });
+            }
           }
 
-          const lugarNac = this.form.get(
-            'datos_extra.demograficos.lugar_nacimiento'
-          )?.value;
-
-          if (lugarNac) {
-            const depto = lugarNac.slice(0, 2);
-
-            // console.log('🧠 Init edición → lugar nacimiento:', lugarNac, 'depto:', depto);
-
-            this.depto_nacimiento_temp.set(depto);
-            this.listarMunicipiosNacimiento();
-          }
           const municipio = this.form.get('contacto.municipio')?.value;
-
           if (municipio) {
             const depto = municipio.slice(0, 2);
-
-            // console.log('🧠 Init edición → municipio:', municipio, 'depto:', depto);
-
-            this.form.get('contacto.departamento')
-              ?.setValue(depto, { emitEvent: false });
-
+            this.form.get('contacto.departamento')?.setValue(depto, { emitEvent: false });
             this.deptoDireccion.set(depto);
             this.listarMunicipiosDireccion();
           }
@@ -365,24 +361,46 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
           this.listarMunicipiosDireccion();
 
           this.error.set(null);
-        } catch (error) {
-          console.error('❌ Error procesando paciente:', error);
-          this.error.set('Error al procesar los datos del paciente');
+        } catch (error: any) {
+          console.error(
+            '❌ Error procesando paciente.',
+            {
+              mensaje: error?.message,
+              pista: 'Probablemente se intentó iterar con forEach sobre un valor que NO es un array.',
+              posiblesCausas: [
+                'referencias no es un array',
+                'metadatos viene como objeto y no como arreglo',
+                'estructura inesperada desde el backend'
+              ],
+              pacienteId: id,
+              dataRecibida: data
+            }
+          );
+
+          this.error.set(
+            'Error al procesar el paciente: la estructura de datos recibida no coincide con lo esperado (array vs objeto). Revise la consola.'
+          );
         }
       });
   }
 
-  private cargarMetadatos(metadatos: any): void {
-    if (!metadatos) return;
+  // ✅ Inicializa metadatos SOLO en modo creación
+  private cargarMetadatos(): void {
+    if (!this.enEdicion()) {
+      this.inicializarMetadatosVacio();
+    }
+  }
 
-    const metadatosGroup = this.fb.group({});
-    Object.entries(metadatos).forEach(([key, meta]: [string, any]) => {
-      metadatosGroup.addControl(key, this.fb.group({
-        usuario: [meta.usuario || ''],
-        registro: [meta.registro || '']
-      }));
-    });
-    this.form.setControl('metadatos', metadatosGroup);
+  private inicializarMetadatosVacio(): void {
+    const { username } = this.api.getUsuarioActual();
+    const array = this.fb.array<FormGroup>([
+      this.fb.group({
+        usuario: [username],
+        registro: [new Date().toISOString()],
+        accion: ['']
+      })
+    ]);
+    this.form.setControl('metadatos', array);
   }
 
   private cargarReferencias(referencias: any[]): void {
@@ -428,41 +446,46 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
     // CUI → Lugar de nacimiento
     this.form.get('cui')?.valueChanges
-      .pipe(
-        debounceTime(500),
-        takeUntil(this.destroy$)
-      )
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => this.lugarNacimiento());
 
-    // ✅ SUSCRIPCIÓN PARA DEPARTAMENTO DE DIRECCIÓN
+    // Departamento de dirección
     this.form.get('contacto.municipio')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((municipio: string) => {
         if (!municipio) {
-          this.form.get('contacto.departamento')
-            ?.setValue('', { emitEvent: false });
+          this.form.get('contacto.departamento')?.setValue('', { emitEvent: false });
           this.municipios_direccion.set([]);
           return;
         }
 
         const departamento = municipio.slice(0, 2);
-
-        // console.log('🔄 Municipio cambió:', municipio, '→ Depto:', departamento);
-
-        this.form.get('contacto.departamento')
-          ?.setValue(departamento, { emitEvent: false });
-
+        this.form.get('contacto.departamento')?.setValue(departamento, { emitEvent: false });
         this.deptoDireccion.set(departamento);
         this.listarMunicipiosDireccion();
       });
-    // ✅ SUSCRIPCIÓN PARA DEPARTAMENTO DE NACIMIENTO
+
+    this.form.get('contacto.departamento')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((departamento: string) => {
+
+        if (!departamento) {
+          this.municipios_direccion.set([]);
+          this.form.get('contacto.municipio')?.setValue('', { emitEvent: false });
+          return;
+        }
+
+        this.deptoDireccion.set(departamento);
+        this.form.get('contacto.municipio')?.setValue('', { emitEvent: false });
+        this.listarMunicipiosDireccion();
+      });
+
+    // Departamento de nacimiento
     this.form.get('datos_extra.demograficos.departamento_nacimiento')?.valueChanges
       .pipe(
         tap((depto: string) => {
-          // console.log('🔄 Departamento nacimiento cambió:', depto);
           if (depto) {
             this.depto_nacimiento_temp.set(depto);
-            // Limpiar municipio cuando cambia departamento
             this.form.get('datos_extra.demograficos.lugar_nacimiento')?.setValue('', { emitEvent: false });
           } else {
             this.municipios_nacimiento.set([]);
@@ -474,7 +497,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
         this.listarMunicipiosNacimiento();
       });
 
-    // Lugar de nacimiento → Listar municipios nacimiento (si viene del CUI)
+    // Lugar de nacimiento
     this.form.get('datos_extra.demograficos.lugar_nacimiento')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((lugarNac) => {
@@ -491,8 +514,8 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     return this.form.get('referencias') as FormArray;
   }
 
-  get metadatos(): FormGroup {
-    return this.form.get('metadatos') as FormGroup;
+  get metadatos(): FormArray {
+    return this.form.get('metadatos') as FormArray;
   }
 
   // ======= GUARDADO =======
@@ -502,25 +525,16 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Registrar evento según contexto
+    this.agregarEventoMetadato(this.enEdicion() ? 'ACTUALIZADO' : 'CREADO');
+
     const pacienteForm = this.form.getRawValue();
 
-    // Convertir referencias
-    const referenciasArray = this.referencias.value
-      .filter((r: any) => r.nombre && r.nombre.trim());
+    // referencias limpias
+    pacienteForm.referencias = this.referencias.value?.filter((r: any) => r.nombre?.trim()) || null;
 
-    pacienteForm.referencias = referenciasArray.length ? referenciasArray : null;
-
-    // Agregar metadato
-    pacienteForm.metadatos = this.pacienteUtil.agregarMetadato(
-      pacienteForm.metadatos,
-      this.usuarioActual()
-    );
-
-    // Convertir formato form → backend
     const pacienteParaBackend = this.pacienteUtil.convertirPacienteParaBackend(pacienteForm);
-
-    // console.log('📤 Paciente del formulario:', pacienteForm);
-    // console.log('📤 Paciente para backend:', pacienteParaBackend);
+    // console.log(pacienteParaBackend);
 
     this.enEdicion()
       ? this.actualizar(pacienteParaBackend)
@@ -531,13 +545,12 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
     const generarExpediente = this.crearExpediente();
 
-    // console.log(`👤 Creando paciente ${generarExpediente ? 'con' : 'sin'} expediente`);
-
     this.api.crearPaciente(paciente, generarExpediente)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => this.isLoading.set(false)),
         catchError(error => {
+          // console.log(paciente)
           console.error('❌ Error al crear paciente:', error);
           this.error.set('Error al crear el paciente');
           this.mostrarError('crear paciente', error);
@@ -546,7 +559,6 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
       )
       .subscribe(response => {
         if (response) {
-          // console.log('✅ Paciente creado:', response);
           this.router.navigate(['/pacientes']);
         }
       });
@@ -554,8 +566,6 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
   private actualizar(paciente: any): void {
     this.isLoading.set(true);
-
-    // console.log(`👤 Actualizando paciente con acción: ${this.accionExpediente()}`);
 
     this.api.updatePaciente(paciente.id, paciente, this.accionExpediente())
       .pipe(
@@ -570,7 +580,6 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
       )
       .subscribe(response => {
         if (response) {
-          // console.log('✅ Paciente actualizado correctamente');
           this.router.navigate(['/pacientes']);
         }
       });
@@ -585,7 +594,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     const ref = this.referencias.at(i);
 
     if (ref.get('idpersona')?.value) {
-      ref.disable(); // soft-delete
+      ref.disable();
     } else {
       this.referencias.removeAt(i);
     }
@@ -598,64 +607,61 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   }
 
   // ======= MUNICIPIOS =======
-
-  // ======= AGREGAR ESTE MÉTODO EN EL COMPONENTE =======
-
   onDeptoChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     const depto = select.value;
 
-    // console.log('🔄 onDeptoChange disparado. Depto:', depto);
-
-    // Actualizar el FormControl explícitamente
     this.form.get('contacto.departamento')?.setValue(depto, { emitEvent: false });
-
-    // Limpiar municipio
     this.form.get('contacto.municipio')?.setValue('', { emitEvent: false });
 
-    // Actualizar signal
     if (depto) {
       this.deptoDireccion.set(depto);
     }
 
-    // Listar municipios
     this.listarMunicipiosDireccion();
   }
 
   listarMunicipiosDireccion(): void {
     const depto = this.form.get('contacto.departamento')?.value;
 
-    // console.log('📍 listarMunicipiosDireccion() - Depto:', depto);
-
     if (!depto || depto.trim() === '') {
-      // console.log('⚠️  Sin departamento');
       this.municipios_direccion.set([]);
       return;
     }
 
     const filtrados = municipios.filter(m => m.codigo.startsWith(depto));
-
-    // console.log('✅ Municipios filtrados:', filtrados.length);
     this.municipios_direccion.set(filtrados);
   }
 
+  listarVecindades(): void {
+    this.vecindades.set(
+      [...municipios].sort((a, b) => a.municipio.localeCompare(b.municipio))
+    );
+  }
+
   listarMunicipiosNacimiento(): void {
-    const depto = this.form.get('datos_extra.demograficos.departamento_nacimiento')?.value;
+    let depto =
+      this.form.get('datos_extra.demograficos.departamento_nacimiento')?.value;
 
-    // console.log('📍 listarMunicipiosNacimiento() - Depto:', depto);
+    // 🧠 Si no hay depto pero sí municipio → inferirlo
+    if (!depto) {
+      const muni = this.form.get('datos_extra.demograficos.lugar_nacimiento')?.value;
+      if (muni?.length >= 2) {
+        depto = muni.substring(0, 2);
+        this.form
+          .get('datos_extra.demograficos.departamento_nacimiento')
+          ?.setValue(depto, { emitEvent: false });
+      }
+    }
 
-    if (!depto || depto.trim() === '') {
-      // console.log('⚠️  Sin departamento nacimiento');
+    if (!depto) {
       this.municipios_nacimiento.set([]);
       return;
     }
 
-    const filtrados = this.enums.municipios.filter(m => m.codigo.startsWith(depto));
-
-    // console.log('✅ Municipios nacimiento filtrados:', filtrados.length);
+    const filtrados = municipios.filter(m => m.codigo.startsWith(depto));
     this.municipios_nacimiento.set(filtrados);
   }
-
   obtenerPaisesIso(): void {
     this.api.getPaisesIso()
       .pipe(
@@ -672,7 +678,6 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
         }));
 
         this.paisesIso.set(normalizados);
-        console.log('🌍 Países normalizados:', normalizados);
       });
   }
 
@@ -684,9 +689,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
         const cuiStr = cui ? String(cui).replace(/\s/g, '') : '';
         if (cuiStr.length < 13) return;
 
-        this.form.get(
-          'datos_extra.demograficos.nacionalidad'
-        )?.setValue('GTM', { emitEvent: false });
+        this.form.get('datos_extra.demograficos.nacionalidad')?.setValue('GTM', { emitEvent: false });
       });
   }
 
@@ -700,38 +703,20 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     const codDepto = cuiStr.slice(9, 11);
     const codMuni = cuiStr.slice(-4);
 
-    // Nacionalidad Guatemala
-    this.form.get(
-      'datos_extra.demograficos.nacionalidad'
-    )?.setValue('GTM', { emitEvent: false });
+    this.form.get('datos_extra.demograficos.nacionalidad')?.setValue('GTM', { emitEvent: false });
 
     const depto = this.enums.departamentos.find(d => d.value === codDepto);
     if (!depto) return;
 
-    // 1️⃣ Setear departamento
-    this.form.get(
-      'datos_extra.demograficos.departamento_nacimiento'
-    )?.setValue(depto.value, { emitEvent: true });
+    this.form.get('datos_extra.demograficos.departamento_nacimiento')?.setValue(depto.value, { emitEvent: true });
 
-    // 2️⃣ Filtrar municipios del departamento
-    const municipiosFiltrados = this.enums.municipios.filter(
-      m => m.codigo.startsWith(depto.value)
-    );
-
+    const municipiosFiltrados = this.enums.municipios.filter(m => m.codigo.startsWith(depto.value));
     this.municipios_nacimiento.set(municipiosFiltrados);
 
-    // 3️⃣ Buscar municipio exacto del CUI
-    const muni = municipiosFiltrados.find(m =>
-      m.codigo.endsWith(codMuni)
-    );
+    const muni = municipiosFiltrados.find(m => m.codigo.endsWith(codMuni));
     if (!muni) return;
 
-    // 4️⃣ Setear municipio DESPUÉS de que la lista existe
-    this.form.get(
-      'datos_extra.demograficos.lugar_nacimiento'
-    )?.setValue(muni.codigo, { emitEvent: false });
-
-    console.log('🧠 CUI → Depto:', depto.value, 'Muni:', muni.codigo);
+    this.form.get('datos_extra.demograficos.lugar_nacimiento')?.setValue(muni.codigo, { emitEvent: false });
   }
 
   onPasteCUI(event: ClipboardEvent): void {
@@ -796,14 +781,30 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     alert(`Error al ${accion}. Consulte la consola para más detalles.`);
   }
 
-  // =========Socioeconomico=========
+  // ======= SOCIOECONÓMICO =======
   setSocio(
     campo: 'estudiante_publico' | 'empleado_publico' | 'discapacidad',
     valor: 'SI' | 'NO'
   ): void {
-    this.form
-      .get(`datos_extra.socioeconomicos.${campo}`)
-      ?.setValue(valor);
+    this.form.get(`datos_extra.socioeconomicos.${campo}`)?.setValue(valor);
   }
 
+  // ======= METADATOS =======
+  agregarEventoMetadato(accion: 'CREADO' | 'ACTUALIZADO'): void {
+
+    // 🔒 Blindaje: garantizar que metadatos sea un FormArray
+    if (!(this.form.get('metadatos') instanceof FormArray)) {
+      this.inicializarMetadatosVacio();
+    }
+
+    const metadatos = this.form.get('metadatos') as FormArray;
+
+    metadatos.push(
+      this.fb.group({
+        usuario: [this.usuarioActual()],
+        registro: [new Date().toISOString()],
+        accion: [accion]
+      })
+    );
+  }
 }

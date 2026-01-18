@@ -1,3 +1,4 @@
+import { Keys } from './../../../interface/comunidadChimaltenango';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,7 +25,8 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   // Listas procesadas para la vista
   demograficosFiltrados: { key: string; valor: any }[] = [];
   socioeconomicosFiltrados: { key: string; valor: any }[] = [];
-  metadatosKeys: string[] = [];
+  metadatosArray: { key: string; valor: any }[] = [];
+  neonatalesFiltrados: { key: string; valor: any }[] = [];
 
   cargando: boolean = true;
   error: string | null = null;
@@ -52,19 +54,13 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    // console.log('🔍 ngOnInit - pacienteId:', this.pacienteId);
-
     if (this.pacienteId) {
-      // console.log('📍 Cargando con @Input pacienteId:', this.pacienteId);
       this.cargarPaciente();
     } else {
       const id = Number(this.ruta.snapshot.paramMap.get('id'));
-      // console.log('📍 Cargando con paramMap id:', id);
-
       if (id) {
         this.cargarPacienteById(id);
       } else {
-        // console.error('❌ No se encontró ID en la ruta');
         this.error = 'No se proporcionó un ID de paciente';
         this.cargando = false;
       }
@@ -72,7 +68,6 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // console.log('🔄 ngOnChanges:', changes);
     if (changes['pacienteId'] && this.pacienteId) {
       this.cargarPaciente();
     }
@@ -81,25 +76,21 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   private async cargarPaciente(): Promise<void> {
     if (!this.pacienteId) return;
     this.cargando = true;
-    // console.log('⏳ Cargando paciente ID:', this.pacienteId);
 
     try {
       this.api.getPaciente(this.pacienteId).subscribe({
         next: (data) => {
           this.paciente = data;
-          // console.log('✅ Paciente cargado:', this.paciente);
           this.procesarPaciente();
           this.error = null;
           this.cargando = false;
         },
         error: (err: any) => {
-          // console.error('❌ Error al cargar paciente:', err);
           this.error = err?.message || 'Error al cargar el expediente del paciente.';
           this.cargando = false;
         }
       });
     } catch (err: any) {
-      // console.error('❌ Error al cargar paciente:', err);
       this.error = err?.message || 'Error al cargar el expediente del paciente.';
       this.cargando = false;
     }
@@ -107,28 +98,21 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
 
   private cargarPacienteById(id: number): void {
     this.cargando = true;
-    // console.log('⏳ Cargando paciente por ID:', id);
 
     try {
       this.api.getPaciente(id).subscribe({
         next: (data) => {
           this.paciente = data;
-          // console.log('✅ Paciente cargado:', this.paciente);
-          // console.log('📊 Datos extra:', this.paciente?.datos_extra);
-          // console.log('👥 Referencias:', this.paciente?.referencias);
           this.procesarPaciente();
           this.error = null;
           this.cargando = false;
         },
         error: (err: any) => {
-          // console.error('❌ Error al cargar paciente:', err);
-          // console.error('📋 Detalles del error:', err.response?.data);
           this.error = err?.message || 'Error al cargar el expediente del paciente.';
           this.cargando = false;
         }
       });
     } catch (err: any) {
-      // console.error('❌ Error al cargar paciente:', err);
       this.error = err?.message || 'Error al cargar el expediente del paciente.';
       this.cargando = false;
     }
@@ -136,12 +120,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
 
   /** Prepara listas filtradas para mostrar en HTML */
   private procesarPaciente(): void {
-    // console.log('🔧 Procesando paciente...');
-
-    if (!this.paciente) {
-      // console.warn('⚠️ No hay paciente para procesar');
-      return;
-    }
+    if (!this.paciente) return;
 
     // Procesar datos demográficos
     if (this.paciente.datos_extra?.demograficos) {
@@ -153,8 +132,6 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
           valor !== ''
         )
         .map(([key, valor]) => ({ key, valor }));
-
-      // console.log('📊 Demográficos filtrados:', this.demograficosFiltrados);
     }
 
     // Procesar datos socioeconómicos
@@ -167,49 +144,85 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
           valor !== 0
         )
         .map(([key, valor]) => ({ key, valor }));
+    }
 
-      // console.log('💼 Socioeconómicos filtrados:', this.socioeconomicosFiltrados);
+    // Procesar datos neonatales
+    if (this.paciente.datos_extra?.neonatales) {
+      this.neonatalesFiltrados = Object.entries(this.paciente.datos_extra.neonatales)
+        .filter(([key, valor]) =>
+          valor !== null &&
+          valor !== undefined &&
+          valor !== '' &&
+          valor !== 0
+        )
+        .map(([key, valor]) => ({ key, valor }));
     }
 
     // Procesar metadatos
-    if (this.paciente.metadatos) {
-      this.metadatosKeys = Object.keys(this.paciente.metadatos)
-        .filter(key => {
-          const valor = this.paciente.metadatos![key];
-          return valor !== null && valor !== undefined && valor !== '';
-        });
+    this.procesarMetadatos();
+  }
 
-      // console.log('📌 Metadatos keys:', this.metadatosKeys);
+  /** Procesa metadatos según la interface Metadata (solo lectura) */
+  private procesarMetadatos(): void {
+    this.metadatosArray = [];
+
+    const metas = this.paciente?.metadatos;
+
+    if (!Array.isArray(metas) || metas.length === 0) return;
+
+    // Mostrar el último evento (o itera si quieres historial completo)
+    const ultimo = metas[metas.length - 1];
+
+    if (ultimo.usuario) {
+      this.metadatosArray.push({ key: 'usuario', valor: ultimo.usuario });
     }
 
-    // console.log('✅ Procesamiento completado');
+    if (ultimo.registro) {
+      this.metadatosArray.push({
+        key: 'registro',
+        valor: this.formatearFecha(ultimo.registro)
+      });
+    }
+
+    if (ultimo.accion) {
+      this.metadatosArray.push({ key: 'accion', valor: ultimo.accion });
+    }
+
+    if (ultimo.expediente_duplicado !== undefined) {
+      this.metadatosArray.push({
+        key: 'expediente_duplicado',
+        valor: ultimo.expediente_duplicado ? 'Sí' : 'No'
+      });
+    }
   }
 
   /** Mapa de claves para mostrar nombres legibles */
   convertirClave(key: string): string {
     const mapaClaves: { [key: string]: string } = {
+      // Metadatos
+      usuario: 'Usuario',
+      registro: 'Fecha de registro',
+      accion: 'Acción',
+      expediente_duplicado: 'Expediente duplicado',
+
       // Demográficos
-      idioma_id: 'Idioma',
-      pueblo_id: 'Pueblo',
-      estado_civil_id: 'Estado civil',
-      nacionalidad_id: 'Nacionalidad',
-      lugar_nacimiento_id: 'Lugar de nacimiento',
-      departamento_nacimiento_id: 'Departamento de nacimiento',
+      idioma: 'Idioma',
+      pueblo: 'Pueblo',
+      estado_civil: 'Estado civil',
+      nacionalidad: 'Nacionalidad',
+      lugar_nacimiento: 'Lugar de nacimiento',
+      departamento_nacimiento: 'Departamento de nacimiento',
+      vecindad: 'Vecindad',
 
       // Socioeconómicos
       ocupacion: 'Ocupación',
-      educacion_id: 'Nivel educativo',
+      educacion: 'Nivel educativo',
+      estudiante_publico: 'Estudiante público',
+      empleado_publico: 'Empleado público',
+      discapacidad: 'Discapacidad',
 
-      // Metadatos
-      id_origen: 'ID origen',
-      creado_por: 'Creado por',
-      migrado_en: 'Migrado en',
-      sistema_origen: 'Sistema origen',
-      version_migracion: 'Versión migración',
-      expediente_duplicado: 'Expediente duplicado',
-
-      // Otros en datos_extra
-      cuipersona: 'CUI',
+      // Otros
+      personaid: 'CUI Persona',
       defuncion: 'Fecha de defunción',
     };
 
@@ -242,7 +255,9 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
       return new Date(fecha).toLocaleDateString('es-GT', {
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
       });
     } catch {
       return fecha;
@@ -290,4 +305,6 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   regresar(): void {
     this.router.navigate(['/pacientes']);
   }
+
+
 }

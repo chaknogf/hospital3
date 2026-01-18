@@ -2,9 +2,9 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { tap, catchError, finalize } from 'rxjs/operators';
+import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse } from '../interface/interfaces';
-import { ConsultaBase, ConsultaResponse } from '../interface/consultas';
+import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, TotalesItem, TotalesResponse } from '../interface/consultas';
 
 interface PaginationState {
   filtro: any;
@@ -115,6 +115,20 @@ export class ApiService {
     );
   }
 
+  getUsuarioActual(): { username: string; role: string } {
+    return {
+      username:
+        this.username() ??
+        localStorage.getItem('username') ??
+        'sistema',
+
+      role:
+        this.role() ??
+        localStorage.getItem('role') ??
+        'SIN_ROL'
+    };
+  }
+
   logOut(): void {
     localStorage.removeItem('access_token');
     localStorage.removeItem('username');
@@ -196,8 +210,8 @@ export class ApiService {
   crearPaciente(paciente: Paciente, generar_expediente: boolean = false): Observable<any> {
     this.isLoading.set(true);
     const url = generar_expediente
-      ? `${this.baseUrl}/paciente/crear/?gen_expediente=true`
-      : `${this.baseUrl}/paciente/crear/`;
+      ? `${this.baseUrl}/pacientes/?gen_expediente=true`
+      : `${this.baseUrl}/pacientes`;
 
     return this.http.post<any>(url, paciente).pipe(
       tap(() => this.refrescarPacientes()),
@@ -329,31 +343,32 @@ export class ApiService {
 
   getConsulta(filtros: any): Observable<ConsultaBase[]> {
     const params = this.limpiarParametros(filtros);
-    return this.http.get<ConsultaBase[]>(`${this.baseUrl}/consulta/`, { params }).pipe(
+    return this.http.get<ConsultaBase[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
       catchError(error => this.manejarError(error, 'obtener consulta'))
     );
   }
 
   getConsultaId(id_consulta: number): Observable<ConsultaBase[]> {
     const params = new HttpParams().set('id_consulta', id_consulta.toString());
-    return this.http.get<ConsultaBase[]>(`${this.baseUrl}/consulta/`, { params }).pipe(
+    return this.http.get<ConsultaBase[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
       catchError(error => this.manejarError(error, 'obtener consulta por ID'))
     );
   }
 
-  crearConsulta(consulta: any): Observable<any> {
+  crearConsulta(consulta: ConsultaCreate): Observable<ConsultaOut> {
     this.isLoading.set(true);
-    return this.http.post<any>(`${this.baseUrl}/consulta/crear/`, consulta).pipe(
+    return this.http.post<ConsultaOut>(`${this.baseUrl}/consultas/`, consulta).pipe(
       tap(() => this.refrescarConsultas()),
       catchError(error => this.manejarError(error, 'crear consulta')),
       finalize(() => this.isLoading.set(false))
     );
   }
 
-  updateConsulta(consultaId: number, consulta: any): Observable<any> {
+
+  updateConsulta(consultaId: number, consulta: ConsultaUpdate): Observable<ConsultaOut> {
     this.isLoading.set(true);
-    return this.http.put<any>(
-      `${this.baseUrl}/consulta/actualizar/${consultaId}`,
+    return this.http.patch<ConsultaOut>(  // ✅ Cambió de put a patch
+      `${this.baseUrl}/consultas/${consultaId}`,
       consulta
     ).pipe(
       tap(() => this.refrescarConsultas()),
@@ -376,9 +391,25 @@ export class ApiService {
   }
 
   // ======= TOTALES =======
-  getTotales(): Observable<Totales[]> {
-    return this.http.get<Totales[]>(`${this.baseUrl}/totales/`).pipe(
+  getTotales(fecha?: string): Observable<TotalesResponse> {
+    let params = new HttpParams();
+
+    if (fecha) {
+      params = params.set('fecha', fecha);
+    }
+
+    return this.http.get<TotalesResponse>(
+      `${this.baseUrl}/totales/`,
+      { params }
+    ).pipe(
       catchError(error => this.manejarError(error, 'obtener totales'))
+    );
+  }
+
+  // ✅ Método helper para obtener solo el array de totales
+  getTotalesArray(fecha?: string): Observable<TotalesItem[]> {
+    return this.getTotales(fecha).pipe(
+      map(response => response.totales)
     );
   }
 }
