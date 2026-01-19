@@ -116,8 +116,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     this.obtenerDatosIniciales();
     this.manejarDatosRenap();
 
-    // 👇 AQUÍ, antes de intentar cargar edición
-    this.cargarMetadatos();
+
 
     this.cargarPacienteParaEdicion();
     if (!this.enEdicion()) {
@@ -136,7 +135,6 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     const { username } = this.api.getUsuarioActual();
     return this.fb.group({
       id: [0],
-      unidad: [287],
       cui: [''],
       expediente: [''],
       pasaporte: [''],
@@ -201,14 +199,8 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
         })
       }),
 
-      estado: ['V'],
-      metadatos: this.fb.array([
-        this.fb.group({
-          usuario: [username],
-          registro: [new Date().toISOString()],
-          accion: ['']
-        })
-      ])
+      estado: ['V']
+
     });
   }
 
@@ -303,12 +295,13 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
           // Convertir formato backend → form
           const pacienteParaForm = this.pacienteUtil.convertirPacienteDesdeBackend(data);
-          const referenciasForm = this.pacienteUtil.convertirReferenciasDesdeBackend(
-            data.referencias
-          );
+          const referenciasForm =
+            this.pacienteUtil.convertirReferenciasDesdeBackend(data.referencias);
 
-          // Cargar metadatos y referencias
-          this.cargarMetadatos();
+          this.cargarReferencias(referenciasForm);
+
+          // Cargar referencias
+
           this.cargarReferencias(data.referencias || []);
 
           // Patch del formulario
@@ -369,7 +362,6 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
               pista: 'Probablemente se intentó iterar con forEach sobre un valor que NO es un array.',
               posiblesCausas: [
                 'referencias no es un array',
-                'metadatos viene como objeto y no como arreglo',
                 'estructura inesperada desde el backend'
               ],
               pacienteId: id,
@@ -384,24 +376,6 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
       });
   }
 
-  // ✅ Inicializa metadatos SOLO en modo creación
-  private cargarMetadatos(): void {
-    if (!this.enEdicion()) {
-      this.inicializarMetadatosVacio();
-    }
-  }
-
-  private inicializarMetadatosVacio(): void {
-    const { username } = this.api.getUsuarioActual();
-    const array = this.fb.array<FormGroup>([
-      this.fb.group({
-        usuario: [username],
-        registro: [new Date().toISOString()],
-        accion: ['']
-      })
-    ]);
-    this.form.setControl('metadatos', array);
-  }
 
   private cargarReferencias(referencias: any[]): void {
     this.referencias.clear();
@@ -514,9 +488,6 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     return this.form.get('referencias') as FormArray;
   }
 
-  get metadatos(): FormArray {
-    return this.form.get('metadatos') as FormArray;
-  }
 
   // ======= GUARDADO =======
   guardar(): void {
@@ -524,9 +495,6 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
       this.error.set('Por favor complete los campos requeridos');
       return;
     }
-
-    // Registrar evento según contexto
-    this.agregarEventoMetadato(this.enEdicion() ? 'ACTUALIZADO' : 'CREADO');
 
     const pacienteForm = this.form.getRawValue();
 
@@ -789,22 +757,5 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     this.form.get(`datos_extra.socioeconomicos.${campo}`)?.setValue(valor);
   }
 
-  // ======= METADATOS =======
-  agregarEventoMetadato(accion: 'CREADO' | 'ACTUALIZADO'): void {
 
-    // 🔒 Blindaje: garantizar que metadatos sea un FormArray
-    if (!(this.form.get('metadatos') instanceof FormArray)) {
-      this.inicializarMetadatosVacio();
-    }
-
-    const metadatos = this.form.get('metadatos') as FormArray;
-
-    metadatos.push(
-      this.fb.group({
-        usuario: [this.usuarioActual()],
-        registro: [new Date().toISOString()],
-        accion: [accion]
-      })
-    );
-  }
 }

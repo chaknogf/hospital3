@@ -71,7 +71,7 @@
     <div class="cv-row">
       <span class="cv-label">Fecha de nacimiento</span>
       <span class="cv-value">
-        {{ paciente.fecha_nacimiento | date : "dd/MM/yyyy" }}
+        {{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
       </span>
     </div>
 
@@ -81,120 +81,135 @@
         {{ paciente.fecha_nacimiento | edad }}
       </span>
     </div>
-    @if (fechaDefuncion){
-    <div class="cv-row">
-      <span class="cv-label">Fecha de defunción</span>
-      <span class="cv-value">
-        {{ formatearFecha(fechaDefuncion) }}
-      </span>
-    </div>
-
+    @if (fechaDefuncion) {
+      <div class="cv-row">
+        <span class="cv-label">Fecha de defunción</span>
+        <span class="cv-value">
+          {{ formatearFecha(fechaDefuncion) }}
+        </span>
+      </div>
     }
   </section>
 
   <!-- Contacto -->
   <section class="section section-cv">
     <h2>📞 Información de Contacto</h2>
-    @if (paciente.contacto?.domicilio){
-    <div class="cv-row">
-      <span class="cv-label">Domicilio</span>
-      <span class="cv-value">{{
-        paciente.contacto?.domicilio | titlecase
-      }}</span>
-    </div>
-    } @if (paciente.contacto?.municipio) {
-    <div class="cv-row">
-      <span class="cv-label">Municipio</span>
-      <span class="cv-value">
-        {{ paciente.contacto?.municipio | datosExtra : "municipio" }}
-      </span>
-    </div>
-    } @if (paciente.contacto?.telefonos) {
-    <div class="cv-row">
-      <span class="cv-label">Teléfonos</span>
-      <span class="cv-value">{{ paciente.contacto?.telefonos }}</span>
-    </div>
+    @if (paciente.contacto?.domicilio) {
+      <div class="cv-row">
+        <span class="cv-label">Domicilio</span>
+        <span class="cv-value">{{
+          paciente.contacto?.domicilio | titlecase
+        }}</span>
+      </div>
+    }
+    @if (paciente.contacto?.municipio) {
+      <div class="cv-row">
+        <span class="cv-label">Municipio</span>
+        <span class="cv-value">
+          {{ paciente.contacto?.municipio | datosExtra: "municipio" }}
+        </span>
+      </div>
+    }
+    @if (paciente.contacto?.telefonos) {
+      <div class="cv-row">
+        <span class="cv-label">Teléfonos</span>
+        <span class="cv-value">{{ paciente.contacto?.telefonos }}</span>
+      </div>
     }
   </section>
 
   <!-- Referencias -->
   @if (tieneReferencias) {
-  <section class="section section-cv">
-    <h2>👥 Referencias</h2>
+    <section class="section section-cv">
+      <h2>👥 Referencias</h2>
 
-    <div
-      class="cv-reference"
-      *ngFor="let ref of paciente.referencias; let i = index"
-    >
-      <strong>Referencia {{ i + 1 }}</strong
-      ><br />
-      {{ ref.nombre | titlecase }} — {{ ref.parentesco | titlecase }} —
-      {{ ref.telefonos || "Sin teléfono" }} - {{ ref.expediente }} -
-      {{ ref.idpersona }} @if (ref.responsable === true) { Responsable}
+      <div
+        class="cv-reference"
+        *ngFor="let ref of paciente.referencias; let i = index"
+      >
+        <strong>Referencia {{ i + 1 }}</strong
+        ><br />
+        {{ ref.nombre | titlecase }} — {{ ref.parentesco | titlecase }} —
+        {{ ref.telefono || "Sin teléfono" }} - {{ ref.expediente }} -
+        {{ ref.idpersona }}
+        @if (ref.responsable === true) {
+          Responsable
+        }
+      </div>
+    </section>
+  }
+  @if (demograficosFiltrados.length > 0) {
+    <!-- Datos Demográficos -->
+    <section class="section section-cv">
+      <h2>🌍 Datos Demográficos</h2>
+
+      <div class="cv-row" *ngFor="let dato of demograficosFiltrados">
+        <span class="cv-label">
+          {{ convertirClave(dato.key) }}
+        </span>
+        <span class="cv-value">
+          {{ dato.valor | datosExtra: dato.key }}
+        </span>
+      </div>
+    </section>
+  }
+  @if (socioeconomicosFiltrados.length > 0) {
+    <!-- Datos Socioeconómicos -->
+    <section class="section section-cv">
+      <h2>💼 Datos Socioeconómicos</h2>
+
+      <div class="cv-row" *ngFor="let dato of socioeconomicosFiltrados">
+        <span class="cv-label">
+          {{ convertirClave(dato.key) }}
+        </span>
+        <span class="cv-value">
+          {{ dato.valor | datosExtra: dato.key }}
+        </span>
+      </div>
+    </section>
+  }
+  @if (neonatalesFiltrados.length > 0) {
+    <section class="section section-cv">
+      <h2>👶 Datos Neonatales</h2>
+
+      <div class="cv-row" *ngFor="let dato of neonatalesFiltrados">
+        <span class="cv-label">{{ convertirClave(dato.key) }}</span>
+        <span class="cv-value">{{ dato.valor }}</span>
+      </div>
+    </section>
+  }
+  @if (metadatosArray.length > 0) {
+    <!-- Metadatos / Historial -->
+    <section class="section section-cv">
+      <h2>📌 Información del Sistema</h2>
+
+      <div class="cv-row" *ngFor="let meta of metadatosArray">
+        <div class="cv-label">
+          {{ meta.key }}
+        </div>
+
+        <div class="cv-value cv-inline">
+          👤 <strong>{{ meta.valor.usuario }}</strong> &nbsp;|&nbsp; 🕒
+          {{ meta.valor.registro }} &nbsp;|&nbsp; ✍️
+          {{ meta.valor.accion }} &nbsp;|&nbsp;
+          @if (meta.valor.expediente_duplicado == true) {
+            📄 Dup: {{ "Si" }}
+          }
+        </div>
+      </div>
+    </section>
+  }
+  @if (cargando) {
+    <!-- Estado de carga -->
+    <div class="loading">
+      <p>Cargando información del paciente...</p>
     </div>
-  </section>
-  } @if (demograficosFiltrados.length > 0) {
-  <!-- Datos Demográficos -->
-  <section class="section section-cv">
-    <h2>🌍 Datos Demográficos</h2>
-
-    <div class="cv-row" *ngFor="let dato of demograficosFiltrados">
-      <span class="cv-label">
-        {{ convertirClave(dato.key) }}
-      </span>
-      <span class="cv-value">
-        {{ dato.valor | datosExtra : dato.key }}
-      </span>
+  }
+  @if (error && !cargando) {
+    <div class="error">
+      <p>{{ error }}</p>
+      <button (click)="regresar()">Regresar</button>
     </div>
-  </section>
-  } @if (socioeconomicosFiltrados.length > 0) {
-  <!-- Datos Socioeconómicos -->
-  <section class="section section-cv">
-    <h2>💼 Datos Socioeconómicos</h2>
-
-    <div class="cv-row" *ngFor="let dato of socioeconomicosFiltrados">
-      <span class="cv-label">
-        {{ convertirClave(dato.key) }}
-      </span>
-      <span class="cv-value">
-        {{ dato.valor | datosExtra : dato.key }}
-      </span>
-    </div>
-  </section>
-  } @if (neonatalesFiltrados.length > 0) {
-  <section class="section section-cv">
-    <h2>👶 Datos Neonatales</h2>
-
-    <div class="cv-row" *ngFor="let dato of neonatalesFiltrados">
-      <span class="cv-label">{{ convertirClave(dato.key) }}</span>
-      <span class="cv-value">{{ dato.valor }}</span>
-    </div>
-  </section>
-  } @if (metadatosArray.length > 0) {
-  <!-- Metadatos / Historial -->
-  <section class="section section-cv">
-    <h2>📌 Información del Sistema</h2>
-
-    <div class="cv-row" *ngFor="let meta of metadatosArray">
-      <span class="cv-label">
-        {{ convertirClave(meta.key) }}
-      </span>
-      <span class="cv-value text-uppercase">
-        {{ meta.valor }}
-      </span>
-    </div>
-  </section>
-  } @if (cargando) {
-  <!-- Estado de carga -->
-  <div class="loading">
-    <p>Cargando información del paciente...</p>
-  </div>
-
-  } @if (error && !cargando) {
-  <div class="error">
-    <p>{{ error }}</p>
-    <button (click)="regresar()">Regresar</button>
-  </div>
   }
   <!-- Error -->
 </div>

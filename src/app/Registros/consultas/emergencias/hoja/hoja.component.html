@@ -68,7 +68,7 @@
   <div class="d-flex justify-content-between doc-section">
     <div>
       <label>Fecha:</label>
-      <p>{{ consulta()?.fecha_consulta | date : "dd/MM/yyyy" }}</p>
+      <p>{{ consulta()?.fecha_consulta | date: "dd/MM/yyyy" }}</p>
     </div>
     <div>
       <label>Hora:</label>
@@ -92,7 +92,7 @@
       </div>
       <div>
         <label>Fecha de Nacimiento:</label>
-        <p>{{ paciente()?.fecha_nacimiento | date : "dd/MM/yyyy" }}</p>
+        <p>{{ paciente()?.fecha_nacimiento | date: "dd/MM/yyyy" }}</p>
       </div>
       <div class="mx-2">
         <label>Edad:</label>
@@ -104,7 +104,7 @@
     <div class="d-flex justify-content-between p-0 m-0 borderline">
       <div class="mx-2">
         <label>Sexo:</label>
-        <p>{{ paciente()?.sexo | datosExtra : "sexo" }}</p>
+        <p>{{ paciente()?.sexo | datosExtra: "sexo" }}</p>
       </div>
       <div>
         <label>DPI:</label>
@@ -124,7 +124,7 @@
       </div>
       <div>
         <label>Parentesco:</label>
-        <p>{{ responsable()?.parentesco | datosExtra : "parentesco" }}</p>
+        <p>{{ responsable()?.parentesco | datosExtra: "parentesco" }}</p>
       </div>
       <div class="mx-2">
         <label>Teléfono:</label>

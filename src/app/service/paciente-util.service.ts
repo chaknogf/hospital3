@@ -309,7 +309,7 @@ export class PacienteUtilService {
       referencias: [],
       datos_extra: this.crearDatosExtraFormularioVacio(),
       estado: 'V',
-      metadatos: {}
+
     };
   }
 
@@ -348,7 +348,7 @@ export class PacienteUtilService {
       referencias,
       datos_extra: this.convertirDatosExtraDesdeBackend(raw.datos_extra),
       estado: raw.estado ?? 'V',
-      metadatos: raw.metadatos ?? {}
+
     };
   }
 

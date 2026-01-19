@@ -167,33 +167,19 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     this.metadatosArray = [];
 
     const metas = this.paciente?.metadatos;
-
     if (!Array.isArray(metas) || metas.length === 0) return;
 
-    // Mostrar el último evento (o itera si quieres historial completo)
-    const ultimo = metas[metas.length - 1];
-
-    if (ultimo.usuario) {
-      this.metadatosArray.push({ key: 'usuario', valor: ultimo.usuario });
-    }
-
-    if (ultimo.registro) {
+    metas.forEach((evento, index) => {
       this.metadatosArray.push({
-        key: 'registro',
-        valor: this.formatearFecha(ultimo.registro)
+        key: `Evento ${index + 1}`,
+        valor: {
+          usuario: evento.usuario,
+          registro: this.formatearFecha(evento.registro),
+          accion: evento.accion,
+          expediente_duplicado: evento.expediente_duplicado ? 'Sí' : 'No'
+        }
       });
-    }
-
-    if (ultimo.accion) {
-      this.metadatosArray.push({ key: 'accion', valor: ultimo.accion });
-    }
-
-    if (ultimo.expediente_duplicado !== undefined) {
-      this.metadatosArray.push({
-        key: 'expediente_duplicado',
-        valor: ultimo.expediente_duplicado ? 'Sí' : 'No'
-      });
-    }
+    });
   }
 
   /** Mapa de claves para mostrar nombres legibles */

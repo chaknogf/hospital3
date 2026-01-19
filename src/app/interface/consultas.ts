@@ -1,5 +1,7 @@
 // app/models/consultas.interface.ts
 
+import { Paciente } from "./interfaces";
+
 export interface Datos {
   ciclo: string;
   registro: string;
@@ -161,7 +163,7 @@ export interface Ciclo {
   usuario?: string;
   especialidad?: string;
   servicio?: string;
-  detalle_clinicos?: { [key: string]: Datos }; // ✅ Cambió a plural
+  detalle_clinico?: { [key: string]: Datos }; // ✅ Cambió a plural
   sistema?: { [key: string]: Sistema };
   signos_vitales?: { [key: string]: SignosVitales };
   antecedentes?: { [key: string]: Antecedentes };
@@ -225,8 +227,8 @@ export interface ConsultaUpdate {
 // ✅ ConsultaOut NO incluye created_at/updated_at
 export interface ConsultaOut extends ConsultaBase {
   id: number;
-  // No incluimos creado_en ni actualizado_en
-  // El backend los tiene, pero el frontend no los usa
+
+
 }
 // Para respuestas de listas con paginación
 export interface ConsultaListResponse {
@@ -235,31 +237,9 @@ export interface ConsultaListResponse {
 }
 
 // Respuesta detallada con datos del paciente (si la usas)
-export interface ConsultaResponse {
-  id_paciente: number;
-  expediente: string;
-  cui: number;
-  pasaporte: string;
-  nombre: {
-    primer_nombre: string;
-    segundo_nombre: string;
-    otro_nombre: string;
-    primer_apellido: string;
-    segundo_apellido: string;
-    apellido_casada: string;
-  };
-  sexo: string;
-  fecha_nacimiento: string;
-  estado: string;
-  id_consulta: number;
-  tipo_consulta: number;
-  especialidad: string;
-  servicio: string;
-  documento: string;
-  fecha_consulta: string;
-  hora_consulta: string;
-  ciclo: Ciclo; // ✅ Usa el tipo correcto
-  orden?: number;
+export interface ConsultaResponse extends ConsultaBase {
+  id: number;
+  paciente: Paciente;
 }
 
 export interface TotalesItem {

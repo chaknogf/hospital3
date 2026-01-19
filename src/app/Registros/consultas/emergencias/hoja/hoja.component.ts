@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular
 import { ApiService } from '../../../../service/api.service';
 import { Paciente } from '../../../../interface/interfaces';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ConsultaBase } from '../../../../interface/consultas';
+import { ConsultaBase, ConsultaOut, ConsultaResponse } from '../../../../interface/consultas';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -42,7 +42,7 @@ export class HojaComponent implements OnInit, OnDestroy {
 
   // ======= SIGNALS =======
   paciente = signal<Paciente | undefined>(undefined);
-  consulta = signal<ConsultaBase | undefined>(undefined);
+  consulta = signal<ConsultaResponse | undefined>(undefined);
   isLoading = signal(false);
   error = signal<string | null>(null);
   detalleVisible = signal(false);
@@ -141,43 +141,16 @@ export class HojaComponent implements OnInit, OnDestroy {
           return of(null);
         })
       )
-      .subscribe(data => {
-        if (!data || !data[0]) {
+      .subscribe((consulta: ConsultaResponse | null) => {
+        if (!consulta) {
           this.error.set('Consulta no encontrada');
           return;
         }
 
-        this.consulta.set(data[0]);
-        this.cargarPaciente(data[0].paciente_id);
+        this.consulta.set(consulta);
+        this.paciente.set(consulta.paciente); // ✅ paciente viene dentro de consulta
       });
   }
-
-  private cargarPaciente(pacienteId: number): void {
-    if (!pacienteId) {
-      this.error.set('ID de paciente no disponible');
-      this.detalleVisible.set(true);
-      return;
-    }
-
-    this.api.getPaciente(pacienteId)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => this.detalleVisible.set(true)),
-        catchError(error => {
-          console.error('❌ Error cargando paciente:', error);
-          this.error.set('Error al cargar el paciente');
-          return of(null);
-        })
-      )
-      .subscribe(pacienteData => {
-        if (pacienteData) {
-          this.paciente.set(pacienteData);
-        } else {
-          this.error.set('Paciente no encontrado');
-        }
-      });
-  }
-
   // ======= INDICADORES =======
   /**
    * Obtiene el valor de un indicador

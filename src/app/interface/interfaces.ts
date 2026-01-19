@@ -38,7 +38,7 @@ export interface Contacto {
 export interface Referencia {
   nombre: string;
   parentesco?: string | null;
-  telefonos?: string | null;
+  telefono?: string | null;
   expediente?: string | null;
   idpersona?: string | null;
   responsable?: boolean | false;
@@ -70,7 +70,7 @@ export interface Neonatales {
   parto?: 'P' | 'C' | null; // P = Vaginal, C = Cesárea
   gemelo?: string | null;
   expediente_madre?: string | null;
-  extrahositalario?: 'S' | 'N';
+  extrahositalario?: boolean | false;
 }
 
 export interface DatosExtra {
@@ -110,8 +110,8 @@ export interface Paciente {
   contacto?: Contacto;
   referencias?: Referencia[];
   datos_extra?: DatosExtra;
-  estado?: 'V' | 'F'; // V = Vivo, F = Fallecido
-  metadatos?: Metadata;
+  estado?: 'V' | 'F' | 'I'; // V = Vivo, F = Fallecido, I = Inactivo
+  metadatos?: EventoMetadato[];
   creado_en?: string | null;
   actualizado_en?: string | null;
 }

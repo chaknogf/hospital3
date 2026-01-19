@@ -31,8 +31,8 @@ export class ApiService {
   ordenes$ = this.ordenesSubject.asObservable();
 
   // ======= ESTADO DE PAGINACIÓN =======
-  private ultimoFiltroPaciente: PaginationState = { filtro: { skip: 0, limit: 6 } };
-  private ultimoFiltroConsulta: PaginationState = { filtro: { skip: 0, limit: 6 } };
+  private ultimoFiltroPaciente: PaginationState = { filtro: { skip: 0, limit: 8 } };
+  private ultimoFiltroConsulta: PaginationState = { filtro: { skip: 0, limit: 8 } };
 
   constructor(
     private http: HttpClient,
@@ -341,16 +341,25 @@ export class ApiService {
     );
   }
 
-  getConsulta(filtros: any): Observable<ConsultaBase[]> {
+  /**
+   * Obtiene una sola consulta según filtros
+   */
+  getConsulta(filtros: any): Observable<ConsultaResponse | null> {
     const params = this.limpiarParametros(filtros);
-    return this.http.get<ConsultaBase[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
-      catchError(error => this.manejarError(error, 'obtener consulta'))
+    return this.http.get<ConsultaResponse[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'obtener consulta')),
+      // Retornar solo la primera coincidencia o null si no hay resultados
+      tap(console.log),
+      map(res => (res && res.length > 0 ? res[0] : null))
     );
   }
 
-  getConsultaId(id_consulta: number): Observable<ConsultaBase[]> {
+  /**
+   * Obtiene una consulta por su ID
+   */
+  getConsultaId(id_consulta: number): Observable<ConsultaResponse> {
     const params = new HttpParams().set('id_consulta', id_consulta.toString());
-    return this.http.get<ConsultaBase[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
+    return this.http.get<ConsultaResponse>(`${this.baseUrl}/consultas/`, { params }).pipe(
       catchError(error => this.manejarError(error, 'obtener consulta por ID'))
     );
   }

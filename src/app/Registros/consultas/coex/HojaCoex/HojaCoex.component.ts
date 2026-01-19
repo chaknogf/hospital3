@@ -139,21 +139,16 @@ export class HojaCoexComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(data => {
-        if (!data || !data[0]) {
+        if (!data || !data) {
           this.error.set('Consulta no encontrada');
           this.detalleVisible.set(true);
           return;
         }
 
-        this.consulta.set(data[0]);
+        this.consulta.set(data);
 
         // Cargar paciente después de obtener la consulta
-        if (data[0].paciente_id) {
-          this.cargarPaciente(data[0].paciente_id);
-        } else {
-          this.error.set('ID de paciente no disponible en la consulta');
-          this.detalleVisible.set(true);
-        }
+
       });
   }
 

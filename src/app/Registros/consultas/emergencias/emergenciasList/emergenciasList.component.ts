@@ -99,10 +99,10 @@ export class EmergenciasListComponent implements OnInit {
     });
 
     // 2️⃣ Obtener totales
-    this.api.getTotales().subscribe((data) => {
-      this.totales = data;
-      this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
-    });
+    // this.api.getTotales().subscribe((data) => {
+    //   this.totales = data;
+    //   this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
+    // });
 
 
 
@@ -197,24 +197,24 @@ export class EmergenciasListComponent implements OnInit {
     this.rowActiva = this.rowActiva === id ? null : id;
   }
 
-  estadoUltimoCiclo(ciclo: Record<string, Ciclo> | null): string | null {
-    if (!ciclo) return null;
+  // estadoUltimoCiclo(ciclo: Record<string, Ciclo> | null): string | null {
+  //   if (!ciclo) return null;
 
-    // Convertimos los valores del objeto ciclo en un array
-    const registros: Ciclo[] = Object.values(ciclo);
+  //   // Convertimos los valores del objeto ciclo en un array
+  //   const registros: Ciclo[] = Object.values(ciclo);
 
-    if (registros.length === 0) return null;
+  //   if (registros.length === 0) return null;
 
-    // Ordenamos por fecha de registro descendente
-    registros.sort((a, b) => new Date(b.registro).getTime() - new Date(a.registro).getTime());
+  //   // Ordenamos por fecha de registro descendente
+  //   registros.sort((a, b) => new Date(b.registro).getTime() - new Date(a.registro).getTime());
 
-    const ultimo = registros[0];
+  //   const ultimo = registros[0];
 
-    // Buscamos el label abreviado en tu diccionario ciclos según el estado
-    const encontrado = ciclos.find(c => c.value === ultimo.estado);
+  //   // Buscamos el label abreviado en tu diccionario ciclos según el estado
+  //   const encontrado = ciclos.find(c => c.value === ultimo.estado);
 
-    return encontrado ? encontrado.label : ultimo.estado;
-  }
+  //   return encontrado ? encontrado.label : ultimo.estado;
+  // }
 
   getCicloStatus(ciclo: Record<string, any>): 'activo' | 'inactivo' {
     if (!ciclo) return 'activo'; // si no hay ciclos, asumimos activo

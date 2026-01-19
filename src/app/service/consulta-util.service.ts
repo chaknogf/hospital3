@@ -2,7 +2,8 @@
 import { Injectable } from '@angular/core';
 import {
   ConsultaBase, Ciclo, Datos, Sistema, SignosVitales, Antecedentes,
-  Nota, ExamenFisico, Enfermeria, PresaQuirurgica, Egreso
+  Nota, ExamenFisico, Enfermeria, PresaQuirurgica, Egreso,
+  ConsultaOut
 } from '../interface/consultas';
 
 @Injectable({ providedIn: 'root' })
@@ -11,7 +12,7 @@ export class ConsultaUtilService {
   constructor() { }
 
   // 🔹 Normalización completa para backend y formulario
-  normalizarConsulta(raw: any): ConsultaBase {
+  normalizarConsulta(raw: any): ConsultaOut {
     return {
       id: raw.id ?? 0,
       expediente: raw.expediente ?? '',
