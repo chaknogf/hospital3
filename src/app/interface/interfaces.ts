@@ -71,6 +71,7 @@ export interface Neonatales {
   gemelo?: string | null;
   expediente_madre?: string | null;
   extrahositalario?: boolean | false;
+  hora_nacimiento?: string | null;
 }
 
 export interface DatosExtra {

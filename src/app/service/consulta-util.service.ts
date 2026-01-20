@@ -3,7 +3,12 @@ import { Injectable } from '@angular/core';
 import {
   ConsultaBase, Ciclo, Datos, Sistema, SignosVitales, Antecedentes,
   Nota, ExamenFisico, Enfermeria, PresaQuirurgica, Egreso,
-  ConsultaOut
+  ConsultaOut,
+  RegistroConsultaCreate,
+  Indicador,
+  ConsultaUpdate,
+  EstadoCiclo,
+  CicloPatch
 } from '../interface/consultas';
 
 @Injectable({ providedIn: 'root' })
@@ -14,67 +19,68 @@ export class ConsultaUtilService {
   // 🔹 Normalización completa para backend y formulario
   normalizarConsulta(raw: any): ConsultaOut {
     return {
-      id: raw.id ?? 0,
+      id: raw.id,
       expediente: raw.expediente ?? '',
-      paciente_id: raw.paciente_id ?? 0,
-      tipo_consulta: raw.tipo_consulta ?? null,
-      especialidad: raw.especialidad ?? null,
-      servicio: raw.servicio ?? null,
+      paciente_id: raw.paciente_id,
+      tipo_consulta: raw.tipo_consulta,
+      especialidad: raw.especialidad,
+      servicio: raw.servicio,
       documento: raw.documento ?? '',
       fecha_consulta: raw.fecha_consulta ?? '',
       hora_consulta: raw.hora_consulta ?? '',
-      indicadores: raw.indicadores ?? {
-        estudiante_publico: false,
-        empleado_publico: false,
-        accidente_laboral: false,
-        discapacidad: false,
-        accidente_transito: false,
-        arma_fuego: false,
-        arma_blanca: false,
-        embarazo: false,
-        ambulancia: false
-      },
-      ciclo: this.limpiarCiclos(raw.ciclo ?? {})
+      indicadores: raw.indicadores,
+      orden: raw.orden,
+      ciclo: this.normalizarCicloArray(raw.ciclo),
+      paciente: raw.paciente
     };
-
   }
 
-  // 🔹 Limpieza de ciclos (quita `additionalPropX`)
-  private limpiarCiclos(ciclos: any): { [key: string]: Ciclo } {
-    const limpio: { [key: string]: Ciclo } = {};
-    if (!ciclos || typeof ciclos !== 'object') return limpio;
+  private normalizarCicloArray(raw: any): Ciclo[] {
+    if (!raw) return [];
 
-    Object.entries(ciclos).forEach(([key, value]) => {
-      if (value && typeof value === 'object') {
-        limpio[key] = this.normalizarCiclo(value);
-      }
-    });
+    // Ya viene como array
+    if (Array.isArray(raw)) {
+      return raw.map(c => this.normalizarCiclo(c));
+    }
 
-    return limpio;
+    // Viene como dict legacy
+    if (typeof raw === 'object') {
+      return Object.values(raw).map(c => this.normalizarCiclo(c));
+    }
+
+    return [];
   }
+
+
 
   normalizarCiclo(raw: any): Ciclo {
     return {
-      estado: raw.estado ?? '',
-      registro: raw.registro ?? '',
-      usuario: raw.usuario ?? '',
-      especialidad: raw.especialidad ?? '',
-      servicio: raw.servicio ?? '',
-      detalle_clinico: raw.detalle_clinico ?? {},
-      sistema: raw.sistema ?? {},
-      signos_vitales: raw.signos_vitales ?? {},
-      antecedentes: raw.antecedentes ?? {},
-      ordenes: raw.ordenes ?? {},
-      estudios: raw.estudios ?? {},
-      comentario: raw.comentario ?? {},
-      impresion_clinica: raw.impresion_clinica ?? {},
-      tratamiento: raw.tratamiento ?? {},
-      examen_fisico: raw.examen_fisico ?? {},
-      nota_enfermeria: raw.nota_enfermeria ?? {},
-      contraindicado: raw.contraindicado ?? '',
-      presa_quirurgica: raw.presa_quirurgica ?? {},
-      egreso: raw.egreso ?? {},
+      estado: raw.estado,
+      registro: raw.registro,
+      usuario: raw.usuario,
+      especialidad: raw.especialidad,
+      servicio: raw.servicio,
+      detalle_clinicos: this.limpiarDict(raw.detalle_clinicos),
+      signos_vitales: this.limpiarDict(raw.signos_vitales),
+      antecedentes: this.limpiarDict(raw.antecedentes),
+      ordenes: this.limpiarDict(raw.ordenes),
+      estudios: this.limpiarDict(raw.estudios),
+      comentario: raw.comentario,
+      impresion_clinica: this.limpiarDict(raw.impresion_clinica),
+      tratamiento: this.limpiarDict(raw.tratamiento),
+      examen_fisico: this.limpiarDict(raw.examen_fisico),
+      nota_enfermeria: this.limpiarDict(raw.nota_enfermeria),
+      contraindicado: raw.contraindicado,
+      presa_quirurgica: this.limpiarDict(raw.presa_quirurgica),
+      egreso: this.limpiarDict(raw.egreso)
     };
+  }
+
+  private limpiarDict(value: any): any {
+    if (!value || typeof value !== 'object') return undefined;
+    return Object.fromEntries(
+      Object.entries(value).filter(([k]) => !k.startsWith('additionalProp'))
+    );
   }
 
   // 🔹 Calcular edad desde fecha
@@ -146,5 +152,60 @@ export class ConsultaUtilService {
     sistema[`r${total}`] = { usuario, fecha: timestamp };
 
     return sistema;
+  }
+
+  construirRegistroConsulta(
+    paciente_id: number,
+    tipo_consulta: number,
+    especialidad: string,
+    servicio: string,
+    indicadores: Indicador,
+    usuario: string
+  ): RegistroConsultaCreate {
+    return {
+      paciente_id,
+      tipo_consulta,
+      especialidad,
+      servicio,
+      indicadores,
+      ciclo: [
+        {
+          estado: 'iniciado',
+          registro: new Date().toISOString(),
+          usuario
+        }
+      ]
+    };
+  }
+
+  construirPatchCiclo(
+    estado: EstadoCiclo,
+    datos?: Partial<CicloPatch>
+  ): ConsultaUpdate {
+    return {
+      ciclo: {
+        estado,
+        ...datos
+      }
+    };
+  }
+  construirConsultaPatch(data: Partial<ConsultaUpdate>): ConsultaUpdate {
+    const patch: ConsultaUpdate = {};
+
+    if (data.expediente) patch.expediente = data.expediente;
+    if (data.tipo_consulta !== undefined) patch.tipo_consulta = data.tipo_consulta;
+    if (data.especialidad) patch.especialidad = data.especialidad;
+    if (data.servicio) patch.servicio = data.servicio;
+    if (data.documento) patch.documento = data.documento;
+    if (data.fecha_consulta) patch.fecha_consulta = data.fecha_consulta;
+    if (data.hora_consulta) patch.hora_consulta = data.hora_consulta;
+    if (data.indicadores) patch.indicadores = data.indicadores;
+    if (data.orden !== undefined) patch.orden = data.orden;
+
+    if (data.ciclo) {
+      patch.ciclo = this.normalizarCiclo(data.ciclo);
+    }
+
+    return patch;
   }
 }

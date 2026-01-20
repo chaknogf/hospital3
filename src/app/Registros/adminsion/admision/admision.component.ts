@@ -4,21 +4,19 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angul
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 import { ApiService } from '../../../service/api.service';
-import { ConsultaService } from '../../../service/consulta.service';
 import { ConsultaUtilService } from '../../../service/consulta-util.service';
 
 import { Dict, ciclos, tipoConsulta, especialidades, servicios } from '../../../enum/diccionarios';
 import { Paciente } from '../../../interface/interfaces';
-import { ConsultaUpdate } from './../../../interface/consultas';
+import { ConsultaOut, RegistroConsultaCreate, CicloClinico, EstadoCiclo } from './../../../interface/consultas';
 
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
-import { lastValueFrom, throwError } from 'rxjs';
 import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon, manIcon, womanIcon } from '../../../shared/icons/svg-icon';
 
 @Component({
@@ -42,8 +40,9 @@ export class AdmisionComponent implements OnInit {
 
   // 🔹 Datos de paciente y consulta
   paciente: Paciente = {} as Paciente;
+  consultaActual?: ConsultaOut;
   private consultaId?: number;
-  historialCiclos: any[] = [];
+  historialCiclos: CicloClinico[] = [];
 
   // 🔹 Configuración
   usuarioActual = '';
@@ -51,11 +50,6 @@ export class AdmisionComponent implements OnInit {
   public esEmergencia = false;
   public esCoesx = false;
   public esIngreso = false;
-
-  // 🔹 Fechas y registro
-  private registroactual: string = '';
-  private fechaActual: string = '';
-  private horaActual: string = '';
 
   // 🔹 Listas y enums
   tipoConsulta: Dict[] = tipoConsulta;
@@ -78,7 +72,6 @@ export class AdmisionComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private api: ApiService,
-    // private apiConsulta: ConsultaService,
     private consultaUtil: ConsultaUtilService,
     private sanitizer: DomSanitizer
   ) {
@@ -90,16 +83,7 @@ export class AdmisionComponent implements OnInit {
   // 🔹 Inicialización
   // ==========================
   ngOnInit(): void {
-    this.usuarioActual = localStorage.getItem('username') || '';
-    this.registroactual = new Date().toISOString();
-    const ahora = new Date();
-    this.fechaActual = ahora.toLocaleDateString('en-CA');
-    this.horaActual = ahora.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit', hour12: false });
-
-    this.form.patchValue({
-      fecha_consulta: this.fechaActual,
-      hora_consulta: this.horaActual
-    });
+    this.usuarioActual = this.api.getUsuarioActual().username;
 
     this.inicializarFlagsYCarga(this.route.snapshot.paramMap);
   }
@@ -109,15 +93,20 @@ export class AdmisionComponent implements OnInit {
   // ==========================
   private inicializarFormulario() {
     this.form = this.fb.group({
+      // Campos básicos (para visualización, no se envían en POST /registro)
       id: [null],
-      expediente: [''],
+      expediente: [{ value: '', disabled: true }],
+      documento: [{ value: '', disabled: true }],
+      fecha_consulta: [{ value: '', disabled: true }],
+      hora_consulta: [{ value: '', disabled: true }],
+      orden: [{ value: null, disabled: true }],
+
+      // Campos que SÍ se envían al backend
       paciente_id: [0],
       tipo_consulta: [0],
       especialidad: [''],
       servicio: [''],
-      documento: [''],
-      fecha_consulta: [''],
-      hora_consulta: [''],
+
       indicadores: this.fb.group({
         estudiante_publico: [false],
         empleado_publico: [false],
@@ -129,19 +118,11 @@ export class AdmisionComponent implements OnInit {
         ambulancia: [false],
         embarazo: [false]
       }),
-      ciclo: this.fb.group({}),
 
+      // Para actualización de ciclo
+      nuevo_estado: [''],
+      nuevo_servicio: ['']
     });
-
-    // Ciclos dinámicos
-    // ['ciclo1', 'ciclo2', 'ciclo3'].forEach(key => {
-    //   (this.form.get('ciclo') as FormGroup).addControl(key, this.crearCiclo());
-    // });
-    // 🔹 Si NO estamos editando, agregamos solo un ciclo inicial
-    if (!this.enEdicion) {
-      const ciclosForm = this.form.get('ciclo') as FormGroup;
-      ciclosForm.addControl('ciclo1', this.crearCiclo());
-    }
   }
 
   private inicializarSVG() {
@@ -161,17 +142,17 @@ export class AdmisionComponent implements OnInit {
     const origen = params.get('origen');
     const id = Number(params.get('id'));
     const pacienteId = Number(params.get('pacienteId'));
+
     // Flags de origen
     this.esEmergencia = origen === 'emergencia';
     this.esCoesx = origen === 'coex';
     this.esIngreso = origen === 'ingreso';
     this.consultaId = id === 0 ? undefined : id;
+
     // Inicializar valores según tipo
     if (this.esEmergencia) this.valoresEmergencia();
     else if (this.esCoesx) this.valoresCoex();
     else if (this.esIngreso) this.valoresIngreso();
-
-    // console.log('consulta: ', id, 'paciente: ', pacienteId, 'consultaId: ', this.consultaId);
 
     // Modo edición
     if (this.consultaId !== undefined) {
@@ -181,14 +162,6 @@ export class AdmisionComponent implements OnInit {
       this.cargarPaciente(pacienteId);
       this.enEdicion = false;
     }
-
-    // console.log(this.enEdicion);
-  }
-
-  private inicializarQueryParams(q: any) {
-    this.esCoesx ||= q['esCoex'];
-    this.esEmergencia ||= q['esEmergencia'];
-    this.esIngreso ||= q['esIngreso'];
   }
 
   // ==========================
@@ -198,18 +171,16 @@ export class AdmisionComponent implements OnInit {
     this.api.getPaciente(idP)
       .pipe(
         catchError(err => {
-          console.error('Error cargar paciente', err);
+          this.mostrarError('cargar paciente', err);
           return of(null);
         })
       )
       .subscribe(data => {
         if (data) {
           this.paciente = data;
-          // console.log(idP, data, this.paciente);
           this.form.patchValue({
             paciente_id: idP,
-            expediente: data.expediente,
-            fecha_nacimiento: data.fecha_nacimiento
+            expediente: data.expediente || 'Se generará automáticamente'
           });
         }
       });
@@ -219,119 +190,153 @@ export class AdmisionComponent implements OnInit {
     this.api.getConsultaId(id)
       .pipe(
         catchError(err => {
-          console.error('Error cargar consulta', err);
+          this.mostrarError('cargar consulta', err);
           return of(null);
         })
       )
       .subscribe(data => {
         if (data) {
-          const consulta = Array.isArray(data) ? data[0] : data;
-          this.form.patchValue(consulta);
-          if (consulta.paciente_id) this.cargarPaciente(consulta.paciente_id);
+          this.consultaActual = data;
 
-          // 🔹 Reconstruir FormGroup ciclo con los ciclos existentes
-          const ciclosForm = this.form.get('ciclo') as FormGroup;
-          ciclosForm.reset(); // limpia cualquier ciclo temporal
-          if (consulta.ciclo) {
-            Object.entries(consulta.ciclo).forEach(([key, ciclo]: [string, any]) => {
-              ciclosForm.addControl(key, this.fb.group({
-                estado: [ciclo.estado],
-                registro: [ciclo.registro],
-                usuario: [ciclo.usuario],
-                servicio: [ciclo.servicio || 'REME'],
-              }));
-            });
+          // Cargar datos básicos
+          this.form.patchValue({
+            id: data.id,
+            expediente: data.expediente,
+            documento: data.documento,
+            paciente_id: data.paciente_id,
+            tipo_consulta: data.tipo_consulta,
+            especialidad: data.especialidad,
+            servicio: data.servicio,
+            fecha_consulta: data.fecha_consulta,
+            hora_consulta: data.hora_consulta,
+            orden: data.orden,
+            indicadores: data.indicadores
+          });
+
+          // Cargar paciente
+          if (data.paciente_id) {
+            this.cargarPaciente(data.paciente_id);
           }
 
-          // 🔹 Historial de ciclos
-          this.historialCiclos = this.cargarCiclos(consulta.ciclo);
+          // Cargar historial de ciclos
+          this.historialCiclos = data.ciclo || [];
         }
       });
   }
 
-  private agregarNuevoCiclo(): void {
-    const ciclosForm = this.form.get('ciclo') as FormGroup;
-    const keys = Object.keys(ciclosForm.controls);
-
-    // 🔹 Calcular el siguiente índice según los ciclos existentes
-    const numeros = keys.map(k => Number(k.replace('ciclo', ''))).filter(n => !isNaN(n));
-    const nextIndex = numeros.length > 0 ? Math.max(...numeros) + 1 : 1;
-
-    const nuevoKey = `ciclo${nextIndex}`;
-    ciclosForm.addControl(nuevoKey, this.crearCiclo());
-  }
-
-  cargarCiclos(ciclos: any): any[] {
-    if (!ciclos) return [];
-
-    return Object.entries(ciclos)
-      .map(([key, ciclo]: [string, any]) => ({
-        id: key,
-        ...ciclo
-      }))
-      .sort((b, a) => a.registro.localeCompare(b.registro)); // Ordenar por fecha
-  }
   // ==========================
   // 🔹 Crear / Actualizar
   // ==========================
   guardar(): void {
-    // 🔹 Agregar un nuevo ciclo antes de guardar
-    this.agregarNuevoCiclo();
-
-    const consulta = this.form.getRawValue();
-    consulta.ciclo = this.filtrarCiclos(consulta.ciclo);
-    // console.log(consulta);
-    if (this.enEdicion) this.actualizar(consulta);
-    else this.crear(consulta);
-
-    this.volver();
+    if (this.enEdicion) {
+      this.actualizarCiclo();
+    } else {
+      this.registrarNuevaAdmision();
+    }
   }
 
-  async crear(consulta: any) {
-    try {
+  /**
+   * Registra una nueva admisión usando el endpoint simplificado
+   * POST /consultas/registro
+   */
+  private registrarNuevaAdmision(): void {
+    const formValue = this.form.getRawValue();
 
-      this.api.crearConsulta(consulta).pipe(
+    // Construir payload para registro
+    const datos: RegistroConsultaCreate = {
+      paciente_id: formValue.paciente_id,
+      tipo_consulta: formValue.tipo_consulta,
+      especialidad: formValue.especialidad,
+      servicio: formValue.servicio,
+      indicadores: formValue.indicadores,
+      ciclo: []
+    };
+
+    this.api.registrarAdmision(datos)
+      .pipe(
+        tap(response => {
+          console.log('✅ Admisión registrada:', response);
+          console.log('📋 Expediente generado:', response.expediente);
+          console.log('📝 Documento:', response.documento);
+          console.log('🔢 Orden en cola:', response.orden);
+          this.mostrarExito('Admisión registrada exitosamente');
+        }),
         catchError(err => {
-          this.mostrarError('crear consulta', err);
+          this.mostrarError('registrar admisión', err);
           return of(null);
         })
-      ).subscribe(resp => {
-        if (resp) {
-          // console.log('Consulta creada', resp);
+      )
+      .subscribe(response => {
+        if (response) {
+          this.volver();
         }
       });
-    } catch (error) {
-      console.error('Error al crear consulta', error);
-      throw error;
-    }
   }
-  async actualizar(consulta: ConsultaUpdate) {
-    try {
-      // ✅ Validación del ID
-      if (!this.consultaId || this.consultaId === 0) {
-        throw new Error("❌ Falta el ID de la consulta para actualizar");
-      }
 
-      // ✅ Usar await con lastValueFrom para código async/await limpio
-      const data = await lastValueFrom(
-        this.api.updateConsulta(this.consultaId, consulta).pipe(
-          catchError(err => {
-            this.mostrarError('actualizar consulta', err);
-            return throwError(() => err); // ✅ Propaga el error
-          })
-        )
-      );
-
-      if (data) {
-        console.log('✅ Consulta actualizada:', data);
-        // Aquí podrías actualizar el estado local si es necesario
-        // this.consultaActual.set(data);
-      }
-
-    } catch (error) {
-      this.mostrarError('actualizar consulta', error);
-      throw error; // ✅ Re-lanza para que el llamador pueda manejarlo
+  /**
+   * Actualiza una consulta existente agregando un nuevo ciclo
+   * PATCH /consultas/{id}
+   */
+  private actualizarCiclo(): void {
+    if (!this.consultaId) {
+      this.mostrarError('actualizar', new Error('ID de consulta no encontrado'));
+      return;
     }
+
+    const formValue = this.form.getRawValue();
+    const nuevoEstado = formValue.nuevo_estado as EstadoCiclo;
+    const nuevoServicio = formValue.nuevo_servicio;
+
+    // Validar que se haya seleccionado un estado
+    if (!nuevoEstado) {
+      alert('Por favor seleccione un estado para actualizar');
+      return;
+    }
+
+    // Usar el método helper del API service
+    this.api.agregarCiclo(
+      this.consultaId,
+      nuevoEstado,
+      {
+        servicio: nuevoServicio || formValue.servicio,
+        especialidad: formValue.especialidad
+      }
+    )
+      .pipe(
+        tap(response => {
+          console.log('✅ Ciclo actualizado:', response);
+          this.mostrarExito('Ciclo actualizado exitosamente');
+        }),
+        catchError(err => {
+          this.mostrarError('actualizar ciclo', err);
+          return of(null);
+        })
+      )
+      .subscribe(response => {
+        if (response) {
+          // Recargar la consulta para mostrar el historial actualizado
+          this.cargarConsulta(this.consultaId!);
+        }
+      });
+  }
+
+  /**
+   * Actualiza solo los indicadores
+   */
+  actualizarIndicadores(): void {
+    if (!this.consultaId) return;
+
+    const indicadores = this.form.get('indicadores')?.value;
+
+    this.api.actualizarIndicadores(this.consultaId, indicadores)
+      .pipe(
+        tap(() => this.mostrarExito('Indicadores actualizados')),
+        catchError(err => {
+          this.mostrarError('actualizar indicadores', err);
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 
   volver(): void {
@@ -349,7 +354,7 @@ export class AdmisionComponent implements OnInit {
     this.servicios = servicios.filter(s => s.ref === 'emergencia');
     this.form.patchValue({
       tipo_consulta: 3,
-
+      servicio: 'REME'
     });
   }
 
@@ -358,7 +363,7 @@ export class AdmisionComponent implements OnInit {
     this.servicios = servicios.filter(s => s.ref === 'ingreso');
     this.form.patchValue({
       tipo_consulta: 2,
-
+      servicio: 'HOSPITALIZACION'
     });
   }
 
@@ -367,70 +372,38 @@ export class AdmisionComponent implements OnInit {
     this.servicios = servicios.filter(s => s.ref === 'coex');
     this.form.patchValue({
       tipo_consulta: 1,
-      servicio: 'COEX',
-
+      servicio: 'COEX'
     });
   }
 
-
-
-  private crearCiclo(): FormGroup {
-    return this.fb.group({
-      estado: [this.enEdicion ? 'ACTU' : 'ADMI'],
-      registro: [new Date().toISOString()],
-      usuario: [this.usuarioActual],
-      servicio: ['REME'],
-      // especialidad: [''],
-      // detalle_clinico: this.fb.group({}),
-      // sistema: this.fb.group({}),
-      // signos_vitales: this.fb.group({}),
-      // antecedentes: this.fb.group({}),
-      // ordenes: this.fb.group({}),
-      // estudios: this.fb.group({}),
-      // comentario: this.fb.group({}),
-      // impresion_clinica: this.fb.group({}),
-      // tratamiento: this.fb.group({}),
-      // examen_fisico: this.fb.group({}),
-      // nota_enfermeria: this.fb.group({}),
-      // contraindicado: [''],
-      // presa_quirurgica: this.fb.group({}),
-      // egreso: this.fb.group({})
-    });
-  }
-
-  filtrarCiclos(ciclos: any): any {
-    const filtrados: any = {};
-    Object.entries(ciclos).forEach(([key, ciclo]: [string, any]) => {
-      if (ciclo && ciclo.estado && ciclo.registro) {
-        filtrados[key] = {
-          ...ciclo,
-          usuario: ciclo.usuario || this.usuarioActual,
-          registro: ciclo.registro || new Date().toISOString(),
-          servicio: ciclo.servicio || 'REME',
-          estado: ciclo.estado || (this.enEdicion ? 'ACTU' : 'ADMI'),
-          // especialidad: ciclo.especialidad || null,
-          // detalle_clinico: ciclo.detalle_clinico || {},
-          // signos_vitales: ciclo.signos_vitales || {},
-          // antecedentes: ciclo.antecedentes || {},
-          // ordenes: ciclo.ordenes || {},
-          // estudios: ciclo.estudios || {},
-          // comentario: ciclo.comentario || {},
-          // impresion_clinica: ciclo.impresion_clinica || {},
-          // tratamiento: ciclo.tratamiento || {},
-          // examen_fisico: ciclo.examen_fisico || {},
-          // nota_enfermeria: ciclo.nota_enfermeria || {},
-          // contraindicado: ciclo.contraindicado || '',
-          // presa_quirurgica: ciclo.presa_quirurgica || {},
-          // egreso: ciclo.egreso || {},
-        };
-      }
-    });
-    return filtrados;
-  }
-
+  // ==========================
+  // 🔹 Helpers de UI
+  // ==========================
   private mostrarError(accion: string, error: any): void {
-    console.error(`Error al ${accion}:`, error);
-    alert(`Error al ${accion}. Consulte la consola para más detalles.`);
+    console.error(`❌ Error al ${accion}:`, error);
+    alert(`Error al ${accion}. ${error?.error?.detail || error?.message || 'Consulte la consola'}`);
   }
 
+  private mostrarExito(mensaje: string): void {
+    console.log(`✅ ${mensaje}`);
+    // Aquí podrías usar un servicio de notificaciones más elegante
+    // this.toastr.success(mensaje);
+  }
+
+  // ==========================
+  // 🔹 Helpers para el template
+  // ==========================
+  get estadoActual(): EstadoCiclo | null {
+    if (!this.consultaActual?.ciclo || this.consultaActual.ciclo.length === 0) {
+      return null;
+    }
+    return this.consultaActual.ciclo[this.consultaActual.ciclo.length - 1].estado;
+  }
+
+  get ultimoCiclo(): CicloClinico | null {
+    if (!this.consultaActual?.ciclo || this.consultaActual.ciclo.length === 0) {
+      return null;
+    }
+    return this.consultaActual.ciclo[this.consultaActual.ciclo.length - 1];
+  }
 }

@@ -1,5 +1,5 @@
 <h2 class="titulo-principal text-center">
-  {{ enEdicion ? "Editar Admisión" : "Nueva Admisión" }}
+  {{ enEdicion ? "Actualizar Consulta" : "Nueva Admisión" }}
 </h2>
 
 <div class="botonera">
@@ -8,22 +8,31 @@
     Cancelar
   </button>
 
-  <button type="submit" class="btn btn-guardar" (click)="guardar()">
+  <button type="button" class="btn btn-guardar" (click)="guardar()">
     <span [innerHTML]="saveIcon"></span>
-    Guardar
+    {{ enEdicion ? "Actualizar" : "Registrar" }}
+  </button>
+
+  <!-- Botón adicional para actualizar solo indicadores en modo edición -->
+  <button
+    *ngIf="enEdicion"
+    type="button"
+    class="btn btn-info"
+    (click)="actualizarIndicadores()"
+  >
+    Actualizar Indicadores
   </button>
 </div>
 
-<form [formGroup]="form" class="formulario-moderno" (ngSubmit)="guardar()">
+<form [formGroup]="form" class="formulario-moderno">
   <!-- Anti-autocompletado -->
   <input type="text" name="fakeusernameremembered" style="display: none" />
   <input type="password" name="fakepasswordremembered" style="display: none" />
 
-  <!-- Datos del Paciente Compacto y Centrado -->
+  <!-- Datos del Paciente -->
   <fieldset class="grupo ficha-paciente text-center">
     <legend>Datos del Paciente</legend>
 
-    <!-- Línea 1: Nombre completo -->
     <div class="resumen linea-nombre justify-center">
       <span class="nombre-completo">
         {{ paciente.nombre.primer_nombre }}
@@ -35,18 +44,16 @@
       </span>
     </div>
 
-    <!-- Línea 2: CUI | Expediente | Fecha de nacimiento / Edad -->
     <div class="resumen linea-identidad justify-center">
       <span class="dato">CUI: {{ paciente.cui | cui }}</span>
       <span class="dato">Expediente: {{ paciente.expediente }}</span>
-      <span class="dato"
-        >Nacimiento: {{ paciente.fecha_nacimiento | date : "dd/MM/yyyy" }} ({{
+      <span class="dato">
+        Nacimiento: {{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }} ({{
           paciente.fecha_nacimiento | edad
-        }})</span
-      >
+        }})
+      </span>
     </div>
 
-    <!-- Línea 3: Sexo | Dirección | Teléfonos -->
     <div class="resumen linea-contacto justify-center">
       <span class="dato icono-sexo">
         <ng-container *ngIf="paciente.sexo === 'M'">
@@ -55,11 +62,11 @@
         <ng-container *ngIf="paciente.sexo === 'F'">
           <span [innerHTML]="womanIcon"></span>
         </ng-container>
-        {{ paciente.sexo | datosExtra : "sexo" }}
+        {{ paciente.sexo | datosExtra: "sexo" }}
       </span>
       <span class="dato direccion">
         {{ paciente.contacto?.domicilio }},
-        {{ paciente.contacto?.municipio | datosExtra : "vecindad" }}
+        {{ paciente.contacto?.municipio | datosExtra: "vecindad" }}
       </span>
       <span class="dato telefono" *ngIf="paciente.contacto?.telefonos">
         Tel: {{ paciente.contacto?.telefonos }}
@@ -67,48 +74,127 @@
     </div>
   </fieldset>
 
-  <!-- Admisión -->
+  <!-- Información de la Consulta (solo lectura en modo edición) -->
+  <fieldset class="grupo" *ngIf="enEdicion">
+    <legend>Información de la Consulta</legend>
+
+    <div class="grid grid-cols-3 gap-4">
+      <div>
+        <label>Expediente</label>
+        <input
+          type="text"
+          formControlName="expediente"
+          class="input-text"
+          readonly
+        />
+      </div>
+
+      <div>
+        <label>Documento</label>
+        <input
+          type="text"
+          formControlName="documento"
+          class="input-text"
+          readonly
+        />
+      </div>
+
+      <div>
+        <label>Orden</label>
+        <input
+          type="number"
+          formControlName="orden"
+          class="input-text"
+          readonly
+        />
+      </div>
+
+      <div>
+        <label>Fecha</label>
+        <input
+          type="date"
+          formControlName="fecha_consulta"
+          class="input-text"
+          readonly
+        />
+      </div>
+
+      <div>
+        <label>Hora</label>
+        <input
+          type="time"
+          formControlName="hora_consulta"
+          class="input-text"
+          readonly
+        />
+      </div>
+
+      <div>
+        <label>Estado Actual</label>
+        <input
+          type="text"
+          [value]="estadoActual || 'N/A'"
+          class="input-text"
+          readonly
+        />
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Admisión (campos editables) -->
   <fieldset class="grupo">
-    <legend>Admisión</legend>
+    <legend>{{ enEdicion ? "Datos de la Consulta" : "Nueva Admisión" }}</legend>
+
+    <label>Tipo de Consulta</label>
+    <select
+      formControlName="tipo_consulta"
+      class="input-select"
+      [disabled]="enEdicion"
+    >
+      <option *ngFor="let t of tipoConsulta" [value]="t.value">
+        {{ t.label | titlecase }}
+      </option>
+    </select>
 
     <label>Especialidad</label>
-    <select formControlName="especialidad" class="input-select">
+    <select
+      formControlName="especialidad"
+      class="input-select"
+      [disabled]="enEdicion"
+    >
       <option *ngFor="let e of especialidades" [value]="e.value">
         {{ e.label | titlecase }}
       </option>
     </select>
 
-    <label *ngIf="form.get('documento')?.value">Hoja de Emergencia</label>
-    <input
-      type="text"
-      id="documento"
-      formControlName="documento"
-      *ngIf="form.get('documento')?.value"
-      placeholder="Hoja de Emergencia"
-      name="hoja_emergencia"
-      autocomplete="off"
-      class="input-text"
-    />
-
-    <label>Tipo de consulta</label>
-    <select formControlName="tipo_consulta" class="input-select">
-      <option *ngFor="let t of tipoConsulta" [value]="t.value" disabled>
-        {{ t.label | titlecase }}
-      </option>
-    </select>
-
     <label>Servicio</label>
-    <select formControlName="servicio" class="input-select">
+    <select
+      formControlName="servicio"
+      class="input-select"
+      [disabled]="enEdicion"
+    >
       <option *ngFor="let s of servicios" [value]="s.value">
         {{ s.label | titlecase }}
       </option>
     </select>
 
-    <label>Fecha de Admisión</label>
-    <input type="date" formControlName="fecha_consulta" class="input-text" />
+    <!-- Solo en modo edición: campos para agregar nuevo ciclo -->
+    <ng-container *ngIf="enEdicion">
+      <label>Nuevo Estado (para actualizar)</label>
+      <select formControlName="nuevo_estado" class="input-select">
+        <option value="">-- Seleccione un estado --</option>
+        <option *ngFor="let c of ciclos" [value]="c.value">
+          {{ c.label | titlecase }}
+        </option>
+      </select>
 
-    <label>Hora de Admisión</label>
-    <input type="time" formControlName="hora_consulta" class="input-text" />
+      <label>Servicio para el nuevo ciclo</label>
+      <select formControlName="nuevo_servicio" class="input-select">
+        <option *ngFor="let s of servicios" [value]="s.value">
+          {{ s.label | titlecase }}
+        </option>
+      </select>
+    </ng-container>
   </fieldset>
 
   <!-- Indicadores -->
@@ -160,6 +246,37 @@
         <input type="checkbox" formControlName="accidente_transito" />
         <span>Accidente Tránsito</span>
       </label>
+    </div>
+  </fieldset>
+
+  <!-- Historial de Ciclos (solo en modo edición) -->
+  <fieldset class="grupo" *ngIf="enEdicion && historialCiclos.length > 0">
+    <legend>Historial del Ciclo Clínico</legend>
+
+    <div class="historial-ciclos">
+      <div
+        *ngFor="let ciclo of historialCiclos; let i = index"
+        class="ciclo-item"
+        [class.ciclo-actual]="i === historialCiclos.length - 1"
+      >
+        <div class="ciclo-header">
+          <span class="ciclo-numero">#{{ historialCiclos.length - i }}</span>
+          <span class="ciclo-estado">{{ ciclo.estado | uppercase }}</span>
+          <span class="ciclo-fecha">{{
+            ciclo.registro | date: "dd/MM/yyyy HH:mm"
+          }}</span>
+        </div>
+
+        <div class="ciclo-body">
+          <p><strong>Usuario:</strong> {{ ciclo.usuario }}</p>
+          <p *ngIf="ciclo.servicio">
+            <strong>Servicio:</strong> {{ ciclo.servicio }}
+          </p>
+          <p *ngIf="ciclo.especialidad">
+            <strong>Especialidad:</strong> {{ ciclo.especialidad }}
+          </p>
+        </div>
+      </div>
     </div>
   </fieldset>
 </form>

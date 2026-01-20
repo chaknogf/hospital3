@@ -1,5 +1,24 @@
 
 
+type EstadoCiclo =
+  | "admision"
+  | "signos"
+  | "consulta"
+  | "estudios"
+  | "tratamiento"
+  | "observacion"
+  | "evolucion"
+  | "procedimiento"
+  | "recuperacion"
+  | "egreso"
+  | "referido"
+  | "traslado"
+  | "prestamo"
+  | "archivo"
+  | "recepcion"
+  | "actualizado"
+  | "descartado"
+  | "reprogramado";
 
 
 // 🔹 Campos clínicos para referencias rápidas

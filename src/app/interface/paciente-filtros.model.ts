@@ -16,3 +16,17 @@ export interface PacienteFiltros {
   skip?: number;
   limit?: number;
 }
+
+
+export type FiltroConsulta = Partial<{
+  paciente_id: number;
+  expediente: string;
+  cui: number;
+  primer_nombre: string;
+  segundo_nombre: string;
+  primer_apellido: string;
+  segundo_apellido: string;
+  tipo_consulta: number;
+  especialidad: string;
+  fecha: string;
+}> & Record<string, any>;

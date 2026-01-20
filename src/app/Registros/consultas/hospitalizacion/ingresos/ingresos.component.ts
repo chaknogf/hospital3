@@ -18,7 +18,7 @@ import { TimePipe } from '../../../../pipes/time.pipe';
   templateUrl: './ingresos.component.html',
   styleUrls: ['./ingresos.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe]
+  imports: [CommonModule, FormsModule, CuiPipe, TimePipe]
 })
 export class IngresosComponent implements OnInit {
 

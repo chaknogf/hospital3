@@ -124,15 +124,16 @@
         <tr
           *ngFor="let data of consultas"
           class="aurora-table-row"
-          [class.touch-active]="rowActiva === data.id_consulta"
-          (click)="activarFila(data.id_consulta)"
+          [class.touch-active]="rowActiva === data.id"
+          (click)="activarFila(data.id)"
         >
           <td class="text-justify">
-            <div class="ms-4" *ngIf="data?.cui">
-              <strong>CUI:</strong> <small> {{ data.cui | cui }}</small>
+            <div class="ms-4" *ngIf="data?.paciente?.cui">
+              <strong>CUI:</strong>
+              <small> {{ data.paciente.cui | cui }}</small>
             </div>
-            <div *ngIf="data?.pasaporte">
-              <strong>Pasaporte:</strong> {{ data.pasaporte }}
+            <div *ngIf="data?.paciente?.pasaporte">
+              <strong>Pasaporte:</strong> {{ data.paciente.pasaporte }}
             </div>
             <div *ngIf="data?.expediente">
               <strong>Expediente:</strong> {{ data.expediente }}
@@ -143,17 +144,17 @@
           </td>
           <td>
             <p class="p-0 m-0 text-uppercase">
-              {{ data.nombre.primer_nombre }}
-              {{ data.nombre.segundo_nombre }}
-              {{ data.nombre.otro_nombre }}
+              {{ data.paciente.nombre.primer_nombre }}
+              {{ data.paciente.nombre.segundo_nombre }}
+              {{ data.paciente.nombre.otro_nombre }}
             </p>
             <p
               class="p-0 m-0 text-uppercase"
-              [ngClass]="data.sexo === 'M' ? 'hombre' : 'mujer'"
+              [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
             >
-              {{ data.nombre.primer_apellido }}
-              {{ data.nombre.segundo_apellido }}
-              {{ data.nombre.apellido_casada }}
+              {{ data.paciente.nombre.primer_apellido }}
+              {{ data.paciente.nombre.segundo_apellido }}
+              {{ data.paciente.nombre.apellido_casada }}
             </p>
           </td>
           <td class="oculto">
@@ -167,23 +168,25 @@
           </td>
           <td class="oculto">
             <!-- <small>{{ estadoUltimoCiclo(data.ciclo) }}</small> -->
-            <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
+            <!-- <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
               <span [innerHTML]="icons['activo']"></span>
             </ng-container>
             <ng-container *ngIf="getCicloStatus(data.ciclo) === 'inactivo'">
               <span [innerHTML]="icons['documento']"></span>
             </ng-container>
             {{ data.tipo_consulta | datosExtra: "tipo_consulta" }}
+          </td> -->
           </td>
+
           <td class="secundario">
             <div class="botones-opt">
-              <button (click)="editar(data.id_consulta)">
+              <button (click)="editar(data.id)">
                 <span [innerHTML]="icons['edit']"></span>
               </button>
-              <button (click)="verDetalle(data.id_consulta)">
+              <button (click)="verDetalle(data.id)">
                 <span [innerHTML]="icons['tabla']"></span>
               </button>
-              <button (click)="imprimir(data.id_consulta)">
+              <button (click)="imprimir(data.id)">
                 <span [innerHTML]="icons['print']"></span>
               </button>
             </div>

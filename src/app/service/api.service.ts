@@ -4,8 +4,9 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse } from '../interface/interfaces';
-import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, TotalesItem, TotalesResponse } from '../interface/consultas';
-
+import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, SignosVitales, TotalesItem, TotalesResponse } from '../interface/consultas';
+import { CicloClinico, EstadoCiclo } from '../interface/consultas';
+import { FiltroConsulta } from '../interface/paciente-filtros.model';
 interface PaginationState {
   filtro: any;
 }
@@ -327,58 +328,80 @@ export class ApiService {
   }
 
   // ======= CONSULTAS =======
+
+  /**
+   * Envía órdenes al BehaviorSubject (funcionalidad legacy)
+   */
   enviarOrdenes(ordenes: any): void {
     this.ordenesSubject.next(ordenes);
   }
 
-  getConsultas(filtros: any): Observable<ConsultaResponse[]> {
-    this.ultimoFiltroConsulta.filtro = filtros;
-    const params = this.limpiarParametros(filtros);
+  /**
+   * Busca consultas con filtros múltiples
+   * GET /consultas/
+   */
+  getConsultas(filtros: FiltroConsulta): Observable<ConsultaOut[]> {
+    this.ultimoFiltroConsulta.filtro = filtros || {};
+    const params = this.limpiarParametros(filtros || {});
 
-    return this.http.get<ConsultaResponse[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
-      tap(response => this.consultasSubject.next(response)),
+    return this.http.get<ConsultaOut[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
+      tap(response => {
+        // Convertir a ConsultaResponse si necesitas agregar datos del paciente
+        this.consultasSubject.next(response as any);
+      }),
       catchError(error => this.manejarError(error, 'obtener consultas'))
     );
   }
 
   /**
-   * Obtiene una sola consulta según filtros
+   * Obtiene una sola consulta según filtros (la primera que coincida)
+   * GET /consultas/
    */
-  getConsulta(filtros: any): Observable<ConsultaResponse | null> {
+  getConsulta(filtros: FiltroConsulta): Observable<ConsultaOut | null> {
     const params = this.limpiarParametros(filtros);
-    return this.http.get<ConsultaResponse[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
-      catchError(error => this.manejarError(error, 'obtener consulta')),
-      // Retornar solo la primera coincidencia o null si no hay resultados
-      tap(console.log),
-      map(res => (res && res.length > 0 ? res[0] : null))
+    return this.http.get<ConsultaOut[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
+      map(consultas => consultas && consultas.length > 0 ? consultas[0] : null),
+      catchError(error => this.manejarError(error, 'obtener consulta'))
     );
   }
 
   /**
    * Obtiene una consulta por su ID
+   * GET /consultas/{consulta_id}
    */
-  getConsultaId(id_consulta: number): Observable<ConsultaResponse> {
-    const params = new HttpParams().set('id_consulta', id_consulta.toString());
-    return this.http.get<ConsultaResponse>(`${this.baseUrl}/consultas/`, { params }).pipe(
+  getConsultaId(consultaId: number): Observable<ConsultaOut> {
+    return this.http.get<ConsultaOut>(`${this.baseUrl}/consultas/${consultaId}`).pipe(
       catchError(error => this.manejarError(error, 'obtener consulta por ID'))
     );
   }
 
-  crearConsulta(consulta: ConsultaCreate): Observable<ConsultaOut> {
+  /**
+   * Registro rápido de consulta (admisión)
+   * POST /consultas/registro
+   * El backend genera automáticamente: expediente, documento, fecha/hora, ciclo inicial, orden
+   */
+  registrarAdmision(datos: RegistroConsultaCreate): Observable<RegistroConsultaResponse> {
     this.isLoading.set(true);
-    return this.http.post<ConsultaOut>(`${this.baseUrl}/consultas/`, consulta).pipe(
+    return this.http.post<RegistroConsultaResponse>(
+      `${this.baseUrl}/consultas/registro`,
+      datos
+    ).pipe(
       tap(() => this.refrescarConsultas()),
-      catchError(error => this.manejarError(error, 'crear consulta')),
+      catchError(error => this.manejarError(error, 'registrar admisión',)),
       finalize(() => this.isLoading.set(false))
     );
   }
 
-
-  updateConsulta(consultaId: number, consulta: ConsultaUpdate): Observable<ConsultaOut> {
+  /**
+   * Actualiza una consulta (PATCH)
+   * IMPORTANTE: Si envías 'ciclo', se AGREGA al historial, no sobrescribe
+   * PATCH /consultas/{consulta_id}
+   */
+  updateConsulta(consultaId: number, datos: ConsultaUpdate): Observable<ConsultaOut> {
     this.isLoading.set(true);
-    return this.http.patch<ConsultaOut>(  // ✅ Cambió de put a patch
+    return this.http.patch<ConsultaOut>(
       `${this.baseUrl}/consultas/${consultaId}`,
-      consulta
+      datos
     ).pipe(
       tap(() => this.refrescarConsultas()),
       catchError(error => this.manejarError(error, 'actualizar consulta')),
@@ -386,17 +409,92 @@ export class ApiService {
     );
   }
 
-  deleteConsulta(consultaId: number): Observable<any> {
-    this.isLoading.set(true);
-    return this.http.delete<any>(`${this.baseUrl}/consulta/eliminar/${consultaId}`).pipe(
-      tap(() => this.refrescarConsultas()),
-      catchError(error => this.manejarError(error, 'eliminar consulta')),
-      finalize(() => this.isLoading.set(false))
-    );
+  /**
+   * Agrega un nuevo registro al ciclo clínico
+   * El backend automáticamente agrega: registro (timestamp), usuario
+   */
+  agregarCiclo(
+    consultaId: number,
+    estado: EstadoCiclo,
+    datosCiclo?: Partial<CicloClinico>
+  ): Observable<ConsultaOut> {
+    const ciclo: Partial<CicloClinico> = {
+      estado,
+      ...datosCiclo
+    };
+
+    return this.updateConsulta(consultaId, { ciclo: ciclo as CicloClinico });
   }
 
+  /**
+   * Actualiza indicadores (merge con los existentes)
+   */
+  actualizarIndicadores(
+    consultaId: number,
+    indicadores: Partial<Indicador>
+  ): Observable<ConsultaOut> {
+    return this.updateConsulta(consultaId, {
+      indicadores: indicadores as Indicador
+    });
+  }
+
+
+  /**
+   * Refresca la lista de consultas con los últimos filtros usados
+   */
   private refrescarConsultas(): void {
     this.getConsultas(this.ultimoFiltroConsulta.filtro).subscribe();
+  }
+
+  // ======= MÉTODOS HELPER PARA CICLO CLÍNICO =======
+
+  /**
+   * Registra signos vitales en el ciclo
+   */
+  registrarSignosVitales(
+    consultaId: number,
+    signos: SignosVitales
+  ): Observable<ConsultaOut> {
+    return this.agregarCiclo(consultaId, 'signos', {
+      signos_vitales: signos
+    });
+  }
+
+  /**
+   * Completa la consulta médica con diagnóstico y tratamiento
+   */
+  completarConsulta(
+    consultaId: number,
+    datos: {
+      impresion_clinica?: any;
+      tratamiento?: any;
+      ordenes?: any;
+      estudios?: any;
+    }
+  ): Observable<ConsultaOut> {
+    return this.agregarCiclo(consultaId, 'consulta', datos);
+  }
+
+  /**
+   * Registra egreso del paciente
+   */
+  registrarEgreso(
+    consultaId: number,
+    egreso: Egreso
+  ): Observable<ConsultaOut> {
+    return this.agregarCiclo(consultaId, 'egreso', {
+      egreso: egreso
+    });
+  }
+
+  /**
+   * Cambia el estado de la consulta sin datos adicionales
+   */
+  cambiarEstado(
+    consultaId: number,
+    estado: EstadoCiclo
+  ): Observable<ConsultaOut> {
+    return this.agregarCiclo(consultaId, estado);
   }
 
   // ======= TOTALES =======
