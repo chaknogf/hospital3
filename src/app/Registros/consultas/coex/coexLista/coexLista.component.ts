@@ -49,12 +49,12 @@ export class CoexListaComponent implements OnInit {
   visible = false;
   modalActivo = false;
   espacio: string = ' ';
-  pageSize: number = 200;
+  pageSize: number = 9;
   paginaActual: number = 1;
   finPagina: boolean = false;
 
   private ahora = new Date();
-  fechaActual = this.ahora.toLocaleDateString('en-CA');
+  fechaActual = '';
 
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
@@ -69,7 +69,7 @@ export class CoexListaComponent implements OnInit {
     segundo_nombre: '',
     primer_apellido: '',
     segundo_apellido: '',
-    fecha_consulta: '',
+    fecha: '',
     ciclo: '',
     especialidad: '',
     servicio: '',
@@ -118,27 +118,22 @@ export class CoexListaComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {
-    // 1️⃣ Suscribirse al observable de consultas
-    this.api.consultas$.subscribe((data) => {
-      this.consultas = data;
-      this.filtrarPorEspecialidadLocal();
-    });
+  // Cambios necesarios en coexLista.component.ts
 
-    // 2️⃣ Obtener totales - ✅ CORREGIDO
+  // 1️⃣ PROBLEMA EN ngOnInit - filtrosIniciales no incluye todos los campos
+  ngOnInit(): void {
+    this.fechaActual = this.ahora.toLocaleDateString('en-CA');
+    this.filtros.fecha = this.fechaActual;
+    this.filtros.limit = this.pageSize;
+
+    // 2️⃣ Obtener totales
     this.api.getTotales(this.fechaActual).subscribe({
       next: (response: TotalesResponse) => {
         this.totales = response.totales;
-
-        // ✅ Buscar el total de consultas COEX específicamente
         const consultasCoex = this.totales.find(t =>
           t.entidad.toLowerCase().includes('coex')
         );
-
         this.totalDeRegistros = consultasCoex?.total || 0;
-
-        console.log('📊 Totales cargados:', this.totales);
-        console.log('🔢 Total COEX:', this.totalDeRegistros);
       },
       error: (err) => {
         console.error('❌ Error al cargar totales:', err);
@@ -147,41 +142,136 @@ export class CoexListaComponent implements OnInit {
       }
     });
 
-    // 3️⃣ Llamar getConsultas con filtros iniciales
-    const filtrosIniciales = {
-      skip: 0,
-      limit: 6,
-      tipo_consulta: 1,
-      fecha_consulta: this.fechaActual
-    };
-
-    this.api.getConsultas(filtrosIniciales).subscribe();
+    // 3️⃣ FIX: Usar this.filtros en lugar de crear un objeto nuevo
+    this.cargarConsultas();
   }
 
-  async cargarConsultas() {
+  // 2️⃣ PROBLEMA EN cargarConsultas - necesita limpiar filtros vacíos
+  async cargarConsultas(filtros?: any) {
     this.cargando = true;
-    try {
-      this.api.getConsultas(this.filtros).subscribe({
-        next: (data) => {
-          this.consultas = data;
-          this.filtrarPorEspecialidadLocal();
-          this.totalDeRegistros = this.consultas.length;
-        },
-        error: (err) => {
-          console.error("Error al cargar consultas:", err);
-        },
-        complete: () => {
-          this.cargando = false;
-        }
-      });
-    } catch (error) {
-      console.error("Error:", error);
-      this.cargando = false;
+    const filtrosAUsar = filtros || this.filtros;
+
+    // ✅ FIX: Limpiar filtros vacíos antes de enviar
+    const filtrosLimpios = this.limpiarFiltrosVacios(filtrosAUsar);
+
+    this.api.getConsultas(filtrosLimpios).subscribe({
+      next: (data: ConsultaResponse[]) => {
+        this.consultas = data;
+
+        // ✅ Filtrar por especialidad localmente (una sola vez)
+        // this.filtrarPorEspecialidadLocal();
+
+        // console.log('✅ Consultas cargadas:', {
+        //   total: this.consultas.length,
+        //   filtros: filtrosLimpios,
+        //   especialidadSeleccionada: this.especialidadSeleccionada
+        // });
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar consultas:', err);
+        this.consultas = [];
+        this.medi = [];
+        this.pedia = [];
+        this.gine = [];
+        this.ciru = [];
+        this.trauma = [];
+        this.psico = [];
+        this.nutri = [];
+        this.odonto = [];
+      },
+      complete: () => {
+        this.cargando = false;
+      }
+    });
+  }
+
+  // 3️⃣ NUEVO MÉTODO: Limpiar filtros vacíos
+  private limpiarFiltrosVacios(filtros: any): any {
+    const filtrosLimpios: any = {};
+
+    for (const key in filtros) {
+      const valor = filtros[key];
+
+      // Incluir solo valores que no sean vacíos
+      if (valor !== '' && valor !== null && valor !== undefined) {
+        filtrosLimpios[key] = valor;
+      }
+
+      // Siempre incluir skip, limit y tipo_consulta
+      if (key === 'skip' || key === 'limit' || key === 'tipo_consulta') {
+        filtrosLimpios[key] = valor;
+      }
     }
+
+    return filtrosLimpios;
+  }
+
+  // 4️⃣ FIX EN buscar() - Asegurar que fecha_consulta se envíe
+  buscar() {
+    this.filtros.skip = 0;
+    this.paginaActual = 1;
+    this.especialidadSeleccionada = '';
+    this.filtros.especialidad = '';
+
+    // ✅ Asegurar que la fecha actual esté en los filtros
+    if (!this.filtros.fecha) {
+      this.filtros.fecha = this.fechaActual;
+    }
+
+
+
+    // console.log('🔍 Buscando con filtros:', this.filtros);
+    this.filtrarPorEspecialidadLocal();
+  }
+
+  // 5️⃣ FIX EN limpiarFiltros() - Mantener fecha actual
+  limpiarFiltros() {
+    this.filtros = {
+      skip: 0,
+      limit: this.pageSize,
+      tipo_consulta: 1,
+      primer_nombre: '',
+      segundo_nombre: '',
+      primer_apellido: '',
+      segundo_apellido: '',
+      fecha: this.fechaActual,
+      ciclo: '',
+      especialidad: '',
+      servicio: '',
+      identificador: ''
+    };
+    this.paginaActual = 1;
+    this.especialidadSeleccionada = '';
+    this.cargarConsultas();
+  }
+
+  // 6️⃣ NUEVO MÉTODO: Para cambiar fecha desde el template
+  cambiarFecha() {
+    this.filtros.skip = 0;
+    this.paginaActual = 1;
+    this.especialidadSeleccionada = '';
+    this.filtros.especialidad = '';
+
+    // Actualizar totales con la nueva fecha
+    this.api.getTotales(this.filtros.fecha).subscribe({
+      next: (response: TotalesResponse) => {
+        this.totales = response.totales;
+        const consultasCoex = this.totales.find(t =>
+          t.entidad.toLowerCase().includes('coex')
+        );
+        this.totalDeRegistros = consultasCoex?.total || 0;
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar totales:', err);
+      }
+    });
+
+    this.cargarConsultas();
   }
 
   // ✅ Método auxiliar para filtrar localmente por especialidad
   private filtrarPorEspecialidadLocal() {
+
     this.medi = this.consultas.filter(c => c.especialidad === 'MEDI');
     this.pedia = this.consultas.filter(c => c.especialidad === 'PEDI');
     this.gine = this.consultas.filter(c => c.especialidad === 'GINE');
@@ -192,57 +282,21 @@ export class CoexListaComponent implements OnInit {
     this.odonto = this.consultas.filter(c => c.especialidad === 'ODON');
   }
 
-  async filtrarPorEspecialidad(especialidad: string) {
+  seleccionarEspecialidad(especialidad: string) {
     this.especialidadSeleccionada = especialidad;
-    this.cargando = true;
 
-    try {
-      this.api.getConsultas({
-        ...this.filtros,
-        especialidad
-      }).subscribe({
-        next: (data) => {
-          this.consultas = data;
-          this.filtrarPorEspecialidadLocal();
-        },
-        error: (err) => {
-          console.error("Error al filtrar por especialidad:", err);
-        },
-        complete: () => {
-          this.cargando = false;
-        }
-      });
-    } catch (error) {
-      console.error("Error:", error);
-      this.cargando = false;
-    }
-  }
+    // ✅ Actualizar filtros con la especialidad seleccionada
+    this.filtros.especialidad = especialidad;
+    this.filtros.skip = 0; // Resetear a primera página
+    this.paginaActual = 1;
 
-  buscar() {
-    this.filtros.skip = 0;
+    // console.log(this.filtros);
+
+    // ✅ Un solo llamado con los filtros actualizados
     this.cargarConsultas();
   }
 
-  toggleFiltrar() {
-    this.filtrar = !this.filtrar;
-  }
 
-  limpiarFiltros() {
-    this.filtros = {
-      skip: 0,
-      limit: this.pageSize,
-      tipo_consulta: 1,
-      primer_nombre: '',
-      segundo_nombre: '',
-      primer_apellido: '',
-      segundo_apellido: '',
-      fecha_consulta: '',
-      ciclo: '',
-      especialidad: '',
-      identificador: ''
-    };
-    this.cargarConsultas();
-  }
 
   editar(id: number) {
     this.router.navigate(['/editarAdmision', id, 'coex']);
@@ -254,6 +308,10 @@ export class CoexListaComponent implements OnInit {
 
   verDetalle(consultaId: number) {
     this.router.navigate(['/detalleAdmision', consultaId]);
+  }
+
+  toggleFiltrar() {
+    this.filtrar = !this.filtrar;
   }
 
   imprimir(consultaId: number) {
@@ -277,9 +335,8 @@ export class CoexListaComponent implements OnInit {
     this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
     this.filtros.limit = this.pageSize;
 
-    this.buscar();
+    this.cargarConsultas(this.filtros);
   }
-
   mostrar(): void {
     this.visible = !this.visible;
   }

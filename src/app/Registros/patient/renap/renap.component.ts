@@ -2,7 +2,7 @@
 import { agregarPersonaIcon, regresarIcon } from './../../../shared/icons/svg-icon';
 import { Renap } from './../../../interface/interfaces';
 import { CommonModule, formatDate } from '@angular/common';
-import { PacienteFiltros } from '../../../interface/paciente-filtros.model';
+import { PacienteFiltros } from '../../../interface/filtros.model';
 import { FormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../service/api.service';

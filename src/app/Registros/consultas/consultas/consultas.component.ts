@@ -19,28 +19,25 @@ import { TimePipe } from '../../../pipes/time.pipe';
   templateUrl: './consultas.component.html',
   styleUrls: ['./consultas.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe]
+  imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe, EdadPipe]
 })
 export class ConsultasComponent implements OnInit {
 
-  esEmergencia = true;
   consultas: ConsultaResponse[] = [];
   totales: Totales[] = [];
   paciente: Paciente | null = null;
-  public status: 'activo' | 'inactivo' | 'none' = 'none';
+  tipos: Dict[] = tipoConsulta;
   cargando = false;
   filtrar = false;
   visible = false;
   modalActivo = false;
   espacio: string = ' ';
-  pageSize: number = 20;
-  skip: number = 0;
+  pageSize: number = 8;
   paginaActual: number = 1;
   finPagina: boolean = false;
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
   ciclos: Dict[] = ciclos;
-  tipos: Dict[] = tipoConsulta;
 
 
   filtros: any = {
@@ -57,9 +54,6 @@ export class ConsultasComponent implements OnInit {
     servicio: '',
     identificador: '',
   };
-
-
-
 
   // iconos (ahora inyectados por servicio)
   icons: { [key: string]: any } = {};
@@ -97,29 +91,21 @@ export class ConsultasComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Suscribirse a las consultas (observable único de la app)
+    // 1️⃣ Suscribirse al observable de consultas
     this.api.consultas$.subscribe((data) => {
       this.consultas = data;
     });
-
-    // Totales
-    // this.api.getTotales().subscribe((data) => {
-    //   this.totales = data;
-    //   this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
-    // });
-
-    // 👇 Aquí sí usamos filtros desde el inicio
-    this.api.getConsultas(this.filtros);
+    this.buscar();
   }
 
   async cargarConsultas() {
     this.cargando = true;
     try {
-
       this.api.getConsultas(this.filtros).subscribe((data) => {
         this.consultas = data;
       });
-      // console.log(this.filtros)
+      //
+      // console.log(this.consultas);
       this.totalDeRegistros = this.consultas.length;
     } catch (error) {
       console.error("Error:", error);
@@ -129,11 +115,10 @@ export class ConsultasComponent implements OnInit {
   }
 
   buscar() {
-
-
+    this.filtros
     this.cargarConsultas();
-
   }
+
   toggleFiltrar() {
     this.filtrar = !this.filtrar;
   }
@@ -155,25 +140,18 @@ export class ConsultasComponent implements OnInit {
   }
 
   editar(id: number) {
-    this.router.navigate(['/editarAdmision', id]);
+    this.router.navigate(['/editarAdmision', id, 'emergencia']);
   }
   agregar() {
-    this.router.navigate(['/admision']);
+    this.router.navigate(['/pacientes']);
   }
 
   verDetalle(consultaId: number) {
     this.router.navigate(['/detalleAdmision', consultaId]);
   }
 
-  imprimir(consultaId: number, tipo: number) {
-    if (tipo === 1) {
-      this.router.navigate(['/hojaCoex', consultaId]);
-    } else if (tipo === 2) {
-      this.router.navigate(['/hojaIngreso', consultaId]);
-    } else {
-      this.router.navigate(['/hojaEmergencia', consultaId]);
-    }
-
+  imprimir(consultaId: number) {
+    this.router.navigate(['/hojaEmergencia', consultaId]);
   }
 
   volver() {
@@ -205,7 +183,7 @@ export class ConsultasComponent implements OnInit {
   rowActiva: number | null = null;
 
   activarFila(id: number) {
-    this.rowActiva = this.rowActiva === id ? null : id; // toggle
+    this.rowActiva = this.rowActiva === id ? null : id;
   }
 
   // estadoUltimoCiclo(ciclo: Record<string, Ciclo> | null): string | null {

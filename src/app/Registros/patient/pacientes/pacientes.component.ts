@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { Paciente, Renap, Totales } from '../../../interface/interfaces';
 import { IconService } from '../../../service/icon.service';
-import { PacienteFiltros } from '../../../interface/paciente-filtros.model';
+import { PacienteFiltros } from '../../../interface/filtros.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from "../../../pipes/edad.pipe";

@@ -6,7 +6,8 @@ import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse } from '../interface/interfaces';
 import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, SignosVitales, TotalesItem, TotalesResponse } from '../interface/consultas';
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
-import { FiltroConsulta } from '../interface/paciente-filtros.model';
+import { FiltroConsulta } from '../interface/filtros.model';
+import { Console } from 'console';
 interface PaginationState {
   filtro: any;
 }
@@ -341,8 +342,9 @@ export class ApiService {
    * GET /consultas/
    */
   getConsultas(filtros: FiltroConsulta): Observable<ConsultaOut[]> {
-    this.ultimoFiltroConsulta.filtro = filtros || {};
-    const params = this.limpiarParametros(filtros || {});
+    this.ultimoFiltroConsulta.filtro = filtros;
+    const params = this.limpiarParametros(filtros);
+    // console.log(params);
 
     return this.http.get<ConsultaOut[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
       tap(response => {

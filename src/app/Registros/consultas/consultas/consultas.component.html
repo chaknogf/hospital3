@@ -32,22 +32,22 @@
       </fieldset>
 
       <fieldset>
-        <label>Primer paciente.nombre</label>
+        <label>Primer nombre</label>
         <input
           type="text"
-          [(ngModel)]="filtros.primer_paciente.nombre"
-          name="primerpaciente.nombre"
-          placeholder="Buscar por paciente.nombre"
+          [(ngModel)]="filtros.primer_nombre"
+          name="primerNombre"
+          placeholder="Buscar por nombre"
         />
       </fieldset>
 
       <fieldset>
-        <label>Segundo paciente.nombre</label>
+        <label>Segundo nombre</label>
         <input
           type="text"
-          [(ngModel)]="filtros.segundo_paciente.nombre"
-          name="segundopaciente.nombre"
-          placeholder="Buscar por paciente.nombre"
+          [(ngModel)]="filtros.segundo_nombre"
+          name="segundoNombre"
+          placeholder="Buscar por nombre"
         />
       </fieldset>
 
@@ -81,15 +81,6 @@
       </fieldset>
 
       <fieldset>
-        <label for="">Tipo Consulta</label>
-        <select name="ciclo" [(ngModel)]="filtros.tipo_consulta" id="cilo">
-          <option *ngFor="let tipo of tipos" [value]="tipo.value">
-            {{ tipo.label }}
-          </option>
-        </select>
-      </fieldset>
-
-      <fieldset>
         <label for="">ciclo</label>
         <select name="ciclo" [(ngModel)]="filtros.ciclo" id="cilo">
           <option *ngFor="let ciclo of ciclos" [value]="ciclo.value">
@@ -106,6 +97,9 @@
         <button type="button" (click)="limpiarFiltros()">
           <span [innerHTML]="icons['delete']"></span> Limpiar
         </button>
+        <button type="button" (click)="agregar()">
+          <span [innerHTML]="icons['create']"></span> Agregar
+        </button>
       </div>
     </form>
     <div class="d-flex justify-content-center m-0 p-0">
@@ -120,7 +114,9 @@
       <thead>
         <tr>
           <th>Identificador</th>
-          <th>paciente.nombre Completo</th>
+          <th>Nombre Completo</th>
+          <th>Fecha Nacimiento</th>
+
           <th>Fecha</th>
           <th>Ciclo & Estado</th>
           <th>Acciones</th>
@@ -147,9 +143,6 @@
             <div *ngIf="data?.documento">
               <strong>Hoja de Emergencia:</strong> {{ data.documento }}
             </div>
-            <div class="ms-4" *ngIf="data?.id">
-              <strong>Consulta No.:</strong> <small> {{ data.id }}</small>
-            </div>
           </td>
           <td>
             <p class="p-0 m-0 text-uppercase">
@@ -166,6 +159,11 @@
               {{ data.paciente.nombre.apellido_casada }}
             </p>
           </td>
+          <td class="oculto">
+            {{ data.paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
+            <br />
+            <small>{{ data.paciente.fecha_nacimiento | edad }}</small>
+          </td>
 
           <td class="oculto">
             <ng-container>
@@ -177,8 +175,8 @@
             </ng-container>
           </td>
           <td class="oculto">
-            <!-- <small>{{ estadoUltimoCiclo(data.ciclo) }}</small>
-              <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
+            <!-- <small>{{ estadoUltimoCiclo(data.ciclo) }}</small> -->
+            <!-- <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
                 <span [innerHTML]="icons['activo']"></span>
               </ng-container>
               <ng-container *ngIf="getCicloStatus(data.ciclo) === 'inactivo'">
@@ -188,15 +186,15 @@
           </td>
           <td class="secundario">
             <div class="botones-opt">
-              <button (click)="editar(data.id)">
+              <button (click)="editar(data.id); $event.stopPropagation()">
                 <span [innerHTML]="icons['edit']"></span>
               </button>
-              <button (click)="verDetalle(data.id)">
+              <button (click)="verDetalle(data.id); $event.stopPropagation()">
                 <span [innerHTML]="icons['tabla']"></span>
               </button>
-              <!-- <button (click)="imprimir(data.id, data.tipo_consulta)" >
-                  <span [innerHTML]="icons['print']"></span>
-                </button> -->
+              <button (click)="imprimir(data.id); $event.stopPropagation()">
+                <span [innerHTML]="icons['print']"></span>
+              </button>
             </div>
           </td>
         </tr>

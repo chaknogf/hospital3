@@ -50,7 +50,7 @@ export class IngresosComponent implements OnInit {
     segundo_nombre: '',
     primer_apellido: '',
     segundo_apellido: '',
-    fecha_consulta: '',
+    fecha: '',
     ciclo: '',
     especialidad: '',
     servicio: '',
@@ -93,16 +93,7 @@ export class IngresosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // 1️⃣ Suscribirse al observable de consultas
-    this.api.consultas$.subscribe((data) => {
-      this.consultas = data;
-    });
 
-    // 2️⃣ Obtener totales
-    // this.api.getTotales().subscribe((data) => {
-    //   this.totales = data;
-    //   this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
-    // });
 
     // 3️⃣ Llamar getConsultas con filtros iniciales
     const filtrosIniciales = {
@@ -111,7 +102,7 @@ export class IngresosComponent implements OnInit {
       tipo_consulta: 2
     };
 
-    this.api.getConsultas(filtrosIniciales);
+    this.buscar();
   }
 
   async cargarConsultas() {
@@ -146,7 +137,7 @@ export class IngresosComponent implements OnInit {
       segundo_nombre: '',
       primer_apellido: '',
       segundo_apellido: '',
-      fecha_consulta: '',
+      fecha: '',
       ciclo: '',
       identificador: ''
     };

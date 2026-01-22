@@ -73,11 +73,7 @@
 
       <fieldset>
         <label>Fecha de consulta</label>
-        <input
-          type="date"
-          [(ngModel)]="filtros.fecha_consulta"
-          name="fechaConsulta"
-        />
+        <input type="date" [(ngModel)]="filtros.fecha" name="fechaConsulta" />
       </fieldset>
 
       <fieldset>
@@ -87,6 +83,7 @@
             {{ ciclo.label }}
           </option>
         </select>
+        <h3>Fecha de busqueda: {{ filtros.fecha }}</h3>
       </fieldset>
 
       <!-- Botones -->
@@ -111,56 +108,56 @@
 
   <div class="botones justify-content-stretch">
     <button
-      (click)="filtrarPorEspecialidad('MEDI')"
+      (click)="seleccionarEspecialidad('MEDI')"
       [class.activo]="especialidadSeleccionada === 'MEDI'"
     >
       Medi <span [innerHTML]="icons['medicina']"></span>
     </button>
 
     <button
-      (click)="filtrarPorEspecialidad('PEDI')"
+      (click)="seleccionarEspecialidad('PEDI')"
       [class.activo]="especialidadSeleccionada === 'PEDI'"
     >
       Pedia <span [innerHTML]="icons['pedia']"></span>
     </button>
 
     <button
-      (click)="filtrarPorEspecialidad('GINE')"
+      (click)="seleccionarEspecialidad('GINE')"
       [class.activo]="especialidadSeleccionada === 'GINE'"
     >
       Gine <span [innerHTML]="icons['gine']"></span>
     </button>
 
     <button
-      (click)="filtrarPorEspecialidad('CIRU')"
+      (click)="seleccionarEspecialidad('CIRU')"
       [class.activo]="especialidadSeleccionada === 'CIRU'"
     >
       Ciru <span [innerHTML]="icons['ciru']"></span>
     </button>
 
     <button
-      (click)="filtrarPorEspecialidad('TRAU')"
+      (click)="seleccionarEspecialidad('TRAU')"
       [class.activo]="especialidadSeleccionada === 'TRAU'"
     >
       Trauma <span [innerHTML]="icons['trauma']"></span>
     </button>
 
     <button
-      (click)="filtrarPorEspecialidad('PSIC')"
+      (click)="seleccionarEspecialidad('PSIC')"
       [class.activo]="especialidadSeleccionada === 'PSIC'"
     >
       Psico <span [innerHTML]="icons['psico']"></span>
     </button>
 
     <button
-      (click)="filtrarPorEspecialidad('NUTR')"
+      (click)="seleccionarEspecialidad('NUTR')"
       [class.activo]="especialidadSeleccionada === 'NUTR'"
     >
       Nutri <span [innerHTML]="icons['nutri']"></span>
     </button>
 
     <button
-      (click)="filtrarPorEspecialidad('ODON')"
+      (click)="seleccionarEspecialidad('ODON')"
       [class.activo]="especialidadSeleccionada === 'ODON'"
     >
       Odonto <span [innerHTML]="icons['odont']"></span>

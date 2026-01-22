@@ -1,4 +1,4 @@
-// paciente-filtros.model.ts
+// filtros.model.ts
 export interface PacienteFiltros {
   q?: any;
   id?: string;

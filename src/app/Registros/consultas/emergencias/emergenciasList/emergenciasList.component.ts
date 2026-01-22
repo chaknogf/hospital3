@@ -50,7 +50,7 @@ export class EmergenciasListComponent implements OnInit {
     segundo_nombre: '',
     primer_apellido: '',
     segundo_apellido: '',
-    fecha_consulta: '',
+    fecha: '',
     ciclo: '',
     especialidad: '',
     servicio: '',
@@ -98,15 +98,7 @@ export class EmergenciasListComponent implements OnInit {
       this.consultas = data;
     });
 
-    // 2️⃣ Obtener totales
-    // this.api.getTotales().subscribe((data) => {
-    //   this.totales = data;
-    //   this.totalDeRegistros = this.totales.find(t => t.entidad === 'consultas')?.total || 0;
-    // });
-
-
-
-    this.api.getConsultas(this.filtros);
+    this.buscar();
   }
 
   async cargarConsultas() {
@@ -143,7 +135,7 @@ export class EmergenciasListComponent implements OnInit {
       segundo_nombre: '',
       primer_apellido: '',
       segundo_apellido: '',
-      fecha_consulta: '',
+      fecha: '',
       ciclo: '',
       identificador: ''
     };

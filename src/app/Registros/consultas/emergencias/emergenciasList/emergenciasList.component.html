@@ -73,11 +73,7 @@
 
       <fieldset>
         <label>Fecha de consulta</label>
-        <input
-          type="date"
-          [(ngModel)]="filtros.fecha_consulta"
-          name="fechaConsulta"
-        />
+        <input type="date" [(ngModel)]="filtros.fecha" name="fechaConsulta" />
       </fieldset>
 
       <fieldset>
@@ -87,6 +83,7 @@
             {{ ciclo.label }}
           </option>
         </select>
+        <h3>Fecha de busqueda: {{ filtros.fecha }}</h3>
       </fieldset>
 
       <!-- Botones -->
