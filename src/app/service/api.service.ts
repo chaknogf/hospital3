@@ -356,6 +356,25 @@ export class ApiService {
   }
 
   /**
+   * Busca consultas con filtros múltiples
+   * GET /consultas/
+   */
+  getConsultasActivas(filtros: FiltroConsulta): Observable<ConsultaOut[]> {
+    this.ultimoFiltroConsulta.filtro = filtros;
+    const params = this.limpiarParametros(filtros);
+    // console.log(params);
+
+    return this.http.get<ConsultaOut[]>(`${this.baseUrl}/consultas/activas`, { params }).pipe(
+      tap(response => {
+        // Convertir a ConsultaResponse si necesitas agregar datos del paciente
+        this.consultasSubject.next(response as any);
+      }),
+      catchError(error => this.manejarError(error, 'obtener consultas'))
+    );
+  }
+
+
+  /**
    * Obtiene una sola consulta según filtros (la primera que coincida)
    * GET /consultas/
    */

@@ -1,0 +1,226 @@
+<div class="aurora-paciente-container" [class.d-none]="modalActivo">
+  <!-- Botones superiores -->
+  <div
+    class="botones justify-content-between"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="icons['menu']"></span>
+      Menu
+    </button>
+
+    <h1 class="text-white">Consultas</h1>
+
+    <button type="button" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['find']"></span>
+      Filtrar
+    </button>
+  </div>
+
+  <!-- Contenedor de Búsqueda -->
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
+    <form class="" (submit)="buscar(); $event.preventDefault()">
+      <!-- Campos -->
+      <fieldset>
+        <label>Identificador</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.identificador"
+          name="identificador"
+          placeholder="Buscar por identificador"
+        />
+      </fieldset>
+
+      <fieldset>
+        <label>Primer nombre</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.primer_nombre"
+          name="primerNombre"
+          placeholder="Buscar por nombre"
+        />
+      </fieldset>
+
+      <fieldset>
+        <label>Segundo nombre</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.segundo_nombre"
+          name="segundoNombre"
+          placeholder="Buscar por nombre"
+        />
+      </fieldset>
+
+      <fieldset>
+        <label>Primer apellido</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.primer_apellido"
+          name="primerApellido"
+          placeholder="Buscar por apellido"
+        />
+      </fieldset>
+
+      <fieldset>
+        <label>Segundo apellido</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.segundo_apellido"
+          name="segundoApellido"
+          placeholder="Buscar por apellido"
+        />
+      </fieldset>
+
+      <fieldset>
+        <label>Fecha de consulta</label>
+        <input
+          type="date"
+          [(ngModel)]="filtros.fecha_consulta"
+          name="fechaConsulta"
+        />
+      </fieldset>
+
+      <fieldset>
+        <label for="">ciclo</label>
+        <select name="ciclo" [(ngModel)]="filtros.ciclo" id="cilo">
+          <option *ngFor="let ciclo of ciclos" [value]="ciclo.value">
+            {{ ciclo.label }}
+          </option>
+        </select>
+      </fieldset>
+
+      <!-- Botones -->
+      <div class="botones">
+        <button type="submit">
+          <span [innerHTML]="icons['search']"></span> Buscar
+        </button>
+        <button type="button" (click)="limpiarFiltros()">
+          <span [innerHTML]="icons['delete']"></span> Limpiar
+        </button>
+        <button type="button" (click)="agregar()">
+          <span [innerHTML]="icons['create']"></span> Agregar
+        </button>
+      </div>
+    </form>
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="btn m-0 p-0" (click)="toggleFiltrar()">
+        <span [innerHTML]="icons['arrowDown']"></span>
+      </button>
+    </div>
+  </div>
+  <!-- Tabla principal (desktop) -->
+  <div class="aurora-container">
+    <table class="aurora-tb">
+      <thead>
+        <tr>
+          <th>Identificador</th>
+          <th>Nombre Completo</th>
+          <th>Fecha Nacimiento</th>
+
+          <th>Fecha</th>
+          <th>Ciclo & Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let data of consultas"
+          class="aurora-table-row"
+          [class.touch-active]="rowActiva === data.id"
+          (click)="activarFila(data.id)"
+        >
+          <td class="text-justify">
+            <div class="ms-4" *ngIf="data?.paciente?.cui">
+              <strong>CUI:</strong>
+              <small> {{ data.paciente.cui | cui }}</small>
+            </div>
+            <div *ngIf="data?.paciente?.pasaporte">
+              <strong>Pasaporte:</strong> {{ data.paciente.pasaporte }}
+            </div>
+            <div *ngIf="data?.expediente">
+              <strong>Expediente:</strong> {{ data.expediente }}
+            </div>
+            <div *ngIf="data?.documento">
+              <strong>Hoja de Emergencia:</strong> {{ data.documento }}
+            </div>
+          </td>
+          <td>
+            <p class="p-0 m-0 text-uppercase">
+              {{ data.paciente.nombre.primer_nombre }}
+              {{ data.paciente.nombre.segundo_nombre }}
+              {{ data.paciente.nombre.otro_nombre }}
+            </p>
+            <p
+              class="p-0 m-0 text-uppercase"
+              [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+            >
+              {{ data.paciente.nombre.primer_apellido }}
+              {{ data.paciente.nombre.segundo_apellido }}
+              {{ data.paciente.nombre.apellido_casada }}
+            </p>
+          </td>
+          <td class="oculto">
+            {{ data.paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
+            <br />
+            <small>{{ data.paciente.fecha_nacimiento | edad }}</small>
+          </td>
+
+          <td class="oculto">
+            <ng-container>
+              {{ data.fecha_consulta | date: "dd/MM/yy" }}
+            </ng-container>
+            <br />
+            <ng-container>
+              {{ data.hora_consulta | time }}
+            </ng-container>
+          </td>
+          <td class="oculto">
+            <!-- <small>{{ estadoUltimoCiclo(data.ciclo) }}</small> -->
+            <!-- <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
+                <span [innerHTML]="icons['activo']"></span>
+              </ng-container>
+              <ng-container *ngIf="getCicloStatus(data.ciclo) === 'inactivo'">
+                <span [innerHTML]="icons['documento']"></span>
+              </ng-container> -->
+            {{ data.tipo_consulta | datosExtra: "tipo_consulta" }}
+          </td>
+          <td class="secundario">
+            <div class="botones-opt">
+              <button (click)="editar(data.id); $event.stopPropagation()">
+                <span [innerHTML]="icons['edit']"></span>
+              </button>
+              <button (click)="verDetalle(data.id); $event.stopPropagation()">
+                <span [innerHTML]="icons['tabla']"></span>
+              </button>
+              <button (click)="imprimir(data.id); $event.stopPropagation()">
+                <span [innerHTML]="icons['print']"></span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- paginación -->
+  <div class="d-flex justify-content-center align-items-center p-0">
+    <!-- Botón anterior -->
+    <button
+      class="btn"
+      [disabled]="filtros.skip === 0"
+      (click)="cambiarPagina(-1)"
+    >
+      <span [innerHTML]="icons['skipLeft']"></span>
+    </button>
+
+    <!-- Página actual -->
+    <div>
+      <strong>{{ filtros.skip }}</strong>
+    </div>
+
+    <!-- Botón siguiente -->
+    <button class="btn" [disabled]="finPagina" (click)="cambiarPagina(1)">
+      <span [innerHTML]="icons['skipRight']"></span>
+    </button>
+  </div>
+</div>

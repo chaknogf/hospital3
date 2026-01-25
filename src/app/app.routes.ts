@@ -20,6 +20,8 @@ import { DetalleConsultaComponent } from './Registros/adminsion/detalleConsulta/
 import { CoexListaComponent } from './Registros/consultas/coex/coexLista/coexLista.component';
 import { HojaCoexComponent } from './Registros/consultas/coex/HojaCoex/HojaCoex.component';
 import { IngresosComponent } from './Registros/consultas/hospitalizacion/ingresos/ingresos.component';
+import { MedicaComponent } from './medica/medica/medica.component';
+import { PacientesAtendidosComponent } from './medica/pacientesAtendidos/pacientesAtendidos.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -54,4 +56,7 @@ export const routes: Routes = [
   { path: 'prestamos', component: PrestamoComponent, canActivate: [AuthGuard] },
   { path: 'registro', component: FormConsultaComponent, canActivate: [AuthGuard] },
   { path: 'renap', component: RenapComponent, canActivate: [AuthGuard] },
+  // Medicas
+  { path: 'clinica', component: MedicaComponent, canActivate: [AuthGuard] },
+  { path: 'pacientesAtendidos', component: PacientesAtendidosComponent, canActivate: [AuthGuard] },
 ];
