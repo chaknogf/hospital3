@@ -146,3 +146,137 @@
   text-transform: capitalize;
 
 }
+
+.selector-grande{
+  display:flex;
+  gap:10px;
+}
+
+.selector-grande button{
+  flex:1;
+  padding:12px;
+  font-size:1rem;
+  border-radius:14px;
+  border:none;
+  background:#1a1f38;
+  color:#8fdfff;
+  transition:.2s;
+}
+
+.selector-grande button.active{
+  background:#00a8e8;
+  color:white;
+  transform:scale(1.05);
+}
+
+.modo-expediente{
+  display:flex;
+  gap:8px;
+}
+
+.modo-expediente button{
+  flex:1;
+  border:none;
+  border-radius:20px;
+  padding:10px;
+  background:#11183b;
+  color:#7fc9ff;
+}
+
+.modo-expediente button.active{
+  background:#00a8e8;
+  color:white;
+}
+
+.chips-parentesco{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.chips-parentesco button{
+  border:none;
+  padding:6px 12px;
+  border-radius:20px;
+  background:#1a244f;
+  color:#8fdfff;
+}
+
+.chips-parentesco button.active{
+  background:#00a8e8;
+  color:white;
+}
+
+.referencia-item{
+  background:#0d1233;
+  padding:14px;
+  border-radius:14px;
+  margin-bottom:10px;
+}
+
+.acciones-flotantes{
+  position:sticky;
+  bottom:20px;
+  display:flex;
+  justify-content:center;
+  gap:12px;
+}
+
+.acciones-flotantes button{
+  padding:14px 22px;
+  border-radius:30px;
+}
+
+/* =========================================
+   SELECTOR CHIP (Vivo / Fallecido)
+   ========================================= */
+
+.selector-chip{
+  display:flex;
+  gap:10px;
+  margin:6px 0 10px 0;
+}
+
+.selector-chip button{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:14px;
+  font-size:0.95rem;
+  font-weight:600;
+  letter-spacing:1px;
+  cursor:pointer;
+
+  background:rgba(0,0,0,0.35);
+  color:#9bdcff;
+
+  transition:
+    transform .15s ease,
+    box-shadow .2s ease,
+    background .2s ease,
+    color .2s ease;
+}
+
+/* efecto hover */
+.selector-chip button:hover{
+  transform:scale(1.03);
+  box-shadow:0 0 8px rgba(76,202,240,.4);
+}
+
+/* botón activo */
+.selector-chip button.active{
+  background:#00a8e8;
+  color:white;
+  box-shadow:0 0 12px rgba(0,168,232,.7);
+}
+
+/* diferenciación por tipo */
+.selector-chip button:nth-child(1).active{
+  background:#27ae60; /* vivo */
+  box-shadow:0 0 12px rgba(39,174,96,.7);
+}
+
+.selector-chip button:nth-child(2).active{
+  background:#c0392b; /* fallecido */
+  box-shadow:0 0 12px rgba(192,57,43,.7);
+}

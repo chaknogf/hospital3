@@ -9,7 +9,7 @@
 <h2 class="text-center text-white">
   {{ enEdicion() ? "Editar Paciente" : "Nuevo Paciente" }}
 </h2>
-
+ 
 <!-- Botones de acción superior -->
 <div class="container">
   <div class="botones">
@@ -72,32 +72,30 @@
 
     <!-- Toggle para edición: opciones de expediente -->
     @if (enEdicion()) {
-    <div class="toggle-buttons justify-content-center">
-      <button
-        [class.active]="accionExpediente() === 'mantener'"
-        type="button"
-        class="btn"
-        (click)="accionExpediente.set('mantener')"
-      >
-        Mantener
-      </button>
-      <button
-        [class.active]="accionExpediente() === 'generar'"
-        type="button"
-        class="btn"
-        (click)="accionExpediente.set('generar')"
-      >
-        Generar
-      </button>
-      <button
-        [class.active]="accionExpediente() === 'sobrescribir'"
-        type="button"
-        class="btn"
-        (click)="accionExpediente.set('sobrescribir')"
-      >
-        Sobrescribir
-      </button>
-    </div>
+   <div class="modo-expediente">
+
+  <button
+    [class.active]="accionExpediente() === 'mantener'"
+    (click)="accionExpediente.set('mantener')"
+  >
+    🔒 Mantener
+  </button>
+
+  <button
+    [class.active]="accionExpediente() === 'generar'"
+    (click)="accionExpediente.set('generar')"
+  >
+    ⚡ Generar
+  </button>
+
+  <button
+    [class.active]="accionExpediente() === 'sobrescribir'"
+    (click)="accionExpediente.set('sobrescribir')"
+  >
+    ♻ Sobrescribir
+  </button>
+
+</div>
     }
 
     <!-- Toggle para creación: con o sin expediente -->
@@ -262,10 +260,23 @@
   <fieldset class="grupo info-basica">
     <legend>Información básica</legend>
     <!-- -------- ESTADO -------- -->
-    <select formControlName="estado" name="estado">
-      <option value="V">Vivo</option>
-      <option value="F">Muerto</option>
-    </select>
+      <div class="selector-chip">
+      <button
+        type="button"
+        [class.active]="form.get('estado')?.value === 'V'"
+        (click)="form.get('estado')?.setValue('V')"
+      >
+        🟢 Vivo
+      </button>
+
+      <button
+        type="button"
+        [class.active]="form.get('estado')?.value === 'F'"
+        (click)="form.get('estado')?.setValue('F')"
+      >
+        ⚫ Fallecido
+      </button>
+    </div>
     @if (form.get('estado')?.value === 'F') {
     <div style="flex: 1" formGroupName="datos_extra">
       <label for="defuncion">Defunción</label>
@@ -273,18 +284,23 @@
     </div>
     }
     <!-- Sexo -->
-    <label for="sexo">Sexo</label>
-    <select
-      id="sexo"
-      formControlName="sexo"
-      name="sexo"
-      [class.is-null]="!form.get('sexo')?.value"
+   <div class="selector-grande">
+    <button
+      type="button"
+      [class.active]="form.get('sexo')?.value === 'M'"
+      (click)="form.get('sexo')?.setValue('M')"
     >
-      <option value="">Seleccione sexo</option>
-      <option value="M">Masculino</option>
-      <option value="F">Femenino</option>
-    </select>
+      ♂ Masculino
+    </button>
 
+    <button
+      type="button"
+      [class.active]="form.get('sexo')?.value === 'F'"
+      (click)="form.get('sexo')?.setValue('F')"
+    >
+      ♀ Femenino
+    </button>
+  </div>
     <!-- Fecha de nacimiento -->
     <label for="fecha_nacimiento">Fecha de nacimiento</label>
     <input
@@ -446,12 +462,16 @@
 
         <!-- Parentesco -->
         <label for="parentesco">Parentesco</label>
-        <select formControlName="parentesco">
-          <option value="">-- Seleccione --</option>
-          <option *ngFor="let p of enums.parentescos" [value]="p.value">
-            {{ p.label }}
-          </option>
-        </select>
+        <div class="chips-parentesco">
+  <button
+    *ngFor="let p of enums.parentescos"
+    type="button"
+    [class.active]="ref.get('parentesco')?.value === p.value"
+    (click)="ref.get('parentesco')?.setValue(p.value)"
+  >
+    {{p.label}}
+  </button>
+</div>
 
         <!-- idpersona -->
         <label for="idpersona">identificación</label>
