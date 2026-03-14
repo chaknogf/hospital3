@@ -1,18 +1,28 @@
 @charset "UTF-8";
-/*!
- * Bootswatch v5.3.7 (https://bootswatch.com)
- * Theme: zephyr
- * Copyright 2012-2025 Thomas Park
- * Licensed under MIT
- * Based on Bootstrap
-*/
-/*!
- * Bootstrap  v5.3.7 (https://getbootstrap.com/)
- * Copyright 2011-2025 The Bootstrap Authors
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
- */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap');
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
 :root {
+   --void: #03050d;
+  --deep: #060d1f;
+  --panel: #0a1428;
+  --surface: #0f1e3a;
+  --rim: rgba(96,165,250,0.12);
+  --rim-hot: rgba(96,165,250,0.35);
+  --pulse: #3b82f6;
+  --pulse-dim: rgba(59,130,246,0.18);
+  --star: #60a5fa;
+  --star-dim: rgba(96,165,250,0.5);
+  --lime: #a3e635;
+  --lime-dim: rgba(163,230,53,0.15);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,0.15);
+  --amber: #fbbf24;
+  --amber-dim: rgba(251,191,36,0.15);
+  --text: #e2eeff;
+  --muted: #4a6fa5;
+  --font-mono: 'Orbitron', monospace;
+  --font-ui: 'Space Grotesk', sans-serif;
   --urgente: rgba(255, 0, 0, 1); /* Rojo */
   --moderado: rgba(255, 255, 0, 1); /* Amarillo */
   --estable: rgba(0, 128, 0, 1); /* Verde */
@@ -193,11 +203,8 @@
   --bs-form-invalid-border-color: #e97f82;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 @media (prefers-reduced-motion: no-preference) {
   :root {
@@ -209,12 +216,14 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+  color: var(--text);
+  min-height: 100vh;
   overflow-x: hidden;
   position: relative;
    background: radial-gradient(ellipse at bottom, #00d5ffc8 -15%, #090979 75%);
    backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  font-family: 'Quicksand', sans-serif;
+  font-family: var(--font-ui);
   font-weight: 400;
   font-style: normal;
 

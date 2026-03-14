@@ -30,6 +30,11 @@ import {
 } from '../../../shared/icons/svg-icon';
 import { Parentescos } from '../../../enum/parentescos';
 
+interface Reference {
+  nombre?: string;
+  telefono?: string;
+  parentesco?: string;
+}
 // ======= DECORADOR DEL COMPONENTE =======
 @Component({
   selector: 'app-formularioPaciente',
@@ -46,6 +51,8 @@ import { Parentescos } from '../../../enum/parentescos';
   ],
   providers: [provideNgxMask()]
 })
+
+
 export class FormularioPacienteComponent implements OnInit, OnDestroy {
   // ======= INYECCIONES =======
   private route = inject(ActivatedRoute);
@@ -54,6 +61,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private sanitizer = inject(DomSanitizer);
   private pacienteUtil = inject(PacienteUtilService);
+
 
   // ======= SEÑALES =======
   enEdicion = signal(false);
@@ -756,6 +764,51 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   ): void {
     this.form.get(`datos_extra.socioeconomicos.${campo}`)?.setValue(valor);
   }
+
+  sections = [true, true, true, true, true, true, true];
+
+  steps = [
+    { label: 'EXPEDIENTE', done: true },
+    { label: 'NOMBRES', done: false },
+    { label: 'INFO', done: false },
+    { label: 'CONTACTO', done: false },
+    { label: 'REFS', done: false },
+    { label: 'DEMO', done: false },
+    { label: 'SOCIO', done: false }
+  ];
+
+
+
+  references: Reference[] = [
+    { nombre: '', telefono: '', parentesco: '' }
+  ];
+
+  toggleSection(i: number) {
+    this.sections[i] = !this.sections[i];
+  }
+
+  goSection(i: number) {
+    const el = document.getElementById('sec-' + i);
+    el?.scrollIntoView({ behavior: 'smooth' });
+    this.sections[i] = true;
+  }
+
+  addReference() {
+    this.references.push({});
+  }
+
+  removeReference(i: number) {
+    this.references.splice(i, 1);
+  }
+
+  selectChip(group: string, value: string) {
+    (this as any)[group] = value;
+  }
+
+  estado: string = 'Vivo';
+  sexo: string = 'Masculino';
+
+
 
 
 }
