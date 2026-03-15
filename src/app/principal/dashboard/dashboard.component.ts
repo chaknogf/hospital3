@@ -44,67 +44,67 @@ export class DashboardComponent implements OnInit {
         ruta: '/registros',
         icon: this.tarjetaPaciente
       },
-      {
-        nombre: 'UISAU',
-        descripcion: 'Gestor de Atención al Usuario',
-        ruta: '/usisau'
-      },
-      {
-        nombre: 'Vacunas',
-        descripcion: 'Control de vacunas y esquemas',
-        ruta: '/vacunas'
-      },
-      {
-        nombre: 'Personal',
-        descripcion: 'Administración del personal médico',
-        ruta: '/personal'
-      },
-      {
-        nombre: 'Estadística',
-        descripcion: 'Gestión de reportes y datos estadísticos',
-        ruta: '/estadistica',
-        icon: this.datosIcon
-      },
-      {
-        nombre: 'Clínica',
-        descripcion: 'Gestión de consulta médica',
-        ruta: '/clinica'
-      },
-      {
-        nombre: 'Reportes y SIGSA',
-        descripcion: 'Imprime reportes y sigsas',
-        ruta: '/reportes'
-      },
-      {
-        nombre: 'Rayos X',
-        descripcion: 'Gestor de rayos x',
-        ruta: '/rayos'
-      },
-      {
-        nombre: 'Laboratorio',
-        descripcion: 'Gestor de laboratorio',
-        ruta: '/laboratorio'
-      },
-      {
-        nombre: 'Farmacia',
-        descripcion: 'Gestor de farmacia',
-        ruta: '/farmacia'
-      },
-      {
-        nombre: 'Configuraciones',
-        descripcion: 'Configuraciones del sistema',
-        ruta: '/configuraciones'
-      },
-      {
-        nombre: 'Usuarios',
-        descripcion: 'Gestor de usuarios',
-        ruta: '/usuarios'
-      },
-      {
-        nombre: 'Salir',
-        descripcion: 'Salir del sistema',
-        ruta: '/inicio'
-      },
+      // {
+      //   nombre: 'UISAU',
+      //   descripcion: 'Gestor de Atención al Usuario',
+      //   ruta: '/usisau'
+      // },
+      // {
+      //   nombre: 'Vacunas',
+      //   descripcion: 'Control de vacunas y esquemas',
+      //   ruta: '/vacunas'
+      // },
+      // {
+      //   nombre: 'Personal',
+      //   descripcion: 'Administración del personal médico',
+      //   ruta: '/personal'
+      // },
+      // {
+      //   nombre: 'Estadística',
+      //   descripcion: 'Gestión de reportes y datos estadísticos',
+      //   ruta: '/estadistica',
+      //   icon: this.datosIcon
+      // },
+      // {
+      //   nombre: 'Clínica',
+      //   descripcion: 'Gestión de consulta médica',
+      //   ruta: '/clinica'
+      // },
+      // {
+      //   nombre: 'Reportes y SIGSA',
+      //   descripcion: 'Imprime reportes y sigsas',
+      //   ruta: '/reportes'
+      // },
+      // {
+      //   nombre: 'Rayos X',
+      //   descripcion: 'Gestor de rayos x',
+      //   ruta: '/rayos'
+      // },
+      // {
+      //   nombre: 'Laboratorio',
+      //   descripcion: 'Gestor de laboratorio',
+      //   ruta: '/laboratorio'
+      // },
+      // {
+      //   nombre: 'Farmacia',
+      //   descripcion: 'Gestor de farmacia',
+      //   ruta: '/farmacia'
+      // },
+      // {
+      //   nombre: 'Configuraciones',
+      //   descripcion: 'Configuraciones del sistema',
+      //   ruta: '/configuraciones'
+      // },
+      // {
+      //   nombre: 'Usuarios',
+      //   descripcion: 'Gestor de usuarios',
+      //   ruta: '/usuarios'
+      // },
+      // {
+      //   nombre: 'Salir',
+      //   descripcion: 'Salir del sistema',
+      //   ruta: '/inicio'
+      // },
     ]
   }
 

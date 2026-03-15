@@ -543,6 +543,9 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   private actualizar(paciente: any): void {
     this.isLoading.set(true);
 
+    console.log('🔵 accionExpediente:', this.accionExpediente()); // ← ¿qué imprime?
+    console.log('🔵 paciente.id:', paciente.id);                  // ← ¿tiene ID?
+
     this.api.updatePaciente(paciente.id, paciente, this.accionExpediente())
       .pipe(
         takeUntil(this.destroy$),
@@ -550,11 +553,11 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
         catchError(error => {
           console.error('❌ Error al actualizar paciente:', error);
           this.error.set('Error al actualizar el paciente');
-          this.mostrarError('actualizar paciente', error);
           return of(null);
         })
       )
       .subscribe(response => {
+        console.log('✅ Paciente actualizado:', response);
         if (response) {
           this.router.navigate(['/pacientes']);
         }

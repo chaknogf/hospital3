@@ -349,13 +349,13 @@
           <div class="chips-row">
             <span
               class="chip chip-block"
-              [class.on-green]="form.get('estado')?.value === 'V'"
+              [class.on]="form.get('estado')?.value === 'V'"
               (click)="form.get('estado')?.setValue('V')"
               >● Vivo</span
             >
             <span
               class="chip chip-block"
-              [class.on-red]="form.get('estado')?.value === 'F'"
+              [class.on]="form.get('estado')?.value === 'F'"
               (click)="form.get('estado')?.setValue('F')"
               >● Fallecido</span
             >
@@ -380,14 +380,14 @@
           <span class="field-label">Sexo biológico</span>
           <div class="chips-row">
             <span
-              class="chip chip-block chip-lg"
+              class="chip chip-block"
               [class.on]="form.get('sexo')?.value === 'M'"
               (click)="form.get('sexo')?.setValue('M')"
               >♂ Masculino</span
             >
             <span
-              class="chip chip-block chip-lg"
-              [class.on-pink]="form.get('sexo')?.value === 'F'"
+              class="chip chip-block"
+              [class.on]="form.get('sexo')?.value === 'F'"
               (click)="form.get('sexo')?.setValue('F')"
               >♀ Femenino</span
             >

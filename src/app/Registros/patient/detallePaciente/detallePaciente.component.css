@@ -1,45 +1,135 @@
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+  padding: 0.65rem 1.25rem 0.65rem 0.9rem;
+  border-radius: 50px;
+  border: 0.5px solid;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.estado-badge.vivo {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+.estado-badge.fallecido {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.estado-pulse-ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50px;
+  border: 1px solid #86efac;
+  animation: pulse-ring 2.5s ease-out infinite;
+  pointer-events: none;
+}
+
+.estado-badge.fallecido .estado-pulse-ring {
+  display: none;
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1);    opacity: 0.7; }
+  70%  { transform: scale(1.04); opacity: 0; }
+  100% { transform: scale(1.04); opacity: 0; }
+}
+
+.estado-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.estado-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.estado-badge.vivo .estado-icon {
+  background: #bbf7d0;
+  color: #166534;
+}
+
+.estado-badge.fallecido .estado-icon {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.estado-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.estado-label {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.estado-badge.vivo .estado-label    { color: #15803d; }
+.estado-badge.fallecido .estado-label { color: #64748b; }
+
+.estado-valor {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.estado-badge.vivo .estado-valor    { color: #166534; }
+.estado-badge.fallecido .estado-valor { color: #334155; }
+
 /* =====================================================
-   📄 FICHA PACIENTE – REPORTE FORMAL (Mobile First)
+   CONTENEDOR PRINCIPAL
    ===================================================== */
 
 .ficha-paciente {
-  max-width: 980px;
-  margin: 1rem auto;
-  padding: 1.4rem;
-
-  background: rgba(245, 247, 250, 0.75);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-
-  border-radius: 16px;
-  box-shadow:
-    0 10px 28px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
-
-  font-family: "Segoe UI", "Inter", system-ui, sans-serif;
-  color: #1f2937;
-}
-
-/* =====================================================
-   ENCABEZADO
-   ===================================================== */
-
-.ficha-header {
+  max-width: 1300px;
+  margin: 1.5rem auto;
+  padding: 0;
+  font-family: var(--font-ui);
+  color: var(--text);
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-
+/* =====================================================
+   ENCABEZADO — HUD card
+   ===================================================== */
 
 .ficha-header {
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 0.5px solid rgba(255,255,255,0.6);
+  border-radius: 16px;
+  padding: 1.5rem 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
   position: relative;
+  overflow: hidden;
 }
 
-.info-header {
-  margin: 0 auto;
+.ficha-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--pulse), #8b5cf6, var(--pulse));
 }
 
 .info-header {
@@ -47,107 +137,137 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 0% 4% 0% 4% ;
-  border-radius: 6px;
+  gap: 0.2rem;
 }
+
 .info-header h1 {
   margin: 0;
+  font-family: var(--font-ui);
   font-size: 1.8rem;
   font-weight: 600;
-  letter-spacing: 0.3px;
-  color: #1f2937;
+  letter-spacing: 0.5px;
+  color: #0f172a;
   text-transform: capitalize;
-
+  line-height: 1.2;
 }
 
 .info-header .subtitulo {
-  margin-top: 0.2rem;
-  font-size: 1.2rem;
+  margin: 0;
+  font-size: 1.15rem;
   font-weight: 400;
   letter-spacing: 0.6px;
   text-transform: capitalize;
-  opacity: 0.75;
-  color: #1f2937;
+  color: #334155;
+  opacity: 0.85;
+  line-height: 1.2;
 }
 
+/* ── Badge estado ── */
 .estado_ {
-  margin-top: 0.4rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0.3rem 1rem;
+  border-radius: 40px;
+  border: 0.5px solid;
 }
 
 .estado_.vivo {
   color: #166534;
+  background: rgba(163,230,53,0.15);
+  border-color: rgba(163,230,53,0.4);
 }
 
 .estado_.fallecido {
-  color: #7f1d1d;
+  color: #991b1b;
+  background: rgba(248,113,113,0.12);
+  border-color: rgba(248,113,113,0.35);
 }
 
-/* =====================================================
-   BOTÓN
-   ===================================================== */
+.estado_ .icon {
+  display: flex;
+  align-items: center;
+}
 
+/* ── Botón volver ── */
 .btn-volver {
-  align-self: flex-start;
-
-  padding: 0.5rem 1rem;
-  border-radius: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(6px);
-
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #1f2937;
-
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 1.1rem;
+  border-radius: 10px;
+  border: 0.5px solid rgba(59,130,246,0.3);
+  background: rgba(59,130,246,0.08);
+  color: #1a3a6a;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s;
 }
 
 .btn-volver:hover {
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  background: var(--pulse);
+  border-color: var(--pulse);
+  color: #fff;
 }
 
 /* =====================================================
-   SECCIONES
+   SECCIONES — cards cosmos
    ===================================================== */
 
 .section {
-  margin-top: 1.8rem;
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 0.5px solid rgba(255,255,255,0.6);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 0;
+  transition: border-color 0.2s;
+}
+
+.section:hover {
+  border-color: rgba(59,130,246,0.35);
 }
 
 .section h2 {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #1e3a8a;
-  margin-bottom: 0.8rem;
-
-  border-left: 4px solid #3b82f6;
-  padding-left: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #1a3a6a;
+  margin: 0;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 0.5px solid rgba(0,0,0,0.07);
+  background: rgba(59,130,246,0.06);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* =====================================================
-   FORMATO CURRÍCULUM / EXPEDIENTE
+   FILAS CV
    ===================================================== */
 
 .section-cv {
-  padding-top: 0.8rem;
+  padding: 0.5rem 0;
 }
 
 .cv-row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.2rem;
-
-  padding: 0.45rem 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-
+  gap: 0.15rem;
+  padding: 0.55rem 1.25rem;
+  border-bottom: 0.5px solid rgba(0,0,0,0.05);
   font-size: 0.88rem;
 }
 
@@ -156,12 +276,19 @@
 }
 
 .cv-label {
-  font-weight: 700;
-  color: #334155;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #2c4a7a;
 }
 
 .cv-value {
-  color: #1f2937;
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #0f172a;
 }
 
 /* =====================================================
@@ -169,67 +296,159 @@
    ===================================================== */
 
 .cv-reference {
-  padding: 0.45rem 0;
+  margin: 0.5rem 1.25rem;
+  padding: 0.75rem 1rem;
+  background: rgba(59,130,246,0.05);
+  border: 0.5px solid rgba(59,130,246,0.15);
+  border-radius: 10px;
   font-size: 0.88rem;
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+  color: #0f172a;
+  line-height: 1.6;
 }
 
 .cv-reference strong {
-  color: #1e293b;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #1a3a6a;
+  display: block;
+  margin-bottom: 0.3rem;
 }
 
 /* =====================================================
-   ESTADOS
+   METADATOS INLINE
    ===================================================== */
-
-.loading,
-.error {
-  margin-top: 2rem;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #334155;
-}
-
-/* =====================================================
-   📱 TABLET / DESKTOP
-   ===================================================== */
-
-@media (min-width: 640px) {
-   .ficha-header {
-    position: relative;
-    justify-content: center;
-  }
-
-  .btn-volver {
-    position: absolute;
-    left: 0;
-  }
-
-  .cv-row {
-    grid-template-columns: 220px 1fr;
-    gap: 1rem;
-  }
-}
-.info-header h1 {
-  margin: 0;
-  line-height: 1.2;
-}
-
-.info-header .subtitulo {
-  margin: 0;
-  line-height: 1.2;
-}
 
 .cv-inline {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.5rem;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
-.cv-inline {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* =====================================================
+   ESTADOS: carga / error
+   ===================================================== */
+
+.loading,
+.error {
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(18px);
+  border: 0.5px solid rgba(255,255,255,0.6);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #2c4a7a;
+}
+
+.error {
+  border-color: rgba(248,113,113,0.3);
+  background: rgba(255,255,255,0.75);
+  color: #991b1b;
+}
+
+.error button {
+  margin-top: 1rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 10px;
+  border: 0.5px solid rgba(248,113,113,0.35);
+  background: rgba(248,113,113,0.1);
+  color: #991b1b;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.error button:hover {
+  background: var(--red);
+  color: #fff;
+}
+
+/* =====================================================
+   RESPONSIVE — tablet / desktop
+   ===================================================== */
+
+@media (min-width: 640px) {
+  .ficha-header {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .btn-volver {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .cv-row {
+    grid-template-columns: 200px 1fr;
+    gap: 1rem;
+    align-items: baseline;
+  }
+}
+
+@media (min-width: 980px) {
+  .ficha-paciente {
+    padding: 1rem 0;
+  }
+}
+
+.ficha-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.ficha-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Referencias mejoradas */
+.ref-data {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 0.88rem;
+  color: #0f172a;
+}
+
+.ref-sep {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.ref-responsable {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #92400e;
+  background: rgba(251,191,36,0.18);
+  border: 0.5px solid rgba(251,191,36,0.4);
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-left: 4px;
+}
+
+/* En móvil vuelve a una columna */
+@media (max-width: 768px) {
+  .ficha-grid {
+    grid-template-columns: 1fr;
+  }
 }

@@ -26,37 +26,45 @@ import { PacientesAtendidosComponent } from './medica/pacientesAtendidos/pacient
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
   { path: 'inicio', component: HomeComponent },
-  { path: 'dash', component: DashboardComponent, canActivate: [AuthGuard] },
-  // Registros Médicos
-  { path: 'registros', component: RegistrosMedicosComponent, canActivate: [AuthGuard] },
-  { path: 'admision', component: AdmisionComponent, canActivate: [AuthGuard] },
-  { path: 'admision/:origen', component: AdmisionComponent, canActivate: [AuthGuard] },
-  { path: 'admisionPaciente/:origen/:pacienteId', component: AdmisionComponent, canActivate: [AuthGuard] },
-  { path: 'editarAdmision/:id/:origen', component: AdmisionComponent, canActivate: [AuthGuard] },
-  { path: 'editarAdmision/:id', component: AdmisionComponent, canActivate: [AuthGuard] },
-  { path: 'detalleAdmision/:id', component: DetalleConsultaComponent, canActivate: [AuthGuard] },
-  // Pacientes
-  { path: 'pacientes', component: PacientesComponent, canActivate: [AuthGuard] },
-  { path: 'paciente', component: FormularioPacienteComponent, canActivate: [AuthGuard] },
-  { path: 'paciente/:modo', component: FormularioPacienteComponent, canActivate: [AuthGuard] },
-  { path: 'detallePaciente/:id', component: DetallePacienteComponent, canActivate: [AuthGuard] },
-  { path: 'pacienteEdit/:id', component: FormularioPacienteComponent, canActivate: [AuthGuard] },
-  // Emergencias
-  { path: 'emergencias', component: EmergenciasListComponent, canActivate: [AuthGuard] },
-  { path: 'hojaEmergencia/:id', component: HojaComponent, canActivate: [AuthGuard] },
-  //Consulta externa
-  { path: 'coex', component: CoexListaComponent, canActivate: [AuthGuard] },
-  { path: 'coexHoja/:id', component: HojaCoexComponent, canActivate: [AuthGuard] },
-  // Hospitalizacion
-  { path: 'ingresos', component: IngresosComponent, canActivate: [AuthGuard] },
-  { path: 'ingreso/:id', component: HojaIngresoComponent, canActivate: [AuthGuard] },
-  // Consultas
-  { path: 'consultas', component: ConsultasComponent, canActivate: [AuthGuard] },
-  { path: 'recepcion', component: RecepcionComponent, canActivate: [AuthGuard] },
-  { path: 'prestamos', component: PrestamoComponent, canActivate: [AuthGuard] },
-  { path: 'registro', component: FormConsultaComponent, canActivate: [AuthGuard] },
-  { path: 'renap', component: RenapComponent, canActivate: [AuthGuard] },
-  // Medicas
-  { path: 'clinica', component: MedicaComponent, canActivate: [AuthGuard] },
-  { path: 'pacientesAtendidos', component: PacientesAtendidosComponent, canActivate: [AuthGuard] },
+
+  // ── Rutas protegidas agrupadas ──
+  {
+    path: '',
+    canActivate: [AuthGuard], // ← se aplica a todas las hijas
+    children: [
+      { path: 'dash', component: DashboardComponent },
+      // Registros Médicos
+      { path: 'registros', component: RegistrosMedicosComponent },
+      { path: 'admision', component: AdmisionComponent },
+      { path: 'admision/:origen', component: AdmisionComponent },
+      { path: 'admisionPaciente/:origen/:pacienteId', component: AdmisionComponent },
+      { path: 'editarAdmision/:id/:origen', component: AdmisionComponent },
+      { path: 'editarAdmision/:id', component: AdmisionComponent },
+      { path: 'detalleAdmision/:id', component: DetalleConsultaComponent },
+      // Pacientes
+      { path: 'pacientes', component: PacientesComponent },
+      { path: 'paciente', component: FormularioPacienteComponent },
+      { path: 'paciente/:modo', component: FormularioPacienteComponent },
+      { path: 'detallePaciente/:id', component: DetallePacienteComponent },
+      { path: 'pacienteEdit/:id', component: FormularioPacienteComponent },
+      // Emergencias
+      { path: 'emergencias', component: EmergenciasListComponent },
+      { path: 'hojaEmergencia/:id', component: HojaComponent },
+      // Consulta externa
+      { path: 'coex', component: CoexListaComponent },
+      { path: 'coexHoja/:id', component: HojaCoexComponent },
+      // Hospitalización
+      { path: 'ingresos', component: IngresosComponent },
+      { path: 'ingreso/:id', component: HojaIngresoComponent },
+      // Consultas
+      { path: 'consultas', component: ConsultasComponent },
+      { path: 'recepcion', component: RecepcionComponent },
+      { path: 'prestamos', component: PrestamoComponent },
+      { path: 'registro', component: FormConsultaComponent },
+      { path: 'renap', component: RenapComponent },
+      // Médicas
+      { path: 'clinica', component: MedicaComponent },
+      { path: 'pacientesAtendidos', component: PacientesAtendidosComponent },
+    ]
+  }
 ];

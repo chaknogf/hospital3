@@ -1,5 +1,6 @@
+// api.service.ts
 import { Injectable, signal, computed } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
@@ -66,9 +67,15 @@ export class ApiService {
     return params;
   }
 
+  // api.service.ts
   private manejarError(error: any, operacion: string) {
     console.error(`❌ Error al ${operacion}:`, error);
-    return throwError(() => new Error(`Error al ${operacion}: ${error.message}`));
+
+    if (error instanceof HttpErrorResponse && error.status === 401) {
+      this.logOut();
+    }
+
+    return throwError(() => error);
   }
 
   // ======= AUTENTICACIÓN =======
@@ -229,7 +236,7 @@ export class ApiService {
   ): Observable<any> {
     this.isLoading.set(true);
     return this.http.patch<any>(
-      `${this.baseUrl}/pacientes/${pacienteId}?accion_expediente=${accion}`,
+      `${this.baseUrl}/pacientes/${pacienteId}?accion=${accion}`, // ← ?accion= no ?accion_expediente=
       paciente
     ).pipe(
       tap(() => this.refrescarPacientes()),
@@ -251,22 +258,45 @@ export class ApiService {
     this.getPacientes(this.ultimoFiltroPaciente.filtro).subscribe();
   }
 
+
   // ======= CORRELATIVOS =======
-  corExpediente(): Observable<{ correlativo: string }> {
-    return this.http.post<{ correlativo: string }>(
-      `${this.baseUrl}/generar/expediente`,
-      {}
+  corExpediente(): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/correlativos/expediente`, {}
     ).pipe(
       catchError(error => this.manejarError(error, 'obtener correlativo de expediente'))
     );
   }
 
-  corEmergencia(): Observable<{ correlativo: string }> {
-    return this.http.post<{ correlativo: string }>(
-      `${this.baseUrl}/generar/emergencia`,
-      {}
+  corEmergencia(): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/correlativos/emergencia`, {}
     ).pipe(
       catchError(error => this.manejarError(error, 'obtener correlativo de emergencia'))
+    );
+  }
+
+  corConstanciaNacimiento(): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/correlativos/constancia_nacimiento`, {}
+    ).pipe(
+      catchError(error => this.manejarError(error, 'obtener correlativo de constancia nacimiento'))
+    );
+  }
+
+  corConstanciaMedica(): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/correlativos/constancia_medica`, {}
+    ).pipe(
+      catchError(error => this.manejarError(error, 'obtener correlativo de constancia médica'))
+    );
+  }
+
+  corDefuncion(): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/correlativos/constancia_defuncion`, {}
+    ).pipe(
+      catchError(error => this.manejarError(error, 'obtener correlativo de defunción'))
     );
   }
 
