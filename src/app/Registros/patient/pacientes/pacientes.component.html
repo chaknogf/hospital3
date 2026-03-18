@@ -233,18 +233,45 @@
   </div>
 
   <!-- Modal -->
-  <dialog #dialogAdmision>
-    <div class="aurora-container">
-      <div
-        class="aurora-cards"
-        *ngFor="let opt of optionsTipoConsulta"
-        (click)="admision(opt.valor, pacienteSeleccionado)"
-      >
-        <div class="aurora-items">
-          <!-- <span [innerHTML]="opt.icon"></span> -->
-          <h2>{{ opt.nombre }}</h2>
+ <dialog #dialogAdmision class="cosmos-dialog">
+  <div class="dialog-backdrop" (click)="dialogAdmision.close()"></div>
+  <div class="dialog-panel">
+
+    <div class="dialog-header">
+      <div class="dialog-header-left">
+        <div class="dialog-icon">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M8 2v4l3 2"/><circle cx="8" cy="8" r="6"/>
+          </svg>
+        </div>
+        <div>
+          <span class="dialog-title">Nueva Admisión</span>
+          <span class="dialog-sub">Selecciona el tipo de consulta</span>
+        </div>
+      </div>
+      <button class="dialog-close" (click)="dialogAdmision.close()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4l8 8M12 4l-8 8"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="dialog-options">
+      <div class="dialog-card"
+           *ngFor="let opt of optionsTipoConsulta"
+           (click)="admision(opt.valor, pacienteSeleccionado)">
+        <div class="dialog-card-icon">
+          <span [innerHTML]=""></span>
+        </div>
+        <span class="dialog-card-label">{{ opt.nombre }}</span>
+        <div class="dialog-card-arrow">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 8h8M9 5l3 3-3 3"/>
+          </svg>
         </div>
       </div>
     </div>
-  </dialog>
+
+  </div>
+</dialog>
 </div>

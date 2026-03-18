@@ -13,6 +13,15 @@
  */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
 :root {
+  --ink:        #0a0a0a;
+  --ink-light:  #2c2c2c;
+  --ink-muted:  #5a5a5a;
+  --rule:       #1a1a1a;
+  --rule-light: #888;
+  --accent:     #1a3a6a;
+  --bg:         #ffffff;
+  --serif:      'Source Serif 4', Georgia, serif;
+  --mono:       'DM Mono', 'Courier New', monospace;
   --urgente: rgba(255, 0, 0, 1); /* Rojo */
   --moderado: rgba(255, 255, 0, 1); /* Amarillo */
   --estable: rgba(0, 128, 0, 1); /* Verde */

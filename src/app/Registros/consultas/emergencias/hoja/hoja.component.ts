@@ -148,7 +148,8 @@ export class HojaComponent implements OnInit, OnDestroy {
         }
 
         this.consulta.set(consulta);
-        this.paciente.set(consulta.paciente); // ✅ paciente viene dentro de consulta
+        this.paciente.set(consulta.paciente); 
+        this.detalleVisible.set(true);
       });
   }
   // ======= INDICADORES =======
