@@ -12,6 +12,7 @@ import { IconService } from '../../../../service/icon.service';
 import { Subject } from 'rxjs';
 import { takeUntil, finalize, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { Dict, especialidades } from './../../../../enum/diccionarios';
 
 @Component({
   selector: 'app-HojaCoex',
@@ -21,6 +22,8 @@ import { of } from 'rxjs';
   imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, TimePipe, CommonModule],
 })
 export class HojaCoexComponent implements OnInit, OnDestroy {
+
+  especialidades: Dict[] = especialidades;
   // ======= INYECCIONES =======
   private api = inject(ApiService);
   private router = inject(Router);
@@ -54,6 +57,11 @@ export class HojaCoexComponent implements OnInit, OnDestroy {
       .trim();
   });
 
+  getIndicador(field: string): boolean {
+    const indicadores = (this.consulta() as any)?.indicadores;
+    if (!indicadores) return false;
+    return (indicadores as Record<string, boolean>)[field] ?? false;
+  }
   /**
    * Dirección completa del paciente
    */
@@ -139,7 +147,7 @@ export class HojaCoexComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(data => {
-        if (!data || !data) {
+        if (!data) {
           this.error.set('Consulta no encontrada');
           this.detalleVisible.set(true);
           return;
@@ -147,8 +155,17 @@ export class HojaCoexComponent implements OnInit, OnDestroy {
 
         this.consulta.set(data);
 
-        // Cargar paciente después de obtener la consulta
-
+        // Cargar paciente desde la consulta
+        const pacienteId = (data as any).paciente?.id ?? (data as any).paciente_id ?? (data as any).idpaciente;
+        if (pacienteId) {
+          this.cargarPaciente(pacienteId);
+        } else if ((data as any).paciente) {
+          // Si el paciente viene embebido en la consulta
+          this.paciente.set((data as any).paciente);
+          this.detalleVisible.set(true);
+        } else {
+          this.detalleVisible.set(true);
+        }
       });
   }
 

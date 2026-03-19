@@ -29,122 +29,24 @@
       <h4>Ministerio de Salud Pública y Asistencia Social</h4>
       <h5>Hospital General Tipo I de Tecpán Guatemala</h5>
     </div>
+    <span class="logo" [innerHTML]="icons['logo']"></span>
   </div>
 
   <!-- ── META ── -->
   <div class="doc-meta">
-    <h4 class="titulo-doc">
-      Hoja de Emergencia:
-      <span class="doc-id">{{ consulta()?.documento }}</span>
-    </h4>
+    <h4>Hoja de Emergencia: {{ consulta()?.documento }}</h4>
     <h6>No. consulta: {{ consulta()?.id }}</h6>
   </div>
 
-  <!-- ── INDICADORES ── -->
-  <div class="doc-section">
-    <h6>Indicadores</h6>
-    <div style="display: flex; justify-content: space-around; flex-wrap: wrap">
-      <div class="centered-container">
-        <label>Accidente Tránsito</label>
-        <span
-          *ngIf="!getIndicador('accidente_transito')"
-          [innerHTML]="icons['cuadroBlanco']"
-          class="text-black"
-        ></span>
-        <span
-          *ngIf="getIndicador('accidente_transito')"
-          [innerHTML]="icons['cuadroNegro']"
-          class="text-black"
-        ></span>
-      </div>
-      <div class="centered-container">
-        <label>Arma Blanca</label>
-        <span
-          *ngIf="!getIndicador('arma_blanca')"
-          [innerHTML]="icons['cuadroBlanco']"
-          class="text-black"
-        ></span>
-        <span
-          *ngIf="getIndicador('arma_blanca')"
-          [innerHTML]="icons['cuadroNegro']"
-          class="text-black"
-        ></span>
-      </div>
-      <div class="centered-container">
-        <label>Arma de Fuego</label>
-        <span
-          *ngIf="!getIndicador('arma_fuego')"
-          [innerHTML]="icons['cuadroBlanco']"
-          class="text-black"
-        ></span>
-        <span
-          *ngIf="getIndicador('arma_fuego')"
-          [innerHTML]="icons['cuadroNegro']"
-          class="text-black"
-        ></span>
-      </div>
-      <div class="centered-container">
-        <label>Estudiante Esc. Pública</label>
-        <span
-          *ngIf="!getIndicador('estudiante_publico')"
-          [innerHTML]="icons['cuadroBlanco']"
-          class="text-black"
-        ></span>
-        <span
-          *ngIf="getIndicador('estudiante_publico')"
-          [innerHTML]="icons['cuadroNegro']"
-          class="text-black"
-        ></span>
-      </div>
-      <div class="centered-container">
-        <label>Accidente Laboral</label>
-        <span
-          *ngIf="!getIndicador('accidente_laboral')"
-          [innerHTML]="icons['cuadroBlanco']"
-          class="text-black"
-        ></span>
-        <span
-          *ngIf="getIndicador('accidente_laboral')"
-          [innerHTML]="icons['cuadroNegro']"
-          class="text-black"
-        ></span>
-      </div>
-      <div class="centered-container">
-        <label>Personal de Hospital</label>
-        <span
-          *ngIf="!getIndicador('personal_hospital')"
-          [innerHTML]="icons['cuadroBlanco']"
-          class="text-black"
-        ></span>
-        <span
-          *ngIf="getIndicador('personal_hospital')"
-          [innerHTML]="icons['cuadroNegro']"
-          class="text-black"
-        ></span>
-      </div>
-      <div class="centered-container">
-        <label>Embarazo</label>
-        <span
-          *ngIf="!getIndicador('embarazo')"
-          [innerHTML]="icons['cuadroBlanco']"
-          class="text-black"
-        ></span>
-        <span
-          *ngIf="getIndicador('embarazo')"
-          [innerHTML]="icons['cuadroNegro']"
-          class="text-black"
-        ></span>
-      </div>
-    </div>
-  </div>
-
   <!-- ── SERVICIOS ── -->
-  <div class="doc-section">
-    <h6>SERVICIOS:</h6>
-    <div
-      style="display: flex; justify-content: space-around; flex-wrap: wrap"
-      class="especialidades-hoja"
-    >
+  <div
+    class="doc-section"
+    style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap"
+  >
+    <h6 style="white-space: nowrap; margin: 0; border: none; padding: 0">
+      SERVICIOS:
+    </h6>
+    <div class="especialidades-hoja">
       <div *ngFor="let esp of especialidades" class="especialidad-cuadro">
         <label>{{ esp.label }}</label>
         <span
@@ -247,29 +149,123 @@
     </div>
   </div>
 
-  <!-- ── EXAMEN FÍSICO ── -->
+  <!-- ── INDICADORES ── -->
   <div class="doc-section">
-    <h6>Examen Físico</h6>
-    <div class="campos-clinicos" style="justify-content: space-around">
-      <span>P/A:_______mmHg</span>
-      <span>FC:_______lpm</span>
-      <span>FR:_______rpm</span>
-      <span>SatO2:_______%</span>
-      <span>Temp:_______°C</span>
-    </div>
+    <h6>Indicadores</h6>
     <div
-      class="campos-clinicos"
-      style="justify-content: space-around; margin-top: 4px"
+      style="
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 2px 0;
+      "
     >
-      <span>Peso:_______kg</span>
-      <span>Talla/longitud:_______cm</span>
-      <span>P/T:_______</span>
-      <span>T/E:_______</span>
-      <span>P/E:_______</span>
+      <div class="centered-container">
+        <label>Accidente Tránsito</label>
+        <span
+          *ngIf="!getIndicador('accidente_transito')"
+          [innerHTML]="icons['cuadroBlanco']"
+          class="text-black"
+        ></span>
+        <span
+          *ngIf="getIndicador('accidente_transito')"
+          [innerHTML]="icons['cuadroNegro']"
+          class="text-black"
+        ></span>
+      </div>
+      <div class="centered-container">
+        <label>Arma Blanca</label>
+        <span
+          *ngIf="!getIndicador('arma_blanca')"
+          [innerHTML]="icons['cuadroBlanco']"
+          class="text-black"
+        ></span>
+        <span
+          *ngIf="getIndicador('arma_blanca')"
+          [innerHTML]="icons['cuadroNegro']"
+          class="text-black"
+        ></span>
+      </div>
+      <div class="centered-container">
+        <label>Arma de Fuego</label>
+        <span
+          *ngIf="!getIndicador('arma_fuego')"
+          [innerHTML]="icons['cuadroBlanco']"
+          class="text-black"
+        ></span>
+        <span
+          *ngIf="getIndicador('arma_fuego')"
+          [innerHTML]="icons['cuadroNegro']"
+          class="text-black"
+        ></span>
+      </div>
+      <div class="centered-container">
+        <label>Estudiante Esc. Pública</label>
+        <span
+          *ngIf="!getIndicador('estudiante_publico')"
+          [innerHTML]="icons['cuadroBlanco']"
+          class="text-black"
+        ></span>
+        <span
+          *ngIf="getIndicador('estudiante_publico')"
+          [innerHTML]="icons['cuadroNegro']"
+          class="text-black"
+        ></span>
+      </div>
+      <div class="centered-container">
+        <label>Accidente Laboral</label>
+        <span
+          *ngIf="!getIndicador('accidente_laboral')"
+          [innerHTML]="icons['cuadroBlanco']"
+          class="text-black"
+        ></span>
+        <span
+          *ngIf="getIndicador('accidente_laboral')"
+          [innerHTML]="icons['cuadroNegro']"
+          class="text-black"
+        ></span>
+      </div>
+      <div class="centered-container">
+        <label>Personal de Hospital</label>
+        <span
+          *ngIf="!getIndicador('personal_hospital')"
+          [innerHTML]="icons['cuadroBlanco']"
+          class="text-black"
+        ></span>
+        <span
+          *ngIf="getIndicador('personal_hospital')"
+          [innerHTML]="icons['cuadroNegro']"
+          class="text-black"
+        ></span>
+      </div>
+      <div class="centered-container">
+        <label>Embarazo</label>
+        <span
+          *ngIf="!getIndicador('embarazo')"
+          [innerHTML]="icons['cuadroBlanco']"
+          class="text-black"
+        ></span>
+        <span
+          *ngIf="getIndicador('embarazo')"
+          [innerHTML]="icons['cuadroNegro']"
+          class="text-black"
+        ></span>
+      </div>
+      <div class="centered-container">
+        <label>Ambulancia</label>
+        <span
+          *ngIf="!getIndicador('ambulancia')"
+          [innerHTML]="icons['cuadroBlanco']"
+          class="text-black"
+        ></span>
+        <span
+          *ngIf="getIndicador('ambulancia')"
+          [innerHTML]="icons['cuadroNegro']"
+          class="text-black"
+        ></span>
+      </div>
     </div>
-    <span class="line" style="margin-top: 6px"></span>
-    <span class="line"></span>
-    <span class="line"></span>
   </div>
 
   <!-- ── MOTIVO DE CONSULTA ── -->
@@ -360,6 +356,31 @@
       <label>Otros Antecedentes de Importancia</label>
       <span class="line"></span>
     </div>
+  </div>
+
+  <!-- ── EXAMEN FÍSICO ── -->
+  <div class="doc-section">
+    <h6>Examen Físico</h6>
+    <div class="campos-clinicos" style="justify-content: space-around">
+      <span>P/A:_______mmHg</span>
+      <span>FC:_______lpm</span>
+      <span>FR:_______rpm</span>
+      <span>SatO2:_______%</span>
+      <span>Temp:_______°C</span>
+    </div>
+    <div
+      class="campos-clinicos"
+      style="justify-content: space-around; margin-top: 4px"
+    >
+      <span>Peso:_______kg</span>
+      <span>Talla/longitud:_______cm</span>
+      <span>P/T:_______</span>
+      <span>T/E:_______</span>
+      <span>P/E:_______</span>
+    </div>
+    <span class="line" style="margin-top: 6px"></span>
+    <span class="line"></span>
+    <span class="line"></span>
   </div>
 
   <!-- ── IMPRESIÓN CLÍNICA ── -->

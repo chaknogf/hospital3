@@ -1,139 +1,377 @@
-/* 🎨 Estilos generales hoja clínica */
-.hoja-medica {
-  background: #fff;
-  color: #000;
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  font-size: 11pt;
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --ink:        #0d0d0d;
+  --ink-muted:  #555;
+  --rule:       #1a1a1a;
+  --rule-light: #aaa;
+  --rule-tenue: #ccc;
+  --accent:     #1a3a6a;
+  --bg:         #ffffff;
+  --serif:      'Source Serif 4', Georgia, serif;
+  --mono:       'DM Mono', 'Courier New', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background: #d4d4d4;
+  font-family: var(--serif);
+  color: var(--ink);
+  font-size: 10pt;
   line-height: 1.4;
-  padding: 1.5rem;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-/* Encabezados */
-.titulo {
-  font-size: 18pt;
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-}
-
-.subtitulo {
-  font-size: 12pt;
-  font-weight: bold;
-  margin: 1rem 0 0.5rem;
-  border-bottom: 1px solid #999;
-  padding-bottom: 0.2rem;
-}
-
-.orden{
-  font-size: 3rem;
-  font-weight: bold;
   margin: 0;
-  color: #000;
+  padding: 0;
 }
 
-.orden h1, h3 {
-
-  color: #000;
+h1,h2,h3,h4,h5,h6 {
+  color: var(--ink);
+  padding: 0; margin: 0;
+  font-family: var(--serif);
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
+p     { margin: 0; letter-spacing: 0; }
+label { letter-spacing: 0.4px; }
+span  { letter-spacing: 0; }
 
-/* Tablas y filas */
-.datos-consulta .info,
-.datos-paciente .row {
-  margin-bottom: 0.3rem;
+/* ── BOTONES ── */
+.botones {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 0.5px solid rgba(0,0,0,0.1);
+  padding: 8px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-.datos-consulta .col,
-.datos-paciente .col,
-.signos-vitales .campo,
-.consulta .campo,
-.seguimiento .campo {
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin-bottom: 0.3rem;
-  background: #fafafa;
-  padding-top: 0.1rem;
-  padding-bottom: 6rem;
-
+.botones button {
+  width: 36px; height: 36px;
+  border: 0.5px solid rgba(0,0,0,0.15);
+  border-radius: 8px;
+  background: #586b99;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  color: #1a3a6a;
 }
 
-.col-3, .border {
-  border-radius: 6px;
+.botones button:hover    { background: #1a3a6a; color: #fff; border-color: #1a3a6a; }
+.botones button:disabled { opacity: 0.4; cursor: not-allowed; }
+.botones button svg      { width: 16px; height: 16px; }
+
+.alert {
+  max-width: 860px;
+  margin: 1rem auto;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: sans-serif;
+}
+.alert-danger  { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; }
+.alert-info    { background: #eff6ff; border: 1px solid #93c5fd; color: #1e40af; }
+.alert-warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+
+/* ── HOJA CARTA ── */
+.container-impresion {
+  background: var(--bg);
+  width: 216mm;
+  min-height: 279mm;
+  margin: 1.5rem auto 3rem;
+  padding: 10mm 13mm;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 8px 32px rgba(0,0,0,0.16);
+  position: relative;
+  font-size: 9pt;
+  font-family: var(--serif);
+  color: var(--ink);
 }
 
-/* Campos */
-.campo {
-  min-height: 2rem;
-  padding: 6px;
-}
-
-/* Vitales como grilla */
-.tabla-vitales {
+/* ── HEADER ── */
+.aurora-header {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 60px 1fr 60px;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 2px solid var(--ink);
+  padding: 6px;
+  margin: 5px;
+}
+
+.aurora-textos { text-align: center; }
+
+.aurora-textos h3 {
+  font-size: 12pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+
+.aurora-textos h4 { font-size: 8.5pt; font-weight: 600; letter-spacing: 0; }
+.aurora-textos h5 { font-size: 8pt; font-weight: 400; color: var(--ink-muted); }
+
+.aurora-header .logo { width: 115px; height: auto; justify-self: end; }
+
+/* ── META HC (orden / especialidad / fecha) ── */
+.doc-meta-hc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 2px;
+  border-bottom: 0.8px solid #444;
+  margin-bottom: 5px;
+}
+
+.meta-orden {
+  display: flex;
+  align-items: baseline;
   gap: 6px;
 }
-.tabla-vitales span {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 4px;
-  text-align: center;
-  font-size: 10pt;
-  background: #fff;
+
+.meta-num {
+  font-family: var(--mono);
+  font-size: 18pt;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
 }
 
-/* Footer */
-footer {
-  border-top: 1px solid #999;
-  margin-top: 2rem;
-  padding-top: 0.5rem;
-  font-size: 10pt;
-  color: #333;
+.meta-sep {
+  font-size: 14pt;
+  color: var(--ink-muted);
 }
 
-/* Ocultar botones y navbar en impresión */
-@media print {
-  .no-print, nav, .navbar, .btn {
-    display: none !important;
-  }
-
-  body {
-    background: #fff;
-    margin: 0;
-    padding: 0;
-  }
-
-  @page {
-    size: A4 portrait;
-    margin: 10mm;
-  }
-
-  .hoja-medica {
-    box-shadow: none;
-    border-radius: 0;
-    padding: 0;
-    font-size: 10.5pt;
-  }
-
-  h1, h2, h3, h4, h5 {
-    page-break-after: avoid;
-  }
-
-  section, table, tr, td, th, div {
-    page-break-inside: avoid;
-  }
+.meta-esp {
+  font-family: var(--serif);
+  font-size: 11pt;
+  font-weight: 600;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
+.meta-right {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
 
+.meta-chip {
+  font-family: var(--mono);
+  font-size: 7pt;
+  color: var(--accent);
+  background: rgba(26,58,106,0.07);
+  border: 0.8px solid rgba(26,58,106,0.2);
+  padding: 2px 7px;
+  border-radius: 20px;
+  white-space: nowrap;
 
-.logoDerecho{
-  position: absolute;
-  top: 36px;
-  left: 375px;
+}
+
+.meta-chip-muted {
+  color: var(--ink-muted);
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.1);
+}
+
+/* ── SECCIONES ── */
+.doc-section {
+  border: 0.8px solid #888;
+  border-radius: 3px;
+  padding: 5px 7px;
+  margin: 3px 0;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.doc-section h6 {
+  font-size: 7pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: var(--accent);
+  border-bottom: 0.5px solid #ddd;
+  padding-bottom: 3px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sec-hora {
+  font-family: var(--mono);
+  font-size: 7pt;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--ink-muted);
+  text-transform: none;
+}
+
+/* ── CAMPOS BORDERLINE ── */
+.borderline,
+.borderline-time {
+  border: 0.8px solid #c0c0c0;
+  border-radius: 3px;
+  padding: 3px 6px 4px;
+  min-height: 34px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ── LABELS ── */
+label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 6.2pt;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #777;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+/* ── VALORES ── */
+.borderline p,
+.borderline-time p {
+  font-family: var(--serif);
+  font-size: 9.5pt;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.nombres-fila {
+  font-size: 10.5pt !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.2px !important;
+}
+
+/* ── LÍNEA DE ESCRITURA ── */
+.line {
+  display: block;
+  border: none;
+  border-bottom: 0.8px solid #888;
+  min-height: 18px;
+  margin-bottom: 4px;
   width: 100%;
-  height: 100%;
+}
 
+/* ── SIGNOS VITALES ── */
+.vitales-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 2px 0;
+}
 
+.vital-item {
+  border: 0.8px solid #c0c0c0;
+  border-radius: 3px;
+  padding: 3px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vital-val {
+  font-family: var(--mono);
+  font-size: 8.5pt;
+  color: var(--ink);
+  letter-spacing: 0;
+}
+
+/* ── CAMPO HC (sección con label + líneas) ── */
+.campo-hc {
+  border: 0.8px solid #d0d0d0;
+  border-radius: 3px;
+  padding: 4px 6px;
+  margin-bottom: 3px;
+  break-inside: avoid;
+}
+
+.campo-hc label {
+  font-size: 6.5pt;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
+
+/* ── FIRMA ── */
+.firma-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+  margin-top: 8px;
+}
+
+.firma-row p {
+  flex: 1;
+  border-top: 0.8px solid #444;
+  padding-top: 3px;
+  text-align: center;
+  font-family: var(--mono) !important;
+  font-size: 6.8pt !important;
+  font-weight: 400 !important;
+  color: #666 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.3px !important;
+  margin: 0 !important;
+}
+
+/* ── UTILIDADES ── */
+.text-black { color: var(--ink); }
+
+/* ── @MEDIA PRINT ── */
+@page { size: letter; margin: 8mm 10mm; }
+
+@media print {
+  body {
+    background: white;
+    margin: 0; padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .no-imprimir,
+  .botones,
+  .alert { display: none !important; }
+
+  .container-impresion {
+    width: 100%; min-height: auto;
+    margin: 0; padding: 0;
+    box-shadow: none;
+  }
+
+  .doc-section  { break-inside: avoid; page-break-inside: avoid; }
+  .campo-hc     { break-inside: avoid; }
+  .borderline   { break-inside: avoid; }
+
+  .aurora-textos h3 { color: black !important; }
+  .doc-section h6   { color: black !important; }
+  .campo-hc label   { color: black !important; }
+  .meta-num         { color: black !important; }
+  .meta-chip        { background: none !important; border-color: #aaa !important; }
+  label             { color: #666 !important; }
+  .line             { border-bottom-color: #666 !important; }
+}
+
+.meta-exp {
+  font-size: 1.3rem;
 }

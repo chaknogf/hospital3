@@ -1,209 +1,272 @@
+<!-- ============================================================ -->
+<!-- HISTORIA CLÍNICA — estilo cosmos + documento imprimible      -->
+<!-- ============================================================ -->
+
 <!-- Botones de control -->
-<div class="d-flex justify-content-center bg-white no-print">
-  <button
-    class="btn btn-dark no-print mx-2 my-3 w-30"
-    (click)="regresar()"
-    [disabled]="isLoading()"
-  >
+<div class="botones no-imprimir">
+  <button (click)="regresar()" [disabled]="isLoading()" title="Regresar">
     <span [innerHTML]="icons['back']"></span>
   </button>
-  <button
-    class="btn btn-info no-print mx-2 my-3 w-30"
-    (click)="imprimir()"
-    [disabled]="isLoading()"
-  >
+  <button (click)="imprimir()" [disabled]="isLoading()" title="Imprimir">
     <span [innerHTML]="icons['print']"></span>
   </button>
 </div>
 
-<hr class="mt-2" />
-
-<!-- Mostrar errores -->
-<div *ngIf="error()" class="alert alert-danger no-print mx-3">
-  {{ error() }}
-</div>
-
-<!-- Loading -->
-<div *ngIf="isLoading()" class="alert alert-info no-print mx-3">
+<div *ngIf="error()" class="alert alert-danger no-imprimir">{{ error() }}</div>
+<div *ngIf="isLoading()" class="alert alert-info no-imprimir">
   Cargando información...
 </div>
+<div
+  *ngIf="!detalleVisible() && !isLoading()"
+  class="alert alert-warning no-imprimir"
+>
+  Cargando documento...
+</div>
 
-<!-- Contenido principal para imprimir -->
-<body
-  id="pdf-content"
-  class="imprimir-esto text-black bg-light p-0 w-100"
+<!-- ============================================================ -->
+<!-- DOCUMENTO IMPRIMIBLE                                         -->
+<!-- ============================================================ -->
+<div
+  class="container-impresion"
   *ngIf="detalleVisible() && consulta() && paciente()"
 >
-  <div id="pdfs-content" class="container-fluid hoja-medica">
-    <small>Print: {{ horaActual | time }} - {{ fechaActual }}</small>
+  <span class="meta-chip">
+    {{ consulta()?.fecha_consulta | date: "dd/MM/yyyy" }}
+    &nbsp;·&nbsp;
+    {{ consulta()?.hora_consulta | time }}
+  </span>
 
-    <!-- ======= ENCABEZADO PRINCIPAL ======= -->
-    <header class="text-center mb-4">
-      <h2 class="titulo">HISTORIA CLÍNICA</h2>
-      <span class="logoDerecho" [innerHTML]="icons['logo']"></span>
-      <h4 class="m-0">Ministerio de Salud Pública y Asistencia Social</h4>
-      <h4 class="m-0">Hospital General Tipo I de Tecpán Guatemala</h4>
-    </header>
-
-    <!-- ======= DATOS DE LA CONSULTA ======= -->
-    <section class="datos-consulta m-2">
-      <div class="orden d-flex gap-1">
-        <h1 class="border-bottom w-10">{{ consulta()?.orden }} /</h1>
-        <h3 class="border-bottom w-10">
-          {{ consulta()?.especialidad | datosExtra : "especialidad" }}
-        </h3>
-      </div>
-      <div class="info row">
-        <div class="col border p-2">
-          <strong>Fecha de Consulta:</strong>
-          <span>
-            {{ consulta()?.fecha_consulta | date : "dd/MM/yyyy" }} -
-            {{ consulta()?.hora_consulta | time }}
-          </span>
-        </div>
-        <div class="col border p-2">
-          <strong>Expediente:</strong>
-          <span>{{ consulta()?.expediente }}</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ======= DATOS DEL PACIENTE ======= -->
-    <section class="datos-paciente m-2">
-      <h3 class="subtitulo">DATOS DEL PACIENTE</h3>
-
-      <!-- Fila 1: Nombre, Sexo, Edad -->
-      <div class="row">
-        <div class="col-6 border p-2">
-          <strong>Nombre:</strong>
-          <span>{{ nombreCompleto() }}</span>
-        </div>
-        <div class="col-3 border p-2">
-          <strong>Sexo:</strong>
-          <span>{{ paciente()?.sexo | datosExtra : "sexo" }}</span>
-        </div>
-        <div class="col-3 border p-2">
-          <strong>Edad:</strong>
-          <span>{{ paciente()?.fecha_nacimiento | edad }}</span>
-        </div>
-      </div>
-
-      <!-- Fila 2: Fecha Nacimiento, DPI, Teléfono -->
-      <div class="row">
-        <div class="col-4 border p-2">
-          <strong>Fecha de nacimiento:</strong>
-          <span>{{ paciente()?.fecha_nacimiento | date : "dd/MM/yyyy" }}</span>
-        </div>
-        <div class="col-4 border p-2">
-          <strong>DPI:</strong>
-          <span>{{ paciente()?.cui | cui }}</span>
-        </div>
-        <div class="col-4 border p-2">
-          <strong>Tel:</strong>
-          <span>{{ paciente()?.contacto?.telefonos || "N/A" }}</span>
-        </div>
-      </div>
-
-      <!-- Fila 3: Dirección, Ocupación, Educación -->
-      <div class="row">
-        <div class="col-6 border p-2">
-          <strong>Dirección:</strong>
-          <span>{{ direccionCompleta() }}</span>
-        </div>
-        <div class="col-3 border p-2">
-          <strong>Ocupación:</strong>
-          <span>{{ paciente()?.datos_extra?.['r4']?.valor || 'N/A' }}</span>
-        </div>
-        <div class="col-3 border p-2">
-          <strong>Educación:</strong>
-          <span>
-            {{ paciente()?.datos_extra?.['r5']?.valor | datosExtra: 'educacion' }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Fila 4: Responsable, Parentesco -->
-      <div class="row">
-        <div class="col-6 border p-2">
-          <strong>Responsable:</strong>
-          <span>{{ responsable()?.nombre || "N/A" }}</span>
-        </div>
-        <div class="col-6 border p-2">
-          <strong>Parentesco:</strong>
-          <span>{{
-            responsable()?.parentesco | datosExtra : "parentesco"
-          }}</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ======= SIGNOS VITALES ======= -->
-    <section class="signos-vitales m-2">
-      <h3 class="subtitulo">
-        SIGNOS VITALES
-        <small class="hora">Hora: ____________</small>
-      </h3>
-      <div class="tabla-vitales border p-2">
-        <span>P/A:</span>
-        <span>FC:</span>
-        <span>FR:</span>
-        <span>T:</span>
-        <span>P:</span>
-        <span>Talla:</span>
-        <span>SO2:</span>
-        <span>GMT:</span>
-      </div>
-    </section>
-
-    <!-- ======= DATOS DE LA CONSULTA ======= -->
-    <section class="consulta m-2">
-      <h3 class="subtitulo">
-        DATOS DE LA CONSULTA
-        <small class="hora">Hora: ____________</small>
-      </h3>
-      <div class="campo border">
-        <strong>Motivo de la consulta:</strong>
-      </div>
-      <div class="campo border">
-        <strong>Historia Clínica:</strong>
-      </div>
-      <div class="campo border">
-        <strong>Antecedentes:</strong>
-      </div>
-      <div class="campo border">
-        <strong>Examen físico:</strong>
-      </div>
-      <div class="campo border">
-        <strong>Diagnósticos:</strong>
-      </div>
-      <div class="campo border">
-        <strong>Tratamiento:</strong>
-      </div>
-      <div class="campo border">
-        <strong>Estudios Complementarios:</strong>
-      </div>
-    </section>
-
-    <!-- ======= SEGUIMIENTO DE CASO ======= -->
-    <section class="seguimiento m-2">
-      <h3 class="subtitulo">SEGUIMIENTO DE CASO</h3>
-      <div class="campo border">
-        <strong>Fecha:</strong>
-      </div>
-      <div class="campo border">
-        <strong>Datos Subjetivos:</strong>
-      </div>
-      <div class="campo border">
-        <strong>Datos Objetivos:</strong>
-      </div>
-    </section>
-
-    <!-- ======= PIE ======= -->
-    <footer class="text-center mt-4"></footer>
+  <span class="meta-chip meta-chip-muted"
+    >Print: {{ horaActual | time }} — {{ fechaActual }}</span
+  >
+  <!-- HEADER -->
+  <div class="aurora-header">
+    <span></span>
+    <div class="aurora-textos">
+      <h3>Historia Clínica</h3>
+      <h4>Ministerio de Salud Pública y Asistencia Social</h4>
+      <h5>Hospital General Tipo I de Tecpán Guatemala</h5>
+    </div>
+    <!-- <span class="logo" [innerHTML]="icons['logo']"></span> -->
   </div>
-</body>
 
-<!-- Mensaje cuando no hay datos -->
-<div *ngIf="!detalleVisible() && !isLoading()" class="alert alert-warning mx-3">
-  Cargando documento...
+  <!-- META: orden / especialidad / fecha / expediente -->
+  <div class="doc-meta-hc">
+    <div class="meta-orden">
+      <span class="meta-num">{{ consulta()?.orden }}</span>
+      <span class="meta-sep">/</span>
+      <span class="meta-esp">{{
+        consulta()?.especialidad | datosExtra: "especialidad"
+      }}</span>
+    </div>
+    <div class="meta-right">
+      <span class="meta-exp">Exp: {{ consulta()?.expediente }}</span>
+    </div>
+  </div>
+
+  <!-- ── DATOS DEL PACIENTE ── -->
+  <div class="doc-section">
+    <h6>Datos del Paciente</h6>
+
+    <!-- Fila 1: Nombre · Sexo · Edad -->
+    <div
+      style="
+        display: grid;
+        grid-template-columns: 3fr 0.8fr 0.8fr;
+        gap: 4px;
+        margin-bottom: 4px;
+      "
+    >
+      <div class="borderline">
+        <label>Nombre</label>
+        <p class="nombres-fila">{{ nombreCompleto() }}</p>
+      </div>
+      <div class="borderline">
+        <label>Sexo</label>
+        <p>{{ paciente()?.sexo | datosExtra: "sexo" }}</p>
+      </div>
+      <div class="borderline">
+        <label>Edad</label>
+        <p>{{ paciente()?.fecha_nacimiento | edad }}</p>
+      </div>
+    </div>
+
+    <!-- Fila 2: Fecha Nac · DPI · Teléfono -->
+    <div
+      style="
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 4px;
+        margin-bottom: 4px;
+      "
+    >
+      <div class="borderline">
+        <label>Fecha de Nacimiento</label>
+        <p>{{ paciente()?.fecha_nacimiento | date: "dd/MM/yyyy" }}</p>
+      </div>
+      <div class="borderline">
+        <label>DPI</label>
+        <p>{{ paciente()?.cui | cui }}</p>
+      </div>
+      <div class="borderline">
+        <label>Teléfono</label>
+        <p>{{ paciente()?.contacto?.telefonos || "N/A" }}</p>
+      </div>
+    </div>
+
+    <!-- Fila 3: Dirección · Ocupación · Educación -->
+    <div
+      style="
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 4px;
+        margin-bottom: 4px;
+      "
+    >
+      <div class="borderline">
+        <label>Dirección</label>
+        <p>{{ direccionCompleta() }}</p>
+      </div>
+      <div class="borderline">
+        <label>Ocupación</label>
+        <p>{{ paciente()?.datos_extra?.["r4"]?.valor || "N/A" }}</p>
+      </div>
+      <div class="borderline">
+        <label>Educación</label>
+        <p>
+          {{ paciente()?.datos_extra?.["r5"]?.valor | datosExtra: "educacion" }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Fila 4: Responsable · Parentesco -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px">
+      <div class="borderline">
+        <label>Responsable</label>
+        <p>{{ responsable()?.nombre || "N/A" }}</p>
+      </div>
+      <div class="borderline">
+        <label>Parentesco</label>
+        <p>{{ responsable()?.parentesco | datosExtra: "parentesco" }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SIGNOS VITALES ── -->
+  <div class="doc-section">
+    <h6>
+      Signos Vitales
+      <span class="sec-hora">Hora: ___________</span>
+    </h6>
+    <div class="vitales-grid">
+      <div class="vital-item">
+        <label>P/A</label><span class="vital-val">_______ mmHg</span>
+      </div>
+      <div class="vital-item">
+        <label>FC</label><span class="vital-val">_______ lpm</span>
+      </div>
+      <div class="vital-item">
+        <label>FR</label><span class="vital-val">_______ rpm</span>
+      </div>
+      <div class="vital-item">
+        <label>Temp</label><span class="vital-val">_______ °C</span>
+      </div>
+      <div class="vital-item">
+        <label>Peso</label><span class="vital-val">_______ kg</span>
+      </div>
+      <div class="vital-item">
+        <label>Talla</label><span class="vital-val">_______ cm</span>
+      </div>
+      <div class="vital-item">
+        <label>SatO2</label><span class="vital-val">_______ %</span>
+      </div>
+      <div class="vital-item">
+        <label>GMT</label><span class="vital-val">_______</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DATOS DE LA CONSULTA ── -->
+  <div class="doc-section">
+    <h6>
+      Datos de la Consulta
+      <span class="sec-hora">Hora: ___________</span>
+    </h6>
+
+    <div class="campo-hc">
+      <label>Motivo de la consulta</label>
+      <span class="line"></span>
+      <span class="line"></span>
+    </div>
+
+    <div class="campo-hc">
+      <label>Historia Clínica</label>
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </div>
+
+    <div class="campo-hc">
+      <label>Antecedentes</label>
+      <span class="line"></span>
+      <span class="line"></span>
+    </div>
+
+    <div class="campo-hc">
+      <label>Examen Físico</label>
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </div>
+
+    <div class="campo-hc">
+      <label>Diagnósticos</label>
+      <span class="line"></span>
+      <span class="line"></span>
+    </div>
+
+    <div class="campo-hc">
+      <label>Tratamiento</label>
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </div>
+
+    <div class="campo-hc">
+      <label>Estudios Complementarios</label>
+      <span class="line"></span>
+      <span class="line"></span>
+    </div>
+  </div>
+
+  <!-- ── SEGUIMIENTO DE CASO ── -->
+  <div class="doc-section">
+    <h6>Seguimiento de Caso</h6>
+
+    <div class="campo-hc">
+      <label>Fecha</label>
+      <span class="line"></span>
+    </div>
+
+    <div class="campo-hc">
+      <label>Datos Subjetivos</label>
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </div>
+
+    <div class="campo-hc">
+      <label>Datos Objetivos</label>
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </div>
+
+    <!-- Firma médico -->
+    <div class="firma-row" style="margin-top: 16px">
+      <p>Fecha</p>
+      <p>Hora</p>
+      <p>Firma y Sello del Médico</p>
+    </div>
+  </div>
 </div>
