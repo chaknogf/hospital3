@@ -76,7 +76,7 @@ label { letter-spacing: 0.4px; }
   position: relative;
 }
 
-/* ══ META-CHIPS (fecha/hora de impresión) ═════════════════════ */
+/* ══ META-CHIPS ═══════════════════════════════════════════════ */
 .meta-chip {
   display: inline-block;
   font-family: var(--mono);
@@ -86,11 +86,12 @@ label { letter-spacing: 0.4px; }
   border: 0.5px solid var(--border-lt);
   border-radius: 3px;
   padding: 1px 5px;
-  margin-bottom: 3px;
-  margin-right: 4px;
+  margin-bottom: 3px; margin-right: 4px;
   letter-spacing: 0.3px;
 }
-.meta-chip-muted { color: #aaa; background: transparent; border-color: #e5e5e5; }
+.meta-chip-muted {
+  color: #aaa; background: transparent; border-color: #e5e5e5;
+}
 
 /* ══ HEADER ═══════════════════════════════════════════════════ */
 .aurora-header {
@@ -118,7 +119,7 @@ label { letter-spacing: 0.4px; }
   font-size: 7pt; font-weight: 400; color: var(--ink-muted);
 }
 
-/* ══ META HC — orden / especialidad / expediente ══════════════ */
+/* ══ META HC ══════════════════════════════════════════════════ */
 .doc-meta-hc {
   display: flex;
   justify-content: space-between;
@@ -127,10 +128,7 @@ label { letter-spacing: 0.4px; }
   border-bottom: 0.8px solid #555;
   margin-bottom: 4px;
 }
-
-.meta-orden {
-  display: flex; align-items: baseline; gap: 4px;
-}
+.meta-orden { display: flex; align-items: baseline; gap: 4px; }
 .meta-num {
   font-family: var(--mono);
   font-size: 18pt; font-weight: 700;
@@ -142,17 +140,16 @@ label { letter-spacing: 0.4px; }
 }
 .meta-esp {
   font-family: var(--serif);
-  font-size: 9pt; font-weight: 600;
-  color: var(--ink-dim);
+  font-size: 9pt; font-weight: 600; color: var(--ink-dim);
 }
 .meta-right { text-align: right; }
 .meta-exp {
   font-family: var(--mono);
-  font-size: 8.5pt; font-weight: 700;
-  color: var(--accent);
+  font-size: 8.5pt; font-weight: 700; color: var(--accent);
 }
 
 /* ══ SECCIONES ════════════════════════════════════════════════ */
+/* Mismo estilo que .doc-section del CSS referencia */
 .doc-section {
   border: 0.8px solid #888;
   border-radius: 3px;
@@ -182,21 +179,20 @@ label { letter-spacing: 0.4px; }
   text-transform: none;
 }
 
-/* ══ CAMPOS INDIVIDUALES ══════════════════════════════════════ */
+/* ══ CAMPOS — mismo sistema que .borderline del referencia ════ */
 .borderline {
-  border: 0.8px solid #c0c0c0;
-  border-radius: 3px;
+  border: 0.8px solid #c0c0c056;
+  border-radius: 8px;
   padding: 2px 5px 3px;
   min-height: 28px;
   overflow-wrap: anywhere; word-break: break-word;
 }
 
-/* ══ CAMPO HC — campo de escritura libre ══════════════════════ */
+/* ══ CAMPO HC — escritura libre con acento lateral ════════════ */
 .campo-hc {
   margin-bottom: 4px;
   padding: 0 1px;
 }
-
 .campo-hc > label {
   font-family: var(--mono);
   font-size: 5.8pt; font-weight: 700;
@@ -207,7 +203,7 @@ label { letter-spacing: 0.4px; }
   padding-left: 4px; line-height: 1.4;
 }
 
-/* ══ LABELS ═══════════════════════════════════════════════════ */
+/* ══ LABELS — igual que el referencia ════════════════════════ */
 label {
   display: block;
   font-family: var(--mono);
@@ -217,7 +213,7 @@ label {
   margin-bottom: 1px; line-height: 1.2;
 }
 
-/* ══ VALORES ══════════════════════════════════════════════════ */
+/* ══ VALORES — igual que .borderline p del referencia ════════ */
 .borderline p,
 .doc-section > p {
   font-family: var(--serif);
@@ -231,30 +227,30 @@ label {
   text-transform: uppercase; letter-spacing: 0.2px !important;
 }
 
-/* ══ LÍNEA DE ESCRITURA ═══════════════════════════════════════ */
+/* ══ LÍNEA — igual que .line del referencia ══════════════════ */
 .line {
   display: block;
   border: none;
   border-bottom: 0.8px solid #888;
-  min-height: 17px;
+  min-height: 24px;
   margin-bottom: 3px; width: 100%;
 }
 
-/* ══ SIGNOS VITALES GRID ══════════════════════════════════════ */
+/* ══ SIGNOS VITALES — grid 4 cols ════════════════════════════ */
 .vitales-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
-  padding: 2px 0;
+  gap: 4px; padding: 2px 0;
 }
 
 .vital-item {
-  border: 0.8px solid #c0c0c0;
-  border-radius: 3px;
+  border: 0.8px solid #c0c0c067;
+  border-radius: 6px;
   padding: 2px 5px;
   display: flex; flex-direction: column;
 }
 
+/* label dentro de vitales — usa color accent como referencia */
 .vital-item label {
   font-family: var(--mono);
   font-size: 5.5pt; font-weight: 700;
@@ -269,7 +265,7 @@ label {
   color: var(--ink); letter-spacing: 0;
 }
 
-/* ══ FIRMA ════════════════════════════════════════════════════ */
+/* ══ FIRMA — igual que .firma-row del referencia ════════════ */
 .firma-row {
   display: flex; gap: 16px;
   align-items: flex-end; margin-top: 12px;
@@ -284,12 +280,13 @@ label {
   letter-spacing: 0.3px !important; margin: 0 !important;
 }
 
-/* ══ @PAGE + @MEDIA PRINT — CARTA ════════════════════════════ */
+/* ══ @PAGE — CARTA ════════════════════════════════════════════ */
 @page {
   size: 8.5in 11in portrait;
   margin: 0;
 }
 
+/* ══ @MEDIA PRINT ════════════════════════════════════════════ */
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;
@@ -304,7 +301,6 @@ label {
 
   .no-imprimir, .botones, .alert { display: none !important; }
 
-  /* La carta ocupa 1 hoja carta exacta */
   .container-impresion {
     width: 100% !important;
     max-width: 100% !important;
@@ -318,17 +314,14 @@ label {
     font-size: 8pt !important;
   }
 
-  /* Meta chips — visibles en print como referencia */
+  /* Meta chips */
   .meta-chip {
     font-size: 5.5pt !important;
-    padding: 0 3px !important;
-    margin-bottom: 2px !important;
+    padding: 0 3px !important; margin-bottom: 2px !important;
   }
 
   /* Header */
-  .aurora-header {
-    padding-bottom: 4px !important; margin-bottom: 2px !important;
-  }
+  .aurora-header { padding-bottom: 4px !important; margin-bottom: 2px !important; }
   .aurora-textos h3 {
     font-size: 10pt !important; color: black !important;
     letter-spacing: 1.2px !important;
@@ -342,7 +335,7 @@ label {
   .meta-esp    { font-size: 8pt !important; }
   .meta-exp    { font-size: 7.5pt !important; color: black !important; }
 
-  /* Secciones */
+  /* Secciones — mismo tratamiento que referencia en print */
   .doc-section {
     padding: 2px 5px !important;
     margin: 1.5px 0 !important;
@@ -362,6 +355,7 @@ label {
     border-color: #bbb !important;
   }
 
+  /* Labels — mismo que referencia */
   label {
     font-size: 4.8pt !important;
     margin-bottom: 0 !important;
@@ -375,7 +369,7 @@ label {
   /* Líneas */
   .line { min-height: 13px !important; margin-bottom: 2px !important; }
 
-  /* Campo HC */
+  /* Campo HC — borde accent → negro en print */
   .campo-hc { margin-bottom: 3px !important; }
   .campo-hc > label {
     font-size: 5.5pt !important;
@@ -387,13 +381,8 @@ label {
 
   /* Vitales */
   .vitales-grid { gap: 3px !important; }
-  .vital-item {
-    padding: 1px 4px !important;
-    border-color: #bbb !important;
-  }
-  .vital-item label {
-    font-size: 5pt !important; color: #555 !important;
-  }
+  .vital-item { padding: 1px 4px !important; border-color: #bbb !important; }
+  .vital-item label { font-size: 5pt !important; color: #555 !important; }
   .vital-val { font-size: 7.5pt !important; }
   .sec-hora  { font-size: 5.5pt !important; }
 
@@ -401,7 +390,7 @@ label {
   .firma-row { gap: 10px !important; margin-top: 8px !important; }
   .firma-row p { font-size: 5.8pt !important; }
 
-  /* No cortar secciones */
+  /* Sin cortes */
   .doc-section  { break-inside: avoid; page-break-inside: avoid; }
   .vitales-grid { break-inside: avoid; }
   .firma-row    { break-inside: avoid; }
