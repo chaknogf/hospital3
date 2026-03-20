@@ -1,3 +1,386 @@
-<p>
-  hojaIngreso works!
-</p>
+<!-- ============================================================ -->
+<!-- HOJA DE INGRESO Y EGRESO — rediseño cosmos                  -->
+<!-- ============================================================ -->
+
+<div class="botones no-imprimir">
+  <button (click)="regresar()" [disabled]="isLoading()" title="Regresar">
+    <span [innerHTML]="icons['back']"></span>
+  </button>
+  <button (click)="imprimir()" [disabled]="isLoading()" title="Imprimir">
+    <span [innerHTML]="icons['print']"></span>
+  </button>
+</div>
+
+<div *ngIf="error()" class="alert alert-danger no-imprimir">{{ error() }}</div>
+<div *ngIf="isLoading()" class="alert alert-info no-imprimir">
+  Cargando información...
+</div>
+
+<div class="print-wrapper" *ngIf="detalleVisible()">
+  <div class="hoja-carta print-page">
+    <!-- ══ CABECERA ══════════════════════════════════════════════ -->
+    <div class="hoja-header">
+      <div class="hoja-logo"><span [innerHTML]="icons['logo']"></span></div>
+      <div class="hoja-header-centro">
+        <p class="h-ministerio">
+          Ministerio de Salud Pública y Asistencia Social
+        </p>
+        <p class="h-hospital">Hospital General Tipo I de Tecpán Guatemala</p>
+        <p class="h-titulo">Hoja de Ingreso y Egreso</p>
+      </div>
+      <div class="hoja-exp">
+        <span class="exp-lbl">Expediente</span>
+        <span class="exp-num">{{ paciente()?.expediente }}</span>
+      </div>
+    </div>
+
+    <!-- ══ SERVICIO / ESPECIALIDAD ═══════════════════════════════ -->
+    <div class="f-row">
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Servicio</span>
+        <span class="f-val">{{
+          consulta()?.servicio | datosExtra: "servicio"
+        }}</span>
+      </div>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Especialidad</span>
+        <span class="f-val">{{
+          consulta()?.especialidad | datosExtra: "especialidad"
+        }}</span>
+      </div>
+    </div>
+
+    <!-- ══ APELLIDOS / NOMBRES ════════════════════════════════════ -->
+    <div class="f-row">
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Apellidos</span>
+        <span class="f-val f-name">
+          {{ paciente()?.nombre?.primer_apellido }}
+          {{ paciente()?.nombre?.segundo_apellido }}
+          {{ paciente()?.nombre?.apellido_casada }}
+        </span>
+      </div>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Nombres</span>
+        <span class="f-val f-name">
+          {{ paciente()?.nombre?.primer_nombre }}
+          {{ paciente()?.nombre?.segundo_nombre }}
+          {{ paciente()?.nombre?.otro_nombre }}
+        </span>
+      </div>
+    </div>
+
+    <!-- ══ RESIDENCIA HABITUAL ════════════════════════════════════ -->
+    <div class="sec-bar">Residencia Habitual</div>
+
+    <div class="f-row">
+      <div class="f-cell" style="flex: 2.5">
+        <span class="f-lbl">Calle o lugar</span>
+        <span class="f-val">{{
+          paciente()?.contacto?.domicilio | titlecase
+        }}</span>
+      </div>
+      <div class="f-cell" style="flex: 1.2">
+        <span class="f-lbl">Municipio</span>
+        <span class="f-val">{{
+          paciente()?.contacto?.municipio | datosExtra: "municipio"
+        }}</span>
+      </div>
+      <div class="f-cell" style="flex: 1.2">
+        <span class="f-lbl">Departamento</span>
+        <span class="f-val">{{
+          paciente()?.contacto?.municipio | departamento
+        }}</span>
+      </div>
+      <div class="f-cell" style="flex: 0.9">
+        <span class="f-lbl">Teléfono</span>
+        <span class="f-val">{{ paciente()?.contacto?.telefonos }}</span>
+      </div>
+    </div>
+
+    <div class="f-row">
+      <div class="f-cell" style="flex: 1.5">
+        <span class="f-lbl">Lugar de nacimiento</span>
+        <span class="f-val">{{
+          paciente()?.datos_extra?.demograficos?.lugar_nacimiento
+            | datosExtra: "municipio"
+        }}</span>
+      </div>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Fecha de nacimiento</span>
+        <span class="f-val">{{
+          paciente()?.fecha_nacimiento | date: "dd/MM/yyyy"
+        }}</span>
+      </div>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Nacionalidad</span>
+        <span class="f-val">{{
+          paciente()?.datos_extra?.demograficos?.nacionalidad
+            | datosExtra: "nacionalidad"
+        }}</span>
+      </div>
+    </div>
+
+    <!-- ══ EDAD / SEXO / ESTADO CIVIL / OCUPACIÓN / CUI ══════════ -->
+    <div class="f-row">
+      <div class="f-cell" style="flex: 0.8">
+        <span class="f-lbl">Edad</span>
+        <span class="f-val">{{ paciente()?.fecha_nacimiento | edad }}</span>
+      </div>
+      <div class="f-cell" style="flex: 0.55">
+        <span class="f-lbl">Sexo</span>
+        <div class="sexo-row">
+          <span class="sexo-opt" [class.sexo-on]="paciente()?.sexo === 'M'"
+            >M</span
+          >
+          <span class="sexo-opt" [class.sexo-on]="paciente()?.sexo === 'F'"
+            >F</span
+          >
+        </div>
+      </div>
+      <div class="f-cell" style="flex: 1.1">
+        <span class="f-lbl">Estado Civil</span>
+        <span class="f-val">{{
+          paciente()?.datos_extra?.socioeconomicos?.estado_civil
+            | datosExtra: "estado_civil"
+        }}</span>
+      </div>
+      <div class="f-cell" style="flex: 1.1">
+        <span class="f-lbl">Ocupación</span>
+        <span class="f-val">{{
+          paciente()?.datos_extra?.socioeconomicos?.ocupacion | titlecase
+        }}</span>
+      </div>
+      <div class="f-cell" style="flex: 1.3">
+        <span class="f-lbl">CUI o Pasaporte</span>
+        <span class="f-val">{{ paciente()?.cui | cui }}</span>
+      </div>
+    </div>
+
+    <!-- ══ DATOS FAMILIARES ═══════════════════════════════════════ -->
+    <div class="sec-bar">Datos Familiares</div>
+
+    <div class="f-row">
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Nombre del cónyuge</span>
+        <span class="f-val"></span>
+      </div>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Dirección</span>
+        <span class="f-val"></span>
+      </div>
+    </div>
+
+    <div class="f-row">
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Padre</span>
+        <span class="f-val"></span>
+      </div>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Madre</span>
+        <span class="f-val"></span>
+      </div>
+    </div>
+
+    <div class="f-row">
+      <div class="f-cell" style="flex: 1.5">
+        <span class="f-lbl">Responsable</span>
+        <span class="f-val">{{ responsable()?.nombre | titlecase }}</span>
+      </div>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Parentesco</span>
+        <span class="f-val">{{
+          responsable()?.parentesco | datosExtra: "parentesco"
+        }}</span>
+      </div>
+      <div class="f-cell" style="flex: 0.8">
+        <span class="f-lbl">Teléfono</span>
+        <span class="f-val">{{ responsable()?.telefono }}</span>
+      </div>
+    </div>
+
+    <div class="f-row">
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">No. de Hospitalizaciones</span>
+        <span class="f-val"></span>
+      </div>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Referido</span>
+        <span class="f-val"></span>
+      </div>
+    </div>
+
+    <!-- ══ ESTANCIA ═══════════════════════════════════════════════ -->
+    <div class="sec-bar">Estancia Hospitalaria</div>
+
+    <div class="f-row">
+      <div class="f-cell" style="flex: 1.3">
+        <span class="f-lbl">Fecha de Ingreso</span>
+        <span class="f-val">{{
+          consulta()?.fecha_consulta | date: "dd/MM/yyyy"
+        }}</span>
+      </div>
+      <div class="f-cell" style="flex: 0.6">
+        <span class="f-lbl">Hora</span>
+        <span class="f-val">{{ consulta()?.hora_consulta | time }}</span>
+      </div>
+      <div class="f-cell" style="flex: 1.3">
+        <span class="f-lbl">Fecha de Egreso</span>
+        <span class="f-val"></span>
+      </div>
+      <div class="f-cell" style="flex: 0.6">
+        <span class="f-lbl">Hora</span>
+        <span class="f-val"></span>
+      </div>
+      <div class="f-cell" style="flex: 0.9">
+        <span class="f-lbl">Días de Estancia</span>
+        <span class="f-val"></span>
+      </div>
+    </div>
+
+    <!-- ══ DIAGNÓSTICO DE INGRESO ═════════════════════════════════ -->
+    <div class="diag-bar">Diagnóstico de Ingreso</div>
+    <div class="f-row f-row-diag">
+      <div class="f-cell" style="flex: 1"><span class="f-val"></span></div>
+    </div>
+    <div class="f-row f-row-diag">
+      <div class="f-cell" style="flex: 1"><span class="f-val"></span></div>
+    </div>
+    <div class="f-row f-row-diag">
+      <div class="f-cell" style="flex: 1"><span class="f-val"></span></div>
+    </div>
+
+    <!-- ══ DIAGNÓSTICO FINAL ══════════════════════════════════════ -->
+    <div class="diag-bar diag-bar-final">
+      <span>Diagnóstico Final — enumerar en orden de importancia</span>
+      <span class="cie-th">Código CIE-10</span>
+    </div>
+
+    <ng-container *ngFor="let n of [1, 2, 3, 4, 5]">
+      <div class="f-row f-row-diag">
+        <span class="diag-n">{{ n }}.</span>
+        <div class="f-cell" style="flex: 1"><span class="f-val"></span></div>
+        <div class="f-cell f-cell-cie"><span class="f-val"></span></div>
+      </div>
+    </ng-container>
+
+    <div class="f-row f-row-diag">
+      <span class="diag-n">P.</span>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Principal</span><span class="f-val"></span>
+      </div>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Operaciones</span><span class="f-val"></span>
+      </div>
+      <div class="f-cell f-cell-cie"><span class="f-val"></span></div>
+    </div>
+    <div class="f-row f-row-diag">
+      <span class="diag-n"></span>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Otras</span><span class="f-val"></span>
+      </div>
+    </div>
+
+    <!-- ══ INTERVENCIONES QUIRÚRGICAS ════════════════════════════ -->
+    <div class="sec-bar">Intervenciones Quirúrgicas</div>
+
+    <div class="f-row">
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">A) Fecha de la operación</span>
+        <span class="f-val"></span>
+      </div>
+      <div class="f-cell" style="flex: 1.2">
+        <span class="f-lbl">B) Médico que la realizó</span>
+        <span class="f-val"></span>
+      </div>
+    </div>
+    <div class="f-row">
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">C) Resultados</span>
+        <span class="f-val"></span>
+      </div>
+      <div class="f-cell" style="flex: 1.2">
+        <span class="f-lbl">D) Se practicó autopsia</span>
+        <div class="autopsia-row">
+          <span class="autopsia-opt">Sí</span>
+          <span class="autopsia-opt">No</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CONDICIÓN DE SALIDA ════════════════════════════════════ -->
+    <div class="sec-bar">Condición de Salida</div>
+
+    <div class="salida-wrapper">
+      <div class="salida-col">
+        <div class="salida-item">
+          <div class="salida-box"></div>
+          <span>Recuperado</span>
+        </div>
+        <div class="salida-item">
+          <div class="salida-box"></div>
+          <span>Mismo estado</span>
+        </div>
+        <div class="salida-item">
+          <div class="salida-box"></div>
+          <span>Fugado</span>
+        </div>
+        <div class="salida-item">
+          <div class="salida-box"></div>
+          <span>Fallecido sin autopsia</span>
+        </div>
+      </div>
+      <div class="salida-col">
+        <div class="salida-item">
+          <div class="salida-box"></div>
+          <span>Estable</span>
+        </div>
+        <div class="salida-item">
+          <div class="salida-box"></div>
+          <span>Contraindicado</span>
+        </div>
+        <div class="salida-item">
+          <div class="salida-box"></div>
+          <span>Fallecido con autopsia</span>
+        </div>
+      </div>
+      <div class="salida-col salida-referido">
+        <span class="f-lbl" style="margin-bottom: 3px"
+          >Referido o trasladado al:</span
+        >
+        <div class="f-cell f-cell-full">
+          <span class="f-lbl">Servicio</span><span class="f-val"></span>
+        </div>
+        <div class="f-cell f-cell-full">
+          <span class="f-lbl">Hospital</span><span class="f-val"></span>
+        </div>
+        <div class="f-cell f-cell-full">
+          <span class="f-lbl">Otro</span><span class="f-val"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CAUSA DE MUERTE ════════════════════════════════════════ -->
+    <div class="f-row">
+      <div class="f-cell f-cell-full">
+        <span class="f-lbl">Causa de Muerte</span>
+        <span class="f-val"></span>
+      </div>
+    </div>
+
+    <!-- ══ PIE ════════════════════════════════════════════════════ -->
+    <div class="hoja-pie">
+      <div class="f-cell" style="flex: 1">
+        <span class="f-lbl">Fecha de Alta</span>
+        <span class="f-val"></span>
+      </div>
+      <div class="f-cell" style="flex: 2">
+        <span class="f-lbl">Firma y Sello del Médico</span>
+        <div class="firma-linea"></div>
+      </div>
+    </div>
+    <div class="hoja-pie-label">Hoja de Ingreso y Egreso</div>
+  </div>
+  <!-- /hoja-carta -->
+</div>
+<!-- /hoja-wrapper -->

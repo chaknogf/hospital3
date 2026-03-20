@@ -301,6 +301,13 @@ export class ApiService {
   }
 
   // ======= MUNICIPIOS =======
+
+  getDepartamentos(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/municipios/departamentos`).pipe(
+      catchError(error => this.manejarError(error, 'obtener departamentos'))
+    );
+  }
+
   getMunicipios(filtros: any): Observable<any> {
     const params = this.limpiarParametros(filtros);
     return this.http.get<any>(`${this.baseUrl}/municipios/`, { params }).pipe(

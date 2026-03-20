@@ -1,451 +1,366 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=DM+Mono:wght@400;500&display=swap');
 
-/* =====================================================
-   VARIABLES
-   ===================================================== */
 :root {
-  --ink:        #0d0d0d;
-  --ink-light:  #2c2c2c;
-  --ink-muted:  #555;
-  --rule:       #1a1a1a;
-  --rule-light: #aaa;
-  --rule-tenue: #ccc;
-  --accent:     #1a3a6a;
-  --bg:         #ffffff;
-  --serif:      'Source Serif 4', Georgia, serif;
-  --mono:       'DM Mono', 'Courier New', monospace;
+  --ink:       #0d0d0d;
+  --ink-dim:   #444;
+  --ink-muted: #6b7280;
+  --accent:    #1a3a6a;
+  --accent-lt: rgba(26,58,106,0.07);
+  --border:    #999;
+  --border-lt: #ccc;
+  --bg:        #ffffff;
+  --serif:     'Source Serif 4', Georgia, serif;
+  --mono:      'DM Mono', 'Courier New', monospace;
 }
 
-/* =====================================================
-   RESET
-   ===================================================== */
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
-  background: #d4d4d4;
+  background: #d0d0d0;
   font-family: var(--serif);
   color: var(--ink);
-  font-size: 10pt;
-  line-height: 1.4;
-  margin: 0;
-  padding: 0;
+  margin: 0; padding: 0;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: var(--ink);
-  padding: 0;
-  margin: 0;
-  font-family: var(--serif);
-  font-weight: 700;
-  letter-spacing: 0;
-}
-
-p     { margin: 0; letter-spacing: 0; }
-label { letter-spacing: 0.4px; }
+p, h1, h2, h3, h4, h5, h6 { margin: 0; padding: 0; }
 span  { letter-spacing: 0; }
+label { letter-spacing: 0.4px; }
 
-/* =====================================================
-   BOTONES DE CONTROL
-   ===================================================== */
+/* ── BOTONES ── */
 .botones {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  gap: 8px;
-  align-items: center;
+  position: sticky; top: 0; z-index: 100;
+  display: flex; gap: 8px; align-items: center;
   background: rgba(255,255,255,0.97);
   backdrop-filter: blur(12px);
   border-bottom: 0.5px solid rgba(0,0,0,0.1);
   padding: 8px 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
-
 .botones button {
-  width: 36px;
-  height: 36px;
+  width: 36px; height: 36px;
   border: 0.5px solid rgba(0,0,0,0.15);
-  border-radius: 8px;
-  background: #103369;
+  border-radius: 8px; background: #0f2548b8;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-  color: #1a3a6a;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; color: #fff;
 }
-
-.botones button:hover    { background: #1a3a6a; color: #fff; border-color: #1a3a6a; }
+.botones button:hover    { background: #1a3a6a; border-color: #1a3a6a; }
 .botones button:disabled { opacity: 0.4; cursor: not-allowed; }
 .botones button svg      { width: 16px; height: 16px; }
 
 .alert {
-  max-width: 860px;
-  margin: 1rem auto;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  font-size: 13px;
-  font-family: sans-serif;
+  max-width: 860px; margin: 1rem auto;
+  padding: 0.75rem 1rem; border-radius: 10px;
+  font-size: 13px; font-family: sans-serif;
 }
-.alert-danger { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; }
-.alert-info   { background: #eff6ff; border: 1px solid #93c5fd; color: #1e40af; }
+.alert-danger { background:#fef2f2; border:1px solid #fca5a5; color:#991b1b; }
+.alert-info   { background:#eff6ff; border:1px solid #93c5fd; color:#1e40af; }
 
-/* =====================================================
-   HOJA — papel carta en pantalla
-   ===================================================== */
+/* ══════════════════════════════════════════════════════════════
+   HOJA OFICIO — 8.5in × 13.5in
+   ══════════════════════════════════════════════════════════════ */
 .container-impresion {
   background: var(--bg);
-  width: 216mm;
-  min-height: 279mm;
+  width: 215.9mm;       /* 8.5 pulgadas */
+  min-height: 342.9mm;  /* 13.5 pulgadas = oficio */
   margin: 1.5rem auto 3rem;
-  padding: 10mm 13mm;
-  box-shadow:
-    0 2px 4px rgba(0,0,0,0.12),
-    0 8px 32px rgba(0,0,0,0.16);
-  position: relative;
-  font-size: 9pt;
+  padding: 10mm 13mm 8mm;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 8px 32px rgba(0,0,0,0.16);
+  font-size: 8.5pt;
   font-family: var(--serif);
   color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
 }
 
-/* =====================================================
-   HEADER
-   ===================================================== */
+/* ══ MARCA DE AGUA ════════════════════════════════════════════ */
+.marca-agua {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%) rotate(-10deg);
+  width: 55%; max-width: 420px;
+  opacity: 0.04; pointer-events: none; z-index: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.marca-agua svg { width: 100%; height: auto; }
+
+/* ══ HEADER ═══════════════════════════════════════════════════ */
 .aurora-header {
   display: grid;
-  grid-template-columns: 60px 1fr 60px;
-  align-items: center;
-  gap: 6px;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center; gap: 8px;
   border-bottom: 2px solid var(--ink);
-  padding-bottom: 6px;
-  margin-bottom: 5px;
+  padding-bottom: 6px; margin-bottom: 4px;
 }
 
 .aurora-textos { text-align: center; }
 
 .aurora-textos h3 {
-  font-size: 11.5pt;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: var(--accent);
-  margin-bottom: 2px;
+  font-family: var(--mono);
+  font-size: 10pt; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--accent); margin-bottom: 2px;
 }
-
 .aurora-textos h4 {
-  font-size: 8.5pt;
-  font-weight: 600;
-  letter-spacing: 0;
+  font-family: var(--serif);
+  font-size: 7.5pt; font-weight: 700; color: var(--ink);
 }
-
 .aurora-textos h5 {
-  font-size: 8pt;
-  font-weight: 400;
-  color: var(--ink-muted);
-  letter-spacing: 0;
+  font-family: var(--serif);
+  font-size: 7pt; font-weight: 400; color: var(--ink-muted);
 }
 
-.aurora-header .logo {
-  width: 58px;
-  height: auto;
-  justify-self: end;
-}
-
-.marca-agua {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-10deg);
-
-  width: 60%;
-  max-width: 500px;
-
-  opacity: 0.05;
-  pointer-events: none;
-  z-index: 0;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.marca-agua svg {
-  width: 100%;
-  height: auto;
-}
-
-.titulo-doc {
-  font-size: 11pt;
-  font-weight: 500 !important;
-  letter-spacing: 0.4px;
-  color: #111;
-}
-
-.titulo-doc .doc-id {
-  font-weight: 700;
-  color: #1a3a6a;
-  margin-left: 4px;
-  font-size: 16px;
-  line-height: 0.2px;
-}
-
-.doc-meta {
-  align-items: center;
-}
-/* =====================================================
-   META CONSULTA
-   ===================================================== */
+/* ══ META ═════════════════════════════════════════════════════ */
 .doc-meta {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   padding: 3px 2px;
-  border-bottom: 0.8px solid #444;
-  margin-bottom: 4px;
+  border-bottom: 0.8px solid #555;
+  margin-bottom: 3px;
 }
 
-.doc-meta h4 {
-  font-size: 9pt;
-  font-weight: 700;
-  text-transform: uppercase;
+.titulo-doc {
+  font-size: 9pt; font-weight: 500; color: var(--ink);
   letter-spacing: 0.3px;
 }
-
-.doc-meta h6 {
-  font-size: 8pt;
-  font-weight: 400;
-  color: var(--ink-muted);
+.doc-id {
   font-family: var(--mono);
-  letter-spacing: 0;
+  font-size: 11pt; font-weight: 700;
+  color: var(--accent); margin-left: 4px;
+}
+.doc-meta h6 {
+  font-family: var(--mono);
+  font-size: 7.5pt; font-weight: 400;
+  color: var(--ink-muted); letter-spacing: 0;
 }
 
-/* =====================================================
-   SECCIONES — contenedores con borde
-   ===================================================== */
+/* ══ SECCIONES ════════════════════════════════════════════════ */
 .doc-section {
   border: 0.8px solid #888;
   border-radius: 3px;
-  padding: 5px 7px;
-  margin: 3px 0;
+  padding: 4px 6px;
+  margin: 2px 0;
   break-inside: avoid;
   page-break-inside: avoid;
+  position: relative; z-index: 1;
 }
 
 .doc-section h6 {
-  font-size: 7pt;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.9px;
+  font-family: var(--mono);
+  font-size: 6pt; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.9px;
   color: var(--accent);
   border-bottom: 0.5px solid #ddd;
-  padding-bottom: 3px;
-  margin-bottom: 5px;
+  padding-bottom: 2px; margin-bottom: 4px;
 }
 
-/* =====================================================
-   CAMPOS INDIVIDUALES
-   ===================================================== */
+/* ══ CAMPOS INDIVIDUALES ══════════════════════════════════════ */
 .borderline,
 .borderline-time {
   border: 0.8px solid #c0c0c0;
   border-radius: 3px;
-  padding: 3px 6px 4px;
-  min-height: 34px;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  padding: 2px 5px 3px;
+  min-height: 28px;
+  overflow-wrap: anywhere; word-break: break-word;
 }
 
-/* =====================================================
-   LABELS — etiquetas monoespaciadas pequeñas
-   ===================================================== */
+/* ══ LABELS ═══════════════════════════════════════════════════ */
 label {
   display: block;
   font-family: var(--mono);
-  font-size: 6.2pt;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #777;
-  margin-bottom: 2px;
-  line-height: 0.2;
+  font-size: 5.8pt; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.4px;
+  color: var(--ink-muted);
+  margin-bottom: 1px; line-height: 1.2;
 }
 
-/* =====================================================
-   VALORES — serif grande y legible
-   ===================================================== */
+/* ══ VALORES ══════════════════════════════════════════════════ */
 .borderline p,
 .borderline-time p,
 .doc-section > p {
   font-family: var(--serif);
-  font-size: 9.5pt;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: 0;
-  line-height: 1.35;
-  margin: 0;
+  font-size: 9pt; font-weight: 600;
+  color: var(--ink); letter-spacing: 0;
+  line-height: 1.3; margin: 0;
 }
 
 .nombres-fila {
-  font-size: 10.5pt !important;
-  font-weight: 700 !important;
-  text-transform: uppercase;
-  letter-spacing: 0.2px !important;
-  text-align: left !important;
+  font-size: 10pt !important; font-weight: 700 !important;
+  text-transform: uppercase; letter-spacing: 0.2px !important;
 }
 
-/* =====================================================
-   LÍNEA DE ESCRITURA
-   ===================================================== */
+/* ══ LÍNEA DE ESCRITURA ═══════════════════════════════════════ */
 .line {
   display: block;
   border: none;
   border-bottom: 0.8px solid #888;
-  min-height: 18px;
-  margin-bottom: 4px;
-  width: 100%;
+  min-height: 16px;
+  margin-bottom: 3px; width: 100%;
 }
 
-/* =====================================================
-   CAMPOS CLÍNICOS (mono, legible)
-   ===================================================== */
+/* ══ CAMPOS CLÍNICOS ══════════════════════════════════════════ */
 .campos-clinicos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px 14px;
-  padding: 3px 0;
+  display: flex; flex-wrap: wrap;
+  gap: 2px 12px; padding: 2px 0;
 }
-
 .campos-clinicos span {
   font-family: var(--mono);
-  font-size: 8pt;
-  color: var(--ink);
-  letter-spacing: 0;
-  white-space: nowrap;
+  font-size: 7.5pt; color: var(--ink);
+  letter-spacing: 0; white-space: nowrap;
 }
 
-/* =====================================================
-   ESPECIALIDADES
-   ===================================================== */
+/* ══ ESPECIALIDADES ═══════════════════════════════════════════ */
 .especialidades-hoja {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
+  display: flex; flex-wrap: wrap;
+  gap: 4px 10px; align-items: flex-end;
 }
-
 .especialidad-cuadro {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 1px;
 }
-
 .especialidad-cuadro label {
-  font-size: 6pt;
-  text-align: center;
-  white-space: nowrap;
-  letter-spacing: 0;
-  line-height: 0.2;
+  font-size: 5.5pt; text-align: center;
+  white-space: nowrap; letter-spacing: 0;
 }
+.especialidad-cuadro span svg { width: 12px; height: 12px; }
 
-.especialidad-cuadro span svg { width: 13px; height: 13px; }
-
-/* =====================================================
-   INDICADORES
-   ===================================================== */
+/* ══ INDICADORES ══════════════════════════════════════════════ */
 .centered-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2px;
 }
-
 .centered-container label {
-  font-size: 5.2pt;
-  text-align: center;
-  white-space: nowrap;
-  color: #666;
+  font-size: 5pt; text-align: center;
+  white-space: nowrap; color: var(--ink-muted);
+}
+.centered-container span svg { width: 13px; height: 13px; }
+
+/* ══ FIRMA ════════════════════════════════════════════════════ */
+.firma-row {
+  display: flex; gap: 16px;
+  align-items: flex-end; margin-top: 6px;
+}
+.firma-row p {
+  flex: 1;
+  border-top: 0.8px solid #444;
+  padding-top: 2px; text-align: center;
+  font-family: var(--mono) !important;
+  font-size: 6.5pt !important; font-weight: 400 !important;
+  color: #666 !important; text-transform: uppercase;
+  letter-spacing: 0.3px !important; margin: 0 !important;
 }
 
-.centered-container span svg { width: 14px; height: 14px; }
-
-/* =====================================================
-   LAYOUT UTILITIES
-   ===================================================== */
+/* ══ UTILITIES ════════════════════════════════════════════════ */
 .d-flex                  { display: flex; }
 .justify-content-between { justify-content: space-between; }
 .justify-content-around  { justify-content: space-around; }
 .align-items-center      { align-items: center; }
-.align-items-start       { align-items: flex-start; }
 .flex-wrap               { flex-wrap: wrap; }
-.flex-column             { flex-direction: column; }
-.gap-2                   { gap: 4px; }
-.gap-4                   { gap: 8px; }
-.p-1                     { padding: 3px; }
-.p-0                     { padding: 0; }
-.m-0                     { margin: 0; }
 .text-black              { color: var(--ink); }
 
-/* =====================================================
-   FIRMA
-   ===================================================== */
-.firma-row {
-  display: flex;
-  gap: 20px;
-  align-items: flex-end;
-  margin-top: 8px;
-}
-
-.firma-row p {
-  flex: 1;
-  border-top: 0.8px solid #444;
-  padding-top: 3px;
-  text-align: center;
-  font-family: var(--mono) !important;
-  font-size: 6.8pt !important;
-  font-weight: 400 !important;
-  color: #666 !important;
-  text-transform: uppercase;
-  letter-spacing: 0.3px !important;
-  margin: 0 !important;
-}
-
-/* =====================================================
-   @MEDIA PRINT
-   ===================================================== */
+/* ══ @PAGE + @MEDIA PRINT ════════════════════════════════════ */
 @page {
-  size: letter;
-  margin: 8mm 10mm;
+  size: 8.5in 13.5in portrait;
+  margin: 0;
 }
 
 @media print {
-  body {
-    background: white;
-    margin: 0;
-    padding: 0;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  .no-imprimir,
-  .botones,
-  .alert { display: none !important; }
+  html, body {
+    margin: 0 !important; padding: 0 !important;
+    background: white !important;
+    font-size: unset !important; line-height: unset !important;
+  }
+
+  .no-imprimir, .botones, .alert { display: none !important; }
 
   .container-impresion {
-    width: 100%;
-    min-height: auto;
-    margin: 0;
-    padding: 0;
-    box-shadow: none;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 8mm 10mm 6mm !important;
+    box-shadow: none !important;
+    font-size: 7.8pt !important;
   }
 
+  /* Header */
+  .aurora-header {
+    grid-template-columns: 44px 1fr auto !important;
+    gap: 5px !important; padding-bottom: 4px !important;
+    margin-bottom: 2px !important;
+  }
+  .aurora-textos h3 { font-size: 9pt !important; color: black !important; }
+  .aurora-textos h4 { font-size: 7pt !important; }
+  .aurora-textos h5 { font-size: 6.5pt !important; }
+
+  /* Meta */
+  .doc-meta { padding: 2px !important; margin-bottom: 2px !important; }
+  .titulo-doc { font-size: 8.5pt !important; }
+  .doc-id { font-size: 10pt !important; color: black !important; }
+  .doc-meta h6 { font-size: 7pt !important; }
+
+  /* Secciones */
+  .doc-section {
+    padding: 2px 5px !important;
+    margin: 1.5px 0 !important;
+    border-color: #999 !important;
+  }
+  .doc-section h6 {
+    font-size: 5.5pt !important;
+    color: black !important;
+    padding-bottom: 1px !important;
+    margin-bottom: 3px !important;
+  }
+
+  /* Campos */
+  .borderline, .borderline-time {
+    padding: 1px 4px 2px !important;
+    min-height: 20px !important;
+    border-color: #bbb !important;
+  }
+
+  label {
+    font-size: 4.8pt !important;
+    margin-bottom: 0 !important;
+    line-height: 1.1 !important;
+    color: #666 !important;
+  }
+
+  .borderline p, .borderline-time p, .doc-section > p {
+    font-size: 8pt !important; line-height: 1.2 !important;
+  }
+  .nombres-fila { font-size: 9pt !important; }
+
+  /* Líneas */
+  .line { min-height: 13px !important; margin-bottom: 2px !important; }
+
+  /* Campos clínicos */
+  .campos-clinicos { gap: 1px 8px !important; padding: 1px 0 !important; }
+  .campos-clinicos span { font-size: 6.8pt !important; }
+
+  /* Especialidades */
+  .especialidad-cuadro label { font-size: 5pt !important; }
+  .especialidad-cuadro span svg { width: 11px !important; height: 11px !important; }
+
+  /* Indicadores */
+  .centered-container label { font-size: 4.5pt !important; }
+  .centered-container span svg { width: 11px !important; height: 11px !important; }
+
+  /* Firma */
+  .firma-row { gap: 10px !important; margin-top: 3px !important; }
+  .firma-row p { font-size: 5.8pt !important; }
+
+  /* No cortar secciones */
   .doc-section { break-inside: avoid; page-break-inside: avoid; }
-  .borderline  { break-inside: avoid; }
-
-  .aurora-textos h3 { color: black !important; }
-  .doc-section h6   { color: black !important; }
-  label             { color: #666 !important; }
-  .line             { border-bottom-color: #666 !important; }
-}
-
-.doc-meta {
-  align-items: center;
 }

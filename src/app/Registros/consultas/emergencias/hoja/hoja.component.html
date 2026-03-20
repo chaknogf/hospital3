@@ -1,8 +1,7 @@
 <!-- ============================================================ -->
-<!-- HOJA DE ATENCIÓN EN EMERGENCIAS                             -->
+<!-- HOJA DE ATENCIÓN EN EMERGENCIAS — cosmos rediseño           -->
 <!-- ============================================================ -->
 
-<!-- Botones de control -->
 <div class="botones no-imprimir">
   <button (click)="regresar()" [disabled]="isLoading()" title="Regresar">
     <span [innerHTML]="icons['back']"></span>
@@ -17,37 +16,82 @@
   Cargando información...
 </div>
 
-<!-- ============================================================ -->
-<!-- DOCUMENTO IMPRIMIBLE                                         -->
-<!-- ============================================================ -->
+<!-- DOCUMENTO -->
 <div class="container-impresion" *ngIf="consulta()">
+  <!-- MARCA DE AGUA -->
+  <div class="marca-agua"><span [innerHTML]="icons['logo']"></span></div>
+
   <!-- ── HEADER ── -->
   <div class="aurora-header">
-    <span></span>
+    <span [innerHTML]="icons['logo']" style="width: 56px; height: auto"></span>
     <div class="aurora-textos">
       <h3>Hoja de Atención en Emergencias</h3>
       <h4>Ministerio de Salud Pública y Asistencia Social</h4>
       <h5>Hospital General Tipo I de Tecpán Guatemala</h5>
     </div>
-    <span class="logo" [innerHTML]="icons['logo']"></span>
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 1.5px solid #1a3a6a;
+        border-radius: 4px;
+        padding: 3px 6px;
+        text-align: center;
+      "
+    >
+      <span
+        style="
+          font-family: var(--mono);
+          font-size: 5pt;
+          text-transform: uppercase;
+          color: #777;
+          letter-spacing: 0.5px;
+        "
+      >
+        No. Consulta
+      </span>
+      <span
+        style="
+          font-family: var(--mono);
+          font-size: 13pt;
+          font-weight: 700;
+          color: #1a3a6a;
+          line-height: 1.1;
+        "
+      >
+        {{ consulta()?.id }}
+      </span>
+    </div>
   </div>
 
   <!-- ── META ── -->
   <div class="doc-meta">
-    <h4>Hoja de Emergencia: {{ consulta()?.documento }}</h4>
-    <h6>No. consulta: {{ consulta()?.id }}</h6>
+    <h4 class="titulo-doc">
+      Hoja de Emergencia:
+      <span class="doc-id">{{ consulta()?.documento }}</span>
+    </h4>
+    <h6>
+      {{ consulta()?.fecha_consulta | date: "dd/MM/yyyy" }} &nbsp;·&nbsp;
+      {{ consulta()?.hora_consulta | time }} &nbsp;·&nbsp; Exp:
+      {{ consulta()?.expediente }}
+    </h6>
   </div>
 
   <!-- ── SERVICIOS ── -->
   <div
     class="doc-section"
-    style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap"
+    style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap"
   >
     <h6 style="white-space: nowrap; margin: 0; border: none; padding: 0">
-      SERVICIOS:
+      Servicios:
     </h6>
-    <div class="especialidades-hoja">
-      <div *ngFor="let esp of especialidades" class="especialidad-cuadro">
+    <div class="especialidades-hoja" style="gap: 6px 10px">
+      <div
+        *ngFor="let esp of especialidades"
+        class="especialidad-cuadro"
+        style="gap: 1px"
+      >
         <label>{{ esp.label }}</label>
         <span
           *ngIf="consulta()?.especialidad !== esp.value"
@@ -86,7 +130,6 @@
   <div class="doc-section">
     <h6>Datos Generales</h6>
 
-    <!-- Fila 1: Nombre · Nacimiento · Edad -->
     <div
       style="
         display: grid;
@@ -109,7 +152,6 @@
       </div>
     </div>
 
-    <!-- Fila 2: Sexo · DPI · Dirección -->
     <div
       style="
         display: grid;
@@ -132,7 +174,6 @@
       </div>
     </div>
 
-    <!-- Fila 3: Responsable · Parentesco · Teléfono -->
     <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4px">
       <div class="borderline">
         <label>Responsable</label>
@@ -157,8 +198,8 @@
         display: flex;
         justify-content: space-around;
         flex-wrap: wrap;
-        gap: 6px;
-        padding: 2px 0;
+        gap: 4px 6px;
+        padding: 1px 0;
       "
     >
       <div class="centered-container">
@@ -273,13 +314,11 @@
     <h6>Motivo de la Consulta</h6>
     <span class="line"></span>
     <span class="line"></span>
-    <span class="line"></span>
   </div>
 
-  <!-- ── HISTORIA DE LA ENFERMEDAD ── -->
+  <!-- ── HISTORIA ENFERMEDAD ── -->
   <div class="doc-section">
     <h6>Historia de la Enfermedad Actual</h6>
-    <span class="line"></span>
     <span class="line"></span>
     <span class="line"></span>
   </div>
@@ -293,20 +332,17 @@
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         gap: 4px;
-        margin-bottom: 4px;
+        margin-bottom: 3px;
       "
     >
       <div class="borderline-time">
-        <label>Familiares</label>
-        <span class="line"></span>
+        <label>Familiares</label><span class="line"></span>
       </div>
       <div class="borderline-time">
-        <label>Médicos</label>
-        <span class="line"></span>
+        <label>Médicos</label><span class="line"></span>
       </div>
       <div class="borderline-time">
-        <label>Traumáticos</label>
-        <span class="line"></span>
+        <label>Traumáticos</label><span class="line"></span>
       </div>
     </div>
 
@@ -315,40 +351,32 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 4px;
-        margin-bottom: 4px;
+        margin-bottom: 3px;
       "
     >
       <div class="borderline-time">
-        <label>Quirúrgicos</label>
-        <span class="line"></span>
+        <label>Quirúrgicos</label><span class="line"></span>
       </div>
       <div class="borderline-time">
-        <label>Alérgicos</label>
-        <span class="line"></span>
+        <label>Alérgicos</label><span class="line"></span>
       </div>
     </div>
 
-    <!-- Ginecológicos -->
-    <div class="borderline-time" style="margin-bottom: 4px">
+    <div class="borderline-time" style="margin-bottom: 3px">
       <label>Ginecológicos</label>
       <div class="campos-clinicos" style="justify-content: space-around">
-        <span>G:_______</span>
-        <span>P:_______</span>
-        <span>C:_______</span>
-        <span>A:_______</span>
-        <span>HV:_______</span>
-        <span>HM:_______</span>
-        <span>FUR:_______</span>
-        <span>FPP:_______</span>
+        <span>G:_____</span><span>P:_____</span><span>C:_____</span
+        ><span>A:_____</span> <span>HV:_____</span><span>HM:_____</span
+        ><span>FUR:_____</span><span>FPP:_____</span>
       </div>
       <div
         class="campos-clinicos"
         style="justify-content: space-around; margin-top: 2px"
       >
-        <span>Menarquía:_____________</span>
-        <span>Ciclos:_____________</span>
-        <span>FUP:_____________</span>
-        <span>Control PN:_____________</span>
+        <span>Menarquía:___________</span>
+        <span>Ciclos:___________</span>
+        <span>FUP:___________</span>
+        <span>Control PN:___________</span>
       </div>
     </div>
 
@@ -370,16 +398,15 @@
     </div>
     <div
       class="campos-clinicos"
-      style="justify-content: space-around; margin-top: 4px"
+      style="justify-content: space-around; margin-top: 3px"
     >
       <span>Peso:_______kg</span>
-      <span>Talla/longitud:_______cm</span>
+      <span>Talla:_______cm</span>
       <span>P/T:_______</span>
       <span>T/E:_______</span>
       <span>P/E:_______</span>
     </div>
-    <span class="line" style="margin-top: 6px"></span>
-    <span class="line"></span>
+    <span class="line" style="margin-top: 4px"></span>
     <span class="line"></span>
   </div>
 
@@ -395,21 +422,15 @@
     <h6>Órdenes Médicas</h6>
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px">
       <div class="borderline">
-        <span class="line"></span>
-        <span class="line"></span>
-        <span class="line"></span>
-        <span class="line"></span>
+        <span class="line"></span><span class="line"></span
+        ><span class="line"></span>
       </div>
       <div class="borderline">
-        <span class="line"></span>
-        <span class="line"></span>
-        <span class="line"></span>
-        <span class="line"></span>
+        <span class="line"></span><span class="line"></span
+        ><span class="line"></span>
       </div>
       <div class="borderline">
-        <span class="line"></span>
-        <span class="line"></span>
-        <span class="line"></span>
+        <span class="line"></span><span class="line"></span>
         <div class="firma-row">
           <p>Fecha</p>
           <p>Hora</p>
@@ -422,7 +443,7 @@
   <!-- ── INGRESO / EGRESO ── -->
   <div
     class="doc-section"
-    style="display: flex; align-items: center; gap: 12px"
+    style="display: flex; align-items: center; gap: 10px"
   >
     <div class="centered-container">
       <label>Ingreso</label>
@@ -443,9 +464,7 @@
     <h6>Órdenes de Egreso</h6>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px">
       <div class="borderline">
-        <span class="line"></span>
-        <span class="line"></span>
-        <span class="line"></span>
+        <span class="line"></span><span class="line"></span>
         <div class="firma-row">
           <p>Fecha</p>
           <p>Hora</p>
@@ -453,9 +472,7 @@
         </div>
       </div>
       <div class="borderline">
-        <span class="line"></span>
-        <span class="line"></span>
-        <span class="line"></span>
+        <span class="line"></span><span class="line"></span>
         <div class="firma-row">
           <p>Fecha</p>
           <p>Hora</p>
@@ -470,7 +487,6 @@
     <h6>Observaciones</h6>
     <span class="line"></span>
     <span class="line"></span>
-    <span class="line"></span>
   </div>
 
   <!-- ── NOTAS DE ENFERMERÍA ── -->
@@ -479,8 +495,7 @@
     <span class="line"></span>
     <span class="line"></span>
     <span class="line"></span>
-    <span class="line"></span>
-    <div class="firma-row" style="margin-top: 6px">
+    <div class="firma-row" style="margin-top: 4px">
       <p>Fecha</p>
       <p>Hora</p>
       <p>Firma y Sello</p>
@@ -492,8 +507,7 @@
     <h6>Egreso Contraindicado</h6>
     <span class="line"></span>
     <span class="line"></span>
-    <span class="line"></span>
-    <div class="firma-row" style="margin-top: 6px">
+    <div class="firma-row" style="margin-top: 4px">
       <p>Firma del Paciente</p>
       <p>Firma del Testigo</p>
       <p>Firma y Sello del Médico</p>
@@ -503,8 +517,6 @@
   <!-- ── NOTA DE DESCARGO ── -->
   <div class="doc-section">
     <h6>Nota de Descargo</h6>
-    <span class="line"></span>
-    <span class="line"></span>
     <span class="line"></span>
     <span class="line"></span>
     <span class="line"></span>
