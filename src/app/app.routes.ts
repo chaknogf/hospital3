@@ -40,6 +40,7 @@ export const routes: Routes = [
       { path: 'admisionPaciente/:origen/:pacienteId', component: AdmisionComponent },
       { path: 'editarAdmision/:id/:origen', component: AdmisionComponent },
       { path: 'editarAdmision/:id', component: AdmisionComponent },
+      { path: 'formConsulta/:id', component: FormConsultaComponent },
       { path: 'detalleAdmision/:id', component: DetalleConsultaComponent },
 
       // Pacientes

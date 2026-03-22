@@ -1,3 +1,582 @@
-<p>
-  formConsulta works!
-</p>
+<!-- ============================================================ -->
+<!-- ADMISIÓN / CONSULTA — estilo cosmos                         -->
+<!-- ============================================================ -->
+
+<div class="hud-header">
+  <span class="hud-id">{{
+    enEdicion ? "CONSULTA-EDIT" : "ADMISION-NUEVA"
+  }}</span>
+  <span class="hud-title">{{
+    enEdicion ? "ACTUALIZAR CONSULTA" : "NUEVA ADMISIÓN"
+  }}</span>
+  <span class="hud-status">ACTIVO</span>
+</div>
+
+<div class="action-dock">
+  <span class="dock-hint">{{
+    enEdicion ? "Modo edición" : "Nuevo registro"
+  }}</span>
+  <button type="button" class="btn-dock btn-dock-cancel" (click)="volver()">
+    <span [innerHTML]="cancelIcon"></span> Cancelar
+  </button>
+  <button
+    *ngIf="enEdicion"
+    type="button"
+    class="btn-dock btn-dock-renap"
+    (click)="actualizarIndicadores()"
+  >
+    Actualizar Indicadores
+  </button>
+  <button type="button" class="btn-dock btn-dock-save" (click)="guardar()">
+    <span [innerHTML]="saveIcon"></span>
+    {{ enEdicion ? "Actualizar" : "Registrar" }}
+  </button>
+</div>
+
+<form [formGroup]="form" class="adm-body">
+  <input type="text" name="fakeusernameremembered" style="display: none" />
+  <input type="password" name="fakepasswordremembered" style="display: none" />
+
+  <!-- BANNER PACIENTE -->
+  <div class="paciente-banner">
+    <div class="paciente-banner-accent"></div>
+    <div class="paciente-avatar">
+      <ng-container *ngIf="paciente.sexo === 'M'"
+        ><span [innerHTML]="manIcon"></span
+      ></ng-container>
+      <ng-container *ngIf="paciente.sexo === 'F'"
+        ><span [innerHTML]="womanIcon"></span
+      ></ng-container>
+    </div>
+    <div class="paciente-datos">
+      <span class="paciente-nombre">
+        {{ paciente.nombre.primer_nombre }} {{ paciente.nombre.segundo_nombre }}
+        {{ paciente.nombre.otro_nombre }} {{ paciente.nombre.primer_apellido }}
+        {{ paciente.nombre.segundo_apellido }}
+        {{ paciente.nombre.apellido_casada }}
+      </span>
+      <div class="paciente-chips">
+        <span class="p-chip">CUI: {{ paciente.cui | cui }}</span>
+        <span class="p-chip">Exp: {{ paciente.expediente }}</span>
+        <span class="p-chip"
+          >{{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }} ·
+          {{ paciente.fecha_nacimiento | edad }}</span
+        >
+        <span class="p-chip">{{ paciente.sexo | datosExtra: "sexo" }}</span>
+        <span class="p-chip" *ngIf="paciente.contacto?.telefonos"
+          >Tel: {{ paciente.contacto?.telefonos }}</span
+        >
+        <span class="p-chip p-chip-dir" *ngIf="paciente.contacto?.domicilio">
+          {{ paciente.contacto?.domicilio }},
+          {{ paciente.contacto?.municipio | datosExtra: "vecindad" }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID PRINCIPAL -->
+  <div class="adm-grid">
+    <!-- ── COL IZQUIERDA ── -->
+    <div class="adm-col">
+      <!-- Info consulta (solo edición) -->
+      <div class="section-card" *ngIf="enEdicion">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <rect x="2" y="2" width="12" height="12" rx="2" />
+                <path d="M5 8h6M5 5h4M5 11h3" />
+              </svg>
+            </div>
+            <span class="sec-title">Información de la Consulta</span>
+          </div>
+          <span class="sec-badge">SOLO LECTURA</span>
+        </div>
+        <div class="sec-body triple">
+          <div class="field">
+            <span class="field-label">Expediente</span>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="expediente"
+              readonly
+            />
+          </div>
+          <div class="field">
+            <span class="field-label">Documento</span>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="documento"
+              readonly
+            />
+          </div>
+          <div class="field">
+            <span class="field-label">Orden</span>
+            <input
+              class="field-input"
+              type="number"
+              formControlName="orden"
+              readonly
+            />
+          </div>
+          <div class="field">
+            <span class="field-label">Fecha</span>
+            <input
+              class="field-input"
+              type="date"
+              formControlName="fecha_consulta"
+              readonly
+            />
+          </div>
+          <div class="field">
+            <span class="field-label">Hora</span>
+            <input
+              class="field-input"
+              type="time"
+              formControlName="hora_consulta"
+              readonly
+            />
+          </div>
+          <div class="field">
+            <span class="field-label">Estado actual</span>
+            <input
+              class="field-input"
+              type="text"
+              [value]="estadoActual || 'N/A'"
+              readonly
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos de admisión / consulta -->
+      <div class="section-card">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path d="M8 2v4l3 2" />
+                <circle cx="8" cy="8" r="6" />
+              </svg>
+            </div>
+            <span class="sec-title">{{
+              enEdicion ? "Datos de la Consulta" : "Nueva Admisión"
+            }}</span>
+          </div>
+        </div>
+        <div class="sec-body single">
+          <div class="field">
+            <span class="field-label">Tipo de consulta</span>
+            <select
+              class="field-input"
+              formControlName="tipo_consulta"
+              [attr.disabled]="enEdicion ? true : null"
+            >
+              <option *ngFor="let t of tipoConsulta" [value]="t.value">
+                {{ t.label | titlecase }}
+              </option>
+            </select>
+          </div>
+          <div class="field">
+            <span class="field-label">Especialidad</span>
+            <select
+              class="field-input"
+              formControlName="especialidad"
+              [attr.disabled]="enEdicion ? true : null"
+            >
+              <option *ngFor="let e of especialidades" [value]="e.value">
+                {{ e.label | titlecase }}
+              </option>
+            </select>
+          </div>
+          <div class="field">
+            <span class="field-label">Servicio</span>
+            <select
+              class="field-input"
+              formControlName="servicio"
+              [attr.disabled]="enEdicion ? true : null"
+            >
+              <option *ngFor="let s of servicios" [value]="s.value">
+                {{ s.label | titlecase }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Nuevo ciclo (solo edición) -->
+          <ng-container *ngIf="enEdicion">
+            <div class="adm-divider"></div>
+            <div class="field">
+              <span class="field-label">Nuevo estado</span>
+              <select class="field-input" formControlName="nuevo_estado">
+                <option value="">— Seleccione un estado —</option>
+                <option *ngFor="let c of ciclos" [value]="c.value">
+                  {{ c.label | titlecase }}
+                </option>
+              </select>
+            </div>
+            <div class="field">
+              <span class="field-label">Servicio para el nuevo ciclo</span>
+              <select class="field-input" formControlName="nuevo_servicio">
+                <option *ngFor="let s of servicios" [value]="s.value">
+                  {{ s.label | titlecase }}
+                </option>
+              </select>
+            </div>
+            <div class="field">
+              <span class="field-label">Comentario del ciclo</span>
+              <input
+                class="field-input"
+                type="text"
+                formControlName="nuevo_comentario"
+                placeholder="Observaciones del nuevo estado..."
+              />
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <!-- /col izquierda -->
+
+    <!-- ── COL DERECHA ── -->
+    <div class="adm-col">
+      <!-- Indicadores -->
+      <div class="section-card" [formGroupName]="'indicadores'">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path d="M3 8l3 3 7-7" />
+              </svg>
+            </div>
+            <span class="sec-title">Indicadores</span>
+          </div>
+          <span class="sec-badge">MÚLTIPLE</span>
+        </div>
+        <div class="sec-body single">
+          <div class="indicadores-grid">
+            <label class="ind-chip"
+              ><input type="checkbox" formControlName="estudiante_publico" />
+              <span class="ind-check"
+                ><svg
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M2 6l3 3 5-5" /></svg
+              ></span>
+              <span class="ind-label">Estudiante público</span>
+            </label>
+            <label class="ind-chip"
+              ><input type="checkbox" formControlName="empleado_publico" />
+              <span class="ind-check"
+                ><svg
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M2 6l3 3 5-5" /></svg
+              ></span>
+              <span class="ind-label">Empleado público</span>
+            </label>
+            <label class="ind-chip"
+              ><input type="checkbox" formControlName="accidente_laboral" />
+              <span class="ind-check"
+                ><svg
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M2 6l3 3 5-5" /></svg
+              ></span>
+              <span class="ind-label">Accidente laboral</span>
+            </label>
+            <label class="ind-chip"
+              ><input type="checkbox" formControlName="discapacidad" />
+              <span class="ind-check"
+                ><svg
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M2 6l3 3 5-5" /></svg
+              ></span>
+              <span class="ind-label">Discapacidad</span>
+            </label>
+            <label class="ind-chip"
+              ><input type="checkbox" formControlName="embarazo" />
+              <span class="ind-check"
+                ><svg
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M2 6l3 3 5-5" /></svg
+              ></span>
+              <span class="ind-label">Embarazo</span>
+            </label>
+            <label class="ind-chip ind-chip-danger"
+              ><input type="checkbox" formControlName="arma_fuego" />
+              <span class="ind-check"
+                ><svg
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M2 6l3 3 5-5" /></svg
+              ></span>
+              <span class="ind-label">Arma de fuego</span>
+            </label>
+            <label class="ind-chip ind-chip-danger"
+              ><input type="checkbox" formControlName="arma_blanca" />
+              <span class="ind-check"
+                ><svg
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M2 6l3 3 5-5" /></svg
+              ></span>
+              <span class="ind-label">Arma blanca</span>
+            </label>
+            <label class="ind-chip"
+              ><input type="checkbox" formControlName="ambulancia" />
+              <span class="ind-check"
+                ><svg
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M2 6l3 3 5-5" /></svg
+              ></span>
+              <span class="ind-label">Ambulancia</span>
+            </label>
+            <label class="ind-chip ind-chip-amber"
+              ><input type="checkbox" formControlName="accidente_transito" />
+              <span class="ind-check"
+                ><svg
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M2 6l3 3 5-5" /></svg
+              ></span>
+              <span class="ind-label">Accidente tránsito</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historial de ciclos (solo edición) -->
+      <div class="section-card" *ngIf="enEdicion && historialCiclos.length > 0">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <circle cx="8" cy="8" r="6" />
+                <path d="M8 4v4l2.5 2.5" />
+              </svg>
+            </div>
+            <span class="sec-title">Historial del Ciclo Clínico</span>
+          </div>
+          <span class="sec-badge">{{ historialCiclos.length }} registros</span>
+        </div>
+        <div class="sec-body single">
+          <div class="historial-list">
+            <div
+              *ngFor="let ciclo of historialCiclos; let i = index"
+              class="ciclo-item"
+              [class.ciclo-actual]="i === historialCiclos.length - 1"
+            >
+              <div class="ciclo-num">#{{ i + 1 }}</div>
+              <div class="ciclo-content">
+                <div class="ciclo-top">
+                  <span class="ciclo-estado">{{
+                    ciclo.estado | uppercase
+                  }}</span>
+                  <span class="ciclo-fecha">{{
+                    ciclo.registro | date: "dd/MM/yyyy HH:mm"
+                  }}</span>
+                </div>
+                <div class="ciclo-meta">
+                  <span>{{ ciclo.usuario }}</span>
+                  <span *ngIf="ciclo.servicio" class="ciclo-sep">·</span>
+                  <span *ngIf="ciclo.servicio">{{ ciclo.servicio }}</span>
+                  <span *ngIf="ciclo.especialidad" class="ciclo-sep">·</span>
+                  <span *ngIf="ciclo.especialidad">{{
+                    ciclo.especialidad
+                  }}</span>
+                  <span *ngIf="ciclo.comentario" class="ciclo-sep">·</span>
+                  <span *ngIf="ciclo.comentario" class="ciclo-comentario">{{
+                    ciclo.comentario
+                  }}</span>
+                </div>
+                <!-- Indicador de egreso si el ciclo tiene uno -->
+                <div class="ciclo-egreso-badge" *ngIf="ciclo.egreso">
+                  <span>🏁</span>
+                  {{ ciclo.egreso.condicion_egreso }}
+                  <span *ngIf="ciclo.egreso.referencia" class="ciclo-sep"
+                    >·</span
+                  >
+                  <span *ngIf="ciclo.egreso.referencia">{{
+                    ciclo.egreso.referencia
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ EGRESO (solo edición) ════════════════════════════ -->
+      <div
+        class="section-card section-card-egreso"
+        *ngIf="enEdicion"
+        [formGroup]="egresoForm"
+      >
+        <div class="sec-head sec-head-egreso">
+          <div class="sec-head-left">
+            <div class="sec-icon sec-icon-egreso">
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path d="M3 8h10M9 4l4 4-4 4" />
+              </svg>
+            </div>
+            <span class="sec-title">Egreso</span>
+          </div>
+
+          <!-- Toggle -->
+          <label class="egreso-toggle">
+            <input type="checkbox" formControlName="incluir" />
+            <span class="egreso-toggle-track">
+              <span class="egreso-toggle-thumb"></span>
+            </span>
+            <span class="egreso-toggle-lbl">
+              {{
+                egresoForm.get("incluir")?.value
+                  ? "Incluir en ciclo"
+                  : "No incluir"
+              }}
+            </span>
+          </label>
+        </div>
+
+        <div
+          class="sec-body egreso-grid"
+          [class.egreso-body-disabled]="!egresoForm.get('incluir')?.value"
+        >
+          <!-- Condición -->
+          <div class="field">
+            <span class="field-label egreso-lbl">Condición de egreso</span>
+            <select
+              class="field-input"
+              formControlName="condicion_egreso"
+              [attr.disabled]="!egresoForm.get('incluir')?.value ? true : null"
+            >
+              <option value="">— Seleccionar —</option>
+              <option *ngFor="let c of condicionesEgreso" [value]="c.value">
+                {{ c.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Referencia -->
+          <div class="field">
+            <span class="field-label egreso-lbl">Referencia / Destino</span>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="referencia"
+              placeholder="Hospital, servicio o institución destino"
+              [attr.disabled]="!egresoForm.get('incluir')?.value ? true : null"
+            />
+          </div>
+
+          <!-- Diagnóstico -->
+          <div class="field egreso-full">
+            <span class="field-label egreso-lbl">Diagnóstico de egreso</span>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="diagnostico"
+              placeholder="Ej: Hipertensión controlada, fractura consolidada..."
+              [attr.disabled]="!egresoForm.get('incluir')?.value ? true : null"
+            />
+          </div>
+
+          <!-- Preview -->
+          <div
+            class="egreso-preview egreso-full"
+            *ngIf="
+              egresoForm.get('incluir')?.value &&
+              egresoForm.get('condicion_egreso')?.value
+            "
+          >
+            <span class="egreso-preview-title"
+              >Se registrará en este ciclo:</span
+            >
+            <div class="egreso-preview-row">
+              <span class="egreso-preview-key">condicion_egreso</span>
+              <span class="egreso-preview-val">{{
+                egresoForm.get("condicion_egreso")?.value
+              }}</span>
+            </div>
+            <div
+              class="egreso-preview-row"
+              *ngIf="egresoForm.get('referencia')?.value"
+            >
+              <span class="egreso-preview-key">referencia</span>
+              <span class="egreso-preview-val">{{
+                egresoForm.get("referencia")?.value
+              }}</span>
+            </div>
+            <div
+              class="egreso-preview-row"
+              *ngIf="egresoForm.get('diagnostico')?.value"
+            >
+              <span class="egreso-preview-key">diagnostico[0]</span>
+              <span class="egreso-preview-val">{{
+                egresoForm.get("diagnostico")?.value
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /col derecha -->
+  </div>
+  <!-- /adm-grid -->
+</form>
