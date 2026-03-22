@@ -12,7 +12,14 @@ import { ConsultaUtilService } from '../../../service/consulta-util.service';
 
 import { Dict, ciclos, tipoConsulta, especialidades, servicios } from '../../../enum/diccionarios';
 import { Paciente } from '../../../interface/interfaces';
-import { ConsultaOut, RegistroConsultaCreate, CicloClinico, EstadoCiclo } from './../../../interface/consultas';
+import {
+  ConsultaOut,
+  ConsultaUpdate,
+  RegistroConsultaCreate,
+  CicloClinico,
+  EstadoCiclo,
+  Indicador
+} from './../../../interface/consultas';
 
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
@@ -35,29 +42,30 @@ import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon, manIcon, womanIcon
 })
 export class AdmisionComponent implements OnInit {
 
-  // 🔹 Formulario
+  // ── Formulario ─────────────────────────────────────────────
   form: FormGroup = new FormGroup({});
 
-  // 🔹 Datos de paciente y consulta
+  // ── Datos ──────────────────────────────────────────────────
   paciente: Paciente = {} as Paciente;
   consultaActual?: ConsultaOut;
   private consultaId?: number;
   historialCiclos: CicloClinico[] = [];
 
-  // 🔹 Configuración
+  // ── Configuración ──────────────────────────────────────────
   usuarioActual = '';
   enEdicion = false;
   public esEmergencia = false;
   public esCoesx = false;
   public esIngreso = false;
+  public esConsulta = false;
 
-  // 🔹 Listas y enums
+  // ── Listas ─────────────────────────────────────────────────
   tipoConsulta: Dict[] = tipoConsulta;
   ciclos: Dict[] = ciclos;
   especialidades: Dict[] = [];
   servicios: Dict[] = [];
 
-  // 🔹 SVG Icons
+  // ── SVG Icons ──────────────────────────────────────────────
   addIcon!: SafeHtml;
   removeIcon!: SafeHtml;
   saveIcon!: SafeHtml;
@@ -65,7 +73,6 @@ export class AdmisionComponent implements OnInit {
   findIcon!: SafeHtml;
   womanIcon!: SafeHtml;
   manIcon!: SafeHtml;
-
 
   constructor(
     private fb: FormBuilder,
@@ -79,29 +86,25 @@ export class AdmisionComponent implements OnInit {
     this.inicializarSVG();
   }
 
-  // ==========================
-  // 🔹 Inicialización
-  // ==========================
+  // ══════════════════════════════════════════════════════════
+  // INICIALIZACIÓN
+  // ══════════════════════════════════════════════════════════
   ngOnInit(): void {
     this.usuarioActual = this.api.getUsuarioActual().username;
-
     this.inicializarFlagsYCarga(this.route.snapshot.paramMap);
   }
 
-  // ==========================
-  // 🔹 Inicialización del Formulario y SVG
-  // ==========================
-  private inicializarFormulario() {
+  private inicializarFormulario(): void {
     this.form = this.fb.group({
-      // Campos básicos (para visualización, no se envían en POST /registro)
-      id: [null],
+      // Solo lectura (visualización)
+      id: [{ value: null, disabled: true }],
       expediente: [{ value: '', disabled: true }],
       documento: [{ value: '', disabled: true }],
       fecha_consulta: [{ value: '', disabled: true }],
       hora_consulta: [{ value: '', disabled: true }],
       orden: [{ value: null, disabled: true }],
 
-      // Campos que SÍ se envían al backend
+      // Campos enviables al backend
       paciente_id: [0],
       tipo_consulta: [0],
       especialidad: [''],
@@ -119,13 +122,14 @@ export class AdmisionComponent implements OnInit {
         embarazo: [false]
       }),
 
-      // Para actualización de ciclo
+      // Solo para modo edición — agrega un nuevo ciclo
       nuevo_estado: [''],
-      nuevo_servicio: ['']
+      nuevo_servicio: [''],
+      nuevo_comentario: ['']
     });
   }
 
-  private inicializarSVG() {
+  private inicializarSVG(): void {
     this.addIcon = this.sanitizer.bypassSecurityTrustHtml(addIcon);
     this.removeIcon = this.sanitizer.bypassSecurityTrustHtml(removeIcon);
     this.saveIcon = this.sanitizer.bypassSecurityTrustHtml(saveIcon);
@@ -135,46 +139,39 @@ export class AdmisionComponent implements OnInit {
     this.manIcon = this.sanitizer.bypassSecurityTrustHtml(manIcon);
   }
 
-  // ==========================
-  // 🔹 Carga de datos y flags
-  // ==========================
-  private inicializarFlagsYCarga(params: any) {
+  // ══════════════════════════════════════════════════════════
+  // FLAGS Y CARGA
+  // ══════════════════════════════════════════════════════════
+  private inicializarFlagsYCarga(params: any): void {
     const origen = params.get('origen');
     const id = Number(params.get('id'));
     const pacienteId = Number(params.get('pacienteId'));
 
-    // Flags de origen
     this.esEmergencia = origen === 'emergencia';
     this.esCoesx = origen === 'coex';
     this.esIngreso = origen === 'ingreso';
+    this.esConsulta = origen === 'consulta';
     this.consultaId = id === 0 ? undefined : id;
 
-    // Inicializar valores según tipo
     if (this.esEmergencia) this.valoresEmergencia();
     else if (this.esCoesx) this.valoresCoex();
     else if (this.esIngreso) this.valoresIngreso();
 
-    // Modo edición
     if (this.consultaId !== undefined) {
       this.enEdicion = true;
       this.cargarConsulta(this.consultaId);
-    } else if (pacienteId !== undefined && id === 0) {
+    } else if (pacienteId && id === 0) {
       this.cargarPaciente(pacienteId);
       this.enEdicion = false;
     }
   }
 
-  // ==========================
-  // 🔹 Funciones de carga
-  // ==========================
+  // ══════════════════════════════════════════════════════════
+  // CARGA DE DATOS
+  // ══════════════════════════════════════════════════════════
   cargarPaciente(idP: number): void {
     this.api.getPaciente(idP)
-      .pipe(
-        catchError(err => {
-          this.mostrarError('cargar paciente', err);
-          return of(null);
-        })
-      )
+      .pipe(catchError(err => { this.mostrarError('cargar paciente', err); return of(null); }))
       .subscribe(data => {
         if (data) {
           this.paciente = data;
@@ -188,17 +185,10 @@ export class AdmisionComponent implements OnInit {
 
   cargarConsulta(id: number): void {
     this.api.getConsultaId(id)
-      .pipe(
-        catchError(err => {
-          this.mostrarError('cargar consulta', err);
-          return of(null);
-        })
-      )
+      .pipe(catchError(err => { this.mostrarError('cargar consulta', err); return of(null); }))
       .subscribe(data => {
         if (data) {
           this.consultaActual = data;
-
-          // Cargar datos básicos
           this.form.patchValue({
             id: data.id,
             expediente: data.expediente,
@@ -213,132 +203,133 @@ export class AdmisionComponent implements OnInit {
             indicadores: data.indicadores
           });
 
-          // Cargar paciente
-          if (data.paciente_id) {
-            this.cargarPaciente(data.paciente_id);
-          }
-
-          // Cargar historial de ciclos
+          if (data.paciente_id) this.cargarPaciente(data.paciente_id);
           this.historialCiclos = data.ciclo || [];
         }
       });
   }
 
-  // ==========================
-  // 🔹 Crear / Actualizar
-  // ==========================
+  // ══════════════════════════════════════════════════════════
+  // GUARDAR — despacha según modo
+  // ══════════════════════════════════════════════════════════
   guardar(): void {
-    if (this.enEdicion) {
-      this.actualizarCiclo();
-    } else {
-      this.registrarNuevaAdmision();
-    }
+    if (this.enEdicion) this.actualizarConsulta();
+    else this.registrarNuevaAdmision();
+    this.router.navigate(['/consultas']);
   }
 
-  /**
-   * Registra una nueva admisión usando el endpoint simplificado
-   * POST /consultas/registro
-   */
+  // ── Registro nuevo ─────────────────────────────────────────
   private registrarNuevaAdmision(): void {
-    const formValue = this.form.getRawValue();
+    const v = this.form.getRawValue();
 
-    // Construir payload para registro
     const datos: RegistroConsultaCreate = {
-      paciente_id: formValue.paciente_id,
-      tipo_consulta: formValue.tipo_consulta,
-      especialidad: formValue.especialidad,
-      servicio: formValue.servicio,
-      indicadores: formValue.indicadores,
+      paciente_id: v.paciente_id,
+      tipo_consulta: v.tipo_consulta,
+      especialidad: v.especialidad,
+      servicio: v.servicio,
+      indicadores: v.indicadores,
       ciclo: []
     };
 
     this.api.registrarAdmision(datos)
       .pipe(
-        tap(response => {
-          console.log('✅ Admisión registrada:', response);
-          console.log('📋 Expediente generado:', response.expediente);
-          console.log('📝 Documento:', response.documento);
-          console.log('🔢 Orden en cola:', response.orden);
+        tap(r => {
+          console.log('✅ Admisión registrada:', r);
           this.mostrarExito('Admisión registrada exitosamente');
         }),
-        catchError(err => {
-          this.mostrarError('registrar admisión', err);
-          return of(null);
-        })
+        catchError(err => { this.mostrarError('registrar admisión', err); return of(null); })
       )
-      .subscribe(response => {
-        if (response) {
-          this.volver();
-        }
-      });
+      .subscribe(r => { if (r) this.volver(); });
   }
 
+  // ── Actualización completa ──────────────────────────────────
   /**
-   * Actualiza una consulta existente agregando un nuevo ciclo
-   * PATCH /consultas/{id}
+   * Actualiza en una sola llamada PATCH:
+   *   - especialidad y servicio (si cambiaron)
+   *   - indicadores
+   *   - agrega un nuevo registro al ciclo (si se seleccionó estado)
    */
-  private actualizarCiclo(): void {
+  private actualizarConsulta(): void {
     if (!this.consultaId) {
       this.mostrarError('actualizar', new Error('ID de consulta no encontrado'));
       return;
     }
 
-    const formValue = this.form.getRawValue();
-    const nuevoEstado = formValue.nuevo_estado as EstadoCiclo;
-    const nuevoServicio = formValue.nuevo_servicio;
+    const v = this.form.getRawValue();
 
-    // Validar que se haya seleccionado un estado
-    if (!nuevoEstado) {
-      alert('Por favor seleccione un estado para actualizar');
-      return;
+    // Construir payload — solo incluye lo que cambió
+    const payload: ConsultaUpdate = {
+      especialidad: v.especialidad || undefined,
+      servicio: v.servicio || undefined,
+      indicadores: v.indicadores as Indicador,
+    };
+
+    // Si se seleccionó un nuevo estado, agrega el ciclo en el mismo PATCH
+    if (v.nuevo_estado) {
+      const nuevoCiclo: CicloClinico = {
+        estado: v.nuevo_estado as EstadoCiclo,
+        especialidad: v.especialidad || undefined,
+        servicio: v.nuevo_servicio || v.servicio || undefined,
+        comentario: v.nuevo_comentario || undefined,
+      };
+      payload.ciclo = nuevoCiclo;
     }
 
-    // Usar el método helper del API service
-    this.api.agregarCiclo(
-      this.consultaId,
-      nuevoEstado,
-      {
-        servicio: nuevoServicio || formValue.servicio,
-        especialidad: formValue.especialidad
-      }
-    )
+    this.api.updateConsulta(this.consultaId, payload)
       .pipe(
-        tap(response => {
-          console.log('✅ Ciclo actualizado:', response);
-          this.mostrarExito('Ciclo actualizado exitosamente');
+        tap(r => {
+          console.log('✅ Consulta actualizada:', r);
+          this.mostrarExito('Consulta actualizada exitosamente');
         }),
-        catchError(err => {
-          this.mostrarError('actualizar ciclo', err);
-          return of(null);
-        })
+        catchError(err => { this.mostrarError('actualizar consulta', err); return of(null); })
       )
-      .subscribe(response => {
-        if (response) {
-          // Recargar la consulta para mostrar el historial actualizado
+      .subscribe(r => {
+        if (r) {
+          // Limpiar campos de nuevo ciclo y recargar
+          this.form.patchValue({ nuevo_estado: '', nuevo_servicio: '', nuevo_comentario: '' });
           this.cargarConsulta(this.consultaId!);
         }
       });
   }
 
-  /**
-   * Actualiza solo los indicadores
-   */
+  // ── Solo indicadores (acción rápida desde el template) ──────
   actualizarIndicadores(): void {
     if (!this.consultaId) return;
 
-    const indicadores = this.form.get('indicadores')?.value;
+    const indicadores = this.form.get('indicadores')?.value as Indicador;
 
-    this.api.actualizarIndicadores(this.consultaId, indicadores)
+    this.api.updateConsulta(this.consultaId, { indicadores })
       .pipe(
         tap(() => this.mostrarExito('Indicadores actualizados')),
-        catchError(err => {
-          this.mostrarError('actualizar indicadores', err);
-          return of(null);
-        })
+        catchError(err => { this.mostrarError('actualizar indicadores', err); return of(null); })
       )
       .subscribe();
   }
 
+  // ══════════════════════════════════════════════════════════
+  // VALORES POR TIPO
+  // ══════════════════════════════════════════════════════════
+  private valoresEmergencia(): void {
+    this.especialidades = especialidades.filter(e => e.ref === 'all');
+    this.servicios = servicios.filter(s => s.ref === 'emergencia');
+    this.form.patchValue({ tipo_consulta: 3, servicio: 'REME' });
+  }
+
+  private valoresIngreso(): void {
+    this.especialidades = especialidades.filter(e => e.ref === 'all');
+    this.servicios = servicios.filter(s => s.ref === 'ingreso');
+    this.form.patchValue({ tipo_consulta: 2, servicio: 'HOSPITALIZACION' });
+  }
+
+  private valoresCoex(): void {
+    this.especialidades = especialidades.filter(e => e.ref !== 'sop');
+    this.servicios = servicios.filter(s => s.ref === 'coex');
+    this.form.patchValue({ tipo_consulta: 1, servicio: 'COEX' });
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // NAVEGACIÓN
+  // ══════════════════════════════════════════════════════════
   volver(): void {
     if (this.esEmergencia) this.router.navigate(['/emergencias']);
     else if (this.esCoesx) this.router.navigate(['/coex']);
@@ -346,39 +337,22 @@ export class AdmisionComponent implements OnInit {
     else this.router.navigate(['/pacientes']);
   }
 
-  // ==========================
-  // 🔹 Valores por tipo de consulta
-  // ==========================
-  private valoresEmergencia() {
-    this.especialidades = especialidades.filter(e => e.ref === 'all');
-    this.servicios = servicios.filter(s => s.ref === 'emergencia');
-    this.form.patchValue({
-      tipo_consulta: 3,
-      servicio: 'REME'
-    });
+  // ══════════════════════════════════════════════════════════
+  // HELPERS TEMPLATE
+  // ══════════════════════════════════════════════════════════
+  get estadoActual(): EstadoCiclo | null {
+    if (!this.consultaActual?.ciclo?.length) return null;
+    return this.consultaActual.ciclo[this.consultaActual.ciclo.length - 1].estado;
   }
 
-  private valoresIngreso() {
-    this.especialidades = especialidades.filter(e => e.ref === 'all');
-    this.servicios = servicios.filter(s => s.ref === 'ingreso');
-    this.form.patchValue({
-      tipo_consulta: 2,
-      servicio: 'HOSPITALIZACION'
-    });
+  get ultimoCiclo(): CicloClinico | null {
+    if (!this.consultaActual?.ciclo?.length) return null;
+    return this.consultaActual.ciclo[this.consultaActual.ciclo.length - 1];
   }
 
-  private valoresCoex() {
-    this.especialidades = especialidades.filter(e => e.ref !== 'sop');
-    this.servicios = servicios.filter(s => s.ref === 'coex');
-    this.form.patchValue({
-      tipo_consulta: 1,
-      servicio: 'COEX'
-    });
-  }
-
-  // ==========================
-  // 🔹 Helpers de UI
-  // ==========================
+  // ══════════════════════════════════════════════════════════
+  // HELPERS PRIVADOS
+  // ══════════════════════════════════════════════════════════
   private mostrarError(accion: string, error: any): void {
     console.error(`❌ Error al ${accion}:`, error);
     alert(`Error al ${accion}. ${error?.error?.detail || error?.message || 'Consulte la consola'}`);
@@ -386,24 +360,5 @@ export class AdmisionComponent implements OnInit {
 
   private mostrarExito(mensaje: string): void {
     console.log(`✅ ${mensaje}`);
-    // Aquí podrías usar un servicio de notificaciones más elegante
-    // this.toastr.success(mensaje);
-  }
-
-  // ==========================
-  // 🔹 Helpers para el template
-  // ==========================
-  get estadoActual(): EstadoCiclo | null {
-    if (!this.consultaActual?.ciclo || this.consultaActual.ciclo.length === 0) {
-      return null;
-    }
-    return this.consultaActual.ciclo[this.consultaActual.ciclo.length - 1].estado;
-  }
-
-  get ultimoCiclo(): CicloClinico | null {
-    if (!this.consultaActual?.ciclo || this.consultaActual.ciclo.length === 0) {
-      return null;
-    }
-    return this.consultaActual.ciclo[this.consultaActual.ciclo.length - 1];
   }
 }

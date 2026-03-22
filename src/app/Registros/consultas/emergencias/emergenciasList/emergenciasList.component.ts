@@ -150,7 +150,10 @@ export class EmergenciasListComponent implements OnInit {
   }
 
   verDetalle(consultaId: number) {
-    this.router.navigate(['/detalleAdmision', consultaId]);
+    this.router.navigate(
+      ['/detalleAdmision', consultaId],
+      { queryParams: { origen: 'emergencia' } }
+    );
   }
 
   imprimir(consultaId: number) {

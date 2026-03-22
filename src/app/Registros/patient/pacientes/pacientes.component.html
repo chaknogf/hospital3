@@ -120,11 +120,11 @@
           <th>Nombre Completo</th>
           <th>Fecha Nacimiento</th>
           @if (!existePaciente) {
-          <th>Dirección</th>
+            <th>Dirección</th>
           }
           <th>Género</th>
           @if (!existePaciente) {
-          <th>Estado</th>
+            <th>Estado</th>
           }
           <th>Acciones</th>
         </tr>
@@ -139,19 +139,22 @@
           <td class="oculto">{{ paciente.id }}</td>
           <td>
             @if (paciente?.cui) {
-            <div class="ms-4">
-              <strong>CUI:</strong> <small> {{ paciente.cui | cui }}</small>
-            </div>
-            } @if (paciente?.expediente) {
-            <div class="text-alert">
-              <strong>Expediente:</strong> {{ paciente.expediente }}
-            </div>
-            } @if (paciente?.pasaporte) {
-            <div><strong>Pasaporte:</strong> {{ paciente.pasaporte }}</div>
-            } @if (paciente?.datos_extra?.personaid){
-            <div>
-              <strong>Otro Id:</strong> {{ paciente.datos_extra?.personaid }}
-            </div>
+              <div class="ms-4">
+                <strong>CUI:</strong> <small> {{ paciente.cui | cui }}</small>
+              </div>
+            }
+            @if (paciente?.expediente) {
+              <div class="text-alert">
+                <strong>Expediente:</strong> {{ paciente.expediente }}
+              </div>
+            }
+            @if (paciente?.pasaporte) {
+              <div><strong>Pasaporte:</strong> {{ paciente.pasaporte }}</div>
+            }
+            @if (paciente?.datos_extra?.personaid) {
+              <div>
+                <strong>Otro Id:</strong> {{ paciente.datos_extra?.personaid }}
+              </div>
             }
           </td>
           <td>
@@ -170,26 +173,28 @@
             </p>
           </td>
           <td class="oculto">
-            {{ paciente.fecha_nacimiento | date : "dd/MM/yyyy" }}
+            {{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
             <br />
             <small>{{ paciente.fecha_nacimiento | edad }}</small>
           </td>
           <td class="oculto text-uppercase flex-wrap">
             {{ paciente.contacto?.domicilio }} <br />
-            {{ paciente.contacto?.municipio | datosExtra : "vecindad" }}
+            {{ paciente.contacto?.municipio | datosExtra: "vecindad" }}
           </td>
           <td class="oculto">
-            @if (paciente.sexo === 'M'){
-            <div><span [innerHTML]="icons['man']"></span> Masculino</div>
-            }@if (paciente.sexo === 'F'){
-            <div><span [innerHTML]="icons['woman']"></span> Femenino</div>
+            @if (paciente.sexo === "M") {
+              <div><span [innerHTML]="icons['man']"></span> Masculino</div>
+            }
+            @if (paciente.sexo === "F") {
+              <div><span [innerHTML]="icons['woman']"></span> Femenino</div>
             }
           </td>
           <td class="oculto">
-            @if (paciente.estado === 'V'){
-            <div><span [innerHTML]="icons['heart']"></span> Vivo</div>
-            } @if (paciente.estado === 'F') {
-            <div><span [innerHTML]="icons['ghost']"></span> Fallecido</div>
+            @if (paciente.estado === "V") {
+              <div><span [innerHTML]="icons['heart']"></span> Vivo</div>
+            }
+            @if (paciente.estado === "F") {
+              <div><span [innerHTML]="icons['ghost']"></span> Fallecido</div>
             }
           </td>
           <td class="secundario">
@@ -210,68 +215,119 @@
     </table>
   </div>
 
-  <!-- paginación -->
-  <div class="d-flex justify-content-center align-items-center">
+  <!-- ── PAGINADOR ── reemplaza el div de paginación actual ── -->
+  <div class="paginador">
     <!-- Botón anterior -->
     <button
-      class="btn"
-      [disabled]="filtros.skip === 0"
+      class="pag-btn"
+      [disabled]="!hayPaginaAnterior"
       (click)="cambiarPagina(-1)"
     >
       <span [innerHTML]="icons['skipLeft']"></span>
     </button>
 
-    <!-- Página actual -->
-    <div>
-      <strong>{{ paginaActual }} / {{ totalPaginas }}</strong>
-    </div>
+    <!-- Primera página + ellipsis si el rango no empieza en 1 -->
+    <button class="pag-num" *ngIf="paginas[0] > 1" (click)="irAPagina(1)">
+      1
+    </button>
+    <span class="pag-ellipsis" *ngIf="paginas[0] > 2">…</span>
+
+    <!-- Páginas del rango visible -->
+    <button
+      *ngFor="let p of paginas"
+      class="pag-num"
+      [class.pag-num-active]="p === paginaActual"
+      (click)="irAPagina(p)"
+    >
+      {{ p }}
+    </button>
+
+    <!-- Ellipsis + última página si el rango no llega al final -->
+    <span
+      class="pag-ellipsis"
+      *ngIf="paginas[paginas.length - 1] < totalPaginas - 1"
+      >…</span
+    >
+    <button
+      class="pag-num"
+      *ngIf="paginas[paginas.length - 1] < totalPaginas"
+      (click)="irAPagina(totalPaginas)"
+    >
+      {{ totalPaginas }}
+    </button>
 
     <!-- Botón siguiente -->
-    <button class="btn" [disabled]="finPagina" (click)="cambiarPagina(1)">
+    <button
+      class="pag-btn"
+      [disabled]="!hayPaginaSiguiente"
+      (click)="cambiarPagina(1)"
+    >
       <span [innerHTML]="icons['skipRight']"></span>
     </button>
+
+    <!-- Total de registros -->
+    <span class="pag-info">
+      Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+      {{ totalDeRegistros }} registros
+    </span>
   </div>
 
   <!-- Modal -->
- <dialog #dialogAdmision class="cosmos-dialog">
-  <div class="dialog-backdrop" (click)="dialogAdmision.close()"></div>
-  <div class="dialog-panel">
-
-    <div class="dialog-header">
-      <div class="dialog-header-left">
-        <div class="dialog-icon">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M8 2v4l3 2"/><circle cx="8" cy="8" r="6"/>
-          </svg>
+  <dialog #dialogAdmision class="cosmos-dialog">
+    <div class="dialog-backdrop" (click)="dialogAdmision.close()"></div>
+    <div class="dialog-panel">
+      <div class="dialog-header">
+        <div class="dialog-header-left">
+          <div class="dialog-icon">
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M8 2v4l3 2" />
+              <circle cx="8" cy="8" r="6" />
+            </svg>
+          </div>
+          <div>
+            <span class="dialog-title">Nueva Admisión</span>
+            <span class="dialog-sub">Selecciona el tipo de consulta</span>
+          </div>
         </div>
-        <div>
-          <span class="dialog-title">Nueva Admisión</span>
-          <span class="dialog-sub">Selecciona el tipo de consulta</span>
+        <button class="dialog-close" (click)="dialogAdmision.close()">
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M4 4l8 8M12 4l-8 8" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="dialog-options">
+        <div
+          class="dialog-card"
+          *ngFor="let opt of optionsTipoConsulta"
+          (click)="admision(opt.valor, pacienteSeleccionado)"
+        >
+          <div class="dialog-card-icon">
+            <span [innerHTML]=""></span>
+          </div>
+          <span class="dialog-card-label">{{ opt.nombre }}</span>
+          <div class="dialog-card-arrow">
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M4 8h8M9 5l3 3-3 3" />
+            </svg>
+          </div>
         </div>
       </div>
-      <button class="dialog-close" (click)="dialogAdmision.close()">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 4l8 8M12 4l-8 8"/>
-        </svg>
-      </button>
     </div>
-
-    <div class="dialog-options">
-      <div class="dialog-card"
-           *ngFor="let opt of optionsTipoConsulta"
-           (click)="admision(opt.valor, pacienteSeleccionado)">
-        <div class="dialog-card-icon">
-          <span [innerHTML]=""></span>
-        </div>
-        <span class="dialog-card-label">{{ opt.nombre }}</span>
-        <div class="dialog-card-arrow">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 8h8M9 5l3 3-3 3"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</dialog>
+  </dialog>
 </div>

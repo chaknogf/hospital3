@@ -140,7 +140,7 @@ export class ConsultasComponent implements OnInit {
   }
 
   editar(id: number) {
-    this.router.navigate(['/editarAdmision', id, 'emergencia']);
+    this.router.navigate(['/editarAdmision', id, 'consulta']);
   }
   agregar() {
     this.router.navigate(['/pacientes']);

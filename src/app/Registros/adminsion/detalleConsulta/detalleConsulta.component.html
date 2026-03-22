@@ -1,3 +1,418 @@
-<p>
-  detalleConsulta works!
-</p>
+<!-- ============================================================ -->
+<!-- DETALLE CONSULTA — cosmos dark UI                           -->
+<!-- ============================================================ -->
+
+<!-- ESTADOS DE CARGA -->
+<div *ngIf="isLoading()" class="dc-loading">
+  <div class="loading-ring"></div>
+  <span>Cargando consulta...</span>
+</div>
+
+<div *ngIf="error()" class="dc-error">
+  <span>⚠️ {{ error() }}</span>
+</div>
+
+<div *ngIf="!detalleVisible() && !isLoading() && !error()" class="dc-loading">
+  <div class="loading-ring"></div>
+  <span>Preparando datos...</span>
+</div>
+
+<!-- ══ PÁGINA PRINCIPAL ══════════════════════════════════════════ -->
+<div class="dc-page" *ngIf="detalleVisible() && consulta() && paciente()">
+  <!-- ══ HUD HEADER ═══════════════════════════════════════════ -->
+  <div class="hud-header">
+    <div class="hud-back">
+      <button class="hud-btn" (click)="regresar()" title="Regresar">
+        <span [innerHTML]="icons['back']"></span>
+      </button>
+    </div>
+
+    <div class="hud-title">
+      <span class="hud-label">Consulta</span>
+      <span class="hud-id">#{{ consulta()?.id }}</span>
+      <span class="hud-sep">·</span>
+      <span class="hud-doc">{{ consulta()?.documento }}</span>
+    </div>
+
+    <div class="hud-actions">
+      <button class="hud-btn" (click)="editar(consulta()!.id)" title="Editar">
+        <span [innerHTML]="icons['edit']"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ STATUS ROW ════════════════════════════════════════════ -->
+  <div class="dc-status-row">
+    <div class="status-badge">
+      <span class="status-dot pulse-dot"></span>
+      <span class="status-text">
+        {{ ultimoCiclo()?.especialidad | datosExtra: "especialidad" }}
+      </span>
+      <span class="status-text">
+        {{ ultimoCiclo()?.servicio | datosExtra: "servicio" }}
+      </span>
+    </div>
+    <div class="status-meta">
+      <span class="meta-tag">
+        <span class="meta-icon">📅</span>
+        {{ consulta()?.fecha_consulta | date: "dd/MM/yyyy" }}
+      </span>
+      <span class="meta-tag">
+        <span class="meta-icon">🕐</span>
+        {{ consulta()?.hora_consulta | time }}
+      </span>
+      <span class="meta-tag">
+        <span class="meta-icon">📋</span>
+        Orden: {{ consulta()?.orden }}
+      </span>
+      <!-- Estado actual del ciclo -->
+      <span class="meta-tag meta-tag-estado" *ngIf="estadoActual()">
+        <span class="estado-dot"></span>
+        {{ estadoActual() | uppercase }}
+      </span>
+    </div>
+  </div>
+
+  <!-- ══ GRID PRINCIPAL ════════════════════════════════════════ -->
+  <div class="dc-grid">
+    <!-- ── COL IZQUIERDA ── -->
+    <div class="dc-col">
+      <!-- PACIENTE -->
+      <div class="dc-card">
+        <div class="card-header">
+          <span class="card-icon">👤</span>
+          <h3 class="card-title">Paciente</h3>
+          <span class="card-exp">
+            <span class="dc-lbl">Expediente </span>
+            <span class="dc-val dc-val-accent">{{
+              consulta()?.expediente
+            }}</span>
+          </span>
+        </div>
+
+        <div class="patient-hero">
+          <div class="patient-avatar">
+            <span class="avatar-letter">
+              {{ paciente()?.nombre?.primer_nombre?.charAt(0)
+              }}{{ paciente()?.nombre?.primer_apellido?.charAt(0) }}
+            </span>
+          </div>
+          <div class="patient-name-block">
+            <p class="patient-name">
+              {{ paciente()?.nombre?.primer_apellido }}
+              {{ paciente()?.nombre?.segundo_apellido }}
+            </p>
+            <p class="patient-firstname">
+              {{ paciente()?.nombre?.primer_nombre }}
+              {{ paciente()?.nombre?.segundo_nombre }}
+              {{ paciente()?.nombre?.otro_nombre }}
+            </p>
+            <div class="patient-tags">
+              <span
+                class="ptag"
+                [class.ptag-m]="paciente()?.sexo === 'M'"
+                [class.ptag-f]="paciente()?.sexo === 'F'"
+              >
+                {{ paciente()?.sexo === "M" ? "♂ Masculino" : "♀ Femenino" }}
+              </span>
+              <span class="ptag ptag-age">{{
+                paciente()?.fecha_nacimiento | edad
+              }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div class="dc-field">
+            <span class="dc-lbl">Fecha Nacimiento</span>
+            <span class="dc-val">{{
+              paciente()?.fecha_nacimiento | date: "dd/MM/yyyy"
+            }}</span>
+          </div>
+          <div class="dc-field">
+            <span class="dc-lbl">CUI / Pasaporte</span>
+            <span class="dc-val">{{ paciente()?.cui | cui }}</span>
+          </div>
+          <div class="dc-field dc-field-full">
+            <span class="dc-lbl">Dirección</span>
+            <span class="dc-val">{{ direccionCompleta() }}</span>
+          </div>
+          <div class="dc-field">
+            <span class="dc-lbl">Teléfono</span>
+            <span class="dc-val">{{
+              paciente()?.contacto?.telefonos || "—"
+            }}</span>
+          </div>
+          <div class="dc-field">
+            <span class="dc-lbl">Estado Civil</span>
+            <span class="dc-val">{{
+              paciente()?.datos_extra?.socioeconomicos?.estado_civil
+                | datosExtra: "estadocivil"
+            }}</span>
+          </div>
+          <div class="dc-field">
+            <span class="dc-lbl">Ocupación</span>
+            <span class="dc-val">{{
+              paciente()?.datos_extra?.socioeconomicos?.ocupacion || "—"
+            }}</span>
+          </div>
+          <div class="dc-field">
+            <span class="dc-lbl">Nacionalidad</span>
+            <span class="dc-val">{{
+              paciente()?.datos_extra?.demograficos?.nacionalidad
+                | datosExtra: "nacionalidad"
+            }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESPONSABLE -->
+      <div class="dc-card" *ngIf="responsable()">
+        <div class="card-header">
+          <span class="card-icon">🤝</span>
+          <h3 class="card-title">Responsable</h3>
+        </div>
+        <div class="field-grid">
+          <div class="dc-field dc-field-full">
+            <span class="dc-lbl">Nombre</span>
+            <span class="dc-val">{{ responsable()?.nombre }}</span>
+          </div>
+          <div class="dc-field">
+            <span class="dc-lbl">Parentesco</span>
+            <span class="dc-val">{{
+              responsable()?.parentesco | datosExtra: "parentesco"
+            }}</span>
+          </div>
+          <div class="dc-field">
+            <span class="dc-lbl">Teléfono</span>
+            <span class="dc-val">{{ responsable()?.telefono || "—" }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORIAL DE CICLOS -->
+      <div
+        class="dc-card dc-card-collapsible"
+        *ngIf="historialCiclos.length > 0"
+      >
+        <div class="card-header card-header-toggle" (click)="toggleHistorial()">
+          <span class="card-icon">🕐</span>
+          <h3 class="card-title">Historial del Ciclo Clínico</h3>
+          <span class="card-badge">{{ historialCiclos.length }} registros</span>
+          <span
+            class="card-chevron"
+            [class.card-chevron-open]="mostrarHistorial()"
+          >
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M4 6l4 4 4-4" />
+            </svg>
+          </span>
+        </div>
+
+        <div
+          class="historial-list"
+          [class.historial-collapsed]="!mostrarHistorial()"
+        >
+          <div
+            *ngFor="let ciclo of historialCiclos; let i = index"
+            class="ciclo-item"
+            [class.ciclo-actual]="i === 0"
+          >
+            <!-- Número de ciclo (invertido: el más reciente = mayor número) -->
+            <div class="ciclo-num">#{{ historialCiclos.length - i }}</div>
+
+            <div class="ciclo-content">
+              <div class="ciclo-top">
+                <span
+                  class="ciclo-estado"
+                  [class.ciclo-estado-actual]="i === 0"
+                >
+                  {{ ciclo.estado | uppercase }}
+                </span>
+                <span class="ciclo-fecha">
+                  {{ ciclo.registro | date: "dd/MM/yyyy HH:mm" }}
+                </span>
+              </div>
+              <div class="ciclo-meta">
+                <span *ngIf="ciclo.usuario">{{ ciclo.usuario }}</span>
+                <span *ngIf="ciclo.servicio" class="ciclo-sep">·</span>
+                <span *ngIf="ciclo.servicio">{{ ciclo.servicio }}</span>
+                <span *ngIf="ciclo.especialidad" class="ciclo-sep">·</span>
+                <span *ngIf="ciclo.especialidad">{{ ciclo.especialidad }}</span>
+                <span *ngIf="ciclo.comentario" class="ciclo-sep">·</span>
+                <span *ngIf="ciclo.comentario" class="ciclo-comentario">
+                  {{ ciclo.comentario }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Indicador visual "actual" -->
+            <div class="ciclo-badge-actual" *ngIf="i === 0">Actual</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /col izq -->
+
+    <!-- ── COL DERECHA ── -->
+    <div class="dc-col">
+      <!-- DATOS DE CONSULTA -->
+      <div class="dc-card">
+        <div class="card-header">
+          <span class="card-icon">🏥</span>
+          <h3 class="card-title">Datos de la Consulta</h3>
+        </div>
+        <div class="field-grid">
+          <div class="dc-field">
+            <span class="dc-lbl">Servicio</span>
+            <span class="dc-val">{{
+              consulta()?.servicio | datosExtra: "servicio"
+            }}</span>
+          </div>
+          <div class="dc-field">
+            <span class="dc-lbl">Especialidad</span>
+            <span class="dc-val">{{
+              consulta()?.especialidad | datosExtra: "especialidad"
+            }}</span>
+          </div>
+          <div class="dc-field">
+            <span class="dc-lbl">Tipo Consulta</span>
+            <span class="dc-val dc-val-accent">{{
+              consulta()?.tipo_consulta | datosExtra: "tipo_consulta"
+            }}</span>
+          </div>
+          <div class="dc-field">
+            <span class="dc-lbl">Documento</span>
+            <span class="dc-val">{{ consulta()?.documento }}</span>
+          </div>
+          <div class="dc-field">
+            <span class="dc-lbl">Fecha Ingreso</span>
+            <span class="dc-val"
+              >{{ consulta()?.fecha_consulta | date: "dd/MM/yyyy" }}
+              {{ consulta()?.hora_consulta | time }}</span
+            >
+          </div>
+
+          @if (cicloConEgreso()) {
+            <div class="dc-field">
+              <span class="dc-lbl">Fecha y Hora de Egreso</span>
+              <span class="dc-val">{{
+                cicloConEgreso()?.registro | date: "dd/MM/yyyy HH:mm"
+              }}</span>
+            </div>
+          }
+          @if (cicloConEgreso()?.egreso?.condicion_egreso) {
+            <div class="dc-field">
+              <span class="dc-lbl">Condición de Egreso</span>
+              <span class="dc-val">{{
+                cicloConEgreso()?.egreso?.condicion_egreso
+              }}</span>
+            </div>
+          }
+          @if (cicloConEgreso()?.egreso?.referencia) {
+            <div class="dc-field">
+              <span class="dc-lbl">Referido</span>
+              <span class="dc-val">{{
+                cicloConEgreso()?.egreso?.referencia
+              }}</span>
+            </div>
+          }
+          @if (cicloConEgreso()?.egreso?.diagnostico) {
+            <div class="dc-field">
+              <span class="dc-lbl">Diagnóstico</span>
+              <span class="dc-val">{{
+                cicloConEgreso()?.egreso?.diagnostico
+              }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- INDICADORES -->
+      <div class="dc-card">
+        <div class="card-header">
+          <span class="card-icon">⚡</span>
+          <h3 class="card-title">Indicadores</h3>
+        </div>
+        <div class="ind-grid">
+          <div
+            class="ind-item"
+            [class.ind-on]="getIndicador('accidente_transito')"
+          >
+            <span class="ind-icon">🚗</span>
+            <span class="ind-lbl">Acc. Tránsito</span>
+          </div>
+          <div class="ind-item" [class.ind-on]="getIndicador('arma_blanca')">
+            <span class="ind-icon">🔪</span>
+            <span class="ind-lbl">Arma Blanca</span>
+          </div>
+          <div class="ind-item" [class.ind-on]="getIndicador('arma_fuego')">
+            <span class="ind-icon">🔫</span>
+            <span class="ind-lbl">Arma de Fuego</span>
+          </div>
+          <div
+            class="ind-item"
+            [class.ind-on]="getIndicador('estudiante_publico')"
+          >
+            <span class="ind-icon">📚</span>
+            <span class="ind-lbl">Estudiante Público</span>
+          </div>
+          <div
+            class="ind-item"
+            [class.ind-on]="getIndicador('accidente_laboral')"
+          >
+            <span class="ind-icon">⚙️</span>
+            <span class="ind-lbl">Acc. Laboral</span>
+          </div>
+          <div
+            class="ind-item"
+            [class.ind-on]="getIndicador('personal_hospital')"
+          >
+            <span class="ind-icon">🏨</span>
+            <span class="ind-lbl">Personal Hospital</span>
+          </div>
+          <div class="ind-item" [class.ind-on]="getIndicador('embarazo')">
+            <span class="ind-icon">🤰</span>
+            <span class="ind-lbl">Embarazo</span>
+          </div>
+          <div class="ind-item" [class.ind-on]="getIndicador('ambulancia')">
+            <span class="ind-icon">🚑</span>
+            <span class="ind-lbl">Ambulancia</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ESPECIALIDADES -->
+      <div class="dc-card">
+        <div class="card-header">
+          <span class="card-icon">🔬</span>
+          <h3 class="card-title">Servicio Asignado</h3>
+        </div>
+        <div class="esp-grid">
+          <div
+            *ngFor="let esp of especialidades"
+            class="esp-item"
+            [class.esp-on]="consulta()?.especialidad === esp.value"
+          >
+            <span
+              [innerHTML]="
+                consulta()?.especialidad === esp.value
+                  ? icons['cuadroNegro']
+                  : icons['cuadroBlanco']
+              "
+            ></span>
+            <span class="esp-lbl">{{ esp.label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /col der -->
+  </div>
+  <!-- /dc-grid -->
+</div>
+<!-- /dc-page -->

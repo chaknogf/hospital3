@@ -18,49 +18,17 @@
 
 <!-- DOCUMENTO -->
 <div class="container-impresion" *ngIf="consulta()">
-  <!-- MARCA DE AGUA -->
-  <div class="marca-agua"><span [innerHTML]="icons['logo']"></span></div>
-
-  <!-- ── HEADER ── -->
+  <!-- HEADER con chips integrados -->
   <div class="aurora-header">
-    <span [innerHTML]="icons['logo']" style="width: 56px; height: auto"></span>
+    <span></span>
     <div class="aurora-textos">
-      <h3>Hoja de Atención en Emergencias</h3>
+      <h3>Hoja de Emergencia</h3>
       <h4>Ministerio de Salud Pública y Asistencia Social</h4>
       <h5>Hospital General Tipo I de Tecpán Guatemala</h5>
     </div>
-    <div
-      style="
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        border: 1.5px solid #1a3a6a;
-        border-radius: 4px;
-        padding: 3px 6px;
-        text-align: center;
-      "
-    >
-      <span
-        style="
-          font-family: var(--mono);
-          font-size: 5pt;
-          text-transform: uppercase;
-          color: #777;
-          letter-spacing: 0.5px;
-        "
-      >
-        No. Consulta
-      </span>
-      <span
-        style="
-          font-family: var(--mono);
-          font-size: 13pt;
-          font-weight: 700;
-          color: #1a3a6a;
-          line-height: 1.1;
-        "
-      >
-        {{ consulta()?.id }}
+    <div class="header-chips">
+      <span class="meta-chip meta-chip-muted">
+        impreso: {{ horaActual }} — {{ fechaActual }} - id: {{ consulta()?.id }}
       </span>
     </div>
   </div>
@@ -71,11 +39,9 @@
       Hoja de Emergencia:
       <span class="doc-id">{{ consulta()?.documento }}</span>
     </h4>
-    <h6>
-      {{ consulta()?.fecha_consulta | date: "dd/MM/yyyy" }} &nbsp;·&nbsp;
-      {{ consulta()?.hora_consulta | time }} &nbsp;·&nbsp; Exp:
-      {{ consulta()?.expediente }}
-    </h6>
+    <h4 class="titulo-doc">
+      Expediente: <span class="doc-id">{{ consulta()?.expediente }}</span>
+    </h4>
   </div>
 
   <!-- ── SERVICIOS ── -->
@@ -86,7 +52,7 @@
     <h6 style="white-space: nowrap; margin: 0; border: none; padding: 0">
       Servicios:
     </h6>
-    <div class="especialidades-hoja" style="gap: 6px 10px">
+    <div class="especialidades-hoja" style="gap: 6px 22px">
       <div
         *ngFor="let esp of especialidades"
         class="especialidad-cuadro"
@@ -308,6 +274,29 @@
       </div>
     </div>
   </div>
+  <!-- ── EXAMEN FÍSICO ── -->
+  <div class="doc-section">
+    <h6>Examen Físico</h6>
+    <div class="campos-clinicos" style="justify-content: space-around">
+      <span>P/A:____________mmHg</span>
+      <span>FC:____________lpm</span>
+      <span>FR:____________rpm</span>
+      <span>SatO2:____________%</span>
+      <span>Temp:____________°C</span>
+    </div>
+    <div
+      class="campos-clinicos"
+      style="justify-content: space-around; margin-top: 3px"
+    >
+      <span>Peso:____________kg</span>
+      <span>Talla:____________cm</span>
+      <span>P/T:____________</span>
+      <span>T/E:____________</span>
+      <span>P/E:____________</span>
+    </div>
+    <span class="line" style="margin-top: 4px"></span>
+    <span class="line"></span>
+  </div>
 
   <!-- ── MOTIVO DE CONSULTA ── -->
   <div class="doc-section">
@@ -365,18 +354,19 @@
     <div class="borderline-time" style="margin-bottom: 3px">
       <label>Ginecológicos</label>
       <div class="campos-clinicos" style="justify-content: space-around">
-        <span>G:_____</span><span>P:_____</span><span>C:_____</span
-        ><span>A:_____</span> <span>HV:_____</span><span>HM:_____</span
-        ><span>FUR:_____</span><span>FPP:_____</span>
+        <span>G:_________</span><span>P:________</span><span>C:_________</span
+        ><span>A:________</span> <span>HV:_________</span
+        ><span>HM:_________</span><span>FUR:_________</span
+        ><span>FPP:_________</span>
       </div>
       <div
         class="campos-clinicos"
         style="justify-content: space-around; margin-top: 2px"
       >
-        <span>Menarquía:___________</span>
-        <span>Ciclos:___________</span>
-        <span>FUP:___________</span>
-        <span>Control PN:___________</span>
+        <span>Menarquía:______________</span>
+        <span>Ciclos:_____________</span>
+        <span>FUP:_____________</span>
+        <span>Control PN:_____________</span>
       </div>
     </div>
 
@@ -386,34 +376,9 @@
     </div>
   </div>
 
-  <!-- ── EXAMEN FÍSICO ── -->
-  <div class="doc-section">
-    <h6>Examen Físico</h6>
-    <div class="campos-clinicos" style="justify-content: space-around">
-      <span>P/A:_______mmHg</span>
-      <span>FC:_______lpm</span>
-      <span>FR:_______rpm</span>
-      <span>SatO2:_______%</span>
-      <span>Temp:_______°C</span>
-    </div>
-    <div
-      class="campos-clinicos"
-      style="justify-content: space-around; margin-top: 3px"
-    >
-      <span>Peso:_______kg</span>
-      <span>Talla:_______cm</span>
-      <span>P/T:_______</span>
-      <span>T/E:_______</span>
-      <span>P/E:_______</span>
-    </div>
-    <span class="line" style="margin-top: 4px"></span>
-    <span class="line"></span>
-  </div>
-
   <!-- ── IMPRESIÓN CLÍNICA ── -->
   <div class="doc-section">
     <h6>Impresión Clínica</h6>
-    <span class="line"></span>
     <span class="line"></span>
   </div>
 
@@ -422,12 +387,10 @@
     <h6>Órdenes Médicas</h6>
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px">
       <div class="borderline">
-        <span class="line"></span><span class="line"></span
-        ><span class="line"></span>
+        <span class="line"></span><span class="line"></span>
       </div>
       <div class="borderline">
-        <span class="line"></span><span class="line"></span
-        ><span class="line"></span>
+        <span class="line"></span><span class="line"></span>
       </div>
       <div class="borderline">
         <span class="line"></span><span class="line"></span>
@@ -492,9 +455,11 @@
   <!-- ── NOTAS DE ENFERMERÍA ── -->
   <div class="doc-section">
     <h6>Notas de Enfermería</h6>
-    <span class="line"></span>
-    <span class="line"></span>
-    <span class="line"></span>
+    <span class="line-min"></span>
+    <span class="line-min"></span>
+    <span class="line-min"></span>
+    <span class="line-min"></span>
+    <span class="line-min"></span>
     <div class="firma-row" style="margin-top: 4px">
       <p>Fecha</p>
       <p>Hora</p>

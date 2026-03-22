@@ -75,41 +75,43 @@ label { letter-spacing: 0.4px; }
   position: relative;
 }
 
-/* ══ MARCA DE AGUA ════════════════════════════════════════════ */
-.marca-agua {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%,-50%) rotate(-10deg);
-  width: 55%; max-width: 420px;
-  opacity: 0.04; pointer-events: none; z-index: 0;
-  display: flex; align-items: center; justify-content: center;
-}
-.marca-agua svg { width: 100%; height: auto; }
-
-/* ══ HEADER ═══════════════════════════════════════════════════ */
 .aurora-header {
   display: grid;
-  grid-template-columns: 56px 1fr auto;
-  align-items: center; gap: 8px;
+  grid-template-columns: 12px 1fr auto; /* auto para que los chips tomen su espacio natural */
+  align-items: center; gap: 6px;
   border-bottom: 2px solid var(--ink);
-  padding-bottom: 6px; margin-bottom: 4px;
+  padding-bottom: 5px; margin-bottom: 3px;
+}
+
+.header-chips {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+/* Los chips en el header son un poco más pequeños */
+.header-chips .meta-chip {
+  font-size: 5.5pt;
+  white-space: nowrap;
+  margin: 0;
 }
 
 .aurora-textos { text-align: center; }
 
 .aurora-textos h3 {
   font-family: var(--mono);
-  font-size: 10pt; font-weight: 700;
+  font-size: 14pt; font-weight: 700;
   text-transform: uppercase; letter-spacing: 1.5px;
   color: var(--accent); margin-bottom: 2px;
 }
 .aurora-textos h4 {
   font-family: var(--serif);
-  font-size: 7.5pt; font-weight: 700; color: var(--ink);
+  font-size: 12pt; font-weight: 700; color: var(--ink);
 }
 .aurora-textos h5 {
   font-family: var(--serif);
-  font-size: 7pt; font-weight: 400; color: var(--ink-muted);
+  font-size: 10pt; font-weight: 400; color: var(--ink-muted);
 }
 
 /* ══ META ═════════════════════════════════════════════════════ */
@@ -138,10 +140,10 @@ label { letter-spacing: 0.4px; }
 }
 
 /* ══ SECCIONES ════════════════════════════════════════════════ */
-.doc-section {
+.doc-section_ {
   border: 0.8px solid #888;
   border-radius: 3px;
-  padding: 4px 6px;
+  padding: 2px 6px;
   margin: 2px 0;
   break-inside: avoid;
   page-break-inside: avoid;
@@ -160,11 +162,15 @@ label { letter-spacing: 0.4px; }
 /* ══ CAMPOS INDIVIDUALES ══════════════════════════════════════ */
 .borderline,
 .borderline-time {
-  border: 0.8px solid #c0c0c0;
+  border: 0.8px  #c0c0c0;
   border-radius: 3px;
   padding: 2px 5px 3px;
-  min-height: 28px;
+  min-height: 40px;
   overflow-wrap: anywhere; word-break: break-word;
+}
+
+.borderline-time label {
+  color: #0d0d0d;
 }
 
 /* ══ LABELS ═══════════════════════════════════════════════════ */
@@ -197,14 +203,22 @@ label {
   display: block;
   border: none;
   border-bottom: 0.8px solid #888;
-  min-height: 16px;
+  min-height: 35px;
+  margin-bottom: 3px; width: 100%;
+}
+
+.line-min {
+  display: block;
+  border: none;
+  border-bottom: 0.8px solid #888;
+  min-height: 20px;
   margin-bottom: 3px; width: 100%;
 }
 
 /* ══ CAMPOS CLÍNICOS ══════════════════════════════════════════ */
 .campos-clinicos {
   display: flex; flex-wrap: wrap;
-  gap: 2px 12px; padding: 2px 0;
+  gap: 2px 12px; padding: 8px 0;
 }
 .campos-clinicos span {
   font-family: var(--mono);
@@ -215,7 +229,7 @@ label {
 /* ══ ESPECIALIDADES ═══════════════════════════════════════════ */
 .especialidades-hoja {
   display: flex; flex-wrap: wrap;
-  gap: 4px 10px; align-items: flex-end;
+  gap: 10px 22px; align-items: flex-end;
 }
 .especialidad-cuadro {
   display: flex; flex-direction: column;
@@ -294,73 +308,5 @@ label {
     font-size: 7.8pt !important;
   }
 
-  /* Header */
-  .aurora-header {
-    grid-template-columns: 44px 1fr auto !important;
-    gap: 5px !important; padding-bottom: 4px !important;
-    margin-bottom: 2px !important;
-  }
-  .aurora-textos h3 { font-size: 9pt !important; color: black !important; }
-  .aurora-textos h4 { font-size: 7pt !important; }
-  .aurora-textos h5 { font-size: 6.5pt !important; }
 
-  /* Meta */
-  .doc-meta { padding: 2px !important; margin-bottom: 2px !important; }
-  .titulo-doc { font-size: 8.5pt !important; }
-  .doc-id { font-size: 10pt !important; color: black !important; }
-  .doc-meta h6 { font-size: 7pt !important; }
-
-  /* Secciones */
-  .doc-section {
-    padding: 2px 5px !important;
-    margin: 1.5px 0 !important;
-    border-color: #999 !important;
-  }
-  .doc-section h6 {
-    font-size: 5.5pt !important;
-    color: black !important;
-    padding-bottom: 1px !important;
-    margin-bottom: 3px !important;
-  }
-
-  /* Campos */
-  .borderline, .borderline-time {
-    padding: 1px 4px 2px !important;
-    min-height: 20px !important;
-    border-color: #bbb !important;
-  }
-
-  label {
-    font-size: 4.8pt !important;
-    margin-bottom: 0 !important;
-    line-height: 1.1 !important;
-    color: #666 !important;
-  }
-
-  .borderline p, .borderline-time p, .doc-section > p {
-    font-size: 8pt !important; line-height: 1.2 !important;
-  }
-  .nombres-fila { font-size: 9pt !important; }
-
-  /* Líneas */
-  .line { min-height: 13px !important; margin-bottom: 2px !important; }
-
-  /* Campos clínicos */
-  .campos-clinicos { gap: 1px 8px !important; padding: 1px 0 !important; }
-  .campos-clinicos span { font-size: 6.8pt !important; }
-
-  /* Especialidades */
-  .especialidad-cuadro label { font-size: 5pt !important; }
-  .especialidad-cuadro span svg { width: 11px !important; height: 11px !important; }
-
-  /* Indicadores */
-  .centered-container label { font-size: 4.5pt !important; }
-  .centered-container span svg { width: 11px !important; height: 11px !important; }
-
-  /* Firma */
-  .firma-row { gap: 10px !important; margin-top: 3px !important; }
-  .firma-row p { font-size: 5.8pt !important; }
-
-  /* No cortar secciones */
-  .doc-section { break-inside: avoid; page-break-inside: avoid; }
 }

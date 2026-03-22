@@ -158,10 +158,10 @@
 
   .dialog-card-label {
   color: #d9e1ec;
- 
+
 }
 
-  
+
 }
 
 
@@ -196,4 +196,46 @@
   color: #94a3b8;
   display: flex;
   align-items: center;
-  transition
+
+}
+.paginador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 0;
+  flex-wrap: wrap;
+}
+
+.pag-btn, .pag-num {
+  min-width: 32px; height: 32px;
+  border: 1px solid rgba(96,165,250,0.2);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  color: #e2eeff;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  transition: all 0.15s;
+}
+.pag-btn:hover, .pag-num:hover {
+  background: rgba(59,130,246,0.15);
+  border-color: rgba(96,165,250,0.5);
+}
+.pag-btn:disabled {
+  opacity: 0.3; cursor: not-allowed;
+}
+.pag-num-active {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: white !important;
+  font-weight: 700;
+}
+.pag-ellipsis {
+  color: #4a6fa5; font-size: 13px; padding: 0 4px;
+}
+.pag-info {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: #4a6fa5;
+  margin-left: 8px; white-space: nowrap;
+}

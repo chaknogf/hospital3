@@ -307,7 +307,10 @@ export class CoexListaComponent implements OnInit {
   }
 
   verDetalle(consultaId: number) {
-    this.router.navigate(['/detalleAdmision', consultaId]);
+    this.router.navigate(
+      ['/detalleAdmision', consultaId],
+      { queryParams: { origen: 'coex' } }
+    );
   }
 
   toggleFiltrar() {
@@ -347,21 +350,7 @@ export class CoexListaComponent implements OnInit {
     this.rowActiva = this.rowActiva === id ? null : id;
   }
 
-  // estadoUltimoCiclo(ciclo: Record<string, Ciclo> | null): string | null {
-  //   if (!ciclo) return null;
 
-  //   const registros: Ciclo[] = Object.values(ciclo);
-  //   if (registros.length === 0) return null;
-
-  //   registros.sort((a, b) =>
-  //     new Date(b.registro).getTime() - new Date(a.registro).getTime()
-  //   );
-
-  //   const ultimo = registros[0];
-  //   const encontrado = ciclos.find(c => c.value === ultimo.estado);
-
-  //   return encontrado ? encontrado.label : ultimo.estado;
-  // }
 
   getCicloStatus(ciclo: Record<string, any>): 'activo' | 'inactivo' {
     if (!ciclo) return 'activo';
@@ -410,4 +399,6 @@ export class CoexListaComponent implements OnInit {
       t.entidad.toLowerCase().includes('coex')
     )?.total || 0;
   }
+
+
 }

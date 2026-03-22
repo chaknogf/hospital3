@@ -8,11 +8,9 @@ import { IconService } from '../../../service/icon.service';
 import { PacienteFiltros } from '../../../interface/filtros.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { EdadPipe } from "../../../pipes/edad.pipe";
+import { EdadPipe } from '../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
-import { addExpediente, addPerson } from '../../../shared/icons/svg-icon';
-
 
 @Component({
   selector: 'app-pacientes',
@@ -22,28 +20,32 @@ import { addExpediente, addPerson } from '../../../shared/icons/svg-icon';
   imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe]
 })
 export class PacientesComponent implements OnInit {
-  options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
 
-  // iconos
-  icons: { [key: string]: any } = {};
-
+  // ── Datos ──────────────────────────────────────────────────
   pacientes: Paciente[] = [];
   enRenap: Renap[] = [];
-  total: number = 0;
-  totales: any[] = []; // Si necesitas totales de otra fuente
-  existePaciente: boolean = false;
+  existePaciente = false;
+
+  // ── UI ─────────────────────────────────────────────────────
   cargando = false;
   filtrar = false;
   visible = false;
   modalActivo = false;
-  espacio: string = ' ';
-  pageSize: number = 8;
-  paginaActual: number = 1;
-  finPagina: boolean = false;
-  totalDeRegistros = 0;
-  porcentajeDeCarga = 0;
-  pacienteSeleccionado: number = 0;
-  @ViewChild('dialogAdmision') dialog!: ElementRef<HTMLDialogElement>;
+  espacio = ' ';
+
+  // ── Paginación con skip/limit del backend ──────────────────
+  readonly pageSize = 8;
+  paginaActual = 1;
+  totalDeRegistros = 0;   // total real que devuelve el backend
+
+  get totalPaginas(): number {
+    return Math.ceil(this.totalDeRegistros / this.pageSize) || 1;
+  }
+
+  get hayPaginaAnterior(): boolean { return this.paginaActual > 1; }
+  get hayPaginaSiguiente(): boolean { return this.paginaActual < this.totalPaginas; }
+
+  // ── Filtros ────────────────────────────────────────────────
   filtros: PacienteFiltros = {
     skip: 0,
     limit: this.pageSize,
@@ -59,191 +61,187 @@ export class PacientesComponent implements OnInit {
     estado: ''
   };
 
-  // busquedas
+  // ── Modal admisión ─────────────────────────────────────────
+  pacienteSeleccionado = 0;
+  @ViewChild('dialogAdmision') dialog!: ElementRef<HTMLDialogElement>;
 
+  optionsTipoConsulta = [
+    { nombre: 'Coex', valor: 1, icon: '🏥' },
+    { nombre: 'Emergencia', valor: 2, icon: '🚨' },
+    { nombre: 'Ingreso', valor: 3, icon: '🛏️' }
+  ];
 
-  public cui: string = '';
+  // ── Icons ──────────────────────────────────────────────────
+  icons: { [key: string]: any } = {};
 
-  pacienteSeleccionadoId: number | null = null;
-  mostrarDetallePaciente = false;
-
-  // iconos (ahora inyectados por servicio)
   constructor(
     private api: ApiService,
     private router: Router,
     private iconService: IconService
   ) {
     this.icons = {
-      editPerson: this.iconService.getIcon("editPerson"),
-      addExpediente: this.iconService.getIcon("addExpediente"),
-      addPerson: this.iconService.getIcon("addPerson"),
-      search: this.iconService.getIcon("searchIcon"),
-      delete: this.iconService.getIcon("deletInput"),
-      create: this.iconService.getIcon("createIcon"),
-      edit: this.iconService.getIcon("editIcon"),
-      trash: this.iconService.getIcon("trashIcon"),
-      tabla: this.iconService.getIcon("tablaShanonIcon"),
-      medical: this.iconService.getIcon("medicalServiceIcon"),
-      man: this.iconService.getIcon("manIcon"),
-      woman: this.iconService.getIcon("womanIcon"),
-      beat: this.iconService.getIcon("beatIcon"),
-      ghost: this.iconService.getIcon("ghostIcon"),
-      heart: this.iconService.getIcon("heartIcon"),
-      paw: this.iconService.getIcon("huellitaIcon"),
-      find: this.iconService.getIcon("findIcon"),
-      menu: this.iconService.getIcon("menuPuntos"),
-      arrowDown: this.iconService.getIcon("arrowDown"),
-      skipLeft: this.iconService.getIcon("skipLeft"),
-      skipRight: this.iconService.getIcon("skipRight"),
-
-
+      editPerson: this.iconService.getIcon('editPerson'),
+      addExpediente: this.iconService.getIcon('addExpediente'),
+      addPerson: this.iconService.getIcon('addPerson'),
+      search: this.iconService.getIcon('searchIcon'),
+      delete: this.iconService.getIcon('deletInput'),
+      create: this.iconService.getIcon('createIcon'),
+      edit: this.iconService.getIcon('editIcon'),
+      trash: this.iconService.getIcon('trashIcon'),
+      tabla: this.iconService.getIcon('tablaShanonIcon'),
+      medical: this.iconService.getIcon('medicalServiceIcon'),
+      man: this.iconService.getIcon('manIcon'),
+      woman: this.iconService.getIcon('womanIcon'),
+      beat: this.iconService.getIcon('beatIcon'),
+      ghost: this.iconService.getIcon('ghostIcon'),
+      heart: this.iconService.getIcon('heartIcon'),
+      paw: this.iconService.getIcon('huellitaIcon'),
+      find: this.iconService.getIcon('findIcon'),
+      menu: this.iconService.getIcon('menuPuntos'),
+      arrowDown: this.iconService.getIcon('arrowDown'),
+      skipLeft: this.iconService.getIcon('skipLeft'),
+      skipRight: this.iconService.getIcon('skipRight'),
     };
   }
 
+  // ══════════════════════════════════════════════════════════
   ngOnInit(): void {
-    // Suscripción pacientes
-    // Suscripción pacientes (solo para actualizar la tabla)
-    this.api.pacientes$.subscribe((data) => {
-      this.pacientes = data;
-    });
-
-    // Cargar primera página
+    // El BehaviorSubject actualiza la tabla cuando el servicio refresca
+    this.api.pacientes$.subscribe(data => { this.pacientes = data; });
     this.cargarPacientes();
-
   }
 
-  cargarPacientes() {
+  // ══════════════════════════════════════════════════════════
+  // CARGA — usa skip/limit del backend
+  // ══════════════════════════════════════════════════════════
+  cargarPacientes(): void {
     this.cargando = true;
-    // getPacientes ahora retorna { total: number, pacientes: Paciente[] }
-    this.api.getPacientes(this.filtros).subscribe({
-      next: (resultado) => {
-        this.totalDeRegistros = resultado.total;
 
-        const totalPaginas = Math.ceil(this.totalDeRegistros / this.pageSize);
-        this.finPagina = this.paginaActual >= totalPaginas;
+    this.api.getPacientes(this.filtros).subscribe({
+      next: resultado => {
+        // El backend devuelve { total, pacientes[] }
+        this.totalDeRegistros = resultado.total;
+        // pacientes se actualiza via BehaviorSubject en api.service
+        // pero por si acaso también lo asignamos directo:
+        this.pacientes = resultado.pacientes;
+
+        // Ajustar página si el backend devolvió menos de lo esperado
+        if (this.paginaActual > this.totalPaginas) {
+          this.paginaActual = this.totalPaginas;
+        }
       },
-      error: (error) => {
-        console.error("Error:", error);
+      error: err => {
+        console.error('Error cargando pacientes:', err);
+        this.pacientes = [];
+        this.totalDeRegistros = 0;
       },
-      complete: () => {
-        this.cargando = false;
-      }
+      complete: () => { this.cargando = false; }
     });
   }
 
-  buscar() {
-    // Resetear a la primera página al buscar
-    this.paginaActual = 1;
-    this.filtros.skip = 0;
-    this.cargarPacientes();
-  }
+  // ══════════════════════════════════════════════════════════
+  // PAGINACIÓN
+  // ══════════════════════════════════════════════════════════
+  cambiarPagina(paso: number): void {
+    const nueva = this.paginaActual + paso;
+    if (nueva < 1 || nueva > this.totalPaginas) return;
 
-  limpiarFiltros() {
-    this.filtros = { skip: 0, limit: this.pageSize };
-    this.paginaActual = 1;
-    this.cargarPacientes();
-  }
-
-  editarPaciente(pacienteId: number) {
-    this.router.navigate(['/pacienteEdit', pacienteId]);
-  }
-
-  eliminarPaciente(pacienteId: number) {
-    if (confirm('¿Está seguro de que desea eliminar este paciente?')) {
-      this.api.deletePaciente(pacienteId);
-    }
-  }
-
-  agregar() {
-    this.router.navigate(['/paciente']);
-  }
-
-  agregarConExpediente() {
-    this.router.navigate(['/paciente', true]);
-  }
-
-  verDetallesPaciente(pacienteId: number) {
-    // this.pacienteSeleccionadoId = pacienteId;
-    // this.mostrarDetallePaciente = true;
-    // this.modalActivo = true;
-    this.router.navigate(['/detallePaciente', pacienteId]);
-  }
-
-  cerrarDetallePaciente() {
-    this.mostrarDetallePaciente = false;
-    this.pacienteSeleccionadoId = null;
-    this.modalActivo = false;
-  }
-
-  volver() {
-    this.router.navigate(['/registros']);
-  }
-
-  toggleFiltrar() {
-    this.filtrar = !this.filtrar;
-  }
-
-  get totalPaginas(): number {
-    return Math.ceil(this.totalDeRegistros / this.pageSize) || 1;
-  }
-
-  cambiarPagina(paso: number) {
-    const nuevaPagina = this.paginaActual + paso;
-
-    if (nuevaPagina < 1 || nuevaPagina > this.totalPaginas) {
-      return;
-    }
-
-    this.paginaActual = nuevaPagina;
+    this.paginaActual = nueva;
     this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
     this.filtros.limit = this.pageSize;
-
     this.cargarPacientes();
   }
 
-  mostrar(): void {
-    this.visible = !this.visible;
+  irAPagina(pagina: number): void {
+    if (pagina < 1 || pagina > this.totalPaginas) return;
+    this.paginaActual = pagina;
+    this.filtros.skip = (pagina - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
+    this.cargarPacientes();
   }
 
-  rowActiva: number | null = null;
-
-  activarFila(id: number) {
-    this.rowActiva = this.rowActiva === id ? null : id; // toggle
+  // ══════════════════════════════════════════════════════════
+  // BÚSQUEDA Y FILTROS
+  // ══════════════════════════════════════════════════════════
+  buscar(): void {
+    this.paginaActual = 1;
+    this.filtros.skip = 0;
+    this.filtros.limit = this.pageSize;
+    this.cargarPacientes();
   }
 
-  optionsTipoConsulta = [
-    { nombre: 'Coex', valor: 1 },
-    { nombre: 'Emergencia', valor: 2 }, // Cambiado para ser consistente
-    { nombre: 'Ingreso', valor: 3 }
-  ];
+  limpiarFiltros(): void {
+    this.filtros = {
+      skip: 0, limit: this.pageSize,
+      q: '', primer_nombre: '', segundo_nombre: '',
+      primer_apellido: '', segundo_apellido: '',
+      nombre_completo: '', sexo: '',
+      fecha_nacimiento: '', referencias: '', estado: ''
+    };
+    this.paginaActual = 1;
+    this.cargarPacientes();
+  }
 
+  toggleFiltrar(): void { this.filtrar = !this.filtrar; }
 
-  abrirModalAdmision(id: number) {
+  // ══════════════════════════════════════════════════════════
+  // ACCIONES DE PACIENTE
+  // ══════════════════════════════════════════════════════════
+  editarPaciente(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
+  agregar(): void { this.router.navigate(['/paciente']); }
+  agregarConExpediente(): void { this.router.navigate(['/paciente', true]); }
+  verDetallesPaciente(id: number): void { this.router.navigate(['/detallePaciente', id]); }
+  volver(): void { this.router.navigate(['/registros']); }
+
+  eliminarPaciente(id: number): void {
+    if (confirm('¿Está seguro de que desea eliminar este paciente?')) {
+      this.api.deletePaciente(id);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // MODAL ADMISIÓN
+  // ══════════════════════════════════════════════════════════
+  abrirModalAdmision(id: number): void {
     this.pacienteSeleccionado = id;
     this.dialog.nativeElement.showModal();
   }
 
-  admision(opt: number, id: number) {
-    if (opt === 1) {
-      this.router.navigate(
-        ['/admisionPaciente', 'coex', id],
-        { queryParams: { esCoex: true } }
-      );
-    } else if (opt === 3) {
-      this.router.navigate(
-        ['/admisionPaciente', 'ingreso', id],
-        { queryParams: { esIngreso: true } }
-      );
-    } else if (opt === 2) {
-      this.router.navigate(
-        ['/admisionPaciente', 'emergencia', id],
-        { queryParams: { esEmergencia: true } }
-      );
-    }
+  admision(opt: number, id: number): void {
+    const rutas: Record<number, [string, string]> = {
+      1: ['coex', 'coex'],
+      2: ['emergencia', 'emergencia'],
+      3: ['ingreso', 'ingreso'],
+    };
+    const [tipo, origen] = rutas[opt] ?? ['coex', 'coex'];
 
+    this.router.navigate(
+      ['/admisionPaciente', tipo, id],
+      { queryParams: { origen } }
+    );
     this.dialog.nativeElement.close();
   }
 
+  // ══════════════════════════════════════════════════════════
+  // UI HELPERS
+  // ══════════════════════════════════════════════════════════
+  mostrar(): void { this.visible = !this.visible; }
 
+  rowActiva: number | null = null;
+  activarFila(id: number): void {
+    this.rowActiva = this.rowActiva === id ? null : id;
+  }
 
+  // Genera array de páginas para mostrar en el paginador
+  get paginas(): number[] {
+    const total = this.totalPaginas;
+    const actual = this.paginaActual;
+    const delta = 2; // páginas a cada lado de la actual
+
+    const rango: number[] = [];
+    for (let i = Math.max(1, actual - delta); i <= Math.min(total, actual + delta); i++) {
+      rango.push(i);
+    }
+    return rango;
+  }
 }

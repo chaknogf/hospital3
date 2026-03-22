@@ -156,7 +156,6 @@ export interface Dx {
 
 export interface Egreso {
   registro: string;
-  usuario: string;
   referencia: string;
   diagnostico: Dx[];
   condicion_egreso: string;

@@ -30,24 +30,24 @@
   class="container-impresion"
   *ngIf="detalleVisible() && consulta() && paciente()"
 >
-  <span class="meta-chip">
-    {{ consulta()?.fecha_consulta | date: "dd/MM/yyyy" }}
-    &nbsp;·&nbsp;
-    {{ consulta()?.hora_consulta | time }}
-  </span>
-
-  <span class="meta-chip meta-chip-muted"
-    >Print: {{ horaActual | time }} — {{ fechaActual }}</span
-  >
-  <!-- HEADER -->
+  <!-- HEADER con chips integrados -->
   <div class="aurora-header">
     <span></span>
     <div class="aurora-textos">
-      <h3>Historia Clínica</h3>
+      <h3>Historia Clínica Consulta Externa</h3>
       <h4>Ministerio de Salud Pública y Asistencia Social</h4>
       <h5>Hospital General Tipo I de Tecpán Guatemala</h5>
     </div>
-    <!-- <span class="logo" [innerHTML]="icons['logo']"></span> -->
+    <div class="header-chips">
+      <span class="meta-chip">
+        {{ consulta()?.fecha_consulta | date: "dd/MM/yyyy" }}
+        &nbsp;·&nbsp;
+        {{ consulta()?.hora_consulta | time }}
+      </span>
+      <span class="meta-chip meta-chip-muted">
+        Print: {{ horaActual }} — {{ fechaActual }}
+      </span>
+    </div>
   </div>
 
   <!-- META: orden / especialidad / fecha / expediente -->
@@ -156,32 +156,32 @@
   <div class="doc-section">
     <h6>
       Signos Vitales
-      <span class="sec-hora">Hora: ___________</span>
+      <span class="sec-hora">Hora: ______________________</span>
     </h6>
     <div class="vitales-grid">
       <div class="vital-item">
-        <label>P/A</label><span class="vital-val">_______ mmHg</span>
+        <label>P/A</label><span class="vital-val">_________________ mmHg</span>
       </div>
       <div class="vital-item">
-        <label>FC</label><span class="vital-val">_______ lpm</span>
+        <label>FC</label><span class="vital-val">_________________ lpm</span>
       </div>
       <div class="vital-item">
-        <label>FR</label><span class="vital-val">_______ rpm</span>
+        <label>FR</label><span class="vital-val">_________________ rpm</span>
       </div>
       <div class="vital-item">
-        <label>Temp</label><span class="vital-val">_______ °C</span>
+        <label>Temp</label><span class="vital-val">_________________ °C</span>
       </div>
       <div class="vital-item">
-        <label>Peso</label><span class="vital-val">_______ kg</span>
+        <label>Peso</label><span class="vital-val">_________________ kg</span>
       </div>
       <div class="vital-item">
-        <label>Talla</label><span class="vital-val">_______ cm</span>
+        <label>Talla</label><span class="vital-val">_________________ cm</span>
       </div>
       <div class="vital-item">
-        <label>SatO2</label><span class="vital-val">_______ %</span>
+        <label>SatO2</label><span class="vital-val">_________________ %</span>
       </div>
       <div class="vital-item">
-        <label>GMT</label><span class="vital-val">_______</span>
+        <label>GMT</label><span class="vital-val">_________________</span>
       </div>
     </div>
   </div>
@@ -190,7 +190,7 @@
   <div class="doc-section">
     <h6>
       Datos de la Consulta
-      <span class="sec-hora">Hora: ___________</span>
+      <span class="sec-hora">Hora: ______________________</span>
     </h6>
 
     <div class="campo-hc">
@@ -208,6 +208,8 @@
 
     <div class="campo-hc">
       <label>Antecedentes</label>
+      <span class="line"></span>
+      <span class="line"></span>
       <span class="line"></span>
       <span class="line"></span>
     </div>

@@ -152,7 +152,10 @@ export class IngresosComponent implements OnInit {
   }
 
   verDetalle(consultaId: number) {
-    this.router.navigate(['/detalleAdmision', consultaId]);
+    this.router.navigate(
+      ['/detalleAdmision', consultaId],
+      { queryParams: { origen: 'ingreso' } }
+    );
   }
 
   imprimir(consultaId: number) {

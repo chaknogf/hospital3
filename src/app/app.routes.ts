@@ -41,6 +41,7 @@ export const routes: Routes = [
       { path: 'editarAdmision/:id/:origen', component: AdmisionComponent },
       { path: 'editarAdmision/:id', component: AdmisionComponent },
       { path: 'detalleAdmision/:id', component: DetalleConsultaComponent },
+
       // Pacientes
       { path: 'pacientes', component: PacientesComponent },
       { path: 'paciente', component: FormularioPacienteComponent },

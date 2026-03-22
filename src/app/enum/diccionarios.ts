@@ -111,20 +111,25 @@ export const gradoAcademicos: Dict[] = [
 ]
 
 export const ciclos: Dict[] = [
-  { label: 'Admision', value: 'ADMI', ref: 'activo' },
-  { label: 'Actualizacion', value: 'ACTU', ref: 'none' },
-  { label: 'Signos Vitales', value: 'SVIT', ref: 'activo' },
-  { label: 'Emergencia', value: 'EMER', ref: 'activo' },
-  { label: 'Atencion Medica', value: 'ATME', ref: 'activo' },
-  { label: 'Diagnostico', value: 'DIAG', ref: 'activo' },
-  { label: 'Tratamiento', value: 'TRAT', ref: 'activo' },
-  { label: 'Traslado', value: 'TRAS', ref: 'activo' },
-  { label: 'Quirofano', value: 'QUIR', ref: 'activo' },
-  { label: 'Egreso', value: 'EGRE', ref: 'inactivo' },
-  { label: 'Archivo', value: 'ARCH', ref: 'inactivo' },
-  { label: 'Prestamo', value: 'PRES', ref: 'inactivo' },
-  { label: 'Registros', value: 'REGI', ref: 'none' },
-  { label: 'Interconsulta', value: 'INCO', ref: 'activo' },
+  { label: 'Admisión', value: 'admision', ref: 'activo' },
+  { label: 'Actualización', value: 'actualizado', ref: 'none' },
+  { label: 'Signos Vitales', value: 'signos', ref: 'activo' },
+  { label: 'Recepción', value: 'recepcion', ref: 'activo' },
+  { label: 'Consulta Médica', value: 'consulta', ref: 'activo' },
+  { label: 'Estudios / Laboratorio', value: 'estudios', ref: 'activo' },
+  { label: 'Tratamiento', value: 'tratamiento', ref: 'activo' },
+  { label: 'Observación', value: 'observacion', ref: 'activo' },
+  { label: 'Evolución', value: 'evolucion', ref: 'activo' },
+  { label: 'Seguimiento', value: 'seguimiento', ref: 'activo' },
+  { label: 'Procedimiento', value: 'procedimiento', ref: 'activo' },
+  { label: 'Recuperación', value: 'recuperacion', ref: 'activo' },
+  { label: 'Traslado', value: 'traslado', ref: 'activo' },
+  { label: 'Referido', value: 'referido', ref: 'activo' },
+  { label: 'Egreso', value: 'egreso', ref: 'inactivo' },
+  { label: 'Archivo', value: 'archivo', ref: 'inactivo' },
+  { label: 'Préstamo', value: 'prestamo', ref: 'inactivo' },
+  { label: 'Reprogramado', value: 'reprogramado', ref: 'none' },
+  { label: 'Descartado', value: 'descartado', ref: 'none' }
 ];
 
 export const especialidades: Dict[] = [
