@@ -270,8 +270,8 @@
         </div>
         <div class="sec-body single">
           <div class="indicadores-grid">
-            <label class="ind-chip"
-              ><input type="checkbox" formControlName="estudiante_publico" />
+            <label class="ind-chip">
+              <input type="checkbox" formControlName="estudiante_publico" />
               <span class="ind-check"
                 ><svg
                   viewBox="0 0 12 12"
@@ -283,8 +283,8 @@
               ></span>
               <span class="ind-label">Estudiante público</span>
             </label>
-            <label class="ind-chip"
-              ><input type="checkbox" formControlName="empleado_publico" />
+            <label class="ind-chip">
+              <input type="checkbox" formControlName="empleado_publico" />
               <span class="ind-check"
                 ><svg
                   viewBox="0 0 12 12"
@@ -296,8 +296,8 @@
               ></span>
               <span class="ind-label">Empleado público</span>
             </label>
-            <label class="ind-chip"
-              ><input type="checkbox" formControlName="accidente_laboral" />
+            <label class="ind-chip">
+              <input type="checkbox" formControlName="accidente_laboral" />
               <span class="ind-check"
                 ><svg
                   viewBox="0 0 12 12"
@@ -309,8 +309,8 @@
               ></span>
               <span class="ind-label">Accidente laboral</span>
             </label>
-            <label class="ind-chip"
-              ><input type="checkbox" formControlName="discapacidad" />
+            <label class="ind-chip">
+              <input type="checkbox" formControlName="discapacidad" />
               <span class="ind-check"
                 ><svg
                   viewBox="0 0 12 12"
@@ -322,8 +322,8 @@
               ></span>
               <span class="ind-label">Discapacidad</span>
             </label>
-            <label class="ind-chip"
-              ><input type="checkbox" formControlName="embarazo" />
+            <label class="ind-chip">
+              <input type="checkbox" formControlName="embarazo" />
               <span class="ind-check"
                 ><svg
                   viewBox="0 0 12 12"
@@ -335,8 +335,8 @@
               ></span>
               <span class="ind-label">Embarazo</span>
             </label>
-            <label class="ind-chip ind-chip-danger"
-              ><input type="checkbox" formControlName="arma_fuego" />
+            <label class="ind-chip ind-chip-danger">
+              <input type="checkbox" formControlName="arma_fuego" />
               <span class="ind-check"
                 ><svg
                   viewBox="0 0 12 12"
@@ -348,8 +348,8 @@
               ></span>
               <span class="ind-label">Arma de fuego</span>
             </label>
-            <label class="ind-chip ind-chip-danger"
-              ><input type="checkbox" formControlName="arma_blanca" />
+            <label class="ind-chip ind-chip-danger">
+              <input type="checkbox" formControlName="arma_blanca" />
               <span class="ind-check"
                 ><svg
                   viewBox="0 0 12 12"
@@ -361,8 +361,8 @@
               ></span>
               <span class="ind-label">Arma blanca</span>
             </label>
-            <label class="ind-chip"
-              ><input type="checkbox" formControlName="ambulancia" />
+            <label class="ind-chip">
+              <input type="checkbox" formControlName="ambulancia" />
               <span class="ind-check"
                 ><svg
                   viewBox="0 0 12 12"
@@ -374,8 +374,8 @@
               ></span>
               <span class="ind-label">Ambulancia</span>
             </label>
-            <label class="ind-chip ind-chip-amber"
-              ><input type="checkbox" formControlName="accidente_transito" />
+            <label class="ind-chip ind-chip-amber">
+              <input type="checkbox" formControlName="accidente_transito" />
               <span class="ind-check"
                 ><svg
                   viewBox="0 0 12 12"
@@ -440,24 +440,13 @@
                     ciclo.comentario
                   }}</span>
                 </div>
-                <!-- Indicador de egreso si el ciclo tiene uno -->
-                <div class="ciclo-egreso-badge" *ngIf="ciclo.egreso">
-                  <span>🏁</span>
-                  {{ ciclo.egreso.condicion_egreso }}
-                  <span *ngIf="ciclo.egreso.referencia" class="ciclo-sep"
-                    >·</span
-                  >
-                  <span *ngIf="ciclo.egreso.referencia">{{
-                    ciclo.egreso.referencia
-                  }}</span>
-                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ══ EGRESO (solo edición) ════════════════════════════ -->
+      <!-- ══ EGRESO — campo raíz de la consulta (no del ciclo) ══ -->
       <div
         class="section-card section-card-egreso"
         *ngIf="enEdicion"
@@ -477,40 +466,33 @@
             </div>
             <span class="sec-title">Egreso</span>
           </div>
-
-          <!-- Toggle -->
-          <label class="egreso-toggle">
-            <input type="checkbox" formControlName="incluir" />
-            <span class="egreso-toggle-track">
-              <span class="egreso-toggle-thumb"></span>
-            </span>
-            <span class="egreso-toggle-lbl">
-              {{
-                egresoForm.get("incluir")?.value
-                  ? "Incluir en ciclo"
-                  : "No incluir"
-              }}
-            </span>
-          </label>
+          <!-- Badge reactivo: activo cuando hay condición -->
+          <span class="sec-badge" [class.sec-badge-active]="tieneEgreso">
+            {{ tieneEgreso ? "SE GUARDARÁ" : "SIN EGRESO" }}
+          </span>
         </div>
 
-        <div
-          class="sec-body egreso-grid"
-          [class.egreso-body-disabled]="!egresoForm.get('incluir')?.value"
-        >
+        <div class="sec-body egreso-grid">
           <!-- Condición -->
           <div class="field">
             <span class="field-label egreso-lbl">Condición de egreso</span>
-            <select
-              class="field-input"
-              formControlName="condicion_egreso"
-              [attr.disabled]="!egresoForm.get('incluir')?.value ? true : null"
-            >
+            <select class="field-input" formControlName="condicion">
               <option value="">— Seleccionar —</option>
               <option *ngFor="let c of condicionesEgreso" [value]="c.value">
                 {{ c.label }}
               </option>
             </select>
+          </div>
+
+          <!-- Médico -->
+          <div class="field">
+            <span class="field-label egreso-lbl">Médico responsable</span>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="medico"
+              placeholder="Nombre del médico"
+            />
           </div>
 
           <!-- Referencia -->
@@ -520,38 +502,56 @@
               class="field-input"
               type="text"
               formControlName="referencia"
-              placeholder="Hospital, servicio o institución destino"
-              [attr.disabled]="!egresoForm.get('incluir')?.value ? true : null"
+              placeholder="Hospital o institución destino"
             />
           </div>
 
-          <!-- Diagnóstico -->
-          <div class="field egreso-full">
-            <span class="field-label egreso-lbl">Diagnóstico de egreso</span>
+          <!-- Fecha/hora de egreso -->
+          <div class="field">
+            <span class="field-label egreso-lbl">Fecha y hora de egreso</span>
+            <input
+              class="field-input"
+              type="datetime-local"
+              formControlName="registro"
+            />
+          </div>
+
+          <!-- Diagnóstico: código + descripción en la misma fila -->
+          <div class="field">
+            <span class="field-label egreso-lbl">Código diagnóstico</span>
             <input
               class="field-input"
               type="text"
-              formControlName="diagnostico"
+              formControlName="codigo"
+              placeholder="CIE-10 (ej: J06.9)"
+            />
+          </div>
+          <div class="field egreso-full">
+            <span class="field-label egreso-lbl">Descripción diagnóstico</span>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="descripcion"
               placeholder="Ej: Hipertensión controlada, fractura consolidada..."
-              [attr.disabled]="!egresoForm.get('incluir')?.value ? true : null"
             />
           </div>
 
-          <!-- Preview -->
-          <div
-            class="egreso-preview egreso-full"
-            *ngIf="
-              egresoForm.get('incluir')?.value &&
-              egresoForm.get('condicion_egreso')?.value
-            "
-          >
-            <span class="egreso-preview-title"
-              >Se registrará en este ciclo:</span
-            >
+          <!-- Preview — visible solo cuando hay condición -->
+          <div class="egreso-preview egreso-full" *ngIf="tieneEgreso">
+            <span class="egreso-preview-title">Se enviará al backend:</span>
             <div class="egreso-preview-row">
-              <span class="egreso-preview-key">condicion_egreso</span>
+              <span class="egreso-preview-key">condicion</span>
               <span class="egreso-preview-val">{{
-                egresoForm.get("condicion_egreso")?.value
+                egresoForm.get("condicion")?.value
+              }}</span>
+            </div>
+            <div
+              class="egreso-preview-row"
+              *ngIf="egresoForm.get('medico')?.value"
+            >
+              <span class="egreso-preview-key">medico</span>
+              <span class="egreso-preview-val">{{
+                egresoForm.get("medico")?.value
               }}</span>
             </div>
             <div
@@ -565,12 +565,26 @@
             </div>
             <div
               class="egreso-preview-row"
-              *ngIf="egresoForm.get('diagnostico')?.value"
+              *ngIf="egresoForm.get('registro')?.value"
             >
-              <span class="egreso-preview-key">diagnostico[0]</span>
+              <span class="egreso-preview-key">registro</span>
               <span class="egreso-preview-val">{{
-                egresoForm.get("diagnostico")?.value
+                egresoForm.get("registro")?.value
               }}</span>
+            </div>
+            <div
+              class="egreso-preview-row"
+              *ngIf="egresoForm.get('descripcion')?.value"
+            >
+              <span class="egreso-preview-key">diagnosticos[0]</span>
+              <span class="egreso-preview-val">
+                {{
+                  egresoForm.get("codigo")?.value
+                    ? egresoForm.get("codigo")?.value + " — "
+                    : ""
+                }}
+                {{ egresoForm.get("descripcion")?.value }}
+              </span>
             </div>
           </div>
         </div>

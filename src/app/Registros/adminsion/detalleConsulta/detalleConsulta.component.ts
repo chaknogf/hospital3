@@ -90,13 +90,7 @@ export class DetalleConsultaComponent implements OnInit, OnDestroy {
     return ciclos[ciclos.length - 1];
   });
 
-  // Busca el ciclo que tenga egreso != null (puede no ser el último)
-  cicloConEgreso = computed(() => {
-    const ciclos = this.consulta()?.ciclo;
-    if (!ciclos?.length) return null;
-    // Recorrer de más reciente a más antiguo
-    return [...ciclos].reverse().find(c => c.egreso != null) ?? null;
-  });
+
 
   // ======= PROPIEDADES =======
   fechaActual: string = new Date().toLocaleDateString('es-GT');

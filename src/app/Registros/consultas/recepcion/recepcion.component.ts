@@ -124,9 +124,10 @@ export class RecepcionComponent implements OnInit {
   formArchivar = {
     condicion: '',
     registro: '',
-    referencia: '',          // referido a / hospital destino
-    diagnostico: '',          // diagnóstico libre (se guarda como Dx)
-    comentario: '',          // observaciones adicionales
+    referencia: '',     // referido a / hospital destino
+    diagnosticos: [{ codigo: '', descripcion: '' }],    // diagnóstico libre (se guarda como Dx)
+    medico: '',         // médico responsable del egreso
+    comentario: '',     // observaciones adicionales
     guardando: false,
     error: ''
   };
@@ -143,8 +144,14 @@ export class RecepcionComponent implements OnInit {
   abrirModalArchivar(consulta: ConsultaOut): void {
     this.consultaArchivando = consulta;
     this.formArchivar = {
-      condicion: '', registro: '', referencia: '', diagnostico: '', comentario: '',
-      guardando: false, error: ''
+      condicion: '',
+      registro: '',
+      referencia: '',
+      diagnosticos: [{ codigo: '', descripcion: '' }],
+      medico: '',
+      comentario: '',
+      guardando: false,
+      error: ''
     };
     this.modalArchivar = true;
     this.modalActivo = true;
@@ -163,22 +170,22 @@ export class RecepcionComponent implements OnInit {
 
     const f = this.formArchivar;
 
-    // Construir Egreso según la interfaz
     const egreso: Egreso = {
       registro: new Date().toISOString(),
-      referencia: f.referencia || '',
-      condicion_egreso: f.condicion || '',
-      diagnostico: [],
+      condicion: f.condicion || '',
+      referencia: f.referencia || undefined,
+      medico: f.medico || undefined,
+      diagnosticos: f.diagnosticos?.length
+        ? [{ codigo: '', descripcion: f.diagnosticos[0].descripcion } as Dx]
+        : [],
     };
 
-    // Ciclo archivo con egreso embebido
     const ciclo: CicloClinico = {
-      estado: 'archivo' as EstadoCiclo,
-      comentario: [f.condicion, f.comentario].filter(Boolean).join(' — ') || undefined,
-      egreso,
+      estado: 'archivo',
+      comentario: f.comentario || undefined
     };
 
-    this.api.updateConsulta(this.consultaArchivando.id, { ciclo })
+    this.api.updateConsulta(this.consultaArchivando.id, { ciclo, egreso })
       .pipe(
         tap(() => {
           this.cerrarModalArchivar();

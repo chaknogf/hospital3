@@ -1,3 +1,4 @@
+
 // app/models/consultas.interface.ts
 
 import { Paciente } from "./interfaces";
@@ -151,14 +152,15 @@ export interface Sistema {
 export interface Dx {
   codigo: string;
   descripcion: string;
-  tipo: string;
 }
 
+
 export interface Egreso {
-  registro: string;
-  referencia: string;
-  diagnostico: Dx[];
-  condicion_egreso: string;
+  registro?: string;
+  condicion: string;
+  referencia?: string;
+  diagnosticos?: Dx[];         // Lista de diagnósticos al egreso
+  medico?: string;
 }
 
 export interface PresaQuirurgica {
@@ -228,6 +230,7 @@ export interface ConsultaBase {
   indicadores?: Indicador;
   ciclo: CicloClinico[];
   orden?: number;
+  egreso?: Egreso;
 }
 
 export interface ConsultaCreate {
@@ -268,8 +271,9 @@ export interface RegistroConsultaResponse {
   fecha_consulta: string;
   hora_consulta: string;
   indicadores: Indicador;
-  ciclo: CicloClinico[];  // ✅ Array con el primer registro
+  ciclo: CicloClinico[];
   orden: number;
+  egreso?: Egreso;
 }
 
 // ✅ Para ACTUALIZAR consultas (todo opcional excepto id)
@@ -282,8 +286,9 @@ export interface ConsultaUpdate {
   fecha_consulta?: string;
   hora_consulta?: string;
   indicadores?: Indicador;
-  ciclo?: CicloClinico;  // ✅ Solo un ciclo para actualizar
+  ciclo?: CicloClinico;
   orden?: number;
+  egreso?: Egreso;
 }
 
 

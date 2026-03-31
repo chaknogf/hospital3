@@ -362,7 +362,7 @@
         <label class="rc-lbl">Fecha y Hora de egreso</label>
         <input
           class="rc-input"
-          type="text"
+          type="datetime-local"
           [(ngModel)]="formArchivar.registro"
           placeholder="Ej: Requiere valoración especializada, No hay camas disponibles..."
         />
@@ -374,7 +374,15 @@
         <input
           class="rc-input"
           type="text"
-          [(ngModel)]="formArchivar.diagnostico"
+          [(ngModel)]="formArchivar.diagnosticos[0].codigo"
+          name="diagnostico"
+          placeholder="Ej: I:10, S72.001A, E78.5..."
+        />
+        <input
+          class="rc-input"
+          type="text"
+          [(ngModel)]="formArchivar.diagnosticos[0].descripcion"
+          name="diagnostico"
           placeholder="Ej: Hipertensión controlada, Fractura consolidada..."
         />
       </div>
@@ -401,9 +409,12 @@
           <span class="rc-preview-key">referencia</span>
           <span class="rc-preview-val">{{ formArchivar.referencia }}</span>
         </div>
-        <div class="rc-preview-row" *ngIf="formArchivar.diagnostico">
-          <span class="rc-preview-key">diagnostico[0]</span>
-          <span class="rc-preview-val">{{ formArchivar.diagnostico }}</span>
+        <div class="rc-preview-row" *ngIf="formArchivar.diagnosticos">
+          <span class="rc-preview-key">diagnostico</span>
+          <span class="rc-preview-val"
+            >{{ formArchivar.diagnosticos[0].codigo }} -
+            {{ formArchivar.diagnosticos[0].descripcion }}</span
+          >
         </div>
       </div>
 

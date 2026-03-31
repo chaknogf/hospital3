@@ -298,36 +298,30 @@
             >
           </div>
 
-          @if (cicloConEgreso()) {
+          @if (consulta()?.egreso?.registro) {
             <div class="dc-field">
               <span class="dc-lbl">Fecha y Hora de Egreso</span>
               <span class="dc-val">{{
-                cicloConEgreso()?.registro | date: "dd/MM/yyyy HH:mm"
+                consulta()?.egreso?.registro | date: "dd/MM/yyyy HH:mm"
               }}</span>
             </div>
           }
-          @if (cicloConEgreso()?.egreso?.condicion_egreso) {
+          @if (consulta()?.egreso?.condicion) {
             <div class="dc-field">
               <span class="dc-lbl">Condición de Egreso</span>
-              <span class="dc-val">{{
-                cicloConEgreso()?.egreso?.condicion_egreso
-              }}</span>
+              <span class="dc-val">{{ consulta()?.egreso?.condicion }}</span>
             </div>
           }
-          @if (cicloConEgreso()?.egreso?.referencia) {
+          @if (consulta()?.egreso?.referencia) {
             <div class="dc-field">
               <span class="dc-lbl">Referido</span>
-              <span class="dc-val">{{
-                cicloConEgreso()?.egreso?.referencia
-              }}</span>
+              <span class="dc-val">{{ consulta()?.egreso?.referencia }}</span>
             </div>
           }
-          @if (cicloConEgreso()?.egreso?.diagnostico) {
+          @if (consulta()?.egreso?.diagnosticos) {
             <div class="dc-field">
               <span class="dc-lbl">Diagnóstico</span>
-              <span class="dc-val">{{
-                cicloConEgreso()?.egreso?.diagnostico
-              }}</span>
+              <span class="dc-val">{{ consulta()?.egreso?.diagnosticos }}</span>
             </div>
           }
         </div>
