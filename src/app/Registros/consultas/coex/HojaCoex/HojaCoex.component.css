@@ -76,28 +76,7 @@ label { letter-spacing: 0.4px; }
   position: relative;
 }
 
-<<<<<<< HEAD
 /* ══ META-CHIPS (fecha/hora de impresión) ═════════════════════ */
-=======
-/* ══ META-CHIPS ═══════════════════════════════════════════════ */
-.meta-chip {
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 6pt; font-weight: 500;
-  color: var(--ink-muted);
-  background: var(--accent-lt);
-  border: 0.5px solid var(--border-lt);
-  border-radius: 3px;
-  padding: 1px 5px;
-  margin-bottom: 3px; margin-right: 4px;
-  letter-spacing: 0.3px;
-}
-.meta-chip-muted {
-  color: #aaa; background: transparent; border-color: #e5e5e5;
-}
-
-/* ══ HEADER ═══════════════════════════════════════════════════ */
->>>>>>> e8b12a75c86617cff5523f06aa733ebba9d3ef53
 .aurora-header {
   display: grid;
   grid-template-columns: 12px 1fr auto; /* auto para que los chips tomen su espacio natural */
@@ -124,17 +103,17 @@ label { letter-spacing: 0.4px; }
 
 .aurora-textos h3 {
   font-family: var(--mono);
-  font-size: 12pt; font-weight: 700;
+  font-size: 11pt; font-weight: 700;
   text-transform: uppercase; letter-spacing: 1.8px;
   color: var(--accent); margin-bottom: 2px;
 }
 .aurora-textos h4 {
   font-family: var(--serif);
-  font-size: 10pt; font-weight: 700; color: var(--ink);
+  font-size: 9pt; font-weight: 700; color: var(--ink);
 }
 .aurora-textos h5 {
   font-family: var(--serif);
-  font-size: 10pt; font-weight: 400; color: var(--ink-muted);
+  font-size: 8pt; font-weight: 400; color: var(--ink-muted);
 }
 
 /* ══ META HC ══════════════════════════════════════════════════ */
@@ -158,22 +137,14 @@ label { letter-spacing: 0.4px; }
 }
 .meta-esp {
   font-family: var(--serif);
-<<<<<<< HEAD
   font-size: 12pt; font-weight: 600;
   color: var(--ink-dim);
-=======
-  font-size: 9pt; font-weight: 600; color: var(--ink-dim);
->>>>>>> e8b12a75c86617cff5523f06aa733ebba9d3ef53
 }
 .meta-right { text-align: right; }
 .meta-exp {
   font-family: var(--mono);
-<<<<<<< HEAD
   font-size: 16pt; font-weight: 700;
   color: var(--accent);
-=======
-  font-size: 8.5pt; font-weight: 700; color: var(--accent);
->>>>>>> e8b12a75c86617cff5523f06aa733ebba9d3ef53
 }
 
 /* ══ SECCIONES ════════════════════════════════════════════════ */
@@ -209,13 +180,8 @@ label { letter-spacing: 0.4px; }
 
 /* ══ CAMPOS — mismo sistema que .borderline del referencia ════ */
 .borderline {
-<<<<<<< HEAD
   border: 0.8px solid #c0c0c0;
   border-radius: 6px;
-=======
-  border: 0.8px solid #c0c0c056;
-  border-radius: 8px;
->>>>>>> e8b12a75c86617cff5523f06aa733ebba9d3ef53
   padding: 2px 5px 3px;
   min-height: 34px;
   overflow-wrap: anywhere; word-break: break-word;
@@ -228,7 +194,7 @@ label { letter-spacing: 0.4px; }
 }
 .campo-hc > label {
   font-family: var(--mono);
-  font-size: 5.8pt; font-weight: 700;
+  font-size: 12.8pt; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.5px;
   color: var(--accent);
   display: block; margin-bottom: 1px;
@@ -240,7 +206,7 @@ label { letter-spacing: 0.4px; }
 label {
   display: block;
   font-family: var(--mono);
-  font-size: 5.8pt; font-weight: 500;
+  font-size: 8.8pt; font-weight: 500;
   text-transform: uppercase; letter-spacing: 0.4px;
   color: var(--ink-muted);
   margin-bottom: 1px; line-height: 1.2;
@@ -264,12 +230,8 @@ label {
 .line {
   display: block;
   border: none;
-  border-bottom: 0.8px solid #888;
-<<<<<<< HEAD
+  border-bottom: 1.8px solid #888;
   min-height: 40px;
-=======
-  min-height: 24px;
->>>>>>> e8b12a75c86617cff5523f06aa733ebba9d3ef53
   margin-bottom: 3px; width: 100%;
 }
 
@@ -281,11 +243,7 @@ label {
 }
 
 .vital-item {
-<<<<<<< HEAD
   border: 0.8px solid #c0c0c0;
-=======
-  border: 0.8px solid #c0c0c067;
->>>>>>> e8b12a75c86617cff5523f06aa733ebba9d3ef53
   border-radius: 6px;
   padding: 2px 5px;
   display: flex; flex-direction: column;
@@ -294,7 +252,7 @@ label {
 /* label dentro de vitales — usa color accent como referencia */
 .vital-item label {
   font-family: var(--mono);
-  font-size: 5.5pt; font-weight: 700;
+  font-size: 8.5pt; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.5px;
   color: var(--accent);
   margin-bottom: 1px; line-height: 1;
@@ -316,8 +274,8 @@ label {
   border-top: 0.8px solid #444;
   padding-top: 2px; text-align: center;
   font-family: var(--mono) !important;
-  font-size: 6.5pt !important; font-weight: 400 !important;
-  color: #666 !important; text-transform: uppercase;
+  font-size: 8.5pt !important; font-weight: 400 !important;
+  color: #0c0000 !important; text-transform: uppercase;
   letter-spacing: 0.3px !important; margin: 0 !important;
 }
 
@@ -355,89 +313,5 @@ label {
     font-size: 12pt !important;
   }
 
-<<<<<<< HEAD
 
 }
-=======
-  /* Meta chips */
-  .meta-chip {
-    font-size: 5.5pt !important;
-    padding: 0 3px !important; margin-bottom: 2px !important;
-  }
-
-  /* Header */
-  .aurora-header { padding-bottom: 4px !important; margin-bottom: 2px !important; }
-  .aurora-textos h3 {
-    font-size: 10pt !important; color: black !important;
-    letter-spacing: 1.2px !important;
-  }
-  .aurora-textos h4 { font-size: 7pt !important; }
-  .aurora-textos h5 { font-size: 6.5pt !important; }
-
-  /* Meta HC */
-  .doc-meta-hc { padding: 2px 3px !important; margin-bottom: 2px !important; }
-  .meta-num    { font-size: 15pt !important; color: black !important; }
-  .meta-esp    { font-size: 8pt !important; }
-  .meta-exp    { font-size: 7.5pt !important; color: black !important; }
-
-  /* Secciones — mismo tratamiento que referencia en print */
-  .doc-section {
-    padding: 2px 5px !important;
-    margin: 1.5px 0 !important;
-    border-color: #999 !important;
-  }
-  .doc-section h6 {
-    font-size: 5.5pt !important;
-    color: black !important;
-    padding-bottom: 1px !important;
-    margin-bottom: 3px !important;
-  }
-
-  /* Campos */
-  .borderline {
-    padding: 1px 4px 2px !important;
-    min-height: 20px !important;
-    border-color: #bbb !important;
-  }
-
-  /* Labels — mismo que referencia */
-  label {
-    font-size: 4.8pt !important;
-    margin-bottom: 0 !important;
-    line-height: 1.1 !important;
-    color: #666 !important;
-  }
-
-  .borderline p { font-size: 8pt !important; line-height: 1.2 !important; }
-  .nombres-fila { font-size: 9pt !important; }
-
-  /* Líneas */
-  .line { min-height: 13px !important; margin-bottom: 2px !important; }
-
-  /* Campo HC — borde accent → negro en print */
-  .campo-hc { margin-bottom: 3px !important; }
-  .campo-hc > label {
-    font-size: 5.5pt !important;
-    padding-left: 3px !important;
-    margin-bottom: 0 !important;
-    color: black !important;
-    border-left-color: black !important;
-  }
-
-  /* Vitales */
-  .vitales-grid { gap: 3px !important; }
-  .vital-item { padding: 1px 4px !important; border-color: #bbb !important; }
-  .vital-item label { font-size: 5pt !important; color: #555 !important; }
-  .vital-val { font-size: 7.5pt !important; }
-  .sec-hora  { font-size: 5.5pt !important; }
-
-  /* Firma */
-  .firma-row { gap: 10px !important; margin-top: 8px !important; }
-  .firma-row p { font-size: 5.8pt !important; }
-
-  /* Sin cortes */
-  .doc-section  { break-inside: avoid; page-break-inside: avoid; }
-  .vitales-grid { break-inside: avoid; }
-  .firma-row    { break-inside: avoid; }
-}
->>>>>>> e8b12a75c86617cff5523f06aa733ebba9d3ef53
