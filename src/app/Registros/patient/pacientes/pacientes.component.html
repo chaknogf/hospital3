@@ -19,25 +19,46 @@
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
-    <form class="" (submit)="buscar(); $event.preventDefault()">
-      <!-- Campos -->
-      <fieldset>
+    <form class="" (ngSubmit)="buscar()">
+      <!-- 🔥 principal -->
+      <fieldset class="full">
         <label>Identificador</label>
         <input
+          class="input-principal"
           type="text"
-          [(ngModel)]="filtros.identificador"
+          [(ngModel)]="filtros.q"
           name="identificador"
-          placeholder="CUI, Expediente, Pasaporte"
+          placeholder="🔍 CUI, expediente, ID o nombre del paciente..."
+          autocomplete="off"
         />
       </fieldset>
 
       <fieldset>
-        <label>Nombre completo</label>
+        <label>Expediente</label>
         <input
           type="text"
-          [(ngModel)]="filtros.nombre_completo"
-          name="nombreCompleto"
-          placeholder="Buscar por nombre completo"
+          [(ngModel)]="filtros.expediente"
+          name="expediente"
+          placeholder="Ej: HGT-000123"
+        />
+      </fieldset>
+
+      <fieldset>
+        <label>Id</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.id"
+          name="ID"
+          placeholder="Ej: 4521"
+        />
+      </fieldset>
+
+      <fieldset>
+        <label>Fecha de nacimiento</label>
+        <input
+          type="date"
+          [(ngModel)]="filtros.fecha_nac"
+          name="fechaNacimiento"
         />
       </fieldset>
 
@@ -47,17 +68,17 @@
           type="text"
           [(ngModel)]="filtros.primer_nombre"
           name="primerNombre"
-          placeholder="1er nombre"
+          placeholder="Ej: Juan"
         />
       </fieldset>
 
       <fieldset>
-        <label>Primer nombre</label>
+        <label>Segundo nombre</label>
         <input
           type="text"
           [(ngModel)]="filtros.segundo_nombre"
           name="segundoNombre"
-          placeholder="2do nombre"
+          placeholder="Ej: Carlos"
         />
       </fieldset>
 
@@ -67,40 +88,45 @@
           type="text"
           [(ngModel)]="filtros.primer_apellido"
           name="primerApellido"
-          placeholder="1er apellido"
+          placeholder="Ej: Pérez"
         />
       </fieldset>
 
       <fieldset>
-        <label>Primer nombre</label>
+        <label>Segundo apellido</label>
         <input
           type="text"
           [(ngModel)]="filtros.segundo_apellido"
           name="segundoApellido"
-          placeholder="2do apellido"
+          placeholder="Ej: López"
         />
       </fieldset>
 
-      <fieldset>
-        <label>Fecha de nacimiento</label>
+      <fieldset class="full">
+        <label>Nombre completo</label>
         <input
-          type="date"
-          [(ngModel)]="filtros.fecha_nacimiento"
-          name="fechaNacimiento"
+          type="text"
+          [(ngModel)]="filtros.nombre"
+          name="nombreCompleto"
+          placeholder="Ej: Juan Carlos Pérez López"
         />
       </fieldset>
 
-      <!-- Botones -->
+      <!-- botones -->
       <div class="botones">
         <button type="button" (click)="agregar()">
-          <span [innerHTML]="icons['addPerson']"></span> Agregar Persona
+          <span [innerHTML]="icons['addPerson']"></span>
+          Nuevo
         </button>
 
-        <button type="submit" (click)="buscar()">
-          <span [innerHTML]="icons['search']"></span> Buscar
+        <button type="submit">
+          <span [innerHTML]="icons['search']"></span>
+          Buscar
         </button>
+
         <button type="button" (click)="limpiarFiltros()">
-          <span [innerHTML]="icons['delete']"></span> Limpiar
+          <span [innerHTML]="icons['delete']"></span>
+          Limpiar
         </button>
       </div>
     </form>

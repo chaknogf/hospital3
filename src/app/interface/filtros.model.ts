@@ -3,6 +3,8 @@ export interface PacienteFiltros {
   q?: any;
   id?: string;
   cui?: string;
+  expediente?: string;
+  nombre?: string;
   identificador?: string;
   primer_nombre?: string;
   segundo_nombre?: string;
@@ -10,7 +12,7 @@ export interface PacienteFiltros {
   segundo_apellido?: string;
   nombre_completo?: string;
   sexo?: string;
-  fecha_nacimiento?: string;
+  fecha_nac?: string;
   referencias?: string;
   estado?: string;
   skip?: number;

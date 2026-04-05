@@ -1,3 +1,4 @@
+import { Console } from 'console';
 // pacientes.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ViewChild, ElementRef } from '@angular/core';
@@ -50,14 +51,16 @@ export class PacientesComponent implements OnInit {
     skip: 0,
     limit: this.pageSize,
     q: '',
+    id: '',
+    cui: '',
+    expediente: '',
+    nombre: '',
     primer_nombre: '',
     segundo_nombre: '',
     primer_apellido: '',
     segundo_apellido: '',
-    nombre_completo: '',
     sexo: '',
-    fecha_nacimiento: '',
-    referencias: '',
+    fecha_nac: '',
     estado: ''
   };
 
@@ -118,11 +121,14 @@ export class PacientesComponent implements OnInit {
     this.cargando = true;
 
     this.api.getPacientes(this.filtros).subscribe({
+
       next: resultado => {
+        // console.log('Cargando pacientes con filtros:', this.filtros);
         // El backend devuelve { total, pacientes[] }
         this.totalDeRegistros = resultado.total;
         // pacientes se actualiza via BehaviorSubject en api.service
         // pero por si acaso también lo asignamos directo:
+
         this.pacientes = resultado.pacientes;
 
         // Ajustar página si el backend devolvió menos de lo esperado
@@ -168,15 +174,16 @@ export class PacientesComponent implements OnInit {
     this.filtros.skip = 0;
     this.filtros.limit = this.pageSize;
     this.cargarPacientes();
+    // console.log('Filtros aplicados:', this.filtros);
   }
 
   limpiarFiltros(): void {
     this.filtros = {
       skip: 0, limit: this.pageSize,
-      q: '', primer_nombre: '', segundo_nombre: '',
-      primer_apellido: '', segundo_apellido: '',
-      nombre_completo: '', sexo: '',
-      fecha_nacimiento: '', referencias: '', estado: ''
+      q: '',
+      id: '', cui: '', expediente: '', nombre: '',
+      sexo: '',
+      fecha_nac: '', referencias: '', estado: ''
     };
     this.paginaActual = 1;
     this.cargarPacientes();

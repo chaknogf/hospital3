@@ -5,10 +5,11 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse } from '../interface/interfaces';
+import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHistorial, ConstanciaNacimientoUpdate } from '../interface/consNac';
 import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, SignosVitales, TotalesItem, TotalesResponse } from '../interface/consultas';
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
 import { FiltroConsulta } from '../interface/filtros.model';
-import { Console } from 'console';
+
 interface PaginationState {
   filtro: any;
 }
@@ -32,6 +33,10 @@ export class ApiService {
 
   private ordenesSubject = new BehaviorSubject<any>({});
   ordenes$ = this.ordenesSubject.asObservable();
+
+  private constanciasNacSubject = new BehaviorSubject<ConstanciaNacimientoOut[]>([]);
+  constanciasNac$ = this.constanciasNacSubject.asObservable();
+
 
   // ======= ESTADO DE PAGINACIÓN =======
   private ultimoFiltroPaciente: PaginationState = { filtro: { skip: 0, limit: 8 } };
@@ -193,10 +198,17 @@ export class ApiService {
 
   // ======= PACIENTES =======
   getPacientes(filtros: any): Observable<PacienteListResponse> {
+
     this.ultimoFiltroPaciente.filtro = filtros;
+
     const params = this.limpiarParametros(filtros);
 
-    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/`, { params }).pipe(
+    // console.log('📡 Enviando params:', params.toString());
+
+    return this.http.get<PacienteListResponse>(
+      `${this.baseUrl}/pacientes/`,
+      { params }
+    ).pipe(
       tap(response => this.pacientesSubject.next(response.pacientes)),
       catchError(error => this.manejarError(error, 'obtener pacientes'))
     );
@@ -577,4 +589,51 @@ export class ApiService {
       map(response => response.totales)
     );
   }
+
+  // ====== CONSTANCIAS NACIMIENTO =======
+  // /constancias-nacimiento/
+
+  getConstanciasNacimiento(filtros: FiltroConsulta): Observable<ConstanciaNacimientoOut[]> {
+    this.ultimoFiltroConsulta.filtro = filtros;
+    const params = this.limpiarParametros(filtros);
+    // console.log(params);
+
+    return this.http.get<ConstanciaNacimientoOut[]>(`${this.baseUrl}/constancias-nacimiento/`, { params }).pipe(
+      tap(response => {
+        // Convertir a ConsultaResponse si necesitas agregar datos del paciente
+        this.consultasSubject.next(response as any);
+      }),
+      catchError(error => this.manejarError(error, 'obtener consultas'))
+    );
+  }
+
+  getConstanciaNacimientoHistoria(consultaId: number): Observable<ConstanciaNacHistorial[]> {
+    return this.http.get<ConstanciaNacHistorial[]>(`${this.baseUrl}/constancias-nacimiento/${consultaId}/historial`).pipe(
+      catchError(error => this.manejarError(error, 'obtener historial de constancia de nacimiento'))
+    );
+  }
+
+
+  createConstanciaNacimiento(constancia: ConstanciaNacimientoCreate): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.post<any>(`${this.baseUrl}/constancias-nacimiento`, constancia).pipe(
+      catchError(error => this.manejarError(error, 'crear constancia de nacimiento')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  updateConstanciaNacimiento(constanciaId: number, datos: ConstanciaNacimientoUpdate): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.patch<ConstanciaNacimientoUpdate>(
+      `${this.baseUrl}/constancias-nacimiento/${constanciaId}`,
+      datos
+    ).pipe(
+      tap(() => this.refrescarConsultas()),
+      catchError(error => this.manejarError(error, 'actualizar constancia')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+
+
 }
