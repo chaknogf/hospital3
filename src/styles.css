@@ -2111,7 +2111,7 @@ background-color: #6bf3e121;
 .botones button {
   padding: 0.4rem;
   border: none;
-  border-radius: 20px;
+  border-radius: 14px;
   background: rgba(76, 202, 240, 0.15);
   color: white !important;
   font-weight: bold;
@@ -2516,127 +2516,7 @@ background-color: #6bf3e121;
 
 }
 
-.find-form {
-  margin: 0.6rem;
-  padding: 0.8rem 1rem 0rem 1rem;
-  background: #05d8e37a;
-  font-family: 'Segoe UI', sans-serif;
-  color: var(--white);
-  border-radius: 30px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  gap: 0.5rem; /* más espacio entre campos */
-  justify-content: space-between;
-}
 
-.find-form form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  justify-content: space-between;
-  padding: 0.2rem;
-}
-
-.find-form:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 168, 232, 0.35);
-}
-
-.find-form fieldset {
-  border: none;
-  padding: 0;
-  margin: 0;
-  flex: 1 1 clamp(220px, 30%, 320px); /* tamaño más ancho que en formulario-moderno */
-  display: flex;
-  flex-direction: column;
-}
-
-.find-form label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #c3e5f7;
-  margin-bottom: 0.4rem;
-  text-transform: capitalize;
-  letter-spacing: 1px;
-  text-align: left; /* a diferencia del otro estilo, ahora alineado a la izquierda */
-}
-
-.find-form input,
-.find-form select {
-  padding: 0.6rem 0.8rem;
-  border: none;
-  border-radius: 12px;
-  font-size: 1rem;
-  background: rgba(3, 39, 93, 0.61);
-  color: #fff;
-  transition: all 0.3s ease;
-  width: 95%; /* menos ajustado */
-  align-self: center; /* mantiene separación estética */
-}
-
-.find-form input:focus,
-.find-form select:focus {
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 8px #4ccaf0;
-  outline: none;
-}
-
-.find-form input::-moz-placeholder {
-  color: #74f549d7;
-}
-
-.find-form input::placeholder {
-  color: #74f549d7;
-}
-
-.find-form .botones {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 0.9rem;
-  flex: 1 1 100%; /* siempre ocupa el ancho completo abajo */
-}
-
-.find-form .botones button {
-  padding: 0.4rem;
-box-shadow: 0 1px 8px rgba(5, 75, 75, 0.512);
-  border-radius: 14px;
-  background: rgba(76, 202, 240, 0.15);
-  color: white;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.find-form .botones button:hover {
-  background: rgba(0, 255, 255, 0.75);
-  color: #000;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 255, 255, 0.4);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .find-form {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  .find-form fieldset {
-    flex: 1 1 100%;
-  }
-  .find-form input {
-    width: 100%;
-  }
-}
-
-.btn:disabled {
-  border: none;;
-}
 
 /* =========================
    Aurora Login Styles
@@ -2969,5 +2849,301 @@ box-shadow: 0 1px 8px rgba(5, 75, 75, 0.512);
   .print-page * {
     max-width: unset !important;
     overflow: visible !important;
+  }
+}
+
+/* ══ FILTROS COSMOS — rediseño ═══════════════════════════════ */
+
+.find-form { overflow: hidden; }
+.find-form.d-none { display: none !important; }
+
+/* Panel */
+.form-filtros {
+  background: #01030afa;
+  border: 1px solid #1e2d45;
+  border-radius: 16px;
+  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Header */
+.ff-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-bottom: 1px solid #1a2840;
+  background: #0d1526;
+}
+.ff-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ff-header-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+}
+.ff-header-title {
+  font-size: 11px; font-weight: 600;
+  color: #7aa3c8; letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+/* Grid */
+.form-filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 16px 18px 12px;
+}
+.fieldset-filtros       { display: flex; flex-direction: column; gap: 4px; border: none; padding: 0; margin: 0; }
+.fieldset-filtros.span2 { grid-column: span 2; }
+.fieldset-filtros.full  { grid-column: 1 / -1; }
+
+/* Labels */
+.label-filtros {
+  font-size: 14px; font-weight: 600;
+  letter-spacing: 1.2px; text-transform: capitalize;
+  color: #fcfcfc; padding-left: 1px;
+}
+
+/* Inputs */
+.input-filtros {
+  height: 26px; padding: 0 11px;
+  background: #060e1c;
+  border: 1px solid #1a2d44;
+  border-radius: 8px;
+  color: #cfe4f7; font-size: 12px;
+  font-family: inherit; outline: none; width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none; appearance: none;
+  text-transform: uppercase;
+}
+.input-filtros:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56,189,248,0.12);
+}
+.input-filtros::placeholder { color: #7eed5f; letter-spacing: 1.3px; }
+.input-filtros[type="date"]  { color-scheme: dark; }
+
+select.input-filtros {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%233d6080' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 26px; cursor: pointer;
+}
+select.input-filtros option { background: #0b1120; color: #cfe4f7; }
+
+/* Footer */
+.botones-filtros {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px 14px;
+  border-top: 1px solid #111d2e;
+  gap: 8px; flex-wrap: wrap;
+}
+.ff-hint { font-size: 11px; color: #2a4a65; }
+.botones-filtros-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Botones */
+.button-filtros {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 16px; border-radius: 8px;
+  background-color: #0f172a;
+  font-size: 12px; font-weight: 500;
+  cursor: pointer; border: 1px solid transparent;
+  font-family: inherit; transition: all 0.15s;
+  letter-spacing: 0.3px; line-height: 1; white-space: nowrap;
+}
+.button-filtros svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+.button-filtros-primary  { background: #0ea5e9; color: #fff; border-color: #0ea5e9; }
+.button-filtros-primary:hover  { background: #0284c7; border-color: #0284c7; }
+
+.button-filtros-ghost  { background: transparent; color: #4a7a9b; border-color: #1a3050; }
+.button-filtros-ghost:hover  { background: #0d1d30; color: #7aa3c8; border-color: #2a4a6a; }
+
+.button-filtros-secondary { background: #0d2040; color: #38bdf8; border-color: #1a3a5c; }
+.button-filtros-secondary:hover { background: #122840; border-color: #38bdf8; }
+
+/* Collapse */
+.filtros-collapse-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; padding: 6px 0 10px;
+  background: transparent; border: none;
+  cursor: pointer; color: #1e3a55; transition: color 0.15s;
+}
+.filtros-collapse-btn:hover { color: #38bdf8; }
+.filtros-collapse-btn svg { width: 18px; height: 18px; }
+
+/* Responsive */
+@media (max-width: 700px) {
+  .form-filtros-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fieldset-filtros.span2 { grid-column: span 1; }
+  .fieldset-filtros.full  { grid-column: span 2; }
+}
+@media (max-width: 420px) {
+  .form-filtros-grid { grid-template-columns: minmax(0, 1fr); }
+  .fieldset-filtros.span2,
+  .fieldset-filtros.full { grid-column: span 1; }
+  .botones-filtros { flex-direction: column; align-items: stretch; }
+  .botones-filtros-actions { flex-direction: column; }
+  .button-filtros { justify-content: center; }
+}
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT FLEX (reemplazo total de grid)
+   ═══════════════════════════════════════════════════════════════ */
+
+.form-filtros-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 10px;
+  padding: 16px 18px 12px;
+}
+
+/* cada campo se comporta como bloque flexible */
+.fieldset-filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  flex: 1 1 180px; /* base adaptable */
+  min-width: 160px;
+  max-width: 240px;
+}
+
+/* ocupar más espacio */
+.fieldset-filtros.span2 {
+  flex: 2 1 360px;
+  max-width: 100%;
+}
+
+/* ocupar todo el ancho */
+.fieldset-filtros.full {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INPUTS MEJOR AJUSTADOS
+   ═══════════════════════════════════════════════════════════════ */
+
+
+/* destacar input principal */
+.input-principal {
+  height: 42px;
+  font-size: 13px;
+  border-color: #2a4a6a;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOTONES MÁS INTELIGENTES
+   ═══════════════════════════════════════════════════════════════ */
+
+.botones-filtros {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px 14px;
+  border-top: 1px solid #111d2e;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.botones-filtros-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* botones adaptables */
+.button-filtros {
+  flex: 0 1 auto;
+  min-width: 110px;
+  justify-content: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TABLET
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+
+  .form-filtros-grid {
+    justify-content: space-between;
+  }
+
+  .fieldset-filtros {
+    flex: 1 1 45%;
+    max-width: 48%;
+  }
+
+  .fieldset-filtros.full {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MÓVIL
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 600px) {
+
+  .form-filtros {
+    border-radius: 0;
+  }
+
+  .form-filtros-grid {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .fieldset-filtros {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .botones-filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .botones-filtros-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .button-filtros {
+    width: 100%;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MÓVIL PEQUEÑO
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 400px) {
+
+  .input-filtros {
+    font-size: 11px;
+    height: 34px;
+  }
+
+  .input-principal {
+    font-size: 12px;
+    height: 38px;
+  }
+
+  .label-filtros {
+    font-size: 9px;
+    letter-spacing: 0.8px;
   }
 }

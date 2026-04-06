@@ -2,3 +2,12 @@
   background: rgba(1, 12, 30, 0.76);
 }
 
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 14px;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}

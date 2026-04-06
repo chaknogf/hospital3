@@ -257,6 +257,18 @@ export class ApiService {
     );
   }
 
+  hijode(pacienteId: number, paciente: any): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.post<any>(
+      `${this.baseUrl}/pacientes/madre-hijo/${pacienteId}`,
+      paciente
+    ).pipe(
+      tap(() => this.refrescarPacientes()),
+      catchError(error => this.manejarError(error, 'error al crear hijo de paciente')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
   deletePaciente(pacienteId: number): Observable<any> {
     this.isLoading.set(true);
     return this.http.delete<any>(`${this.baseUrl}/paciente/eliminar/${pacienteId}`).pipe(

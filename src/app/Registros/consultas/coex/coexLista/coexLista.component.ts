@@ -73,7 +73,7 @@ export class CoexListaComponent implements OnInit {
     ciclo: '',
     especialidad: '',
     servicio: '',
-    identificador: '',
+    expediente: '',
   };
 
   // iconos (ahora inyectados por servicio)
@@ -238,7 +238,7 @@ export class CoexListaComponent implements OnInit {
       ciclo: '',
       especialidad: '',
       servicio: '',
-      identificador: ''
+      expediente: ''
     };
     this.paginaActual = 1;
     this.especialidadSeleccionada = '';

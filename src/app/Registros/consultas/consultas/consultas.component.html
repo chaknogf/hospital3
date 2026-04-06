@@ -19,85 +19,98 @@
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
-    <form class="" (submit)="buscar(); $event.preventDefault()">
+    <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
       <!-- Campos -->
-      <fieldset>
-        <label>Identificador</label>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Expediente</label>
         <input
           type="text"
-          [(ngModel)]="filtros.identificador"
-          name="identificador"
-          placeholder="Buscar por identificador"
+          class="input-filtros"
+          [(ngModel)]="filtros.expediente"
+          name="expediente"
+          placeholder="E26-003"
         />
       </fieldset>
 
-      <fieldset>
-        <label>Primer nombre</label>
-        <input
-          type="text"
-          [(ngModel)]="filtros.primer_nombre"
-          name="primerNombre"
-          placeholder="Buscar por nombre"
-        />
-      </fieldset>
+      <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Primer nombre</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.primer_nombre"
+            name="primerNombre"
+            placeholder="Ej: Juan"
+          />
+        </fieldset>
 
-      <fieldset>
-        <label>Segundo nombre</label>
-        <input
-          type="text"
-          [(ngModel)]="filtros.segundo_nombre"
-          name="segundoNombre"
-          placeholder="Buscar por nombre"
-        />
-      </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Segundo nombre</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.segundo_nombre"
+            name="segundoNombre"
+            placeholder="Ej: María"
+          />
+        </fieldset>
 
-      <fieldset>
-        <label>Primer apellido</label>
-        <input
-          type="text"
-          [(ngModel)]="filtros.primer_apellido"
-          name="primerApellido"
-          placeholder="Buscar por apellido"
-        />
-      </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Primer apellido</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.primer_apellido"
+            name="primerApellido"
+            placeholder="Ej: García"
+          />
+        </fieldset>
 
-      <fieldset>
-        <label>Segundo apellido</label>
-        <input
-          type="text"
-          [(ngModel)]="filtros.segundo_apellido"
-          name="segundoApellido"
-          placeholder="Buscar por apellido"
-        />
-      </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Segundo apellido</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.segundo_apellido"
+            name="segundoApellido"
+            placeholder="Ej: Pérez"
+          />
+        </fieldset>
+      </div>
 
-      <fieldset>
-        <label>Fecha de consulta</label>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Fecha de consulta</label>
         <input
           type="date"
+          class="input-filtros"
           [(ngModel)]="filtros.fecha_consulta"
           name="fechaConsulta"
         />
       </fieldset>
 
-      <fieldset>
-        <label for="">ciclo</label>
-        <select name="ciclo" [(ngModel)]="filtros.ciclo" id="cilo">
+      <!-- <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Ciclo</label>
+        <select
+          name="ciclo"
+          [(ngModel)]="filtros.ciclo"
+          id="cilo"
+          class="input-filtros"
+        >
           <option *ngFor="let ciclo of ciclos" [value]="ciclo.value">
             {{ ciclo.label }}
           </option>
         </select>
-      </fieldset>
+      </fieldset> -->
 
       <!-- Botones -->
-      <div class="botones">
-        <button type="submit">
+      <div class="botones-filtros">
+        <button class="button-filtros" type="submit">
           <span [innerHTML]="icons['search']"></span> Buscar
         </button>
-        <button type="button" (click)="limpiarFiltros()">
+        <button class="button-filtros" type="button" (click)="limpiarFiltros()">
           <span [innerHTML]="icons['delete']"></span> Limpiar
         </button>
-        <button type="button" (click)="agregar()">
+        <button class="button-filtros" type="button" (click)="agregar()">
           <span [innerHTML]="icons['create']"></span> Agregar
         </button>
       </div>

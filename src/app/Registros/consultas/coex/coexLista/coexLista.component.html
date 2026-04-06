@@ -19,83 +19,88 @@
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
-    <form class="" (submit)="buscar(); $event.preventDefault()">
+    <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
       <!-- Campos -->
-      <fieldset>
-        <label>Identificador</label>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Expediente</label>
         <input
           type="text"
-          [(ngModel)]="filtros.identificador"
-          name="identificador"
-          placeholder="Buscar por identificador"
+          class="input-filtros"
+          [(ngModel)]="filtros.expediente"
+          name="expediente"
+          placeholder="Buscar por expediente"
         />
       </fieldset>
 
-      <fieldset>
-        <label>Primer paciente.nombre</label>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Primer nombre</label>
         <input
           type="text"
+          class="input-filtros"
           [(ngModel)]="filtros.primer_nombre"
           name="primerNombre"
           placeholder="Buscar por paciente.nombre"
         />
       </fieldset>
 
-      <fieldset>
-        <label>Segundo paciente.nombre</label>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Segundo nombre</label>
         <input
           type="text"
+          class="input-filtros"
           [(ngModel)]="filtros.segundo_nombre"
           name="segundoNombre"
           placeholder="Buscar por paciente.nombre"
         />
       </fieldset>
 
-      <fieldset>
-        <label>Primer apellido</label>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Primer apellido</label>
         <input
           type="text"
+          class="input-filtros"
           [(ngModel)]="filtros.primer_apellido"
           name="primerApellido"
           placeholder="Buscar por apellido"
         />
       </fieldset>
 
-      <fieldset>
-        <label>Segundo apellido</label>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Segundo apellido</label>
         <input
           type="text"
+          class="input-filtros"
           [(ngModel)]="filtros.segundo_apellido"
           name="segundoApellido"
           placeholder="Buscar por apellido"
         />
       </fieldset>
 
-      <fieldset>
-        <label>Fecha de consulta</label>
-        <input type="date" [(ngModel)]="filtros.fecha" name="fechaConsulta" />
-      </fieldset>
-
-      <fieldset>
-        <label for="">ciclo</label>
-        <select name="ciclo" [(ngModel)]="filtros.ciclo" id="cilo">
-          <option *ngFor="let ciclo of ciclos" [value]="ciclo.value">
-            {{ ciclo.label }}
-          </option>
-        </select>
-        <h3>Fecha de busqueda: {{ filtros.fecha }}</h3>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Fecha de consulta</label>
+        <input
+          type="date"
+          class="input-filtros"
+          [(ngModel)]="filtros.fecha"
+          name="fechaConsulta"
+        />
       </fieldset>
 
       <!-- Botones -->
-      <div class="botones">
-        <button type="submit">
-          <span [innerHTML]="icons['search']"></span> Buscar
+      <div class="botones-filtros">
+        <button class="button-filtros" type="button" (click)="agregar()">
+          <span [innerHTML]="icons['addPerson']"></span>
+          Nuevo
         </button>
-        <button type="button" (click)="limpiarFiltros()">
-          <span [innerHTML]="icons['delete']"></span> Limpiar
+
+        <button type="submit" class="button-filtros">
+          <span [innerHTML]="icons['search']"></span>
+          Buscar
         </button>
-        <button type="button" (click)="agregar()">
-          <span [innerHTML]="icons['create']"></span> Agregar
+
+        <button type="button" (click)="limpiarFiltros()" class="button-filtros">
+          <span [innerHTML]="icons['delete']"></span>
+          Limpiar
         </button>
       </div>
     </form>

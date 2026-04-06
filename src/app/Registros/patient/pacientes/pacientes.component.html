@@ -19,12 +19,12 @@
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
-    <form class="" (ngSubmit)="buscar()">
+    <form class="form-filtros" (ngSubmit)="buscar()">
       <!-- 🔥 principal -->
-      <fieldset class="full">
-        <label>Identificador</label>
+      <fieldset class="fieldset-filtros full">
+        <label class="label-filtros">Identificador</label>
         <input
-          class="input-principal"
+          class="input-principal input-filtros"
           type="text"
           [(ngModel)]="filtros.q"
           name="identificador"
@@ -33,79 +33,89 @@
         />
       </fieldset>
 
-      <fieldset>
-        <label>Expediente</label>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Expediente</label>
         <input
           type="text"
+          class="input-filtros"
           [(ngModel)]="filtros.expediente"
           name="expediente"
           placeholder="Ej: HGT-000123"
         />
       </fieldset>
 
-      <fieldset>
-        <label>Id</label>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Id</label>
         <input
           type="text"
+          class="input-filtros"
           [(ngModel)]="filtros.id"
           name="ID"
           placeholder="Ej: 4521"
         />
       </fieldset>
 
-      <fieldset>
-        <label>Fecha de nacimiento</label>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Fecha de nacimiento</label>
         <input
           type="date"
+          class="input-filtros"
           [(ngModel)]="filtros.fecha_nac"
           name="fechaNacimiento"
         />
       </fieldset>
 
-      <fieldset>
-        <label>Primer nombre</label>
-        <input
-          type="text"
-          [(ngModel)]="filtros.primer_nombre"
-          name="primerNombre"
-          placeholder="Ej: Juan"
-        />
-      </fieldset>
+      <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Primer nombre</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.primer_nombre"
+            name="primerNombre"
+            placeholder="Ej: Juan"
+          />
+        </fieldset>
 
-      <fieldset>
-        <label>Segundo nombre</label>
-        <input
-          type="text"
-          [(ngModel)]="filtros.segundo_nombre"
-          name="segundoNombre"
-          placeholder="Ej: Carlos"
-        />
-      </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Segundo nombre</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.segundo_nombre"
+            name="segundoNombre"
+            placeholder="Ej: Carlos"
+          />
+        </fieldset>
 
-      <fieldset>
-        <label>Primer apellido</label>
-        <input
-          type="text"
-          [(ngModel)]="filtros.primer_apellido"
-          name="primerApellido"
-          placeholder="Ej: Pérez"
-        />
-      </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Primer apellido</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.primer_apellido"
+            name="primerApellido"
+            placeholder="Ej: Pérez"
+          />
+        </fieldset>
 
-      <fieldset>
-        <label>Segundo apellido</label>
-        <input
-          type="text"
-          [(ngModel)]="filtros.segundo_apellido"
-          name="segundoApellido"
-          placeholder="Ej: López"
-        />
-      </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Segundo apellido</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.segundo_apellido"
+            name="segundoApellido"
+            placeholder="Ej: López"
+          />
+        </fieldset>
+      </div>
 
       <fieldset class="full">
-        <label>Nombre completo</label>
+        <label class="label-filtros">Nombre completo</label>
         <input
           type="text"
+          class="input-filtros"
           [(ngModel)]="filtros.nombre"
           name="nombreCompleto"
           placeholder="Ej: Juan Carlos Pérez López"
@@ -113,18 +123,18 @@
       </fieldset>
 
       <!-- botones -->
-      <div class="botones">
-        <button type="button" (click)="agregar()">
+      <div class="botones-filtros">
+        <button class="button-filtros" type="button" (click)="agregar()">
           <span [innerHTML]="icons['addPerson']"></span>
           Nuevo
         </button>
 
-        <button type="submit">
+        <button type="submit" class="button-filtros">
           <span [innerHTML]="icons['search']"></span>
           Buscar
         </button>
 
-        <button type="button" (click)="limpiarFiltros()">
+        <button type="button" (click)="limpiarFiltros()" class="button-filtros">
           <span [innerHTML]="icons['delete']"></span>
           Limpiar
         </button>
@@ -333,6 +343,7 @@
       </div>
 
       <div class="dialog-options">
+        <!-- opciones -->
         <div
           class="dialog-card"
           *ngFor="let opt of optionsTipoConsulta"
@@ -353,6 +364,16 @@
             </svg>
           </div>
         </div>
+        <!-- Nacimiento -->
+        @if (mujerEnEdadFertil) {
+          <div class="dialog-card" (click)="hijode(pacienteSeleccionado)">
+            <div class="dialog-card-icon">
+              <span [innerHTML]=""></span>
+            </div>
+            <span class="dialog-card-label">Nacimiento</span>
+            <div class="dialog-card-arrow"></div>
+          </div>
+        }
       </div>
     </div>
   </dialog>

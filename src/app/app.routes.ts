@@ -22,6 +22,9 @@ import { HojaCoexComponent } from './Registros/consultas/coex/HojaCoex/HojaCoex.
 import { IngresosComponent } from './Registros/consultas/hospitalizacion/ingresos/ingresos.component';
 import { MedicaComponent } from './medica/medica/medica.component';
 import { PacientesAtendidosComponent } from './medica/pacientesAtendidos/pacientesAtendidos.component';
+import { ConstanciasNacimientoComponent } from './Registros/nacimientos/constanciasNacimiento/constanciasNacimiento.component';
+import { ListarConstanciasComponent } from './Registros/nacimientos/listarConstancias/listarConstancias.component';
+import { HijosComponent } from './Registros/patient/hijos/hijos.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -42,6 +45,9 @@ export const routes: Routes = [
       { path: 'editarAdmision/:id', component: AdmisionComponent },
       { path: 'formConsulta/:id', component: FormConsultaComponent },
       { path: 'detalleAdmision/:id', component: DetalleConsultaComponent },
+      { path: 'nacimientos', component: ListarConstanciasComponent },
+      { path: 'hijo/:id', component: HijosComponent },
+
 
       // Pacientes
       { path: 'pacientes', component: PacientesComponent },

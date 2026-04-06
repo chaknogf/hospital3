@@ -5,13 +5,14 @@ import { ConstanciaNacimientoOut } from '../../../interface/consNac';
 import { ApiService } from './../../../service/api.service';
 import { Router } from '@angular/router';
 import { IconService } from './../../../service/icon.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-listarConstancias',
   templateUrl: './listarConstancias.component.html',
   styleUrls: ['./listarConstancias.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, FormsModule]
 })
 export class ListarConstanciasComponent implements OnInit {
 
@@ -24,6 +25,7 @@ export class ListarConstanciasComponent implements OnInit {
   pageSize: number = 8;
   paginaActual: number = 1;
   finPagina: boolean = false;
+  rowActiva: number | null = null;
 
   filtros: any = {
     id_usuario: '',
@@ -109,6 +111,14 @@ export class ListarConstanciasComponent implements OnInit {
   }
 
   pacientes() {
+    this.router.navigate(['/pacientes']);
+  }
+
+  volver() {
+    this.router.navigate(['/registros']);
+  }
+
+  agregar() {
     this.router.navigate(['/pacientes']);
   }
 

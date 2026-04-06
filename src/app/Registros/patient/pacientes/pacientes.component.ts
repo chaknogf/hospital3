@@ -1,4 +1,4 @@
-import { Console } from 'console';
+
 // pacientes.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ViewChild, ElementRef } from '@angular/core';
@@ -71,7 +71,9 @@ export class PacientesComponent implements OnInit {
   optionsTipoConsulta = [
     { nombre: 'Coex', valor: 1, icon: '🏥' },
     { nombre: 'Emergencia', valor: 2, icon: '🚨' },
-    { nombre: 'Ingreso', valor: 3, icon: '🛏️' }
+    { nombre: 'Ingreso', valor: 3, icon: '🛏️' },
+    // { nombre: 'Nacimiento', valor: 4, icon: '👶' }
+
   ];
 
   // ── Icons ──────────────────────────────────────────────────
@@ -209,6 +211,36 @@ export class PacientesComponent implements OnInit {
   // ══════════════════════════════════════════════════════════
   // MODAL ADMISIÓN
   // ══════════════════════════════════════════════════════════
+
+  private calcularEdad(fecha: string | Date): number {
+    if (!fecha) return 0;
+
+    const nacimiento = new Date(fecha);
+    const hoy = new Date();
+
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const m = hoy.getMonth() - nacimiento.getMonth();
+
+    if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edad--;
+    }
+
+    return edad;
+  }
+
+  get pacienteSeleccionadoObj(): Paciente | undefined {
+    return this.pacientes.find(p => p.id === this.pacienteSeleccionado);
+  }
+
+  get mujerEnEdadFertil(): boolean {
+    const paciente = this.pacienteSeleccionadoObj;
+    if (!paciente) return false;
+
+    const edad = this.calcularEdad(paciente.fecha_nacimiento || '');
+
+    return paciente.sexo?.toUpperCase() === 'F' && edad > 12 && edad < 54;
+  }
+
   abrirModalAdmision(id: number): void {
     this.pacienteSeleccionado = id;
     this.dialog.nativeElement.showModal();
@@ -219,13 +251,19 @@ export class PacientesComponent implements OnInit {
       1: ['coex', 'coex'],
       2: ['emergencia', 'emergencia'],
       3: ['ingreso', 'ingreso'],
+      // 4: ['nacimiento', 'nacimiento']
     };
     const [tipo, origen] = rutas[opt] ?? ['coex', 'coex'];
-
     this.router.navigate(
       ['/admisionPaciente', tipo, id],
       { queryParams: { origen } }
     );
+    this.dialog.nativeElement.close();
+
+  }
+
+  hijode(id: number): void {
+    this.router.navigate(['/hijo', id]);
     this.dialog.nativeElement.close();
   }
 

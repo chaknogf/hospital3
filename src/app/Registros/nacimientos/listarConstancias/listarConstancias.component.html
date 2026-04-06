@@ -1,3 +1,149 @@
-<p>
-  listarConstancias works!
-</p>
+<div class="aurora-paciente-container" [class.d-none]="modalActivo">
+  <!-- Botones superiores -->
+  <div
+    class="botones justify-content-between"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="icons['menu']"></span>
+      Menu
+    </button>
+
+    <h1 class="text-white">Constancias de Nacimiento</h1>
+
+    <button type="button" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['find']"></span>
+      Filtrar
+    </button>
+  </div>
+
+  <!-- Contenedor de Búsqueda -->
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
+    <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
+      <!-- Campos -->
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Documento</label>
+        <input
+          type="text"
+          class="input-filtros"
+          [(ngModel)]="filtros.documento"
+          name="documento"
+          placeholder="CN26-003"
+        />
+      </fieldset>
+
+      <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Nombre de la Madre</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.nombre_madre"
+            name="nombreMadre"
+            placeholder="Ej: María Mercedes García Pérez"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Id</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.id_constancia"
+            name="idConstancia"
+            placeholder="Ej: 12345"
+          />
+        </fieldset>
+      </div>
+
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Fecha</label>
+        <input
+          type="date"
+          class="input-filtros"
+          [(ngModel)]="filtros.fecha"
+          name="fecha"
+        />
+      </fieldset>
+
+      <!-- Botones -->
+      <div class="botones-filtros">
+        <button class="button-filtros" type="submit">
+          <span [innerHTML]="icons['search']"></span> Buscar
+        </button>
+        <button class="button-filtros" type="button" (click)="limpiarFiltros()">
+          <span [innerHTML]="icons['delete']"></span> Limpiar
+        </button>
+        <button class="button-filtros" type="button" (click)="agregar()">
+          <span [innerHTML]="icons['create']"></span> Agregar
+        </button>
+      </div>
+    </form>
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="btn m-0 p-0" (click)="toggleFiltrar()">
+        <span [innerHTML]="icons['arrowDown']"></span>
+      </button>
+    </div>
+  </div>
+  <!-- Tabla principal (desktop) -->
+  <div class="aurora-container">
+    <table class="aurora-tb">
+      <thead>
+        <tr>
+          <th>Documento</th>
+          <th>Nombre Madre</th>
+          <th>Fecha Parto</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let data of datos"
+          class="aurora-table-row"
+          [class.touch-active]="rowActiva === data.id"
+        >
+          <td class="text-justify">
+            <div *ngIf="data?.documento">
+              <strong>Numero de Constancia:</strong> {{ data.documento }}
+            </div>
+          </td>
+          <td>
+            {{ data.nombre_madre }}
+          </td>
+          <td class="oculto"></td>
+          <td class="oculto"></td>
+          <td class="secundario">
+            <div class="botones-opt">
+              <button (click)="editar(data.id); $event.stopPropagation()">
+                <span [innerHTML]="icons['edit']"></span>
+              </button>
+
+              <!-- <button (click)="imprimir(data.id); $event.stopPropagation()">
+                <span [innerHTML]="icons['print']"></span>
+              </button> -->
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- paginación -->
+  <div class="d-flex justify-content-center align-items-center p-0">
+    <!-- Botón anterior -->
+    <button class="btn" [disabled]="filtros.skip === 0">
+      <span [innerHTML]="icons['skipLeft']"></span>
+    </button>
+
+    <!-- Página actual -->
+    <div>
+      <strong>{{ filtros.skip }}</strong>
+    </div>
+
+    <!-- Botón siguiente -->
+    <button class="btn" [disabled]="finPagina">
+      <span [innerHTML]="icons['skipRight']"></span>
+    </button>
+  </div>
+</div>

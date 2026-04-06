@@ -236,7 +236,7 @@
 }
 .pag-info {
   font-family: 'DM Mono', monospace;
-  font-size: 10px; color: #4a6fa5;
+  font-size: 10px; color: #edf0f3;
   margin-left: 8px; white-space: nowrap;
 }
 
@@ -247,104 +247,6 @@ form {
   gap: 12px;
   padding: 18px;
   border-radius: 14px;
-  background: linear-gradient(145deg, #0f172a, #1e293b);
+
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-}
-
-/* fieldset como bloques flexibles */
-fieldset {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  border: none;
-  flex: 1 1 180px;
-  min-width: 160px;
-}
-
-/* ocupar todo el ancho */
-.full {
-  flex: 1 1 100%;
-}
-
-/* labels */
-label {
-  font-size: 11px;
-  color: #94a3b8;
-  letter-spacing: 0.4px;
-}
-
-/* inputs */
-input {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: none;
-  background: #020617;
-  color: #e2e8f0;
-  font-size: 13px;
-  box-shadow: inset 0 0 0 1px #1e293b;
-  transition: all 0.2s ease;
-}
-
-/* input principal */
-.input-principal {
-  padding: 14px 16px;
-  font-size: 15px;
-  box-shadow: inset 0 0 0 1px #334155;
-}
-
-/* focus elegante */
-input:focus {
-  outline: none;
-  box-shadow: inset 0 0 0 1px #38bdf8, 0 0 6px #38bdf8;
-}
-
-/* botones */
-.botones {
-  padding-right: 17px;
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  width: 100%;
-  margin-top: 10px;
-}
-
-/* botones estilo limpio */
-.botones button {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 14px;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  font-size: 13px;
-  transition: 0.2s;
-}
-
-/* estilos */
-.botones button[type="submit"] {
-  background: #0ea5e9;
-  color: white;
-}
-
-.botones button[type="submit"]:hover {
-  background: #0284c7;
-}
-
-.botones button[type="button"]:first-child {
-  background: transparent;
-  color: #94a3b8;
-}
-
-.botones button[type="button"]:first-child:hover {
-  background: #1e293b;
-}
-
-.botones button:last-child {
-  background: #ef4444;
-  color: white;
-}
-
-.botones button:last-child:hover {
-  background: #dc2626;
 }
