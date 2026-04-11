@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
-import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse } from '../interface/interfaces';
+import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse, Hijode } from '../interface/interfaces';
 import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHistorial, ConstanciaNacimientoUpdate } from '../interface/consNac';
 import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, SignosVitales, TotalesItem, TotalesResponse } from '../interface/consultas';
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
@@ -257,14 +257,27 @@ export class ApiService {
     );
   }
 
-  hijode(pacienteId: number, paciente: any): Observable<any> {
+
+  hijode(paciente: Hijode, idMadre: number): Observable<any> {
     this.isLoading.set(true);
+    const payload = {
+      sexo: paciente.sexo,
+      fecha_nacimiento: paciente.fecha_nacimiento,
+      estado: paciente.estado,
+      datos_extra: paciente.datos_extra || {}  // ← Solo datos neonatales
+    };
+    console.log('📤 Registrando hijo de madre ID:', idMadre);
+    console.log('📋 Payload:', JSON.stringify(payload, null, 2));
+
     return this.http.post<any>(
-      `${this.baseUrl}/pacientes/madre-hijo/${pacienteId}`,
-      paciente
+      `${this.baseUrl}/fah/pacientes/madre-hijo/${idMadre}?auto_expediente=true`,
+      payload
     ).pipe(
-      tap(() => this.refrescarPacientes()),
-      catchError(error => this.manejarError(error, 'error al crear hijo de paciente')),
+      tap(response => {
+        console.log('✅ Hijo registrado:', response);
+        this.refrescarPacientes();
+      }),
+      catchError(error => this.manejarError(error, 'registrar hijo')),
       finalize(() => this.isLoading.set(false))
     );
   }

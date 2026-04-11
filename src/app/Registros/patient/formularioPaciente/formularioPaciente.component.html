@@ -86,132 +86,137 @@
         </div>
       </div>
 
-      <div class="sec-body" *ngIf="sections[0]">
-        <!-- Modo expediente en edición -->
-        @if (enEdicion()) {
-          <div class="field field-full">
-            <span class="field-label">¿Qué hacemos con el expediente?</span>
-            <div class="chips-row">
-              <span
-                class="chip chip-block"
-                [class.on]="accionExpediente() === 'mantener'"
-                (click)="accionExpediente.set('mantener')"
-                >🔒 Mantener</span
-              >
-              <span
-                class="chip chip-block"
-                [class.on]="accionExpediente() === 'generar'"
-                (click)="accionExpediente.set('generar')"
-                >⚡ Generar</span
-              >
-              <span
-                class="chip chip-block"
-                [class.on]="accionExpediente() === 'sobrescribir'"
-                (click)="accionExpediente.set('sobrescribir')"
-                >♻ Sobrescribir</span
-              >
+      <div class="expedientes" *ngIf="sections[0]">
+        <div class="grupo1">
+          <!-- Modo expediente en edición -->
+          @if (enEdicion()) {
+            <div class="field">
+              <span class="field-label">¿Qué hacemos con el expediente?</span>
+              <div class="chips-row">
+                <span
+                  class="chip chip-block"
+                  [class.on]="accionExpediente() === 'mantener'"
+                  (click)="accionExpediente.set('mantener')"
+                  >🔒 Mantener</span
+                >
+                <span
+                  class="chip chip-block"
+                  [class.on]="accionExpediente() === 'generar'"
+                  (click)="accionExpediente.set('generar')"
+                  >⚡ Generar</span
+                >
+                <span
+                  class="chip chip-block"
+                  [class.on]="accionExpediente() === 'sobrescribir'"
+                  (click)="accionExpediente.set('sobrescribir')"
+                  >♻ Sobrescribir</span
+                >
+              </div>
             </div>
-          </div>
-        }
-
-        <!-- Tipo de registro en creación -->
-        @if (!enEdicion()) {
-          <div class="field field-full">
-            <span class="field-label">Tipo de registro</span>
-            <div class="chips-row">
-              <span
-                class="chip chip-block chip-lg"
-                [class.on-red]="!crearExpediente()"
-                (click)="crearExpediente.set(false)"
-                >📋 Sin Expediente</span
-              >
-              <span
-                class="chip chip-block chip-lg"
-                [class.on-green]="crearExpediente()"
-                (click)="crearExpediente.set(true)"
-                >📁 Con Expediente</span
-              >
-            </div>
-          </div>
-        }
-
-        <!-- CUI -->
-        <div class="field">
-          <span class="field-label">CUI <span class="req">*</span></span>
-          <input
-            class="field-input"
-            id="cui"
-            type="text"
-            formControlName="cui"
-            placeholder="1234 56789 9999"
-            mask="0000 00000 0000"
-            (paste)="onPasteCUI($event)"
-          />
-          @if (form.get("cui")?.errors?.["validarDPI"]) {
-            <span class="error-msg">
-              ⚠ Faltan
-              {{ form.get("cui")?.errors?.["validarDPI"].faltantes }} dígito(s)
-            </span>
           }
+
+          <!-- Tipo de registro en creación -->
+          @if (!enEdicion()) {
+            <div class="field field-full">
+              <span class="field-label">Tipo de registro</span>
+              <div class="chips-row">
+                <span
+                  class="chip chip-block chip-lg"
+                  [class.on-red]="!crearExpediente()"
+                  (click)="crearExpediente.set(false)"
+                  >📋 Sin Expediente</span
+                >
+                <span
+                  class="chip chip-block chip-lg"
+                  [class.on-green]="crearExpediente()"
+                  (click)="crearExpediente.set(true)"
+                  >📁 Con Expediente</span
+                >
+              </div>
+            </div>
+          }
+
+          <!-- Biométricos -->
+          <div class="biometric-row">
+            <div class="biometric-btn">
+              <span [innerHTML]="faceidicon"></span>
+              Capturar Foto
+            </div>
+            <div class="biometric-btn">
+              <span [innerHTML]="touchicon"></span>
+              Capturar Huella
+            </div>
+          </div>
         </div>
 
-        <!-- Expediente (solo edición) -->
-        @if (enEdicion() && form.get("expediente")?.value) {
-          <div class="field">
-            <span class="field-label">N° Expediente</span>
+        <div class="id-content">
+          <!-- CUI -->
+          <div class="field" style="flex: 1; min-width: 0">
+            <span class="field-label">CUI <span class="req">*</span></span>
             <input
               class="field-input"
-              id="expediente"
+              id="cui"
               type="text"
-              formControlName="expediente"
-              placeholder="Número de expediente"
-              autocomplete="off"
+              formControlName="cui"
+              placeholder="1234 56789 9999"
+              mask="0000 00000 0000"
+              (paste)="onPasteCUI($event)"
             />
+            @if (form.get("cui")?.errors?.["validarDPI"]) {
+              <span class="error-msg">
+                ⚠ Faltan
+                {{ form.get("cui")?.errors?.["validarDPI"].faltantes }}
+                dígito(s)
+              </span>
+            }
           </div>
-        }
 
-        <!-- Pasaporte (no guatemaltecos) -->
-        @if (
-          form.get("datos_extra.demograficos.nacionalidad")?.value !== "GTM"
-        ) {
-          <div class="field">
-            <span class="field-label">Pasaporte</span>
-            <input
-              class="field-input"
-              id="pasaporte"
-              type="text"
-              formControlName="pasaporte"
-              placeholder="Número de pasaporte"
-              autocomplete="off"
-            />
-          </div>
-        }
+          <!-- Expediente (solo edición) -->
+          @if (enEdicion() && form.get("expediente")?.value) {
+            <div class="field">
+              <span class="field-label">N° Expediente</span>
+              <input
+                class="field-input"
+                id="expediente"
+                type="text"
+                formControlName="expediente"
+                placeholder="Número de expediente"
+                autocomplete="off"
+              />
+            </div>
+          }
 
-        <!-- Otra identificación (sin CUI) -->
-        @if (!form.get("cui")?.value) {
-          <div class="field">
-            <span class="field-label">Otra Identificación</span>
-            <input
-              class="field-input"
-              id="personaid"
-              type="text"
-              formControlName="datos_extra.personaid"
-              placeholder="Otra forma de identificación"
-              autocomplete="off"
-            />
-          </div>
-        }
+          <!-- Pasaporte (no guatemaltecos) -->
+          @if (
+            form.get("datos_extra.demograficos.nacionalidad")?.value !== "GTM"
+          ) {
+            <div class="field">
+              <span class="field-label">Pasaporte</span>
+              <input
+                class="field-input"
+                id="pasaporte"
+                type="text"
+                formControlName="pasaporte"
+                placeholder="Número de pasaporte"
+                autocomplete="off"
+              />
+            </div>
+          }
 
-        <!-- Biométricos -->
-        <div class="biometric-row">
-          <div class="biometric-btn">
-            <span [innerHTML]="faceidicon"></span>
-            Capturar Foto
-          </div>
-          <div class="biometric-btn">
-            <span [innerHTML]="touchicon"></span>
-            Capturar Huella
-          </div>
+          <!-- Otra identificación (sin CUI) -->
+          @if (!form.get("cui")?.value) {
+            <div class="field">
+              <span class="field-label">Otra Identificación</span>
+              <input
+                class="field-input"
+                id="personaid"
+                type="text"
+                formControlName="datos_extra.personaid"
+                placeholder="Otra forma de identificación"
+                autocomplete="off"
+              />
+            </div>
+          }
         </div>
       </div>
       <!-- /sec-body -->
@@ -241,81 +246,86 @@
       </div>
 
       <div class="sec-body" *ngIf="sections[1]" formGroupName="nombre">
-        <div class="field">
-          <span class="field-label"
-            >Primer nombre <span class="req">*</span></span
-          >
-          <input
-            class="field-input"
-            id="primer_nombre"
-            formControlName="primer_nombre"
-            placeholder="Ej: Juan"
-            unaPalabra
-            autocomplete="off"
-          />
-        </div>
-
-        <div class="field">
-          <span class="field-label">Segundo nombre</span>
-          <input
-            class="field-input"
-            id="segundo_nombre"
-            formControlName="segundo_nombre"
-            placeholder="Ej: Carlos"
-            unaPalabra
-            autocomplete="off"
-          />
-        </div>
-
-        <div class="field">
-          <span class="field-label"
-            >Primer apellido <span class="req">*</span></span
-          >
-          <input
-            class="field-input"
-            id="primer_apellido"
-            formControlName="primer_apellido"
-            placeholder="Ej: Pérez"
-            unaPalabra
-            autocomplete="off"
-          />
-        </div>
-
-        <div class="field">
-          <span class="field-label">Segundo apellido</span>
-          <input
-            class="field-input"
-            id="segundo_apellido"
-            formControlName="segundo_apellido"
-            placeholder="Ej: García"
-            unaPalabra
-            autocomplete="off"
-          />
-        </div>
-
-        <div class="field">
-          <span class="field-label">Otro nombre</span>
-          <input
-            class="field-input"
-            id="otro_nombre"
-            formControlName="otro_nombre"
-            placeholder="Ej: de Jesús"
-            autocomplete="off"
-          />
-        </div>
-
-        @if (form.get("sexo")?.value === "F") {
+        <div class="nombres">
           <div class="field">
-            <span class="field-label">Apellido de casada</span>
+            <span class="field-label"
+              >Primer nombre <span class="req">*</span></span
+            >
             <input
               class="field-input"
-              id="apellido_casada"
-              formControlName="apellido_casada"
-              placeholder="Apellido de casada"
+              id="primer_nombre"
+              formControlName="primer_nombre"
+              placeholder="Ej: Juan"
+              unaPalabra
               autocomplete="off"
             />
           </div>
-        }
+
+          <div class="field">
+            <span class="field-label">Segundo nombre</span>
+            <input
+              class="field-input"
+              id="segundo_nombre"
+              formControlName="segundo_nombre"
+              placeholder="Ej: Carlos"
+              unaPalabra
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="field">
+            <span class="field-label">Otro nombre</span>
+            <input
+              class="field-input"
+              id="otro_nombre"
+              formControlName="otro_nombre"
+              placeholder="Ej: de Jesús"
+              unaPalabra
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div class="nombres">
+          <div class="field">
+            <span class="field-label"
+              >Primer apellido <span class="req">*</span></span
+            >
+            <input
+              class="field-input"
+              id="primer_apellido"
+              formControlName="primer_apellido"
+              placeholder="Ej: Pérez"
+              unaPalabra
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="field">
+            <span class="field-label">Segundo apellido</span>
+            <input
+              class="field-input"
+              id="segundo_apellido"
+              formControlName="segundo_apellido"
+              placeholder="Ej: García"
+              unaPalabra
+              autocomplete="off"
+            />
+          </div>
+
+          @if (form.get("sexo")?.value === "F") {
+            <div class="field">
+              <span class="field-label">Apellido de casada</span>
+              <input
+                class="field-input"
+                id="apellido_casada"
+                formControlName="apellido_casada"
+                placeholder="Apellido de casada"
+                autocomplete="off"
+              />
+            </div>
+          }
+        </div>
       </div>
     </div>
     <!-- /S2 -->
@@ -343,112 +353,116 @@
       </div>
 
       <div class="sec-body" *ngIf="sections[2]">
-        <!-- Estado vital -->
-        <div class="field field-full">
-          <span class="field-label">Estado del paciente</span>
-          <div class="chips-row">
-            <span
-              class="chip chip-block"
-              [class.on]="form.get('estado')?.value === 'V'"
-              (click)="form.get('estado')?.setValue('V')"
-              >● Vivo</span
-            >
-            <span
-              class="chip chip-block"
-              [class.on]="form.get('estado')?.value === 'F'"
-              (click)="form.get('estado')?.setValue('F')"
-              >● Fallecido</span
-            >
+        <div class="field-group">
+          <!-- Estado vital -->
+          <div class="field field">
+            <span class="field-label">Estado del paciente</span>
+            <div class="chips-row">
+              <span
+                class="chip chip-block"
+                [class.on]="form.get('estado')?.value === 'V'"
+                (click)="form.get('estado')?.setValue('V')"
+                >● Vivo</span
+              >
+              <span
+                class="chip chip-block"
+                [class.on]="form.get('estado')?.value === 'F'"
+                (click)="form.get('estado')?.setValue('F')"
+                >● Fallecido</span
+              >
+            </div>
+          </div>
+
+          <!-- Fecha de defunción -->
+          @if (form.get("estado")?.value === "F") {
+            <div class="field field" formGroupName="datos_extra">
+              <span class="field-label">Fecha y hora de defunción</span>
+              <input
+                class="field-input"
+                id="defuncion"
+                type="datetime-local"
+                formControlName="defuncion"
+              />
+            </div>
+          }
+
+          <!-- Sexo -->
+          <div class="field field">
+            <span class="field-label">Sexo biológico</span>
+            <div class="chips-row">
+              <span
+                class="chip chip-block"
+                [class.on]="form.get('sexo')?.value === 'M'"
+                (click)="form.get('sexo')?.setValue('M')"
+                >♂ Masculino</span
+              >
+              <span
+                class="chip chip-block"
+                [class.on]="form.get('sexo')?.value === 'F'"
+                (click)="form.get('sexo')?.setValue('F')"
+                >♀ Femenino</span
+              >
+            </div>
           </div>
         </div>
 
-        <!-- Fecha de defunción -->
-        @if (form.get("estado")?.value === "F") {
-          <div class="field field-full" formGroupName="datos_extra">
-            <span class="field-label">Fecha y hora de defunción</span>
-            <input
-              class="field-input"
-              id="defuncion"
-              type="datetime-local"
-              formControlName="defuncion"
-            />
-          </div>
-        }
-
-        <!-- Sexo -->
-        <div class="field field-full">
-          <span class="field-label">Sexo biológico</span>
-          <div class="chips-row">
-            <span
-              class="chip chip-block"
-              [class.on]="form.get('sexo')?.value === 'M'"
-              (click)="form.get('sexo')?.setValue('M')"
-              >♂ Masculino</span
-            >
-            <span
-              class="chip chip-block"
-              [class.on]="form.get('sexo')?.value === 'F'"
-              (click)="form.get('sexo')?.setValue('F')"
-              >♀ Femenino</span
-            >
-          </div>
-        </div>
-
-        <!-- Fecha de nacimiento -->
-        <div class="field">
-          <span class="field-label">Fecha de nacimiento</span>
-          <input
-            class="field-input"
-            id="fecha_nacimiento"
-            type="date"
-            formControlName="fecha_nacimiento"
-            [class.is-valid]="form.get('fecha_nacimiento')?.value"
-            [class.is-null]="!form.get('fecha_nacimiento')?.value"
-          />
-        </div>
-
-        <!-- Edad calculada -->
-        <div class="age-grid field-full" formGroupName="edad">
+        <div class="field-group">
+          <!-- Fecha de nacimiento -->
           <div class="field">
-            <span class="field-label">Años</span>
+            <span class="field-label">Fecha de nacimiento</span>
             <input
               class="field-input"
-              id="anios"
-              type="number"
-              formControlName="anios"
-              placeholder="0"
-              min="0"
+              id="fecha_nacimiento"
+              type="date"
+              formControlName="fecha_nacimiento"
               [class.is-valid]="form.get('fecha_nacimiento')?.value"
               [class.is-null]="!form.get('fecha_nacimiento')?.value"
             />
           </div>
-          <div class="field">
-            <span class="field-label">Meses</span>
-            <input
-              class="field-input"
-              id="meses"
-              type="number"
-              formControlName="meses"
-              placeholder="0"
-              min="0"
-              max="11"
-              [class.is-valid]="form.get('fecha_nacimiento')?.value"
-              [class.is-null]="!form.get('fecha_nacimiento')?.value"
-            />
-          </div>
-          <div class="field">
-            <span class="field-label">Días</span>
-            <input
-              class="field-input"
-              id="dias"
-              type="number"
-              formControlName="dias"
-              placeholder="0"
-              min="0"
-              max="30"
-              [class.is-valid]="form.get('fecha_nacimiento')?.value"
-              [class.is-null]="!form.get('fecha_nacimiento')?.value"
-            />
+
+          <!-- Edad calculada -->
+          <div class="d-flex justify-content-evenly" formGroupName="edad">
+            <div class="field">
+              <span class="field-label">Años</span>
+              <input
+                class="edad"
+                id="anios"
+                type="number"
+                formControlName="anios"
+                placeholder="0"
+                min="0"
+                [class.is-valid]="form.get('fecha_nacimiento')?.value"
+                [class.is-null]="!form.get('fecha_nacimiento')?.value"
+              />
+            </div>
+            <div class="field">
+              <span class="field-label">Meses</span>
+              <input
+                class="edad"
+                id="meses"
+                type="number"
+                formControlName="meses"
+                placeholder="0"
+                min="0"
+                max="11"
+                [class.is-valid]="form.get('fecha_nacimiento')?.value"
+                [class.is-null]="!form.get('fecha_nacimiento')?.value"
+              />
+            </div>
+            <div class="field">
+              <span class="field-label">Días</span>
+              <input
+                class="edad"
+                id="dias"
+                type="number"
+                formControlName="dias"
+                placeholder="0"
+                min="0"
+                max="30"
+                [class.is-valid]="form.get('fecha_nacimiento')?.value"
+                [class.is-null]="!form.get('fecha_nacimiento')?.value"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -538,14 +552,15 @@
 
         <div class="field field-full">
           <span class="field-label">Dirección de domicilio</span>
-          <input
+          <textarea
             class="field-input"
+            style="width: 300px"
             id="domicilio"
             type="text"
             formControlName="domicilio"
             placeholder="Calle, zona, colonia…"
             autocomplete="off"
-          />
+          ></textarea>
         </div>
       </div>
     </div>
@@ -569,7 +584,7 @@
               <path d="M1 13c0-2.2 1.8-4 4-4m6 0c2.2 0 4 1.8 4 4" />
             </svg>
           </div>
-          <span class="sec-title">Referencias / Parientes</span>
+          <span class="sec-title">Referencias / Parientes / Acompañantes</span>
         </div>
         <span class="sec-toggle">{{ sections[4] ? "−" : "+" }}</span>
       </div>
@@ -582,87 +597,93 @@
             class="reference-block"
             [class.es-responsable]="ref.get('responsable')?.value"
           >
-            <!-- Responsable badge -->
-            <div class="ref-header">
-              <span class="ref-title"
-                >Referencia {{ (i + 1).toString().padStart(2, "0") }}</span
-              >
-              <label class="checkbox-label">
-                <input
-                  type="checkbox"
-                  formControlName="responsable"
-                  (change)="marcarComoResponsable(i)"
-                />
-                Responsable
-              </label>
-              @if (ref.get("responsable")?.value) {
-                <span class="ref-badge">★ RESPONSABLE</span>
-              }
-            </div>
+            <div class="reference-card">
+              <!-- HEADER -->
+              <div class="ref-header">
+                <div class="ref-title-group">
+                  <span class="ref-title">
+                    Referencia {{ (i + 1).toString().padStart(2, "0") }}
+                  </span>
 
-            <!-- Datos -->
-            <div class="ref-row">
-              <div class="field">
-                <span class="field-label">Nombre</span>
-                <input
-                  class="field-input"
-                  type="text"
-                  formControlName="nombre"
-                  placeholder="Nombre completo"
-                  autocomplete="off"
-                />
+                  @if (ref.get("responsable")?.value) {
+                    <span class="ref-badge">★ Responsable</span>
+                  }
+                </div>
+
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    formControlName="responsable"
+                    (change)="marcarComoResponsable(i)"
+                  />
+                  Responsable
+                </label>
               </div>
-              <div class="field">
-                <span class="field-label">Teléfono</span>
-                <input
-                  class="field-input"
-                  type="tel"
-                  formControlName="telefono"
-                  placeholder="Teléfono de contacto"
-                  autocomplete="off"
-                />
+
+              <!-- BODY -->
+              <div class="ref-body">
+                <!-- Nombre + Teléfono -->
+                <div class="ref-grid">
+                  <div class="field">
+                    <span class="field-label">Nombre</span>
+                    <input
+                      class="field-input"
+                      type="text"
+                      formControlName="nombre"
+                      placeholder="Nombre completo"
+                    />
+                  </div>
+
+                  <div class="field">
+                    <span class="field-label">Teléfono</span>
+                    <input
+                      class="field-input"
+                      type="tel"
+                      formControlName="telefono"
+                      placeholder="Teléfono de contacto"
+                    />
+                  </div>
+                </div>
+
+                <!-- Parentesco -->
+                <div class="field">
+                  <span class="field-label">Parentesco</span>
+                  <div class="chips-row">
+                    <span
+                      *ngFor="let p of enums.parentescos"
+                      class="chip"
+                      [class.on]="ref.get('parentesco')?.value === p.value"
+                      (click)="ref.get('parentesco')?.setValue(p.value)"
+                    >
+                      {{ p.label }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Identificación + expediente -->
+                <div class="ref-grid">
+                  <div class="field">
+                    <span class="field-label">Identificación</span>
+                    <input
+                      class="field-input"
+                      type="text"
+                      formControlName="idpersona"
+                      placeholder="CUI u otro ID"
+                    />
+                  </div>
+
+                  <div class="field">
+                    <span class="field-label">Expediente</span>
+                    <input
+                      class="field-input"
+                      type="text"
+                      formControlName="expediente"
+                      placeholder="N° expediente"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-
-            <!-- Parentesco chips -->
-            <div class="field">
-              <span class="field-label">Parentesco</span>
-              <div class="chips-row chips-parentesco">
-                <span
-                  *ngFor="let p of enums.parentescos"
-                  class="chip"
-                  [class.on]="ref.get('parentesco')?.value === p.value"
-                  (click)="ref.get('parentesco')?.setValue(p.value)"
-                >
-                  {{ p.label }}
-                </span>
-              </div>
-            </div>
-
-            <!-- Identificación y expediente -->
-            <div class="ref-row">
-              <div class="field">
-                <span class="field-label">Identificación</span>
-                <input
-                  class="field-input"
-                  type="text"
-                  formControlName="idpersona"
-                  placeholder="CUI u otro ID"
-                  autocomplete="off"
-                />
-              </div>
-              <div class="field">
-                <span class="field-label">Expediente</span>
-                <input
-                  class="field-input"
-                  type="text"
-                  formControlName="expediente"
-                  placeholder="N° expediente"
-                  autocomplete="off"
-                />
-              </div>
-            </div>
-
             <!-- Acciones -->
             <div class="ref-actions">
               <button
@@ -717,7 +738,7 @@
       </div>
 
       <div class="sec-body" *ngIf="sections[5]" formGroupName="datos_extra">
-        <div formGroupName="demograficos">
+        <div formGroupName="demograficos" class="container">
           <div class="field">
             <span class="field-label">Nacionalidad</span>
             <select
@@ -823,7 +844,7 @@
     <!-- /S6 -->
 
     <!-- ══════════════════════════════════════════════════════ -->
-    <!-- S7 · SOCIOECONÓMICO                                    -->
+    <!-- S7 · SOCIOECONÓMICO - VERSIÓN CORREGIDA             -->
     <!-- ══════════════════════════════════════════════════════ -->
     <div class="section-card" id="sec-6">
       <div class="sec-head" (click)="toggleSection(6)">
@@ -846,139 +867,147 @@
       </div>
 
       <div class="sec-body" *ngIf="sections[6]" formGroupName="datos_extra">
-        <div formGroupName="socioeconomicos">
-          <div class="field">
-            <span class="field-label">Estado civil</span>
-            <select
-              class="field-input"
-              id="estado_civil"
-              formControlName="estado_civil"
-              [class.is-valid]="
-                form.get('datos_extra.socioeconomicos.estado_civil')?.value
-              "
-              [class.is-null]="
-                !form.get('datos_extra.socioeconomicos.estado_civil')?.value
-              "
-            >
-              <option value="">— Seleccione —</option>
-              <option *ngFor="let ec of enums.estadocivil" [value]="ec.value">
-                {{ ec.label }}
-              </option>
-            </select>
-          </div>
-
-          <div class="field">
-            <span class="field-label">Ocupación</span>
-            <input
-              class="field-input"
-              id="ocupacion"
-              type="text"
-              formControlName="ocupacion"
-              placeholder="Ej: Agricultor, Comerciante…"
-              [class.is-valid]="
-                form.get('datos_extra.socioeconomicos.ocupacion')?.value
-              "
-              [class.is-null]="
-                !form.get('datos_extra.socioeconomicos.ocupacion')?.value
-              "
-            />
-          </div>
-
-          <div class="field field-full">
-            <span class="field-label">Nivel educativo</span>
-            <select
-              class="field-input"
-              id="educacion"
-              formControlName="educacion"
-              [class.is-valid]="
-                form.get('datos_extra.socioeconomicos.educacion')?.value
-              "
-              [class.is-null]="
-                !form.get('datos_extra.socioeconomicos.educacion')?.value
-              "
-            >
-              <option value="">— Seleccione —</option>
-              <option
-                *ngFor="let ne of enums.gradoacademico"
-                [value]="ne.value"
-              >
-                {{ ne.label }}
-              </option>
-            </select>
-          </div>
-
-          <!-- Estudiante público -->
-          <div class="field">
-            <span class="field-label">Estudiante público</span>
-            <div class="chips-row toggle-si-no">
-              <span
-                class="chip chip-block"
-                [class.on-green]="
-                  form.get('datos_extra.socioeconomicos.estudiante_publico')
-                    ?.value === 'SI'
+        <div
+          formGroupName="socioeconomicos"
+          class="container d-flex"
+          style="flex-wrap: wrap; gap: 24px"
+        >
+          <div class="chips-sc" style="flex-grow: 1; flex-basis: 200">
+            <div class="field">
+              <span class="field-label">Estado civil</span>
+              <select
+                class="field-input"
+                id="estado_civil"
+                formControlName="estado_civil"
+                [class.is-valid]="
+                  form.get('datos_extra.socioeconomicos.estado_civil')?.value
                 "
-                (click)="setSocio('estudiante_publico', 'SI')"
-                >✔ Sí</span
-              >
-              <span
-                class="chip chip-block"
-                [class.on-red]="
-                  form.get('datos_extra.socioeconomicos.estudiante_publico')
-                    ?.value === 'NO'
+                [class.is-null]="
+                  !form.get('datos_extra.socioeconomicos.estado_civil')?.value
                 "
-                (click)="setSocio('estudiante_publico', 'NO')"
-                >✘ No</span
               >
+                <option value="">— Seleccione —</option>
+                <option *ngFor="let ec of enums.estadocivil" [value]="ec.value">
+                  {{ ec.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="field">
+              <span class="field-label">Ocupación</span>
+              <input
+                class="field-input"
+                id="ocupacion"
+                type="text"
+                formControlName="ocupacion"
+                placeholder="Ej: Agricultor, Comerciante…"
+                [class.is-valid]="
+                  form.get('datos_extra.socioeconomicos.ocupacion')?.value
+                "
+                [class.is-null]="
+                  !form.get('datos_extra.socioeconomicos.ocupacion')?.value
+                "
+              />
+            </div>
+
+            <div class="field field-full">
+              <span class="field-label">Nivel educativo</span>
+              <select
+                class="field-input"
+                id="educacion"
+                formControlName="educacion"
+                [class.is-valid]="
+                  form.get('datos_extra.socioeconomicos.educacion')?.value
+                "
+                [class.is-null]="
+                  !form.get('datos_extra.socioeconomicos.educacion')?.value
+                "
+              >
+                <option value="">— Seleccione —</option>
+                <option
+                  *ngFor="let ne of enums.gradoacademico"
+                  [value]="ne.value"
+                >
+                  {{ ne.label }}
+                </option>
+              </select>
             </div>
           </div>
 
-          <!-- Empleado público -->
-          <div class="field">
-            <span class="field-label">Empleado público</span>
-            <div class="chips-row toggle-si-no">
-              <span
-                class="chip chip-block"
-                [class.on-green]="
-                  form.get('datos_extra.socioeconomicos.empleado_publico')
-                    ?.value === 'SI'
-                "
-                (click)="setSocio('empleado_publico', 'SI')"
-                >✔ Sí</span
-              >
-              <span
-                class="chip chip-block"
-                [class.on-red]="
-                  form.get('datos_extra.socioeconomicos.empleado_publico')
-                    ?.value === 'NO'
-                "
-                (click)="setSocio('empleado_publico', 'NO')"
-                >✘ No</span
-              >
+          <div class="chips-sc" style="flex-grow: 1; flex-basis: 200">
+            <!-- ✅ ESTUDIANTE PÚBLICO - CORREGIDO -->
+            <div class="field">
+              <span class="field-label">Estudiante público</span>
+              <div class="chips-row toggle-si-no">
+                <span
+                  class="chip chip-block"
+                  [class.on]="
+                    form.get('datos_extra.socioeconomicos.estudiante_publico')
+                      ?.value === 'SI'
+                  "
+                  (click)="setSocio('estudiante_publico', 'SI')"
+                  >✔ Sí</span
+                >
+                <span
+                  class="chip chip-block"
+                  [class.on]="
+                    form.get('datos_extra.socioeconomicos.estudiante_publico')
+                      ?.value === 'NO'
+                  "
+                  (click)="setSocio('estudiante_publico', 'NO')"
+                  >✘ No</span
+                >
+              </div>
             </div>
-          </div>
 
-          <!-- Discapacidad -->
-          <div class="field field-full">
-            <span class="field-label">Discapacidad</span>
-            <div class="chips-row toggle-si-no">
-              <span
-                class="chip chip-block"
-                [class.on-green]="
-                  form.get('datos_extra.socioeconomicos.discapacidad')
-                    ?.value === 'SI'
-                "
-                (click)="setSocio('discapacidad', 'SI')"
-                >✔ Sí</span
-              >
-              <span
-                class="chip chip-block"
-                [class.on-red]="
-                  form.get('datos_extra.socioeconomicos.discapacidad')
-                    ?.value === 'NO'
-                "
-                (click)="setSocio('discapacidad', 'NO')"
-                >✘ No</span
-              >
+            <!-- ✅ EMPLEADO PÚBLICO - CORREGIDO -->
+            <div class="field">
+              <span class="field-label">Empleado público</span>
+              <div class="chips-row toggle-si-no">
+                <span
+                  class="chip chip-block"
+                  [class.on]="
+                    form.get('datos_extra.socioeconomicos.empleado_publico')
+                      ?.value === 'SI'
+                  "
+                  (click)="setSocio('empleado_publico', 'SI')"
+                  >✔ Sí</span
+                >
+                <span
+                  class="chip chip-block"
+                  [class.on]="
+                    form.get('datos_extra.socioeconomicos.empleado_publico')
+                      ?.value === 'NO'
+                  "
+                  (click)="setSocio('empleado_publico', 'NO')"
+                  >✘ No</span
+                >
+              </div>
+            </div>
+
+            <!-- ✅ DISCAPACIDAD -->
+            <div class="field field-full">
+              <span class="field-label">Discapacidad</span>
+              <div class="chips-row toggle-si-no">
+                <span
+                  class="chip chip-block"
+                  [class.on]="
+                    form.get('datos_extra.socioeconomicos.discapacidad')
+                      ?.value === 'SI'
+                  "
+                  (click)="setSocio('discapacidad', 'SI')"
+                  >✔ Sí</span
+                >
+                <span
+                  class="chip chip-block"
+                  [class.on]="
+                    form.get('datos_extra.socioeconomicos.discapacidad')
+                      ?.value === 'NO'
+                  "
+                  (click)="setSocio('discapacidad', 'NO')"
+                  >✘ No</span
+                >
+              </div>
             </div>
           </div>
         </div>
@@ -990,9 +1019,9 @@
     <!-- ══════════════════════════════════════════════════════ -->
     <!-- S8 · NEONATALES (solo recién nacidos)                  -->
     <!-- ══════════════════════════════════════════════════════ -->
-    @if (esRecienNacido()) {
-      <div class="section-card section-full neonatal" id="sec-neo">
-        <div class="sec-head">
+    @if (esRecienNacido() || form.get("datos_extra.neonatales")?.value) {
+      <div class="section-card section-full neonatal" id="sec-7">
+        <div class="sec-head" (click)="toggleSection(7)">
           <div class="sec-head-left">
             <div class="sec-icon sec-icon-amber">
               <svg
@@ -1009,83 +1038,146 @@
               >Datos de Nacimiento — Recién Nacido</span
             >
           </div>
+          <span class="sec-toggle">{{ sections[7] ? "−" : "+" }}</span>
         </div>
 
-        <div class="sec-body" formGroupName="datos_extra">
-          <div formGroupName="neonatales">
-            <div class="field">
-              <span class="field-label">Peso al nacer (libras.onzas)</span>
-              <input
-                class="field-input"
-                id="peso_nacimiento"
-                type="text"
-                formControlName="peso_nacimiento"
-                placeholder="Ej: 3.08"
-              />
-            </div>
+        <div class="sec-body" formGroupName="datos_extra" *ngIf="sections[7]">
+          <div
+            formGroupName="neonatales"
+            class="container d-flex"
+            style="flex-wrap: wrap; gap: 20px"
+          >
+            <div class="container" style="flex-grow: 1; flex-basis: 200">
+              <div class="field">
+                <span class="field-label">Hora de nacimiento</span>
+                <input
+                  class="field-input"
+                  id="hora_nacimiento"
+                  type="time"
+                  formControlName="hora_nacimiento"
+                  unaPalabra
+                  placeholder="Ej: 08:30"
+                />
+              </div>
 
-            <div class="field">
-              <span class="field-label">Edad gestacional (semanas)</span>
-              <input
-                class="field-input"
-                id="edad_gestacional"
-                type="text"
-                formControlName="edad_gestacional"
-                soloNumero
-                placeholder="Ej: 40"
-              />
-            </div>
+              <div class="field">
+                <span class="field-label">Peso al nacer (libras.onzas)</span>
+                <input
+                  class="field-input"
+                  id="peso_nacimiento"
+                  type="text"
+                  formControlName="peso_nacimiento"
+                  placeholder="Ej: 3.08"
+                />
+              </div>
 
-            <div class="field field-full">
-              <span class="field-label">Tipo de parto</span>
-              <div class="chips-row">
-                <span
-                  class="chip chip-block chip-lg"
-                  [class.on]="
-                    form.get('datos_extra.neonatales.parto')?.value === 'P'
-                  "
-                  (click)="
-                    form.get('datos_extra.neonatales.parto')?.setValue('P')
-                  "
-                >
-                  Vaginal
-                </span>
-                <span
-                  class="chip chip-block chip-lg"
-                  [class.on]="
-                    form.get('datos_extra.neonatales.parto')?.value === 'C'
-                  "
-                  (click)="
-                    form.get('datos_extra.neonatales.parto')?.setValue('C')
-                  "
-                >
-                  Cesárea
-                </span>
+              <div class="field">
+                <span class="field-label">Edad gestacional (semanas)</span>
+                <input
+                  class="field-input"
+                  id="edad_gestacional"
+                  type="text"
+                  formControlName="edad_gestacional"
+                  soloNumero
+                  placeholder="Ej: 40"
+                />
               </div>
             </div>
 
-            <div class="field">
-              <span class="field-label">N° de gemelo</span>
-              <input
-                class="field-input"
-                id="gemelo"
-                type="text"
-                formControlName="gemelo"
-                soloNumero
-                placeholder="Ej: 1"
-              />
+            <div class="container" style="flex-grow: 1; flex-basis: 200">
+              <div class="field field-full">
+                <span class="field-label">Tipo de parto</span>
+                <div class="chips-row">
+                  <span
+                    class="chip chip-block chip-lg"
+                    [class.on]="
+                      form.get('datos_extra.neonatales.tipo_parto')?.value ===
+                      'P'
+                    "
+                    (click)="
+                      form
+                        .get('datos_extra.neonatales.tipo_parto')
+                        ?.setValue('P')
+                    "
+                  >
+                    Vaginal
+                  </span>
+                  <span
+                    class="chip chip-block chip-lg"
+                    [class.on]="
+                      form.get('datos_extra.neonatales.tipo_parto')?.value ===
+                      'C'
+                    "
+                    (click)="
+                      form
+                        .get('datos_extra.neonatales.tipo_ parto')
+                        ?.setValue('C')
+                    "
+                  >
+                    Cesárea
+                  </span>
+                </div>
+              </div>
+
+              <div class="field field-full">
+                <span class="field-label">Clase de parto</span>
+                <div class="chips-row">
+                  <span
+                    class="chip chip-block chip-lg"
+                    [class.on]="
+                      form.get('datos_extra.neonatales.Clase_parto')?.value ===
+                      'S'
+                    "
+                    (click)="
+                      form
+                        .get('datos_extra.neonatales.Clase_parto')
+                        ?.setValue('S')
+                    "
+                  >
+                    Simple
+                  </span>
+                  <span
+                    class="chip chip-block chip-lg"
+                    [class.on]="
+                      form.get('datos_extra.neonatales.Clase_parto')?.value ===
+                      'M'
+                    "
+                    (click)="
+                      form
+                        .get('datos_extra.neonatales.Clase_parto')
+                        ?.setValue('M')
+                    "
+                  >
+                    Multiple
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div class="field">
-              <span class="field-label">Expediente de la madre</span>
-              <input
-                class="field-input"
-                id="expediente_madre"
-                type="text"
-                formControlName="expediente_madre"
-                unaPalabra
-                placeholder="Ej: 12345"
-              />
+            <div class="container" style="flex-grow: 1; flex-basis: 200">
+              <div class="field">
+                <span class="field-label">N° de gemelo</span>
+                <input
+                  class="field-input"
+                  id="gemelo"
+                  type="text"
+                  formControlName="gemelo"
+                  soloNumero
+                  placeholder="Ej: 1"
+                />
+              </div>
+
+              <div class="field">
+                <span class="field-label">Expediente de la madre</span>
+                <input
+                  class="field-input"
+                  id="expediente_madre"
+                  type="text"
+                  formControlName="expediente_madre"
+                  unaPalabra
+                  placeholder="Ej: 12345"
+                />
+              </div>
             </div>
           </div>
           <!-- /neonatales -->

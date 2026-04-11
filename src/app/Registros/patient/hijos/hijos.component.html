@@ -1,3 +1,384 @@
-<p>
-  hijos works!
-</p>
+<!-- hijos.component.html -->
+
+<!-- ── HEADER ── -->
+<div class="hud-header">
+  <span class="hud-id">REG-HIJO</span>
+  <span class="hud-title">REGISTRAR HIJO / RECIÉN NACIDO</span>
+  <span class="hud-status">{{ isLoading() ? "PROCESANDO" : "ACTIVO" }}</span>
+</div>
+
+<!-- ── PASOS ── -->
+<div class="progress-track">
+  <ng-container *ngFor="let step of steps; let i = index; let last = last">
+    <div
+      class="prog-step"
+      [class.active]="sections[i]"
+      [class.done]="step.done"
+      (click)="goSection(i)"
+    >
+      <div class="prog-dot">
+        <span *ngIf="step.done">✓</span>
+        <span *ngIf="!step.done">{{
+          (i + 1).toString().padStart(2, "0")
+        }}</span>
+      </div>
+      <span class="prog-label">{{ step.label }}</span>
+    </div>
+    <div class="prog-line" *ngIf="!last"></div>
+  </ng-container>
+</div>
+
+<!-- ── ALERTA ── -->
+@if (error()) {
+  <div class="alert-danger">⚠ {{ error() }}</div>
+}
+
+<!-- ── ÉXITO ── -->
+@if (success()) {
+  <div class="alert-success">✅ {{ success() }}</div>
+}
+
+<!-- ── LOADING ── -->
+@if (isLoading()) {
+  <div class="loading-overlay"><div class="spinner"></div></div>
+}
+
+<!-- ── MODAL: SELECTOR DE NACIMIENTOS ── -->
+@if (mostrarSelectorNacimientos()) {
+  <div class="modal-overlay" (click)="mostrarSelectorNacimientos.set(false)">
+    <div class="modal-selector" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">¿Cuántos nacimientos hubo?</h2>
+        <p class="modal-subtitle">
+          Registraremos cada recién nacido de forma individual
+        </p>
+      </div>
+
+      <div class="modal-body">
+        <div class="contador-nacimientos">
+          <button
+            type="button"
+            class="btn-contador"
+            (click)="decrementarTotalNacimientos()"
+            [disabled]="totalNacimientos() <= 1"
+          >
+            −
+          </button>
+
+          <div class="numero-nacimientos">
+            <span class="numero">{{ totalNacimientos() }}</span>
+            <span class="label">nacimiento(s)</span>
+          </div>
+
+          <button
+            type="button"
+            class="btn-contador"
+            (click)="incrementarTotalNacimientos()"
+            [disabled]="totalNacimientos() >= 10"
+          >
+            +
+          </button>
+        </div>
+
+        <div class="info-box">
+          <p>
+            Se registrarán
+            <strong>{{ totalNacimientos() }} recién nacido(s)</strong>
+          </p>
+          <p class="text-secondary">
+            Después de guardar cada uno, podrás continuar con el siguiente
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn-modal btn-secondary"
+          (click)="mostrarSelectorNacimientos.set(false)"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn-modal btn-primary"
+          (click)="confirmarTotalNacimientos()"
+        >
+          Continuar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ============================================================ -->
+<!-- FORMULARIO                                                   -->
+<!-- ============================================================ -->
+<form
+  [formGroup]="form"
+  (ngSubmit)="guardar()"
+  [class.opacity-50]="isLoading()"
+>
+  <div class="main-body">
+    <!-- INDICADOR DE PROGRESO (si es múltiple) -->
+    @if (
+      form.get("datos_extra.tipo_parto")?.value === "Múltiple" &&
+      totalNacimientos() > 1
+    ) {
+      <div class="progress-bar-container">
+        <div class="progress-info">
+          <span class="progress-label"
+            >Registrando nacimiento {{ nacimientoActual() }} de
+            {{ totalNacimientos() }}</span
+          >
+          <span class="progress-percentage"
+            >{{
+              ((nacimientoActual() / totalNacimientos()) * 100).toFixed(0)
+            }}%</span
+          >
+        </div>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="(nacimientoActual() / totalNacimientos()) * 100"
+          ></div>
+        </div>
+      </div>
+    }
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- S1 · DATOS BÁSICOS                                     -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <div class="section-card" id="sec-0">
+      <div class="sec-head" (click)="toggleSection(0)">
+        <div class="sec-head-left">
+          <div class="sec-icon">
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <circle cx="8" cy="5" r="3" />
+              <path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+            </svg>
+          </div>
+          <span class="sec-title">Datos Básicos</span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center">
+          <span class="sec-badge">IDENTIFICACIÓN</span>
+          <span class="sec-toggle">{{ sections[0] ? "−" : "+" }}</span>
+        </div>
+      </div>
+
+      <div class="sec-body" *ngIf="sections[0]">
+        <!-- Sexo -->
+        <div class="field field-full">
+          <span class="field-label"
+            >Sexo biológico <span class="req">*</span></span
+          >
+          <div class="chips-row">
+            <span
+              *ngFor="let opt of opcionesSexo"
+              class="chip chip-block"
+              [class.on]="form.get('sexo')?.value === opt.valor"
+              (click)="setSexo(opt.valor)"
+            >
+              {{ opt.label }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Fecha de nacimiento -->
+        <div class="field">
+          <span class="field-label"
+            >Fecha de nacimiento <span class="req">*</span></span
+          >
+          <input
+            class="field-input"
+            type="date"
+            formControlName="fecha_nacimiento"
+          />
+        </div>
+
+        <!-- Hora de nacimiento -->
+        <div class="field" formGroupName="datos_extra">
+          <span class="field-label">Hora de nacimiento</span>
+          <input
+            class="field-input"
+            type="time"
+            formControlName="hora_nacimiento"
+          />
+        </div>
+
+        <!-- Estado vital -->
+        <div class="field field-full">
+          <span class="field-label">Estado del paciente</span>
+          <div class="chips-row">
+            <span
+              *ngFor="let opt of opcionesEstado"
+              class="chip chip-block"
+              [class.on]="form.get('estado')?.value === opt.valor"
+              (click)="setEstado(opt.valor)"
+            >
+              {{ opt.label }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /S1 -->
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- S2 · DATOS DEL PARTO                                   -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <div class="section-card" id="sec-1">
+      <div class="sec-head" (click)="toggleSection(1)">
+        <div class="sec-head-left">
+          <div class="sec-icon">
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <circle cx="8" cy="8" r="5" />
+              <path d="M8 5v3l2 2" />
+            </svg>
+          </div>
+          <span class="sec-title">Datos del Parto</span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center">
+          <span class="sec-badge">NEONATALES</span>
+          <span class="sec-toggle">{{ sections[1] ? "−" : "+" }}</span>
+        </div>
+      </div>
+
+      <div class="sec-body" *ngIf="sections[1]" formGroupName="datos_extra">
+        <!-- Peso al nacer -->
+        <div class="field">
+          <span class="field-label">Peso al nacer (libras.onzas)</span>
+          <input
+            class="field-input"
+            type="text"
+            formControlName="peso_nacimiento"
+            placeholder="Ej: 3.08"
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- Edad gestacional -->
+        <div class="field">
+          <span class="field-label">Edad gestacional (semanas)</span>
+          <input
+            class="field-input"
+            type="text"
+            formControlName="edad_gestacional"
+            soloNumero
+            placeholder="Ej: 40"
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- ✅ TIPO DE PARTO: Simple, Gemelar, Múltiple -->
+        <div class="field field-full">
+          <span class="field-label">Tipo de parto</span>
+          <div class="chips-row">
+            <span
+              *ngFor="let opt of opcionesTipoParto"
+              class="chip chip-block chip-lg"
+              [class.on]="
+                form.get('datos_extra.tipo_parto')?.value === opt.valor
+              "
+              (click)="setTipoParto(opt.valor)"
+            >
+              {{ opt.label }}
+            </span>
+          </div>
+        </div>
+
+        <!-- ✅ CLASE DE PARTO: Eutócico, Distócico -->
+        <div class="field field-full">
+          <span class="field-label">Clase de parto</span>
+          <div class="chips-row">
+            <span
+              *ngFor="let opt of opcionesClaseParto"
+              class="chip chip-block chip-lg"
+              [class.on]="
+                form.get('datos_extra.clase_parto')?.value === opt.valor
+              "
+              (click)="setClaseParto(opt.valor)"
+            >
+              {{ opt.label }}
+            </span>
+          </div>
+        </div>
+
+        <!-- N° de gemelo (solo si tipo_parto es Gemelar o Múltiple) -->
+        @if (
+          form.get("datos_extra.tipo_parto")?.value === "Gemelar" ||
+          form.get("datos_extra.tipo_parto")?.value === "Múltiple"
+        ) {
+          <div class="field">
+            <span class="field-label">N° de gemelo/múltiple</span>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="gemelo"
+              soloNumero
+              placeholder="Ej: 1"
+              autocomplete="off"
+            />
+          </div>
+        }
+
+        <div class="divider"></div>
+      </div>
+    </div>
+    <!-- /S2 -->
+  </div>
+  <!-- /main-body -->
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- DOCK DE ACCIONES                                       -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="action-dock">
+    <span class="dock-hint"
+      >Nuevo registro · hijo de paciente #{{ pacienteId }}
+      <span
+        *ngIf="
+          form.get('datos_extra.tipo_parto')?.value === 'Múltiple' &&
+          totalNacimientos() > 1
+        "
+      >
+        (Nacimiento {{ nacimientoActual() }}/{{ totalNacimientos() }})
+      </span>
+    </span>
+
+    <button
+      type="button"
+      class="btn-dock btn-dock-cancel"
+      (click)="volver()"
+      [disabled]="isLoading()"
+    >
+      <span [innerHTML]="cancelIcon"></span> Cancelar
+    </button>
+
+    <button
+      type="submit"
+      class="btn-dock btn-dock-save"
+      [disabled]="isLoading()"
+    >
+      <span [innerHTML]="saveIcon"></span>
+      @if (
+        form.get("datos_extra.tipo_parto")?.value === "Múltiple" &&
+        totalNacimientos() > 1 &&
+        nacimientoActual() < totalNacimientos()
+      ) {
+        {{ isLoading() ? "Guardando…" : "Guardar y Siguiente" }}
+      } @else {
+        {{ isLoading() ? "Guardando…" : "Registrar Hijo" }}
+      }
+    </button>
+  </div>
+</form>

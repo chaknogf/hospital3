@@ -161,3 +161,20 @@ export interface Totales {
 }
 
 
+
+export interface Hijode {
+  sexo: 'M' | 'F';
+  fecha_nacimiento: string;  // Formato: YYYY-MM-DD
+  estado: 'V' | 'F';         // Vivo o Fallecido
+  datos_extra?: HijodeDatosExtra;
+}
+
+export interface HijodeDatosExtra {
+  peso_nacimiento?: string;      // en lb.oz
+  edad_gestacional?: string;     // en semanas
+  tipo_parto?: string;           // ej: "pes", "cesarea"
+  clase_parto?: string;          // ej: "simple", "gemelar"
+  gemelo?: string | null;        // ej: "gemelo_a", "gemelo_b", null
+  extrahositalario?: boolean;    // nacimiento extra-hospitalario
+  hora_nacimiento?: string;      // Formato: HH:MM:SS.000Z
+}

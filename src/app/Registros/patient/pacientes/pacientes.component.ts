@@ -12,13 +12,14 @@ import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
+import { HijosComponent } from "../hijos/hijos.component";
 
 @Component({
   selector: 'app-pacientes',
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe]
+  imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe, HijosComponent]
 })
 export class PacientesComponent implements OnInit {
 
@@ -230,6 +231,7 @@ export class PacientesComponent implements OnInit {
 
   get pacienteSeleccionadoObj(): Paciente | undefined {
     return this.pacientes.find(p => p.id === this.pacienteSeleccionado);
+
   }
 
   get mujerEnEdadFertil(): boolean {
@@ -262,11 +264,12 @@ export class PacientesComponent implements OnInit {
 
   }
 
+  // pacientes.component.ts
   hijode(id: number): void {
+    const madre = this.pacientes.find(p => p.id === id);
     this.router.navigate(['/hijo', id]);
     this.dialog.nativeElement.close();
   }
-
   // ══════════════════════════════════════════════════════════
   // UI HELPERS
   // ══════════════════════════════════════════════════════════

@@ -192,18 +192,20 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
           estado_civil: [''],
           ocupacion: [''],
           educacion: [''],
-          estudiante_publico: ['N'],
-          empleado_publico: ['N'],
-          discapacidad: ['N']
+          estudiante_publico: ['NO'],
+          empleado_publico: ['NO'],
+          discapacidad: ['NO']
         }),
 
         neonatales: this.fb.group({
           peso_nacimiento: [''],
           edad_gestacional: [''],
-          parto: [''],
+          clase_parto: [''],
+          tipo_parto: [''],
           gemelo: [''],
           expediente_madre: [''],
-          extrahositalario: [false]
+          extrahositalario: [false],
+          hora_nacimiento: ['']
         })
       }),
 
@@ -761,11 +763,18 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   }
 
   // ======= SOCIOECONÓMICO =======
+  // ======= SOCIOECONÓMICO =======
   setSocio(
     campo: 'estudiante_publico' | 'empleado_publico' | 'discapacidad',
     valor: 'SI' | 'NO'
   ): void {
-    this.form.get(`datos_extra.socioeconomicos.${campo}`)?.setValue(valor);
+    const control = this.form.get(`datos_extra.socioeconomicos.${campo}`);
+    if (control) {
+      control.setValue(valor);
+      control.markAsDirty();
+      control.markAsTouched();
+      console.log(`✅ ${campo} = ${valor}`); // Para verificar en consola
+    }
   }
 
   sections = [true, true, true, true, true, true, true];
