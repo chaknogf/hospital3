@@ -63,14 +63,14 @@ export class HijosComponent implements OnInit, OnDestroy {
 
   // ✅ TIPO DE PARTO: Simple, Gemelar, Múltiple
   opcionesTipoParto = [
-    { label: 'Simple', valor: 'S' },
-    { label: 'Múltiple', valor: 'M' },
+    { label: 'Simple', valor: 'Simple' },
+    { label: 'Múltiple', valor: 'Multiple' },
   ];
 
   // ✅ CLASE DE PARTO: Eutócico, Distócico
   opcionesClaseParto = [
-    { label: 'Eutócico (Vaginal)', valor: 'P' },
-    { label: 'Distócico (Cesárea)', valor: 'C' },
+    { label: 'Eutócico (Vaginal)', valor: 'Pes' },
+    { label: 'Distócico (Cesárea)', valor: 'Cstp' },
   ];
 
   // ======= CONTROL DE MÚLTIPLES NACIMIENTOS =======

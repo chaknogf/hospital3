@@ -267,8 +267,8 @@
         <span class="rc-modal-title">Recibir en Recepción</span>
         <span class="rc-modal-sub" *ngIf="consultaRecibiendo">
           Exp: {{ consultaRecibiendo.expediente }} ·
-          {{ consultaRecibiendo.paciente?.nombre?.primer_nombre }}
-          {{ consultaRecibiendo.paciente?.nombre?.primer_apellido }}
+          {{ consultaRecibiendo.paciente.nombre.primer_nombre }}
+          {{ consultaRecibiendo.paciente.nombre.primer_apellido }}
         </span>
       </div>
       <button class="rc-close" (click)="cerrarModalRecibido()">✕</button>
@@ -328,8 +328,8 @@
         <span class="rc-modal-title">Archivar Consulta</span>
         <span class="rc-modal-sub" *ngIf="consultaArchivando">
           Exp: {{ consultaArchivando.expediente }} ·
-          {{ consultaArchivando.paciente?.nombre?.primer_nombre }}
-          {{ consultaArchivando.paciente?.nombre?.primer_apellido }}
+          {{ consultaArchivando.paciente.nombre.primer_nombre }}
+          {{ consultaArchivando.paciente.nombre.primer_apellido }}
         </span>
       </div>
       <button class="rc-close" (click)="cerrarModalArchivar()">✕</button>

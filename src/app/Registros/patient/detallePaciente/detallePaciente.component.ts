@@ -18,7 +18,7 @@ import { DetalleConsultaComponent } from "../../adminsion/detalleConsulta/detall
   templateUrl: './detallePaciente.component.html',
   styleUrls: ['./detallePaciente.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe, DetalleConsultaComponent]
+  imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe]
 })
 export class DetallePacienteComponent implements OnInit, OnChanges {
   @Input() pacienteId: number | null = null;
