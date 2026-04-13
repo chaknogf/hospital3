@@ -10,13 +10,15 @@ import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { Paciente, Referencia } from '../../../interface/interfaces';
 import { heartIcon, ghostIcon, manIcon, womanIcon, personFicha, regresarIcon } from './../../../shared/icons/svg-icon';
 import { CuiPipe } from '../../../pipes/cui.pipe';
+import { ConsultasIdPaciente } from '../../../interface/consultas';
+import { DetalleConsultaComponent } from "../../adminsion/detalleConsulta/detalleConsulta.component";
 
 @Component({
   selector: 'detallePaciente',
   templateUrl: './detallePaciente.component.html',
   styleUrls: ['./detallePaciente.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe]
+  imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe, DetalleConsultaComponent]
 })
 export class DetallePacienteComponent implements OnInit, OnChanges {
   @Input() pacienteId: number | null = null;
@@ -25,8 +27,11 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   // Listas procesadas para la vista
   demograficosFiltrados: { key: string; valor: any }[] = [];
   socioeconomicosFiltrados: { key: string; valor: any }[] = [];
+  referenciasFiltradas: Referencia[] = [];
   metadatosArray: { key: string; valor: any }[] = [];
   neonatalesFiltrados: { key: string; valor: any }[] = [];
+  consultasProcesadas: { titulo: string; campos: { key: string; valor: any }[] }[] = [];
+  consultasPorPaciente: ConsultasIdPaciente[] = [];
 
   cargando: boolean = true;
   error: string | null = null;
@@ -56,20 +61,26 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     if (this.pacienteId) {
       this.cargarPaciente();
+      this.cargarConsultas();
+
     } else {
       const id = Number(this.ruta.snapshot.paramMap.get('id'));
       if (id) {
+        this.pacienteId = id;
         this.cargarPacienteById(id);
+        this.cargarConsultas();
       } else {
         this.error = 'No se proporcionó un ID de paciente';
         this.cargando = false;
       }
     }
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['pacienteId'] && this.pacienteId) {
       this.cargarPaciente();
+      this.cargarConsultas();
     }
   }
 
@@ -118,9 +129,40 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     }
   }
 
+  private cargarConsultas(): void {
+    if (!this.pacienteId) return;
+
+    this.api.getConsultasIdPaciente(this.pacienteId, {}).subscribe({
+      next: (data) => {
+        this.consultasPorPaciente = data;
+        console.log('Consultas del paciente:', this.consultasPorPaciente);
+
+        this.consultasProcesadas = data.map((consulta, index) => ({
+          titulo: `Consulta ${index + 1}`,
+          campos: Object.entries(consulta)
+            .filter(([_, valor]) =>
+              valor !== null && valor !== undefined && valor !== ''
+            )
+            .map(([key, valor]) => ({
+              key,
+              valor
+            }))
+        }));
+      },
+      error: (err: any) => {
+        console.error('Error al cargar las consultas del paciente:', err);
+      }
+    });
+  }
+
   /** Prepara listas filtradas para mostrar en HTML */
   private procesarPaciente(): void {
     if (!this.paciente) return;
+
+    // Procesar referencias    if (Array.isArray(this.paciente.referencias)) {
+    if (Array.isArray(this.paciente.referencias)) {
+      this.referenciasFiltradas = this.paciente.referencias.filter(ref => ref != null);
+    }
 
     // Procesar datos demográficos
     if (this.paciente.datos_extra?.demograficos) {
@@ -207,6 +249,16 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
       empleado_publico: 'Empleado público',
       discapacidad: 'Discapacidad',
 
+      // Neonatales
+      peso_nacer: 'Peso al nacer',
+      tipo_parto: 'Tipo de parto',
+      clase_parto: 'Clase de parto',
+      hora_nacimiento: 'Hora de nacimiento',
+      peso_nacimiento: 'Peso al nacimiento Lb.Onz',
+      edad_gestacional: 'Edad gestacional al nacer (semanas)',
+      expediente_madre: 'Expediente de la madre',
+      extrahospitalario: 'Nacimiento extrahospitalario',
+
       // Otros
       personaid: 'CUI Persona',
       defuncion: 'Fecha de defunción',
@@ -214,6 +266,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
 
     return mapaClaves[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   }
+
 
   /** Obtener el icono de sexo */
   get iconoSexo(): SafeHtml {
@@ -292,5 +345,12 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     this.router.navigate(['/pacientes']);
   }
 
+  editar(id: number): void {
+    this.router.navigate(['/pacienteEdit', id]);
+  }
+
+  verDetalle(consultaId: number) {
+    this.router.navigate(['/detalleAdmision', consultaId]);
+  }
 
 }

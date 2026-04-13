@@ -508,6 +508,10 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
     const pacienteForm = this.form.getRawValue();
 
+    console.log(pacienteForm)
+
+
+
     // referencias limpias
     pacienteForm.referencias = this.referencias.value?.filter((r: any) => r.nombre?.trim()) || null;
 
@@ -773,7 +777,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
       control.setValue(valor);
       control.markAsDirty();
       control.markAsTouched();
-      console.log(`✅ ${campo} = ${valor}`); // Para verificar en consola
+      // console.log(`✅ ${campo} = ${valor}`); // Para verificar en consola
     }
   }
 

@@ -311,6 +311,16 @@ export interface ConsultaResponse extends ConsultaBase {
   paciente: Paciente;
 }
 
+export interface ConsultasIdPaciente {
+  id: number;
+  tipo_consulta: number;
+  especialidad: string;
+  fecha_consulta: string;
+  hora_consulta: string;
+
+
+}
+
 // ===================================================================
 // TOTALES Y ESTADÍSTICAS
 // ===================================================================

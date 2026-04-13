@@ -150,6 +150,7 @@ export class PacienteUtilService {
       return this.crearDatosExtraBackendVacio();
     }
 
+
     const demo: any = datosExtra.demograficos || {};
     const socio: any = datosExtra.socioeconomicos || {};
     const neo: any = datosExtra.neonatales || {};
@@ -175,7 +176,9 @@ export class PacienteUtilService {
       neonatales: {
         peso_nacimiento: neo.peso_nacimiento || null,
         edad_gestacional: neo.edad_gestacional || null,
-        parto: neo.parto || null,
+        hora_nacimiento: neo.hora_nacimiento || null,
+        tipo_parto: neo.tipo_parto || null,
+        clase_parto: neo.clase_parto || null,
         gemelo: neo.gemelo || null,
         expediente_madre: neo.expediente_madre || null
       }
@@ -189,6 +192,7 @@ export class PacienteUtilService {
     const demo: Demograficos = datosExtra.demograficos || {};
     const socio: Socioeconomicos = datosExtra.socioeconomicos || {};
     const neo: Neonatales = datosExtra.neonatales || {};
+
 
     return {
       defuncion: datosExtra.defuncion || '',
@@ -212,7 +216,9 @@ export class PacienteUtilService {
       neonatales: {
         peso_nacimiento: neo.peso_nacimiento || '',
         edad_gestacional: neo.edad_gestacional || '',
-        parto: neo.parto || '',
+        hora_nacimiento: neo.hora_nacimiento || '',
+        tipo_parto: neo.tipo_parto || '',
+        clase_parto: neo.clase_parto || '',
         gemelo: neo.gemelo || '',
         expediente_madre: neo.expediente_madre || ''
       }
@@ -245,7 +251,9 @@ export class PacienteUtilService {
       neonatales: {
         peso_nacimiento: '',
         edad_gestacional: '',
-        parto: '',
+        hora_nacimiento: '',
+        tipo_parto: '',
+        clase_parto: '',
         gemelo: '',
         expediente_madre: ''
       }
@@ -277,7 +285,9 @@ export class PacienteUtilService {
       neonatales: {
         peso_nacimiento: null,
         edad_gestacional: null,
-        parto: null,
+        hora_nacimiento: null,
+        tipo_parto: null,
+        clase_parto: null,
         gemelo: null,
         expediente_madre: null
       }

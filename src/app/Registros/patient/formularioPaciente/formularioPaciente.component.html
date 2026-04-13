@@ -15,25 +15,6 @@
 </div>
 
 <!-- ── BARRA DE PROGRESO / PASOS ── -->
-<div class="progress-track">
-  <ng-container *ngFor="let step of steps; let i = index; let last = last">
-    <div
-      class="prog-step"
-      [class.active]="sections[i]"
-      [class.done]="step.done"
-      (click)="goSection(i)"
-    >
-      <div class="prog-dot">
-        <span *ngIf="step.done">✓</span>
-        <span *ngIf="!step.done">{{
-          (i + 1).toString().padStart(2, "0")
-        }}</span>
-      </div>
-      <span class="prog-label">{{ step.label }}</span>
-    </div>
-    <div class="prog-line" *ngIf="!last"></div>
-  </ng-container>
-</div>
 
 <!-- ── ALERTAS ── -->
 @if (error()) {
@@ -1055,8 +1036,7 @@
                   id="hora_nacimiento"
                   type="time"
                   formControlName="hora_nacimiento"
-                  unaPalabra
-                  placeholder="Ej: 08:30"
+                  step="60"
                 />
               </div>
 
@@ -1092,12 +1072,12 @@
                     class="chip chip-block chip-lg"
                     [class.on]="
                       form.get('datos_extra.neonatales.tipo_parto')?.value ===
-                      'P'
+                      'Pes'
                     "
                     (click)="
                       form
                         .get('datos_extra.neonatales.tipo_parto')
-                        ?.setValue('P')
+                        ?.setValue('Pes')
                     "
                   >
                     Vaginal
@@ -1106,12 +1086,12 @@
                     class="chip chip-block chip-lg"
                     [class.on]="
                       form.get('datos_extra.neonatales.tipo_parto')?.value ===
-                      'C'
+                      'Cstp'
                     "
                     (click)="
                       form
                         .get('datos_extra.neonatales.tipo_ parto')
-                        ?.setValue('C')
+                        ?.setValue('Cstp')
                     "
                   >
                     Cesárea
@@ -1125,13 +1105,13 @@
                   <span
                     class="chip chip-block chip-lg"
                     [class.on]="
-                      form.get('datos_extra.neonatales.Clase_parto')?.value ===
-                      'S'
+                      form.get('datos_extra.neonatales.clase_parto')?.value ===
+                      'Simple'
                     "
                     (click)="
                       form
-                        .get('datos_extra.neonatales.Clase_parto')
-                        ?.setValue('S')
+                        .get('datos_extra.neonatales.clase_parto')
+                        ?.setValue('Simple')
                     "
                   >
                     Simple
@@ -1139,13 +1119,13 @@
                   <span
                     class="chip chip-block chip-lg"
                     [class.on]="
-                      form.get('datos_extra.neonatales.Clase_parto')?.value ===
-                      'M'
+                      form.get('datos_extra.neonatales.clase_parto')?.value ===
+                      'Multiple'
                     "
                     (click)="
                       form
-                        .get('datos_extra.neonatales.Clase_parto')
-                        ?.setValue('M')
+                        .get('datos_extra.neonatales.clase_parto')
+                        ?.setValue('Multiple')
                     "
                   >
                     Multiple
@@ -1192,9 +1172,28 @@
   <!-- DOCK DE ACCIONES (sticky bottom)                       -->
   <!-- ══════════════════════════════════════════════════════ -->
   <div class="action-dock">
-    <span class="dock-hint">
+    <!-- <span class="dock-hint">
       {{ enEdicion() ? "Actualizando registro" : "Nuevo registro" }}
-    </span>
+    </span> -->
+    <div class="progress-track">
+      <ng-container *ngFor="let step of steps; let i = index; let last = last">
+        <div
+          class="prog-step"
+          [class.active]="sections[i]"
+          [class.done]="step.done"
+          (click)="goSection(i)"
+        >
+          <div class="prog-dot">
+            <span *ngIf="step.done">✓</span>
+            <span *ngIf="!step.done">{{
+              (i + 1).toString().padStart(2, "0")
+            }}</span>
+          </div>
+          <span class="prog-label">{{ step.label }}</span>
+        </div>
+        <div class="prog-line" *ngIf="!last"></div>
+      </ng-container>
+    </div>
 
     <button
       type="button"
@@ -1202,17 +1201,17 @@
       (click)="volver()"
       [disabled]="isLoading()"
     >
-      <span [innerHTML]="cancelIcon"></span> Cancelar
+      ❌ Cancelar
     </button>
 
-    <button
+    <!-- <button
       type="button"
       class="btn-dock btn-dock-renap"
       (click)="irRenap()"
       [disabled]="isLoading()"
     >
-      <span [innerHTML]="findIcon"></span> Buscar RENAP
-    </button>
+      <span [innerHTML]="findIcon" class="btn-text"></span> Buscar RENAP
+    </button> -->
 
     <button
       type="submit"
@@ -1220,8 +1219,8 @@
       (click)="guardar()"
       [disabled]="!form.valid || isLoading()"
     >
-      <span [innerHTML]="saveIcon"></span>
-      {{ isLoading() ? "Guardando…" : "Guardar Paciente" }}
+      💾
+      {{ isLoading() ? "Guardando…" : "Guardar" }}
     </button>
   </div>
 </form>

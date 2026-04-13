@@ -1,3 +1,4 @@
+import { ConsultasIdPaciente } from './../interface/consultas';
 // api.service.ts
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
@@ -423,6 +424,30 @@ export class ApiService {
     return this.http.get<ConsultaOut[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
       tap(response => {
         // Convertir a ConsultaResponse si necesitas agregar datos del paciente
+        this.consultasSubject.next(response as any);
+      }),
+      catchError(error => this.manejarError(error, 'obtener consultas'))
+    );
+  }
+
+  /**
+  * Busca consultas con filtros múltiples
+  * GET /consultas/
+  */
+  getConsultasIdPaciente(
+    pacienteId: number,
+    filtros?: FiltroConsulta
+  ): Observable<ConsultasIdPaciente[]> {
+
+    this.ultimoFiltroConsulta.filtro = filtros;
+
+    const params = this.limpiarParametros(filtros);
+
+    return this.http.get<ConsultasIdPaciente[]>(
+      `${this.baseUrl}/consultas/pacienteId/${pacienteId}`, // ✅ URL correcta
+      { params }
+    ).pipe(
+      tap(response => {
         this.consultasSubject.next(response as any);
       }),
       catchError(error => this.manejarError(error, 'obtener consultas'))

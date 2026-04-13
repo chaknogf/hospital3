@@ -1,238 +1,325 @@
-<div class="ficha-paciente" *ngIf="paciente && !cargando">
-  <!-- Encabezado -->
-  <header class="ficha-header">
-    <div class="info-header">
-      <h1>
-        {{ paciente.nombre.primer_nombre }} {{ paciente.nombre.segundo_nombre }}
-        {{ paciente.nombre.otro_nombre }}
-      </h1>
-      <p class="subtitulo">
-        {{ paciente.nombre.primer_apellido }}
-        {{ paciente.nombre.segundo_apellido }}
-        {{ paciente.nombre.apellido_casada }}
-      </p>
-      <div
-        class="estado-badge"
-        [ngClass]="paciente.estado === 'V' ? 'vivo' : 'fallecido'"
-      >
-        <div class="estado-pulse-ring"></div>
-        <div class="estado-icon">
-          <svg
-            *ngIf="paciente.estado === 'V'"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              d="M10 17.5s-7-4.5-7-9a4 4 0 018 0 4 4 0 018 0c0 4.5-7 9-7 9z"
-            />
-          </svg>
-          <svg
-            *ngIf="paciente.estado !== 'V'"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <circle cx="7.5" cy="10" r="1" />
-            <circle cx="12.5" cy="10" r="1" />
-            <path
-              d="M3 7c0-3.9 3.1-7 7-7s7 3.1 7 7v8l-2-2-2 2-2-2-2 2-2-2-2 2V7z"
-            />
-          </svg>
-        </div>
-        <div class="estado-info">
-          <span class="estado-label">Estado del paciente</span>
-          <span class="estado-valor">{{ estadoPaciente }}</span>
-        </div>
-      </div>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ESTADOS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div *ngIf="cargando" class="dc-loading">
+  <div class="loading-ring"></div>
+  <span>Cargando paciente...</span>
+</div>
+
+<div *ngIf="error && !cargando" class="dc-error">
+  <span>⚠️ {{ error }}</span>
+  <button class="hud-btn" (click)="regresar()">Regresar</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PÁGINA -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="dc-page" *ngIf="paciente && !cargando && !error">
+  <!-- ══ HEADER HUD ═══════════════════════════════════════ -->
+  <div class="hud-header">
+    <button class="btn" (click)="regresar()">❌ Salir</button>
+
+    <div class="hud-title">
+      <span class="hud-label">Paciente</span>
+      <span class="hud-id">
+        {{ paciente.expediente || "—" }}
+      </span>
+      <span class="hud-sep">·</span>
+      <span class="hud-doc">
+        {{ paciente.cui | cui }}
+      </span>
     </div>
 
-    <button class="btn-volver" (click)="regresar()">
-      <span [innerHTML]="regresarIcon"></span> Regresar
-    </button>
-  </header>
+    <div class="hud-actions">
+      <div
+        class="status-badge"
+        [ngClass]="{
+          'status-activo': paciente.estado === 'V',
+          'status-egreso': paciente.estado !== 'V',
+        }"
+      >
+        <span class="status-dot"></span>
+        <span class="status-text">{{ estadoPaciente }}</span>
+      </div>
+      <button class="btn" (click)="editar(paciente.id)">💻 Editar</button>
+    </div>
+  </div>
 
-  <div></div>
-
-  <!-- GRID DOS COLUMNAS -->
-  <div class="ficha-grid">
-    <!-- COLUMNA IZQUIERDA -->
-    <div class="ficha-col">
-      <!-- Identificación -->
-      <section class="section section-cv">
-        <h2>🆔 Identificación</h2>
-        <div class="cv-row">
-          <span class="cv-label">CUI</span>
-          <span class="cv-value">{{ paciente.cui | cui }}</span>
-        </div>
-        <div class="cv-row">
-          <span class="cv-label">Expediente</span>
-          <span class="cv-value">{{
-            paciente.expediente || "Sin expediente"
-          }}</span>
-        </div>
-        <div class="cv-row">
-          <span class="cv-label">Pasaporte</span>
-          <span class="cv-value">{{ paciente.pasaporte || "No aplica" }}</span>
-        </div>
-        <div class="cv-row">
-          <span class="cv-label">Otro Id</span>
-          <span class="cv-value">{{ paciente.datos_extra?.personaid }}</span>
-        </div>
-      </section>
-
-      <!-- Datos Vitales -->
-      <section class="section section-cv">
-        <h2>🧬 Datos Vitales</h2>
-        <div class="cv-row">
-          <span class="cv-label">Sexo</span>
-          <span class="cv-value">{{
-            paciente.sexo?.trim() === "M" ? "Masculino" : "Femenino"
-          }}</span>
-        </div>
-        <div class="cv-row">
-          <span class="cv-label">Fecha de nacimiento</span>
-          <span class="cv-value">{{
-            paciente.fecha_nacimiento | date: "dd/MM/yyyy"
-          }}</span>
-        </div>
-        <div class="cv-row">
-          <span class="cv-label">Edad</span>
-          <span class="cv-value">{{ paciente.fecha_nacimiento | edad }}</span>
-        </div>
-        @if (fechaDefuncion) {
-          <div class="cv-row">
-            <span class="cv-label">Fecha de defunción</span>
-            <span class="cv-value">{{ formatearFecha(fechaDefuncion) }}</span>
+  <!-- ══ GRID PRINCIPAL ═══════════════════════════════════ -->
+  <div class="dc-grid">
+    <!-- ───── IZQUIERDA ───── -->
+    <div class="dc-col">
+      <!-- PERFIL -->
+      <div class="dc-card">
+        <div class="patient-hero">
+          <div class="patient-avatar">
+            <span class="avatar-letter">
+              {{ paciente.nombre.primer_nombre[0] }}
+              {{ paciente.nombre.primer_apellido[0] }}
+            </span>
           </div>
-        }
-      </section>
 
-      <!-- Contacto -->
-      <section class="section section-cv">
-        <h2>📞 Contacto</h2>
-        @if (paciente.contacto?.domicilio) {
-          <div class="cv-row">
-            <span class="cv-label">Domicilio</span>
-            <span class="cv-value">{{
-              paciente.contacto?.domicilio | titlecase
-            }}</span>
-          </div>
-        }
-        @if (paciente.contacto?.municipio) {
-          <div class="cv-row">
-            <span class="cv-label">Municipio</span>
-            <span class="cv-value">{{
-              paciente.contacto?.municipio | datosExtra: "municipio"
-            }}</span>
-          </div>
-        }
-        @if (paciente.contacto?.telefonos) {
-          <div class="cv-row">
-            <span class="cv-label">Teléfonos</span>
-            <span class="cv-value">{{ paciente.contacto?.telefonos }}</span>
-          </div>
-        }
-      </section>
+          <div class="patient-name-block">
+            <p class="patient-name">
+              {{ paciente.nombre.primer_apellido }}
+              {{ paciente.nombre.segundo_apellido }}
+              {{ paciente.nombre.apellido_casada }}
+            </p>
 
-      <!-- Referencias -->
-      @if (tieneReferencias) {
-        <section class="section section-cv">
-          <h2>👥 Referencias</h2>
-          <div
-            class="cv-reference"
-            *ngFor="let ref of paciente.referencias; let i = index"
-          >
-            <strong>Referencia {{ i + 1 }}</strong>
-            <div class="ref-data">
-              <span>{{ ref.nombre | titlecase }}</span>
-              <span class="ref-sep">·</span>
-              <span>{{ ref.parentesco | titlecase }}</span>
-              <span class="ref-sep">·</span>
-              <span>{{ ref.telefono || "Sin teléfono" }}</span>
-              @if (ref.expediente) {
-                <span class="ref-sep">·</span>
-                <span>{{ ref.expediente }}</span>
-              }
-              @if (ref.idpersona) {
-                <span class="ref-sep">·</span>
-                <span>{{ ref.idpersona }}</span>
-              }
-              @if (ref.responsable === true) {
-                <span class="ref-responsable">★ Responsable</span>
-              }
+            <p class="patient-firstname">
+              {{ paciente.nombre.primer_nombre }}
+              {{ paciente.nombre.segundo_nombre }}
+              {{ paciente.nombre.otro_nombre }}
+            </p>
+
+            <div class="patient-tags">
+              <span
+                class="ptag"
+                [class.ptag-m]="paciente.sexo === 'M'"
+                [class.ptag-f]="paciente.sexo !== 'M'"
+              >
+                {{ paciente.sexo === "M" ? "♂ Masculino" : "♀ Femenino" }}
+              </span>
+
+              <span class="ptag ptag-age">
+                {{ paciente.fecha_nacimiento | edad }}
+              </span>
             </div>
           </div>
-        </section>
-      }
-    </div>
-    <!-- /col izquierda -->
+        </div>
 
-    <!-- COLUMNA DERECHA -->
-    <div class="ficha-col">
-      <!-- Demográficos -->
-      @if (demograficosFiltrados.length > 0) {
-        <section class="section section-cv">
-          <h2>🌍 Datos Demográficos</h2>
-          <div class="cv-row" *ngFor="let dato of demograficosFiltrados">
-            <span class="cv-label">{{ convertirClave(dato.key) }}</span>
-            <span class="cv-value">{{
-              dato.valor | datosExtra: dato.key
-            }}</span>
+        <!-- INFO BASE -->
+        <div class="field-grid">
+          <div class="dc-field">
+            <span class="dc-lbl">Nacimiento</span>
+            <span class="dc-val">
+              {{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
+            </span>
           </div>
-        </section>
-      }
 
-      <!-- Socioeconómicos -->
-      @if (socioeconomicosFiltrados.length > 0) {
-        <section class="section section-cv">
-          <h2>💼 Datos Socioeconómicos</h2>
-          <div class="cv-row" *ngFor="let dato of socioeconomicosFiltrados">
-            <span class="cv-label">{{ convertirClave(dato.key) }}</span>
-            <span class="cv-value">{{
-              dato.valor | datosExtra: dato.key
-            }}</span>
-          </div>
-        </section>
-      }
+          @if (fechaDefuncion) {
+            <div class="dc-field">
+              <span class="dc-lbl">Defunción</span>
+              <span class="dc-val">{{ formatearFecha(fechaDefuncion) }}</span>
+            </div>
+          }
 
-      <!-- Neonatales -->
-      @if (neonatalesFiltrados.length > 0) {
-        <section class="section section-cv">
-          <h2>👶 Datos Neonatales</h2>
-          <div class="cv-row" *ngFor="let dato of neonatalesFiltrados">
-            <span class="cv-label">{{ convertirClave(dato.key) }}</span>
-            <span class="cv-value">{{ dato.valor }}</span>
+          <div class="dc-field">
+            <span class="dc-lbl">Pasaporte</span>
+            <span class="dc-val">{{ paciente.pasaporte || "—" }}</span>
           </div>
-        </section>
-      }
-    </div>
-    <!-- /col derecha -->
-  </div>
-  <!-- /ficha-grid -->
-  <!-- Metadatos -->
-  @if (metadatosArray.length > 0) {
-    <section class="section section-cv">
-      <h2>📌 Información del Sistema</h2>
-      <div class="cv-row" *ngFor="let meta of metadatosArray">
-        <div class="cv-label">{{ meta.key }}</div>
-        <div class="cv-value cv-inline">
-          👤 <strong>{{ meta.valor.usuario }}</strong> &nbsp;|&nbsp; 🕒
-          {{ meta.valor.registro }} &nbsp;|&nbsp; ✍️ {{ meta.valor.accion }}
-          @if (meta.valor.expediente_duplicado == true) {
-            &nbsp;|&nbsp; 📄 Dup: Sí
+
+          <div class="dc-field">
+            <span class="dc-lbl">ID alterno</span>
+            <span class="dc-val">{{ paciente.datos_extra?.personaid }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACTO -->
+      <div class="dc-card">
+        <div class="card-header">
+          <span class="card-icon">📞</span>
+          <h3 class="card-title">Contacto</h3>
+        </div>
+
+        <div class="field-grid">
+          @if (paciente.contacto?.domicilio) {
+            <div class="dc-field dc-field-full">
+              <span class="dc-lbl">Dirección</span>
+              <span class="dc-val">
+                {{ paciente.contacto?.domicilio | titlecase }}
+              </span>
+            </div>
+          }
+
+          @if (paciente.contacto?.municipio) {
+            <div class="dc-field">
+              <span class="dc-lbl">Municipio</span>
+              <span class="dc-val">
+                {{ paciente.contacto?.municipio | datosExtra: "municipio" }}
+              </span>
+            </div>
+          }
+
+          @if (paciente.contacto?.telefonos) {
+            <div class="dc-field">
+              <span class="dc-lbl">Teléfono</span>
+              <span class="dc-val">
+                {{ paciente.contacto?.telefonos }}
+              </span>
+            </div>
           }
         </div>
       </div>
-    </section>
-  }
 
-  <!-- Estados loading / error — fuera del grid, ancho completo -->
-  @if (cargando) {
-    <div class="loading"><p>Cargando información del paciente...</p></div>
-  }
-  @if (error && !cargando) {
-    <div class="error">
-      <p>{{ error }}</p>
-      <button (click)="regresar()">Regresar</button>
+      <!-- NEONATALES -->
+      @if (neonatalesFiltrados.length > 0) {
+        <div class="dc-card">
+          <div class="card-header">
+            <span class="card-icon">🐣</span>
+            <h3 class="card-title">Neonatales</h3>
+          </div>
+
+          <div class="field-grid">
+            <div class="dc-field" *ngFor="let d of neonatalesFiltrados">
+              <span class="dc-lbl">{{ convertirClave(d.key) }}</span>
+              <span class="dc-val">
+                {{ d.valor | datosExtra: d.key }}
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- ───── DERECHA ───── -->
+    <div class="dc-col">
+      <!-- REFERENCIAS -->
+      @if (referenciasFiltradas.length > 0) {
+        <div class="dc-card">
+          <div class="card-header">
+            <span class="card-icon">🧔🏻‍♂️</span>
+            <h3 class="card-title">Referencias</h3>
+            <span class="card-badge">
+              {{ referenciasFiltradas.length }} registros
+            </span>
+          </div>
+
+          <div class="field-grid">
+            <div
+              class="dc-field dc-field-full"
+              *ngFor="let ref of referenciasFiltradas"
+            >
+              <div class="ref-card">
+                <div class="ref-header">
+                  <span class="ref-name">
+                    {{ getNombreReferencia(ref) }}
+                  </span>
+
+                  <p class="ref-parentesco">
+                    {{ getParentesco(ref) }}
+                  </p>
+                </div>
+
+                <div class="ref-body">
+                  <span *ngIf="ref.telefono"> 📞 {{ getTelefono(ref) }} </span>
+
+                  <span *ngIf="ref.expediente">
+                    📁 {{ getExpediente(ref) }}
+                  </span>
+
+                  <span *ngIf="ref.idpersona">
+                    🆔 {{ getIdPersona(ref) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- DEMOGRÁFICOS -->
+      @if (demograficosFiltrados.length > 0) {
+        <div class="dc-card">
+          <div class="card-header">
+            <span class="card-icon">🌍</span>
+            <h3 class="card-title">Demográficos</h3>
+          </div>
+
+          <div class="field-grid">
+            <div class="dc-field" *ngFor="let d of demograficosFiltrados">
+              <span class="dc-lbl">{{ convertirClave(d.key) }}</span>
+              <span class="dc-val">
+                {{ d.valor | datosExtra: d.key }}
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- SOCIOECONÓMICOS -->
+      @if (socioeconomicosFiltrados.length > 0) {
+        <div class="dc-card">
+          <div class="card-header">
+            <span class="card-icon">💼</span>
+            <h3 class="card-title">Socioeconómicos</h3>
+          </div>
+
+          <div class="field-grid">
+            <div class="dc-field" *ngFor="let d of socioeconomicosFiltrados">
+              <span class="dc-lbl">{{ convertirClave(d.key) }}</span>
+              <span class="dc-val">
+                {{ d.valor | datosExtra: d.key }}
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- CONSULTAS -->
+      @if (consultasPorPaciente.length > 0) {
+        <div class="dc-card consultas-card">
+          <div class="card-header">
+            <span class="card-icon">📂</span>
+            <h3 class="card-title">Consultas</h3>
+          </div>
+
+          <div class="table-container">
+            <table class="dc-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th>Especialidad</th>
+                  <th>Tipo Consulta</th>
+                  <th>Opciones</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let c of consultasPorPaciente">
+                  <td>{{ c.fecha_consulta | date: "dd-MM-yyyy" }}</td>
+                  <td>{{ c.hora_consulta }}</td>
+                  <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
+                  <td>{{ c.tipo_consulta | datosExtra: "tipo_consulta" }}</td>
+                  <td>
+                    <button class="btn" (click)="verDetalle(c.id)">
+                      📑 Ver
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ══ FOOTER ═══════════════════════════════════════════ -->
+  @if (metadatosArray.length > 0) {
+    <div class="dc-grid">
+      <div class="dc-col">
+        <div class="dc-card">
+          <div class="card-header">
+            <span class="card-icon">📌</span>
+            <h3 class="card-title">Sistema</h3>
+          </div>
+
+          <div class="field-grid">
+            <div class="dc-field" *ngFor="let meta of metadatosArray">
+              <span class="dc-lbl">{{ meta.key }}</span>
+              <span class="dc-val-meta">
+                {{ meta.valor.usuario }} · {{ meta.valor.registro }} ·
+                {{ meta.valor.accion }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   }
 </div>

@@ -19,7 +19,7 @@ import { HijosComponent } from "../hijos/hijos.component";
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe, HijosComponent]
+  imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe]
 })
 export class PacientesComponent implements OnInit {
 

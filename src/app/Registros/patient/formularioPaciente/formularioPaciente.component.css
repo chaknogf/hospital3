@@ -352,23 +352,42 @@
   bottom: 0;
   background: rgba(10,15,26,0.95);
   border-top: 1px solid var(--rim);
-  padding: 1rem 1.5rem;
+  padding: 1rem 0.5rem;
   display: flex;
   gap: 0.5rem;
   justify-content: flex-end;
 }
 
 .btn-dock {
-  padding: 0.6rem 1.2rem;
-  border-radius: 4px;
+  padding: 0.2rem 0.2rem;
+  border-radius: 8px;
   font-family: var(--font-mono);
   cursor: pointer;
   border: 1px solid;
+  font-size: 0.8rem;
+  width: 6rem;
+  text-wrap: wrap;
+  display: flex;              /* importante */
+  align-items: center;
+  justify-content: center;         /* o el ancho que uses */
+
+}
+
+.btn-text {
+  white-space: normal;
+  word-break: break-word;
+  text-align: center;
 }
 
 .btn-dock-save {
-  background: var(--pulse);
-  border-color: var(--pulse);
+  background: rgba(11, 11, 70, 0.796);
+
+  color: #fff;
+}
+
+.btn-dock-cancel {
+  background: rgba(5, 108, 120, 0.504);
+
   color: #fff;
 }
 
@@ -382,6 +401,8 @@
 @media (max-width: 600px) {
   .sec-body { grid-template-columns: 1fr; }
   .prog-label { display: none; }
+  .biometric-row { flex-direction: row;}
+
 }
 
 

@@ -7,6 +7,48 @@
 
 :root {
   /* ───────── CORE (PRINCIPAL) ───────── */
+  --accent: #3b82f6;       /* Azul brillante */
+  --accent-light: #60a5fa; /* Azul claro */
+  --success: #10b981;      /* Verde éxito */
+  --warning: #f59e0b;      /* Naranja alerta */
+  --danger: #ef4444;       /* Rojo crítico */
+
+  /* Grises neutrales */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+
+  /* Fondos */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+
+  /* Bordes */
+  --border-light: #e5e7eb;
+  --border-medium: #d1d5db;
+
+  /* Tipografía */
+  --font-sans: 'Inter', 'Segoe UI', sans-serif;
+  --font-mono: 'Fira Code', 'Courier New', monospace;
+
+  /* Espaciado */
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Z-index */
+  --z-overlay: 100;
+  --z-sticky: 50;
   --deep: #0a0f1a;
   --surface: #161e2d;
   --rim: rgba(255, 255, 255, 0.1);
