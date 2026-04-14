@@ -179,3 +179,13 @@ export interface HijodeDatosExtra {
   extrahositalario?: boolean;    // nacimiento extra-hospitalario
   hora_nacimiento?: string;      // Formato: HH:MM:SS.000Z
 }
+
+export interface PacienteJoin {
+  id: number;
+  cui?: number | null;
+  expediente?: string | null;
+  nombre: Nombre;
+  sexo?: string;
+  fecha_nacimiento?: string;
+  contacto?: Contacto;
+}

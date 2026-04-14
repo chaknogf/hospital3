@@ -10,6 +10,7 @@ import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHisto
 import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, SignosVitales, TotalesItem, TotalesResponse } from '../interface/consultas';
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
 import { FiltroConsulta } from '../interface/filtros.model';
+import { CitaResponse } from '../interface/citas';
 
 interface PaginationState {
   filtro: any;
@@ -684,6 +685,22 @@ export class ApiService {
     );
   }
 
+  // ====== CITAS =======
+  // LISTAR CITAS
 
+  getCitas(filtros: any): Observable<CitaResponse[]> {
+    const params = this.limpiarParametros(filtros);
+    return this.http.get<any>(`${this.baseUrl}/citas/`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'obtener datos'))
+    );
+  }
+
+  crearCita(cita: any): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.post<any>(`${this.baseUrl}/citas/`, cita).pipe(
+      catchError(error => this.manejarError(error, 'error obtener datos')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
 
 }

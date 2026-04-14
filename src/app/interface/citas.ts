@@ -1,4 +1,4 @@
-
+import { PacienteJoin } from "./interfaces";
 
 
 
@@ -10,4 +10,9 @@ export interface CitaCreate {
   agenda: string;
   datos_extra: any;
   created_by: string;
+}
+
+export interface CitaResponse extends CitaCreate {
+  id: number
+  paciente: PacienteJoin;
 }
