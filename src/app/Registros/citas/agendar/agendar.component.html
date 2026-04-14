@@ -1,3 +1,209 @@
-<p>
-  agendar works!
-</p>
+<!-- ───────── HEADER HUD ───────── -->
+<div class="hud-header">
+  <div class="hud-id">
+    {{ enEdicion() ? 'EDIT-MODE' : 'NEW-ENTRY' }}
+  </div>
+
+  <div class="hud-title">
+    {{ enEdicion() ? 'EDITAR CITA' : 'AGENDAR CITA' }}
+  </div>
+
+  <div class="hud-status">
+    {{ isLoading() ? 'PROCESANDO' : 'LISTO' }}
+  </div>
+</div>
+
+<!-- ───────── ACTION DOCK ───────── -->
+<div class="action-dock">
+  <div class="dock-hint">acciones</div>
+
+  <button class="btn-dock btn-dock-cancel" (click)="volver()">
+    <span [innerHTML]="cancelIcon"></span>
+    Cancelar
+  </button>
+
+  <button class="btn-dock btn-dock-save" (click)="guardar()">
+    <span [innerHTML]="saveIcon"></span>
+    Guardar
+  </button>
+</div>
+
+<!-- ───────── BODY ───────── -->
+<form [formGroup]="form" class="adm-body">
+
+  <!-- ───────── BUSQUEDA PACIENTE ───────── -->
+  <div class="section-card">
+    <div class="sec-head">
+      <div class="sec-head-left">
+        <div class="sec-icon">
+          <span [innerHTML]="findIcon"></span>
+        </div>
+        <div class="sec-title">Paciente</div>
+      </div>
+
+      <div class="sec-badge">lookup</div>
+    </div>
+
+    <div class="sec-body single">
+
+      <div class="field">
+        <label class="field-label">Buscar por expediente</label>
+        <input
+          class="field-input"
+          [(ngModel)]="busquedaExpediente"
+          placeholder="Ej: 202400123"
+        />
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="btn-dock btn-dock-renap" (click)="buscarPaciente()">
+          <span [innerHTML]="findIcon"></span>
+          Buscar
+        </button>
+
+        <button type="button" class="btn-dock btn-dock-cancel" (click)="limpiarPaciente()">
+          <span [innerHTML]="removeIcon"></span>
+          Limpiar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ───────── PACIENTE ENCONTRADO ───────── -->
+  @if (pacienteEncontrado) {
+    <div class="paciente-banner">
+      <div class="paciente-banner-accent"></div>
+
+      <div class="paciente-avatar">
+        <span [innerHTML]="faceidicon"></span>
+      </div>
+
+      <div class="paciente-datos">
+        <div class="paciente-nombre">
+          {{ getNombrePaciente() }}
+        </div>
+
+        <div class="paciente-chips">
+          <div class="p-chip">
+            {{ pacienteEncontrado?.expediente }}
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ───────── GRID ───────── -->
+  <div class="adm-grid">
+
+    <!-- ───── COLUMNA 1 ───── -->
+    <div class="adm-col">
+
+      <!-- DATOS DE CITA -->
+      <div class="section-card">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <span [innerHTML]="touchicon"></span>
+            </div>
+            <div class="sec-title">Datos de Cita</div>
+          </div>
+        </div>
+
+        <div class="sec-body">
+
+          <div class="field">
+            <label class="field-label">Fecha</label>
+            <input
+              type="date"
+              class="field-input"
+              formControlName="fecha"
+            />
+          </div>
+
+          <div class="field">
+            <label class="field-label">Especialidad</label>
+            <input
+              class="field-input"
+              formControlName="especialidad"
+              placeholder="Ej: Pediatría"
+            />
+          </div>
+
+          <div class="field">
+            <label class="field-label">Agenda</label>
+            <input
+              class="field-input"
+              formControlName="agenda"
+              placeholder="Turno / doctor"
+            />
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ───── COLUMNA 2 ───── -->
+    <div class="adm-col">
+
+      <!-- DATOS EXTRA -->
+      <div class="section-card">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <span [innerHTML]="addIcon"></span>
+            </div>
+            <div class="sec-title">Datos Extra</div>
+          </div>
+        </div>
+
+        <div class="sec-body single" formGroupName="datos_extra">
+
+          <div class="field">
+            <label class="field-label">Tipo Consulta</label>
+            <input
+              class="field-input"
+              formControlName="tipo_consulta"
+              placeholder="Primera vez / Control"
+            />
+          </div>
+
+          <div class="field">
+            <label class="field-label">Orden</label>
+            <input
+              class="field-input"
+              formControlName="orden"
+              placeholder="Prioridad"
+            />
+          </div>
+
+          <div class="field">
+            <label class="field-label">Notas</label>
+            <textarea
+              class="field-input"
+              rows="3"
+              formControlName="notas"
+              placeholder="Observaciones clínicas..."
+            ></textarea>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ───────── ERROR ───────── -->
+  @if (error()) {
+    <div class="section-card">
+      <div class="sec-body single">
+        <div style="color:#b91c1c; font-weight:500;">
+          ⚠️ {{ error() }}
+        </div>
+      </div>
+    </div>
+  }
+
+</form>

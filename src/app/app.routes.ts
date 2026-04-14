@@ -25,6 +25,8 @@ import { PacientesAtendidosComponent } from './medica/pacientesAtendidos/pacient
 import { ConstanciasNacimientoComponent } from './Registros/nacimientos/constanciasNacimiento/constanciasNacimiento.component';
 import { ListarConstanciasComponent } from './Registros/nacimientos/listarConstancias/listarConstancias.component';
 import { HijosComponent } from './Registros/patient/hijos/hijos.component';
+import { CitadosComponent } from './Registros/citas/citados/citados.component';
+import { AgendarComponent } from './Registros/citas/agendar/agendar.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -73,6 +75,11 @@ export const routes: Routes = [
       // Médicas
       { path: 'clinica', component: MedicaComponent },
       { path: 'pacientesAtendidos', component: PacientesAtendidosComponent },
+      //Citas
+      { path: 'citas', component: CitadosComponent},
+      { path: 'agendar', component: AgendarComponent},
+      { path: 'agendar/:id', component: AgendarComponent}
+      
     ]
   }
 ];

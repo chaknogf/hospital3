@@ -10,7 +10,7 @@ import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHisto
 import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, SignosVitales, TotalesItem, TotalesResponse } from '../interface/consultas';
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
 import { FiltroConsulta } from '../interface/filtros.model';
-import { CitaResponse } from '../interface/citas';
+import { CitaCreate, CitaResponse } from '../interface/citas';
 
 interface PaginationState {
   filtro: any;
@@ -43,6 +43,7 @@ export class ApiService {
   // ======= ESTADO DE PAGINACIÓN =======
   private ultimoFiltroPaciente: PaginationState = { filtro: { skip: 0, limit: 8 } };
   private ultimoFiltroConsulta: PaginationState = { filtro: { skip: 0, limit: 8 } };
+   private ultimoFiltroCitas: PaginationState = { filtro: { skip: 0, limit: 8 } };
 
   constructor(
     private http: HttpClient,
@@ -688,6 +689,13 @@ export class ApiService {
   // ====== CITAS =======
   // LISTAR CITAS
 
+  /**
+   * Refresca la lista de consultas con los últimos filtros usados
+   */
+  private refrescarCitas(): void {
+    this.getCitas(this.ultimoFiltroCitas.filtro).subscribe();
+  }
+
   getCitas(filtros: any): Observable<CitaResponse[]> {
     const params = this.limpiarParametros(filtros);
     return this.http.get<any>(`${this.baseUrl}/citas/`, { params }).pipe(
@@ -695,10 +703,31 @@ export class ApiService {
     );
   }
 
+  getCita(id: number): Observable<any>{
+    return this.http.get<any>(`${this.baseUrl}/citas/${id}`).pipe(
+      catchError(error => this.manejarError(error, 'obtener datos'))
+    )
+  }
+
+
+
   crearCita(cita: any): Observable<any> {
     this.isLoading.set(true);
     return this.http.post<any>(`${this.baseUrl}/citas/`, cita).pipe(
       catchError(error => this.manejarError(error, 'error obtener datos')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+ 
+  updateCita(id: number, datos: CitaCreate): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.put<CitaCreate>(
+      `${this.baseUrl}/citas/${id}`,
+      datos
+    ).pipe(
+      tap(() => this.refrescarCitas()),
+      catchError(error => this.manejarError(error, 'actualizar constancia')),
       finalize(() => this.isLoading.set(false))
     );
   }

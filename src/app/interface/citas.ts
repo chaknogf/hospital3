@@ -3,6 +3,7 @@ import { PacienteJoin } from "./interfaces";
 
 
 export interface CitaCreate {
+  id?: number;
   fecha: string;
   expediente: string;
   paciente_id: number;

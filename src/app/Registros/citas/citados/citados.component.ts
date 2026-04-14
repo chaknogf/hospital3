@@ -2,12 +2,21 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CitaResponse } from '../../../interface/citas';
 import { ApiService } from '../../../service/api.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import {
+  addIcon, removeIcon, saveIcon, cancelIcon, findIcon, menuIcon,
+  searchIcon, arrowDown, tablaShanonIcon, editIcon, skipRight, skipLeft
+  
+} from '../../../shared/icons/svg-icon';
 
 @Component({
   selector: 'app-citados',
   templateUrl: './citados.component.html',
-  styleUrls: ['./citados.component.css']
+  styleUrls: ['./citados.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule]
 })
 export class CitadosComponent implements OnInit {
   // ======= INYECCIONES =======
@@ -15,6 +24,9 @@ export class CitadosComponent implements OnInit {
   private router = inject(Router);
   private api = inject(ApiService);
   private fb = inject(FormBuilder);
+  private sanitizer = inject(DomSanitizer);
+
+ 
 
   // ======= ESTADO =======
   citas: CitaResponse[] = [];
@@ -23,6 +35,9 @@ export class CitadosComponent implements OnInit {
   cargando = false;
   filtrar = false;
   visible = false;
+  modalActivo = false;
+  finPagina: boolean = false;
+  rowActiva: number | null = null;
 
   // ======= FILTROS =======
   filtros: any = {
@@ -34,17 +49,49 @@ export class CitadosComponent implements OnInit {
     limit: 200,
   };
 
+   //======== ICONOS ======
+  addIcon!: SafeHtml;
+  removeIcon!: SafeHtml;
+  saveIcon!: SafeHtml;
+  cancelIcon!: SafeHtml;
+  findIcon!: SafeHtml;
+  searchIcon!: SafeHtml;
+  arrowDown!: SafeHtml;
+  tablaShanonIcon!: SafeHtml;
+  editIcon!: SafeHtml;
+  skipRight!: SafeHtml;
+  skipLeft!: SafeHtml;
+  menuIcon!: SafeHtml;
+  
+
   filtroForm: FormGroup = this.fb.group({
     expediente: [''],
     especialidad: [''],
     fecha: [''],
   });
 
-  constructor() { }
+  constructor() {
+    this.inicializarIconos();
+  }
 
   // ======= CICLO DE VIDA =======
   ngOnInit(): void {
     this.cargarCitas();
+  }
+
+  private inicializarIconos(): void {
+    this.addIcon = this.sanitizer.bypassSecurityTrustHtml(addIcon);
+    this.removeIcon = this.sanitizer.bypassSecurityTrustHtml(removeIcon);
+    this.menuIcon = this.sanitizer.bypassSecurityTrustHtml(menuIcon);
+    this.cancelIcon = this.sanitizer.bypassSecurityTrustHtml(cancelIcon);
+    this.findIcon = this.sanitizer.bypassSecurityTrustHtml(findIcon);
+    this.searchIcon = this.sanitizer.bypassSecurityTrustHtml(searchIcon);
+    this.arrowDown = this.sanitizer.bypassSecurityTrustHtml(arrowDown);
+    this.tablaShanonIcon = this.sanitizer.bypassSecurityTrustHtml(tablaShanonIcon);
+    this.editIcon = this.sanitizer.bypassSecurityTrustHtml(editIcon);
+    this.skipLeft = this.sanitizer.bypassSecurityTrustHtml(skipLeft);
+    this.skipRight = this.sanitizer.bypassSecurityTrustHtml(skipLeft);
+
   }
 
   // ======= CARGA DE DATOS =======
@@ -107,11 +154,11 @@ export class CitadosComponent implements OnInit {
 
   // ======= NAVEGACIÓN =======
   nuevaCita(): void {
-    this.router.navigate(['nueva'], { relativeTo: this.route });
+    this.router.navigate(['agendar'])
   }
 
   editarCita(id: number): void {
-    this.router.navigate(['editar', id], { relativeTo: this.route });
+    this.router.navigate(['agendar', id]);
   }
 
   // ======= ELIMINACIÓN =======
@@ -136,4 +183,10 @@ export class CitadosComponent implements OnInit {
   get totalCitas(): number {
     return this.citasFiltradas.length;
   }
+
+   volver() {
+    this.router.navigate(['/registros']);
+  }
+
+  
 }

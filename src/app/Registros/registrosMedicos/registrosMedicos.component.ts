@@ -27,7 +27,7 @@ export class RegistrosMedicosComponent implements OnInit {
     private iconService: IconService
   ) {
     this.icons = {
-      menu: this.iconService.getIcon("menuPuntos"),
+      menu: this.iconService.getIcon("menuIcon"),
       paciente: this.iconService.getIcon("patientIcon"),
       ambulance: this.iconService.getIcon("ambulanceIcon"),
       enfermo: this.iconService.getIcon("enfermoIcon"),
