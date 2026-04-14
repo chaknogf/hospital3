@@ -1,8 +1,13 @@
-export interface Cita {
-  id: number;
+
+
+
+
+export interface CitaCreate {
   fecha: string;
-  hora: string;
-  paciente: string;
-  doctor: string;
-  motivo: string;
+  expediente: string;
+  paciente_id: number;
+  especialidad: string;
+  agenda: string;
+  datos_extra: any;
+  created_by: string;
 }
