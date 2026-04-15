@@ -5,7 +5,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
-import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse, Hijode } from '../interface/interfaces';
+import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse, Hijode, PacienteJoin } from '../interface/interfaces';
 import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHistorial, ConstanciaNacimientoUpdate } from '../interface/consNac';
 import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, SignosVitales, TotalesItem, TotalesResponse } from '../interface/consultas';
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
@@ -43,7 +43,7 @@ export class ApiService {
   // ======= ESTADO DE PAGINACIÓN =======
   private ultimoFiltroPaciente: PaginationState = { filtro: { skip: 0, limit: 8 } };
   private ultimoFiltroConsulta: PaginationState = { filtro: { skip: 0, limit: 8 } };
-   private ultimoFiltroCitas: PaginationState = { filtro: { skip: 0, limit: 8 } };
+  private ultimoFiltroCitas: PaginationState = { filtro: { skip: 0, limit: 8 } };
 
   constructor(
     private http: HttpClient,
@@ -257,6 +257,13 @@ export class ApiService {
       tap(() => this.refrescarPacientes()),
       catchError(error => this.manejarError(error, 'actualizar paciente')),
       finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  pacienteExpediente(expediente: string): Observable<PacienteJoin> {
+    console.log(expediente);
+    return this.http.get<PacienteJoin>(`${this.baseUrl}/pacientes/expediente/${expediente}`).pipe(
+      catchError(error => this.manejarError(error, 'obtener paciente'))
     );
   }
 
@@ -703,7 +710,7 @@ export class ApiService {
     );
   }
 
-  getCita(id: number): Observable<any>{
+  getCita(id: number): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/citas/${id}`).pipe(
       catchError(error => this.manejarError(error, 'obtener datos'))
     )
@@ -719,7 +726,7 @@ export class ApiService {
     );
   }
 
- 
+
   updateCita(id: number, datos: CitaCreate): Observable<any> {
     this.isLoading.set(true);
     return this.http.put<CitaCreate>(

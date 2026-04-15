@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, OnChanges } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ApiService } from '../../../service/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +15,8 @@ import {
 } from '../../../shared/icons/svg-icon';
 import { CitaCreate, CitaResponse } from '../../../interface/citas';
 import { Paciente, PacienteJoin } from '../../../interface/interfaces';
+import { distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-agendar',
@@ -64,6 +66,19 @@ export class AgendarComponent implements OnInit, OnDestroy {
 
   // ======= CICLO DE VIDA =======
   ngOnInit(): void {
+    this.form.get('expediente')?.valueChanges
+      .pipe(
+        debounceTime(600),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(exp => {
+        if (exp?.trim()) {
+          this.busquedaExpediente = exp;
+          this.buscarPaciente();
+        }
+      });
+
     this.cargarCitaParaEdicion();
   }
 
@@ -71,6 +86,8 @@ export class AgendarComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+
 
   // ======= FORMULARIO =======
   private crearFormulario(): FormGroup {
@@ -134,16 +151,55 @@ export class AgendarComponent implements OnInit, OnDestroy {
       });
   }
 
-  // ======= BÚSQUEDA DE PACIENTE =======
+  /// ======= BÚSQUEDA DE PACIENTE =======
   buscarPaciente(): void {
-    const expediente = this.busquedaExpediente.trim();
+    // Toma el valor del ngModel O del form como fallback
+    const expediente = (this.busquedaExpediente || this.form.get('expediente')?.value || '').trim();
     if (!expediente) return;
 
     this.buscandoPaciente = true;
-    this.pacienteEncontrado = null;
     this.error.set(null);
+    this.pacienteEncontrado = null;
 
-    
+    this.api.pacienteExpediente(expediente)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.buscandoPaciente = false),
+        catchError(err => {
+          console.error('Error al buscar paciente:', err);
+          this.error.set('Paciente no encontrado con expediente: ' + expediente);
+          return of(null);
+        })
+      )
+      .subscribe((data: PacienteJoin | null) => {
+        if (!data) return;
+
+        this.pacienteEncontrado = data;
+        this.busquedaExpediente = data.expediente ?? expediente;
+
+        this.form.patchValue({
+          paciente_id: data.id,
+          expediente: data.expediente ?? expediente,
+        }, { emitEvent: false });
+      });
+  }
+
+  // ======= UTILIDADES =======
+  getNombrePaciente(): string {
+    if (!this.pacienteEncontrado) return '';
+    const n = this.pacienteEncontrado.nombre;
+    return [
+      n.primer_nombre,
+      n.segundo_nombre,
+      n.otro_nombre,
+      n.primer_apellido,
+      n.segundo_apellido,
+      n.apellido_casada,
+    ].filter(Boolean).join(' ').toUpperCase();
+  }
+
+  getTelefonoPaciente(): string {
+    return this.pacienteEncontrado?.contacto?.telefonos ?? 'Sin teléfono registrado';
   }
 
   limpiarPaciente(): void {
@@ -216,19 +272,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
     this.router.navigate(['../'], { relativeTo: this.route });
   }
 
-  // ======= UTILIDADES =======
-  getNombrePaciente(): string {
-    if (!this.pacienteEncontrado) return '';
-    const n = this.pacienteEncontrado.nombre;
-    return [
-      n.primer_nombre, n.segundo_nombre,
-      n.primer_apellido, n.segundo_apellido
-    ].filter(Boolean).join(' ');
-  }
 
-  getpaciente(id: number): void {
-    this.api.getPaciente(id).subscribe((data) => {
-      this.paciente = data
-    })
-  }
+
 }
+
