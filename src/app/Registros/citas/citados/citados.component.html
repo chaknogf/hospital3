@@ -17,7 +17,7 @@
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || visible }">
-    <form class="form-filtros" (submit)="aplicarFiltros(); $event.preventDefault()">
+    <form class="form-filtros" (submit)="cargarCitas(); $event.preventDefault()">
 
       <fieldset class="fieldset-filtros">
         <label class="label-filtros">Expediente</label>
@@ -93,7 +93,7 @@
         >
           <!-- Expediente -->
           <td class="text-justify">
-            <div *ngIf="cita?.expediente">
+            <div *ngIf="cita">
               <strong>Expediente:</strong> {{ cita.expediente }}
             </div>
             
@@ -123,9 +123,9 @@
 
           <!-- Fecha y Agenda -->
           <td class="oculto">
-            {{ cita.fecha | date: 'dd/MM/yyyy' }}
+            {{ cita.fecha_registro | date: 'dd/MM/yyyy' }}
             <br />
-            <small>{{ cita.agenda }}</small>
+            <small>{{ cita.fecha_cita }}</small>
           </td>
 
           <!-- Acciones -->
@@ -134,7 +134,7 @@
               <button (click)="editarCita(cita.id); $event.stopPropagation()">
                 <span [innerHTML]="editIcon"></span>
               </button>
-              <button (click)="verDetalle(cita); $event.stopPropagation()">
+              <button (click)="verDetalle(cita.id); $event.stopPropagation()">
                 <span [innerHTML]="tablaShanonIcon"></span>
               </button>
              <!--  <button (click)="eliminarCita(cita.id); $event.stopPropagation()">

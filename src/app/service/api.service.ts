@@ -10,7 +10,7 @@ import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHisto
 import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, SignosVitales, TotalesItem, TotalesResponse } from '../interface/consultas';
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
 import { FiltroConsulta } from '../interface/filtros.model';
-import { CitaCreate, CitaResponse } from '../interface/citas';
+import { CitaCreate, CitaResponse, Citas, CitasBase } from '../interface/citas';
 
 interface PaginationState {
   filtro: any;
@@ -30,6 +30,9 @@ export class ApiService {
   private pacientesSubject = new BehaviorSubject<Paciente[]>([]);
   pacientes$ = this.pacientesSubject.asObservable();
 
+  private citasSubject = new BehaviorSubject<CitasBase[]>([]);
+  citas$ = this.citasSubject.asObservable();
+
   private consultasSubject = new BehaviorSubject<ConsultaResponse[]>([]);
   consultas$ = this.consultasSubject.asObservable();
 
@@ -43,7 +46,7 @@ export class ApiService {
   // ======= ESTADO DE PAGINACIÓN =======
   private ultimoFiltroPaciente: PaginationState = { filtro: { skip: 0, limit: 8 } };
   private ultimoFiltroConsulta: PaginationState = { filtro: { skip: 0, limit: 8 } };
-  private ultimoFiltroCitas: PaginationState = { filtro: { skip: 0, limit: 8 } };
+  private ultimoFiltroCitas: PaginationState = { filtro: { limit: 200 } };
 
   constructor(
     private http: HttpClient,
@@ -703,14 +706,22 @@ export class ApiService {
     this.getCitas(this.ultimoFiltroCitas.filtro).subscribe();
   }
 
-  getCitas(filtros: any): Observable<CitaResponse[]> {
+  getCitas(filtros: any): Observable<CitaResponse> {
+    this. ultimoFiltroCitas.filtro = filtros;
+    console.log(filtros, this.ultimoFiltroCitas)
     const params = this.limpiarParametros(filtros);
-    return this.http.get<any>(`${this.baseUrl}/citas/`, { params }).pipe(
+    console.log('📡 Enviando params:', params.toString());
+
+    return this.http.get<CitaResponse>(
+      `${this.baseUrl}/citas/`, 
+      { params }
+    ).pipe(
+      /* tap(response => this.citasSubject.next(response.citas)), */
       catchError(error => this.manejarError(error, 'obtener datos'))
     );
   }
 
-  getCita(id: number): Observable<any> {
+  getCita(id: number): Observable<Citas> {
     return this.http.get<any>(`${this.baseUrl}/citas/${id}`).pipe(
       catchError(error => this.manejarError(error, 'obtener datos'))
     )

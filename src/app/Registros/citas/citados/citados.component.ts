@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CitaResponse } from '../../../interface/citas';
+import { CitaResponse, Citas } from '../../../interface/citas';
 import { ApiService } from '../../../service/api.service';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -29,9 +29,9 @@ export class CitadosComponent implements OnInit {
  
 
   // ======= ESTADO =======
-  citas: CitaResponse[] = [];
-  citasFiltradas: CitaResponse[] = [];
-  citaSeleccionada: CitaResponse | null = null;
+  citas: Citas[] = [];
+  citasFiltradas: Citas[] = [];
+  citaSeleccionada: Citas | null = null;
   cargando = false;
   filtrar = false;
   visible = false;
@@ -45,7 +45,7 @@ export class CitadosComponent implements OnInit {
     expediente: '',
     paciente_id: 0,
     especialidad: '',
-    fecha: '',
+    fecha_cita: '',
     limit: 200,
   };
 
@@ -97,53 +97,35 @@ export class CitadosComponent implements OnInit {
   // ======= CARGA DE DATOS =======
   cargarCitas(): void {
     this.cargando = true;
+    console.log(this.filtros)
     this.api.getCitas(this.filtros).subscribe({
-      next: (data) => {
-        this.citas = data;
-        this.citasFiltradas = data;
-        this.cargando = false;
-      },
-      error: (error) => {
-        console.error('Error al cargar citas:', error);
-        this.cargando = false;
-      },
-    });
-  }
+      next: resultado => {
+        this.citas = resultado.citas;
+      }
+    })
 
-  // ======= FILTRADO =======
-  aplicarFiltros(): void {
-    const { expediente, especialidad, fecha } = this.filtroForm.value;
-
-    this.filtros = {
-      ...this.filtros,
-      expediente: expediente ?? '',
-      especialidad: especialidad ?? '',
-      fecha: fecha ?? '',
-    };
-
-    this.cargarCitas();
+ 
   }
 
   limpiarFiltros(): void {
-    this.filtroForm.reset();
     this.filtros = {
-      id: 0,
-      expediente: '',
-      paciente_id: 0,
-      especialidad: '',
-      fecha: '',
-      limit: 200,
-    };
-    this.cargarCitas();
+    id: 0,
+    expediente: '',
+    paciente_id: 0,
+    especialidad: '',
+    fecha_cita: '',
+    limit: 200,
+    }
   }
+
 
   toggleFiltros(): void {
     this.filtrar = !this.filtrar;
   }
 
   // ======= SELECCIÓN / DETALLE =======
-  verDetalle(cita: CitaResponse): void {
-    this.citaSeleccionada = cita;
+  verDetalle(id: number): void {
+   
     this.visible = true;
   }
 
@@ -176,7 +158,7 @@ export class CitadosComponent implements OnInit {
   // }
 
   // ======= UTILIDADES =======
-  trackById(_index: number, cita: CitaResponse): number {
+  trackById(_index: number, cita: Citas): number {
     return cita.id;
   }
 

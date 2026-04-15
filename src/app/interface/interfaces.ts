@@ -182,7 +182,6 @@ export interface HijodeDatosExtra {
 
 export interface PacienteJoin {
   id: number;
-  cui?: number | null;
   expediente?: string | null;
   nombre: Nombre;
   sexo?: string;

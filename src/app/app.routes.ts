@@ -77,8 +77,8 @@ export const routes: Routes = [
       { path: 'pacientesAtendidos', component: PacientesAtendidosComponent },
       //Citas
       { path: 'citas', component: CitadosComponent},
-      { path: 'agendar', component: AgendarComponent},
-      { path: 'agendar/:id', component: AgendarComponent}
+     /*  { path: 'agendar', component: AgendarComponent},
+      { path: 'agendar/:id', component: AgendarComponent} */
       
     ]
   }

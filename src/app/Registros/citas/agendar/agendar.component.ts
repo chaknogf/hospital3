@@ -13,7 +13,7 @@ import {
   addIcon, removeIcon, saveIcon, cancelIcon, findIcon,
   touchicon, faceidicon
 } from '../../../shared/icons/svg-icon';
-import { CitaCreate, CitaResponse } from '../../../interface/citas';
+import { CitaCreate, CitaResponse, Citas } from '../../../interface/citas';
 import { Paciente, PacienteJoin } from '../../../interface/interfaces';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { debounceTime } from 'rxjs/operators';
@@ -42,7 +42,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
   busquedaExpediente = '';
   pacienteEncontrado: PacienteJoin | null = null;
   buscandoPaciente = false;
-  paciente: Paciente = {} as Paciente;
+  citas: Citas | null = null
 
   // ======= ICONOS SVG =======
   addIcon!: SafeHtml;
@@ -141,7 +141,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
           return of(null);
         })
       )
-      .subscribe((data: CitaResponse | null) => {
+      .subscribe((data: Citas | null) => {
         if (!data) return;
 
         this.enEdicion.set(true);
@@ -219,13 +219,13 @@ export class AgendarComponent implements OnInit, OnDestroy {
 
     // Limpiar id=0 si es creación
     const cita: CitaCreate = {
-      fecha: valor.fecha,
+      fecha_registro: valor.fecha,
       expediente: valor.expediente,
       paciente_id: valor.paciente_id,
       especialidad: valor.especialidad,
-      agenda: valor.agenda,
+      fecha_cita: valor.agenda,
       datos_extra: valor.datos_extra,
-      created_by: valor.created_by,
+      
     };
 
     this.enEdicion() ? this.actualizar(valor.id, cita) : this.crear(cita);

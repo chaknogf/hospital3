@@ -93,9 +93,7 @@
               📋 {{ pacienteEncontrado.expediente }}
             </div>
           }
-          @if (pacienteEncontrado.cui) {
-            <div class="p-chip p-chip-cui">🪪 {{ pacienteEncontrado.cui }}</div>
-          }
+         
           <div class="p-chip p-chip-tel">📞 {{ getTelefonoPaciente() }}</div>
           @if (pacienteEncontrado.fecha_nacimiento) {
             <div class="p-chip">
