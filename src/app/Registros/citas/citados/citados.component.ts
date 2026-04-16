@@ -105,7 +105,7 @@ export class CitadosComponent implements OnInit {
   // ======= CARGA DE DATOS =======
   cargarCitas(): void {
     this.cargando = false;
-    //console.log(this.filtros)
+    console.log(this.filtros)
     this.api.getCitas(this.filtros).subscribe((data) => {
       this.citas = data;
     })
