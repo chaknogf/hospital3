@@ -9,7 +9,7 @@ import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse, Hijode, P
 import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHistorial, ConstanciaNacimientoUpdate } from '../interface/consNac';
 import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, SignosVitales, TotalesItem, TotalesResponse } from '../interface/consultas';
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
-import { FiltroConsulta } from '../interface/filtros.model';
+import { FiltroConsulta, FiltroCitas } from '../interface/filtros.model';
 import { CitaCreate, CitaResponse, Citas, CitasBase } from '../interface/citas';
 
 interface PaginationState {
@@ -30,7 +30,7 @@ export class ApiService {
   private pacientesSubject = new BehaviorSubject<Paciente[]>([]);
   pacientes$ = this.pacientesSubject.asObservable();
 
-  private citasSubject = new BehaviorSubject<CitasBase[]>([]);
+  private citasSubject = new BehaviorSubject<CitaResponse[]>([]);
   citas$ = this.citasSubject.asObservable();
 
   private consultasSubject = new BehaviorSubject<ConsultaResponse[]>([]);
@@ -44,9 +44,13 @@ export class ApiService {
 
 
   // ======= ESTADO DE PAGINACIÓN =======
+  private hoy(): string {
+  const hoy = new Date();
+  return hoy.toISOString().split('T')[0]; // YYYY-MM-DD
+}
   private ultimoFiltroPaciente: PaginationState = { filtro: { skip: 0, limit: 8 } };
   private ultimoFiltroConsulta: PaginationState = { filtro: { skip: 0, limit: 8 } };
-  private ultimoFiltroCitas: PaginationState = { filtro: { limit: 200 } };
+  private ultimoFiltroCitas: PaginationState = { filtro: { skip: 0, limit: 200, fecha_cita: this.hoy() } };
 
   constructor(
     private http: HttpClient,
@@ -431,7 +435,7 @@ export class ApiService {
   getConsultas(filtros: FiltroConsulta): Observable<ConsultaOut[]> {
     this.ultimoFiltroConsulta.filtro = filtros;
     const params = this.limpiarParametros(filtros);
-    // console.log(params);
+    console.log(params.toString());
 
     return this.http.get<ConsultaOut[]>(`${this.baseUrl}/consultas/`, { params }).pipe(
       tap(response => {
@@ -473,9 +477,10 @@ export class ApiService {
   getConsultasActivas(filtros: FiltroConsulta): Observable<ConsultaOut[]> {
     this.ultimoFiltroConsulta.filtro = filtros;
     const params = this.limpiarParametros(filtros);
-    // console.log(params);
+    //console.log(params);
 
-    return this.http.get<ConsultaOut[]>(`${this.baseUrl}/consultas/activas`, { params }).pipe(
+    return this.http.get<ConsultaOut[]>(`${this.baseUrl}/consultas/activas`,
+       { params }).pipe(
       tap(response => {
         // Convertir a ConsultaResponse si necesitas agregar datos del paciente
         this.consultasSubject.next(response as any);
@@ -706,20 +711,19 @@ export class ApiService {
     this.getCitas(this.ultimoFiltroCitas.filtro).subscribe();
   }
 
-  getCitas(filtros: any): Observable<CitaResponse> {
-    this. ultimoFiltroCitas.filtro = filtros;
-    console.log(filtros, this.ultimoFiltroCitas)
-    const params = this.limpiarParametros(filtros);
-    console.log('📡 Enviando params:', params.toString());
+ getCitas(filtros: FiltroCitas): Observable<CitaResponse[]> {
+  this.ultimoFiltroCitas.filtro = filtros;
 
-    return this.http.get<CitaResponse>(
-      `${this.baseUrl}/citas/`, 
-      { params }
-    ).pipe(
-      /* tap(response => this.citasSubject.next(response.citas)), */
-      catchError(error => this.manejarError(error, 'obtener datos'))
-    );
-  }
+  const params = this.limpiarParametros(filtros);
+
+  return this.http.get<CitaResponse[]>(
+    `${this.baseUrl}/citas/`,
+    { params }
+  ).pipe(
+    tap(response => this.citasSubject.next(response)), // ✔ FIX
+    catchError(error => this.manejarError(error, 'obtener citas'))
+  );
+}
 
   getCita(id: number): Observable<Citas> {
     return this.http.get<any>(`${this.baseUrl}/citas/${id}`).pipe(

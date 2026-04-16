@@ -32,3 +32,13 @@ export type FiltroConsulta = Partial<{
   especialidad: string;
   fecha: string;
 }> & Record<string, any>;
+
+export type FiltroCitas = Partial<{
+  id?: number;
+  expediente?: string;
+  paciente_id?: number;
+  especialidad?: string;
+  fecha_cita?: string;
+  limit?: number;
+
+}> & Record<string, any>;

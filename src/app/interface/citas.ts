@@ -51,6 +51,7 @@ export interface CitaUpdate {
   
 }
 
-export interface CitaResponse {
-citas: Citas[];
+export interface CitaResponse extends Citas {
+  id: number;
+  paciente: PacienteJoin;
 }

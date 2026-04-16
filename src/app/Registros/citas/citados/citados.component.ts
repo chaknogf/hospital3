@@ -25,6 +25,10 @@ export class CitadosComponent implements OnInit {
   private api = inject(ApiService);
   private fb = inject(FormBuilder);
   private sanitizer = inject(DomSanitizer);
+  private hoy(): string {
+  const hoy = new Date();
+  return hoy.toISOString().split('T')[0];
+}
 
  
 
@@ -40,14 +44,12 @@ export class CitadosComponent implements OnInit {
   rowActiva: number | null = null;
 
   // ======= FILTROS =======
-  filtros: any = {
-    id: 0,
-    expediente: '',
-    paciente_id: 0,
-    especialidad: '',
-    fecha_cita: '',
-    limit: 200,
-  };
+ filtros: any = {
+  expediente: '',
+  especialidad: '',
+  fecha_cita: this.hoy(),
+  limit: 200,
+};
 
    //======== ICONOS ======
   addIcon!: SafeHtml;
@@ -76,8 +78,14 @@ export class CitadosComponent implements OnInit {
 
   // ======= CICLO DE VIDA =======
   ngOnInit(): void {
-    this.cargarCitas();
-  }
+  this.api.citas$.subscribe(data => {
+    this.citas = data;
+    this.citasFiltradas = data; 
+    this.cargando = false;
+  });
+
+  this.cargarCitas();
+}
 
   private inicializarIconos(): void {
     this.addIcon = this.sanitizer.bypassSecurityTrustHtml(addIcon);
@@ -96,12 +104,10 @@ export class CitadosComponent implements OnInit {
 
   // ======= CARGA DE DATOS =======
   cargarCitas(): void {
-    this.cargando = true;
-    console.log(this.filtros)
-    this.api.getCitas(this.filtros).subscribe({
-      next: resultado => {
-        this.citas = resultado.citas;
-      }
+    this.cargando = false;
+    //console.log(this.filtros)
+    this.api.getCitas(this.filtros).subscribe((data) => {
+      this.citas = data;
     })
 
  
