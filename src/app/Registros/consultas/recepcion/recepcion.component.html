@@ -209,12 +209,17 @@
           </td>
         </tr>
 
+        <!-- Sin resultados -->
         <tr *ngIf="!cargando && consultas.length === 0">
-          <td
-            colspan="7"
-            style="text-align: center; padding: 20px; color: #4a6fa5"
-          >
-            No se encontraron consultas activas
+          <td colspan="5" class="text-center py-3">
+            <em>No se encontraron coincidencias.</em>
+          </td>
+        </tr>
+
+        <!-- Cargando -->
+        <tr *ngIf="cargando">
+          <td colspan="5" class="text-center py-3">
+            <em>Cargando...</em>
           </td>
         </tr>
       </tbody>

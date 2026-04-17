@@ -10,7 +10,7 @@ import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHisto
 import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, SignosVitales, TotalesItem, TotalesResponse } from '../interface/consultas';
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
 import { FiltroConsulta, FiltroCitas } from '../interface/filtros.model';
-import { CitaCreate, CitaResponse, Citas, CitasBase } from '../interface/citas';
+import { CitaCreate, CitaResponse, Citas, CitasBase, CitaUpdate } from '../interface/citas';
 
 interface PaginationState {
   filtro: any;
@@ -733,18 +733,22 @@ export class ApiService {
 
 
 
-  crearCita(cita: any): Observable<any> {
+  crearCita(cita: CitaCreate): Observable<any> {
     this.isLoading.set(true);
     return this.http.post<any>(`${this.baseUrl}/citas/`, cita).pipe(
-      catchError(error => this.manejarError(error, 'error obtener datos')),
+      tap(() => this. refrescarCitas()),
+      catchError(error => this.manejarError(error, 'error al crear')),
       finalize(() => this.isLoading.set(false))
     );
   }
 
 
-  updateCita(id: number, datos: CitaCreate): Observable<any> {
+  updateCita(
+    id: number, 
+    datos: any
+  ): Observable<any> {
     this.isLoading.set(true);
-    return this.http.put<CitaCreate>(
+    return this.http.put<any>(
       `${this.baseUrl}/citas/${id}`,
       datos
     ).pipe(

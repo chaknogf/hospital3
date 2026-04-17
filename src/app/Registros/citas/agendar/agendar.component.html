@@ -22,7 +22,7 @@
     Cancelar
   </button>
 
-  <button class="btn-dock btn-dock-save" (click)="guardar()">
+  <button type="button" class="btn-dock btn-dock-save" (click)="guardar()">
     <span [innerHTML]="saveIcon"></span>
     Guardar
   </button>
@@ -39,8 +39,8 @@
       </div>
       <div class="sec-badge">lookup</div>
     </div>
-
-    <div class="sec-body single">
+    @if(!enEdicion()){
+      <div class="sec-body single">
       <div class="field">
         <label class="field-label">Buscar por expediente</label>
         <div style="display: flex; gap: 8px">
@@ -71,6 +71,8 @@
         </div>
       </div>
     </div>
+    }
+    
   </div>
 
   <!-- ───────── PACIENTE ENCONTRADO ───────── -->
@@ -88,6 +90,12 @@
         </div>
 
         <div class="paciente-chips">
+           @if (pacienteEncontrado.sexo) {
+            <div class="p-chip p-chip-exp">
+              📋 {{ pacienteEncontrado.sexo | datosExtra: 'sexo' }}
+            </div>
+          }
+
           @if (pacienteEncontrado.expediente) {
             <div class="p-chip p-chip-exp">
               📋 {{ pacienteEncontrado.expediente }}
@@ -97,7 +105,7 @@
           <div class="p-chip p-chip-tel">📞 {{ getTelefonoPaciente() }}</div>
           @if (pacienteEncontrado.fecha_nacimiento) {
             <div class="p-chip">
-              🎂 {{ pacienteEncontrado.fecha_nacimiento | date: "dd/MM/yyyy" }}
+              🎂 {{ pacienteEncontrado.fecha_nacimiento | edad }}
             </div>
           }
         </div>
@@ -121,24 +129,33 @@
         <div class="sec-body">
           <div class="field">
             <label class="field-label">Fecha</label>
-            <input type="date" class="field-input" formControlName="fecha" />
-          </div>
-
-          <div class="field">
-            <label class="field-label">Especialidad</label>
-            <input
-              class="field-input"
-              formControlName="especialidad"
-              placeholder="Ej: Pediatría"
+            <input 
+            type="date" 
+            class="field-input" 
+            formControlName="fecha_cita"
+           
             />
           </div>
 
           <div class="field">
-            <label class="field-label">Agenda</label>
+            <span class="field-label">Especialidad</span>
+            <select
+              class="field-input"
+              formControlName="especialidad"
+            >
+              <option *ngFor="let e of especialidades" [value]="e.value">
+                {{ e.label | titlecase }}
+              </option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field-label">Dia de la Semana</label>
             <input
               class="field-input"
-              formControlName="agenda"
-              placeholder="Turno / doctor"
+              formControlName="dia_semana"
+             
+              
             />
           </div>
         </div>
@@ -185,6 +202,21 @@
             ></textarea>
           </div>
         </div>
+      </div>
+    </div>
+
+     <!-- ───── COLUMNA 3 ───── -->
+    <div class="adm-col">
+      <!-- Dias Disponibles -->
+      <div class="section-card">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">📓</div>
+            <div class="sec-title">Disponibilidad</div>
+          </div>
+        </div>
+
+       
       </div>
     </div>
   </div>

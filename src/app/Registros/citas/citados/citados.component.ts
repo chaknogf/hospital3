@@ -146,6 +146,7 @@ export class CitadosComponent implements OnInit {
   }
 
   editarCita(id: number): void {
+   
     this.router.navigate(['agendar', id]);
   }
 

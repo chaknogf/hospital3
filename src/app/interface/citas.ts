@@ -9,7 +9,6 @@ export interface DatosExtras {
 }
 
 export interface CitaCreate {
-fecha_registro: string;
 expediente: string;
 paciente_id: number;
 especialidad: string;
@@ -42,7 +41,6 @@ export interface Citas {
 
 export interface CitaUpdate {
   id?: number;
-  fecha_registro: string;
   expediente: string;
   paciente_id: number;
   especialidad: string;
