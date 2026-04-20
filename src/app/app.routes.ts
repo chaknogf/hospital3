@@ -78,6 +78,7 @@ export const routes: Routes = [
       { path: 'clinica', component: MedicaComponent },
       { path: 'pacientesAtendidos', component: PacientesAtendidosComponent },
       { path: 'notaMedica/:consultaId', component: NotaMedicaComponent },
+      { path: 'notaMedicas', component: NotaMedicaComponent },
       { path: 'historiaClinica/:consultaId', component: HistoriaClinicaComponent },
 
       //Citas

@@ -290,6 +290,10 @@ export class PacientesAtendidosComponent implements OnInit {
     this.router.navigate(['/notaMedica', consultaId]);
   }
 
+  notamedicas(): void {
+    this.router.navigate(['/notaMedicas']);
+  }
+
   historiaclinica(consultaId: number): void {
     this.router.navigate(['/historiaClinica', consultaId]);
   }
@@ -332,6 +336,7 @@ export class PacientesAtendidosComponent implements OnInit {
       tabla: s.getIcon('tablaShanonIcon'),
       man: s.getIcon('manIcon'),
       woman: s.getIcon('womanIcon'),
+      nota: s.getIcon('notaIcon'),
     };
   })();
 }

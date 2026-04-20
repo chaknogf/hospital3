@@ -48,7 +48,7 @@ export class RegistrosMedicosComponent implements OnInit {
   ngOnInit() {
 
     this.options = [
-      
+
       { nombre: 'Pacientes', descripcion: 'Pacientes Registrados', ruta: '/pacientes', icon: 'paciente' },
       { nombre: 'Emergencia', descripcion: 'Emergencias Registradas', ruta: '/emergencias', icon: 'ambulance' },
       { nombre: 'Coex', descripcion: 'Consulta Externa Registradas', ruta: '/coex', icon: 'enfermo' },
@@ -58,6 +58,7 @@ export class RegistrosMedicosComponent implements OnInit {
       { nombre: 'Prestamo', descripcion: 'Gestor de expedientes prestados', ruta: '/prestamos', icon: 'compartir' },
       { nombre: 'Citas', descripcion: 'Gestor de citas', ruta: '/citas', icon: 'calendar' },
       { nombre: 'Nacimientos', descripcion: 'Constancias de nacimiento', ruta: '/nacimientos', icon: 'baby' },
+      { nombre: 'Defunciones', descripcion: 'Informe de Defunción formato oficial', ruta: '/defunciones', icon: '' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];

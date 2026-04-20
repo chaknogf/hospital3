@@ -203,24 +203,13 @@
 
           <td class="secundario">
             <div class="botones-opt justify-content-center">
-              <!-- RECIBIR: si no está en recepcion todavía -->
+              <!-- nota -->
               <button
                 *ngIf="puedeRecibirse(data)"
                 class="btn-recibir"
-                (click)="notamedica(data.id)"
-                title="Marcar como recibido en recepción"
+                (click)="notamedicas()"
               >
-                <span [innerHTML]="icons['recibido']"></span>
-              </button>
-
-              <!-- ARCHIVAR: solo si ya está en recepcion -->
-              <button
-                *ngIf="estaEnRecepcion(data)"
-                class="btn-archivar"
-                (click)="abrirModalArchivar(data); $event.stopPropagation()"
-                title="Archivar consulta"
-              >
-                <span [innerHTML]="icons['archivo']"></span>
+                <span [innerHTML]="icons['nota']"></span>
               </button>
 
               <!-- DETALLE -->

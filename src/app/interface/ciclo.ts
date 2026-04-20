@@ -1,4 +1,4 @@
-import { ConsultaPacienteResumen } from './consultas'
+import { ConsultaPacienteResumen } from './consultas';
 
 export interface SignosVitales {
   pa: string;
@@ -120,12 +120,11 @@ export interface Dx {
   descripcion: string;
 }
 
-
 export interface Egreso {
   registro?: string;
   condicion: string;
   referencia?: string;
-  diagnosticos?: Dx[];         // Lista de diagnósticos al egreso
+  diagnosticos?: Dx[];
   medico?: string;
 }
 
@@ -166,6 +165,3 @@ export interface CicloConsulta {
   consulta?: ConsultaPacienteResumen;
   total?: number;
 }
-
-
-

@@ -101,18 +101,19 @@ export class ApiService {
       .set('password', password);
 
     return this.http.post<{ access_token: string }>(
-      `${this.baseUrl}/auth/login`,
-      body
+      `${this.baseUrl}/auth/login`, body
     ).pipe(
       tap(response => {
-        if (response.access_token) {
-          localStorage.setItem('access_token', response.access_token);
-          this.token.set(response.access_token);
-          this.getCurrentUser().subscribe();
-          this.router.navigate(['/dash']);
-        } else {
-          throw new Error('No se recibió el token.');
-        }
+        if (!response.access_token) throw new Error('No se recibió el token.');
+
+        localStorage.setItem('access_token', response.access_token);
+        this.token.set(response.access_token);
+
+        // ✅ Primero obtener el usuario, luego navegar (evita condición de carrera)
+        this.getCurrentUser().subscribe({
+          next: () => this.router.navigate(['/dash']),
+          error: () => this.router.navigate(['/dash']) // navegar igual aunque falle /me
+        });
       }),
       catchError(error => this.manejarError(error, 'iniciar sesión')),
       finalize(() => this.isLoading.set(false))

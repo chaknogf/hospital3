@@ -1,3 +1,734 @@
-<p>
-  notaMedica works!
-</p>
+<!-- ============================================================ -->
+<!-- NOTA MÉDICA — cosmos dark UI                                -->
+<!-- ============================================================ -->
+
+<!-- ESTADOS DE CARGA -->
+<div *ngIf="isLoading()" class="dc-loading">
+  <div class="loading-ring"></div>
+  <span>Cargando nota médica...</span>
+</div>
+
+<div *ngIf="error()" class="dc-error">
+  <span>⚠️ {{ error() }}</span>
+</div>
+
+<!-- ══ PÁGINA PRINCIPAL ══════════════════════════════════════════ -->
+<div class="dc-page" *ngIf="!isLoading() && !error() && ciclo()">
+  <!-- ══ HUD HEADER ════════════════════════════════════════════ -->
+  <div class="hud-header">
+    <button class="hud-btn" (click)="regresar()" title="Regresar">←</button>
+
+    <div class="hud-title">
+      <span class="hud-label">Nota Médica</span>
+      <span class="hud-id">Ciclo #{{ ciclo()?.numero }}</span>
+      <span class="hud-sep">·</span>
+      <span class="hud-doc">{{ ciclo()?.usuario }}</span>
+    </div>
+
+    <div class="hud-actions">
+      <div
+        class="status-badge"
+        [ngClass]="ciclo()?.activo ? 'status-activo' : 'status-egreso'"
+      >
+        <span class="status-dot" [class.pulse-dot]="ciclo()?.activo"></span>
+        <span class="status-text">{{
+          ciclo()?.activo ? "ACTIVO" : "CERRADO"
+        }}</span>
+      </div>
+      <button class="hud-btn" (click)="guardar()" title="Guardar">💾</button>
+    </div>
+  </div>
+
+  <!-- ══ STATUS ROW ═════════════════════════════════════════════ -->
+  <div class="dc-status-row">
+    <div class="status-meta">
+      <span class="meta-tag">
+        <span class="meta-icon">📅</span>
+        {{ ciclo()?.registro | date: "dd/MM/yyyy HH:mm" }}
+      </span>
+      <span class="meta-tag">
+        <span class="meta-icon">👨‍⚕️</span>
+        {{ ciclo()?.especialidad | datosExtra: "especialidad" }}
+      </span>
+      <span class="meta-tag">
+        <span class="meta-icon">🏥</span>
+        {{ ciclo()?.servicio | datosExtra: "servicio" }}
+      </span>
+    </div>
+
+    <!-- TABS DE SECCIONES -->
+    <div class="nm-tabs">
+      <button
+        class="nm-tab"
+        [class.nm-tab-active]="tabActivo === 'clinica'"
+        (click)="setTab('clinica')"
+      >
+        🩺 Clínica
+      </button>
+      <button
+        class="nm-tab"
+        [class.nm-tab-active]="tabActivo === 'signos'"
+        (click)="setTab('signos')"
+      >
+        📊 Signos
+      </button>
+      <button
+        class="nm-tab"
+        [class.nm-tab-active]="tabActivo === 'antecedentes'"
+        (click)="setTab('antecedentes')"
+      >
+        📋 Antecedentes
+      </button>
+      <button
+        class="nm-tab"
+        [class.nm-tab-active]="tabActivo === 'examen'"
+        (click)="setTab('examen')"
+      >
+        🔬 Examen Físico
+      </button>
+      <button
+        class="nm-tab"
+        [class.nm-tab-active]="tabActivo === 'escalas'"
+        (click)="setTab('escalas')"
+      >
+        📐 Escalas
+      </button>
+      <button
+        class="nm-tab"
+        [class.nm-tab-active]="tabActivo === 'egreso'"
+        (click)="setTab('egreso')"
+      >
+        🚪 Egreso
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ GRID PRINCIPAL ═════════════════════════════════════════ -->
+  <div class="dc-grid">
+    <!-- ── COL IZQUIERDA — Datos fijos ── -->
+    <div class="dc-col">
+      <!-- DATOS CLÍNICOS TEXTUALES -->
+      <div class="dc-card" [class.nm-section-active]="tabActivo === 'clinica'">
+        <div class="card-header">
+          <span class="card-icon">🩺</span>
+          <h3 class="card-title">Nota Clínica</h3>
+        </div>
+
+        <div class="nm-field-stack">
+          <div class="nm-field">
+            <label class="nm-lbl">Detalle Clínico / Motivo de consulta</label>
+            <textarea
+              class="nm-textarea"
+              rows="4"
+              [(ngModel)]="datosMedicos.detalle_clinicos"
+              placeholder="Descripción detallada del cuadro clínico..."
+            >
+            </textarea>
+          </div>
+
+          <div class="nm-field">
+            <label class="nm-lbl">Impresión Clínica / Diagnóstico</label>
+            <textarea
+              class="nm-textarea"
+              rows="3"
+              [(ngModel)]="datosMedicos.impresion_clinica"
+              placeholder="Impresión diagnóstica..."
+            >
+            </textarea>
+          </div>
+
+          <div class="nm-field">
+            <label class="nm-lbl">Tratamiento indicado</label>
+            <textarea
+              class="nm-textarea"
+              rows="3"
+              [(ngModel)]="datosMedicos.tratamiento"
+              placeholder="Medicamentos, dosis, vía, frecuencia..."
+            >
+            </textarea>
+          </div>
+
+          <div class="nm-field">
+            <label class="nm-lbl">Órdenes médicas</label>
+            <textarea
+              class="nm-textarea"
+              rows="3"
+              [(ngModel)]="datosMedicos.ordenes"
+              placeholder="Laboratorios, imágenes, interconsultas..."
+            >
+            </textarea>
+          </div>
+
+          <div class="nm-field">
+            <label class="nm-lbl">Estudios solicitados</label>
+            <textarea
+              class="nm-textarea"
+              rows="2"
+              [(ngModel)]="datosMedicos.estudios"
+              placeholder="Exámenes de laboratorio, gabinete..."
+            >
+            </textarea>
+          </div>
+
+          <div class="nm-field">
+            <label class="nm-lbl">Comentario</label>
+            <textarea
+              class="nm-textarea"
+              rows="2"
+              [(ngModel)]="datosMedicos.comentario"
+              placeholder="Observaciones adicionales..."
+            >
+            </textarea>
+          </div>
+
+          <div class="nm-field">
+            <label class="nm-lbl">Contraindicado</label>
+            <input
+              class="nm-input"
+              type="text"
+              [(ngModel)]="datosMedicos.contraindicado"
+              placeholder="Medicamentos o procedimientos contraindicados"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- SIGNOS VITALES -->
+      <div class="dc-card" [class.nm-section-active]="tabActivo === 'signos'">
+        <div class="card-header">
+          <span class="card-icon">📊</span>
+          <h3 class="card-title">Signos Vitales</h3>
+          <span class="card-badge">{{ horaSignos }}</span>
+        </div>
+
+        <div class="sv-grid">
+          <div class="sv-item">
+            <span class="sv-icon">💓</span>
+            <label class="nm-lbl">PA (mmHg)</label>
+            <input
+              class="nm-input sv-input"
+              type="text"
+              [(ngModel)]="signosVitales.pa"
+              placeholder="120/80"
+            />
+          </div>
+          <div class="sv-item">
+            <span class="sv-icon">🫀</span>
+            <label class="nm-lbl">FC (lpm)</label>
+            <input
+              class="nm-input sv-input"
+              type="text"
+              [(ngModel)]="signosVitales.fc"
+              placeholder="72"
+            />
+          </div>
+          <div class="sv-item">
+            <span class="sv-icon">🫁</span>
+            <label class="nm-lbl">FR (rpm)</label>
+            <input
+              class="nm-input sv-input"
+              type="text"
+              [(ngModel)]="signosVitales.fr"
+              placeholder="16"
+            />
+          </div>
+          <div class="sv-item">
+            <span class="sv-icon">🌡️</span>
+            <label class="nm-lbl">Temp (°C)</label>
+            <input
+              class="nm-input sv-input"
+              type="text"
+              [(ngModel)]="signosVitales.temp"
+              placeholder="36.5"
+            />
+          </div>
+          <div class="sv-item">
+            <span class="sv-icon">🩸</span>
+            <label class="nm-lbl">SatO₂ (%)</label>
+            <input
+              class="nm-input sv-input"
+              type="text"
+              [(ngModel)]="signosVitales.sat02"
+              placeholder="98"
+            />
+          </div>
+          <div class="sv-item">
+            <span class="sv-icon">⚖️</span>
+            <label class="nm-lbl">Peso (kg)</label>
+            <input
+              class="nm-input sv-input"
+              type="text"
+              [(ngModel)]="signosVitales.peso"
+              placeholder="70"
+            />
+          </div>
+          <div class="sv-item">
+            <span class="sv-icon">📏</span>
+            <label class="nm-lbl">Talla (cm)</label>
+            <input
+              class="nm-input sv-input"
+              type="text"
+              [(ngModel)]="signosVitales.talla"
+              placeholder="170"
+            />
+          </div>
+          <div class="sv-item">
+            <span class="sv-icon">🧠</span>
+            <label class="nm-lbl">P. Cefálico</label>
+            <input
+              class="nm-input sv-input"
+              type="text"
+              [(ngModel)]="signosVitales.pt"
+              placeholder="—"
+            />
+          </div>
+          <div class="sv-item">
+            <span class="sv-icon">📐</span>
+            <label class="nm-lbl">T. Edad Gest.</label>
+            <input
+              class="nm-input sv-input"
+              type="text"
+              [(ngModel)]="signosVitales.te"
+              placeholder="—"
+            />
+          </div>
+          <div class="sv-item">
+            <span class="sv-icon">📉</span>
+            <label class="nm-lbl">P. Edad Gest.</label>
+            <input
+              class="nm-input sv-input"
+              type="text"
+              [(ngModel)]="signosVitales.pe"
+              placeholder="—"
+            />
+          </div>
+          <div class="sv-item sv-item-full">
+            <span class="sv-icon">🩺</span>
+            <label class="nm-lbl">GMT</label>
+            <input
+              class="nm-input sv-input"
+              type="text"
+              [(ngModel)]="signosVitales.gmt"
+              placeholder="—"
+            />
+          </div>
+        </div>
+
+        <!-- Mini indicadores visuales -->
+        <div class="sv-indicators">
+          <div class="sv-ind" [class.sv-ind-ok]="signosVitales.fc">
+            <span class="sv-ind-dot"></span>FC
+          </div>
+          <div class="sv-ind" [class.sv-ind-ok]="signosVitales.pa">
+            <span class="sv-ind-dot"></span>PA
+          </div>
+          <div class="sv-ind" [class.sv-ind-ok]="signosVitales.sat02">
+            <span class="sv-ind-dot"></span>SatO₂
+          </div>
+          <div class="sv-ind" [class.sv-ind-ok]="signosVitales.temp">
+            <span class="sv-ind-dot"></span>Temp
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /col izq -->
+
+    <!-- ── COL DERECHA ── -->
+    <div class="dc-col">
+      <!-- ANTECEDENTES -->
+      <div
+        class="dc-card"
+        [class.nm-section-active]="tabActivo === 'antecedentes'"
+      >
+        <div class="card-header">
+          <span class="card-icon">📋</span>
+          <h3 class="card-title">Antecedentes</h3>
+        </div>
+
+        <div class="nm-field-stack">
+          <div class="nm-antecedente" *ngFor="let grupo of gruposAntecedentes">
+            <div class="nm-ant-header" (click)="toggleAntecedente(grupo.key)">
+              <span class="nm-ant-icon">{{ grupo.icon }}</span>
+              <span class="nm-ant-label">{{ grupo.label }}</span>
+              <span
+                class="nm-ant-count"
+                *ngIf="getAntecedentes(grupo.key).length > 0"
+              >
+                {{ getAntecedentes(grupo.key).length }}
+              </span>
+              <span
+                class="nm-ant-chevron"
+                [class.open]="antecedentesAbiertos[grupo.key]"
+                >▾</span
+              >
+            </div>
+
+            <div class="nm-ant-body" *ngIf="antecedentesAbiertos[grupo.key]">
+              <div
+                class="nm-ant-item"
+                *ngFor="let item of getAntecedentes(grupo.key); let i = index"
+              >
+                <input
+                  class="nm-input nm-ant-input"
+                  type="text"
+                  [(ngModel)]="item.descripcion"
+                  [placeholder]="'Agregar ' + grupo.label.toLowerCase() + '...'"
+                />
+                <button
+                  class="nm-remove-btn"
+                  (click)="eliminarAntecedente(grupo.key, i)"
+                >
+                  ✕
+                </button>
+              </div>
+              <button
+                class="nm-add-btn"
+                (click)="agregarAntecedente(grupo.key)"
+              >
+                + Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXAMEN FÍSICO -->
+      <div class="dc-card" [class.nm-section-active]="tabActivo === 'examen'">
+        <div class="card-header">
+          <span class="card-icon">🔬</span>
+          <h3 class="card-title">Examen Físico</h3>
+        </div>
+
+        <div class="nm-field-stack">
+          <div class="cuerpo-grid">
+            <div class="nm-field" *ngFor="let seg of segmentosCuerpo">
+              <label class="nm-lbl">{{ seg.label }}</label>
+              <input
+                class="nm-input"
+                type="text"
+                [(ngModel)]="cuerpo[seg.key]"
+                [placeholder]="'Hallazgos en ' + seg.label.toLowerCase()"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ESCALAS CLÍNICAS -->
+      <div class="dc-card" [class.nm-section-active]="tabActivo === 'escalas'">
+        <div class="card-header">
+          <span class="card-icon">📐</span>
+          <h3 class="card-title">Escalas Clínicas</h3>
+        </div>
+
+        <!-- SUB-TABS ESCALAS -->
+        <div class="escalas-tabs">
+          <button
+            class="escalas-tab"
+            [class.active]="escalaActiva === 'glasgow'"
+            (click)="escalaActiva = 'glasgow'"
+          >
+            Glasgow
+          </button>
+          <button
+            class="escalas-tab"
+            [class.active]="escalaActiva === 'silverman'"
+            (click)="escalaActiva = 'silverman'"
+          >
+            Silverman
+          </button>
+          <button
+            class="escalas-tab"
+            [class.active]="escalaActiva === 'downe'"
+            (click)="escalaActiva = 'downe'"
+          >
+            Downe
+          </button>
+          <button
+            class="escalas-tab"
+            [class.active]="escalaActiva === 'apgar'"
+            (click)="escalaActiva = 'apgar'"
+          >
+            Apgar
+          </button>
+          <button
+            class="escalas-tab"
+            [class.active]="escalaActiva === 'bishop'"
+            (click)="escalaActiva = 'bishop'"
+          >
+            Bishop
+          </button>
+        </div>
+
+        <!-- GLASGOW -->
+        <!-- <div *ngIf="escalaActiva === 'glasgow'" class="escala-panel">
+          <div class="escala-grid">
+            <div class="escala-field" *ngFor="let f of glasgowFields">
+              <label class="nm-lbl">{{ f.label }}</label>
+
+              <div class="escala-stepper">
+                <button
+                  class="step-btn"
+                  (click)="
+                    glasgow[f.key] = max(f.min, $any(glasgow)[f.key] - 1)
+                  "
+                >
+                  −
+                </button>
+
+                <span class="step-val">{{ $any(glasgow)[f.key] }}</span>
+
+                <button
+                  class="step-btn"
+                  (click)="
+                    glasgow[f.key] = min(f.max, $any(glasgow)[f.key] + 1)
+                  "
+                >
+                  +
+                </button>
+              </div>
+
+              <span class="escala-hint">{{ f.hint }}</span>
+            </div>
+          </div>
+
+          <div
+            class="escala-total"
+            [class.escala-critico]="glasgowTotal < 9"
+            [class.escala-alerta]="glasgowTotal >= 9 && glasgowTotal < 13"
+          >
+            <span class="escala-total-lbl">Total Glasgow</span>
+            <span class="escala-total-val">{{ glasgowTotal }}</span>
+            <span class="escala-total-interp">{{ interpretarGlasgow() }}</span>
+          </div>
+        </div> -->
+
+        <!-- SILVERMAN -->
+        <!-- <div *ngIf="escalaActiva === 'silverman'" class="escala-panel">
+          <div class="escala-grid">
+            <div class="escala-field" *ngFor="let f of silvermanFields">
+              <label class="nm-lbl">{{ f.label }}</label>
+              <div class="escala-stepper">
+                <button
+                  class="step-btn"
+                  (click)="silverman[f.key] = max(0, silverman[f.key] - 1)"
+                >
+                  −
+                </button>
+                <span class="step-val">{{ silverman[f.key] }}</span>
+                <button
+                  class="step-btn"
+                  (click)="silverman[f.key] = min(2, silverman[f.key] + 1)"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="escala-total"
+            [class.escala-critico]="silvermanTotal >= 7"
+            [class.escala-alerta]="silvermanTotal >= 4 && silvermanTotal < 7"
+          >
+            <span class="escala-total-lbl">Total Silverman</span>
+            <span class="escala-total-val">{{ silvermanTotal }}</span>
+            <span class="escala-total-interp">{{
+              interpretarSilverman()
+            }}</span>
+          </div>
+        </div> -->
+
+        <!-- DOWNE -->
+        <!-- <div *ngIf="escalaActiva === 'downe'" class="escala-panel">
+          <div class="escala-grid">
+            <div class="escala-field" *ngFor="let f of downeFields">
+              <label class="nm-lbl">{{ f.label }}</label>
+              <div class="escala-stepper">
+                <button
+                  class="step-btn"
+                  (click)="downe[f.key] = max(0, downe[f.key] - 1)"
+                >
+                  −
+                </button>
+                <span class="step-val">{{ downe[f.key] }}</span>
+                <button
+                  class="step-btn"
+                  (click)="downe[f.key] = min(f.max, downe[f.key] + 1)"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="escala-total"
+            [class.escala-critico]="downeTotal >= 7"
+            [class.escala-alerta]="downeTotal >= 4 && downeTotal < 7"
+          >
+            <span class="escala-total-lbl">Total Downe</span>
+            <span class="escala-total-val">{{ downeTotal }}</span>
+            <span class="escala-total-interp">{{ interpretarDowne() }}</span>
+          </div>
+        </div> -->
+
+        <!-- APGAR -->
+        <!-- <div *ngIf="escalaActiva === 'apgar'" class="escala-panel">
+          <div class="escala-grid">
+            <div class="escala-field" *ngFor="let f of apgarFields">
+              <label class="nm-lbl">{{ f.label }}</label>
+              <div class="escala-stepper">
+                <button
+                  class="step-btn"
+                  (click)="apgar[f.key] = max(0, apgar[f.key] - 1)"
+                >
+                  −
+                </button>
+                <span class="step-val">{{ apgar[f.key] }}</span>
+                <button
+                  class="step-btn"
+                  (click)="apgar[f.key] = min(2, apgar[f.key] + 1)"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="escala-total"
+            [class.escala-critico]="apgarTotal < 4"
+            [class.escala-alerta]="apgarTotal >= 4 && apgarTotal < 7"
+          >
+            <span class="escala-total-lbl">Total Apgar</span>
+            <span class="escala-total-val">{{ apgarTotal }}</span>
+            <span class="escala-total-interp">{{ interpretarApgar() }}</span>
+          </div>
+        </div> -->
+
+        <!-- BISHOP -->
+        <!-- <div *ngIf="escalaActiva === 'bishop'" class="escala-panel">
+          <div class="escala-grid">
+            <div class="escala-field" *ngFor="let f of bishopFields">
+              <label class="nm-lbl">{{ f.label }}</label>
+              <div class="escala-stepper">
+                <button
+                  class="step-btn"
+                  (click)="bishop[f.key] = max(f.min, bishop[f.key] - 1)"
+                >
+                  −
+                </button>
+                <span class="step-val">{{ bishop[f.key] }}</span>
+                <button
+                  class="step-btn"
+                  (click)="bishop[f.key] = min(f.max, bishop[f.key] + 1)"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="escala-total" [class.escala-ok]="bishopTotal >= 8">
+            <span class="escala-total-lbl">Total Bishop</span>
+            <span class="escala-total-val">{{ bishopTotal }}</span>
+            <span class="escala-total-interp">{{ interpretarBishop() }}</span>
+          </div>
+        </div> -->
+      </div>
+
+      <!-- EGRESO -->
+      <div
+        class="dc-card dc-card-egreso"
+        [class.nm-section-active]="tabActivo === 'egreso'"
+      >
+        <div class="card-header">
+          <span class="card-icon">🚪</span>
+          <h3 class="card-title">Egreso</h3>
+          <span class="card-badge egreso-badge">Alta / Cierre</span>
+        </div>
+
+        <div class="nm-field-stack">
+          <div class="nm-field">
+            <label class="nm-lbl">Condición de Egreso</label>
+            <select class="nm-select" [(ngModel)]="egreso.condicion">
+              <option value="">— Seleccionar —</option>
+              <option value="mejorado">Mejorado</option>
+              <option value="curado">Curado</option>
+              <option value="sin_cambio">Sin Cambio</option>
+              <option value="empeorado">Empeorado</option>
+              <option value="fallecido">Fallecido</option>
+              <option value="voluntario">Alta Voluntaria</option>
+              <option value="fuga">Fuga</option>
+            </select>
+          </div>
+
+          <div class="nm-field">
+            <label class="nm-lbl">Referido a</label>
+            <input
+              class="nm-input"
+              type="text"
+              [(ngModel)]="egreso.referencia"
+              placeholder="Unidad o servicio de referencia"
+            />
+          </div>
+
+          <div class="nm-field">
+            <label class="nm-lbl">Médico responsable del egreso</label>
+            <input
+              class="nm-input"
+              type="text"
+              [(ngModel)]="egreso.medico"
+              placeholder="Nombre del médico"
+            />
+          </div>
+
+          <!-- DIAGNÓSTICOS DE EGRESO -->
+          <div class="egreso-diag-header">Diagnósticos al Egreso (CIE-10)</div>
+          <div class="egreso-diag-list">
+            <div
+              class="egreso-diag-item"
+              *ngFor="let dx of egreso.diagnosticos; let i = index"
+            >
+              <input
+                class="nm-input diag-codigo-input"
+                type="text"
+                [(ngModel)]="dx.codigo"
+                placeholder="CIE-10"
+              />
+              <input
+                class="nm-input diag-desc-input"
+                type="text"
+                [(ngModel)]="dx.descripcion"
+                placeholder="Descripción del diagnóstico..."
+              />
+              <button class="nm-remove-btn" (click)="eliminarDx(i)">✕</button>
+            </div>
+            <button class="nm-add-btn" (click)="agregarDx()">
+              + Agregar diagnóstico
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /col der -->
+  </div>
+  <!-- /dc-grid -->
+
+  <!-- ══ FOOTER ACCIONES ════════════════════════════════════════ -->
+  <div class="nm-footer">
+    <div class="nm-footer-info">
+      <span class="nm-footer-label">Ciclo #{{ ciclo()?.numero }}</span>
+      <span class="nm-footer-sep">·</span>
+      <span class="nm-footer-user">{{ ciclo()?.usuario }}</span>
+      <span class="nm-footer-sep">·</span>
+      <span class="nm-footer-date">{{
+        ciclo()?.registro | date: "dd/MM/yyyy HH:mm"
+      }}</span>
+    </div>
+    <div class="nm-footer-actions">
+      <button class="nm-btn-secondary" (click)="regresar()">Cancelar</button>
+      <button class="nm-btn-primary" (click)="guardar()">
+        <span>💾</span> Guardar Nota
+      </button>
+    </div>
+  </div>
+</div>
+<!-- /dc-page -->
