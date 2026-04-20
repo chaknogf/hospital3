@@ -16,7 +16,7 @@ import { ConsultaResponse, Ciclo, TotalesResponse, TotalesItem } from '../../../
 import { ciclos, Dict } from '../../../../enum/diccionarios';
 
 import { ApiService } from '../../../../service/api.service';
-import { ConsultaService } from '../../../../service/consulta.service';
+import { ConsultaService } from '../../../../service/axios.service';
 import { IconService } from '../../../../service/icon.service';
 
 @Component({

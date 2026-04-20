@@ -12,13 +12,16 @@ import { heartIcon, ghostIcon, manIcon, womanIcon, personFicha, regresarIcon } f
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { ConsultasIdPaciente } from '../../../interface/consultas';
 import { DetalleConsultaComponent } from "../../adminsion/detalleConsulta/detalleConsulta.component";
+import { TimePipe } from '../../../pipes/time.pipe';
+import { PacienteService } from '../paciente.service';
+import { ConsultaService } from '../../consultas/consultas.service';
 
 @Component({
   selector: 'detallePaciente',
   templateUrl: './detallePaciente.component.html',
   styleUrls: ['./detallePaciente.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe]
+  imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe, TimePipe]
 })
 export class DetallePacienteComponent implements OnInit, OnChanges {
   @Input() pacienteId: number | null = null;
@@ -46,7 +49,8 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
 
   constructor(
     private ruta: ActivatedRoute,
-    private api: ApiService,
+    private api: PacienteService,
+    private apic: ConsultaService,
     private router: Router,
     private sanitizer: DomSanitizer
   ) {
@@ -132,7 +136,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   private cargarConsultas(): void {
     if (!this.pacienteId) return;
 
-    this.api.getConsultasIdPaciente(this.pacienteId, {}).subscribe({
+    this.apic.getConsultasPorPaciente(this.pacienteId, {}).subscribe({
       next: (data) => {
         this.consultasPorPaciente = data;
         console.log('Consultas del paciente:', this.consultasPorPaciente);

@@ -1,3 +1,4 @@
+import { PacienteService } from './../paciente.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -5,7 +6,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subject, of } from 'rxjs';
 import { takeUntil, catchError, finalize } from 'rxjs/operators';
-import { ApiService } from '../../../service/api.service';
 import { saveIcon, cancelIcon } from '../../../shared/icons/svg-icon';
 import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
 
@@ -26,7 +26,7 @@ export class HijosComponent implements OnInit, OnDestroy {
   pacienteId!: number;
 
   private fb = inject(FormBuilder);
-  private api = inject(ApiService);
+  private api = inject(PacienteService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private sanitizer = inject(DomSanitizer);
@@ -248,7 +248,7 @@ export class HijosComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.api.hijode(payload, this.pacienteId)
+    this.api.hijoDe(payload, this.pacienteId)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => this.isLoading.set(false)),

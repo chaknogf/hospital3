@@ -6,6 +6,9 @@ import { NavbarComponent } from './principal/navbar/navbar.component';
 import { ApiService } from './service/api.service';
 import { filter } from 'rxjs/operators';
 import { ViewEncapsulation } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+
+import localeEs from '@angular/common/locales/es';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +25,7 @@ export class AppComponent implements OnInit {
   role = '';
   modalActivo = false;
 
-  constructor(private router: Router, private api: ApiService) { }
+  constructor(private router: Router, private api: ApiService) { registerLocaleData(localeEs); }
 
   ngOnInit() {
     this.detectarRuta();

@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { combineLatest, Subject, of } from 'rxjs';
 import { debounceTime, takeUntil, catchError, finalize, tap } from 'rxjs/operators';
-import { Paciente, Municipio, PaisesIso } from '../../../interface/interfaces';
+import { Municipio, PaisesIso } from '../../../interface/interfaces';
 import { Enumeradores } from '../../../interface/enumsIterfaces';
 import {
   estadoCivil, pueblos, idiomas,
@@ -29,6 +29,8 @@ import {
   faceidicon
 } from '../../../shared/icons/svg-icon';
 import { Parentescos } from '../../../enum/parentescos';
+import { PacienteService } from '../paciente.service';
+
 
 interface Reference {
   nombre?: string;
@@ -57,7 +59,8 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   // ======= INYECCIONES =======
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private api = inject(ApiService);
+  private api = inject(PacienteService);
+  private apis = inject(ApiService);
   private fb = inject(FormBuilder);
   private sanitizer = inject(DomSanitizer);
   private pacienteUtil = inject(PacienteUtilService);
@@ -140,7 +143,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   // ======= MÉTODOS PRINCIPALES =======
 
   private crearFormulario(): FormGroup {
-    const { username } = this.api.getUsuarioActual();
+    const { username } = this.apis.getUsuarioActual();
     return this.fb.group({
       id: [0],
       cui: [''],
@@ -648,7 +651,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     this.municipios_nacimiento.set(filtrados);
   }
   obtenerPaisesIso(): void {
-    this.api.getPaisesIso()
+    this.apis.getPaisesIso()
       .pipe(
         takeUntil(this.destroy$),
         catchError(error => {

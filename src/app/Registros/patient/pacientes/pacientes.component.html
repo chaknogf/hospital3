@@ -125,18 +125,13 @@
       <!-- botones -->
       <div class="botones-filtros">
         <button class="button-filtros" type="button" (click)="agregar()">
-          <span [innerHTML]="icons['addPerson']"></span>
-          Nuevo
+          ➕ Nuevo
         </button>
 
-        <button type="submit" class="button-filtros">
-          <span [innerHTML]="icons['search']"></span>
-          Buscar
-        </button>
+        <button type="submit" class="button-filtros">🔍 Buscar</button>
 
         <button type="button" (click)="limpiarFiltros()" class="button-filtros">
-          <span [innerHTML]="icons['delete']"></span>
-          Limpiar
+          🗑️ Limpiar
         </button>
       </div>
     </form>
@@ -155,13 +150,10 @@
           <th>Identificador</th>
           <th>Nombre Completo</th>
           <th>Fecha Nacimiento</th>
-          @if (!existePaciente) {
+          <!-- @if (!existePaciente) {
             <th>Dirección</th>
-          }
-          <th>Género</th>
-          @if (!existePaciente) {
-            <th>Estado</th>
-          }
+          } -->
+          <th>Sexo</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -195,6 +187,9 @@
           </td>
           <td>
             <p class="p-0 m-0 text-uppercase">
+              @if (paciente.estado === "F") {
+                💀
+              }
               {{ paciente.nombre.primer_nombre }}
               {{ paciente.nombre.segundo_nombre }}
               {{ paciente.nombre.otro_nombre }}
@@ -211,28 +206,26 @@
           <td class="oculto">
             {{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
             <br />
-            <small>{{ paciente.fecha_nacimiento | edad }}</small>
+            @if (paciente.estado == "F") {
+              <small>{{ paciente.defuncion | edad }}</small>
+            }
+            @if (paciente.estado == "V") {
+              <small>{{ paciente.fecha_nacimiento | edad }}</small>
+            }
           </td>
-          <td class="oculto text-uppercase flex-wrap">
+          <!-- <td class="oculto text-uppercase flex-wrap">
             {{ paciente.contacto?.domicilio }} <br />
             {{ paciente.contacto?.municipio | datosExtra: "vecindad" }}
-          </td>
-          <td class="oculto">
+          </td> -->
+          <td class="oculto d-flex justify-content-center align-item-baseline">
             @if (paciente.sexo === "M") {
-              <div><span [innerHTML]="icons['man']"></span> Masculino</div>
+              <div><span [innerHTML]="icons['man']"></span></div>
             }
             @if (paciente.sexo === "F") {
-              <div><span [innerHTML]="icons['woman']"></span> Femenino</div>
+              <div><span [innerHTML]="icons['woman']"></span></div>
             }
           </td>
-          <td class="oculto">
-            @if (paciente.estado === "V") {
-              <div><span [innerHTML]="icons['heart']"></span> Vivo</div>
-            }
-            @if (paciente.estado === "F") {
-              <div><span [innerHTML]="icons['ghost']"></span> Fallecido</div>
-            }
-          </td>
+
           <td class="secundario">
             <div class="d-flex gap-1">
               <button (click)="editarPaciente(paciente.id)">

@@ -3,23 +3,22 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiService } from '../../../service/api.service';
-import { Paciente, Renap, Totales } from '../../../interface/interfaces';
+import { Paciente, Renap } from '../../../interface/interfaces';
 import { IconService } from '../../../service/icon.service';
 import { PacienteFiltros } from '../../../interface/filtros.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../pipes/edad.pipe';
-import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
-import { HijosComponent } from "../hijos/hijos.component";
+import { PacienteService } from '../paciente.service';
+
 
 @Component({
   selector: 'app-pacientes',
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe]
+  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe]
 })
 export class PacientesComponent implements OnInit {
 
@@ -36,7 +35,7 @@ export class PacientesComponent implements OnInit {
   espacio = ' ';
 
   // ── Paginación con skip/limit del backend ──────────────────
-  readonly pageSize = 8;
+  readonly pageSize = 14;
   paginaActual = 1;
   totalDeRegistros = 0;   // total real que devuelve el backend
 
@@ -81,7 +80,7 @@ export class PacientesComponent implements OnInit {
   icons: { [key: string]: any } = {};
 
   constructor(
-    private api: ApiService,
+    private api: PacienteService,
     private router: Router,
     private iconService: IconService
   ) {
@@ -98,10 +97,6 @@ export class PacientesComponent implements OnInit {
       medical: this.iconService.getIcon('medicalServiceIcon'),
       man: this.iconService.getIcon('manIcon'),
       woman: this.iconService.getIcon('womanIcon'),
-      beat: this.iconService.getIcon('beatIcon'),
-      ghost: this.iconService.getIcon('ghostIcon'),
-      heart: this.iconService.getIcon('heartIcon'),
-      paw: this.iconService.getIcon('huellitaIcon'),
       find: this.iconService.getIcon('findIcon'),
       menu: this.iconService.getIcon('menuPuntos'),
       arrowDown: this.iconService.getIcon('arrowDown'),

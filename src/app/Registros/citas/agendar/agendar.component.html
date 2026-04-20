@@ -17,14 +17,10 @@
 <div class="action-dock">
   <div class="dock-hint">acciones</div>
 
-  <button class="btn-dock btn-dock-cancel" (click)="volver()">
-    <span [innerHTML]="cancelIcon"></span>
-    Cancelar
-  </button>
+  <button class="btn-dock btn" (click)="volver()">❌ Cancelar</button>
 
-  <button type="button" class="btn-dock btn-dock-save" (click)="guardar()">
-    <span [innerHTML]="saveIcon"></span>
-    Guardar
+  <button type="button" class="btn-dock btn" (click)="guardar()">
+    💾 Guardar
   </button>
 </div>
 
@@ -39,40 +35,31 @@
       </div>
       <div class="sec-badge">lookup</div>
     </div>
-    @if(!enEdicion()){
+    @if (!enEdicion()) {
       <div class="sec-body single">
-      <div class="field">
-        <label class="field-label">Buscar por expediente</label>
-        <div style="display: flex; gap: 8px">
-          <input
-            class="field-input"
-            [(ngModel)]="busquedaExpediente"
-            [ngModelOptions]="{ standalone: true }"
-            placeholder="Ej: 202400123"
-            (keydown.enter)="buscarPaciente(); $event.preventDefault()"
-            (change)="buscarPaciente()"
-          />
-          <button
-            type="button"
-            class="btn-dock btn-dock-renap"
-            (click)="buscarPaciente()"
-            [disabled]="buscandoPaciente"
-          >
-            <span [innerHTML]="findIcon"></span>
-            {{ buscandoPaciente ? "..." : "Buscar" }}
-          </button>
-          <button
-            type="button"
-            class="btn-dock btn-dock-cancel"
-            (click)="limpiarPaciente()"
-          >
-            <span [innerHTML]="removeIcon"></span>
-          </button>
+        <div class="field">
+          <label class="field-label">Buscar por expediente</label>
+          <div style="display: flex; gap: 8px">
+            <input
+              class="field-input"
+              [(ngModel)]="busquedaExpediente"
+              [ngModelOptions]="{ standalone: true }"
+              placeholder="Ej: 202400123"
+              (keydown.enter)="buscarPaciente(); $event.preventDefault()"
+              (change)="buscarPaciente()"
+            />
+            <button
+              type="button"
+              class="btn-dock btn"
+              (click)="buscarPaciente()"
+            >
+              🔎
+              {{ buscandoPaciente ? "..." : "Buscar" }}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
     }
-    
   </div>
 
   <!-- ───────── PACIENTE ENCONTRADO ───────── -->
@@ -81,7 +68,12 @@
       <div class="paciente-banner-accent"></div>
 
       <div class="paciente-avatar">
-        <span [innerHTML]="faceidicon"></span>
+        @if (pacienteEncontrado.sexo == "F") {
+          👩🏻‍🦱
+        }
+        @if (pacienteEncontrado.sexo == "M") {
+          🧔🏻‍♂️
+        }
       </div>
 
       <div class="paciente-datos">
@@ -90,24 +82,20 @@
         </div>
 
         <div class="paciente-chips">
-           @if (pacienteEncontrado.sexo) {
+          @if (pacienteEncontrado.sexo) {
             <div class="p-chip p-chip-exp">
-              📋 {{ pacienteEncontrado.sexo | datosExtra: 'sexo' }}
+              🚻 {{ pacienteEncontrado.sexo | datosExtra: "sexo" }},
+              {{ pacienteEncontrado.fecha_nacimiento | edad }}
             </div>
           }
 
           @if (pacienteEncontrado.expediente) {
             <div class="p-chip p-chip-exp">
-              📋 {{ pacienteEncontrado.expediente }}
+              📋expediente: {{ pacienteEncontrado.expediente }}
             </div>
           }
-         
-          <div class="p-chip p-chip-tel">📞 {{ getTelefonoPaciente() }}</div>
-          @if (pacienteEncontrado.fecha_nacimiento) {
-            <div class="p-chip">
-              🎂 {{ pacienteEncontrado.fecha_nacimiento | edad }}
-            </div>
-          }
+
+          <div class="p-chip p-chip-tel">☎️ {{ getTelefonoPaciente() }}</div>
         </div>
       </div>
     </div>
@@ -129,20 +117,16 @@
         <div class="sec-body">
           <div class="field">
             <label class="field-label">Fecha</label>
-            <input 
-            type="date" 
-            class="field-input" 
-            formControlName="fecha_cita"
-           
+            <input
+              type="date"
+              class="field-input"
+              formControlName="fecha_cita"
             />
           </div>
 
           <div class="field">
             <span class="field-label">Especialidad</span>
-            <select
-              class="field-input"
-              formControlName="especialidad"
-            >
+            <select class="field-input" formControlName="especialidad">
               <option *ngFor="let e of especialidades" [value]="e.value">
                 {{ e.label | titlecase }}
               </option>
@@ -151,12 +135,7 @@
 
           <div class="field">
             <label class="field-label">Dia de la Semana</label>
-            <input
-              class="field-input"
-              formControlName="dia_semana"
-             
-              
-            />
+            <input class="field-input" formControlName="dia_semana" />
           </div>
         </div>
       </div>
@@ -164,7 +143,6 @@
 
     <!-- ───── COLUMNA 2 ───── -->
     <div class="adm-col">
-      <!-- DATOS EXTRA -->
       <div class="section-card">
         <div class="sec-head">
           <div class="sec-head-left">
@@ -174,24 +152,37 @@
         </div>
 
         <div class="sec-body single" formGroupName="datos_extra">
+          <!-- TIPO CONSULTA -->
           <div class="field">
-            <label class="field-label">Tipo Consulta</label>
-            <input
-              class="field-input"
-              formControlName="tipo_consulta"
-              placeholder="Primera vez / Control"
-            />
+            <label class="field-label">Tipo de Consulta</label>
+
+            <div class="indicadores-grid">
+              @for (t of razonConsulta; track t.ref) {
+                <div
+                  class="ind-chip"
+                  [class.active]="tipoConsultaValue === t.ref"
+                  (click)="seleccionarRazonConsulta(t.ref)"
+                >
+                  <div class="ind-check">
+                    <svg viewBox="0 0 16 16">
+                      <path
+                        d="M4 8l3 3 5-6"
+                        stroke="currentColor"
+                        fill="none"
+                        stroke-width="2"
+                      />
+                    </svg>
+                  </div>
+
+                  <div class="ind-label">
+                    {{ t.label }}
+                  </div>
+                </div>
+              }
+            </div>
           </div>
 
-          <div class="field">
-            <label class="field-label">Orden</label>
-            <input
-              class="field-input"
-              formControlName="orden"
-              placeholder="Prioridad"
-            />
-          </div>
-
+          <!-- NOTAS -->
           <div class="field">
             <label class="field-label">Notas</label>
             <textarea
@@ -205,18 +196,22 @@
       </div>
     </div>
 
-     <!-- ───── COLUMNA 3 ───── -->
+    <!-- ───── COLUMNA 3 ───── -->
     <div class="adm-col">
       <!-- Dias Disponibles -->
       <div class="section-card">
         <div class="sec-head">
           <div class="sec-head-left">
-            <div class="sec-icon">📓</div>
+            <div class="sec-icon">📊</div>
             <div class="sec-title">Disponibilidad</div>
           </div>
         </div>
 
-       
+        <div class="sec-body">
+          <app-citaConteo
+            [especialidad]="especialidadSeleccionada"
+          ></app-citaConteo>
+        </div>
       </div>
     </div>
   </div>

@@ -1,0 +1,68 @@
+.conteo-card {
+  background: #111827;
+  border-radius: 12px;
+  padding: 12px;
+  color: #e5e7eb;
+  width: 100%;
+  max-height: 300px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #60a5fa;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  background: #04ded767;
+  border: none;
+  border-radius: 10px;
+}
+
+th, td {
+  padding: 6px 8px;
+  text-align: center;
+
+}
+
+tbody {
+  display: block;
+  overflow-y: scroll;
+  max-height: 200px;
+
+}
+
+thead, tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+tr:hover {
+  background: rgba(96, 165, 250, 0.1);
+}
+
+.estado {
+  text-align: center;
+  font-size: 13px;
+  padding: 10px;
+}
+
+.error {
+  color: #f87171;
+}
+
+.body-table {
+  text-align: center;
+}

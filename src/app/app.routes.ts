@@ -27,6 +27,8 @@ import { ListarConstanciasComponent } from './Registros/nacimientos/listarConsta
 import { HijosComponent } from './Registros/patient/hijos/hijos.component';
 import { CitadosComponent } from './Registros/citas/citados/citados.component';
 import { AgendarComponent } from './Registros/citas/agendar/agendar.component';
+import { NotaMedicaComponent } from './medica/notaMedica/notaMedica.component';
+import { HistoriaClinicaComponent } from './medica/historiaClinica/historiaClinica.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -75,11 +77,14 @@ export const routes: Routes = [
       // Médicas
       { path: 'clinica', component: MedicaComponent },
       { path: 'pacientesAtendidos', component: PacientesAtendidosComponent },
+      { path: 'notaMedica/:consultaId', component: NotaMedicaComponent },
+      { path: 'historiaClinica/:consultaId', component: HistoriaClinicaComponent },
+
       //Citas
-      { path: 'citas', component: CitadosComponent},
-      { path: 'agendar', component: AgendarComponent},
-      { path: 'agendar/:id', component: AgendarComponent} 
-      
+      { path: 'citas', component: CitadosComponent },
+      { path: 'agendar', component: AgendarComponent },
+      { path: 'agendar/:id', component: AgendarComponent }
+
     ]
   }
 ];

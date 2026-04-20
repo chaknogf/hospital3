@@ -12,6 +12,8 @@ import { CuiPipe } from './../../../pipes/cui.pipe';
 import { TimePipe } from '../../../pipes/time.pipe';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { ConsultaService } from '../consultas.service';
+
 
 const ESTADOS_INACTIVOS = new Set(['archivo', 'descartado']);
 
@@ -24,7 +26,7 @@ const ESTADOS_INACTIVOS = new Set(['archivo', 'descartado']);
 })
 export class RecepcionComponent implements OnInit {
 
-  private api = inject(ApiService);
+  private api = inject(ConsultaService);
   private router = inject(Router);
   private iconService = inject(IconService);
 

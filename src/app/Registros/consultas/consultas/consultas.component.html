@@ -175,7 +175,12 @@
           <td class="oculto">
             {{ data.paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
             <br />
-            <small>{{ data.paciente.fecha_nacimiento | edad }}</small>
+            @if (data.paciente.estado == "F") {
+              <small>{{ data.paciente.defuncion | edad }}</small>
+            }
+            @if (data.paciente.estado == "V") {
+              <small>{{ data.paciente.fecha_nacimiento | edad }}</small>
+            }
           </td>
 
           <td class="oculto">
@@ -188,13 +193,6 @@
             </ng-container>
           </td>
           <td class="oculto">
-            <!-- <small>{{ estadoUltimoCiclo(data.ciclo) }}</small> -->
-            <!-- <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
-                <span [innerHTML]="icons['activo']"></span>
-              </ng-container>
-              <ng-container *ngIf="getCicloStatus(data.ciclo) === 'inactivo'">
-                <span [innerHTML]="icons['documento']"></span>
-              </ng-container> -->
             {{ data.tipo_consulta | datosExtra: "tipo_consulta" }}
           </td>
           <td class="secundario">

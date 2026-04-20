@@ -1,5 +1,5 @@
-import { ConsultasIdPaciente } from './../interface/consultas';
 // api.service.ts
+import { ConsultasIdPaciente } from './../interface/consultas';
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { CicloClinico, EstadoCiclo } from '../interface/consultas';
 import { FiltroConsulta, FiltroCitas } from '../interface/filtros.model';
 import { CitaCreate, CitaResponse, Citas, CitasBase, CitaUpdate } from '../interface/citas';
 
-interface PaginationState {
+export interface PaginationState {
   filtro: any;
 }
 
@@ -45,9 +45,9 @@ export class ApiService {
 
   // ======= ESTADO DE PAGINACIÓN =======
   private hoy(): string {
-  const hoy = new Date();
-  return hoy.toISOString().split('T')[0]; // YYYY-MM-DD
-}
+    const hoy = new Date();
+    return hoy.toISOString().split('T')[0]; // YYYY-MM-DD
+  }
   private ultimoFiltroPaciente: PaginationState = { filtro: { skip: 0, limit: 8 } };
   private ultimoFiltroConsulta: PaginationState = { filtro: { skip: 0, limit: 8 } };
   private ultimoFiltroCitas: PaginationState = { filtro: { skip: 0, limit: 200, fecha_cita: this.hoy() } };
@@ -480,13 +480,13 @@ export class ApiService {
     //console.log(params);
 
     return this.http.get<ConsultaOut[]>(`${this.baseUrl}/consultas/activas`,
-       { params }).pipe(
-      tap(response => {
-        // Convertir a ConsultaResponse si necesitas agregar datos del paciente
-        this.consultasSubject.next(response as any);
-      }),
-      catchError(error => this.manejarError(error, 'obtener consultas'))
-    );
+      { params }).pipe(
+        tap(response => {
+          // Convertir a ConsultaResponse si necesitas agregar datos del paciente
+          this.consultasSubject.next(response as any);
+        }),
+        catchError(error => this.manejarError(error, 'obtener consultas'))
+      );
   }
 
 
@@ -711,19 +711,19 @@ export class ApiService {
     this.getCitas(this.ultimoFiltroCitas.filtro).subscribe();
   }
 
- getCitas(filtros: FiltroCitas): Observable<CitaResponse[]> {
-  this.ultimoFiltroCitas.filtro = filtros;
+  getCitas(filtros: FiltroCitas): Observable<CitaResponse[]> {
+    this.ultimoFiltroCitas.filtro = filtros;
 
-  const params = this.limpiarParametros(filtros);
+    const params = this.limpiarParametros(filtros);
 
-  return this.http.get<CitaResponse[]>(
-    `${this.baseUrl}/citas/`,
-    { params }
-  ).pipe(
-    tap(response => this.citasSubject.next(response)), // ✔ FIX
-    catchError(error => this.manejarError(error, 'obtener citas'))
-  );
-}
+    return this.http.get<CitaResponse[]>(
+      `${this.baseUrl}/citas/`,
+      { params }
+    ).pipe(
+      tap(response => this.citasSubject.next(response)), // ✔ FIX
+      catchError(error => this.manejarError(error, 'obtener citas'))
+    );
+  }
 
   getCita(id: number): Observable<Citas> {
     return this.http.get<any>(`${this.baseUrl}/citas/${id}`).pipe(
@@ -736,7 +736,7 @@ export class ApiService {
   crearCita(cita: CitaCreate): Observable<any> {
     this.isLoading.set(true);
     return this.http.post<any>(`${this.baseUrl}/citas/`, cita).pipe(
-      tap(() => this. refrescarCitas()),
+      tap(() => this.refrescarCitas()),
       catchError(error => this.manejarError(error, 'error al crear')),
       finalize(() => this.isLoading.set(false))
     );
@@ -744,7 +744,7 @@ export class ApiService {
 
 
   updateCita(
-    id: number, 
+    id: number,
     datos: any
   ): Observable<any> {
     this.isLoading.set(true);

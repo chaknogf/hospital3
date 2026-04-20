@@ -1,19 +1,18 @@
 import { PacienteJoin } from "./interfaces";
 
 export interface DatosExtras {
-  tipo_consulta: string;
-  orden: number;
+  razon_consulta: string;
   nota: string;
   cita_laboratorio: string;
 
 }
 
 export interface CitaCreate {
-expediente: string;
-paciente_id: number;
-especialidad: string;
-fecha_cita: string;
-datos_extra: DatosExtras;
+  expediente: string;
+  paciente_id: number;
+  especialidad: string;
+  fecha_cita: string;
+  datos_extra: DatosExtras;
 }
 
 export interface CitasBase {
@@ -46,10 +45,16 @@ export interface CitaUpdate {
   especialidad: string;
   fecha_cita: string;
   datos_extra: any;
-  
+
 }
 
 export interface CitaResponse extends Citas {
   id: number;
   paciente: PacienteJoin;
+}
+
+export interface ConteoCitas {
+  fecha_cita: string;
+  razon_consulta?: string;
+  total: number;
 }

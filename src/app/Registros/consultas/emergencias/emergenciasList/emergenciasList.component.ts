@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { Paciente, Totales } from '../../../../interface/interfaces';
 import { ApiService } from '../../../../service/api.service';
-import { ConsultaService } from '../../../../service/consulta.service';
+import { ConsultaService } from '../../../../service/axios.service';
 import { Router } from '@angular/router';
 import { IconService } from '../../../../service/icon.service';
 import { ConsultaResponse, Ciclo } from '../../../../interface/consultas';

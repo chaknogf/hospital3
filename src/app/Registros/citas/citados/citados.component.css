@@ -11,3 +11,7 @@ form {
 
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
+
+.input-filtros {
+  font-size: 18px;
+}

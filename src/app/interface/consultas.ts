@@ -1,7 +1,6 @@
-
 // app/models/consultas.interface.ts
-
 import { Paciente } from "./interfaces";
+import { PacienteJoin } from './interfaces';
 
 // ===================================================================
 // TIPO DE ESTADOS DEL CICLO CLÍNICO
@@ -317,7 +316,23 @@ export interface ConsultasIdPaciente {
   especialidad: string;
   fecha_consulta: string;
   hora_consulta: string;
+}
 
+
+export interface ConsultaPacienteResumen {
+  id: number;
+  expediente?: string;
+  tipo_consulta?: number;
+  especialidad?: string;
+  servicio?: string;
+  documento?: string;
+  fecha_consulta?: string;
+  hora_consulta?: string;
+  indicadores?: Indicador;
+  ciclo?: CicloClinico;
+  orden?: number;
+  egreso?: Egreso;
+  paciente: PacienteJoin;
 
 }
 
@@ -488,3 +503,5 @@ export function contarPorEstado(consulta: ConsultaOut): Record<EstadoCiclo, numb
 
   return conteo;
 }
+
+

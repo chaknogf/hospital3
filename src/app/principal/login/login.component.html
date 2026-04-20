@@ -1,33 +1,35 @@
-<div class="aurora-login">
-  <div class="min-vh-100 d-flex justify-content-center align-items-center rounded-4">
-    <div class="w-100">
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="glass-login-dark p-4 rounded-4 shadow-lg">
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="mlogin">
+  <div class="mlogin__group">
+    <label class="mlogin__label">Usuario</label>
+    <input
+      type="text"
+      class="mlogin__input"
+      formControlName="username"
+      placeholder="Ingrese su usuario"
+    />
+  </div>
 
-        <h3 class="text-center mb-2 fw-bold text-white">Login</h3>
-        <p class="text-center text-white-50 mb-4 small">Ingresa tus credenciales</p>
+  <div class="mlogin__group">
+    <label class="mlogin__label">Contraseña</label>
+    <input
+      type="password"
+      class="mlogin__input"
+      formControlName="password"
+      placeholder="Ingrese su contraseña"
+    />
+  </div>
 
-        <div class="mb-3">
-          <input type="text"
-                 class="form-control rounded-pill"
-                 formControlName="username"
-                 placeholder="Usuario"
-                 autocomplete="off"/>
-        </div>
-
-        <div class="mb-3">
-          <input type="password"
-                 class="form-control rounded-pill"
-                 formControlName="password"
-                 placeholder="Contraseña"/>
-        </div>
-
-        <button type="submit" class="btn btn-gradient w-100 rounded-pill shadow-sm">
-          Iniciar Sesión
-        </button>
-      </form>
+  @if (errorMessage) {
+    <div class="mlogin__error">
+      {{ errorMessage }}
     </div>
-  </div>
+  }
 
-  <div *ngIf="loading">
-    <app-wordConect></app-wordConect>
-  </div>
+  <button type="submit" class="mlogin__btn" [disabled]="loading">
+    @if (!loading) {
+      Iniciar sesión
+    } @else {
+      Procesando...
+    }
+  </button>
+</form>

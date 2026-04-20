@@ -1,7 +1,9 @@
 <div class="aurora-paciente-container" [class.d-none]="visible">
-
   <!-- Botones superiores -->
-  <div class="botones justify-content-between" [ngClass]="{ 'd-none': filtrar }">
+  <div
+    class="botones justify-content-between"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
     <button type="button" (click)="volver()">
       <span [innerHTML]="menuIcon"></span>
       Menu
@@ -17,8 +19,10 @@
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || visible }">
-    <form class="form-filtros" (submit)="cargarCitas(); $event.preventDefault()">
-
+    <form
+      class="form-filtros"
+      (submit)="cargarCitas(); $event.preventDefault()"
+    >
       <fieldset class="fieldset-filtros">
         <label class="label-filtros">Expediente</label>
         <input
@@ -47,6 +51,7 @@
           type="date"
           class="input-filtros"
           [(ngModel)]="filtros.fecha_cita"
+          (change)="cargarCitas()"
           name="fecha"
         />
       </fieldset>
@@ -77,6 +82,7 @@
     <table class="aurora-tb">
       <thead>
         <tr>
+          <th>No.</th>
           <th>Expediente</th>
           <th>Paciente</th>
           <th>Especialidad</th>
@@ -86,17 +92,17 @@
       </thead>
       <tbody>
         <tr
-          *ngFor="let cita of citas; trackBy: trackById"
+          *ngFor="let cita of citas; let i = index; trackBy: trackById"
           class="aurora-table-row"
           [class.touch-active]="rowActiva === cita.id"
-          
         >
+          <td class="cell-index">{{ i + 1 }}</td>
+
           <!-- Expediente -->
           <td class="text-justify">
             <div *ngIf="cita">
               <strong>Expediente:</strong> {{ cita.expediente }}
             </div>
-            
           </td>
 
           <!-- Paciente -->
@@ -118,14 +124,14 @@
 
           <!-- Especialidad -->
           <td class="oculto">
-            {{ cita.especialidad }}
+            {{ cita.especialidad | datosExtra: "especialidad" }}
           </td>
 
           <!-- Fecha y Agenda -->
           <td class="oculto">
-            {{ cita.fecha_registro | date: 'dd/MM/yyyy' }}
+            {{ cita.fecha_cita | date: "dd/MM/yyyy" }}
             <br />
-            <small>{{ cita.fecha_cita }}</small>
+            <small>{{ cita.datos_extra.razon_consulta }}</small>
           </td>
 
           <!-- Acciones -->
@@ -134,12 +140,6 @@
               <button (click)="editarCita(cita.id); $event.stopPropagation()">
                 <span [innerHTML]="editIcon"></span>
               </button>
-              <button (click)="verDetalle(cita.id); $event.stopPropagation()">
-                <span [innerHTML]="tablaShanonIcon"></span>
-              </button>
-             <!--  <button (click)="eliminarCita(cita.id); $event.stopPropagation()">
-                <span [innerHTML]="icons['delete']"></span>
-              </button> -->
             </div>
           </td>
         </tr>
@@ -163,7 +163,7 @@
 
   <!-- Paginación -->
   <div class="d-flex justify-content-center align-items-center p-0">
-    <button class="btn" [disabled]="filtros.skip === 0" >
+    <button class="btn" [disabled]="filtros.skip === 0">
       <span [innerHTML]="skipLeft"></span>
     </button>
 
@@ -171,9 +171,8 @@
       <strong>{{ filtros.skip }}</strong>
     </div>
 
-    <button class="btn" [disabled]="finPagina" >
+    <button class="btn" [disabled]="finPagina">
       <span [innerHTML]="skipRight"></span>
     </button>
   </div>
-
 </div>

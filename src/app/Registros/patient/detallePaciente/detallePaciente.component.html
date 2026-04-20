@@ -121,7 +121,7 @@
       <!-- CONTACTO -->
       <div class="dc-card">
         <div class="card-header">
-          <span class="card-icon">📞</span>
+          <span class="card-icon">☎️</span>
           <h3 class="card-title">Contacto</h3>
         </div>
 
@@ -282,12 +282,12 @@
               <tbody>
                 <tr *ngFor="let c of consultasPorPaciente">
                   <td>{{ c.fecha_consulta | date: "dd-MM-yyyy" }}</td>
-                  <td>{{ c.hora_consulta }}</td>
+                  <td>{{ c.hora_consulta | time }}</td>
                   <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
                   <td>{{ c.tipo_consulta | datosExtra: "tipo_consulta" }}</td>
                   <td>
                     <button class="btn" (click)="verDetalle(c.id)">
-                      📑 Ver
+                      📁 Ver
                     </button>
                   </td>
                 </tr>

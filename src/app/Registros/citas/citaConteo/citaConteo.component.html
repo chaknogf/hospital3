@@ -1,0 +1,29 @@
+<div class="conteo-card">
+  <div class="header">
+    <span>{{ especialidad | datosExtra: "especialidad" }}</span>
+  </div>
+
+  <div *ngIf="loading" class="estado">Cargando...</div>
+  <div *ngIf="error" class="estado error">{{ error }}</div>
+
+  <table *ngIf="!loading && datos.length > 0">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Razon de Consulta</th>
+        <th>Programadas</th>
+        <th>Disponibles</th>
+      </tr>
+    </thead>
+    <tbody class="body-table">
+      <tr *ngFor="let item of datos">
+        <td>{{ item.fecha_cita | fecha }}</td>
+        <td>{{ item.razon_consulta }}</td>
+        <td>{{ item.total }}</td>
+        <td>{{ 10 - item.total }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && datos.length === 0" class="estado">Sin registros</div>
+</div>

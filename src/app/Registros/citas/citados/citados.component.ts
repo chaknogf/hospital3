@@ -1,36 +1,37 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CitaResponse, Citas } from '../../../interface/citas';
-import { ApiService } from '../../../service/api.service';
+import { Citas } from '../../../interface/citas';
+import { CitaService } from '../cita.service';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {
   addIcon, removeIcon, saveIcon, cancelIcon, findIcon, menuIcon,
   searchIcon, arrowDown, tablaShanonIcon, editIcon, skipRight, skipLeft
-  
+
 } from '../../../shared/icons/svg-icon';
+import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 
 @Component({
   selector: 'app-citados',
   templateUrl: './citados.component.html',
   styleUrls: ['./citados.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, DatosExtraPipe]
 })
 export class CitadosComponent implements OnInit {
   // ======= INYECCIONES =======
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private api = inject(ApiService);
+  private api = inject(CitaService);
   private fb = inject(FormBuilder);
   private sanitizer = inject(DomSanitizer);
   private hoy(): string {
-  const hoy = new Date();
-  return hoy.toISOString().split('T')[0];
-}
+    const hoy = new Date();
+    return hoy.toISOString().split('T')[0];
+  }
 
- 
+
 
   // ======= ESTADO =======
   citas: Citas[] = [];
@@ -44,14 +45,14 @@ export class CitadosComponent implements OnInit {
   rowActiva: number | null = null;
 
   // ======= FILTROS =======
- filtros: any = {
-  expediente: '',
-  especialidad: '',
-  fecha_cita: this.hoy(),
-  limit: 200,
-};
+  filtros: any = {
+    expediente: '',
+    especialidad: '',
+    fecha_cita: this.hoy(),
+    limit: 200,
+  };
 
-   //======== ICONOS ======
+  //======== ICONOS ======
   addIcon!: SafeHtml;
   removeIcon!: SafeHtml;
   saveIcon!: SafeHtml;
@@ -64,7 +65,7 @@ export class CitadosComponent implements OnInit {
   skipRight!: SafeHtml;
   skipLeft!: SafeHtml;
   menuIcon!: SafeHtml;
-  
+
 
   filtroForm: FormGroup = this.fb.group({
     expediente: [''],
@@ -78,14 +79,14 @@ export class CitadosComponent implements OnInit {
 
   // ======= CICLO DE VIDA =======
   ngOnInit(): void {
-  this.api.citas$.subscribe(data => {
-    this.citas = data;
-    this.citasFiltradas = data; 
-    this.cargando = false;
-  });
+    this.api.citas$.subscribe(data => {
+      this.citas = data;
+      this.citasFiltradas = data;
+      this.cargando = false;
+    });
 
-  this.cargarCitas();
-}
+    this.cargarCitas();
+  }
 
   private inicializarIconos(): void {
     this.addIcon = this.sanitizer.bypassSecurityTrustHtml(addIcon);
@@ -105,23 +106,22 @@ export class CitadosComponent implements OnInit {
   // ======= CARGA DE DATOS =======
   cargarCitas(): void {
     this.cargando = false;
-    console.log(this.filtros)
+    // console.log(this.filtros)
     this.api.getCitas(this.filtros).subscribe((data) => {
       this.citas = data;
     })
 
- 
+
   }
 
   limpiarFiltros(): void {
     this.filtros = {
-    id: 0,
-    expediente: '',
-    paciente_id: 0,
-    especialidad: '',
-    fecha_cita: '',
-    limit: 200,
+      expediente: '',
+      especialidad: '',
+      fecha_cita: this.hoy(),
+      limit: 200,
     }
+    this.cargarCitas();
   }
 
 
@@ -131,7 +131,7 @@ export class CitadosComponent implements OnInit {
 
   // ======= SELECCIÓN / DETALLE =======
   verDetalle(id: number): void {
-   
+
     this.visible = true;
   }
 
@@ -146,23 +146,11 @@ export class CitadosComponent implements OnInit {
   }
 
   editarCita(id: number): void {
-   
+
     this.router.navigate(['agendar', id]);
   }
 
-  // ======= ELIMINACIÓN =======
-  // eliminarCita(id: number): void {
-  //   if (!confirm('¿Está seguro de eliminar esta cita?')) return;
 
-  //   this.api.deleteCita(id).subscribe({
-  //     next: () => {
-  //       this.citas = this.citas.filter((c) => c.id !== id);
-  //       this.citasFiltradas = this.citasFiltradas.filter((c) => c.id !== id);
-  //       if (this.citaSeleccionada?.id === id) this.cerrarDetalle();
-  //     },
-  //     error: (error) => console.error('Error al eliminar cita:', error),
-  //   });
-  // }
 
   // ======= UTILIDADES =======
   trackById(_index: number, cita: Citas): number {
@@ -173,9 +161,9 @@ export class CitadosComponent implements OnInit {
     return this.citasFiltradas.length;
   }
 
-   volver() {
+  volver() {
     this.router.navigate(['/registros']);
   }
 
-  
+
 }

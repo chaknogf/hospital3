@@ -116,11 +116,26 @@ export interface Paciente {
   metadatos?: EventoMetadato[];
   creado_en?: string | null;
   actualizado_en?: string | null;
+  defuncion?: string;
+}
+
+export interface PacienteResumen {
+  id: number;
+  cui?: number | null;
+  expediente?: string | null;
+  pasaporte?: string | null;
+  nombre: Nombre;
+  nombre_completo?: string;
+  sexo?: 'F' | 'M' | 'O'; // F = Femenino, M = Masculino, O = Otro
+  fecha_nacimiento?: string | null;
+  estado?: 'V' | 'F' | 'I'; // V = Vivo, F = Fallecido, I = Inactivo
+  defuncion?: string;
+
 }
 
 export interface PacienteListResponse {
   total: number;
-  pacientes: Paciente[];
+  pacientes: PacienteResumen[];
 }
 
 
@@ -187,4 +202,5 @@ export interface PacienteJoin {
   sexo?: string;
   fecha_nacimiento?: string;
   contacto?: Contacto;
+  defuncion?: string;
 }

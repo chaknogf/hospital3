@@ -8,9 +8,9 @@ import { WordConectComponent } from "../loaders/wordConect/wordConect.component"
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, WordConectComponent],
+  imports: [CommonModule, ReactiveFormsModule,],
   templateUrl: './login.component.html',
-  // styleUrls: ['./login.component.css'],
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -43,10 +43,8 @@ export class LoginComponent {
       .subscribe({
         next: (res: any) => {
           this.loading = false;
-          localStorage.setItem('token', res.token); // Guarda el token JWT
+          localStorage.setItem('token', res.token);
           console.log('inicio de sesión exitoso');
-          this.loading = true;
-          console.log('Redirigiendo al dashboard...');
           this.router.navigate(['/dash']);
         },
         error: (error) => {

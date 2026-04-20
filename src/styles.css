@@ -24,6 +24,9 @@
   --gray-700: #374151;
   --gray-800: #1f2937;
   --gray-900: #111827;
+   --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.05);
 
   --deep: #060d1f;
   --panel: #0a1428;
@@ -81,11 +84,7 @@
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --font-ui: 'Inter', system-ui, sans-serif;
 
-  /* ───────── CORE ALT (VARIANTE MI6) ───────── */
-  --deep-alt: #060d1f;
-  --surface-alt: #0f1e3a;
-  --panel: #0a1428;
-  --void: #03050d;
+
 
   --rim-alt: rgba(96,165,250,0.12);
   --rim-hot: rgba(96,165,250,0.35);
@@ -1451,7 +1450,7 @@ legend + * {
   --bs-btn-close-focus-shadow: 0 0 0 0.25rem rgba(52, 89, 230, 0.25);
   --bs-btn-close-focus-opacity: 1;
   --bs-btn-close-disabled-opacity: 0.25;
-  box-sizing: content-box;
+  /* box-sizing: content-box;
   width: 1em;
   height: 1em;
   padding: 0.25em 0.25em;
@@ -1460,7 +1459,7 @@ legend + * {
   filter: var(--bs-btn-close-filter);
   border: 0;
   border-radius: 0.375rem;
-  opacity: var(--bs-btn-close-opacity);
+  opacity: var(--bs-btn-close-opacity); */
 }
 .btn-close:hover {
   color: var(--bs-btn-close-color);
@@ -1508,7 +1507,7 @@ legend + * {
   width: 100dvw;
   color: var(--bs-modal-color);
   pointer-events: auto;
-  background-color: var(--bs-modal-bg);
+  /* background-color: var(--bs-modal-bg); */
   background-clip: padding-box;
   border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
   border-radius: var(--bs-modal-border-radius);
@@ -1844,7 +1843,7 @@ legend + * {
 }
 
 .text-alert {
-  color: yellow !important;
+  color: #dbd75e !important;
   letter-spacing: 1px;
 
 }
@@ -2365,7 +2364,7 @@ background-color: #6bf3e121;
 /* Tabla */
 .aurora-container .aurora-tb {
   width: 100%;
-  border-collapse:separate;
+  border-collapse:collapse;
   border-spacing: 0;
   color: #f8fafc;
   font-size: 1rem;
@@ -2436,10 +2435,10 @@ background-color: #6bf3e121;
 /* Botones de acción */
 .aurora-tb button {
 
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   padding: 0.1rem !important;
   border-radius: 0.6rem;
-  background: rgba(0, 255, 255, 0.1);
+  background: rgba(1, 29, 33, 0.543);
   border: 1px solid rgba(0, 255, 255, 0.25);
   box-shadow: 0 0 8px rgba(0, 255, 255, 0.25);
   transition: all 0.25s ease;
@@ -2455,7 +2454,7 @@ background-color: #6bf3e121;
 .aurora-tb .botones-opt {
   display: flex;
   gap: 0.2rem;
-  justify-content: end;
+  justify-content: center;
   align-items: center;
 }
 
@@ -2547,7 +2546,7 @@ background-color: #6bf3e121;
 
 /* Fondo principal con degradado sutil */
 .aurora-login .min-vh-100 {
-  background: linear-gradient(135deg, #584be9, #222043, #3622e9);;
+  background: var(--deep);
   padding: 1rem;
 }
 

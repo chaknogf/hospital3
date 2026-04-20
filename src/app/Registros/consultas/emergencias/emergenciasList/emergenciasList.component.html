@@ -185,7 +185,12 @@
           <td class="oculto">
             {{ data.paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
             <br />
-            <small>{{ data.paciente.fecha_nacimiento | edad }}</small>
+            @if (data.paciente.estado == "F") {
+              <small>{{ data.paciente.defuncion | edad }}</small>
+            }
+            @if (data.paciente.estado == "V") {
+              <small>{{ data.paciente.fecha_nacimiento | edad }}</small>
+            }
           </td>
 
           <td class="oculto">

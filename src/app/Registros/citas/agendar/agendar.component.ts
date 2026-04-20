@@ -1,7 +1,9 @@
+import { ConteoCitas } from './../../../interface/citas';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, signal, OnChanges } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ApiService } from '../../../service/api.service';
+import { CitaService } from '../cita.service';
+import { PacienteService } from '../../patient/paciente.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormBuilder, FormGroup, ReactiveFormsModule, FormsModule
@@ -9,17 +11,14 @@ import {
 import { Subject } from 'rxjs';
 import { takeUntil, catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
-import {
-  addIcon, removeIcon, saveIcon, cancelIcon, findIcon,
-  touchicon, faceidicon
-} from '../../../shared/icons/svg-icon';
-import { CitaCreate, CitaResponse, Citas, CitaUpdate } from '../../../interface/citas';
+import { CitaCreate, Citas, CitaUpdate } from '../../../interface/citas';
 import { Paciente, PacienteJoin } from '../../../interface/interfaces';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { debounceTime } from 'rxjs/operators';
-import { Dict, ciclos, tipoConsulta, especialidades, servicios } from '../../../enum/diccionarios';
+import { Dict, especialidades } from '../../../enum/diccionarios';
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
+import { CitaConteoComponent } from '../citaConteo/citaConteo.component';
 
 
 @Component({
@@ -27,7 +26,7 @@ import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
   templateUrl: './agendar.component.html',
   styleUrls: ['./agendar.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, EdadPipe, DatosExtraPipe]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, EdadPipe, DatosExtraPipe, CitaConteoComponent]
 })
 
 
@@ -36,15 +35,16 @@ export class AgendarComponent implements OnInit, OnDestroy {
   // ======= INYECCIONES =======
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private api = inject(ApiService);
+  private api = inject(CitaService);
+  private pservice = inject(PacienteService);
   private fb = inject(FormBuilder);
   private sanitizer = inject(DomSanitizer);
 
   // ======= PROPIEDADES =======
   form: FormGroup;
   private destroy$ = new Subject<void>();
+  especialidadSeleccionada: string | null = null;
 
-  
   // ======= BÚSQUEDA DE PACIENTE =======
   busquedaExpediente = '';
   pacienteEncontrado: PacienteJoin | null = null;
@@ -69,11 +69,19 @@ export class AgendarComponent implements OnInit, OnDestroy {
   // ======= CONSTRUCTOR =======
   constructor() {
     this.form = this.crearFormulario();
-    this.inicializarIconos();
+
   }
+
+  razonConsulta = [
+    { ref: 'control', label: 'Control - Reconsulta' },
+    { ref: 'preoperatorio', label: 'Preoperatorio' },
+    { ref: 'ingreso', label: 'Ingreso SOP' },
+    { ref: 'procedimiento', label: 'Procedimiento Menor' }
+  ];
 
   // ======= CICLO DE VIDA =======
   ngOnInit(): void {
+
     this.valores();
     this.cargarCitaParaEdicion();
     this.form.get('expediente')?.valueChanges
@@ -88,22 +96,31 @@ export class AgendarComponent implements OnInit, OnDestroy {
           this.buscarPaciente();
         }
       });
+    this.form.get('especialidad')?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(200),
+        distinctUntilChanged()
+      )
+      .subscribe((esp: string) => {
+        this.especialidadSeleccionada = esp;
+      });
 
-      this.form.get('fecha_cita')?.valueChanges
-  .pipe(
-    takeUntil(this.destroy$),
-    debounceTime(100),
-    distinctUntilChanged()
-  )
-  .subscribe((fecha: string) => {
-    if (!fecha) return;
+    this.form.get('fecha_cita')?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(100),
+        distinctUntilChanged()
+      )
+      .subscribe((fecha: string) => {
+        if (!fecha) return;
 
-    const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-    const dia = dias[new Date(fecha).getDay()];
+        const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const dia = dias[new Date(fecha).getDay()];
 
-    this.form.get('dia_semana')?.setValue(dia, { emitEvent: false });
-  });
-    
+        this.form.get('dia_semana')?.setValue(dia, { emitEvent: false });
+      });
+
   }
 
   ngOnDestroy(): void {
@@ -111,14 +128,17 @@ export class AgendarComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-private valores(): void {
+  private valores(): void {
     this.especialidades = especialidades.filter(e => e.ref !== 'sop');
 
+  }
+  get tipoConsultaValue(): string {
+    return this.form.get('datos_extra.razon_consulta')?.value;
   }
 
   // ======= FORMULARIO =======
   private crearFormulario(): FormGroup {
-    
+
     return this.fb.group({
       id: [0],
       fecha_cita: [''],
@@ -128,31 +148,32 @@ private valores(): void {
       dia_semana: [{ value: '', disabled: true }],
       datos_extra: this.fb.group({
         notas: [''],
-        tipo_consulta: [''],
-        orden: [''],
+        razon_consulta: ['control'],
+
       })
     });
   }
 
-  private inicializarIconos(): void {
-    this.addIcon = this.sanitizer.bypassSecurityTrustHtml(addIcon);
-    this.removeIcon = this.sanitizer.bypassSecurityTrustHtml(removeIcon);
-    this.saveIcon = this.sanitizer.bypassSecurityTrustHtml(saveIcon);
-    this.cancelIcon = this.sanitizer.bypassSecurityTrustHtml(cancelIcon);
-    this.findIcon = this.sanitizer.bypassSecurityTrustHtml(findIcon);
-    this.faceidicon = this.sanitizer.bypassSecurityTrustHtml(faceidicon);
-    this.touchicon = this.sanitizer.bypassSecurityTrustHtml(touchicon);
+  seleccionarRazonConsulta(valor: string): void {
+    const actual = this.form.get('datos_extra.razon_consulta')?.value;
+
+    // Toggle (opcional)
+    const nuevo = actual === valor ? '' : valor;
+
+    this.form.get('datos_extra.razon_consulta')?.setValue(nuevo);
   }
 
-actualizarDiaSemana(fecha: string) {
-  if (!fecha) return;
 
-  const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-  const d = new Date(fecha);
-  const dia = dias[d.getDay()];
 
-  this.form.patchValue({ dia_semana: dia });
-}
+  actualizarDiaSemana(fecha: string) {
+    if (!fecha) return;
+
+    const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const d = new Date(fecha);
+    const dia = dias[d.getDay()];
+
+    this.form.patchValue({ dia_semana: dia });
+  }
 
   // ======= CARGAR PARA EDICIÓN =======
   private cargarCitaParaEdicion(): void {
@@ -178,20 +199,20 @@ actualizarDiaSemana(fecha: string) {
         })
       )
       .subscribe((data: Citas | null) => {
-  if (!data) return;
+        if (!data) return;
 
-  this.enEdicion.set(true);
-  this.pacienteEncontrado = data.paciente;
+        this.enEdicion.set(true);
+        this.pacienteEncontrado = data.paciente;
+        this.form.patchValue(data, { emitEvent: false });
+        this.especialidadSeleccionada = data.especialidad;
 
-  this.form.patchValue(data, { emitEvent: false });
 
-  
-  if (data.fecha_cita) {
-    this.actualizarDiaSemana(data.fecha_cita);
-  }
+        if (data.fecha_cita) {
+          this.actualizarDiaSemana(data.fecha_cita);
+        }
 
-  this.error.set(null);
-});
+        this.error.set(null);
+      });
   }
 
   quediaes(fecha: string): void {
@@ -208,7 +229,7 @@ actualizarDiaSemana(fecha: string) {
     this.error.set(null);
     this.pacienteEncontrado = null;
 
-    this.api.pacienteExpediente(expediente)
+    this.pservice.pacienteExpediente(expediente)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => this.buscandoPaciente = false),
@@ -256,83 +277,83 @@ actualizarDiaSemana(fecha: string) {
   }
 
   // ======= GUARDADO =======
-guardar(): void {
-  const valor = this.form.getRawValue();
+  guardar(): void {
+    const valor = this.form.getRawValue();
 
-  if (!valor.fecha_cita) {
-    this.error.set('Debe seleccionar una fecha');
-    return;
+    if (!valor.fecha_cita) {
+      this.error.set('Debe seleccionar una fecha');
+      return;
+    }
+
+    if (!valor.paciente_id) {
+      this.error.set('Debe seleccionar un paciente');
+      return;
+    }
+
+    if (!valor.especialidad) {
+      this.error.set('Debe seleccionar una especialidad');
+      return;
+    }
+
+    const cita: CitaCreate = {
+      fecha_cita: valor.fecha_cita,
+      expediente: valor.expediente,
+      paciente_id: valor.paciente_id,
+      especialidad: valor.especialidad,
+      datos_extra: valor.datos_extra,
+    };
+
+    this.enEdicion()
+      ? this.actualizar(valor.id, cita)
+      : this.crear(cita);
+
+
   }
 
-  if (!valor.paciente_id) {
-    this.error.set('Debe seleccionar un paciente');
-    return;
+  private crear(cita: CitaCreate): void {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    this.api.crearCita(cita)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.isLoading.set(false)),
+        catchError(err => {
+          console.error('Error al crear cita:', err);
+          this.error.set('No se pudo crear la cita.');
+          return of(null);
+        })
+      )
+      .subscribe(response => {
+        if (!response) return;
+
+        console.log('✅ Cita creada:', response);
+        this.volver();
+      });
   }
 
-  if (!valor.especialidad) {
-    this.error.set('Debe seleccionar una especialidad');
-    return;
+
+  private actualizar(id: number, cita: CitaUpdate): void {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    this.api.updateCita(id, cita)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.isLoading.set(false)),
+        catchError(err => {
+          console.error('Error al actualizar cita:', err);
+          this.error.set('No se pudo actualizar la cita.');
+          return of(null);
+        })
+      )
+      .subscribe(response => {
+        if (!response) return;
+
+        console.log('✅ Cita actulizada:', response);
+        this.volver();
+      });
   }
-
-  const cita: CitaCreate = {
-    fecha_cita: valor.fecha_cita,
-    expediente: valor.expediente,
-    paciente_id: valor.paciente_id,
-    especialidad: valor.especialidad,
-    datos_extra: valor.datos_extra,
-  };
-
-  this.enEdicion()
-    ? this.actualizar(valor.id, cita)
-    : this.crear(cita);
-
-  
-}
-
-private crear(cita: CitaCreate): void {
-  this.isLoading.set(true);
-  this.error.set(null);
-
-  this.api.crearCita(cita)
-    .pipe(
-      takeUntil(this.destroy$),
-      finalize(() => this.isLoading.set(false)),
-      catchError(err => {
-        console.error('Error al crear cita:', err);
-        this.error.set('No se pudo crear la cita.');
-        return of(null);
-      })
-    )
-    .subscribe(response => {
-  if (!response) return;
-
-  console.log('✅ Cita creada:', response);
-  this.volver();
-});
-}
-
-
- private actualizar(id: number, cita: CitaUpdate): void {
-  this.isLoading.set(true);
-  this.error.set(null);
-
-  this.api.updateCita(id, cita)
-    .pipe(
-      takeUntil(this.destroy$),
-      finalize(() => this.isLoading.set(false)),
-      catchError(err => {
-        console.error('Error al actualizar cita:', err);
-        this.error.set('No se pudo actualizar la cita.');
-        return of(null);
-      })
-    )
-    .subscribe(response => {
-  if (!response) return;
-
-  console.log('✅ Cita actulizada:', response);
-  this.volver();
-});
-}
 
   // ======= NAVEGACIÓN =======
   volver(): void {
