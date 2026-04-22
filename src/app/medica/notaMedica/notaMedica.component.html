@@ -13,10 +13,10 @@
 </div>
 
 <!-- ══ PÁGINA PRINCIPAL ══════════════════════════════════════════ -->
-<div class="dc-page" *ngIf="!isLoading() && !error() && ciclo()">
+<div class="dc-page">
   <!-- ══ HUD HEADER ════════════════════════════════════════════ -->
   <div class="hud-header">
-    <button class="hud-btn" (click)="regresar()" title="Regresar">←</button>
+    <button class="hud-btn btn" (click)="regresar()" title="Regresar">←</button>
 
     <div class="hud-title">
       <span class="hud-label">Nota Médica</span>
@@ -35,7 +35,9 @@
           ciclo()?.activo ? "ACTIVO" : "CERRADO"
         }}</span>
       </div>
-      <button class="hud-btn" (click)="guardar()" title="Guardar">💾</button>
+      <button class="hud-btn btn" (click)="guardar()" title="Guardar">
+        💾
+      </button>
     </div>
   </div>
 
@@ -59,21 +61,21 @@
     <!-- TABS DE SECCIONES -->
     <div class="nm-tabs">
       <button
-        class="nm-tab"
+        class="nm-tab btn"
         [class.nm-tab-active]="tabActivo === 'clinica'"
         (click)="setTab('clinica')"
       >
         🩺 Clínica
       </button>
       <button
-        class="nm-tab"
+        class="nm-tab btn"
         [class.nm-tab-active]="tabActivo === 'signos'"
         (click)="setTab('signos')"
       >
         📊 Signos
       </button>
       <button
-        class="nm-tab"
+        class="nm-tab btn"
         [class.nm-tab-active]="tabActivo === 'antecedentes'"
         (click)="setTab('antecedentes')"
       >
@@ -461,37 +463,18 @@
         </div>
 
         <!-- GLASGOW -->
-        <!-- <div *ngIf="escalaActiva === 'glasgow'" class="escala-panel">
+        <div *ngIf="escalaActiva === 'glasgow'" class="escala-panel">
           <div class="escala-grid">
             <div class="escala-field" *ngFor="let f of glasgowFields">
               <label class="nm-lbl">{{ f.label }}</label>
-
               <div class="escala-stepper">
-                <button
-                  class="step-btn"
-                  (click)="
-                    glasgow[f.key] = max(f.min, $any(glasgow)[f.key] - 1)
-                  "
-                >
-                  −
-                </button>
-
-                <span class="step-val">{{ $any(glasgow)[f.key] }}</span>
-
-                <button
-                  class="step-btn"
-                  (click)="
-                    glasgow[f.key] = min(f.max, $any(glasgow)[f.key] + 1)
-                  "
-                >
-                  +
-                </button>
+                <button class="step-btn">−</button>
+                <span class="step-val"></span>
+                <button class="step-btn">+</button>
               </div>
-
               <span class="escala-hint">{{ f.hint }}</span>
             </div>
           </div>
-
           <div
             class="escala-total"
             [class.escala-critico]="glasgowTotal < 9"
@@ -501,27 +484,17 @@
             <span class="escala-total-val">{{ glasgowTotal }}</span>
             <span class="escala-total-interp">{{ interpretarGlasgow() }}</span>
           </div>
-        </div> -->
+        </div>
 
         <!-- SILVERMAN -->
-        <!-- <div *ngIf="escalaActiva === 'silverman'" class="escala-panel">
+        <div *ngIf="escalaActiva === 'silverman'" class="escala-panel">
           <div class="escala-grid">
             <div class="escala-field" *ngFor="let f of silvermanFields">
               <label class="nm-lbl">{{ f.label }}</label>
               <div class="escala-stepper">
-                <button
-                  class="step-btn"
-                  (click)="silverman[f.key] = max(0, silverman[f.key] - 1)"
-                >
-                  −
-                </button>
-                <span class="step-val">{{ silverman[f.key] }}</span>
-                <button
-                  class="step-btn"
-                  (click)="silverman[f.key] = min(2, silverman[f.key] + 1)"
-                >
-                  +
-                </button>
+                <button class="step-btn">−</button>
+                <span class="step-val"></span>
+                <button class="step-btn">+</button>
               </div>
             </div>
           </div>
@@ -536,27 +509,17 @@
               interpretarSilverman()
             }}</span>
           </div>
-        </div> -->
+        </div>
 
         <!-- DOWNE -->
-        <!-- <div *ngIf="escalaActiva === 'downe'" class="escala-panel">
+        <div *ngIf="escalaActiva === 'downe'" class="escala-panel">
           <div class="escala-grid">
             <div class="escala-field" *ngFor="let f of downeFields">
               <label class="nm-lbl">{{ f.label }}</label>
               <div class="escala-stepper">
-                <button
-                  class="step-btn"
-                  (click)="downe[f.key] = max(0, downe[f.key] - 1)"
-                >
-                  −
-                </button>
-                <span class="step-val">{{ downe[f.key] }}</span>
-                <button
-                  class="step-btn"
-                  (click)="downe[f.key] = min(f.max, downe[f.key] + 1)"
-                >
-                  +
-                </button>
+                <button class="step-btn">−</button>
+                <span class="step-val"></span>
+                <button class="step-btn">+</button>
               </div>
             </div>
           </div>
@@ -569,27 +532,17 @@
             <span class="escala-total-val">{{ downeTotal }}</span>
             <span class="escala-total-interp">{{ interpretarDowne() }}</span>
           </div>
-        </div> -->
+        </div>
 
         <!-- APGAR -->
-        <!-- <div *ngIf="escalaActiva === 'apgar'" class="escala-panel">
+        <div *ngIf="escalaActiva === 'apgar'" class="escala-panel">
           <div class="escala-grid">
             <div class="escala-field" *ngFor="let f of apgarFields">
               <label class="nm-lbl">{{ f.label }}</label>
               <div class="escala-stepper">
-                <button
-                  class="step-btn"
-                  (click)="apgar[f.key] = max(0, apgar[f.key] - 1)"
-                >
-                  −
-                </button>
-                <span class="step-val">{{ apgar[f.key] }}</span>
-                <button
-                  class="step-btn"
-                  (click)="apgar[f.key] = min(2, apgar[f.key] + 1)"
-                >
-                  +
-                </button>
+                <button class="step-btn">−</button>
+                <span class="step-val"></span>
+                <button class="step-btn">+</button>
               </div>
             </div>
           </div>
@@ -602,27 +555,17 @@
             <span class="escala-total-val">{{ apgarTotal }}</span>
             <span class="escala-total-interp">{{ interpretarApgar() }}</span>
           </div>
-        </div> -->
+        </div>
 
         <!-- BISHOP -->
-        <!-- <div *ngIf="escalaActiva === 'bishop'" class="escala-panel">
+        <div *ngIf="escalaActiva === 'bishop'" class="escala-panel">
           <div class="escala-grid">
             <div class="escala-field" *ngFor="let f of bishopFields">
               <label class="nm-lbl">{{ f.label }}</label>
               <div class="escala-stepper">
-                <button
-                  class="step-btn"
-                  (click)="bishop[f.key] = max(f.min, bishop[f.key] - 1)"
-                >
-                  −
-                </button>
-                <span class="step-val">{{ bishop[f.key] }}</span>
-                <button
-                  class="step-btn"
-                  (click)="bishop[f.key] = min(f.max, bishop[f.key] + 1)"
-                >
-                  +
-                </button>
+                <button class="step-btn">−</button>
+                <span class="step-val"></span>
+                <button class="step-btn">+</button>
               </div>
             </div>
           </div>
@@ -631,7 +574,7 @@
             <span class="escala-total-val">{{ bishopTotal }}</span>
             <span class="escala-total-interp">{{ interpretarBishop() }}</span>
           </div>
-        </div> -->
+        </div>
       </div>
 
       <!-- EGRESO -->

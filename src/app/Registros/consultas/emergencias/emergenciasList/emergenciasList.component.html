@@ -152,35 +152,39 @@
           [class.touch-active]="rowActiva === data.id"
           (click)="activarFila(data.id)"
         >
-          <td class="text-justify">
-            <div class="ms-4" *ngIf="data?.paciente?.cui">
-              <strong>CUI:</strong>
-              <small> {{ data.paciente.cui | cui }}</small>
-            </div>
-            <div *ngIf="data?.paciente?.pasaporte">
-              <strong>Pasaporte:</strong> {{ data.paciente.pasaporte }}
-            </div>
-            <div *ngIf="data?.expediente">
-              <strong>Expediente:</strong> {{ data.expediente }}
-            </div>
-            <div *ngIf="data?.documento">
-              <strong>Hoja de Emergencia:</strong> {{ data.documento }}
+          <td class="text-justify" data-label="Identificadores:">
+            <div class="nombre-table">
+              <div class="ms-4" *ngIf="data?.paciente?.cui">
+                <strong>CUI:</strong>
+                <small> {{ data.paciente.cui | cui }}</small>
+              </div>
+              <div *ngIf="data?.paciente?.pasaporte">
+                <strong>Pasaporte:</strong> {{ data.paciente.pasaporte }}
+              </div>
+              <div *ngIf="data?.expediente">
+                <strong>Expediente:</strong> {{ data.expediente }}
+              </div>
+              <div *ngIf="data?.documento">
+                <strong>Hoja de Emergencia:</strong> {{ data.documento }}
+              </div>
             </div>
           </td>
-          <td>
-            <p class="p-0 m-0 text-uppercase">
-              {{ data.paciente.nombre.primer_nombre }}
-              {{ data.paciente.nombre.segundo_nombre }}
-              {{ data.paciente.nombre.otro_nombre }}
-            </p>
-            <p
-              class="p-0 m-0 text-uppercase"
-              [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-            >
-              {{ data.paciente.nombre.primer_apellido }}
-              {{ data.paciente.nombre.segundo_apellido }}
-              {{ data.paciente.nombre.apellido_casada }}
-            </p>
+          <td data-label="Nombre:">
+            <div class="nombre-table">
+              <p>
+                {{ data.paciente.nombre.primer_nombre }}
+                {{ data.paciente.nombre.segundo_nombre }}
+                {{ data.paciente.nombre.otro_nombre }}
+              </p>
+              <p
+                class="p-0 m-0 text-uppercase"
+                [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+              >
+                {{ data.paciente.nombre.primer_apellido }}
+                {{ data.paciente.nombre.segundo_apellido }}
+                {{ data.paciente.nombre.apellido_casada }}
+              </p>
+            </div>
           </td>
           <td class="oculto">
             {{ data.paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}

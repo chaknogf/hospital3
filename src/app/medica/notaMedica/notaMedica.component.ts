@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import {
   CicloConsulta,
   DatoMedico,
@@ -17,15 +17,22 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DatosExtraPipe } from '../../pipes/datos-extra.pipe';
 import { EdadPipe } from '../../pipes/edad.pipe';
+import { Router } from '@angular/router';
+import { IconService } from '../../service/icon.service';
+import { ConsultaService } from '../ciclo.service';
 
 @Component({
-  selector: 'app-nota-medica',
+  selector: 'app-notaMedica',
   templateUrl: './notaMedica.component.html',
   styleUrls: ['./notaMedica.component.css'],
   standalone: true,
   imports: [CommonModule, FormsModule, DatosExtraPipe]
 })
 export class NotaMedicaComponent implements OnInit {
+
+  private api = inject(ConsultaService);
+  private router = inject(Router);
+  private iconService = inject(IconService);
 
   /* ── Signals ─────────────────────────────────────────── */
   ciclo = signal<CicloConsulta | null>(null);
@@ -403,8 +410,7 @@ export class NotaMedicaComponent implements OnInit {
   }
 
   regresar(): void {
-    // TODO: this.location.back();
-    console.log('[NotaMedica] Regresar');
+    this.router.navigate(['/pacientesAtendidos'])
   }
 
   editar(id: number | undefined): void {

@@ -3,6 +3,11 @@
    Extiende las variables definidas en el tema global
    ══════════════════════════════════════════════════════════════ */
 
+
+.dc-page {
+  background: rgba(0, 0, 0, 0.819);
+}
+
 /* ══ TABS DE SECCIÓN ═════════════════════════════════════════ */
 .nm-tabs {
   display: flex;
@@ -650,5 +655,98 @@
 
   .escala-grid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NOTA MÉDICA — cosmos dark UI
+   ══════════════════════════════════════════════════════════════ */
+
+.nm-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.nm-tab {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--rim);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nm-tab:hover {
+  border-color: var(--rim-hot);
+  color: var(--text-dim);
+}
+
+.nm-tab-active {
+  background: var(--pulse-dim);
+  border-color: var(--pulse);
+  color: var(--star);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.25);
+}
+
+/* ══ CAMPOS ══ */
+.nm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nm-lbl {
+  font-size: 8px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.nm-input,
+.nm-textarea,
+.nm-select {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--rim);
+  padding: 6px;
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+}
+
+/* ══ GRID ══ */
+.sv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* ══ BOTONES ══ */
+.nm-btn-primary {
+  background: var(--pulse-dim);
+  border: 1px solid var(--pulse);
+  color: var(--star);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ══ FOOTER ══ */
+.nm-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  border-top: 1px solid var(--rim);
+}
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 768px) {
+  .sv-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

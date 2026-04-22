@@ -207,7 +207,7 @@
               <button
                 *ngIf="puedeRecibirse(data)"
                 class="btn-recibir"
-                (click)="notamedicas()"
+                (click)="notamedica(data.id)"
               >
                 <span [innerHTML]="icons['nota']"></span>
               </button>

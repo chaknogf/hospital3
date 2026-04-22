@@ -35,7 +35,7 @@ export class PacientesComponent implements OnInit {
   espacio = ' ';
 
   // ── Paginación con skip/limit del backend ──────────────────
-  readonly pageSize = 14;
+  readonly pageSize = 8;
   paginaActual = 1;
   totalDeRegistros = 0;   // total real que devuelve el backend
 

@@ -1843,8 +1843,10 @@ legend + * {
 }
 
 .text-alert {
-  color: #dbd75e !important;
-  letter-spacing: 1px;
+  /* color: #dbd75e !important; */
+  letter-spacing: 2px;
+  font-weight: 500;
+
 
 }
 
@@ -2361,178 +2363,125 @@ background-color: #6bf3e121;
 /* Contenedor general */
 
 
-/* Tabla */
+/* --- Tabla Desktop --- */
 .aurora-container .aurora-tb {
   width: 100%;
-  border-collapse:collapse;
-  border-spacing: 0;
-  color: #f8fafc;
-  font-size: 1rem;
-  border-radius: 16px;
+  border-collapse: collapse;
+  color: #e2e8f0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #0b0f19;
+  border-radius: 12px;
   overflow: hidden;
-  border: none;
-
+  border: 1px solid #1e293b;
+  text-align: center;
 }
 
-/* Cabecera */
 .aurora-tb thead th {
-  background: rgba(1, 33, 34, 0.656);
-  color: #e0ffff;
-  font-weight: 600;
-  padding: 0.3rem 0.4rem;
-  text-align: center;
+  background: #161e2e;
+  color: #f8fafc;
+  padding: 1rem;
   text-transform: uppercase;
-  letter-spacing: 0.05rem;
-  text-shadow: 0 0 1px #00f7ff;
-
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #38bdf8;
+  align-items: center;
 }
 
-/* Filas */
-.aurora-tb tr {
-  background: rgba(3, 13, 79, 0.981);
-  border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-
-}
-
-.aurora-tb tr:hover {
-   background: radial-gradient(circle at top left, #271d6098, #5cf3f0c3, #170e508f); background: radial-gradient(circle at top left, #271d6098, #10b4b179, #170e508f);
-  box-shadow: 0 0 18px rgba(0, 255, 255, 0.3);
-  /* border-radius: 24px; */
-}
-
-/* Celdas */
 .aurora-tb td {
-  padding: 0.2rem 0.4rem;
-  vertical-align: middle;
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid #1e293b;
+  letter-spacing: 1px;
   text-align: center;
 }
 
-/* Texto */
-.aurora-tb td strong {
-  color: #00ffff;
-  text-shadow: 0 0 1px #06f1ed;
-  font-size: 0.8rem;
-}
-.aurora-tb td small {
-  color: #b2c2d7;
-  font-size: 0.8rem;
-}
+/* --- Estilos de Texto --- */
+.aurora-tb td strong { color: #ffffff; font-size: 0.8rem; }
+.aurora-tb td small { color: #94a3b8; }
+.orden { font-weight: 800; color: #fb923c; font-size: 1.5rem; }
 
-.orden {
-    font-weight: 600;
-    font-size: 1.9rem;
-    color: orange
-  }
-
-/* Íconos */
-.aurora-tb td span {
-  display: block;
-  align-items: center;
-  justify-content: center;
-  text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
-}
-
-/* Botones de acción */
+/* --- Botones --- */
 .aurora-tb button {
-
-  font-size: 0.95rem;
+  background: #1e293b;
+  border: 1px solid #38bdf8;
+  color: #ffffff;
   padding: 0.1rem !important;
-  border-radius: 0.6rem;
-  background: rgba(1, 29, 33, 0.543);
-  border: 1px solid rgba(0, 255, 255, 0.25);
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.25);
-  transition: all 0.25s ease;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.aurora-tb button:hover {
-  transform: translateY(-2px) scale(1.05);
-  background: rgba(216, 223, 246, 0.871);
-  box-shadow: 0 0 14px rgba(0, 255, 255, 0.6);
-  color: #0f172a;
-}
-
-.aurora-tb .botones-opt {
+.nombre-table {
   display: flex;
-  gap: 0.2rem;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
 }
 
-/* Responsive first-mobile */
-/* Mobile: Agenda tipo contactos */
+.nombre-table p {
+padding: 0;
+  margin: 0;
+  letter-spacing: 3px;
+}
+
+
+
+
+
+.aurora-tb tr:hover { background: radial-gradient(circle at top left, #271d6098, #5cf3f0c3, #170e508f); background: radial-gradient(circle at top left, #271d6098, #10b4b179, #170e508f);
+  font-weight: bold;
+  .hombre {font-weight: bold !important; font-size: 1.1rem; background: #000; border-radius: 10px; padding: 0 6px !important;}
+  .mujer {font-weight: bold !important; font-size: 1.1rem; background: #000;border-radius: 10px; padding: 0 6px !important;}
+}
+
+/* --- RESPONSIVE MOBILE: FORMATO TARJETAS --- */
 @media (max-width: 768px) {
+  .aurora-tb thead { display: none; } /* Ocultar cabecera */
 
-  .aurora-container {
-    padding: 1.3rem;
-    margin: 0.8rem;
-    gap: 0.5rem;
-
+.oculto {
+    display: none !important;
   }
 
+  .opciones {display: none;}
+  .aurora-tb .mostrar:hover {display: block;}
 
-  .aurora-container .aurora-cards {
-  flex: 1 1 150px;
-  font-size: 0.8rem;
-  height: 180px;
-
-}
-  /* Ocultar encabezados de tabla */
-  .aurora-tb thead {
-    display: none;
-  }
-
-  /* Filas y celdas */
-  .aurora-tb,
-  .aurora-tb tbody,
-  .aurora-tb tr {
+  .aurora-tb, .aurora-tb tbody, .aurora-tb tr {
     display: block;
     width: 100%;
-    border: none;
-    padding: 0;
-    margin: 0;
   }
-
-  .oculto {
-    display: none;
-  }
-
-
 
   .aurora-tb tr {
+    border-bottom: 8px solid #0b0f19; /* Espacio entre filas */
+    background: #161e2e;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+
+  .aurora-tb td {
     display: flex;
-    flex-direction: row; /* nombre a la izquierda, acciones a la derecha */
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 0.8rem;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-    cursor: pointer;
-    transition: background 0.2s ease;
+    text-align: right;
+    border-bottom: 1px solid #1e293b;
+    padding: 0.5rem 0;
+    gap:4px
   }
 
-  /* Celdas principales (nombre/identificador) */
-
-  /* Celdas secundarias ocultas por defecto */
-  .aurora-tb td.secundario {
-    display: none;
-    flex-direction: column;
-    gap: 0.3rem;
-    font-size: 0.8rem;
-    color: #aaa;
+  /* Etiquetas dinámicas para móviles */
+  .aurora-tb td::before {
+    content: attr(data-label); /* Necesitas añadir data-label en el HTML */
+    font-weight: bold;
+    color: #d1d5d4;
+    text-transform: uppercase;
+    font-size: 0.7rem;
   }
 
-  /* Mostrar secundario si fila activa */
-  .aurora-tb tr.touch-active td.secundario {
-    display: flex;
+  .aurora-tb .botones-opt {
+    justify-content: center;
+    padding-top: 0.5rem;
   }
 
-  /* Botones de acción */
-
-  /* Opcional: efecto fila activa */
-  .aurora-tb tr.touch-active {
-    border-radius: 0.4rem;
+  .aurora-tb button {
+    padding: 0.1 !important;
   }
-
 }
 
 
