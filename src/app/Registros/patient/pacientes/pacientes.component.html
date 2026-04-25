@@ -162,6 +162,7 @@
           *ngFor="let paciente of pacientes"
           class="aurora-table-row"
           [class.touch-active]="rowActiva === paciente.id"
+          [class.paciente-fallecido]="paciente.estado === 'F'"
           (click)="activarFila(paciente.id)"
         >
           <td data-label="ID:" class="oculto">{{ paciente.id }}</td>
@@ -188,9 +189,6 @@
           <td data-label="Nombre:">
             <div class="nombre-table">
               <p class="">
-                @if (paciente.estado === "F") {
-                  💀
-                }
                 {{ paciente.nombre.primer_nombre }}
                 {{ paciente.nombre.segundo_nombre }}
                 {{ paciente.nombre.otro_nombre }}
@@ -207,8 +205,12 @@
           </td>
           <td data-label="Fecha de Nacimiento" class="oculto">
             {{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
+
             <br />
             @if (paciente.estado == "F") {
+              <p class="m-0 p-0">
+                Fallecio: {{ paciente.defuncion | date: "dd/MM/yyyy" }}
+              </p>
               <small>{{ paciente.defuncion | edad }}</small>
             }
             @if (paciente.estado == "V") {
@@ -227,31 +229,53 @@
 
           <td class="secundario">
             <div class="d-flex gap-1">
-              <button (click)="editarPaciente(paciente.id)">
-                <span [innerHTML]="icons['editPerson']"></span>
+              <button (click)="editarPaciente(paciente.id)" data-label="Editar">
+                <span [innerHTML]="icons['edit']"></span>
               </button>
-              <button (click)="abrirModalAdmision(paciente.id)">
-                <span [innerHTML]="icons['medical']"></span>
-              </button>
-              <button (click)="verDetallesPaciente(paciente.id)">
+              @if (paciente.estado === "V") {
+                <button
+                  (click)="abrirModalAdmision(paciente.id)"
+                  data-label="Admisión"
+                >
+                  <span [innerHTML]="icons['medical']"></span>
+                </button>
+              }
+              @if (paciente.estado === "F") {
+                <button (click)="defuncion()" data-label="Defunción">
+                  <span [innerHTML]="icons['ghost']"></span>
+                </button>
+              }
+              <button
+                (click)="verDetallesPaciente(paciente.id)"
+                data-label="Detalle"
+              >
                 <span [innerHTML]="icons['tabla']"></span>
               </button>
+              @if (paciente.estado === "V") {
+                <button (click)="cita(paciente.id)" data-label="Cita">
+                  <span [innerHTML]="icons['calendar']"></span>
+                </button>
+              }
             </div>
           </td>
         </tr>
         <!-- Sin resultados -->
-        <tr *ngIf="!cargando && pacientes.length === 0">
-          <td colspan="5" class="text-center py-3">
-            <em>No se encontraron coincidencias.</em>
-          </td>
-        </tr>
+        @if (!cargando && pacientes.length === 0) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>No se encontraron coincidencias.</em>
+            </td>
+          </tr>
+        }
 
         <!-- Cargando -->
-        <tr *ngIf="cargando">
-          <td colspan="5" class="text-center py-3">
-            <em>Cargando...</em>
-          </td>
-        </tr>
+        @if (cargando) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>Cargando... 🛰️ </em>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>

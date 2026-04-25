@@ -202,40 +202,22 @@ export class RecepcionComponent implements OnInit {
       .subscribe();
   }
 
-  // ══════════════════════════════════════════════════════════
-  // HELPERS DE ESTADO
-  // ══════════════════════════════════════════════════════════
-  ultimoEstado(consulta: ConsultaOut): string {
-    if (!consulta.ciclo?.length) return '—';
-    const ultimo = consulta.ciclo[consulta.ciclo.length - 1].estado;
-    return this.ciclos.find(c => c.value === ultimo)?.label ?? ultimo;
-  }
 
-  ultimoEstadoValor(consulta: ConsultaOut): string {
-    if (!consulta.ciclo?.length) return '';
-    return consulta.ciclo[consulta.ciclo.length - 1].estado;
-  }
-
-  // true si el último ciclo ya es 'recepcion' (listo para archivar)
-  estaEnRecepcion(consulta: ConsultaOut): boolean {
-    return this.ultimoEstadoValor(consulta) === 'recepcion';
-  }
-
-  // true si puede recibirse (no está en recepcion ni archivado)
-  puedeRecibirse(consulta: ConsultaOut): boolean {
-    const estado = this.ultimoEstadoValor(consulta);
-    return estado !== 'recepcion' && !ESTADOS_INACTIVOS.has(estado);
-  }
 
   // ══════════════════════════════════════════════════════════
   // CARGA
   // ══════════════════════════════════════════════════════════
-  ngOnInit(): void { this.cargarConsultas(); }
+  ngOnInit(): void {
+    this.cargarConsultas();
+    console.log(this.consultas);
+  }
 
   cargarConsultas(): void {
     this.cargando = true;
     this.api.getConsultas(this.limpiarFiltrosVacios(this.filtros)).subscribe({
       next: (data: ConsultaOut[]) => {
+
+
         const filtradas = data.filter(c => this.esConsultaActiva(c));
         this.hayPaginaSiguiente = filtradas.length > this.pageSize;
         this.consultas = this.hayPaginaSiguiente ? filtradas.slice(0, this.pageSize) : filtradas;
@@ -246,8 +228,7 @@ export class RecepcionComponent implements OnInit {
   }
 
   private esConsultaActiva(c: ConsultaOut): boolean {
-    if (!c.ciclo?.length) return true;
-    return !ESTADOS_INACTIVOS.has(c.ciclo[c.ciclo.length - 1].estado);
+    return !ESTADOS_INACTIVOS.has(c.ultimo_estado ?? '');
   }
 
   private limpiarFiltrosVacios(filtros: any): any {

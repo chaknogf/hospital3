@@ -2409,6 +2409,20 @@ background-color: #6bf3e121;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
+  font-size: 10px;
+  letter-spacing: 2px;
+  svg { width: 30px !important; }
+  p { writing-mode: vertical-rl; transform: rotate(180deg); }
+}
+
+
+
+.aurora-tb button svg {
+  transition: all 0.15s ease;
+}
+
+.aurora-tb button:active svg {
+  transform: scale(0.9);
 }
 
 .nombre-table {
@@ -2422,14 +2436,81 @@ padding: 0;
   letter-spacing: 3px;
 }
 
+.paciente-fallecido {
+
+  background-color: rgba(255, 0, 0, 0.08); /* rojo suave */
+
+  color: rgba(255, 100, 100, 0.9);
+
+}
+
+.aurora-tb {
+  .d-flex {
+    justify-content: center;
+  }
+  .d-flex button {
+  position: relative;
+  background: #1e293b;
+  border: 1px solid #38bdf8;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 4px;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+/* TOOLTIP (texto) */
+.d-flex button::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: 140%; /* más arriba que la flecha */
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+
+  background: rgba(8, 0, 0, 0.652);
+  color: #fff4f4e9;
+  font-size: 14px;
+  font-weight: bolder;
+  padding: 1px;
+  border-radius: 6px;
+  white-space: wrap;
+  opacity: 0;
+  pointer-events: none;
+
+  transition: all 0.2s ease;
+}
+
+/* FLECHITA */
+.d-flex button::before {
+  content: "";
+  position: absolute;
+  bottom: 110%; /* justo debajo del tooltip */
+  left: 50%;
+  transform: translateX(-50%);
+
+  border: 5px solid transparent;
+  border-top-color: rgba(89, 196, 242, 0.954);
+
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+/* HOVER */
+.d-flex button:hover::after,
+.d-flex button:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+
+}
 
 
 
-
-.aurora-tb tr:hover { background: radial-gradient(circle at top left, #271d6098, #5cf3f0c3, #170e508f); background: radial-gradient(circle at top left, #271d6098, #10b4b179, #170e508f);
+.aurora-tb tr:hover {background:  radial-gradient(circle at top left, #3317d098, #10b4b179, #2b081a8f);
   font-weight: bold;
-  .hombre {font-weight: bold !important; font-size: 1.1rem; background: #000; border-radius: 10px; padding: 0 6px !important;}
-  .mujer {font-weight: bold !important; font-size: 1.1rem; background: #000;border-radius: 10px; padding: 0 6px !important;}
+  .hombre {font-weight: bold !important;  background: #000; border-radius: 10px; padding: 0 6px !important;}
+  .mujer {font-weight: bold !important;  background: #000;border-radius: 10px; padding: 0 6px !important;}
 }
 
 /* --- RESPONSIVE MOBILE: FORMATO TARJETAS --- */
@@ -2477,10 +2558,12 @@ padding: 0;
   .aurora-tb .botones-opt {
     justify-content: center;
     padding-top: 0.5rem;
+
   }
 
   .aurora-tb button {
     padding: 0.1 !important;
+
   }
 }
 

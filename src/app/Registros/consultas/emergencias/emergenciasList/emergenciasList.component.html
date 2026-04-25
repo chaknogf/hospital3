@@ -207,24 +207,28 @@
             </ng-container>
           </td>
           <td class="oculto">
-            <!-- <small>{{ estadoUltimoCiclo(data.ciclo) }}</small> -->
-            <!-- <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
-                <span [innerHTML]="icons['activo']"></span>
-              </ng-container>
-              <ng-container *ngIf="getCicloStatus(data.ciclo) === 'inactivo'">
-                <span [innerHTML]="icons['documento']"></span>
-              </ng-container> -->
+            <small>{{ data.ultimo_estado }}</small
+            ><br />
             {{ data.tipo_consulta | datosExtra: "tipo_consulta" }}
           </td>
           <td class="secundario">
-            <div class="botones-opt">
-              <button (click)="editar(data.id); $event.stopPropagation()">
+            <div class="d-flex gap-1">
+              <button
+                (click)="editar(data.id); $event.stopPropagation()"
+                data-label="Editar"
+              >
                 <span [innerHTML]="icons['edit']"></span>
               </button>
-              <button (click)="verDetalle(data.id); $event.stopPropagation()">
+              <button
+                (click)="verDetalle(data.id); $event.stopPropagation()"
+                data-label="Detalle"
+              >
                 <span [innerHTML]="icons['tabla']"></span>
               </button>
-              <button (click)="imprimir(data.id); $event.stopPropagation()">
+              <button
+                (click)="imprimir(data.id); $event.stopPropagation()"
+                data-label="Imprimir"
+              >
                 <span [innerHTML]="icons['print']"></span>
               </button>
             </div>

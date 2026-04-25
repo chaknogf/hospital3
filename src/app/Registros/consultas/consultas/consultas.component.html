@@ -193,35 +193,50 @@
             </ng-container>
           </td>
           <td class="oculto">
+            <small>{{ data.ultimo_estado }}</small>
+            <br />
             {{ data.tipo_consulta | datosExtra: "tipo_consulta" }}
           </td>
           <td class="secundario">
-            <div class="botones-opt">
-              <button (click)="editar(data.id); $event.stopPropagation()">
+            <div class="d-flex gap-1">
+              <button
+                (click)="editar(data.id); $event.stopPropagation()"
+                data-label="Editar"
+              >
                 <span [innerHTML]="icons['edit']"></span>
               </button>
-              <button (click)="verDetalle(data.id); $event.stopPropagation()">
+              <button
+                (click)="verDetalle(data.id); $event.stopPropagation()"
+                data-label="Detalle"
+              >
                 <span [innerHTML]="icons['tabla']"></span>
               </button>
-              <button (click)="imprimir(data.id); $event.stopPropagation()">
+              <button
+                (click)="imprimir(data.id); $event.stopPropagation()"
+                data-label="Imprimir"
+              >
                 <span [innerHTML]="icons['print']"></span>
               </button>
             </div>
           </td>
         </tr>
         <!-- Sin resultados -->
-        <tr *ngIf="!cargando && consultas.length === 0">
-          <td colspan="5" class="text-center py-3">
-            <em>No se encontraron coincidencias.</em>
-          </td>
-        </tr>
+        @if (!cargando && consultas.length === 0) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>No se encontraron coincidencias.</em>
+            </td>
+          </tr>
+        }
 
         <!-- Cargando -->
-        <tr *ngIf="cargando">
-          <td colspan="5" class="text-center py-3">
-            <em>Cargando...</em>
-          </td>
-        </tr>
+        @if (cargando) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>Cargando... 🛰️ </em>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>

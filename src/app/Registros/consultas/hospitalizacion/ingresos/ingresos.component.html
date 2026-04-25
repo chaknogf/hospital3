@@ -113,7 +113,7 @@
           <th>Identificador</th>
           <th>Nombre Completo</th>
           <th>Fecha</th>
-          <th>Ciclo & Estado</th>
+          <th>Ultimo Ciclo</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -164,26 +164,18 @@
             </ng-container>
           </td>
           <td class="oculto">
-            <!-- <small>{{ estadoUltimoCiclo(data.ciclo) }}</small> -->
-            <!-- <ng-container *ngIf="getCicloStatus(data.ciclo) === 'activo'">
-              <span [innerHTML]="icons['activo']"></span>
-            </ng-container>
-            <ng-container *ngIf="getCicloStatus(data.ciclo) === 'inactivo'">
-              <span [innerHTML]="icons['documento']"></span>
-            </ng-container>
-            {{ data.tipo_consulta | datosExtra: "tipo_consulta" }}
-          </td> -->
+            <small>{{ data.ultimo_estado }}</small>
           </td>
 
           <td class="secundario">
-            <div class="botones-opt">
-              <button (click)="editar(data.id)">
+            <div class="d-flex gap-1">
+              <button (click)="editar(data.id)" data-label="Editar">
                 <span [innerHTML]="icons['edit']"></span>
               </button>
-              <button (click)="verDetalle(data.id)">
+              <button (click)="verDetalle(data.id)" data-label="Detalle">
                 <span [innerHTML]="icons['tabla']"></span>
               </button>
-              <button (click)="imprimir(data.id)">
+              <button (click)="imprimir(data.id)" data-label="Imprimir">
                 <span [innerHTML]="icons['print']"></span>
               </button>
             </div>

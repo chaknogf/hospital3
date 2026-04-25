@@ -25,7 +25,8 @@ export type EstadoCiclo =
   | "recepcion"     // En recepción
   | "actualizado"   // Registro actualizado
   | "reprogramado"  // Consulta reprogramada
-  | "descartado";   // Consulta descartada/cancelada
+  | "descartado"   // Consulta descartada/cancelada
+  | "triage"; // Consulta contraindicada
 
 
 export interface Datos {
@@ -227,8 +228,9 @@ export interface ConsultaBase {
   fecha_consulta?: string;
   hora_consulta?: string;
   indicadores?: Indicador;
-  ciclo: CicloClinico[];
+  ciclo?: CicloClinico[];
   orden?: number;
+  ultimo_estado?: string;
   egreso?: Egreso;
 }
 

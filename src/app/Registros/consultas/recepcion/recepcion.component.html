@@ -170,38 +170,39 @@
           <td class="oculto">
             <span
               class="ciclo-chip"
-              [class.ciclo-recepcion]="ultimoEstadoValor(data) === 'recepcion'"
+              [class.ciclo-recepcion]="data.ultimo_estado === 'recepcion'"
+              [class.ciclo-regular]="data.ultimo_estado !== 'recepcion'"
             >
-              {{ ultimoEstado(data) }}
+              {{ data.ultimo_estado }}
             </span>
           </td>
 
           <td class="secundario">
-            <div class="botones-opt justify-content-center">
+            <div class="d-flex gap-1">
               <!-- RECIBIR: si no está en recepcion todavía -->
-              <button
-                *ngIf="puedeRecibirse(data)"
-                class="btn-recibir"
-                (click)="abrirModalRecibido(data); $event.stopPropagation()"
-                title="Marcar como recibido en recepción"
-              >
-                <span [innerHTML]="icons['recibido']"></span>
-              </button>
+              @if (data.ultimo_estado !== "recepcion") {
+                <button
+                  data-label="Recibir"
+                  (click)="abrirModalRecibido(data); $event.stopPropagation()"
+                >
+                  <span [innerHTML]="icons['recibido']"></span>
+                </button>
+              }
 
               <!-- ARCHIVAR: solo si ya está en recepcion -->
-              <button
-                *ngIf="estaEnRecepcion(data)"
-                class="btn-archivar"
-                (click)="abrirModalArchivar(data); $event.stopPropagation()"
-                title="Archivar consulta"
-              >
-                <span [innerHTML]="icons['archivo']"></span>
-              </button>
-
+              @if (data.ultimo_estado === "recepcion") {
+                <button
+                  data-label="Archivar"
+                  class="btn-archivar"
+                  (click)="abrirModalArchivar(data); $event.stopPropagation()"
+                >
+                  <span [innerHTML]="icons['archivo']"></span>
+                </button>
+              }
               <!-- DETALLE -->
               <button
+                data-label="Detalle"
                 (click)="verDetalle(data.id); $event.stopPropagation()"
-                title="Ver detalle"
               >
                 <span [innerHTML]="icons['tabla']"></span>
               </button>
@@ -210,11 +211,13 @@
         </tr>
 
         <!-- Sin resultados -->
-        <tr *ngIf="!cargando && consultas.length === 0">
-          <td colspan="5" class="text-center py-3">
-            <em>No se encontraron coincidencias.</em>
-          </td>
-        </tr>
+        @if (!cargando && consultas.length === 0) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>No se encontraron coincidencias.</em>
+            </td>
+          </tr>
+        }
 
         <!-- Cargando -->
         <tr *ngIf="cargando">

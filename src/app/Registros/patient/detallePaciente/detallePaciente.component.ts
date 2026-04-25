@@ -8,7 +8,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { EdadPipe } from "../../../pipes/edad.pipe";
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { Paciente, Referencia } from '../../../interface/interfaces';
-import { heartIcon, ghostIcon, manIcon, womanIcon, personFicha, regresarIcon } from './../../../shared/icons/svg-icon';
+import { manIcon, womanIcon, personFicha, regresarIcon } from './../../../shared/icons/svg-icon';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { ConsultasIdPaciente } from '../../../interface/consultas';
 import { DetalleConsultaComponent } from "../../adminsion/detalleConsulta/detalleConsulta.component";
@@ -40,10 +40,9 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   error: string | null = null;
 
   // SVGs
-  heartIcon: SafeHtml;
+
   manIcon: SafeHtml;
   womanIcon: SafeHtml;
-  ghostIcon: SafeHtml;
   personFicha: SafeHtml;
   regresarIcon: SafeHtml;
 
@@ -54,10 +53,10 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     private router: Router,
     private sanitizer: DomSanitizer
   ) {
-    this.heartIcon = this.sanitizer.bypassSecurityTrustHtml(heartIcon);
+
     this.manIcon = this.sanitizer.bypassSecurityTrustHtml(manIcon);
     this.womanIcon = this.sanitizer.bypassSecurityTrustHtml(womanIcon);
-    this.ghostIcon = this.sanitizer.bypassSecurityTrustHtml(ghostIcon);
+
     this.personFicha = this.sanitizer.bypassSecurityTrustHtml(personFicha);
     this.regresarIcon = this.sanitizer.bypassSecurityTrustHtml(regresarIcon);
   }
@@ -273,11 +272,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
 
 
   /** Obtener el icono de sexo */
-  get iconoSexo(): SafeHtml {
-    if (!this.paciente?.sexo) return this.ghostIcon;
-    const sexo = this.paciente.sexo.trim().toUpperCase();
-    return sexo === 'M' ? this.manIcon : sexo === 'F' ? this.womanIcon : this.ghostIcon;
-  }
+
 
   /** Obtener el estado del paciente */
   get estadoPaciente(): string {

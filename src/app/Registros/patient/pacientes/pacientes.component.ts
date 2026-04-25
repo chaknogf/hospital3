@@ -102,6 +102,8 @@ export class PacientesComponent implements OnInit {
       arrowDown: this.iconService.getIcon('arrowDown'),
       skipLeft: this.iconService.getIcon('skipLeft'),
       skipRight: this.iconService.getIcon('skipRight'),
+      calendar: this.iconService.getIcon('calendarIcon'),
+      ghost: this.iconService.getIcon('ghostIcon'),
     };
   }
 
@@ -265,6 +267,11 @@ export class PacientesComponent implements OnInit {
     this.router.navigate(['/hijo', id]);
     this.dialog.nativeElement.close();
   }
+
+  cita(id: number): void {
+    this.router.navigate(['agendar', id])
+  }
+
   // ══════════════════════════════════════════════════════════
   // UI HELPERS
   // ══════════════════════════════════════════════════════════
@@ -286,5 +293,13 @@ export class PacientesComponent implements OnInit {
       rango.push(i);
     }
     return rango;
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // utras opciones
+  // ══════════════════════════════════════════════════════════
+
+  defuncion() {
+    console.log('defuncion');
   }
 }
