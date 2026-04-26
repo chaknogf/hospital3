@@ -14,6 +14,7 @@ import {
   CicloClinico,
   EstadoCiclo,
   Egreso,
+  ConsultaListResponse,
   Indicador,
   RegistroConsultaCreate,
   RegistroConsultaResponse,
@@ -26,7 +27,7 @@ import {
 export class ConsultaService extends BaseApiService {
 
   // ======= BEHAVIOR SUBJECTS =======
-  private consultasSubject = new BehaviorSubject<ConsultaResponse[]>([]);
+  private consultasSubject = new BehaviorSubject<ConsultaOut[]>([]);
   consultas$ = this.consultasSubject.asObservable();
 
   private ordenesSubject = new BehaviorSubject<any>({});
@@ -62,15 +63,15 @@ export class ConsultaService extends BaseApiService {
    * Lista consultas con filtros múltiples
    * GET /consultas/
    */
-  getConsultas(filtros: FiltroConsulta): Observable<ConsultaOut[]> {
+  getConsultas(filtros: any): Observable<ConsultaListResponse> {
     this.ultimoFiltroConsulta.filtro = filtros;
     const params = this.limpiarParametros(filtros);
 
-    return this.http.get<ConsultaOut[]>(
+    return this.http.get<ConsultaListResponse>(
       `${this.baseUrl}/consultas/`,
       { params }
     ).pipe(
-      tap(response => this.consultasSubject.next(response as any)),
+      tap(response => this.consultasSubject.next(response.consultas)),
       catchError(error => this.manejarError(error, 'obtener consultas'))
     );
   }
@@ -79,15 +80,15 @@ export class ConsultaService extends BaseApiService {
    * Lista consultas activas con filtros
    * GET /consultas/activas
    */
-  getConsultasActivas(filtros: FiltroConsulta): Observable<ConsultaOut[]> {
+  getConsultasActivas(filtros: FiltroConsulta): Observable<ConsultaListResponse> {
     this.ultimoFiltroConsulta.filtro = filtros;
     const params = this.limpiarParametros(filtros);
 
-    return this.http.get<ConsultaOut[]>(
+    return this.http.get<ConsultaListResponse>(
       `${this.baseUrl}/consultas/activas`,
       { params }
     ).pipe(
-      tap(response => this.consultasSubject.next(response as any)),
+      tap(response => this.consultasSubject.next(response.consultas)),
       catchError(error => this.manejarError(error, 'obtener consultas activas'))
     );
   }

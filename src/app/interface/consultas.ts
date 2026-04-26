@@ -294,9 +294,22 @@ export interface ConsultaUpdate {
 
 
 // ✅ ConsultaOut NO incluye created_at/updated_at
-export interface ConsultaOut extends ConsultaBase {
+export interface ConsultaOut {
   id: number;
   paciente: Paciente;
+  expediente?: string;
+  paciente_id?: number;
+  tipo_consulta?: number;
+  especialidad?: string;
+  servicio?: string;
+  documento?: string;
+  fecha_consulta?: string;
+  hora_consulta?: string;
+  indicadores?: Indicador;
+  ciclo?: CicloClinico[];
+  orden?: number;
+  ultimo_estado?: string;
+  egreso?: Egreso;
 
 
 }

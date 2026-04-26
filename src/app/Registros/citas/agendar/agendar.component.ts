@@ -16,7 +16,7 @@ import { Paciente, PacienteJoin } from '../../../interface/interfaces';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { debounceTime } from 'rxjs/operators';
 import { Dict, especialidades } from '../../../enum/diccionarios';
-import { EdadPipe } from '../../../pipes/edad.pipe';
+import { EdadPipe, GrupoEdadPipe } from '../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CitaConteoComponent } from '../citaConteo/citaConteo.component';
 
@@ -26,7 +26,7 @@ import { CitaConteoComponent } from '../citaConteo/citaConteo.component';
   templateUrl: './agendar.component.html',
   styleUrls: ['./agendar.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, EdadPipe, DatosExtraPipe, CitaConteoComponent]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, EdadPipe, DatosExtraPipe, CitaConteoComponent, GrupoEdadPipe]
 })
 
 
@@ -79,49 +79,31 @@ export class AgendarComponent implements OnInit, OnDestroy {
     { ref: 'procedimiento', label: 'Procedimiento Menor' }
   ];
 
-  // ======= CICLO DE VIDA =======
   ngOnInit(): void {
-
     this.valores();
-    this.cargarCitaParaEdicion();
-    this.form.get('expediente')?.valueChanges
-      .pipe(
-        debounceTime(600),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(exp => {
-        if (exp?.trim()) {
-          this.busquedaExpediente = exp;
-          this.buscarPaciente();
-        }
-      });
+
+    const pacienteId = this.route.snapshot.paramMap.get('pacienteId');
+    const citaId = this.route.snapshot.paramMap.get('citaId');
+
+    if (pacienteId) {
+      this.buscarPacientePorId(Number(pacienteId));
+    } else if (citaId) {
+      this.cargarCitaParaEdicion(Number(citaId));
+    }
+
     this.form.get('especialidad')?.valueChanges
-      .pipe(
-        takeUntil(this.destroy$),
-        debounceTime(200),
-        distinctUntilChanged()
-      )
-      .subscribe((esp: string) => {
-        this.especialidadSeleccionada = esp;
-      });
+      .pipe(takeUntil(this.destroy$), debounceTime(200), distinctUntilChanged())
+      .subscribe((esp: string) => { this.especialidadSeleccionada = esp; });
 
     this.form.get('fecha_cita')?.valueChanges
-      .pipe(
-        takeUntil(this.destroy$),
-        debounceTime(100),
-        distinctUntilChanged()
-      )
+      .pipe(takeUntil(this.destroy$), debounceTime(100), distinctUntilChanged())
       .subscribe((fecha: string) => {
         if (!fecha) return;
-
         const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        const dia = dias[new Date(fecha).getDay()];
-
-        this.form.get('dia_semana')?.setValue(dia, { emitEvent: false });
+        this.form.get('dia_semana')?.setValue(dias[new Date(fecha).getDay()], { emitEvent: false });
       });
-
   }
+
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -175,82 +157,80 @@ export class AgendarComponent implements OnInit, OnDestroy {
     this.form.patchValue({ dia_semana: dia });
   }
 
-  // ======= CARGAR PARA EDICIÓN =======
-  private cargarCitaParaEdicion(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (!idParam) return;
 
-    const id = Number(idParam);
-    if (isNaN(id) || id <= 0) {
-      this.error.set('ID de cita inválido');
-      return;
-    }
-    this.enEdicion.set(true);
+  // ✅ Recibe el id como parámetro, no lo lee del snapshot
+  private cargarCitaParaEdicion(id: number): void {
     this.isLoading.set(true);
 
     this.api.getCita(id)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => this.isLoading.set(false)),
-        catchError(err => {
-          console.error('Error al cargar cita:', err);
-          this.error.set('Error al obtener la cita');
+        catchError(() => {
+          this.buscarPacientePorId(id);
           return of(null);
         })
       )
       .subscribe((data: Citas | null) => {
         if (!data) return;
-
         this.enEdicion.set(true);
         this.pacienteEncontrado = data.paciente;
         this.form.patchValue(data, { emitEvent: false });
         this.especialidadSeleccionada = data.especialidad;
-
-
-        if (data.fecha_cita) {
-          this.actualizarDiaSemana(data.fecha_cita);
-        }
-
+        if (data.fecha_cita) this.actualizarDiaSemana(data.fecha_cita);
         this.error.set(null);
       });
   }
+
+  buscarPacientePorId(id: number): void {
+    this.pservice.getPaciente(id)
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(() => {
+          this.error.set('Paciente no encontrado');
+          return of(null);
+        })
+      )
+      .subscribe(data => {
+        if (!data) return;
+        this.pacienteEncontrado = data;
+        this.form.patchValue({ paciente_id: data.id }, { emitEvent: false });
+      });
+  }
+
+  // buscarPacientePorExpediente(): void {
+  //   const expediente = (this.busquedaExpediente || this.form.get('expediente')?.value || '').trim();
+  //   if (!expediente) return;
+
+  //   this.buscandoPaciente = true;
+  //   this.error.set(null);
+  //   this.pacienteEncontrado = null;
+
+  //   this.pservice.pacienteExpediente(expediente)
+  //     .pipe(
+  //       takeUntil(this.destroy$),
+  //       finalize(() => this.buscandoPaciente = false),
+  //       catchError(() => {
+  //         this.error.set('Paciente no encontrado: ' + expediente);
+  //         return of(null);
+  //       })
+  //     )
+  //     .subscribe((data: PacienteJoin | null) => {
+  //       if (!data) return;
+  //       this.pacienteEncontrado = data;
+  //       this.busquedaExpediente = data.expediente ?? expediente;
+  //       this.form.patchValue({
+  //         paciente_id: data.id,
+  //         expediente: data.expediente ?? expediente,
+  //       }, { emitEvent: false });
+  //     });
+  // }
 
   quediaes(fecha: string): void {
 
   }
 
-  /// ======= BÚSQUEDA DE PACIENTE =======
-  buscarPaciente(): void {
-    // Toma el valor del ngModel O del form como fallback
-    const expediente = (this.busquedaExpediente || this.form.get('expediente')?.value || '').trim();
-    if (!expediente) return;
 
-    this.buscandoPaciente = true;
-    this.error.set(null);
-    this.pacienteEncontrado = null;
-
-    this.pservice.pacienteExpediente(expediente)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => this.buscandoPaciente = false),
-        catchError(err => {
-          console.error('Error al buscar paciente:', err);
-          this.error.set('Paciente no encontrado con expediente: ' + expediente);
-          return of(null);
-        })
-      )
-      .subscribe((data: PacienteJoin | null) => {
-        if (!data) return;
-
-        this.pacienteEncontrado = data;
-        this.busquedaExpediente = data.expediente ?? expediente;
-
-        this.form.patchValue({
-          paciente_id: data.id,
-          expediente: data.expediente ?? expediente,
-        }, { emitEvent: false });
-      });
-  }
 
   // ======= UTILIDADES =======
   getNombrePaciente(): string {
@@ -357,7 +337,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
 
   // ======= NAVEGACIÓN =======
   volver(): void {
-    this.router.navigate(['/citas']);
+    this.router.navigate(['/pacientes']);
   }
 
 

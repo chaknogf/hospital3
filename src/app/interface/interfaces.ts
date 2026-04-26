@@ -200,7 +200,7 @@ export interface PacienteJoin {
   expediente?: string | null;
   nombre: Nombre;
   sexo?: string;
-  fecha_nacimiento?: string;
+  fecha_nacimiento?: string | null;
   contacto?: Contacto;
   defuncion?: string;
 }

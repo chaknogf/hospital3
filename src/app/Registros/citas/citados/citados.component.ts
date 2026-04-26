@@ -140,14 +140,10 @@ export class CitadosComponent implements OnInit {
     this.visible = false;
   }
 
-  // ======= NAVEGACIÓN =======
-  nuevaCita(): void {
-    this.router.navigate(['agendar'])
-  }
 
   editarCita(id: number): void {
 
-    this.router.navigate(['agendar', id]);
+    this.router.navigate(['/reagendar/cita', id]);
   }
 
 

@@ -13,7 +13,7 @@
 
     <button type="button" (click)="toggleFiltrar()">
       <span [innerHTML]="icons['find']"></span>
-      Filtrar
+      Buscar
     </button>
   </div>
 
@@ -189,23 +189,31 @@
         <tr
           *ngFor="let data of consultas"
           class="aurora-table-row"
-          [class.touch-active]="rowActiva === data.id"
+          [class.touch-active]="data.id"
           (click)="activarFila(data.id)"
         >
           <td class="text-justify identificador">
-            <div class="ms-4" *ngIf="data?.paciente?.cui">
-              <strong>CUI:</strong>
-              <small> {{ data.paciente.cui | cui }}</small>
-            </div>
-            <div class="ms-4" *ngIf="data?.paciente?.pasaporte">
-              <strong>Pasaporte:</strong> {{ data.paciente.pasaporte }}
-            </div>
-            <div class="ms-4" *ngIf="data?.expediente">
-              <strong>Expediente:</strong> {{ data.expediente }}
-            </div>
-            <div class="ms-4" *ngIf="data?.documento">
-              <strong>Hoja de Emergencia:</strong> {{ data.documento }}
-            </div>
+            @if (data?.paciente?.cui) {
+              <div class="ms-4">
+                <strong>CUI:</strong>
+                <small> {{ data.paciente.cui | cui }}</small>
+              </div>
+            }
+            @if (data?.paciente?.pasaporte) {
+              <div class="ms-4">
+                <strong>Pasaporte:</strong> {{ data.paciente.pasaporte }}
+              </div>
+            }
+            @if (data?.expediente) {
+              <div class="ms-4">
+                <strong>Expediente:</strong> {{ data.expediente }}
+              </div>
+            }
+            @if (data?.documento) {
+              <div class="ms-4">
+                <strong>Hoja de Emergencia:</strong> {{ data.documento }}
+              </div>
+            }
           </td>
           <td>
             <p class="p-0 m-0 text-uppercase">
@@ -222,7 +230,9 @@
               {{ data.paciente.nombre.apellido_casada }}
             </p>
           </td>
-          <td class="orden">{{ data.orden }}</td>
+          <td>
+            <div class="orden">{{ data.orden }}</div>
+          </td>
 
           <td class="oculto">
             <ng-container>
@@ -255,41 +265,78 @@
           </td>
         </tr>
         <!-- Sin resultados -->
-        <tr *ngIf="!cargando && consultas.length === 0">
-          <td colspan="5" class="text-center py-3">
-            <em>No se encontraron coincidencias.</em>
-          </td>
-        </tr>
+        @if (!cargando && consultas.length === 0) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>No se encontraron coincidencias.</em>
+            </td>
+          </tr>
+        }
 
         <!-- Cargando -->
-        <tr *ngIf="cargando">
-          <td colspan="5" class="text-center py-3">
-            <em>Cargando...</em>
-          </td>
-        </tr>
+        @if (cargando) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>Cargando... 🛰️ </em>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>
 
-  <!-- paginación -->
-  <div class="d-flex justify-content-center align-items-center p-0">
+  <!-- ── PAGINADOR ── reemplaza el div de paginación actual ── -->
+  <div class="paginador">
     <!-- Botón anterior -->
     <button
-      class="btn"
-      [disabled]="filtros.skip === 0"
+      class="pag-btn"
+      [disabled]="!hayPaginaAnterior"
       (click)="cambiarPagina(-1)"
     >
       <span [innerHTML]="icons['skipLeft']"></span>
     </button>
 
-    <!-- Página actual -->
-    <div>
-      <strong>{{ filtros.skip }}</strong>
-    </div>
+    <!-- Primera página + ellipsis si el rango no empieza en 1 -->
+    @if (paginas[0] > 1) {
+      <button class="pag-num" (click)="irAPagina(1)">1</button>
+    }
+    @if (paginas[0] > 2) {
+      <span class="pag-ellipsis">…</span>
+    }
+
+    <!-- Páginas del rango visible -->
+    <button
+      *ngFor="let p of paginas"
+      class="pag-num"
+      [class.pag-num-active]="p === paginaActual"
+      (click)="irAPagina(p)"
+    >
+      {{ p }}
+    </button>
+
+    <!-- Ellipsis + última página si el rango no llega al final -->
+    @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+      <span class="pag-ellipsis">…</span>
+    }
+    @if (paginas[paginas.length - 1] < totalPaginas) {
+      <button class="pag-num" (click)="irAPagina(totalPaginas)">
+        {{ totalPaginas }}
+      </button>
+    }
 
     <!-- Botón siguiente -->
-    <button class="btn" [disabled]="finPagina" (click)="cambiarPagina(1)">
+    <button
+      class="pag-btn"
+      [disabled]="!hayPaginaSiguiente"
+      (click)="cambiarPagina(1)"
+    >
       <span [innerHTML]="icons['skipRight']"></span>
     </button>
+
+    <!-- Total de registros -->
+    <span class="pag-info">
+      Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+      {{ totalDeRegistros }} registros
+    </span>
   </div>
 </div>

@@ -5,18 +5,13 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
 import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
 import { TimePipe } from '../../../../pipes/time.pipe';
-
-import { Paciente, } from '../../../../interface/interfaces';
 import { ConsultaResponse, Ciclo, TotalesResponse, TotalesItem } from '../../../../interface/consultas';
 import { ciclos, Dict } from '../../../../enum/diccionarios';
-
-import { ApiService } from '../../../../service/api.service';
-import { ConsultaService } from '../../../../service/axios.service';
+import { ConsultaService } from '../../consultas.service';
 import { IconService } from '../../../../service/icon.service';
 
 @Component({
@@ -41,15 +36,13 @@ export class CoexListaComponent implements OnInit {
 
   // ✅ Corregido: ahora es TotalesItem[]
   totales: TotalesItem[] = [];
-
-  paciente: Paciente | null = null;
   public status: 'activo' | 'inactivo' | 'none' = 'none';
   cargando = false;
   filtrar = false;
   visible = false;
   modalActivo = false;
   espacio: string = ' ';
-  pageSize: number = 9;
+  pageSize: number = 40;
   paginaActual: number = 1;
   finPagina: boolean = false;
 
@@ -80,8 +73,7 @@ export class CoexListaComponent implements OnInit {
   icons: { [key: string]: any } = {};
 
   constructor(
-    private pacienteData: ApiService,
-    private api: ApiService,
+    private api: ConsultaService,
     private router: Router,
     private iconService: IconService
   ) {
@@ -107,7 +99,7 @@ export class CoexListaComponent implements OnInit {
       woman: this.iconService.getIcon("womanIcon"),
       paw: this.iconService.getIcon("huellitaIcon"),
       find: this.iconService.getIcon("findIcon"),
-      menu: this.iconService.getIcon("menuPuntos"),
+      menu: this.iconService.getIcon("menuIcon"),
       arrowDown: this.iconService.getIcon("arrowDown"),
       skipLeft: this.iconService.getIcon("skipLeft"),
       skipRight: this.iconService.getIcon("skipRight"),
@@ -115,9 +107,6 @@ export class CoexListaComponent implements OnInit {
     };
   }
 
-  // Cambios necesarios en coexLista.component.ts
-
-  // 1️⃣ PROBLEMA EN ngOnInit - filtrosIniciales no incluye todos los campos
   ngOnInit(): void {
     this.fechaActual = this.ahora.toLocaleDateString('en-CA');
     this.filtros.fecha = this.fechaActual;
@@ -152,17 +141,10 @@ export class CoexListaComponent implements OnInit {
     const filtrosLimpios = this.limpiarFiltrosVacios(filtrosAUsar);
 
     this.api.getConsultas(filtrosLimpios).subscribe({
-      next: (data: ConsultaResponse[]) => {
-        this.consultas = data;
+      next: resultado => {
+        this.consultas = resultado.consultas;
 
-        // ✅ Filtrar por especialidad localmente (una sola vez)
-        // this.filtrarPorEspecialidadLocal();
 
-        // console.log('✅ Consultas cargadas:', {
-        //   total: this.consultas.length,
-        //   filtros: filtrosLimpios,
-        //   especialidadSeleccionada: this.especialidadSeleccionada
-        // });
       },
       error: (err) => {
         console.error('❌ Error al cargar consultas:', err);
@@ -322,31 +304,48 @@ export class CoexListaComponent implements OnInit {
     this.router.navigate(['/registros']);
   }
 
+  rowActiva: number | null = null;
+  activarFila(id: number): void {
+    this.rowActiva = this.rowActiva === id ? null : id;
+  }
+
   get totalPaginas(): number {
     return Math.ceil(this.totalDeRegistros / this.pageSize) || 1;
   }
 
-  cambiarPagina(paso: number) {
-    this.paginaActual += paso;
+  get hayPaginaAnterior(): boolean { return this.paginaActual > 1; }
+  get hayPaginaSiguiente(): boolean { return this.paginaActual < this.totalPaginas; }
 
-    if (this.paginaActual < 1) this.paginaActual = 1;
-    if (this.paginaActual > this.totalPaginas) this.paginaActual = this.totalPaginas;
 
+  cambiarPagina(paso: number): void {
+    const nueva = this.paginaActual + paso;
+    if (nueva < 1 || nueva > this.totalPaginas) return;
+
+    this.paginaActual = nueva;
     this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
     this.filtros.limit = this.pageSize;
-
-    this.cargarConsultas(this.filtros);
-  }
-  mostrar(): void {
-    this.visible = !this.visible;
+    this.cargarConsultas();
   }
 
-  rowActiva: number | null = null;
-
-  activarFila(id: number) {
-    this.rowActiva = this.rowActiva === id ? null : id;
+  irAPagina(pagina: number): void {
+    if (pagina < 1 || pagina > this.totalPaginas) return;
+    this.paginaActual = pagina;
+    this.filtros.skip = (pagina - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
+    this.cargarConsultas();
   }
 
+  get paginas(): number[] {
+    const total = this.totalPaginas;
+    const actual = this.paginaActual;
+    const delta = 2; // páginas a cada lado de la actual
+
+    const rango: number[] = [];
+    for (let i = Math.max(1, actual - delta); i <= Math.min(total, actual + delta); i++) {
+      rango.push(i);
+    }
+    return rango;
+  }
 
 
   getCicloStatus(ciclo: Record<string, any>): 'activo' | 'inactivo' {

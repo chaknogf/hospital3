@@ -30,13 +30,14 @@ export class RegistrosMedicosComponent implements OnInit {
       menu: this.iconService.getIcon("menuIcon"),
       paciente: this.iconService.getIcon("patientIcon"),
       ambulance: this.iconService.getIcon("ambulanceIcon"),
-      enfermo: this.iconService.getIcon("enfermoIcon"),
-      hospital: this.iconService.getIcon("hospitalconsvg"),
+      cmedic: this.iconService.getIcon("consultaMedica"),
+      ingresoIcon: this.iconService.getIcon("ingresoIcon"),
       consultas: this.iconService.getIcon("consultasIcon"),
       archivo: this.iconService.getIcon("archivoIcon"),
       compartir: this.iconService.getIcon("compartirIcon"),
       calendar: this.iconService.getIcon("calendarIcon"),
       baby: this.iconService.getIcon("babyIcon"),
+      persons: this.iconService.getIcon("persons2")
 
     }
 
@@ -49,10 +50,10 @@ export class RegistrosMedicosComponent implements OnInit {
 
     this.options = [
 
-      { nombre: 'Pacientes', descripcion: 'Pacientes Registrados', ruta: '/pacientes', icon: 'paciente' },
+      { nombre: 'Pacientes', descripcion: 'Pacientes Registrados', ruta: '/pacientes', icon: 'persons' },
       { nombre: 'Emergencia', descripcion: 'Emergencias Registradas', ruta: '/emergencias', icon: 'ambulance' },
-      { nombre: 'Coex', descripcion: 'Consulta Externa Registradas', ruta: '/coex', icon: 'enfermo' },
-      { nombre: 'Ingresos', descripcion: 'Hospitalizaciones Registradas', ruta: '/ingresos', icon: 'hospital' },
+      { nombre: 'Coex', descripcion: 'Consulta Externa Registradas', ruta: '/coex', icon: 'cmedic' },
+      { nombre: 'Ingresos', descripcion: 'Hospitalizaciones Registradas', ruta: '/ingresos', icon: 'ingresoIcon' },
       { nombre: 'Consultas', descripcion: 'Todas las consultas registradas', ruta: '/consultas', icon: 'consultas' },
       { nombre: 'Recepcion', descripcion: 'Gestion de expedientes', ruta: '/recepcion', icon: 'archivo' },
       { nombre: 'Prestamo', descripcion: 'Gestor de expedientes prestados', ruta: '/prestamos', icon: 'compartir' },

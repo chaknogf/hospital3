@@ -46,6 +46,7 @@ export class PacientesAtendidosComponent implements OnInit {
   readonly pageSize = 8;
   paginaActual = 1;
   hayPaginaSiguiente = false;
+  totalDeRegistros = 0;
 
   get hayPaginaAnterior(): boolean { return this.paginaActual > 1; }
   get totalPaginas(): number { return this.hayPaginaSiguiente ? this.paginaActual + 1 : this.paginaActual; }
@@ -239,13 +240,21 @@ export class PacientesAtendidosComponent implements OnInit {
 
   cargarConsultas(): void {
     this.cargando = true;
-    this.api.getConsultas(this.limpiarFiltrosVacios(this.filtros)).subscribe({
-      next: (data: ConsultaOut[]) => {
-        const filtradas = data.filter(c => this.esConsultaActiva(c));
-        this.hayPaginaSiguiente = filtradas.length > this.pageSize;
-        this.consultas = this.hayPaginaSiguiente ? filtradas.slice(0, this.pageSize) : filtradas;
+    this.api.getConsultas(this.filtros).subscribe({
+      next: resultado => {
+        this.totalDeRegistros = resultado.total;
+        this.consultas = resultado.consultas;
+
+        // Ajustar página si el backend devolvió menos de lo esperado
+        if (this.paginaActual > this.totalPaginas) {
+          this.paginaActual = this.totalPaginas;
+        }
       },
-      error: err => { console.error(err); this.consultas = []; },
+      error: err => {
+        console.error('Error cargando consultas:', err);
+        this.consultas = [];
+        this.totalDeRegistros = 0;
+      },
       complete: () => { this.cargando = false; }
     });
   }
@@ -269,14 +278,18 @@ export class PacientesAtendidosComponent implements OnInit {
   cambiarPagina(paso: number): void {
     const nueva = this.paginaActual + paso;
     if (nueva < 1 || nueva > this.totalPaginas) return;
-    this.irAPagina(nueva);
+
+    this.paginaActual = nueva;
+    this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
+    this.cargarConsultas();
   }
 
-  irAPagina(p: number): void {
-    if (p < 1 || p > this.totalPaginas) return;
-    this.paginaActual = p;
-    this.filtros.skip = (p - 1) * this.pageSize;
-    this.filtros.limit = this.pageSize + 1;
+  irAPagina(pagina: number): void {
+    if (pagina < 1 || pagina > this.totalPaginas) return;
+    this.paginaActual = pagina;
+    this.filtros.skip = (pagina - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
     this.cargarConsultas();
   }
 

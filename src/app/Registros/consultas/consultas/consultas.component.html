@@ -13,7 +13,7 @@
 
     <button type="button" (click)="toggleFiltrar()">
       <span [innerHTML]="icons['find']"></span>
-      Filtrar
+      Buscar
     </button>
   </div>
 
@@ -241,25 +241,58 @@
     </table>
   </div>
 
-  <!-- paginación -->
-  <div class="d-flex justify-content-center align-items-center p-0">
+  <!-- ── PAGINADOR ── reemplaza el div de paginación actual ── -->
+  <div class="paginador">
     <!-- Botón anterior -->
     <button
-      class="btn"
-      [disabled]="filtros.skip === 0"
+      class="pag-btn"
+      [disabled]="!hayPaginaAnterior"
       (click)="cambiarPagina(-1)"
     >
       <span [innerHTML]="icons['skipLeft']"></span>
     </button>
 
-    <!-- Página actual -->
-    <div>
-      <strong>{{ filtros.skip }}</strong>
-    </div>
+    <!-- Primera página + ellipsis si el rango no empieza en 1 -->
+    @if (paginas[0] > 1) {
+      <button class="pag-num" (click)="irAPagina(1)">1</button>
+    }
+    @if (paginas[0] > 2) {
+      <span class="pag-ellipsis">…</span>
+    }
+
+    <!-- Páginas del rango visible -->
+    <button
+      *ngFor="let p of paginas"
+      class="pag-num"
+      [class.pag-num-active]="p === paginaActual"
+      (click)="irAPagina(p)"
+    >
+      {{ p }}
+    </button>
+
+    <!-- Ellipsis + última página si el rango no llega al final -->
+    @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+      <span class="pag-ellipsis">…</span>
+    }
+    @if (paginas[paginas.length - 1] < totalPaginas) {
+      <button class="pag-num" (click)="irAPagina(totalPaginas)">
+        {{ totalPaginas }}
+      </button>
+    }
 
     <!-- Botón siguiente -->
-    <button class="btn" [disabled]="finPagina" (click)="cambiarPagina(1)">
+    <button
+      class="pag-btn"
+      [disabled]="!hayPaginaSiguiente"
+      (click)="cambiarPagina(1)"
+    >
       <span [innerHTML]="icons['skipRight']"></span>
     </button>
+
+    <!-- Total de registros -->
+    <span class="pag-info">
+      Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+      {{ totalDeRegistros }} registros
+    </span>
   </div>
 </div>

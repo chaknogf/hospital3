@@ -84,7 +84,8 @@ export const routes: Routes = [
       //Citas
       { path: 'citas', component: CitadosComponent },
       { path: 'agendar', component: AgendarComponent },
-      { path: 'agendar/:id', component: AgendarComponent }
+      { path: 'agendar/paciente/:pacienteId', component: AgendarComponent },
+      { path: 'reagendar/cita/:citaId', component: AgendarComponent }
 
     ]
   }

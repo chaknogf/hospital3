@@ -35,7 +35,7 @@
       </div>
       <div class="sec-badge">lookup</div>
     </div>
-    @if (!enEdicion()) {
+    <!-- @if (!enEdicion()) {
       <div class="sec-body single">
         <div class="field">
           <label class="field-label">Buscar por expediente</label>
@@ -45,13 +45,15 @@
               [(ngModel)]="busquedaExpediente"
               [ngModelOptions]="{ standalone: true }"
               placeholder="Ej: 202400123"
-              (keydown.enter)="buscarPaciente(); $event.preventDefault()"
-              (change)="buscarPaciente()"
+              (keydown.enter)="
+                buscarPacientePorExpediente(); $event.preventDefault()
+              "
+              (change)="buscarPacientePorExpediente()"
             />
             <button
               type="button"
               class="btn-dock btn"
-              (click)="buscarPaciente()"
+              (click)="buscarPacientePorExpediente()"
             >
               🔎
               {{ buscandoPaciente ? "..." : "Buscar" }}
@@ -59,7 +61,7 @@
           </div>
         </div>
       </div>
-    }
+    } -->
   </div>
 
   <!-- ───────── PACIENTE ENCONTRADO ───────── -->
@@ -68,14 +70,47 @@
       <div class="paciente-banner-accent"></div>
 
       <div class="paciente-avatar">
-        @if (pacienteEncontrado.sexo == "F") {
+        @if (
+          pacienteEncontrado.sexo == "F" &&
+          (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Anciano"
+        ) {
+          👵🏻
+        }
+        @if (
+          pacienteEncontrado.sexo == "M" &&
+          (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Anciano"
+        ) {
+          👴🏼
+        }
+        @if (
+          pacienteEncontrado.sexo == "F" &&
+          (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Adulto"
+        ) {
           👩🏻‍🦱
         }
-        @if (pacienteEncontrado.sexo == "M") {
+        @if (
+          pacienteEncontrado.sexo == "M" &&
+          (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Adulto"
+        ) {
           🧔🏻‍♂️
         }
+        @if (
+          pacienteEncontrado.sexo == "F" &&
+          (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Niño"
+        ) {
+          👧🏽
+        }
+        @if (
+          pacienteEncontrado.sexo == "M" &&
+          (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Niño"
+        ) {
+          👦🏽
+        }
+        @if ((pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Neonato") {
+          👶🏻
+        }
       </div>
-
+      |
       <div class="paciente-datos">
         <div class="paciente-nombre">
           {{ getNombrePaciente() }}

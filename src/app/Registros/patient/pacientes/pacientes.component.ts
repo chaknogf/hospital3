@@ -98,7 +98,7 @@ export class PacientesComponent implements OnInit {
       man: this.iconService.getIcon('manIcon'),
       woman: this.iconService.getIcon('womanIcon'),
       find: this.iconService.getIcon('findIcon'),
-      menu: this.iconService.getIcon('menuPuntos'),
+      menu: this.iconService.getIcon('menuIcon'),
       arrowDown: this.iconService.getIcon('arrowDown'),
       skipLeft: this.iconService.getIcon('skipLeft'),
       skipRight: this.iconService.getIcon('skipRight'),
@@ -269,7 +269,7 @@ export class PacientesComponent implements OnInit {
   }
 
   cita(id: number): void {
-    this.router.navigate(['agendar', id])
+    this.router.navigate(['/agendar/paciente', id]);
   }
 
   // ══════════════════════════════════════════════════════════

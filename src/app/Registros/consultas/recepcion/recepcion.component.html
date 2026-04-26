@@ -9,7 +9,7 @@
     </button>
     <h1 class="text-white">Recepción</h1>
     <button type="button" (click)="toggleFiltrar()">
-      <span [innerHTML]="icons['find']"></span> Filtrar
+      <span [innerHTML]="icons['find']"></span> Buscar
     </button>
   </div>
 
@@ -229,8 +229,9 @@
     </table>
   </div>
 
-  <!-- ── PAGINADOR ── -->
+  <!-- ── PAGINADOR ── reemplaza el div de paginación actual ── -->
   <div class="paginador">
+    <!-- Botón anterior -->
     <button
       class="pag-btn"
       [disabled]="!hayPaginaAnterior"
@@ -238,10 +239,16 @@
     >
       <span [innerHTML]="icons['skipLeft']"></span>
     </button>
-    <button class="pag-num" *ngIf="paginas[0] > 1" (click)="irAPagina(1)">
-      1
-    </button>
-    <span class="pag-ellipsis" *ngIf="paginas[0] > 2">…</span>
+
+    <!-- Primera página + ellipsis si el rango no empieza en 1 -->
+    @if (paginas[0] > 1) {
+      <button class="pag-num" (click)="irAPagina(1)">1</button>
+    }
+    @if (paginas[0] > 2) {
+      <span class="pag-ellipsis">…</span>
+    }
+
+    <!-- Páginas del rango visible -->
     <button
       *ngFor="let p of paginas"
       class="pag-num"
@@ -250,6 +257,18 @@
     >
       {{ p }}
     </button>
+
+    <!-- Ellipsis + última página si el rango no llega al final -->
+    @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+      <span class="pag-ellipsis">…</span>
+    }
+    @if (paginas[paginas.length - 1] < totalPaginas) {
+      <button class="pag-num" (click)="irAPagina(totalPaginas)">
+        {{ totalPaginas }}
+      </button>
+    }
+
+    <!-- Botón siguiente -->
     <button
       class="pag-btn"
       [disabled]="!hayPaginaSiguiente"
@@ -257,9 +276,12 @@
     >
       <span [innerHTML]="icons['skipRight']"></span>
     </button>
-    <span class="pag-info"
-      >Pág. {{ paginaActual }} · {{ consultas.length }} registros</span
-    >
+
+    <!-- Total de registros -->
+    <span class="pag-info">
+      Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+      {{ totalDeRegistros }} registros
+    </span>
   </div>
 </div>
 <!-- /aurora-paciente-container -->

@@ -5,10 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { Paciente, Totales } from '../../../../interface/interfaces';
 import { ApiService } from '../../../../service/api.service';
-import { ConsultaService } from '../../../../service/axios.service';
+import { ConsultaService } from '../../consultas.service';
 import { Router } from '@angular/router';
 import { IconService } from '../../../../service/icon.service';
-import { ConsultaResponse, Ciclo } from '../../../../interface/consultas';
+import { ConsultaResponse, Ciclo, ConsultaOut, ConsultaListResponse } from '../../../../interface/consultas';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { TimePipe } from '../../../../pipes/time.pipe';
@@ -25,9 +25,10 @@ import { TimePipe } from '../../../../pipes/time.pipe';
 export class EmergenciasListComponent implements OnInit {
 
   esEmergencia = true;
-  consultas: ConsultaResponse[] = [];
+  consultas: ConsultaOut[] = [];
   totales: Totales[] = [];
-  paciente: Paciente | null = null;
+
+
   public status: 'activo' | 'inactivo' | 'none' = 'none';
   cargando = false;
   filtrar = false;
@@ -40,6 +41,7 @@ export class EmergenciasListComponent implements OnInit {
   totalDeRegistros = 0;
   porcentajeDeCarga = 0;
   ciclos: Dict[] = ciclos;
+
 
 
   filtros: any = {
@@ -64,7 +66,7 @@ export class EmergenciasListComponent implements OnInit {
 
   constructor(
     private pacienteData: ApiService,
-    private api: ApiService,
+    private api: ConsultaService,
     private router: Router,
     private iconService: IconService
 
@@ -83,7 +85,7 @@ export class EmergenciasListComponent implements OnInit {
       woman: this.iconService.getIcon("womanIcon"),
       paw: this.iconService.getIcon("huellitaIcon"),
       find: this.iconService.getIcon("findIcon"),
-      menu: this.iconService.getIcon("menuPuntos"),
+      menu: this.iconService.getIcon("menuIcon"),
       arrowDown: this.iconService.getIcon("arrowDown"),
       skipLeft: this.iconService.getIcon("skipLeft"),
       skipRight: this.iconService.getIcon("skipRight"),
@@ -93,27 +95,74 @@ export class EmergenciasListComponent implements OnInit {
 
   ngOnInit(): void {
     // 1️⃣ Suscribirse al observable de consultas
-    this.api.consultas$.subscribe((data) => {
-      this.consultas = data;
-    });
-
+    this.api.consultas$.subscribe(data => { this.consultas = data; });
+    this.cargarConsultas();
     this.buscar();
   }
 
-  async cargarConsultas() {
+
+  cargarConsultas(): void {
     this.cargando = true;
-    try {
-      this.api.getConsultas(this.filtros).subscribe((data) => {
-        this.consultas = data;
-      });
-      //
-      // console.log(this.consultas);
-      this.totalDeRegistros = this.consultas.length;
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      this.cargando = false;
+    this.api.getConsultas(this.filtros).subscribe({
+      next: resultado => {
+        this.totalDeRegistros = resultado.total;
+        this.consultas = resultado.consultas;
+
+        // Ajustar página si el backend devolvió menos de lo esperado
+        if (this.paginaActual > this.totalPaginas) {
+          this.paginaActual = this.totalPaginas;
+        }
+      },
+      error: err => {
+        console.error('Error cargando consultas:', err);
+        this.consultas = [];
+        this.totalDeRegistros = 0;
+      },
+      complete: () => { this.cargando = false; }
+    });
+  }
+
+  rowActiva: number | null = null;
+  activarFila(id: number): void {
+    this.rowActiva = this.rowActiva === id ? null : id;
+  }
+
+  get totalPaginas(): number {
+    return Math.ceil(this.totalDeRegistros / this.pageSize) || 1;
+  }
+
+  get hayPaginaAnterior(): boolean { return this.paginaActual > 1; }
+  get hayPaginaSiguiente(): boolean { return this.paginaActual < this.totalPaginas; }
+
+
+  cambiarPagina(paso: number): void {
+    const nueva = this.paginaActual + paso;
+    if (nueva < 1 || nueva > this.totalPaginas) return;
+
+    this.paginaActual = nueva;
+    this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
+    this.cargarConsultas();
+  }
+
+  irAPagina(pagina: number): void {
+    if (pagina < 1 || pagina > this.totalPaginas) return;
+    this.paginaActual = pagina;
+    this.filtros.skip = (pagina - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
+    this.cargarConsultas();
+  }
+
+  get paginas(): number[] {
+    const total = this.totalPaginas;
+    const actual = this.paginaActual;
+    const delta = 2; // páginas a cada lado de la actual
+
+    const rango: number[] = [];
+    for (let i = Math.max(1, actual - delta); i <= Math.min(total, actual + delta); i++) {
+      rango.push(i);
     }
+    return rango;
   }
 
   buscar() {
@@ -145,6 +194,10 @@ export class EmergenciasListComponent implements OnInit {
     this.cargarConsultas();
   }
 
+  mostrar(): void {
+    this.visible = !this.visible;
+  }
+
   editar(id: number) {
     this.router.navigate(['/editarAdmision', id, 'emergencia']);
   }
@@ -167,52 +220,7 @@ export class EmergenciasListComponent implements OnInit {
     this.router.navigate(['/registros']);
   }
 
-  get totalPaginas(): number {
-    return Math.ceil(this.totalDeRegistros / this.pageSize) || 1;
-  }
 
-  cambiarPagina(paso: number) {
-    this.paginaActual += paso;
-
-    if (this.paginaActual < 1) this.paginaActual = 1;
-    if (this.paginaActual > this.totalPaginas) this.paginaActual = this.totalPaginas;
-
-    this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
-    this.filtros.limit = this.pageSize;
-
-    // console.log("🔄 Filtros:", this.filtros);
-
-    this.buscar();
-  }
-
-  mostrar(): void {
-    this.visible = !this.visible;
-  }
-
-  rowActiva: number | null = null;
-
-  activarFila(id: number) {
-    this.rowActiva = this.rowActiva === id ? null : id;
-  }
-
-  // estadoUltimoCiclo(ciclo: Record<string, Ciclo> | null): string | null {
-  //   if (!ciclo) return null;
-
-  //   // Convertimos los valores del objeto ciclo en un array
-  //   const registros: Ciclo[] = Object.values(ciclo);
-
-  //   if (registros.length === 0) return null;
-
-  //   // Ordenamos por fecha de registro descendente
-  //   registros.sort((a, b) => new Date(b.registro).getTime() - new Date(a.registro).getTime());
-
-  //   const ultimo = registros[0];
-
-  //   // Buscamos el label abreviado en tu diccionario ciclos según el estado
-  //   const encontrado = ciclos.find(c => c.value === ultimo.estado);
-
-  //   return encontrado ? encontrado.label : ultimo.estado;
-  // }
 
   getCicloStatus(ciclo: Record<string, any>): 'activo' | 'inactivo' {
     if (!ciclo) return 'activo'; // si no hay ciclos, asumimos activo

@@ -3,7 +3,7 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from './../../../pipes/edad.pipe';
 import { ConsultaOut, CicloClinico, EstadoCiclo, ConsultaUpdate, Egreso, Dx } from './../../../interface/consultas';
-import { ApiService } from './../../../service/api.service';
+import { ConsultaService } from './../consultas.service';
 import { Router } from '@angular/router';
 import { IconService } from './../../../service/icon.service';
 import { ciclos, Dict, tipoConsulta } from './../../../enum/diccionarios';
@@ -12,7 +12,7 @@ import { CuiPipe } from './../../../pipes/cui.pipe';
 import { TimePipe } from '../../../pipes/time.pipe';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { ConsultaService } from '../consultas.service';
+
 
 
 const ESTADOS_INACTIVOS = new Set(['archivo', 'descartado']);
@@ -40,21 +40,13 @@ export class RecepcionComponent implements OnInit {
   filtrar = false;
   modalActivo = false;
 
+
   // ── Paginación limit+1 ─────────────────────────────────────
-  readonly pageSize = 8;
-  paginaActual = 1;
-  hayPaginaSiguiente = false;
+  readonly pageSize = 6;
+  totalDeRegistros = 0;
+  paginaActual: number = 1;
+  finPagina: boolean = false;
 
-  get hayPaginaAnterior(): boolean { return this.paginaActual > 1; }
-  get totalPaginas(): number { return this.hayPaginaSiguiente ? this.paginaActual + 1 : this.paginaActual; }
-
-  get paginas(): number[] {
-    const rango: number[] = [];
-    const desde = Math.max(1, this.paginaActual - 2);
-    const hasta = this.paginaActual + (this.hayPaginaSiguiente ? 1 : 0);
-    for (let i = desde; i <= hasta; i++) rango.push(i);
-    return rango;
-  }
 
   // ── Filtros ────────────────────────────────────────────────
   filtros: any = {
@@ -65,7 +57,6 @@ export class RecepcionComponent implements OnInit {
     fecha: '', ciclo: '', especialidad: '', servicio: '', identificador: '',
   };
 
-  rowActiva: number | null = null;
 
   // ══════════════════════════════════════════════════════════
   // MODAL RECIBIDO
@@ -208,23 +199,75 @@ export class RecepcionComponent implements OnInit {
   // CARGA
   // ══════════════════════════════════════════════════════════
   ngOnInit(): void {
+    // 1️⃣ Suscribirse al observable de consultas
+    this.api.consultas$.subscribe(data => { this.consultas = data; });
     this.cargarConsultas();
-    console.log(this.consultas);
+    this.buscar();
   }
+
 
   cargarConsultas(): void {
     this.cargando = true;
-    this.api.getConsultas(this.limpiarFiltrosVacios(this.filtros)).subscribe({
-      next: (data: ConsultaOut[]) => {
+    this.api.getConsultas(this.filtros).subscribe({
+      next: resultado => {
+        this.totalDeRegistros = resultado.total;
+        this.consultas = resultado.consultas;
 
-
-        const filtradas = data.filter(c => this.esConsultaActiva(c));
-        this.hayPaginaSiguiente = filtradas.length > this.pageSize;
-        this.consultas = this.hayPaginaSiguiente ? filtradas.slice(0, this.pageSize) : filtradas;
+        // Ajustar página si el backend devolvió menos de lo esperado
+        if (this.paginaActual > this.totalPaginas) {
+          this.paginaActual = this.totalPaginas;
+        }
       },
-      error: err => { console.error(err); this.consultas = []; },
+      error: err => {
+        console.error('Error cargando consultas:', err);
+        this.consultas = [];
+        this.totalDeRegistros = 0;
+      },
       complete: () => { this.cargando = false; }
     });
+  }
+
+  rowActiva: number | null = null;
+  activarFila(id: number): void {
+    this.rowActiva = this.rowActiva === id ? null : id;
+  }
+
+  get totalPaginas(): number {
+    return Math.ceil(this.totalDeRegistros / this.pageSize) || 1;
+  }
+
+  get hayPaginaAnterior(): boolean { return this.paginaActual > 1; }
+  get hayPaginaSiguiente(): boolean { return this.paginaActual < this.totalPaginas; }
+
+
+  cambiarPagina(paso: number): void {
+    const nueva = this.paginaActual + paso;
+    if (nueva < 1 || nueva > this.totalPaginas) return;
+
+    this.paginaActual = nueva;
+    this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
+    this.cargarConsultas();
+  }
+
+  irAPagina(pagina: number): void {
+    if (pagina < 1 || pagina > this.totalPaginas) return;
+    this.paginaActual = pagina;
+    this.filtros.skip = (pagina - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
+    this.cargarConsultas();
+  }
+
+  get paginas(): number[] {
+    const total = this.totalPaginas;
+    const actual = this.paginaActual;
+    const delta = 2; // páginas a cada lado de la actual
+
+    const rango: number[] = [];
+    for (let i = Math.max(1, actual - delta); i <= Math.min(total, actual + delta); i++) {
+      rango.push(i);
+    }
+    return rango;
   }
 
   private esConsultaActiva(c: ConsultaOut): boolean {
@@ -241,20 +284,7 @@ export class RecepcionComponent implements OnInit {
     return limpio;
   }
 
-  // ── Paginación ─────────────────────────────────────────────
-  cambiarPagina(paso: number): void {
-    const nueva = this.paginaActual + paso;
-    if (nueva < 1 || nueva > this.totalPaginas) return;
-    this.irAPagina(nueva);
-  }
 
-  irAPagina(p: number): void {
-    if (p < 1 || p > this.totalPaginas) return;
-    this.paginaActual = p;
-    this.filtros.skip = (p - 1) * this.pageSize;
-    this.filtros.limit = this.pageSize + 1;
-    this.cargarConsultas();
-  }
 
   buscar(): void {
     this.paginaActual = 1; this.filtros.skip = 0;
@@ -273,7 +303,6 @@ export class RecepcionComponent implements OnInit {
   }
 
   toggleFiltrar(): void { this.filtrar = !this.filtrar; }
-  activarFila(id: number): void { this.rowActiva = this.rowActiva === id ? null : id; }
 
   agregar(): void { this.router.navigate(['/pacientes']); }
   verDetalle(id: number): void { this.router.navigate(['/detalleAdmision', id]); }
@@ -286,7 +315,7 @@ export class RecepcionComponent implements OnInit {
       delete: s.getIcon('deletInput'),
       create: s.getIcon('createIcon'),
       find: s.getIcon('findIcon'),
-      menu: s.getIcon('menuPuntos'),
+      menu: s.getIcon('menuIcon'),
       arrowDown: s.getIcon('arrowDown'),
       skipLeft: s.getIcon('skipLeft'),
       skipRight: s.getIcon('skipRight'),
