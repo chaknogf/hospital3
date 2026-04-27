@@ -49,7 +49,7 @@ export const routes: Routes = [
       { path: 'editarAdmision/:id', component: AdmisionComponent },
       { path: 'formConsulta/:id', component: FormConsultaComponent },
       { path: 'detalleAdmision/:id', component: DetalleConsultaComponent },
-      { path: 'nacimientos', component: ListarConstanciasComponent },
+
       { path: 'hijo/:id', component: HijosComponent },
 
 
@@ -85,8 +85,11 @@ export const routes: Routes = [
       { path: 'citas', component: CitadosComponent },
       { path: 'agendar', component: AgendarComponent },
       { path: 'agendar/paciente/:pacienteId', component: AgendarComponent },
-      { path: 'reagendar/cita/:citaId', component: AgendarComponent }
+      { path: 'reagendar/cita/:citaId', component: AgendarComponent },
 
+      //Constancias Nacimiento
+      { path: 'nacimientos', component: ListarConstanciasComponent },
+      { path: 'cons-nac/:id', component: ConstanciasNacimientoComponent }
     ]
   }
 ];

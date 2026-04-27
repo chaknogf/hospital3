@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-
+import { ConsultaService } from '../../consultas/consultas.service';
 import { ApiService } from '../../../service/api.service';
 import { ConsultaUtilService } from '../../../service/consulta-util.service';
 import { Dict, ciclos, tipoConsulta, especialidades, servicios } from '../../../enum/diccionarios';
@@ -18,6 +18,7 @@ import { EdadPipe } from '../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon, manIcon, womanIcon } from '../../../shared/icons/svg-icon';
+import { PacienteService } from '../../patient/paciente.service';
 
 @Component({
   selector: 'app-formConsulta',
@@ -57,7 +58,9 @@ export class FormConsultaComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private api: ApiService,
+    private api: ConsultaService,
+    private apis: ApiService,
+    private apip: PacienteService,
     private consultaUtil: ConsultaUtilService,
     private sanitizer: DomSanitizer
   ) {
@@ -66,7 +69,7 @@ export class FormConsultaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.usuarioActual = this.api.getUsuarioActual().username;
+    this.usuarioActual = this.apis.getUsuarioActual().username;
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
@@ -174,7 +177,7 @@ export class FormConsultaComponent implements OnInit {
   }
 
   cargarPaciente(idP: number): void {
-    this.api.getPaciente(idP)
+    this.apip.getPaciente(idP)
       .pipe(catchError(err => { this.mostrarError('cargar paciente', err); return of(null); }))
       .subscribe(data => {
         if (!data) return;

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
-import { ApiService } from './../../../service/api.service';
+import { ConsultaService } from '../../consultas/consultas.service';
 import { IconService } from './../../../service/icon.service';
 import { Paciente } from './../../../interface/interfaces';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -24,7 +24,7 @@ import { Dict, especialidades, OpcionBoolean, opcionesIngreso } from './../../..
 export class DetalleConsultaComponent implements OnInit, OnDestroy {
 
   // ======= INYECCIONES =======
-  private api = inject(ApiService);
+  private api = inject(ConsultaService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private iconService = inject(IconService);

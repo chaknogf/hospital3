@@ -1,5 +1,6 @@
 // departamento.pipe.ts
 import { Pipe, PipeTransform } from '@angular/core';
+import { municipios } from '../enum/departamentos';
 
 const DEPARTAMENTOS: Record<string, string> = {
   '01': 'Guatemala',
@@ -39,4 +40,25 @@ export class DepartamentoPipe implements PipeTransform {
 
     return DEPARTAMENTOS[codigo] ?? '';
   }
+}
+
+@Pipe({
+
+  name: 'vecindad',
+  standalone: true
+
+})
+
+export class VecindadPipe implements PipeTransform {
+
+  transform(codigo: string | null | undefined): string {
+
+    if (!codigo) return '';
+
+    const match = municipios.find(m => m.codigo === codigo);
+
+    return match ? match.vecindad : codigo; // fallback elegante
+
+  }
+
 }

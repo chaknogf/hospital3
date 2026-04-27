@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
 import { ApiService } from '../../../../service/api.service';
+import { ConsultaService } from '../../consultas.service';
 import { Paciente } from '../../../../interface/interfaces';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ConsultaBase, ConsultaOut, ConsultaResponse } from '../../../../interface/consultas';
@@ -35,7 +36,7 @@ import {
 })
 export class HojaComponent implements OnInit, OnDestroy {
   // ======= INYECCIONES =======
-  private api = inject(ApiService);
+  private api = inject(ConsultaService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private iconService = inject(IconService);
@@ -148,7 +149,7 @@ export class HojaComponent implements OnInit, OnDestroy {
         }
 
         this.consulta.set(consulta);
-        this.paciente.set(consulta.paciente); 
+        this.paciente.set(consulta.paciente);
         this.detalleVisible.set(true);
       });
   }

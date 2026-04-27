@@ -1,5 +1,8 @@
+
 import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
 import { ApiService } from '../../../../service/api.service';
+import { ConsultaService } from '../../consultas.service';
+import { PacienteService } from '../../../patient/paciente.service';
 import { Paciente } from '../../../../interface/interfaces';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ConsultaBase } from '../../../../interface/consultas';
@@ -25,7 +28,8 @@ export class HojaCoexComponent implements OnInit, OnDestroy {
 
   especialidades: Dict[] = especialidades;
   // ======= INYECCIONES =======
-  private api = inject(ApiService);
+  private api = inject(ConsultaService);
+  private apip = inject(PacienteService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private iconService = inject(IconService);
@@ -176,7 +180,7 @@ export class HojaCoexComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.api.getPaciente(pacienteId)
+    this.apip.getPaciente(pacienteId)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => this.detalleVisible.set(true)),

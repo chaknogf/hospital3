@@ -7,6 +7,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 import { ApiService } from '../../../service/api.service';
+import { ConsultaService } from '../../consultas/consultas.service';
 import { ConsultaUtilService } from '../../../service/consulta-util.service';
 
 import { Dict, ciclos, tipoConsulta, especialidades, servicios } from '../../../enum/diccionarios';
@@ -24,6 +25,7 @@ import { EdadPipe } from '../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon, manIcon, womanIcon } from '../../../shared/icons/svg-icon';
+import { PacienteService } from '../../patient/paciente.service';
 
 @Component({
   selector: 'app-admision',
@@ -77,7 +79,9 @@ export class AdmisionComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private api: ApiService,
+    private api: ConsultaService,
+    private apis: ApiService,
+    private apip: PacienteService,
     private consultaUtil: ConsultaUtilService,
     private sanitizer: DomSanitizer
   ) {
@@ -89,7 +93,7 @@ export class AdmisionComponent implements OnInit {
   // INICIALIZACIÓN
   // ══════════════════════════════════════════════════════════
   ngOnInit(): void {
-    this.usuarioActual = this.api.getUsuarioActual().username;
+    this.usuarioActual = this.apis.getUsuarioActual().username;
     this.inicializarFlagsYCarga(this.route.snapshot.paramMap);
   }
 
@@ -169,7 +173,7 @@ export class AdmisionComponent implements OnInit {
   // CARGA DE DATOS
   // ══════════════════════════════════════════════════════════
   cargarPaciente(idP: number): void {
-    this.api.getPaciente(idP)
+    this.apip.getPaciente(idP)
       .pipe(catchError(err => { this.mostrarError('cargar paciente', err); return of(null); }))
       .subscribe(data => {
         if (data) {

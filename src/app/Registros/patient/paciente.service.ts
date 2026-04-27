@@ -131,7 +131,7 @@ export class PacienteService extends BaseApiService {
     };
 
     return this.http.post<any>(
-      `${this.baseUrl}/fah/pacientes/madre-hijo/${idMadre}?auto_expediente=true`,
+      `${this.baseUrl}/pacientes/madre-hijo/${idMadre}?auto_expediente=true`,
       payload
     ).pipe(
       tap(() => this.refrescarPacientes()),

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
-import { ApiService } from '../../../../service/api.service';
+import { ConsultaService } from '../../consultas.service';
 import { Paciente } from '../../../../interface/interfaces';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ConsultaBase } from '../../../../interface/consultas';
@@ -13,6 +13,7 @@ import { Subject } from 'rxjs';
 import { takeUntil, finalize, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { DepartamentoPipe } from '../../../../pipes/lugar.pipe';
+import { PacienteService } from '../../../patient/paciente.service';
 
 @Component({
   selector: 'app-hojaIngreso',
@@ -24,7 +25,8 @@ import { DepartamentoPipe } from '../../../../pipes/lugar.pipe';
 export class HojaIngresoComponent implements OnInit, OnDestroy {
 
   // ======= INYECCIONES =======
-  private api = inject(ApiService);
+  private api = inject(ConsultaService);
+  private apip = inject(PacienteService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private iconService = inject(IconService);
@@ -151,7 +153,7 @@ export class HojaIngresoComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.api.getPaciente(pacienteId)
+    this.apip.getPaciente(pacienteId)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => this.detalleVisible.set(true)),

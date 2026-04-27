@@ -2,7 +2,9 @@ import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ConstanciaNacimientoOut } from '../../../interface/consNac';
+import { ConstanciaNacimiento } from '../constancias.inteface';
 import { ApiService } from './../../../service/api.service';
+import { ConstanciasService } from '../constancias.service';
 import { Router } from '@angular/router';
 import { IconService } from './../../../service/icon.service';
 import { FormsModule } from '@angular/forms';
@@ -16,7 +18,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class ListarConstanciasComponent implements OnInit {
 
-  datos: ConstanciaNacimientoOut[] = [];
+  datos: ConstanciaNacimiento[] = [];
   cargando = false;
   filtrar = false;
   visible = false;
@@ -43,7 +45,7 @@ export class ListarConstanciasComponent implements OnInit {
 
   constructor(
     private pacienteData: ApiService,
-    private api: ApiService,
+    private api: ConstanciasService,
     private router: Router,
     private iconService: IconService
 
@@ -53,7 +55,7 @@ export class ListarConstanciasComponent implements OnInit {
       edit: this.iconService.getIcon("editIcon"),
       trash: this.iconService.getIcon("trashIcon"),
       find: this.iconService.getIcon("findIcon"),
-      menu: this.iconService.getIcon("menuPuntos"),
+      menu: this.iconService.getIcon("menuIcon"),
       arrowDown: this.iconService.getIcon("arrowDown"),
       skipLeft: this.iconService.getIcon("skipLeft"),
       skipRight: this.iconService.getIcon("skipRight"),
@@ -62,16 +64,18 @@ export class ListarConstanciasComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.api.constanciasNac$.subscribe((data) => {
+    this.api.constancias$.subscribe((data) => {
       this.datos = data;
     });
+    console.log(this.datos);
+    this.cargarDatos();
 
   }
 
   async cargarDatos() {
     this.cargando = true;
     try {
-      this.api.getConstanciasNacimiento(this.filtros).subscribe((data) => {
+      this.api.getConstancias(this.filtros).subscribe((data) => {
         this.datos = data;
       });
     } catch (error) {
@@ -107,7 +111,7 @@ export class ListarConstanciasComponent implements OnInit {
   }
 
   editar(id: number) {
-    this.router.navigate(['/consnacEdit', id, 'nacimiento']);
+    this.router.navigate(['/cons-nac', id]);
   }
 
   pacientes() {

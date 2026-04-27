@@ -1,3 +1,504 @@
-<p>
-  constanciasNacimiento works!
-</p>
+<!-- ───────── HEADER HUD ───────── -->
+<div class="hud-header">
+  <div class="hud-id">
+    {{ enEdicion() ? "EDIT · CONSTANCIA" : "NEW-ENTRY" }}
+  </div>
+
+  <div class="hud-title">CONSTANCIA DE NACIMIENTO</div>
+
+  <div class="hud-status" [class.hud-status--loading]="isLoading()">
+    {{ isLoading() ? "PROCESANDO…" : guardadoOk() ? "✓ GUARDADO" : "LISTO" }}
+  </div>
+</div>
+
+<!-- ───────── ACTION DOCK ───────── -->
+<div class="action-dock">
+  <div class="dock-hint">constancia #{{ constancia?.id ?? "—" }}</div>
+
+  <button class="btn-dock btn" type="button" (click)="volver()">
+    ❌ Cancelar
+  </button>
+
+  <button
+    class="btn-dock btn btn--primary"
+    type="button"
+    [disabled]="isLoading()"
+    (click)="guardar()"
+  >
+    {{ isLoading() ? "⏳ Guardando…" : "💾 Guardar" }}
+  </button>
+</div>
+
+<!-- ───────── SKELETON LOADER ───────── -->
+@if (isLoading() && !constancia) {
+  <div class="adm-body">
+    <div class="skeleton-block"></div>
+    <div class="skeleton-block skeleton-block--short"></div>
+  </div>
+}
+
+<!-- ───────── BODY ───────── -->
+@if (!isLoading() || constancia) {
+  <form [formGroup]="form" class="adm-body" (submit)="$event.preventDefault()">
+    <!-- ── PACIENTE BANNER ── -->
+    @if (constancia?.paciente) {
+      <div class="paciente-banner">
+        <div class="paciente-banner-accent"></div>
+        <div class="paciente-avatar">👶🏻</div>
+        |
+        <div class="paciente-datos">
+          <div class="paciente-nombre">
+            {{ constancia?.paciente?.nombre_completo ?? "Neonato" }}
+          </div>
+          <div class="paciente-chips">
+            @if (constancia?.paciente?.expediente) {
+              <div class="p-chip">
+                📋 Expediente: {{ constancia?.paciente?.expediente }}
+              </div>
+            }
+            @if (constancia?.paciente?.fecha_nacimiento) {
+              <div class="p-chip">
+                📅 {{ constancia?.paciente?.fecha_nacimiento }}
+              </div>
+            }
+            @if (constancia?.paciente?.sexo) {
+              <div class="p-chip">🚻 {{ constancia?.paciente?.sexo }}</div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── TABS ── -->
+    <div class="tab-bar">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.tab-btn--active]="tabActivo() === 'datos'"
+        (click)="setTab('datos')"
+      >
+        📄 Documento
+      </button>
+      <button
+        type="button"
+        class="tab-btn"
+        [class.tab-btn--active]="tabActivo() === 'madre'"
+        (click)="setTab('madre')"
+      >
+        👩 Madre
+      </button>
+      <button
+        type="button"
+        class="tab-btn"
+        [class.tab-btn--active]="tabActivo() === 'medico'"
+        (click)="setTab('medico')"
+      >
+        🩺 Médico / Parto
+      </button>
+    </div>
+
+    <!-- ══════════ TAB: DOCUMENTO ══════════ -->
+    @if (tabActivo() === "datos") {
+      <div class="adm-grid">
+        <!-- COL 1 — Identificación -->
+        <div class="adm-col">
+          <div class="section-card">
+            <div class="sec-head">
+              <div class="sec-head-left">
+                <div class="sec-icon">🪪</div>
+                <div class="sec-title">Identificación</div>
+              </div>
+              <div class="sec-badge">registro civil</div>
+            </div>
+
+            <div class="sec-body">
+              <div class="field">
+                <label class="field-label">Documento</label>
+                <input
+                  class="field-input field-input--readonly"
+                  formControlName="documento"
+                  placeholder="0360-2026"
+                  readonly
+                />
+              </div>
+
+              <div class="field">
+                <label class="field-label">Fecha de Registro</label>
+                <input
+                  type="date"
+                  class="field-input"
+                  formControlName="fecha_registro"
+                />
+              </div>
+
+              <div class="field">
+                <label class="field-label">ID Paciente (neonato)</label>
+                <input
+                  class="field-input field-input--readonly"
+                  formControlName="paciente_id"
+                  readonly
+                />
+              </div>
+
+              <div class="field">
+                <label class="field-label">ID Registrador</label>
+                <input
+                  class="field-input field-input--readonly"
+                  formControlName="registrador_id"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COL 2 — Menor edad -->
+        @if (!constancia?.madre?.cui) {
+          <div class="adm-col">
+            <div class="section-card">
+              <div class="sec-head">
+                <div class="sec-head-left">
+                  <div class="sec-icon">📚</div>
+                  <div class="sec-title">Registro Civil (Menor)</div>
+                </div>
+                <div class="sec-badge">menor_edad JSON</div>
+              </div>
+
+              <div class="sec-body" formGroupName="menor_edad">
+                <div class="field">
+                  <label class="field-label">Libro</label>
+                  <input
+                    class="field-input"
+                    formControlName="libro"
+                    placeholder="Núm. de libro"
+                  />
+                </div>
+
+                <div class="field">
+                  <label class="field-label">Folio</label>
+                  <input
+                    class="field-input"
+                    formControlName="folio"
+                    placeholder="Núm. de folio"
+                  />
+                </div>
+
+                <div class="field">
+                  <label class="field-label">Partida</label>
+                  <input
+                    class="field-input"
+                    formControlName="partida"
+                    placeholder="Núm. de partida"
+                  />
+                </div>
+
+                <div class="field">
+                  <label class="field-label">CUI Emitido</label>
+                  <input
+                    class="field-input"
+                    formControlName="cui"
+                    placeholder="CUI del menor"
+                  />
+                </div>
+
+                <div class="field field--full">
+                  <label class="field-label">Municipalidad</label>
+                  <input
+                    class="field-input"
+                    formControlName="municipalidad"
+                    placeholder="Municipio emisor"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- COL 3 — Hijos / Observaciones -->
+        <div class="adm-col">
+          <div class="section-card">
+            <div class="sec-head">
+              <div class="sec-head-left">
+                <div class="sec-icon">🧑‍🧒‍🧒</div>
+                <div class="sec-title">Hijos de la madre</div>
+              </div>
+            </div>
+
+            <div class="sec-body">
+              <div class="field">
+                <label class="field-label"
+                  >Total Hijos
+                  <span class="field-calc">= vivos + muertos</span></label
+                >
+                <input
+                  type="number"
+                  class="field-input field-input--readonly"
+                  formControlName="hijos"
+                  readonly
+                  placeholder="Auto-calculado"
+                />
+              </div>
+
+              <div class="field">
+                <label class="field-label">Vivos</label>
+                <input
+                  type="number"
+                  min="0"
+                  class="field-input"
+                  formControlName="vivos"
+                  placeholder="0"
+                />
+              </div>
+
+              <div class="field">
+                <label class="field-label">Muertos</label>
+                <input
+                  type="number"
+                  min="0"
+                  class="field-input"
+                  formControlName="muertos"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COL 4 — Datos del neonato -->
+        <div class="adm-col">
+          <div class="section-card">
+            <div class="sec-head">
+              <div class="sec-head-left">
+                <div class="sec-icon">👩🏻‍🍼</div>
+                <div class="sec-title">Datos del Nacimiento</div>
+                <div>
+                  <button
+                    (click)="editarHijo(constancia?.paciente_id)"
+                    class="btn"
+                  >
+                    Editar Niño
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="sec-body">
+              <div class="field">
+                <label class="field-label">Tipo Parto</label>
+                <span class="btn">{{
+                  constancia?.paciente?.datos_extra?.neonatales?.tipo_parto
+                }}</span>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Clase de Parto</label>
+                <span class="btn">{{
+                  constancia?.paciente?.datos_extra?.neonatales?.clase_parto
+                }}</span>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Peso</label>
+                <span class="btn">{{
+                  constancia?.paciente?.datos_extra?.neonatales?.peso_nacimiento
+                }}</span>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Hora de Nacimiento</label>
+                <span class="btn">{{
+                  constancia?.paciente?.datos_extra?.neonatales?.hora_nacimiento
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="sec-head">
+              <div class="sec-head-left">
+                <div class="sec-icon">📝</div>
+                <div class="sec-title">Observaciones</div>
+              </div>
+            </div>
+            <div class="sec-body single">
+              <div class="field">
+                <textarea
+                  class="field-input"
+                  rows="4"
+                  formControlName="observaciones"
+                  placeholder="Observaciones clínicas o administrativas…"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ══════════ TAB: MADRE ══════════ -->
+    @if (tabActivo() === "madre") {
+      <div class="adm-grid">
+        <div class="adm-col">
+          <div class="section-card">
+            <div class="sec-head">
+              <div class="sec-head-left">
+                <div class="sec-icon">👩</div>
+                <div class="sec-title">Datos de la Madre</div>
+                <div>
+                  <button
+                    (click)="editarHijo(constancia?.madre_id)"
+                    class="btn"
+                  >
+                    Editar Madre
+                  </button>
+                </div>
+              </div>
+              <div class="sec-badge">
+                madre_id: {{ constancia?.madre_id ?? "—" }}
+              </div>
+            </div>
+
+            <div class="sec-body single">
+              <div class="field">
+                <label class="field-label">Nombre Completo</label>
+                <input
+                  class="field-input"
+                  formControlName="nombre_madre"
+                  placeholder="Nombre de la madre"
+                />
+              </div>
+
+              <div class="field">
+                <label class="field-label">Vecindad</label>
+                <span class="info-value btn">
+                  {{
+                    constancia?.madre?.datos_extra?.demograficos?.vecindad
+                      | vecindad
+                  }}
+                </span>
+              </div>
+
+              <div class="field">
+                <label class="field-label">ID Paciente Madre (FK)</label>
+                <input
+                  class="field-input field-input--readonly"
+                  formControlName="madre_id"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info heredada solo lectura -->
+        @if (constancia?.paciente) {
+          <div class="adm-col">
+            <div class="section-card">
+              <div class="sec-head">
+                <div class="sec-head-left">
+                  <div class="sec-icon">🔗</div>
+                  <div class="sec-title">Datos heredados del paciente</div>
+                </div>
+                <div class="sec-badge readonly-badge">solo lectura</div>
+              </div>
+              <div class="sec-body single">
+                <div class="info-row">
+                  <span class="info-label">Expediente neonato</span>
+                  <span class="info-value">{{
+                    constancia?.paciente?.expediente ?? "—"
+                  }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Fecha nacimiento</span>
+                  <span class="info-value">{{
+                    constancia?.paciente?.fecha_nacimiento ?? "—"
+                  }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Sexo</span>
+                  <span class="info-value">{{
+                    constancia?.paciente?.sexo ?? "—"
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ══════════ TAB: MÉDICO ══════════ -->
+    @if (tabActivo() === "medico") {
+      <div class="adm-grid">
+        <div class="adm-col">
+          <div class="section-card">
+            <div class="sec-head">
+              <div class="sec-head-left">
+                <div class="sec-icon">🩺</div>
+                <div class="sec-title">Médico</div>
+              </div>
+            </div>
+            <div class="sec-body single">
+              <div class="field">
+                <label class="field-label">ID Médico</label>
+                <input
+                  type="number"
+                  class="field-input"
+                  formControlName="medico_id"
+                  placeholder="ID del médico responsable"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ══════════ MOTIVO (siempre visible) ══════════ -->
+    <!-- <div
+      class="section-card motivo-card"
+      [class.motivo-card--error]="motivoInvalido"
+    >
+      <div class="sec-head">
+        <div class="sec-head-left">
+          <div class="sec-icon">🔏</div>
+          <div class="sec-title">Motivo de modificación</div>
+        </div>
+        <div class="sec-badge">requerido · historial</div>
+      </div>
+      <div class="sec-body single">
+        <div class="field">
+          <textarea
+            class="field-input"
+            rows="2"
+            formControlName="motivo"
+            placeholder="Indique el motivo del cambio para trazabilidad…"
+          ></textarea>
+          @if (motivoInvalido) {
+            <span class="field-error"
+              >⚠️ El motivo es obligatorio para guardar cambios.</span
+            >
+          }
+        </div>
+      </div>
+    </div> -->
+
+    <!-- ── ERROR ── -->
+    @if (error()) {
+      <div class="section-card">
+        <div class="sec-body single">
+          <div class="alert-error">⚠️ {{ error() }}</div>
+        </div>
+      </div>
+    }
+
+    <!-- ── ÉXITO ── -->
+    @if (guardadoOk()) {
+      <div class="section-card">
+        <div class="sec-body single">
+          <div class="alert-ok">✅ Constancia actualizada correctamente.</div>
+        </div>
+      </div>
+    }
+  </form>
+}

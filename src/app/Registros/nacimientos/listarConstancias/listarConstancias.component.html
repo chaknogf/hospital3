@@ -111,7 +111,9 @@
           <td>
             {{ data.nombre_madre }}
           </td>
-          <td class="oculto"></td>
+          <td class="oculto">
+            {{ data.paciente?.fecha_nacimiento | date: "dd-MM-yyyy" }}
+          </td>
           <td class="oculto"></td>
           <td class="secundario">
             <div class="botones-opt">
