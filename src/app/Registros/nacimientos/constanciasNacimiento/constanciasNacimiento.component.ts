@@ -11,6 +11,7 @@ import { of } from 'rxjs';
 import { ConstanciaNacimiento } from '../constancias.inteface';
 import { VecindadPipe } from '../../../pipes/lugar.pipe';
 import { ApiService } from '../../../service/api.service';
+import { Medico } from '../../../interface/medicos.interface';
 
 @Component({
   selector: 'app-constanciasNacimiento',
@@ -33,6 +34,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
   form: FormGroup;
   private destroy$ = new Subject<void>();
   constancia: ConstanciaNacimiento | null = null;
+  medicos: Medico[] = [];
 
   // ======= SEÑALES =======
   enEdicion = signal(false);
@@ -48,6 +50,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.cargarMedicos();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.enEdicion.set(true);
@@ -95,8 +98,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
       vivos: [null],
       muertos: [null],
       observaciones: [''],
-      // Campo obligatorio para historial
-      //motivo: ['', Validators.required]
+
     });
   }
 
@@ -192,9 +194,21 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
       hijos: v.hijos ?? undefined,
       vivos: v.vivos ?? undefined,
       muertos: v.muertos ?? undefined,
-      //observaciones: v.observaciones || undefined,
-      //motivo: v.motivo
+
     };
+  }
+
+  cargarMedicos(): void {
+    this.apis.getMedicos({})
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.medicos = data;
+        },
+        error: (err) => {
+          console.error('Error al cargar médicos:', err);
+        }
+      });
   }
 
   /** Elimina claves con valores vacíos para no mandar nulls innecesarios */
@@ -224,10 +238,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
   }
 
 
-  get motivoInvalido(): boolean {
-    const c = this.form.get('motivo');
-    return !!(c?.invalid && c?.touched);
-  }
+
 
   private mostrarError(accion: string, error: any): void {
     const msg = error?.error?.detail || error?.message || 'Consulte la consola';

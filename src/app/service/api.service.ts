@@ -11,6 +11,7 @@ import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUp
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
 import { FiltroConsulta, FiltroCitas } from '../interface/filtros.model';
 import { CitaCreate, CitaResponse, Citas, CitasBase, CitaUpdate } from '../interface/citas';
+import { Medico } from '../interface/medicos.interface';
 
 export interface PaginationState {
   filtro: any;
@@ -299,6 +300,16 @@ export class ApiService {
     );
   }
 
+  //======== MEDICOS =============
+  getMedicos(filtros: any): Observable<Medico[]> {
+    this.isLoading.set(true);
+    const params = this.limpiarParametros(filtros);
+
+    return this.http.get<Medico[]>(`${this.baseUrl}/medicos/`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener datos'))
+    );
+  }
 
 
 }

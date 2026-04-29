@@ -1,4 +1,5 @@
 import { Paciente } from "../../interface/interfaces";
+import { Medico } from "../../interface/medicos.interface";
 
 export interface ConstanciaNacimiento {
   id: number;
@@ -20,4 +21,5 @@ export interface ConstanciaNacimiento {
   updated_at?: string;
   paciente?: Paciente;
   madre?: Paciente;
+  medico?: Medico;
 }

@@ -440,48 +440,18 @@
             </div>
             <div class="sec-body single">
               <div class="field">
-                <label class="field-label">ID Médico</label>
-                <input
-                  type="number"
-                  class="field-input"
-                  formControlName="medico_id"
-                  placeholder="ID del médico responsable"
-                />
+                <label class="field-label">Médico</label>
+                <select formControlName="medico_id">
+                  <option [value]="item.id" *ngFor="let item of medicos">
+                    {{ item.nombre }} ({{ item.colegiado }})
+                  </option>
+                </select>
               </div>
             </div>
           </div>
         </div>
       </div>
     }
-
-    <!-- ══════════ MOTIVO (siempre visible) ══════════ -->
-    <!-- <div
-      class="section-card motivo-card"
-      [class.motivo-card--error]="motivoInvalido"
-    >
-      <div class="sec-head">
-        <div class="sec-head-left">
-          <div class="sec-icon">🔏</div>
-          <div class="sec-title">Motivo de modificación</div>
-        </div>
-        <div class="sec-badge">requerido · historial</div>
-      </div>
-      <div class="sec-body single">
-        <div class="field">
-          <textarea
-            class="field-input"
-            rows="2"
-            formControlName="motivo"
-            placeholder="Indique el motivo del cambio para trazabilidad…"
-          ></textarea>
-          @if (motivoInvalido) {
-            <span class="field-error"
-              >⚠️ El motivo es obligatorio para guardar cambios.</span
-            >
-          }
-        </div>
-      </div>
-    </div> -->
 
     <!-- ── ERROR ── -->
     @if (error()) {
