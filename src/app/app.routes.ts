@@ -30,10 +30,17 @@ import { CitadosComponent } from './Registros/citas/citados/citados.component';
 import { AgendarComponent } from './Registros/citas/agendar/agendar.component';
 import { NotaMedicaComponent } from './medica/notaMedica/notaMedica.component';
 import { HistoriaClinicaComponent } from './medica/historiaClinica/historiaClinica.component';
+import { AdminComponent } from './principal/administrador/admin/admin.component';
+import { UsuariosComponent } from './principal/administrador/usuarios/usuarios.component';
+import { UsuarioComponent } from './principal/administrador/usuario/usuario.component';
+import { RegistrarComponent } from './principal/administrador/registrar/registrar.component';
+import { RecuperarComponent } from './principal/administrador/recuperar/recuperar.component';
+import { roleGuard } from './role.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
   { path: 'inicio', component: HomeComponent },
+  { path: 'resetpass', component: RecuperarComponent },
 
   // ── Rutas protegidas agrupadas ──
   {
@@ -41,6 +48,13 @@ export const routes: Routes = [
     canActivate: [AuthGuard], // ← se aplica a todas las hijas
     children: [
       { path: 'dash', component: DashboardComponent },
+      //admin
+      { path: 'adminsys', component: AdminComponent, canActivate: [roleGuard(['admin'])] },
+      { path: 'usuarios', component: UsuariosComponent, canActivate: [roleGuard(['admin'])] },
+      { path: 'usuario/:id', component: UsuarioComponent },
+      { path: 'newuser', component: RegistrarComponent },
+
+
       // Registros Médicos
       { path: 'registros', component: RegistrosMedicosComponent },
       { path: 'admision', component: AdmisionComponent },

@@ -12,6 +12,7 @@ import { CicloClinico, EstadoCiclo } from '../interface/consultas';
 import { FiltroConsulta, FiltroCitas } from '../interface/filtros.model';
 import { CitaCreate, CitaResponse, Citas, CitasBase, CitaUpdate } from '../interface/citas';
 import { Medico } from '../interface/medicos.interface';
+import { Usuario, UsuarioOut, UsersListResponse } from '../interface/usuarios.interface';
 
 export interface PaginationState {
   filtro: any;
@@ -28,6 +29,8 @@ export class ApiService {
   nombreUsuario = signal<string | null>(null);
   isLoading = signal(false);
 
+  private usuariosSubject = new BehaviorSubject<UsuarioOut[]>([]);
+  usuarios$ = this.usuariosSubject.asObservable();
 
 
 
@@ -62,7 +65,7 @@ export class ApiService {
   private limpiarParametros(filtros: any): HttpParams {
     let params = new HttpParams();
     Object.entries(filtros).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
+      if (value !== null && value !== undefined && value !== '' && value !== 0) {
         params = params.set(key, String(value));
       }
     });
@@ -161,35 +164,43 @@ export class ApiService {
   }
 
   // ======= USUARIOS =======
-  getUsers(filtros: any): Observable<Usuarios[]> {
+  getUsers(filtros: any): Observable<UsersListResponse> {
     const params = this.limpiarParametros(filtros);
-    return this.http.get<Usuarios[]>(`${this.baseUrl}/user/`, { params }).pipe(
+    console.log(params.toString())
+    return this.http.get<UsersListResponse>(`${this.baseUrl}/users/`, { params }).pipe(
+      tap(response => {
+        this.usuariosSubject.next(response.usuarios);
+        console.log(response)
+      }),
       catchError(error => this.manejarError(error, 'obtener usuarios'))
     );
   }
 
-  getUser(id: number): Observable<Usuarios> {
-    const params = new HttpParams()
-      .set('id', id.toString())
-      .set('skip', '0')
-      .set('limit', '1');
-
-    return this.http.get<Usuarios>(`${this.baseUrl}/user/`, { params }).pipe(
+  getUser(id: number): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.baseUrl}/users/${id}`).pipe(
       catchError(error => this.manejarError(error, 'obtener usuario'))
     );
   }
 
   createUser(user: any): Observable<any> {
     this.isLoading.set(true);
-    return this.http.post<any>(`${this.baseUrl}/user/crear`, user).pipe(
+    return this.http.post<any>(`${this.baseUrl}/users/`, user).pipe(
       catchError(error => this.manejarError(error, 'crear usuario')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  passReset(user: any): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.patch<any>(`${this.baseUrl}/users/recuperar`, user).pipe(
+      catchError(error => this.manejarError(error, 'actualizar password')),
       finalize(() => this.isLoading.set(false))
     );
   }
 
   updateUser(userId: number, user: any): Observable<any> {
     this.isLoading.set(true);
-    return this.http.put<any>(`${this.baseUrl}/user/actualizar/${userId}`, user).pipe(
+    return this.http.put<any>(`${this.baseUrl}/users/${userId}`, user).pipe(
       catchError(error => this.manejarError(error, 'actualizar usuario')),
       finalize(() => this.isLoading.set(false))
     );

@@ -1,3 +1,51 @@
-<p>
-  recuperar works!
-</p>
+<div class="auth-wrapper">
+  <!-- CARD -->
+  <div class="auth-card">
+    <!-- HEADER -->
+    <div class="auth-header">
+      <h2>Restablecer contraseña</h2>
+      <p>Define una nueva contraseña para el usuario</p>
+    </div>
+
+    <!-- ERROR -->
+    <div *ngIf="error()" class="alert-error">
+      {{ error() }}
+    </div>
+
+    <!-- FORM -->
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="auth-form">
+      <!-- EMAIL -->
+      <div class="field">
+        <label class="field-label">Correo electrónico</label>
+        <input
+          class="field-input"
+          type="email"
+          formControlName="email"
+          placeholder="correo@ejemplo.com"
+        />
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="field">
+        <label class="field-label">Nueva contraseña</label>
+        <input
+          class="field-input"
+          type="password"
+          formControlName="password"
+          placeholder="••••••••"
+        />
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="auth-actions">
+        <button class="btn primary" type="submit" [disabled]="isLoading()">
+          Guardar
+        </button>
+
+        <button class="btn ghost" type="button" (click)="volver()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

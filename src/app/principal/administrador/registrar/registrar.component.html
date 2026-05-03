@@ -1,3 +1,65 @@
-<p>
-  registrar works!
-</p>
+<!-- HEADER -->
+<div class="hud-header">
+  <div class="hud-title">Registro de Usuario</div>
+</div>
+
+<!-- ACCIONES -->
+<div class="action-dock">
+  <span class="dock-hint">Nuevo usuario</span>
+
+  <button class="btn" (click)="guardar()" [disabled]="isLoading()">
+    Guardar
+  </button>
+
+  <button class="btn" (click)="volver()">Cancelar</button>
+</div>
+
+<!-- BODY -->
+<div class="adm-body">
+  <!-- ERROR -->
+  <div *ngIf="error()" class="alert-error">
+    {{ error() }}
+  </div>
+
+  <form [formGroup]="form" class="adm-grid">
+    <div class="adm-col">
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Datos básicos</span>
+        </div>
+
+        <div class="sec-body">
+          <!-- NOMBRE -->
+          <div class="field">
+            <label class="field-label">Nombre</label>
+            <input
+              class="field-input"
+              formControlName="nombre"
+              placeholder="Nombre completo"
+            />
+          </div>
+
+          <!-- USERNAME -->
+          <div class="field">
+            <label class="field-label">Usuario</label>
+            <input
+              class="field-input"
+              formControlName="username"
+              placeholder="username"
+            />
+          </div>
+
+          <!-- EMAIL -->
+          <div class="field">
+            <label class="field-label">Correo</label>
+            <input
+              class="field-input"
+              formControlName="email"
+              placeholder="correo@ejemplo.com"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

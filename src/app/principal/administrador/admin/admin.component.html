@@ -1,3 +1,16 @@
-<p>
-  admin works!
-</p>
+<h1>Panel de Control Administrador</h1>
+<div class="aurora-container">
+  <div
+    class="aurora-cards"
+    *ngFor="let app of options"
+    (click)="navegar(app.ruta)"
+  >
+    <div class="aurora-items">
+      <div class="">
+        <span class="" [innerHTML]="app.icon"></span>
+        <h2 class="">{{ app.nombre }}</h2>
+        <p class="">{{ app.descripcion }}</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,341 @@
+/* === BOTONES === */
+.btn {
+  background: #0f172a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background: #1e293b;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* === FORM === */
+form {
+  width: 100%;
+}
+
+/* === INPUTS === */
+.field-input::placeholder {
+  color: #94a3b8;
+}
+
+/* === TRANSICIÓN SUAVE === */
+.section-card {
+  transition: all 0.25s ease;
+}
+
+/* === FOCUS GLOBAL === */
+input:focus {
+  outline: none;
+}
+
+/* === MICRO INTERACCIÓN === */
+.field-input:hover {
+  border-color: #cbd5f5;
+}
+
+/* === ESPACIADO EXTRA PARA FORM === */
+.sec-body {
+  padding: 1.2rem;
+}
+
+
+.alert-error {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  color: #ff4d4f;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+/* ── HUD HEADER (Más estilizado) ── */
+.hud-header {
+  position: relative;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--rim);
+  background: rgba(6, 13, 31, 0.92);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.hud-title {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #fff;
+}
+
+/* ── ACTION DOCK (Flotante y moderno) ── */
+.action-dock {
+  position: sticky;
+  top: 15px;
+  z-index: 50;
+  margin: 10px 1.5rem;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  box-shadow: var(--shadow-soft);
+}
+
+.dock-hint {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: #64748b;
+  margin-right: auto;
+}
+
+/* ── BODY ESTRUCTURA (Flexbox Dinámico) ── */
+.adm-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.adm-grid {
+  display: flex;
+  flex-flow: row wrap; /* Flexbox principal */
+  gap: 1.5rem;
+}
+
+.adm-col {
+  flex: 1 1 450px; /* Base elástica */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── PACIENTE BANNER (Diseño Card Elegante) ── */
+.paciente-banner {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.3s ease;
+}
+
+.paciente-avatar {
+  width: 60px;
+  height: 60px;
+   background: rgba(59,130,246,0.1);
+  border: 2px solid #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pulse);
+  font-size: 48px;
+}
+
+.paciente-nombre {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+/* ── SECTION CARDS (Refinamiento visual) ── */
+.section-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section-card:hover {
+    border-color: var(--pulse);
+    transform: translateY(-2px);
+}
+
+.sec-head {
+  padding: 1rem 1.5rem;
+  background: rgba(255,255,255,0.4);
+  border-bottom: 1px solid rgba(0,0,0,0.03);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sec-badge {
+color: #061429;
+}
+
+.sec-title {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  color: #475569;
+  letter-spacing: 1.5px;
+}
+
+.sec-body {
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+/* ── CAMPOS ELÁSTICOS ── */
+.field {
+  flex: 1 1 calc(50% - 1.25rem); /* Dos columnas que fluyen */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sec-body.single .field { flex: 1 1 100%; }
+.sec-body.triple .field { flex: 1 1 calc(33.33% - 1.25rem); min-width: 150px; }
+
+.field-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #061429;
+  padding-left: 4px;
+}
+
+.field-input {
+  background: #f6f6f6;
+  border: 1.5px solid #f1f5f9;
+  color: #1e293b;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.field-input:focus {
+  border-color: var(--pulse);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* ── INDICADORES (Chips Flexbox) ── */
+.indicadores-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ind-chip {
+  flex: 1 1 calc(50% - 10px);
+  background: #fff;
+  border: 3px solid #f1f5f9;
+  color: #414d5fa9;
+  border-radius: 10px;
+  padding: 0.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+
+.ind-chip:hover {
+    background: #f8fafc;
+    border-color: var(--pulse);
+}
+
+/* ── RESPONSIVE ADAPTATIVO ── */
+@media (max-width: 900px) {
+    .adm-col {
+        flex: 1 1 100%; /* Una sola columna principal en tablets */
+    }
+}
+
+@media (max-width: 600px) {
+    .paciente-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .field {
+        flex: 1 1 100%; /* Todo a una columna en móviles */
+    }
+
+    .sec-body {
+        padding: 1rem;
+    }
+
+    .ind-chip {
+        flex: 1 1 100%;
+    }
+}
+
+.ind-chip.active {
+  background: var(--surface);
+  border-color: var(--surface);
+  color: #f1f5f9;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.ind-chip.active .ind-check {
+  background: var(--surface);
+  border-color: var(--surface);
+}
+
+.ind-chip.active .ind-check svg {
+  color: #fff;
+}
+
+.btn {
+  background: #1e293b;
+  padding: 4px;
+  width: 90px;
+  font-size: 13px;
+}
+
+.p-chip {
+  /* font-family: var(--font-mono); */
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: #020b1d;
+  border: 2.2px solid rgba(59,130,246,0.18);
+  padding: 3px 9px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.paciente-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.paciente-datos {
+  justify-content: center;
+}

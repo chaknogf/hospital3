@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../service/api.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,9 @@ export class LoginComponent {
   loginForm: FormGroup;
   errorMessage: string = '';
   loading = false;
+
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   constructor(
     private fb: FormBuilder,
@@ -69,5 +73,10 @@ export class LoginComponent {
       case 500: return 'Error del servidor. Inténtalo más tarde.';
       default: return `Error inesperado (código ${status}).`;
     }
+  }
+
+  reset(): void {
+    console.log('CLICK RESET');
+    this.router.navigate(['/resetpass']);
   }
 }

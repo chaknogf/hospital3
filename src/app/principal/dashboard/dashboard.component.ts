@@ -1,4 +1,4 @@
-import { logoicon } from './../../shared/icons/svg-icon';
+import { logoicon, rocketIcon } from './../../shared/icons/svg-icon';
 
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -22,6 +22,7 @@ export class DashboardComponent implements OnInit {
   tarjetaPaciente: SafeHtml = tarjetaPaciente;
   datosIcon: SafeHtml = datosIcon;
   logoicon: SafeHtml = logoicon;
+  rocket: SafeHtml = rocketIcon;
   constructor(
     private router: Router,
     private sanitizer: DomSanitizer
@@ -30,6 +31,7 @@ export class DashboardComponent implements OnInit {
     this.tarjetaPaciente = this.sanitizer.bypassSecurityTrustHtml(tarjetaPaciente);
     this.datosIcon = this.sanitizer.bypassSecurityTrustHtml(datosIcon);
     this.logoicon = this.sanitizer.bypassSecurityTrustHtml(logoicon);
+    this.rocket = this.sanitizer.bypassSecurityTrustHtml(rocketIcon);
 
   }
 
@@ -39,7 +41,7 @@ export class DashboardComponent implements OnInit {
 
     this.modulos = [
       {
-        nombre: 'Pacientes',
+        nombre: 'Registros Medicos',
         descripcion: 'Gestión de pacientes y registros médicos',
         ruta: '/registros',
         icon: this.tarjetaPaciente
@@ -49,6 +51,7 @@ export class DashboardComponent implements OnInit {
         descripcion: 'Gestor de Atención al Usuario',
         ruta: '/usisau'
       },
+
       // {
       //   nombre: 'Vacunas',
       //   descripcion: 'Control de vacunas y esquemas',
@@ -75,21 +78,21 @@ export class DashboardComponent implements OnInit {
         descripcion: 'Imprime reportes y sigsas',
         ruta: '/reportes'
       },
-      {
-        nombre: 'Rayos X',
-        descripcion: 'Gestor de rayos x',
-        ruta: '/rayos'
-      },
-      {
-        nombre: 'Laboratorio',
-        descripcion: 'Gestor de laboratorio',
-        ruta: '/laboratorio'
-      },
-      {
-        nombre: 'Farmacia',
-        descripcion: 'Gestor de farmacia',
-        ruta: '/farmacia'
-      },
+      // {
+      //   nombre: 'Rayos X',
+      //   descripcion: 'Gestor de rayos x',
+      //   ruta: '/rayos'
+      // },
+      // {
+      //   nombre: 'Laboratorio',
+      //   descripcion: 'Gestor de laboratorio',
+      //   ruta: '/laboratorio'
+      // },
+      // {
+      //   nombre: 'Farmacia',
+      //   descripcion: 'Gestor de farmacia',
+      //   ruta: '/farmacia'
+      // },
       // {
       //   nombre: 'Configuraciones',
       //   descripcion: 'Configuraciones del sistema',
@@ -105,6 +108,12 @@ export class DashboardComponent implements OnInit {
       //   descripcion: 'Salir del sistema',
       //   ruta: '/inicio'
       // },
+      {
+        nombre: 'Huston',
+        descripcion: 'Panel de Control',
+        ruta: '/adminsys',
+        icon: this.rocket
+      },
     ]
   }
 

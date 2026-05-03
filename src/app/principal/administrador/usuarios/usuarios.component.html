@@ -1,3 +1,167 @@
-<p>
-  usuarios works!
-</p>
+<div class="aurora-paciente-container" [class.d-none]="visible">
+  <!-- Botones superiores -->
+  <div
+    class="botones justify-content-between"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="menuIcon"></span>
+      Menu
+    </button>
+
+    <h1 class="text-white">Usuarios</h1>
+
+    <button type="button" (click)="toggleFiltros()">
+      <span [innerHTML]="findIcon"></span>
+      Buscar
+    </button>
+  </div>
+
+  <!-- Contenedor de Búsqueda -->
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar || visible }">
+    <form
+      class="form-filtros"
+      (submit)="cargarUsuarios(); $event.preventDefault()"
+    >
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Username</label>
+        <input
+          type="text"
+          class="input-filtros"
+          [(ngModel)]="filtros.username"
+          name="username"
+          placeholder="username"
+        />
+      </fieldset>
+
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Email</label>
+        <input
+          type="text"
+          class="input-filtros"
+          [(ngModel)]="filtros.email"
+          name="email"
+          placeholder="tu@email.com"
+        />
+      </fieldset>
+
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Rol</label>
+        <input
+          type="text"
+          class="input-filtros"
+          [(ngModel)]="filtros.rol"
+          name="email"
+          placeholder="rol"
+        />
+      </fieldset>
+
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">id</label>
+        <input
+          type="tex"
+          class="input-filtros"
+          [(ngModel)]="filtros.id"
+          name="id"
+        />
+      </fieldset>
+
+      <!-- Botones -->
+      <div class="botones-filtros">
+        <button type="submit" class="button-filtros">
+          <span [innerHTML]="searchIcon"></span> Buscar
+        </button>
+        <button type="button" (click)="limpiarFiltros()" class="button-filtros">
+          <span [innerHTML]="removeIcon"></span> Limpiar
+        </button>
+      </div>
+    </form>
+
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="btn m-0 p-0" (click)="toggleFiltros()">
+        <span [innerHTML]="arrowDown"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla principal -->
+  <div class="aurora-container">
+    <table class="aurora-tb">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nombre</th>
+          <th>Username</th>
+          <th>Rol</th>
+          <th>Email</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let u of usuarios; let i = index; trackBy: trackById"
+          class="aurora-table-row"
+          [class.touch-active]="rowActiva === u.id"
+        >
+          <td class="text-justify">
+            {{ u.id }}
+          </td>
+          <td>
+            {{ u.nombre }}
+          </td>
+          <td class="oculto">
+            {{ u.username }}
+          </td>
+          <td class="oculto">
+            {{ u.role }}
+          </td>
+          <td class="oculto">
+            {{ u.email }}
+          </td>
+          <td class="oculto">
+            {{ u.estado }}
+          </td>
+
+          <!-- Acciones -->
+          <td class="secundario">
+            <div class="botones-opt">
+              <button (click)="editar(u.id); $event.stopPropagation()">
+                <span [innerHTML]="editIcon"></span>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Sin resultados -->
+        <tr *ngIf="!cargando && usuarios.length === 0">
+          <td colspan="5" class="text-center py-3">
+            <em>No se encontraron coincidencias.</em>
+          </td>
+        </tr>
+
+        <!-- Cargando -->
+        <tr *ngIf="cargando">
+          <td colspan="5" class="text-center py-3">
+            <em>Cargando...</em>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación -->
+  <div class="d-flex justify-content-center align-items-center p-0">
+    <button class="btn" [disabled]="filtros.skip === 0">
+      <span [innerHTML]="skipLeft"></span>
+    </button>
+
+    <div>
+      <strong>{{ filtros.skip }}</strong>
+    </div>
+
+    <button class="btn" [disabled]="finPagina">
+      <span [innerHTML]="skipRight"></span>
+    </button>
+  </div>
+</div>
