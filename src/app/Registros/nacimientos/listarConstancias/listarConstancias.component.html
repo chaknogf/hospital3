@@ -105,7 +105,7 @@
         >
           <td class="text-justify">
             <div *ngIf="data?.documento">
-              <strong>Numero de Constancia:</strong> {{ data.documento }}
+              {{ data.documento }}
             </div>
           </td>
           <td>
@@ -114,16 +114,16 @@
           <td class="oculto">
             {{ data.paciente?.fecha_nacimiento | date: "dd-MM-yyyy" }}
           </td>
-          <td class="oculto"></td>
+          <td class="oculto">{{ data.fecha_registro | date: "dd-MM-yyyy" }}</td>
           <td class="secundario">
             <div class="botones-opt">
               <button (click)="editar(data.id); $event.stopPropagation()">
                 <span [innerHTML]="icons['edit']"></span>
               </button>
 
-              <!-- <button (click)="imprimir(data.id); $event.stopPropagation()">
+              <button (click)="imprimir(data.id); $event.stopPropagation()">
                 <span [innerHTML]="icons['print']"></span>
-              </button> -->
+              </button>
             </div>
           </td>
         </tr>

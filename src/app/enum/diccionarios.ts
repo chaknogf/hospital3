@@ -142,6 +142,20 @@ export const especialidades: Dict[] = [
   { label: 'Psicología', value: 'PSIC', ref: 'coex' },
   { label: 'Nutricion', value: 'NUTR', ref: 'coex' },
   { label: 'Anestesia', value: 'ANES', ref: 'sop' },
+  { label: 'General', value: 'GENE', ref: 'admision' }
+];
+
+export const especialidadesConsulta: Dict[] = [
+  { label: 'Pedia', value: 'PEDI', ref: 'all' },
+  { label: 'Medi', value: 'MEDI', ref: 'all' }, // combinación para diferenciar
+  { label: 'Gine', value: 'GINE', ref: 'all' },
+  { label: 'Ciru', value: 'CIRU', ref: 'all' },
+  { label: 'Trauma', value: 'TRAU', ref: 'all' },
+  { label: 'Odonto', value: 'ODON', ref: 'coex' },
+  { label: 'Psico', value: 'PSIC', ref: 'coex' },
+  { label: 'Nutri', value: 'NUTR', ref: 'coex' },
+  { label: 'General', value: 'GENE', ref: 'admision' }
+
 ];
 
 

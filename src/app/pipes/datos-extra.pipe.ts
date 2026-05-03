@@ -11,7 +11,7 @@ export class DatosExtraPipe implements PipeTransform {
   transform(valor: any, tipo: any): any {
     // Manejar valores vacíos o nulos
     if (valor === null || valor === undefined || valor === '' || valor === 0) {
-      return 'No especificado';
+      return '-';
     }
 
     // Convertir a string para comparaciones
@@ -27,7 +27,7 @@ export class DatosExtraPipe implements PipeTransform {
           '4': 'Viudo/a',
           '5': 'Divorciado/a'
         };
-        return estados[valorStr] || 'Desconocido';
+        return estados[valorStr] || '-';
       }
 
       case 'nacionalidad':

@@ -1,13 +1,13 @@
 <!-- ============================================================ -->
-<!-- HOJA DE ATENCIÓN EN EMERGENCIAS — cosmos rediseño           -->
+<!-- HOJA DE ATENCIÓN EN EMERGENCIAS                             -->
 <!-- ============================================================ -->
 
 <div class="botones no-imprimir">
   <button (click)="regresar()" [disabled]="isLoading()" title="Regresar">
-    <span [innerHTML]="icons['back']"></span>
+    ❌ Cancelar
   </button>
   <button (click)="imprimir()" [disabled]="isLoading()" title="Imprimir">
-    <span [innerHTML]="icons['print']"></span>
+    🖨️ Imprimir
   </button>
 </div>
 
@@ -16,9 +16,9 @@
   Cargando información...
 </div>
 
-<!-- DOCUMENTO -->
+<!-- ══ DOCUMENTO ══════════════════════════════════════════════ -->
 <div class="container-impresion" *ngIf="consulta()">
-  <!-- HEADER con chips integrados -->
+  <!-- ENCABEZADO -->
   <div class="aurora-header">
     <span></span>
     <div class="aurora-textos">
@@ -38,26 +38,29 @@
     <h4 class="titulo-doc">
       Hoja de Emergencia:
       <span class="doc-id">{{ consulta()?.documento }}</span>
+      <br />
+      @if (consulta()?.expediente) {
+        Expediente: <span class="doc-id">{{ consulta()?.expediente }}</span>
+      }
     </h4>
-    <h4 class="titulo-doc">
-      Expediente: <span class="doc-id">{{ consulta()?.expediente }}</span>
-    </h4>
+    <label class="doc__label">Nombre del Paciente</label>
+    <div class="borderline-time text-center">
+      <label class="doc__label">Fecha y Hora de Consulta</label>
+      <span class="doc-id">
+        📅 {{ consulta()?.fecha_consulta | date: "dd - MM - yyyy" }} - 🕣
+        {{ consulta()?.hora_consulta | time }}
+      </span>
+    </div>
+  </div>
+  <div class="borderline text-center">
+    <span class="nombre">{{ nombreCompleto() }}</span>
   </div>
 
-  <!-- ── SERVICIOS ── -->
-  <div
-    class="doc-section"
-    style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap"
-  >
-    <h6 style="white-space: nowrap; margin: 0; border: none; padding: 0">
-      Servicios:
-    </h6>
-    <div class="especialidades-hoja" style="gap: 6px 22px">
-      <div
-        *ngFor="let esp of especialidades"
-        class="especialidad-cuadro"
-        style="gap: 1px"
-      >
+  <!-- ── ESPECIALIDAD ── -->
+  <div class="doc-section">
+    <h6 class="section-inline-label">Especialidad:</h6>
+    <div class="especialidades-hoja">
+      <div *ngFor="let esp of especialidades" class="especialidad-cuadro">
         <label>{{ esp.label }}</label>
         <span
           *ngIf="consulta()?.especialidad !== esp.value"
@@ -73,101 +76,81 @@
     </div>
   </div>
 
-  <!-- ── FECHA / HORA / EXPEDIENTE ── -->
-  <div
-    class="doc-section"
-    style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px"
-  >
-    <div class="borderline-time">
-      <label>Fecha</label>
-      <p>{{ consulta()?.fecha_consulta | date: "dd/MM/yyyy" }}</p>
-    </div>
-    <div class="borderline-time">
-      <label>Hora</label>
-      <p>{{ consulta()?.hora_consulta | time }}</p>
-    </div>
-    <div class="borderline-time">
-      <label>Expediente</label>
-      <p>{{ consulta()?.expediente }}</p>
-    </div>
-  </div>
-
   <!-- ── DATOS GENERALES ── -->
-  <div class="doc-section">
-    <h6>Datos Generales</h6>
+  <div class="doc">
+    <div class="doc__section">
+      <h5 class="doc__title">Datos Generales</h5>
 
-    <div
-      style="
-        display: grid;
-        grid-template-columns: 3fr 1.2fr 0.8fr;
-        gap: 4px;
-        margin-bottom: 4px;
-      "
-    >
-      <div class="borderline">
-        <label>Nombre del Paciente</label>
-        <p class="nombres-fila">{{ nombreCompleto() }}</p>
-      </div>
-      <div class="borderline">
-        <label>Fecha de Nacimiento</label>
-        <p>{{ paciente()?.fecha_nacimiento | date: "dd/MM/yyyy" }}</p>
-      </div>
-      <div class="borderline">
-        <label>Edad</label>
-        <p>{{ paciente()?.fecha_nacimiento | edad }}</p>
-      </div>
-    </div>
+      <div class="doc__grid doc__grid--4">
+        <div class="doc__field">
+          <span class="doc__label">Edad</span>
+          <span class="doc__value">
+            {{ paciente()?.fecha_nacimiento | edad }}
+          </span>
+        </div>
 
-    <div
-      style="
-        display: grid;
-        grid-template-columns: 0.6fr 1fr 2fr;
-        gap: 4px;
-        margin-bottom: 4px;
-      "
-    >
-      <div class="borderline">
-        <label>Sexo</label>
-        <p>{{ paciente()?.sexo | datosExtra: "sexo" }}</p>
-      </div>
-      <div class="borderline">
-        <label>DPI</label>
-        <p>{{ paciente()?.cui | cui }}</p>
-      </div>
-      <div class="borderline">
-        <label>Dirección</label>
-        <p>{{ direccionCompleta() }}</p>
-      </div>
-    </div>
+        <div class="doc__field">
+          <span class="doc__label">F. Nacimiento</span>
+          <span class="doc__value">
+            {{ paciente()?.fecha_nacimiento | date: "dd-MM-yyyy" }}
+          </span>
+        </div>
 
-    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4px">
-      <div class="borderline">
-        <label>Responsable</label>
-        <p>{{ responsable()?.nombre || "N/A" }}</p>
+        <div class="doc__field">
+          <span class="doc__label">Sexo</span>
+          <span class="doc__value">
+            {{ paciente()?.sexo | datosExtra: "sexo" }}
+          </span>
+        </div>
+
+        <div class="doc__field">
+          <span class="doc__label">DPI</span>
+          <span class="doc__value">
+            {{ paciente()?.cui | cui }}
+          </span>
+        </div>
       </div>
-      <div class="borderline">
-        <label>Parentesco</label>
-        <p>{{ responsable()?.parentesco | datosExtra: "parentesco" }}</p>
+
+      <div class="doc__grid doc__grid--1">
+        <div class="doc__field">
+          <span class="doc__label">Dirección</span>
+          <span class="doc__value">
+            {{ direccionCompleta() }}
+          </span>
+        </div>
       </div>
-      <div class="borderline">
-        <label>Teléfono</label>
-        <p>{{ responsable()?.telefono || "N/A" }}</p>
+
+      <div class="doc__divider"></div>
+
+      <div class="doc__grid doc__grid--3">
+        <div class="doc__field">
+          <span class="doc__label">Responsable</span>
+          <span class="doc__value">
+            {{ responsable()?.nombre || "-" }}
+          </span>
+        </div>
+
+        <div class="doc__field">
+          <span class="doc__label">Parentesco</span>
+          <span class="doc__value">
+            {{ responsable()?.parentesco | datosExtra: "parentesco" }}
+          </span>
+        </div>
+
+        <div class="doc__field">
+          <span class="doc__label">Teléfono</span>
+          <span class="doc__value">
+            {{ responsable()?.telefono || "-" }}
+          </span>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- ── INDICADORES ── -->
-  <div class="doc-section">
+  <!-- <div class="doc-section">
     <h6>Indicadores</h6>
-    <div
-      style="
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        gap: 4px 6px;
-        padding: 1px 0;
-      "
-    >
+    <div class="indicadores-grid">
       <div class="centered-container">
         <label>Accidente Tránsito</label>
         <span
@@ -273,28 +256,27 @@
         ></span>
       </div>
     </div>
-  </div>
+  </div> -->
+
   <!-- ── EXAMEN FÍSICO ── -->
   <div class="doc-section">
-    <h6>Examen Físico</h6>
-    <div class="campos-clinicos" style="justify-content: space-around">
+    <h6>Examen Físico (Signos Vitales)</h6>
+    <div class="campos-clinicos campos-clinicos--spread">
       <span>P/A:____________mmHg</span>
       <span>FC:____________lpm</span>
       <span>FR:____________rpm</span>
       <span>SatO2:____________%</span>
       <span>Temp:____________°C</span>
     </div>
-    <div
-      class="campos-clinicos"
-      style="justify-content: space-around; margin-top: 3px"
-    >
+    <div class="campos-clinicos campos-clinicos--spread campos-clinicos--mt">
       <span>Peso:____________kg</span>
       <span>Talla:____________cm</span>
       <span>P/T:____________</span>
       <span>T/E:____________</span>
       <span>P/E:____________</span>
+      <span>____________Puntaje Z(menores de 5 años)</span>
     </div>
-    <span class="line" style="margin-top: 4px"></span>
+    <span class="line line--mt"></span>
     <span class="line"></span>
   </div>
 
@@ -302,10 +284,10 @@
   <div class="doc-section">
     <h6>Motivo de la Consulta</h6>
     <span class="line"></span>
-    
+    <span class="line"></span>
   </div>
 
-  <!-- ── HISTORIA ENFERMEDAD ── -->
+  <!-- ── HISTORIA ENFERMEDAD ACTUAL ── -->
   <div class="doc-section">
     <h6>Historia de la Enfermedad Actual</h6>
     <span class="line"></span>
@@ -317,59 +299,55 @@
   <div class="doc-section">
     <h6>Antecedentes</h6>
 
-    <div
-      style="
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 4px;
-        margin-bottom: 3px;
-      "
-    >
+    <div class="grid-1-1-1 mb-sm">
       <div class="borderline-time">
-        <label>Familiares</label><span class="line"></span>
+        <label>Familiares</label>
+        <span class="line"></span>
       </div>
       <div class="borderline-time">
-        <label>Médicos</label><span class="line"></span>
+        <label>Médicos</label>
+        <span class="line"></span>
       </div>
       <div class="borderline-time">
-        <label>Traumáticos</label><span class="line"></span>
+        <label>Traumáticos</label>
+        <span class="line"></span>
       </div>
     </div>
 
-    <div
-      style="
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 4px;
-        margin-bottom: 3px;
-      "
-    >
+    <div class="grid-1-1 mb-sm">
       <div class="borderline-time">
-        <label>Quirúrgicos</label><span class="line"></span>
+        <label>Quirúrgicos</label>
+        <span class="line"></span>
       </div>
       <div class="borderline-time">
-        <label>Alérgicos</label><span class="line"></span>
+        <label>Alérgicos</label>
+        <span class="line"></span>
       </div>
     </div>
 
-    <div class="borderline-time" style="margin-bottom: 3px">
-      <label>Ginecológicos</label>
-      <div class="campos-clinicos" >
-        <span>G:______________</span><span>P:___________</span><span>C:____________</span
-        ><span>A:____________</span> <span>HV:______________</span
-        ><span>HM:_____________</span><span>FUR:______________</span
-        ><span>FPP:_____________</span>
+    @if (consulta()?.paciente?.sexo === "F") {
+      <div class="borderline-time mb-sm">
+        <label>Ginecológicos</label>
+        <div class="campos-clinicos">
+          <span>G:______________</span>
+          <span>P:___________</span>
+          <span>C:____________</span>
+          <span>A:____________</span>
+          <span>HV:______________</span>
+          <span>HM:_____________</span>
+          <span>FUR:______________</span>
+          <span>FPP:_____________</span>
+        </div>
+        <div
+          class="campos-clinicos campos-clinicos--spread campos-clinicos--mt-sm"
+        >
+          <span>Menarquía:______________</span>
+          <span>Ciclos:_____________</span>
+          <span>FUP:_____________</span>
+          <span>Control PN:_____________</span>
+        </div>
       </div>
-      <div
-        class="campos-clinicos"
-        style="justify-content: space-around; margin-top: 2px"
-      >
-        <span>Menarquía:______________</span>
-        <span>Ciclos:_____________</span>
-        <span>FUP:_____________</span>
-        <span>Control PN:_____________</span>
-      </div>
-    </div>
+    }
 
     <div class="borderline-time">
       <label>Otros Antecedentes de Importancia</label>
@@ -386,15 +364,18 @@
   <!-- ── ÓRDENES MÉDICAS ── -->
   <div class="doc-section">
     <h6>Órdenes Médicas</h6>
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px">
+    <div class="grid-1-1-1">
       <div class="borderline">
-        <span class="line"></span><span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
       </div>
       <div class="borderline">
-        <span class="line"></span><span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
       </div>
       <div class="borderline">
-        <span class="line"></span><span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
         <div class="firma-row">
           <p>Fecha</p>
           <p>Hora</p>
@@ -405,15 +386,12 @@
   </div>
 
   <!-- ── INGRESO / EGRESO ── -->
-  <div
-    class="doc-section"
-    style="display: flex; align-items: center; gap: 10px"
-  >
+  <div class="doc-section ingreso-egreso-row">
     <div class="centered-container">
       <label>Ingreso</label>
       <span [innerHTML]="icons['cuadroBlanco']" class="text-black"></span>
     </div>
-    <div class="borderline" style="flex: 1">
+    <div class="borderline ingreso-egreso-servicio">
       <label>Servicio a donde ingresa</label>
       <span class="line"></span>
     </div>
@@ -426,22 +404,22 @@
   <!-- ── ÓRDENES DE EGRESO ── -->
   <div class="doc-section">
     <h6>Órdenes de Egreso</h6>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px">
+    <div class="grid-1-1">
       <div class="borderline">
-        <span class="line"></span><span class="line"></span>
-        <br>
+        <span class="line"></span>
+        <span class="line"></span>
+        <br />
         <div class="firma-row">
-          
           <p>Fecha</p>
           <p>Hora</p>
           <p>Firma</p>
         </div>
       </div>
       <div class="borderline">
-        <span class="line"></span><span class="line"></span>
-         <br>
+        <span class="line"></span>
+        <span class="line"></span>
+        <br />
         <div class="firma-row">
-         
           <p>Fecha</p>
           <p>Hora</p>
           <p>Firma</p>
@@ -464,8 +442,8 @@
     <span class="line-min"></span>
     <span class="line-min"></span>
     <span class="line-min"></span>
-    <br>
-    <div class="firma-row" style="margin-top: 4px">
+    <br />
+    <div class="firma-row firma-row--mt">
       <p>Fecha</p>
       <p>Hora</p>
       <p>Firma y Sello</p>
@@ -473,55 +451,57 @@
   </div>
 
   <!-- ── EGRESO CONTRAINDICADO ── -->
-   <br>
-<div class="doc-section">
-  <h6>Egreso Contraindicado</h6>
+  <div class="doc-section">
+    <h6>Egreso Contraindicado</h6>
 
-  <p class="parrafo">
-    Por la presente dejo constancia que yo, ________________________________________________________________,
-    identificado con DPI No. ______________________________________________, atendido en el servicio de
-    ________________________________________, decido retirarme voluntariamente del establecimiento de salud,
-    aun cuando el personal médico me ha indicado la conveniencia de continuar con la atención.
-  </p>
+    <p class="parrafo">
+      Por la presente dejo constancia que yo,
+      ________________________________________________________________,
+      identificado con DPI No. ______________________________________________,
+      atendido en el servicio de ________________________________________,
+      decido retirarme voluntariamente del establecimiento de salud, aun cuando
+      el personal médico me ha indicado la conveniencia de continuar con la
+      atención.
+    </p>
 
-  <p class="parrafo">
-    Declaro que he sido informado(a) de los riesgos y posibles complicaciones que pueden derivarse
-    de esta decisión, y en pleno uso de mis facultades, libero de toda responsabilidad al médico tratante,
-    al personal de salud, así como a la administración del hospital, asumiendo por completo las
-    consecuencias que pudieran presentarse.
-  </p>
+    <p class="parrafo">
+      Declaro que he sido informado(a) de los riesgos y posibles complicaciones
+      que pueden derivarse de esta decisión, y en pleno uso de mis facultades,
+      libero de toda responsabilidad al médico tratante, al personal de salud,
+      así como a la administración del hospital, asumiendo por completo las
+      consecuencias que pudieran presentarse.
+    </p>
 
-  <div class="firma-row" style="margin-top: 4px">
-    <div>
-      <span class="line"></span>
-      <p>Firma del Paciente o Responsable</p>
-    </div>
-    <div>
-      <span class="line"></span>
-      <p>Firma del Testigo    </p>
-    </div>
-    <div>
-      <span class="line"></span>
-      <p>Firma y Sello del Médico</p>
+    <div class="firma-row firma-row--mt firma-row--3">
+      <div>
+        <span class="line"></span>
+        <p>Firma del Paciente o Responsable</p>
+      </div>
+      <div>
+        <span class="line"></span>
+        <p>Firma del Testigo</p>
+      </div>
+      <div>
+        <span class="line"></span>
+        <p>Firma y Sello del Médico</p>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ── NOTA DE DESCARGO ── -->
-<div class="doc-section">
-  <h6>Nota de Descargo</h6>
-
-  <p class="parrafo">
-    El paciente manifiesta su voluntad expresa de abandonar el establecimiento de salud en contra
-    de la recomendación médica, habiendo recibido información clara, suficiente y comprensible
-    sobre su estado de salud y las implicaciones de su decisión.
-  </p>
-
-  <p class="parrafo">
-    Se deja constancia que el personal médico cumplió con brindar la orientación correspondiente,
-    por lo que cualquier evento adverso posterior a su retiro será responsabilidad exclusiva del paciente
-    o de su representante legal.
-  </p>
-
-</div>
+  <!-- ── NOTA DE DESCARGO ── -->
+  <div class="doc-section">
+    <h6>Nota de Descargo</h6>
+    <p class="parrafo">
+      El paciente manifiesta su voluntad expresa de abandonar el establecimiento
+      de salud en contra de la recomendación médica, habiendo recibido
+      información clara, suficiente y comprensible sobre su estado de salud y
+      las implicaciones de su decisión.
+    </p>
+    <p class="parrafo">
+      Se deja constancia que el personal médico cumplió con brindar la
+      orientación correspondiente, por lo que cualquier evento adverso posterior
+      a su retiro será responsabilidad exclusiva del paciente o de su
+      representante legal.
+    </p>
+  </div>
 </div>

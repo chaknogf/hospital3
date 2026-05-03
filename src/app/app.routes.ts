@@ -1,3 +1,4 @@
+import { HojaCnacimientoComponent } from './Registros/nacimientos/hoja-cnacimiento/hoja-cnacimiento.component';
 import { HojaIngresoComponent } from './Registros/consultas/hospitalizacion/hojaIngreso/hojaIngreso.component';
 import { EmergenciasListComponent } from './Registros/consultas/emergencias/emergenciasList/emergenciasList.component';
 import { Routes } from '@angular/router';
@@ -89,7 +90,8 @@ export const routes: Routes = [
 
       //Constancias Nacimiento
       { path: 'nacimientos', component: ListarConstanciasComponent },
-      { path: 'cons-nac/:id', component: ConstanciasNacimientoComponent }
+      { path: 'cons-nac/:id', component: ConstanciasNacimientoComponent },
+      { path: 'cnprint/:id', component: HojaCnacimientoComponent }
     ]
   }
 ];

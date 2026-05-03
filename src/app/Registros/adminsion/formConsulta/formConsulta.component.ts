@@ -298,6 +298,7 @@ export class FormConsultaComponent implements OnInit {
 
   volver(): void { this.router.navigate(['/consultas']); }
 
+  editarPaciente(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
   private mostrarError(accion: string, error: any): void {
     console.error(`❌ Error al ${accion}:`, error);
     alert(`Error al ${accion}. ${error?.error?.detail || error?.message || 'Consulte la consola'}`);

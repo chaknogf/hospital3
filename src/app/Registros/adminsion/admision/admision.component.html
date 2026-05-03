@@ -82,6 +82,9 @@
           {{ paciente.contacto?.domicilio }},
           {{ paciente.contacto?.municipio | datosExtra: "vecindad" }}
         </span>
+        <button class="btn btn-dark" (click)="editarPaciente(paciente.id)">
+          Editar
+        </button>
       </div>
     </div>
   </div>

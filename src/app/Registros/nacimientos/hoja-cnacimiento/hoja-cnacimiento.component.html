@@ -1,3 +1,292 @@
-<p>
-  hoja-cnacimiento works!
-</p>
+<!-- ============================================================ -->
+<!-- CONSTANCIA DE NACIMIENTO                                     -->
+<!-- ============================================================ -->
+
+<div class="botones no-imprimir">
+  <button (click)="regresar()" [disabled]="isLoading()">Cancelar ❌</button>
+  <button (click)="imprimir()" [disabled]="isLoading()">Imprimir 🖨️</button>
+</div>
+
+<div *ngIf="error()" class="alert alert-danger no-imprimir">{{ error() }}</div>
+<div *ngIf="isLoading()" class="alert alert-info no-imprimir">
+  Cargando información...
+</div>
+
+<div class="print-wrapper" *ngIf="detalleVisible() && constancia() as c">
+  <div class="hoja-carta print-page">
+    <!-- ══ CABECERA ══════════════════════════════════════════════ -->
+    <div class="hoja-header">
+      <div class="hoja-logo">
+        <img src="assets/logo-gobierno.png" alt="Logo" />
+      </div>
+      <div class="hoja-header-centro">
+        <p class="h-ministerio">
+          Ministerio de Salud Pública y Asistencia Social
+        </p>
+        <p class="h-hospital">Hospital General Tipo I de Tecpán Guatemala</p>
+        <p class="h-titulo">Constancia de Nacimiento</p>
+      </div>
+      <div class="hoja-exp">
+        <span class="exp-lbl">Documento No.</span>
+        <span class="exp-num">{{ constancia()?.documento }}</span>
+      </div>
+    </div>
+
+    <!-- ══ FILA: LUGAR, FECHA Y DIRIGIDO A ══════════════════════ -->
+    <div class="form-section-row" style="margin-top: 6px">
+      <div class="form-field" style="flex: 2">
+        <span class="form-lbl">Lugar y Fecha de Emisión</span>
+        <span class="form-val">
+          Tecpán Guatemala,
+          {{
+            constancia()?.fecha_registro
+              | date: "EEEE d 'de' MMMM 'de' yyyy" : "" : "es"
+          }}
+        </span>
+      </div>
+      <div class="form-field" style="flex: 1">
+        <span class="form-lbl">Dirigido a</span>
+        <span class="form-val fw-bold">Señores del RENAP</span>
+      </div>
+    </div>
+
+    <!-- ══ PRÓLOGO / TEXTO FORMAL ═══════════════════════════════ -->
+    <div class="cn-prologo">
+      <p class="cn-parrafo">
+        Para los efectos legales de la inscripción correspondiente ante el
+        Registro Nacional de las Personas —RENAP—, el/la infrascrito/a Auxiliar
+        de Registros Médicos del Hospital General Tipo I de Tecpán Guatemala,
+        hace constar que en las instalaciones de este centro asistencial,
+        ubicado en el Barrio San Antonio, Sector Pachulalí de Tecpán Guatemala,
+        Chimaltenango, se atendió el parto de la paciente que a continuación se
+        identifica, habiéndose producido el nacimiento de un producto vivo en la
+        fecha y hora que se indican en el presente documento, extendiéndose la
+        presente constancia a solicitud de parte interesada para los usos
+        legales que estime convenientes.
+      </p>
+    </div>
+
+    <!-- ══ SECCIÓN: DATOS DE LA MADRE ═══════════════════════════ -->
+    <div class="form-section-bar">
+      <span>I. Datos de la Madre</span>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field" style="flex: 3">
+        <span class="form-lbl">Nombre Completo</span>
+        <span class="form-val form-val--name">
+          {{ constancia()?.madre?.nombre?.primer_nombre }}
+          {{ constancia()?.madre?.nombre?.segundo_nombre }}
+          {{ constancia()?.madre?.nombre?.primer_apellido }}
+          {{ constancia()?.madre?.nombre?.segundo_apellido }}
+          <ng-container *ngIf="constancia()?.madre?.nombre?.apellido_casada">
+            de {{ constancia()?.madre?.nombre?.apellido_casada }}
+          </ng-container>
+        </span>
+      </div>
+      <div class="form-field" style="flex: 1">
+        <span class="form-lbl">Edad</span>
+        <span class="form-val">
+          {{ constancia()?.madre?.fecha_nacimiento | aedad }}
+        </span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field" style="flex: 1">
+        <span class="form-lbl">Tipo de Documento</span>
+        <span class="form-val">
+          <ng-container *ngIf="constancia()?.madre?.cui"
+            >DPI — CUI</ng-container
+          >
+          <ng-container
+            *ngIf="constancia()?.madre?.pasaporte && !constancia()?.madre?.cui"
+            >Pasaporte</ng-container
+          >
+        </span>
+      </div>
+      <div class="form-field" style="flex: 2">
+        <span class="form-lbl">Número de Identificación</span>
+        <span class="form-val fw-bold">
+          <ng-container *ngIf="constancia()?.madre?.cui">
+            {{ constancia()?.madre?.cui | cui }}
+          </ng-container>
+          <ng-container
+            *ngIf="constancia()?.madre?.pasaporte && !constancia()?.madre?.cui"
+          >
+            {{ constancia()?.madre?.pasaporte }}
+          </ng-container>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field" style="flex: 1">
+        @if (c.madre?.datos_extra?.demograficos?.nacionalidad === "GTM") {
+          <span class="form-lbl">Lugar de Nacimiento</span>
+        }
+        @if (c.madre?.datos_extra?.demograficos?.nacionalidad != "GTM") {
+          <span class="form-lbl">Lugar de Origen</span>
+        }
+
+        <span class="form-val">
+          {{
+            constancia()?.madre?.datos_extra?.demograficos?.lugar_nacimiento
+              | datosExtra: "municipio"
+          }}
+        </span>
+      </div>
+      <div class="form-field" style="flex: 1">
+        <span class="form-lbl">Vecindad</span>
+        <span class="form-val">
+          {{
+            constancia()?.madre?.datos_extra?.demograficos?.vecindad
+              | datosExtra: "municipio"
+          }}
+        </span>
+      </div>
+    </div>
+
+    <!-- ══ SECCIÓN: DATOS DEL NACIMIENTO ════════════════════════ -->
+    <div class="form-section-bar">
+      <span>II. Datos del Nacimiento</span>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field" style="flex: 2">
+        <span class="form-lbl">Fecha de Nacimiento</span>
+        <span class="form-val fw-bold">
+          {{
+            c.paciente?.fecha_nacimiento
+              | date: "EEEE d 'de' MMMM 'de' yyyy" : "" : "es"
+          }}
+        </span>
+      </div>
+      <div class="form-field" style="flex: 1">
+        <span class="form-lbl">Hora de Nacimiento</span>
+        <span class="form-val fw-bold">
+          {{
+            constancia()?.paciente?.datos_extra?.neonatales?.hora_nacimiento
+              | time
+          }}
+          hrs.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field" style="flex: 1">
+        <span class="form-lbl">Sexo del Neonato</span>
+        <span class="form-val">
+          {{ constancia()?.paciente?.sexo === "M" ? "Masculino" : "Femenino" }}
+        </span>
+      </div>
+      <div class="form-field" style="flex: 1; text-align: center">
+        <span class="form-lbl">Peso al Nacer</span>
+        <span class="form-lbl">(Libras . Onzas)</span>
+        <span class="form-val">
+          {{
+            constancia()?.paciente?.datos_extra?.neonatales?.peso_nacimiento ??
+              "—"
+          }}
+        </span>
+      </div>
+      <div class="form-field" style="flex: 1">
+        <span class="form-lbl">Edad Gestacional</span>
+        <span class="form-val">
+          {{
+            constancia()?.paciente?.datos_extra?.neonatales?.edad_gestacional ??
+              "—"
+          }}
+          semanas
+        </span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field" style="flex: 1">
+        <span class="form-lbl">Tipo de Parto</span>
+        <span class="form-val">
+          {{
+            constancia()?.paciente?.datos_extra?.neonatales?.tipo_parto ?? "—"
+          }}
+        </span>
+      </div>
+      <div class="form-field" style="flex: 1">
+        <span class="form-lbl">Clase de Parto</span>
+        <span class="form-val">
+          @if (pes) {
+            Eutócico (Parto Vaginal Espontaneo)
+          }
+          @if (cstp) {
+            Distócico (Cesárea)
+          }
+        </span>
+      </div>
+      <div class="form-field" style="flex: 2">
+        <span class="form-lbl">Médico Responsable</span>
+        <span class="form-val">
+          <ng-container *ngIf="constancia()?.medico; else sinMedico">
+            {{ constancia()?.medico?.nombre }} — Colegiado
+            <strong>{{ constancia()?.medico?.colegiado }}</strong>
+          </ng-container>
+          <ng-template #sinMedico>Atendido en esta institución</ng-template>
+        </span>
+      </div>
+    </div>
+
+    <!-- ══ SECCIÓN: HISTORIAL OBSTÉTRICO ════════════════════════ -->
+    <div class="form-section-bar">
+      <span>III. Historial Obstétrico</span>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field" style="flex: 1">
+        <span class="form-lbl">Total de Hijos (incluyendo este)</span>
+        <span class="form-val form-val--num">{{
+          constancia()?.hijos ?? 0
+        }}</span>
+      </div>
+      <div class="form-field" style="flex: 1">
+        <span class="form-lbl">Nacidos Muertos</span>
+        <span class="form-val form-val--num">{{
+          constancia()?.muertos ?? 0
+        }}</span>
+      </div>
+      <div class="form-field" style="flex: 1">
+        <span class="form-lbl">Viven Actualmente</span>
+        <span class="form-val form-val--num">{{
+          constancia()?.vivos ?? 0
+        }}</span>
+      </div>
+    </div>
+
+    <!-- ══ OBSERVACIONES (condicional) ══════════════════════════ -->
+    <ng-container *ngIf="constancia()?.observaciones">
+      <div class="form-section-bar">
+        <span>Observaciones</span>
+      </div>
+      <div class="form-observaciones">
+        {{ constancia()?.observaciones }}
+      </div>
+    </ng-container>
+
+    <!-- ══ PIE — FIRMA ═══════════════════════════════════════════ -->
+    <div class="cn-pie">
+      <div class="cn-firma-bloque">
+        <div class="firma-linea"></div>
+        <span class="cn-firma">{{ responsable() }}</span>
+        <span class="cn-firma-cargo">Auxiliar de Registros Médicos</span>
+        <span class="cn-firma-hospital"
+          >Hospital General Tipo I de Tecpán Guatemala</span
+        >
+      </div>
+    </div>
+
+    <div class="hoja-pie-label">
+      Constancia de Nacimiento — {{ constancia()?.documento }}
+    </div>
+  </div>
+  <!-- /hoja-carta -->
+</div>
+<!-- /print-wrapper -->

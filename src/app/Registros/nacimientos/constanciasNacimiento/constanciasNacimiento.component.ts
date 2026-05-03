@@ -1,3 +1,4 @@
+import { TimePipe } from './../../../pipes/time.pipe';
 import { ConstanciasService } from './../constancias.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
@@ -18,7 +19,7 @@ import { Medico } from '../../../interface/medicos.interface';
   templateUrl: './constanciasNacimiento.component.html',
   styleUrls: ['./constanciasNacimiento.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, VecindadPipe]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, VecindadPipe, TimePipe]
 })
 export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
 
@@ -107,7 +108,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.api.getCostancia(id)
+    this.api.getConstancia(id)
       .pipe(
         catchError(err => {
           this.mostrarError('cargar datos', err);

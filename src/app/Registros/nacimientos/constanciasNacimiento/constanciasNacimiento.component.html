@@ -226,20 +226,6 @@
 
             <div class="sec-body">
               <div class="field">
-                <label class="field-label"
-                  >Total Hijos
-                  <span class="field-calc">= vivos + muertos</span></label
-                >
-                <input
-                  type="number"
-                  class="field-input field-input--readonly"
-                  formControlName="hijos"
-                  readonly
-                  placeholder="Auto-calculado"
-                />
-              </div>
-
-              <div class="field">
                 <label class="field-label">Vivos</label>
                 <input
                   type="number"
@@ -258,6 +244,20 @@
                   class="field-input"
                   formControlName="muertos"
                   placeholder="0"
+                />
+              </div>
+
+              <div class="field">
+                <label class="field-label"
+                  >Total Hijos
+                  <span class="field-calc">= vivos + muertos</span></label
+                >
+                <input
+                  type="number"
+                  class="field-input field-input--readonly"
+                  formControlName="hijos"
+                  readonly
+                  placeholder="Auto-calculado"
                 />
               </div>
             </div>
@@ -308,6 +308,7 @@
                 <label class="field-label">Hora de Nacimiento</label>
                 <span class="btn">{{
                   constancia?.paciente?.datos_extra?.neonatales?.hora_nacimiento
+                    | time
                 }}</span>
               </div>
             </div>
@@ -415,9 +416,15 @@
                   }}</span>
                 </div>
                 <div class="info-row">
-                  <span class="info-label">Sexo</span>
+                  <span class="info-label">Sexo RN</span>
                   <span class="info-value">{{
                     constancia?.paciente?.sexo ?? "—"
+                  }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Expediente Madre</span>
+                  <span class="info-value">{{
+                    constancia?.madre?.expediente ?? "—"
                   }}</span>
                 </div>
               </div>

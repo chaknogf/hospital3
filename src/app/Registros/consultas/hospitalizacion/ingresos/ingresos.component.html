@@ -169,9 +169,16 @@
 
           <td class="secundario">
             <div class="d-flex gap-1">
-              <button (click)="editar(data.id)" data-label="Editar">
-                <span [innerHTML]="icons['edit']"></span>
-              </button>
+              @if (data.ultimo_estado !== "archivo") {
+                <button
+                  (click)="editar(data.id); $event.stopPropagation()"
+                  data-label="Editar"
+                >
+                  <span [innerHTML]="icons['edit']"></span>
+                </button>
+              } @else {
+                <span>🔒</span>
+              }
               <button (click)="verDetalle(data.id)" data-label="Detalle">
                 <span [innerHTML]="icons['tabla']"></span>
               </button>

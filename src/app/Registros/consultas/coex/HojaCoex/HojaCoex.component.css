@@ -37,14 +37,14 @@ label { letter-spacing: 0.4px; }
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 .botones button {
-  width: 36px; height: 36px;
+
   border: 0.5px solid rgba(0,0,0,0.15);
-  border-radius: 8px; background: #0f2548b8;
+  border-radius: 8px; background: #0f2548ed;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.15s; color: #fff;
 }
-.botones button:hover    { background: #1a3a6a; border-color: #1a3a6a; }
+.botones button:hover    { background: #3a84f5; border-color: #1a3a6a; }
 .botones button:disabled { opacity: 0.4; cursor: not-allowed; }
 .botones button svg      { width: 16px; height: 16px; }
 
@@ -65,7 +65,7 @@ label { letter-spacing: 0.4px; }
   width: 215.9mm;
   min-height: 279.4mm;
   margin: 1.5rem auto 3rem;
-  padding: 10mm 13mm 8mm;
+  padding: 5mm 10mm 8mm;
   box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 8px 32px rgba(0,0,0,0.16);
   font-size: 8.5pt;
   font-family: var(--serif);
@@ -150,7 +150,7 @@ label { letter-spacing: 0.4px; }
 /* ══ SECCIONES ════════════════════════════════════════════════ */
 /* Mismo estilo que .doc-section del CSS referencia */
 .doc-section {
-  border: 0.8px solid #888;
+  /* border: 0.8px solid #888; */
   border-radius: 6px;
   padding: 4px 7px;
   margin: 2.5px 0;
@@ -180,9 +180,9 @@ label { letter-spacing: 0.4px; }
 
 /* ══ CAMPOS — mismo sistema que .borderline del referencia ════ */
 .borderline {
-  border: 0.8px solid #c0c0c0;
+  border-bottom: 0.8px solid #c0c0c0;
   border-radius: 6px;
-  padding: 2px 5px 3px;
+  /* padding: 2px 5px 3px; */
   min-height: 34px;
   overflow-wrap: anywhere; word-break: break-word;
 }
@@ -194,7 +194,7 @@ label { letter-spacing: 0.4px; }
 }
 .campo-hc > label {
   font-family: var(--mono);
-  font-size: 12.8pt; font-weight: 700;
+  font-size: 9.8pt; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.5px;
   color: var(--accent);
   display: block; margin-bottom: 1px;
@@ -231,7 +231,7 @@ label {
   display: block;
   border: none;
   border-bottom: 1.8px solid #888;
-  min-height: 40px;
+  min-height: 27px;
   margin-bottom: 3px; width: 100%;
 }
 
@@ -243,9 +243,9 @@ label {
 }
 
 .vital-item {
-  border: 0.8px solid #c0c0c0;
+  border-bottom: 0.8px solid #c0c0c0;
   border-radius: 6px;
-  padding: 2px 5px;
+  /* padding: 2px 5px; */
   display: flex; flex-direction: column;
 }
 
@@ -281,7 +281,7 @@ label {
 
 /* ══ @PAGE — CARTA ════════════════════════════════════════════ */
 @page {
-  size: 8.5in 11in portrait;
+  size: 8.5in 11in portrait !important;
   margin: 0;
 }
 
@@ -300,18 +300,7 @@ label {
 
   .no-imprimir, .botones, .alert { display: none !important; }
 
-  .container-impresion {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 0 !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    overflow: hidden !important;
-    margin: 0 !important;
-    padding: 8mm 10mm 6mm !important;
-    box-shadow: none !important;
-    font-size: 12pt !important;
-  }
+
 
 
 }

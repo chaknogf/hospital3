@@ -15,7 +15,7 @@ import { takeUntil, finalize, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import {
   Dict,
-  especialidades,
+  especialidadesConsulta,
   OpcionBoolean,
   opcionesIngreso
 } from './../../../../enum/diccionarios';
@@ -95,7 +95,7 @@ export class HojaComponent implements OnInit, OnDestroy {
   // ======= PROPIEDADES =======
   fechaActual: string = new Date().toLocaleDateString('es-GT');
   horaActual: string = new Date().toLocaleTimeString('es-GT');
-  especialidades: Dict[] = especialidades;
+  especialidades: Dict[] = especialidadesConsulta;
   opcionesIngreso: OpcionBoolean[] = opcionesIngreso;
 
   private destroy$ = new Subject<void>();

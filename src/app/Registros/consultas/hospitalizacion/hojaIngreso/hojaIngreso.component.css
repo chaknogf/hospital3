@@ -37,14 +37,14 @@ label { letter-spacing: 0.4px; }
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 .botones button {
-  width: 36px; height: 36px;
+
   border: 0.5px solid rgba(0,0,0,0.15);
-  border-radius: 8px; background: #0f2548b8;
+  border-radius: 8px; background: #0f2548ed;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.15s; color: #fff;
 }
-.botones button:hover    { background: #1a3a6a; border-color: #1a3a6a; }
+.botones button:hover    { background: #71a4f0; border-color: #1a3a6a;  }
 .botones button:disabled { opacity: 0.4; cursor: not-allowed; }
 .botones button svg      { width: 16px; height: 16px; }
 
@@ -289,7 +289,7 @@ label { letter-spacing: 0.4px; }
 
 /* ══ @PAGE + @MEDIA PRINT — OFICIO ═══════════════════════════ */
 @page {
-  size: 8.5in 13.5in portrait;  /* oficio/folio */
+  size: letter portrait !important;
   margin: 0;
 }
 

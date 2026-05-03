@@ -114,6 +114,10 @@ export class ListarConstanciasComponent implements OnInit {
     this.router.navigate(['/cons-nac', id]);
   }
 
+  imprimir(id: number) {
+    this.router.navigate(['/cnprint', id])
+  }
+
   pacientes() {
     this.router.navigate(['/pacientes']);
   }

@@ -39,7 +39,7 @@ export class ConstanciasService extends BaseApiService {
     )
   }
 
-  getCostancia(id: number): Observable<ConstanciaNacimiento> {
+  getConstancia(id: number): Observable<ConstanciaNacimiento> {
     return this.http.get<ConstanciaNacimiento>(
       `${this.baseUrl}/constancias-nacimiento/${id}`
     ).pipe(

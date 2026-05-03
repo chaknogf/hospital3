@@ -25,6 +25,7 @@ export class ApiService {
   token = signal<string | null>(null);
   username = signal<string | null>(null);
   role = signal<string | null>(null);
+  nombreUsuario = signal<string | null>(null);
   isLoading = signal(false);
 
 
@@ -48,11 +49,13 @@ export class ApiService {
     const token = localStorage.getItem('access_token');
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
+    const nombreUsuario = localStorage.getItem('nombreUsuario')
 
     if (token) {
       this.token.set(token);
       this.username.set(username);
       this.role.set(role);
+      this.nombreUsuario.set(nombreUsuario)
     }
   }
 
@@ -105,26 +108,30 @@ export class ApiService {
   }
 
   getCurrentUser(): Observable<any> {
-    return this.http.get<{ username: string; role: string }>(
+    return this.http.get<{ username: string; role: string, nombre: string }>(
       `${this.baseUrl}/auth/me`,
       {
         headers: {
           usuario: this.username() || '',
-          rol: this.role() || ''
+          rol: this.role() || '',
+          nombre: this.nombreUsuario() || ''
         }
       }
     ).pipe(
       tap(response => {
         localStorage.setItem('username', response.username);
         localStorage.setItem('role', response.role);
+        localStorage.setItem('nombreUsuario', response.nombre);
         this.username.set(response.username);
         this.role.set(response.role);
+        this.nombreUsuario.set(response.nombre);
+
       }),
       catchError(error => this.manejarError(error, 'obtener usuario actual'))
     );
   }
 
-  getUsuarioActual(): { username: string; role: string } {
+  getUsuarioActual(): { username: string; role: string, nombre: string } {
     return {
       username:
         this.username() ??
@@ -134,7 +141,12 @@ export class ApiService {
       role:
         this.role() ??
         localStorage.getItem('role') ??
-        'SIN_ROL'
+        'SIN_ROL',
+
+      nombre:
+        this.nombreUsuario() ??
+        localStorage.getItem('nombreUsuario') ??
+        ''
     };
   }
 

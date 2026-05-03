@@ -309,6 +309,7 @@ export class AdmisionComponent implements OnInit {
       .subscribe();
   }
 
+  editarPaciente(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
   // ══════════════════════════════════════════════════════════
   // VALORES POR TIPO
   // ══════════════════════════════════════════════════════════
