@@ -36,6 +36,8 @@ import { UsuarioComponent } from './principal/administrador/usuario/usuario.comp
 import { RegistrarComponent } from './principal/administrador/registrar/registrar.component';
 import { RecuperarComponent } from './principal/administrador/recuperar/recuperar.component';
 import { roleGuard } from './role.guard';
+import { EstadisticaComponent } from './std/estadistica/estadistica.component';
+import { ConsultorComponent } from './std/consultor/consultor.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -56,24 +58,24 @@ export const routes: Routes = [
 
 
       // Registros Médicos
-      { path: 'registros', component: RegistrosMedicosComponent },
-      { path: 'admision', component: AdmisionComponent },
-      { path: 'admision/:origen', component: AdmisionComponent },
-      { path: 'admisionPaciente/:origen/:pacienteId', component: AdmisionComponent },
-      { path: 'editarAdmision/:id/:origen', component: AdmisionComponent },
-      { path: 'editarAdmision/:id', component: AdmisionComponent },
-      { path: 'formConsulta/:id', component: FormConsultaComponent },
-      { path: 'detalleAdmision/:id', component: DetalleConsultaComponent },
+      { path: 'registros', component: RegistrosMedicosComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      { path: 'admision', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      { path: 'admision/:origen', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      { path: 'admisionPaciente/:origen/:pacienteId', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      { path: 'editarAdmision/:id/:origen', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      { path: 'editarAdmision/:id', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      { path: 'formConsulta/:id', component: FormConsultaComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      { path: 'detalleAdmision/:id', component: DetalleConsultaComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
 
-      { path: 'hijo/:id', component: HijosComponent },
+      { path: 'hijo/:id', component: HijosComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
 
 
       // Pacientes
       { path: 'pacientes', component: PacientesComponent },
-      { path: 'paciente', component: FormularioPacienteComponent },
-      { path: 'paciente/:modo', component: FormularioPacienteComponent },
-      { path: 'detallePaciente/:id', component: DetallePacienteComponent },
-      { path: 'pacienteEdit/:id', component: FormularioPacienteComponent },
+      { path: 'paciente', component: FormularioPacienteComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      { path: 'paciente/:modo', component: FormularioPacienteComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      { path: 'detallePaciente/:id', component: DetallePacienteComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      { path: 'pacienteEdit/:id', component: FormularioPacienteComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
       // Emergencias
       { path: 'emergencias', component: EmergenciasListComponent },
       { path: 'hojaEmergencia/:id', component: HojaComponent },
@@ -104,8 +106,13 @@ export const routes: Routes = [
 
       //Constancias Nacimiento
       { path: 'nacimientos', component: ListarConstanciasComponent },
-      { path: 'cons-nac/:id', component: ConstanciasNacimientoComponent },
-      { path: 'cnprint/:id', component: HojaCnacimientoComponent }
+      { path: 'cons-nac/:id', component: ConstanciasNacimientoComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      { path: 'cnprint/:id', component: HojaCnacimientoComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+
+      //Estadistica
+      { path: 'estadistica', component: EstadisticaComponent, canActivate: [roleGuard(['admin', 'std'])] },
+      { path: 'consultar', component: ConsultorComponent }
+
     ]
   }
 ];

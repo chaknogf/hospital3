@@ -520,3 +520,15 @@ export function contarPorEstado(consulta: ConsultaOut): Record<EstadoCiclo, numb
 }
 
 
+export interface PacienteBuscado {
+  id: number,
+  cui: number,
+  expediente: string,
+  nombre_completo: string,
+  fecha_nacimiento: string
+
+}
+
+export interface PacientesBuscado {
+  pacientes: Paciente[];
+}

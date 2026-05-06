@@ -2293,70 +2293,166 @@ background-color: #6bf3e121;
 
 /* Responsivo */
 
+/* ── CONTENEDOR ── */
 .aurora-container {
-  background: radial-gradient(circle at top left, #553fe4c6, #06f1ed81, #553fe4c6);
-  /* background: rgba(1, 12, 30, 0.76); */ /* más blur para efecto glass real */
-  backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15);
-  padding: 0.6rem;
-  margin: 0.3rem;
-  border-radius: 25px;
+  /* background: linear-gradient(145deg, #05080f, #0a0f1a); */
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 255, 255, 0.08);
+
+  padding: 1rem;
+  margin: 0.5rem;
+  border-radius: 20px;
+
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem; /* mayor respiro visual */
-  justify-content: center; /* centra elementos */
-  max-width: 98dvw; /* evita que se estire infinito en pantallas grandes */
+  gap: 1rem;
+  justify-content: center;
+
+  max-width: 98dvw;
+
+  box-shadow:
+    inset 0 0 30px rgba(0,255,255,0.03),
+    0 10px 30px rgba(0,0,0,0.4);
 }
 
+/* ── CARD BASE ── */
 .aurora-container .aurora-cards {
+  position: relative;
+
   flex: 1 1 220px;
+  height: 220px;
+
   padding: 1.2rem;
-  border: 1px solid rgba(6, 241, 237, 0.4);
-  border-radius: 20px;
-  background: rgba(0, 0, 139, 0.55); /* más sutil */
-  backdrop-filter: blur(8px);
+  border-radius: 16px;
+
+  background: rgba(10, 15, 30, 0.7);
+  backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(0, 255, 255, 0.12);
+
   display: flex;
   flex-direction: column;
-  align-items: center; /* centra contenido */
+  align-items: center;
   justify-content: center;
-  height: 240px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease;
+
+  transition:
+    transform 0.25s ease,
+    border 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+
+  overflow: hidden;
 }
 
+/* ── LINEA TECNOLÓGICA ── */
+.aurora-cards::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
 
+  width: 2px;
+  height: 100%;
 
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0,255,255,0.6),
+    transparent
+  );
+
+  opacity: 0.4;
+}
+
+/* ── SCANLINE SUTIL ── */
+.aurora-cards::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    rgba(255,255,255,0.03) 1px,
+    transparent 1px
+  );
+  background-size: 100% 3px;
+
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* ── HOVER (CONTROLADO, NO EXAGERADO) ── */
+.aurora-container .aurora-cards:hover {
+  transform: translateY(-4px);
+
+  border-color: rgba(0,255,255,0.5);
+
+  box-shadow:
+    0 0 12px rgba(0,255,255,0.25),
+    0 0 30px rgba(0,255,255,0.15);
+
+  background: rgba(8, 18, 35, 0.85);
+}
+
+.aurora-cards:hover::after {
+  opacity: 1;
+}
+
+/* ── TEXTO ── */
 .aurora-items {
   text-align: center;
-  color: var(--bs-light);
-  font-style: none;
-  font-weight: 600;
-  word-wrap: break-word;
+  color: #cbd5f5;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+
+  transition: color 0.2s ease;
+}
+
+/* ── TEXTO EN HOVER ── */
+.aurora-container .aurora-cards:hover .aurora-items {
+  color: #00eaff;
+}
+
+/* ── LINKS ── */
+.aurora-container a {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.aurora-container a:hover {
+  opacity: 0.85;
+}
+
+/* ── TEXTO DESCRIPTIVO ── */
+.aurora-container p {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  opacity: 0.75;
+}
+
+/* ── EFECTO PULSE MÉDICO (MUY SUTIL) ── */
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 rgba(0,255,255,0); }
+  50% { box-shadow: 0 0 8px rgba(0,255,255,0.2); }
+  100% { box-shadow: 0 0 0 rgba(0,255,255,0); }
 }
 
 .aurora-container .aurora-cards:hover {
-  background: linear-gradient(135deg, #00eaff, #0099ff);
-  box-shadow: 0 0 15px rgba(0,255,255,0.4), 0 0 40px rgba(0,255,255,0.6), 0 0 80px rgba(0,255,255,0.8);
-  border-radius: 2.5rem;
-  transform: translateY(-6px) scale(1.02);
+  animation: pulseGlow 1.8s infinite;
 }
 
-.aurora-container .aurora-cards:hover p,
-.aurora-container .aurora-cards:hover h2,
-.aurora-container .aurora-cards:hover a {
-  color: #082e2e !important;
-  font-weight: 700;
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .aurora-container {
+    padding: 0.6rem;
+  }
+
+  .aurora-container .aurora-cards {
+    flex: 1 1 100%;
+    height: 180px;
+  }
 }
 
-.aurora-container a {
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.aurora-container p {
-  font-size: 0.9rem;
-  line-height: 1.4;
-  opacity: 0.9;
-}
 
 
 

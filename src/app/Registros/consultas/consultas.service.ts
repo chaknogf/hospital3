@@ -21,6 +21,8 @@ import {
   SignosVitales,
   TotalesItem,
   TotalesResponse,
+  PacientesBuscado,
+  PacienteBuscado,
 } from '../../interface/consultas';
 
 @Injectable({ providedIn: 'root' })
@@ -29,6 +31,9 @@ export class ConsultaService extends BaseApiService {
   // ======= BEHAVIOR SUBJECTS =======
   private consultasSubject = new BehaviorSubject<ConsultaOut[]>([]);
   consultas$ = this.consultasSubject.asObservable();
+
+  private pacienteBuscadoSubject = new BehaviorSubject<PacienteBuscado[]>([]);
+  pacientes$ = this.pacienteBuscadoSubject.asObservable();
 
   private ordenesSubject = new BehaviorSubject<any>({});
   ordenes$ = this.ordenesSubject.asObservable();
@@ -281,6 +286,19 @@ export class ConsultaService extends BaseApiService {
       `${this.baseUrl}/correlativos/constancia_defuncion`, {}
     ).pipe(
       catchError(error => this.manejarError(error, 'obtener correlativo de defunción'))
+    );
+  }
+
+  getPacientesBuscados(filtros: any): Observable<PacienteBuscado[]> {
+    this.ultimoFiltroConsulta.filtro = filtros;
+    const params = this.limpiarParametros(filtros);
+
+    return this.http.get<PacienteBuscado[]>(
+      `${this.baseUrl}/consultas/buscarpaciente`,
+      { params }
+    ).pipe(
+      tap(pacientes => this.pacienteBuscadoSubject.next(pacientes)),
+      catchError(error => this.manejarError(error, 'obtener consultas'))
     );
   }
 }
