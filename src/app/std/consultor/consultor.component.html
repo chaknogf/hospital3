@@ -2,9 +2,10 @@
   <!-- ══ SIDEBAR ══════════════════════════════════════════ -->
   <aside class="sidebar">
     <div class="sidebar-header">
+      <button class="btn" (click)="regresar()">❌ Salir</button>
       <span class="sidebar-title">Buscar paciente</span>
       <button class="btn-clear" (click)="limpiarFiltros()" title="Limpiar">
-        ✕
+        Reset
       </button>
     </div>
     <form (ngSubmit)="buscar()">
@@ -12,6 +13,7 @@
         <label>ID paciente</label>
         <input
           type="number"
+          name="paciente_id"
           [(ngModel)]="filtros.paciente_id"
           placeholder="12345"
         />
@@ -20,6 +22,7 @@
         <label>Expediente</label>
         <input
           type="text"
+          name="expediente"
           [(ngModel)]="filtros.expediente"
           placeholder="EXP-0001"
         />
@@ -28,6 +31,7 @@
         <label>CUI</label>
         <input
           type="number"
+          name="cui"
           [(ngModel)]="filtros.cui"
           placeholder="1234567890101"
         />
@@ -36,17 +40,17 @@
         <label>Documento</label>
         <input
           type="text"
+          name="documento"
           [(ngModel)]="filtros.documento"
           placeholder="DOC-001"
         />
       </div>
-
       <div class="sidebar-divider"></div>
-
       <div class="field-group">
         <label>Primer nombre</label>
         <input
           type="text"
+          name="primer_nombre"
           [(ngModel)]="filtros.primer_nombre"
           placeholder="María"
         />
@@ -55,6 +59,7 @@
         <label>Segundo nombre</label>
         <input
           type="text"
+          name="segundo_nombre"
           [(ngModel)]="filtros.segundo_nombre"
           placeholder="José"
         />
@@ -63,6 +68,7 @@
         <label>Primer apellido</label>
         <input
           type="text"
+          name="primer_apellido"
           [(ngModel)]="filtros.primer_apellido"
           placeholder="García"
         />
@@ -71,12 +77,13 @@
         <label>Segundo apellido</label>
         <input
           type="text"
+          name="segundo_apellido"
           [(ngModel)]="filtros.segundo_apellido"
           placeholder="López"
         />
       </div>
 
-      <button class="btn-buscar" type="submit" [disabled]="buscando">
+      <button class="btn-buscar btn" type="submit" [disabled]="buscando">
         {{ buscando ? "Buscando..." : "Buscar" }}
       </button>
     </form>
@@ -112,7 +119,7 @@
                 <td>{{ p.id }}</td>
                 <td>{{ p.expediente || "—" }}</td>
                 <td>{{ p.nombre_completo }}</td>
-                <td>{{ p.cui || "—" }}</td>
+                <td>{{ p.cui | cui }}</td>
                 <td>{{ p.fecha_nacimiento | date: "dd/MM/yyyy" }}</td>
                 <td>
                   <button class="btn-select" (click)="seleccionarPaciente(p)">
@@ -128,7 +135,7 @@
 
     <!-- Sin paciente -->
     <div class="empty-state" *ngIf="!paciente && !cargandoPaciente && !error">
-      <div class="empty-icon">🔍</div>
+      <div class="empty-icon">🤖</div>
       <p>Sin paciente seleccionado</p>
       <span>Use la barra lateral para buscar</span>
     </div>
@@ -149,7 +156,6 @@
     <div class="patient-scroll" *ngIf="paciente && !cargandoPaciente && !error">
       <!-- HUD header -->
       <div class="hud-header">
-        <button class="btn" (click)="regresar()">❌ Salir</button>
         <div class="hud-title">
           <span class="hud-label">Paciente</span>
           <span class="hud-id">{{ paciente.expediente || "—" }}</span>
@@ -167,281 +173,262 @@
             <span class="status-dot"></span>
             <span class="status-text">{{ estadoPaciente }}</span>
           </div>
-          <button class="btn" (click)="editar(paciente.id)">💻 Editar</button>
+          <!-- <button class="btn" (click)="editar(paciente.id)">💻 Editar</button> -->
         </div>
       </div>
 
       <div class="dc-grid">
-        <!-- ═══ COLUMNA IZQUIERDA ═══════════════════════════ -->
-        <div class="dc-col">
-          <!-- PERFIL -->
+        <!-- PERFIL -->
+        <div class="dc-card">
+          <div class="patient-hero">
+            <div class="patient-avatar">
+              <span class="avatar-letter">
+                {{ paciente.nombre.primer_nombre[0] }}
+                {{ paciente.nombre.primer_apellido[0] }}
+              </span>
+            </div>
+            <div class="patient-name-block">
+              <p class="patient-name">
+                {{ paciente.nombre.primer_apellido }}
+                {{ paciente.nombre.segundo_apellido }}
+                {{ paciente.nombre.apellido_casada }}
+              </p>
+              <p class="patient-firstname">
+                {{ paciente.nombre.primer_nombre }}
+                {{ paciente.nombre.segundo_nombre }}
+                {{ paciente.nombre.otro_nombre }}
+              </p>
+              <div class="patient-tags">
+                <span
+                  class="ptag"
+                  [class.ptag-m]="paciente.sexo === 'M'"
+                  [class.ptag-f]="paciente.sexo !== 'M'"
+                >
+                  {{ paciente.sexo === "M" ? "♂ Masculino" : "♀ Femenino" }}
+                </span>
+                <span class="ptag ptag-age">{{
+                  paciente.fecha_nacimiento | edad
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <div class="dc-field">
+              <span class="dc-lbl">Nacimiento</span>
+              <span class="dc-val">{{
+                paciente.fecha_nacimiento | date: "dd/MM/yyyy"
+              }}</span>
+            </div>
+            @if (fechaDefuncion) {
+              <div class="dc-field">
+                <span class="dc-lbl">Defunción</span>
+                <span class="dc-val">{{ formatearFecha(fechaDefuncion) }}</span>
+              </div>
+            }
+            <div class="dc-field">
+              <span class="dc-lbl">Pasaporte</span>
+              <span class="dc-val">{{ paciente.pasaporte || "—" }}</span>
+            </div>
+            @if (cuiPersona) {
+              <div class="dc-field">
+                <span class="dc-lbl">ID Alterno</span>
+                <span class="dc-val">{{ cuiPersona }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- CONTACTO -->
+        @if (paciente.contacto) {
           <div class="dc-card">
-            <div class="patient-hero">
-              <div class="patient-avatar">
-                <span class="avatar-letter">
-                  {{ paciente.nombre.primer_nombre[0] }}
-                  {{ paciente.nombre.primer_apellido[0] }}
+            <div class="card-header">
+              <span class="card-icon">☎️</span>
+              <h3 class="card-title">Contacto</h3>
+            </div>
+            <div class="field-grid">
+              @if (paciente.contacto.domicilio) {
+                <div class="dc-field dc-field-full">
+                  <span class="dc-lbl">Dirección</span>
+                  <span class="dc-val">{{
+                    paciente.contacto.domicilio | titlecase
+                  }}</span>
+                </div>
+              }
+              @if (paciente.contacto.municipio) {
+                <div class="dc-field">
+                  <span class="dc-lbl">Municipio</span>
+                  <span class="dc-val">{{
+                    paciente.contacto.municipio | datosExtra: "municipio"
+                  }}</span>
+                </div>
+              }
+              @if (paciente.contacto.telefonos) {
+                <div class="dc-field">
+                  <span class="dc-lbl">Teléfono</span>
+                  <span class="dc-val">{{ paciente.contacto.telefonos }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- NEONATALES -->
+        @if (neonatalesFiltrados.length > 0) {
+          <div class="dc-card">
+            <div class="card-header">
+              <span class="card-icon">🐣</span>
+              <h3 class="card-title">Neonatales</h3>
+            </div>
+            <div class="field-grid">
+              <div class="dc-field" *ngFor="let d of neonatalesFiltrados">
+                <span class="dc-lbl">{{ convertirClave(d.key) }}</span>
+                <span class="dc-val">{{ d.valor | datosExtra: d.key }}</span>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- REFERENCIAS -->
+        @if (referenciasFiltradas.length > 0) {
+          <div class="dc-card">
+            <div class="card-header">
+              <span class="card-icon">🧔🏻‍♂️</span>
+              <h3 class="card-title">Referencias</h3>
+              <span class="card-badge"
+                >{{ referenciasFiltradas.length }} registros</span
+              >
+            </div>
+            <div class="field-grid">
+              <div
+                class="dc-field dc-field-full"
+                *ngFor="let ref of referenciasFiltradas"
+              >
+                <div class="ref-card">
+                  <div class="ref-header">
+                    <span class="ref-name">{{ getNombreReferencia(ref) }}</span>
+                    <p class="ref-parentesco">{{ getParentesco(ref) }}</p>
+                  </div>
+                  <div class="ref-body">
+                    <span *ngIf="ref.telefono">📞 {{ getTelefono(ref) }}</span>
+                    <span *ngIf="ref.expediente"
+                      >📁 {{ getExpediente(ref) }}</span
+                    >
+                    <span *ngIf="ref.idpersona"
+                      >🆔 {{ getIdPersona(ref) }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- DEMOGRÁFICOS -->
+        @if (demograficosFiltrados.length > 0) {
+          <div class="dc-card">
+            <div class="card-header">
+              <span class="card-icon">🌍</span>
+              <h3 class="card-title">Demográficos</h3>
+            </div>
+            <div class="field-grid">
+              <div class="dc-field" *ngFor="let d of demograficosFiltrados">
+                <span class="dc-lbl">{{ convertirClave(d.key) }}</span>
+                <span class="dc-val">{{ d.valor | datosExtra: d.key }}</span>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- SOCIOECONÓMICOS -->
+        @if (socioeconomicosFiltrados.length > 0) {
+          <div class="dc-card">
+            <div class="card-header">
+              <span class="card-icon">💼</span>
+              <h3 class="card-title">Socioeconómicos</h3>
+            </div>
+            <div class="field-grid">
+              <div class="dc-field" *ngFor="let d of socioeconomicosFiltrados">
+                <span class="dc-lbl">{{ convertirClave(d.key) }}</span>
+                <span class="dc-val">{{ d.valor | datosExtra: d.key }}</span>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- CONSULTAS -->
+        <div *ngIf="cargandoConsultas" class="dc-card">
+          <div
+            style="
+              text-align: center;
+              padding: 16px;
+              color: #94a3b8;
+              font-size: 12px;
+            "
+          >
+            Cargando consultas...
+          </div>
+        </div>
+
+        @if (consultasPorPaciente.length > 0) {
+          <div class="dc-card consultas-card">
+            <div class="card-header">
+              <span class="card-icon">📂</span>
+              <h3 class="card-title">Consultas</h3>
+              <span class="card-badge">{{ consultasPorPaciente.length }}</span>
+            </div>
+            <div class="table-container">
+              <table class="dc-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Especialidad</th>
+                    <th>Tipo</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of consultasPorPaciente">
+                    <td>{{ c.fecha_consulta | date: "dd-MM-yyyy" }}</td>
+                    <td>{{ c.hora_consulta | time }}</td>
+                    <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
+                    <td>
+                      {{ c.tipo_consulta | datosExtra: "tipo_consulta" }}
+                    </td>
+                    <td>
+                      <button class="btn" (click)="verDetalle(c.id)">
+                        📁 Ver
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+
+        <!-- METADATOS -->
+        @if (metadatosArray.length > 0) {
+          <div class="dc-card">
+            <div class="card-header">
+              <span class="card-icon">📌</span>
+              <h3 class="card-title">Sistema</h3>
+            </div>
+            <div class="field-grid">
+              <div
+                class="dc-field dc-field-full"
+                *ngFor="let meta of metadatosArray"
+              >
+                <span class="dc-lbl">{{ meta.key }}</span>
+                <span class="dc-val-meta">
+                  {{ meta.valor.usuario }} · {{ meta.valor.registro }} ·
+                  {{ meta.valor.accion }}
                 </span>
               </div>
-              <div class="patient-name-block">
-                <p class="patient-name">
-                  {{ paciente.nombre.primer_apellido }}
-                  {{ paciente.nombre.segundo_apellido }}
-                  {{ paciente.nombre.apellido_casada }}
-                </p>
-                <p class="patient-firstname">
-                  {{ paciente.nombre.primer_nombre }}
-                  {{ paciente.nombre.segundo_nombre }}
-                  {{ paciente.nombre.otro_nombre }}
-                </p>
-                <div class="patient-tags">
-                  <span
-                    class="ptag"
-                    [class.ptag-m]="paciente.sexo === 'M'"
-                    [class.ptag-f]="paciente.sexo !== 'M'"
-                  >
-                    {{ paciente.sexo === "M" ? "♂ Masculino" : "♀ Femenino" }}
-                  </span>
-                  <span class="ptag ptag-age">{{
-                    paciente.fecha_nacimiento | edad
-                  }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="field-grid">
-              <div class="dc-field">
-                <span class="dc-lbl">Nacimiento</span>
-                <span class="dc-val">{{
-                  paciente.fecha_nacimiento | date: "dd/MM/yyyy"
-                }}</span>
-              </div>
-              @if (fechaDefuncion) {
-                <div class="dc-field">
-                  <span class="dc-lbl">Defunción</span>
-                  <span class="dc-val">{{
-                    formatearFecha(fechaDefuncion)
-                  }}</span>
-                </div>
-              }
-              <div class="dc-field">
-                <span class="dc-lbl">Pasaporte</span>
-                <span class="dc-val">{{ paciente.pasaporte || "—" }}</span>
-              </div>
-              @if (cuiPersona) {
-                <div class="dc-field">
-                  <span class="dc-lbl">ID Alterno</span>
-                  <span class="dc-val">{{ cuiPersona }}</span>
-                </div>
-              }
             </div>
           </div>
-
-          <!-- CONTACTO -->
-          @if (paciente.contacto) {
-            <div class="dc-card">
-              <div class="card-header">
-                <span class="card-icon">☎️</span>
-                <h3 class="card-title">Contacto</h3>
-              </div>
-              <div class="field-grid">
-                @if (paciente.contacto.domicilio) {
-                  <div class="dc-field dc-field-full">
-                    <span class="dc-lbl">Dirección</span>
-                    <span class="dc-val">{{
-                      paciente.contacto.domicilio | titlecase
-                    }}</span>
-                  </div>
-                }
-                @if (paciente.contacto.municipio) {
-                  <div class="dc-field">
-                    <span class="dc-lbl">Municipio</span>
-                    <span class="dc-val">{{
-                      paciente.contacto.municipio | datosExtra: "municipio"
-                    }}</span>
-                  </div>
-                }
-                @if (paciente.contacto.telefonos) {
-                  <div class="dc-field">
-                    <span class="dc-lbl">Teléfono</span>
-                    <span class="dc-val">{{
-                      paciente.contacto.telefonos
-                    }}</span>
-                  </div>
-                }
-              </div>
-            </div>
-          }
-
-          <!-- NEONATALES -->
-          @if (neonatalesFiltrados.length > 0) {
-            <div class="dc-card">
-              <div class="card-header">
-                <span class="card-icon">🐣</span>
-                <h3 class="card-title">Neonatales</h3>
-              </div>
-              <div class="field-grid">
-                <div class="dc-field" *ngFor="let d of neonatalesFiltrados">
-                  <span class="dc-lbl">{{ convertirClave(d.key) }}</span>
-                  <span class="dc-val">{{ d.valor | datosExtra: d.key }}</span>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-
-        <!-- ═══ COLUMNA DERECHA ════════════════════════════ -->
-        <div class="dc-col">
-          <!-- REFERENCIAS -->
-          @if (referenciasFiltradas.length > 0) {
-            <div class="dc-card">
-              <div class="card-header">
-                <span class="card-icon">🧔🏻‍♂️</span>
-                <h3 class="card-title">Referencias</h3>
-                <span class="card-badge"
-                  >{{ referenciasFiltradas.length }} registros</span
-                >
-              </div>
-              <div class="field-grid">
-                <div
-                  class="dc-field dc-field-full"
-                  *ngFor="let ref of referenciasFiltradas"
-                >
-                  <div class="ref-card">
-                    <div class="ref-header">
-                      <span class="ref-name">{{
-                        getNombreReferencia(ref)
-                      }}</span>
-                      <p class="ref-parentesco">{{ getParentesco(ref) }}</p>
-                    </div>
-                    <div class="ref-body">
-                      <span *ngIf="ref.telefono"
-                        >📞 {{ getTelefono(ref) }}</span
-                      >
-                      <span *ngIf="ref.expediente"
-                        >📁 {{ getExpediente(ref) }}</span
-                      >
-                      <span *ngIf="ref.idpersona"
-                        >🆔 {{ getIdPersona(ref) }}</span
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          }
-
-          <!-- DEMOGRÁFICOS -->
-          @if (demograficosFiltrados.length > 0) {
-            <div class="dc-card">
-              <div class="card-header">
-                <span class="card-icon">🌍</span>
-                <h3 class="card-title">Demográficos</h3>
-              </div>
-              <div class="field-grid">
-                <div class="dc-field" *ngFor="let d of demograficosFiltrados">
-                  <span class="dc-lbl">{{ convertirClave(d.key) }}</span>
-                  <span class="dc-val">{{ d.valor | datosExtra: d.key }}</span>
-                </div>
-              </div>
-            </div>
-          }
-
-          <!-- SOCIOECONÓMICOS -->
-          @if (socioeconomicosFiltrados.length > 0) {
-            <div class="dc-card">
-              <div class="card-header">
-                <span class="card-icon">💼</span>
-                <h3 class="card-title">Socioeconómicos</h3>
-              </div>
-              <div class="field-grid">
-                <div
-                  class="dc-field"
-                  *ngFor="let d of socioeconomicosFiltrados"
-                >
-                  <span class="dc-lbl">{{ convertirClave(d.key) }}</span>
-                  <span class="dc-val">{{ d.valor | datosExtra: d.key }}</span>
-                </div>
-              </div>
-            </div>
-          }
-
-          <!-- CONSULTAS -->
-          <div *ngIf="cargandoConsultas" class="dc-card">
-            <div
-              style="
-                text-align: center;
-                padding: 16px;
-                color: #94a3b8;
-                font-size: 12px;
-              "
-            >
-              Cargando consultas...
-            </div>
-          </div>
-
-          @if (consultasPorPaciente.length > 0) {
-            <div class="dc-card consultas-card">
-              <div class="card-header">
-                <span class="card-icon">📂</span>
-                <h3 class="card-title">Consultas</h3>
-                <span class="card-badge">{{
-                  consultasPorPaciente.length
-                }}</span>
-              </div>
-              <div class="table-container">
-                <table class="dc-table">
-                  <thead>
-                    <tr>
-                      <th>Fecha</th>
-                      <th>Hora</th>
-                      <th>Especialidad</th>
-                      <th>Tipo</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let c of consultasPorPaciente">
-                      <td>{{ c.fecha_consulta | date: "dd-MM-yyyy" }}</td>
-                      <td>{{ c.hora_consulta | time }}</td>
-                      <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
-                      <td>
-                        {{ c.tipo_consulta | datosExtra: "tipo_consulta" }}
-                      </td>
-                      <td>
-                        <button class="btn" (click)="verDetalle(c.id)">
-                          📁 Ver
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          }
-
-          <!-- METADATOS -->
-          @if (metadatosArray.length > 0) {
-            <div class="dc-card">
-              <div class="card-header">
-                <span class="card-icon">📌</span>
-                <h3 class="card-title">Sistema</h3>
-              </div>
-              <div class="field-grid">
-                <div
-                  class="dc-field dc-field-full"
-                  *ngFor="let meta of metadatosArray"
-                >
-                  <span class="dc-lbl">{{ meta.key }}</span>
-                  <span class="dc-val-meta">
-                    {{ meta.valor.usuario }} · {{ meta.valor.registro }} ·
-                    {{ meta.valor.accion }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
+        }
       </div>
     </div>
   </main>

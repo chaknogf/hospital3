@@ -13,6 +13,7 @@ import { Subject } from 'rxjs';
 import { takeUntil, finalize, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Dict, especialidades, OpcionBoolean, opcionesIngreso } from './../../../enum/diccionarios';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-detalleConsulta',
@@ -28,6 +29,7 @@ export class DetalleConsultaComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private iconService = inject(IconService);
+  private location = inject(Location);
 
   // ======= SIGNALS =======
   paciente = signal<Paciente | undefined>(undefined);
@@ -176,11 +178,12 @@ export class DetalleConsultaComponent implements OnInit, OnDestroy {
 
   // ======= ACCIONES =======
   imprimir(): void { window.print(); }
+  regresar(): void { this.location.back(); }
 
-  regresar(): void {
-    if (this.esEmergencia) this.router.navigate(['/emergencias']);
-    else if (this.esCoex) this.router.navigate(['/coex']);
-    else if (this.esIngreso) this.router.navigate(['/ingresos']);
-    else this.router.navigate(['/consultas']);
-  }
+  // regresar(): void {
+  //   if (this.esEmergencia) this.router.navigate(['/emergencias']);
+  //   else if (this.esCoex) this.router.navigate(['/coex']);
+  //   else if (this.esIngreso) this.router.navigate(['/ingresos']);
+  //   else this.router.navigate(['/consultas']);
+  // }
 }

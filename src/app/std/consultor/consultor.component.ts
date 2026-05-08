@@ -10,6 +10,7 @@ import { DatosExtraPipe } from '../../pipes/datos-extra.pipe';
 import { TimePipe } from '../../pipes/time.pipe';
 import { CuiPipe } from '../../pipes/cui.pipe';
 import { EdadPipe } from '../../pipes/edad.pipe';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-consultor',
@@ -23,8 +24,10 @@ export class ConsultorComponent implements OnInit {
   private api = inject(ConsultaService);
   private apip = inject(PacienteService);
   private router = inject(Router);
+  private location = inject(Location);
 
   // ── Estado de búsqueda ──────────────────────────────────
+  // 1. Separar limit del objeto filtros para que nunca se borre
   filtros = {
     paciente_id: '',
     expediente: '',
@@ -35,6 +38,7 @@ export class ConsultorComponent implements OnInit {
     primer_apellido: '',
     segundo_apellido: ''
   };
+  limit: number = 10; // ← fuera del objeto filtros
 
   resultados: PacienteBuscado[] = [];
   mostrarTabla: boolean = false;
@@ -55,18 +59,26 @@ export class ConsultorComponent implements OnInit {
   metadatosArray: { key: string; valor: any }[] = [];
   neonatalesFiltrados: { key: string; valor: any }[] = [];
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.buscando;
+  }
 
   // ── Búsqueda ────────────────────────────────────────────
+  // 2. Construir params correctamente
   buscar(): void {
     this.buscando = true;
     this.resultados = [];
 
-    // Limpiar filtros vacíos antes de enviar
-    const params: any = {};
+    const params: any = { limit: this.limit }; // ← limit siempre presente
+
     Object.entries(this.filtros).forEach(([k, v]) => {
-      if (v !== '' && v !== null) params[k] = v;
+      const val = typeof v === 'string' ? v.trim() : v;
+      if (val !== '' && val !== null && val !== undefined) {
+        params[k] = val;
+      }
     });
+
+    console.log('params enviados:', params);
 
     this.api.getPacientesBuscados(params).subscribe({
       next: (data) => {
@@ -80,6 +92,7 @@ export class ConsultorComponent implements OnInit {
     });
   }
 
+  // 3. limpiarFiltros solo resetea los campos de texto, no el limit
   limpiarFiltros(): void {
     Object.keys(this.filtros).forEach(k => (this.filtros as any)[k] = '');
     this.resultados = [];
@@ -262,5 +275,6 @@ export class ConsultorComponent implements OnInit {
 
   verDetalle(id: number): void { this.router.navigate(['/detalleAdmision', id]); }
   editar(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
-  regresar(): void { this.router.navigate(['/pacientes']); }
+  regresar(): void { this.location.back(); }
+
 }
