@@ -9,7 +9,7 @@ export interface PaginationState {
 
 @Injectable({ providedIn: 'root' })
 export class BaseApiService {
-  protected readonly baseUrl = 'http://localhost:8000';
+  protected readonly baseUrl = 'http://localhost:8015';
 
   isLoading = signal(false);
   token = signal<string | null>(null);
