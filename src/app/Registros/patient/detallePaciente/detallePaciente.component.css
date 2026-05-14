@@ -29,7 +29,7 @@
 
 /* ══ PÁGINA ═══════════════════════════════════════════════════ */
 .dc-page {
-  min-height: 100vh;
+  min-height: 100%;
   background: #151d5399;
   font-family: var(--ui);
   color: var(--text);
@@ -123,30 +123,33 @@
 .meta-icon { font-size: 11px; }
 
 /* ══ GRID LAYOUT ══════════════════════════════════════════════ */
+
+
 .dc-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 16px;
-  padding: 16px 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 16px 10px;
+  margin: 3px;
 }
 
-@media (max-width: 900px) {
-  .dc-grid { grid-template-columns: 1fr; }
-}
-
-.dc-col { display: flex; flex-direction: column; gap: 16px; }
 
 /* ══ CARDS ════════════════════════════════════════════════════ */
 .dc-card {
+  flex: 0 370px;
+  flex-grow: 1;
+  flex-basis: 200;
   background: #08001061;
   border: 1px solid var(--rim);
   border-radius: 12px;
   padding: 16px;
   backdrop-filter: blur(8px);
   transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 0;     /* clave */
+  width: 100%;      /* ocupa todo el col, no la card directamente */
+  box-sizing: border-box;
 }
+
 .dc-card:hover {
   border-color: var(--rim-hot);
   box-shadow: 0 4px 24px rgba(59,130,246,0.08);
@@ -218,9 +221,11 @@
 /* ══ FIELD GRID ═══════════════════════════════════════════════ */
 .field-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 8px;
 }
+/* dc-field-full sigue igual — span completo */
+.dc-field-full { grid-column: 1 / -1; }
 
 .dc-field { display: flex; flex-direction: column; gap: 2px; }
 .dc-field-full { grid-column: 1 / -1; }
@@ -247,13 +252,11 @@
 /* ══ INDICADORES ══════════════════════════════════════════════ */
 .ind-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   gap: 8px;
+  /* 4 cols en ≥400px, 2 cols en estrecho, sin @media */
 }
 
-@media (max-width: 600px) {
-  .ind-grid { grid-template-columns: repeat(2, 1fr); }
-}
 
 .ind-item {
   display: flex; flex-direction: column;
@@ -530,7 +533,8 @@
 .consultas-card {
   display: flex;
   flex-direction: column;
-  max-height: 300px; /* 🔥 ajusta según tu UI */
+  /* sin max-height fijo — usa viewport units */
+  max-height: clamp(220px, 40vh, 420px);
 }
 
 /* Contenedor con scroll vertical */
@@ -597,3 +601,24 @@
 .dc-table tbody tr:active {
   background: rgba(59, 130, 246, 0.2);
 }
+
+@media (max-width: 480px) {
+  .patient-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .hud-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hud-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+
+}
+
