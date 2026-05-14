@@ -545,62 +545,19 @@
 
 }
 
-/* Tabla */
+/* ═══════════════════════════════════════
+   TABLA NORMAL
+═══════════════════════════════════════ */
+
 .dc-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 10px;
   font-family: var(--mono);
-  border-radius: 6px;
-
-}
-
-/* Header fijo (MUY PRO) */
-.dc-table thead th {
-  position: sticky;
-  top: 0;
-  font-weight: bold;
-  font-size: 9px;
-  z-index: 2;
-  letter-spacing: 2px;
-  border-radius: 6px;
-}
-
-.dc-table tr {
-  letter-spacing: 1px;
-  border-radius: 6px;
-}
-
-/* Celdas */
-.dc-table th,
-.dc-table td {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-   align-items: center;
-   border-radius: 6px;
-   border: none;
-}
-
-/* Hover elegante */
-.dc-table tbody tr:hover {
-  background: rgba(7, 2, 23, 0.834);
+  table-layout: fixed;
 }
 
 
-
-
-
-/* Texto ligeramente reactivo */
-.dc-table tbody tr:hover td {
-  color: #e6f0ff;
-
-}
-
-/* Efecto de selección (opcional) */
-.dc-table tbody tr:active {
-  background: rgba(59, 130, 246, 0.2);
-}
 
 @media (max-width: 480px) {
   .patient-hero {

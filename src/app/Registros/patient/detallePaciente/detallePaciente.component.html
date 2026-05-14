@@ -262,23 +262,24 @@
         <div class="table-container">
           <table class="dc-table">
             <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Hora</th>
+              <tr class="text-center" style="border-bottom: 2px dotted;">
+                <th>Fecha y Hora</th>
                 <th>Especialidad</th>
                 <th>Tipo Consulta</th>
-                <th>Opciones</th>
+                <th>Detalle</th>
               </tr>
             </thead>
 
             <tbody>
               <tr *ngFor="let c of consultasPorPaciente">
-                <td>{{ c.fecha_consulta | date: "dd-MM-yyyy" }}</td>
-                <td>{{ c.hora_consulta | time }}</td>
+                <td>{{ c.fecha_consulta | date: "dd-MM-yyyy" }} 
+                  <br>
+                  {{ c.hora_consulta | time }}
+                </td>
                 <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
                 <td>{{ c.tipo_consulta | datosExtra: "tipo_consulta" }}</td>
-                <td>
-                  <button class="btn" (click)="verDetalle(c.id)">📁 Ver</button>
+                <td class="text-center">
+                  <button class="btn" (click)="verDetalle(c.id)">📁</button>
                 </td>
               </tr>
             </tbody>
