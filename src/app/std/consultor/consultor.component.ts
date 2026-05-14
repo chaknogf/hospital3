@@ -21,13 +21,15 @@ import { Location } from '@angular/common';
 })
 export class ConsultorComponent implements OnInit {
 
-  private api = inject(ConsultaService);
-  private apip = inject(PacienteService);
+  private api    = inject(ConsultaService);
+  private apip   = inject(PacienteService);
   private router = inject(Router);
   private location = inject(Location);
 
+  // ── Estado del sidebar (bottom sheet en mobile) ──────────
+  sidebarAbierto: boolean = false;
+
   // ── Estado de búsqueda ──────────────────────────────────
-  // 1. Separar limit del objeto filtros para que nunca se borre
   filtros = {
     paciente_id: '',
     expediente: '',
@@ -38,7 +40,7 @@ export class ConsultorComponent implements OnInit {
     primer_apellido: '',
     segundo_apellido: ''
   };
-  limit: number = 10; // ← fuera del objeto filtros
+  limit: number = 10;
 
   resultados: PacienteBuscado[] = [];
   mostrarTabla: boolean = false;
@@ -59,17 +61,30 @@ export class ConsultorComponent implements OnInit {
   metadatosArray: { key: string; valor: any }[] = [];
   neonatalesFiltrados: { key: string; valor: any }[] = [];
 
-  ngOnInit() {
-    this.buscando;
+  ngOnInit() {}
+
+  // ── Control del sidebar / bottom sheet ─────────────────
+  toggleSidebar(): void {
+    this.sidebarAbierto = !this.sidebarAbierto;
+  }
+
+  cerrarSidebar(): void {
+    this.sidebarAbierto = false;
+  }
+
+  /** Cierra el sidebar automáticamente en mobile (< 768px) */
+  private cerrarSidebarEnMobile(): void {
+    if (window.innerWidth < 768) {
+      this.sidebarAbierto = false;
+    }
   }
 
   // ── Búsqueda ────────────────────────────────────────────
-  // 2. Construir params correctamente
   buscar(): void {
     this.buscando = true;
     this.resultados = [];
 
-    const params: any = { limit: this.limit }; // ← limit siempre presente
+    const params: any = { limit: this.limit };
 
     Object.entries(this.filtros).forEach(([k, v]) => {
       const val = typeof v === 'string' ? v.trim() : v;
@@ -78,13 +93,13 @@ export class ConsultorComponent implements OnInit {
       }
     });
 
-    console.log('params enviados:', params);
-
     this.api.getPacientesBuscados(params).subscribe({
       next: (data) => {
         this.resultados = data;
         this.mostrarTabla = true;
         this.buscando = false;
+        // En mobile cerramos el sidebar para ver la tabla
+        this.cerrarSidebarEnMobile();
       },
       error: () => {
         this.buscando = false;
@@ -92,7 +107,6 @@ export class ConsultorComponent implements OnInit {
     });
   }
 
-  // 3. limpiarFiltros solo resetea los campos de texto, no el limit
   limpiarFiltros(): void {
     Object.keys(this.filtros).forEach(k => (this.filtros as any)[k] = '');
     this.resultados = [];
@@ -107,6 +121,8 @@ export class ConsultorComponent implements OnInit {
   seleccionarPaciente(p: PacienteBuscado): void {
     this.pacienteId = p.id;
     this.mostrarTabla = false;
+    // Cerramos sidebar en mobile al seleccionar
+    this.cerrarSidebarEnMobile();
     this.cargarPaciente();
     this.cargarConsultas();
   }
@@ -115,7 +131,6 @@ export class ConsultorComponent implements OnInit {
     if (!this.pacienteId) return;
     this.cargandoPaciente = true;
 
-    // 🔥 Limpiar listas antes de cargar nuevo paciente
     this.demograficosFiltrados = [];
     this.socioeconomicosFiltrados = [];
     this.neonatalesFiltrados = [];
@@ -125,7 +140,7 @@ export class ConsultorComponent implements OnInit {
     this.apip.getPaciente(this.pacienteId).subscribe({
       next: (data) => {
         this.paciente = data;
-        this.procesarPaciente(); // ← debe estar aquí, dentro del next
+        this.procesarPaciente();
         this.error = null;
         this.cargandoPaciente = false;
       },
@@ -154,39 +169,29 @@ export class ConsultorComponent implements OnInit {
   private procesarPaciente(): void {
     if (!this.paciente) return;
 
-    // Referencias
     this.referenciasFiltradas = Array.isArray(this.paciente.referencias)
       ? this.paciente.referencias.filter(ref => ref != null)
       : [];
 
-    // Demográficos
     if (this.paciente.datos_extra?.demograficos) {
       this.demograficosFiltrados = Object.entries(this.paciente.datos_extra.demograficos)
-        .filter(([, valor]) =>
-          valor !== null && valor !== undefined && valor !== 0 && valor !== ''
-        )
+        .filter(([, valor]) => valor !== null && valor !== undefined && valor !== 0 && valor !== '')
         .map(([key, valor]) => ({ key, valor }));
     } else {
       this.demograficosFiltrados = [];
     }
 
-    // Socioeconómicos
     if (this.paciente.datos_extra?.socioeconomicos) {
       this.socioeconomicosFiltrados = Object.entries(this.paciente.datos_extra.socioeconomicos)
-        .filter(([, valor]) =>
-          valor !== null && valor !== undefined && valor !== '' && valor !== 0
-        )
+        .filter(([, valor]) => valor !== null && valor !== undefined && valor !== '' && valor !== 0)
         .map(([key, valor]) => ({ key, valor }));
     } else {
       this.socioeconomicosFiltrados = [];
     }
 
-    // Neonatales
     if (this.paciente.datos_extra?.neonatales) {
       this.neonatalesFiltrados = Object.entries(this.paciente.datos_extra.neonatales)
-        .filter(([, valor]) =>
-          valor !== null && valor !== undefined && valor !== '' && valor !== 0
-        )
+        .filter(([, valor]) => valor !== null && valor !== undefined && valor !== '' && valor !== 0)
         .map(([key, valor]) => ({ key, valor }));
     } else {
       this.neonatalesFiltrados = [];
@@ -197,7 +202,6 @@ export class ConsultorComponent implements OnInit {
 
   private procesarMetadatos(): void {
     this.metadatosArray = [];
-
     const metas = this.paciente?.metadatos;
     if (!Array.isArray(metas) || metas.length === 0) return;
 
@@ -213,15 +217,6 @@ export class ConsultorComponent implements OnInit {
       });
     });
   }
-
-  private extraerFiltrado(obj: any): { key: string; valor: any }[] {
-    if (!obj) return [];
-    return Object.entries(obj)
-      .filter(([, v]) => v !== null && v !== undefined && v !== '' && v !== 0)
-      .map(([key, valor]) => ({ key, valor }));
-  }
-
-
 
   // ── Helpers de vista ────────────────────────────────────
   get estadoPaciente(): string {
@@ -268,13 +263,12 @@ export class ConsultorComponent implements OnInit {
   }
 
   getNombreReferencia(ref: Referencia): string { return ref.nombre ?? 'Sin nombre'; }
-  getParentesco(ref: any): string { return ref?.parentesco || 'Sin parentesco'; }
-  getTelefono(ref: any): string { return ref?.telefono || 'Sin teléfono'; }
-  getExpediente(ref: any): string { return ref?.expediente || '—'; }
-  getIdPersona(ref: any): string { return ref?.idpersona || '—'; }
+  getParentesco(ref: any): string  { return ref?.parentesco || 'Sin parentesco'; }
+  getTelefono(ref: any): string    { return ref?.telefono   || 'Sin teléfono'; }
+  getExpediente(ref: any): string  { return ref?.expediente || '—'; }
+  getIdPersona(ref: any): string   { return ref?.idpersona  || '—'; }
 
   verDetalle(id: number): void { this.router.navigate(['/detalleAdmision', id]); }
-  editar(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
-  regresar(): void { this.location.back(); }
-
+  editar(id: number): void     { this.router.navigate(['/pacienteEdit', id]); }
+  regresar(): void             { this.location.back(); }
 }

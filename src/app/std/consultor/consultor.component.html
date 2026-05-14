@@ -1,6 +1,20 @@
 <div class="consultor-layout">
-  <!-- ══ SIDEBAR ══════════════════════════════════════════ -->
-  <aside class="sidebar">
+
+  <!-- ══ BACKDROP (mobile overlay) ══════════════════════════ -->
+  <div
+    class="sidebar-backdrop"
+    [class.sidebar-backdrop--visible]="sidebarAbierto"
+    (click)="cerrarSidebar()"
+  ></div>
+
+  <!-- ══ SIDEBAR / BOTTOM SHEET ══════════════════════════════ -->
+  <aside class="sidebar" [class.sidebar--open]="sidebarAbierto">
+
+    <!-- Handle — solo visible en mobile -->
+    <div class="sidebar-handle" (click)="toggleSidebar()">
+      <div class="sidebar-handle-bar"></div>
+    </div>
+
     <div class="sidebar-header">
       <button class="btn" (click)="regresar()">❌ Salir</button>
       <span class="sidebar-title">Buscar paciente</span>
@@ -8,6 +22,7 @@
         Reset
       </button>
     </div>
+
     <form (ngSubmit)="buscar()">
       <div class="field-group">
         <label>ID paciente</label>
@@ -89,7 +104,17 @@
     </form>
   </aside>
 
-  <!-- ══ MAIN ══════════════════════════════════════════════ -->
+  <!-- ══ FAB — solo visible en mobile cuando sidebar está cerrado ══ -->
+  <button
+    class="fab-search"
+    (click)="toggleSidebar()"
+    [class.fab-search--hidden]="sidebarAbierto"
+    aria-label="Buscar paciente"
+  >
+    🔍
+  </button>
+
+  <!-- ══ MAIN ══════════════════════════════════════════════════ -->
   <main class="main-panel">
     <!-- Overlay de resultados -->
     <div class="overlay" *ngIf="mostrarTabla" (click)="cerrarTabla()">
@@ -138,6 +163,8 @@
       <div class="empty-icon">🤖</div>
       <p>Sin paciente seleccionado</p>
       <span>Use la barra lateral para buscar</span>
+      <!-- Hint mobile -->
+      <span class="empty-hint-mobile">Toca 🔍 para buscar</span>
     </div>
 
     <!-- Cargando -->
@@ -152,7 +179,7 @@
       <button class="btn-clear" (click)="error = null">Reintentar</button>
     </div>
 
-    <!-- ══ DATOS DEL PACIENTE ══════════════════════════════ -->
+    <!-- ══ DATOS DEL PACIENTE ══════════════════════════════════ -->
     <div class="patient-scroll" *ngIf="paciente && !cargandoPaciente && !error">
       <!-- HUD header -->
       <div class="hud-header">
@@ -167,13 +194,12 @@
             class="status-badge"
             [ngClass]="{
               'status-activo': paciente.estado === 'V',
-              'status-egreso': paciente.estado !== 'V',
+              'status-egreso': paciente.estado !== 'V'
             }"
           >
             <span class="status-dot"></span>
             <span class="status-text">{{ estadoPaciente }}</span>
           </div>
-          <!-- <button class="btn" (click)="editar(paciente.id)">💻 Editar</button> -->
         </div>
       </div>
 
@@ -206,9 +232,7 @@
                 >
                   {{ paciente.sexo === "M" ? "♂ Masculino" : "♀ Femenino" }}
                 </span>
-                <span class="ptag ptag-age">{{
-                  paciente.fecha_nacimiento | edad
-                }}</span>
+                <span class="ptag ptag-age">{{ paciente.fecha_nacimiento | edad }}</span>
               </div>
             </div>
           </div>
@@ -216,9 +240,7 @@
           <div class="field-grid">
             <div class="dc-field">
               <span class="dc-lbl">Nacimiento</span>
-              <span class="dc-val">{{
-                paciente.fecha_nacimiento | date: "dd/MM/yyyy"
-              }}</span>
+              <span class="dc-val">{{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}</span>
             </div>
             @if (fechaDefuncion) {
               <div class="dc-field">
@@ -250,17 +272,13 @@
               @if (paciente.contacto.domicilio) {
                 <div class="dc-field dc-field-full">
                   <span class="dc-lbl">Dirección</span>
-                  <span class="dc-val">{{
-                    paciente.contacto.domicilio | titlecase
-                  }}</span>
+                  <span class="dc-val">{{ paciente.contacto.domicilio | titlecase }}</span>
                 </div>
               }
               @if (paciente.contacto.municipio) {
                 <div class="dc-field">
                   <span class="dc-lbl">Municipio</span>
-                  <span class="dc-val">{{
-                    paciente.contacto.municipio | datosExtra: "municipio"
-                  }}</span>
+                  <span class="dc-val">{{ paciente.contacto.municipio | datosExtra: "municipio" }}</span>
                 </div>
               }
               @if (paciente.contacto.telefonos) {
@@ -295,9 +313,7 @@
             <div class="card-header">
               <span class="card-icon">🧔🏻‍♂️</span>
               <h3 class="card-title">Referencias</h3>
-              <span class="card-badge"
-                >{{ referenciasFiltradas.length }} registros</span
-              >
+              <span class="card-badge">{{ referenciasFiltradas.length }} registros</span>
             </div>
             <div class="field-grid">
               <div
@@ -311,12 +327,8 @@
                   </div>
                   <div class="ref-body">
                     <span *ngIf="ref.telefono">📞 {{ getTelefono(ref) }}</span>
-                    <span *ngIf="ref.expediente"
-                      >📁 {{ getExpediente(ref) }}</span
-                    >
-                    <span *ngIf="ref.idpersona"
-                      >🆔 {{ getIdPersona(ref) }}</span
-                    >
+                    <span *ngIf="ref.expediente">📁 {{ getExpediente(ref) }}</span>
+                    <span *ngIf="ref.idpersona">🆔 {{ getIdPersona(ref) }}</span>
                   </div>
                 </div>
               </div>
@@ -358,14 +370,7 @@
 
         <!-- CONSULTAS -->
         <div *ngIf="cargandoConsultas" class="dc-card">
-          <div
-            style="
-              text-align: center;
-              padding: 16px;
-              color: #94a3b8;
-              font-size: 12px;
-            "
-          >
+          <div style="text-align: center; padding: 16px; color: #94a3b8; font-size: 12px;">
             Cargando consultas...
           </div>
         </div>
@@ -378,32 +383,30 @@
               <span class="card-badge">{{ consultasPorPaciente.length }}</span>
             </div>
             <div class="table-container">
-              <table class="dc-table">
-                <thead>
-                  <tr>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Especialidad</th>
-                    <th>Tipo</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let c of consultasPorPaciente">
-                    <td>{{ c.fecha_consulta | date: "dd-MM-yyyy" }}</td>
-                    <td>{{ c.hora_consulta | time }}</td>
-                    <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
-                    <td>
-                      {{ c.tipo_consulta | datosExtra: "tipo_consulta" }}
-                    </td>
-                    <td>
-                      <button class="btn" (click)="verDetalle(c.id)">
-                        📁 Ver
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+             <table class="dc-table">
+            <thead>
+              <tr class="text-center" style="border-bottom: 2px dotted;">
+                <th>Fecha y Hora</th>
+                <th>Especialidad</th>
+                <th>Tipo Consulta</th>
+                <th>Detalle</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let c of consultasPorPaciente">
+                <td>{{ c.fecha_consulta | date: "dd-MM-yyyy" }} 
+                  <br>
+                  {{ c.hora_consulta | time }}
+                </td>
+                <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
+                <td>{{ c.tipo_consulta | datosExtra: "tipo_consulta" }}</td>
+                <td class="text-center">
+                  <button class="btn" (click)="verDetalle(c.id)">📁</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
             </div>
           </div>
         }
