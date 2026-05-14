@@ -47,9 +47,9 @@
   <!-- FICHA DEL PACIENTE — banner identificador              -->
   <!-- ═══════════════════════════════════════════════════════ -->
   <div class="paciente-banner">
-    <div class="paciente-banner-accent"></div>
-
-    <div class="paciente-avatar">
+   
+  <div class="paciente-banner-accent"></div>
+  <div class="paciente-avatar">
       <ng-container *ngIf="paciente.sexo === 'M'">
         <span [innerHTML]="manIcon"></span>
       </ng-container>
@@ -57,16 +57,6 @@
         <span [innerHTML]="womanIcon"></span>
       </ng-container>
     </div>
-
-   <div class="paciente-banner">
-  <div class="paciente-banner-accent"></div>
-  <div class="paciente-avatar">
-    <!-- Icono de usuario (ejemplo con SVG) -->
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  </div>
   <div class="paciente-datos">
     <span class="paciente-nombre">
       {{ paciente.nombre.primer_nombre }}
@@ -97,7 +87,7 @@
     </div>
   </div>
 </div>
-  </div>
+  
 
   <!-- ═══════════════════════════════════════════════════════ -->
   <!-- GRID PRINCIPAL                                          -->

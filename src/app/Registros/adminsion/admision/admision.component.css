@@ -174,26 +174,13 @@
   background: linear-gradient(90deg, var(--pulse), #8b5cf6, var(--pulse));
 }
 
-.paciente-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(59,130,246,0.1);
-  border: 0.5px solid rgba(59,130,246,0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: #1a3a6a;
-}
-
-.paciente-avatar svg { width: 22px; height: 22px; }
 
 .paciente-datos {
   display: flex;
   flex-direction: column;
   gap: 6px;
   min-width: 0;
+  margin: 6px;
 }
 
 .paciente-nombre {
@@ -594,45 +581,9 @@ select.field-input option { background: #fff; color: #0f172a; }
   --transition: all 0.2s ease;
 }
 
-/* --- BANNER DEL PACIENTE (Mejorado) --- */
-.paciente-banner {
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  border-radius: var(--border-radius-md);
-  padding: var(--spacing-md);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: var(--transition);
-}
 
-.paciente-banner-accent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--pulse), #8b5cf6, var(--pulse));
-}
 
-/* Avatar mejorado con efecto hover */
-.paciente-avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--pulse-dim), rgba(139, 92, 246, 0.2));
-  border: 2px solid rgba(59, 130, 246, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: var(--pulse);
-  transition: var(--transition);
-}
+
 
 .paciente-avatar:hover {
   transform: scale(1.05);
@@ -861,10 +812,8 @@ select.field-input option { background: #fff; color: #0f172a; }
 
 /* Sombra suave al hacer scroll */
 .paciente-banner {
- 
-  top: 0;
-  z-index: 40;
-  margin-bottom: var(--spacing-sm);
+  border-radius: 8px;
+  
 }
 
 /* Mejora para dark mode (opcional) */
