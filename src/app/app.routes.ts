@@ -38,6 +38,7 @@ import { RecuperarComponent } from './principal/administrador/recuperar/recupera
 import { roleGuard } from './role.guard';
 import { EstadisticaComponent } from './std/estadistica/estadistica.component';
 import { ConsultorComponent } from './std/consultor/consultor.component';
+import { MenutsComponent } from './trabajoSocial/trabajosocial/menuts.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -111,7 +112,10 @@ export const routes: Routes = [
 
       //Estadistica
       { path: 'estadistica', component: EstadisticaComponent, canActivate: [roleGuard(['admin', 'std'])] },
-      { path: 'consultar', component: ConsultorComponent }
+      { path: 'consultar', component: ConsultorComponent },
+
+      //TrabajoSocial
+      { path: 'TrabajoSocial', component: MenutsComponent, canActivate: [roleGuard(['admin', 'ts'])] },
 
     ]
   }

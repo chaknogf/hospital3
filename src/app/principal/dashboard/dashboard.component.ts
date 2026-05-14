@@ -52,11 +52,11 @@ export class DashboardComponent implements OnInit {
         ruta: '/usisau'
       },
 
-      // {
-      //   nombre: 'Vacunas',
-      //   descripcion: 'Control de vacunas y esquemas',
-      //   ruta: '/vacunas'
-      // },
+      {
+         nombre: 'Trabajo Social',
+         descripcion: 'Modulo de trabajo',
+         ruta: '/TrabajoSocial'
+       },
       // {
       //   nombre: 'Personal',
       //   descripcion: 'Administración del personal médico',

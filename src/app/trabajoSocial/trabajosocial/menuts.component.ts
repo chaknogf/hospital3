@@ -7,14 +7,14 @@ import { IconService } from '../../service/icon.service';
 
 
 @Component({
-  selector: 'app-estadistica',
-  templateUrl: './estadistica.component.html',
-  styleUrls: ['./estadistica.component.css'],
+  selector: 'app-menuts',
+  templateUrl: './menuts.component.html',
+  styleUrls: ['./menuts.component.css'],
   standalone: true,
   imports: [CommonModule, RouterModule]
 })
 
-export class EstadisticaComponent implements OnInit {
+export class MenutsComponent implements OnInit {
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
 
   // iconos
@@ -52,8 +52,8 @@ export class EstadisticaComponent implements OnInit {
     this.options = [
 
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
-      { nombre: 'Procedimientos', descripcion: 'Registro de procedimientos menores y mayores', ruta: '/procedimientosmenores', icon: '' },
-      { nombre: 'Nacimientos', descripcion: 'Registro de Nacimientos', ruta: '/nacimientosCons', icon: '' },
+     //{ nombre: 'Procedimientos', descripcion: 'Registro de procedimientos menores y mayores', ruta: '/procedimientosmenores', icon: '' },
+      //{ nombre: 'Nacimientos', descripcion: 'Registro de Nacimientos', ruta: '/nacimientosCons', icon: '' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];
