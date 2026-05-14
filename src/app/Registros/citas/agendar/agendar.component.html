@@ -110,16 +110,19 @@
           👶🏻
         }
       </div>
-      |
-      <div class="paciente-datos">
+      <div class="paciente-datos container">
         <div class="paciente-nombre">
           {{ getNombrePaciente() }}
         </div>
 
-        <div class="paciente-chips">
+        <div class="paciente-chips container">
           @if (pacienteEncontrado.sexo) {
             <div class="p-chip p-chip-exp">
-              🚻 {{ pacienteEncontrado.sexo | datosExtra: "sexo" }},
+              🚻 {{ pacienteEncontrado.sexo | datosExtra: "sexo" }}
+              
+            </div>,
+            <div class="p-chip p-chip-exp">
+             
               {{ pacienteEncontrado.fecha_nacimiento | edad }}
             </div>
           }

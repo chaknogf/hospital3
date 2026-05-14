@@ -58,35 +58,45 @@
       </ng-container>
     </div>
 
-    <div class="paciente-datos">
-      <span class="paciente-nombre">
-        {{ paciente.nombre.primer_nombre }}
-        {{ paciente.nombre.segundo_nombre }}
-        {{ paciente.nombre.otro_nombre }}
-        {{ paciente.nombre.primer_apellido }}
-        {{ paciente.nombre.segundo_apellido }}
-        {{ paciente.nombre.apellido_casada }}
+   <div class="paciente-banner">
+  <div class="paciente-banner-accent"></div>
+  <div class="paciente-avatar">
+    <!-- Icono de usuario (ejemplo con SVG) -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  </div>
+  <div class="paciente-datos">
+    <span class="paciente-nombre">
+      {{ paciente.nombre.primer_nombre }}
+      {{ paciente.nombre.segundo_nombre }}
+      {{ paciente.nombre.otro_nombre }}
+      {{ paciente.nombre.primer_apellido }}
+      {{ paciente.nombre.segundo_apellido }}
+      {{ paciente.nombre.apellido_casada }}
+    </span>
+    <div class="paciente-chips">
+      <span class="p-chip">CUI: {{ paciente.cui | cui }}</span>
+      <span class="p-chip">Exp: {{ paciente.expediente }}</span>
+      <span class="p-chip"
+        >{{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }} ·
+        {{ paciente.fecha_nacimiento | edad }}</span
+      >
+      <span class="p-chip">{{ paciente.sexo | datosExtra: "sexo" }}</span>
+      <span class="p-chip" *ngIf="paciente.contacto?.telefonos">
+        📞 {{ paciente.contacto?.telefonos }}
       </span>
-      <div class="paciente-chips">
-        <span class="p-chip">CUI: {{ paciente.cui | cui }}</span>
-        <span class="p-chip">Exp: {{ paciente.expediente }}</span>
-        <span class="p-chip"
-          >{{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }} ·
-          {{ paciente.fecha_nacimiento | edad }}</span
-        >
-        <span class="p-chip">{{ paciente.sexo | datosExtra: "sexo" }}</span>
-        <span class="p-chip" *ngIf="paciente.contacto?.telefonos">
-          Tel: {{ paciente.contacto?.telefonos }}
-        </span>
-        <span class="p-chip p-chip-dir" *ngIf="paciente.contacto?.domicilio">
-          {{ paciente.contacto?.domicilio }},
-          {{ paciente.contacto?.municipio | datosExtra: "vecindad" }}
-        </span>
-        <button class="btn btn-dark" (click)="editarPaciente(paciente.id)">
-          Editar
-        </button>
-      </div>
+      <span class="p-chip p-chip-dir" *ngIf="paciente.contacto?.domicilio">
+        📍 {{ paciente.contacto?.domicilio }},
+        {{ paciente.contacto?.municipio | datosExtra: "vecindad" }}
+      </span>
+      <button class="btn-editar" (click)="editarPaciente(paciente.id)">
+        ✏️ Editar
+      </button>
     </div>
+  </div>
+</div>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════ -->
