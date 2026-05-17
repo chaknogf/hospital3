@@ -159,6 +159,7 @@ export interface Egreso {
   registro?: string;
   condicion: string;
   referencia?: string;
+  lactancia_materna?: boolean;
   diagnosticos?: Dx[];         // Lista de diagnósticos al egreso
   medico?: string;
 }
@@ -232,6 +233,7 @@ export interface ConsultaBase {
   orden?: number;
   ultimo_estado?: string;
   egreso?: Egreso;
+
 }
 
 export interface ConsultaCreate {
@@ -348,6 +350,7 @@ export interface ConsultaPacienteResumen {
   orden?: number;
   egreso?: Egreso;
   paciente: PacienteJoin;
+  ultimo_estado?: string;
 
 }
 

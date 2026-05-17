@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { ApiService } from '../../../service/api.service';
 import { ConsultaService } from '../../consultas/consultas.service';
 import { ConsultaUtilService } from '../../../service/consulta-util.service';
-
+import { Location } from '@angular/common';
 import { Dict, ciclos, tipoConsulta, especialidades, servicios } from '../../../enum/diccionarios';
 import { Paciente } from '../../../interface/interfaces';
 import {
@@ -26,6 +26,7 @@ import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon, manIcon, womanIcon } from '../../../shared/icons/svg-icon';
 import { PacienteService } from '../../patient/paciente.service';
+import { IconService } from '../../../service/icon.service';
 
 @Component({
   selector: 'app-admision',
@@ -46,6 +47,18 @@ export class AdmisionComponent implements OnInit {
   // ── Formulario ─────────────────────────────────────────────
   form: FormGroup = new FormGroup({});
 
+  // ======= INYECCIONES =======
+  private api = inject(ConsultaService);
+  private apis = inject(ApiService);
+  //private apip = inject(PacienteService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private iconService = inject(IconService);
+  private location = inject(Location);
+  private fb = inject(FormBuilder);
+  private consultaUtil = inject(ConsultaUtilService);
+
+
   // ── Datos ──────────────────────────────────────────────────
   paciente: Paciente = {} as Paciente;
   consultaActual?: ConsultaOut;
@@ -65,6 +78,7 @@ export class AdmisionComponent implements OnInit {
   ciclos: Dict[] = ciclos;
   especialidades: Dict[] = [];
   servicios: Dict[] = [];
+  especialidadesFiltradas: Dict[] = [];
 
   // ── SVG Icons ──────────────────────────────────────────────
   addIcon!: SafeHtml;
@@ -76,17 +90,12 @@ export class AdmisionComponent implements OnInit {
   manIcon!: SafeHtml;
 
   constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private api: ConsultaService,
-    private apis: ApiService,
-    private apip: PacienteService,
-    private consultaUtil: ConsultaUtilService,
-    private sanitizer: DomSanitizer
+
+
+
   ) {
     this.inicializarFormulario();
-    this.inicializarSVG();
+
   }
 
   // ══════════════════════════════════════════════════════════
@@ -99,20 +108,16 @@ export class AdmisionComponent implements OnInit {
 
   private inicializarFormulario(): void {
     this.form = this.fb.group({
-      // Solo lectura (visualización)
       id: [{ value: null, disabled: true }],
       expediente: [{ value: '', disabled: true }],
       documento: [{ value: '', disabled: true }],
-      fecha_consulta: [{ value: '', disabled: true }],
-      hora_consulta: [{ value: '', disabled: true }],
+      fecha_consulta: [{ value: '', disabled: false }],
+      hora_consulta: [{ value: '', disabled: false }],
       orden: [{ value: null, disabled: true }],
-
-      // Campos enviables al backend
       paciente_id: [0],
-      tipo_consulta: [0],
+      tipo_consulta: [{ value: null, disabled: true }],
       especialidad: [''],
       servicio: [''],
-
       indicadores: this.fb.group({
         estudiante_publico: [false],
         empleado_publico: [false],
@@ -124,23 +129,45 @@ export class AdmisionComponent implements OnInit {
         ambulancia: [false],
         embarazo: [false]
       }),
-
-      // Solo para modo edición — agrega un nuevo ciclo
-      nuevo_estado: [''],
+      nuevo_estado: ['actualizado'],
       nuevo_servicio: [''],
-      nuevo_comentario: ['']
+      nuevo_comentario: [''],
+
+      // ── Egreso ──────────────────────────────────────────────
+      egreso_condicion: [''],
+      egreso_referencia: [''],
+      lactancia_materna: [''],
+      egreso_medico: [''],
+      egreso_diagnostico: [''],   // descripción libre del dx
+      egreso_comentario: [''],
+    });
+
+    // Listener: filtrar especialidades según tipo de consulta
+    this.form.get('tipo_consulta')?.valueChanges.subscribe(tipo => {
+      this.filtrarEspecialidadesPorTipo(Number(tipo));
     });
   }
 
-  private inicializarSVG(): void {
-    this.addIcon = this.sanitizer.bypassSecurityTrustHtml(addIcon);
-    this.removeIcon = this.sanitizer.bypassSecurityTrustHtml(removeIcon);
-    this.saveIcon = this.sanitizer.bypassSecurityTrustHtml(saveIcon);
-    this.cancelIcon = this.sanitizer.bypassSecurityTrustHtml(cancelIcon);
-    this.findIcon = this.sanitizer.bypassSecurityTrustHtml(findIcon);
-    this.womanIcon = this.sanitizer.bypassSecurityTrustHtml(womanIcon);
-    this.manIcon = this.sanitizer.bypassSecurityTrustHtml(manIcon);
+  private filtrarEspecialidadesPorTipo(tipo: number): void {
+    switch (tipo) {
+      case 1: // COEX
+        this.especialidadesFiltradas = especialidades.filter(e => e.ref !== 'sop');
+        this.servicios = servicios.filter(s => s.ref === 'coex');
+        break;
+      case 2: // Hospitalización/Ingreso
+        this.especialidadesFiltradas = especialidades.filter(e => e.ref === 'all');
+        this.servicios = servicios.filter(s => s.ref === 'ingreso');
+        break;
+      case 3: // Emergencia
+        this.especialidadesFiltradas = especialidades.filter(e => e.ref === 'all');
+        this.servicios = servicios.filter(s => s.ref === 'emergencia');
+        break;
+      default:
+        this.especialidadesFiltradas = especialidades;
+        this.servicios = servicios;
+    }
   }
+
 
   // ══════════════════════════════════════════════════════════
   // FLAGS Y CARGA
@@ -148,7 +175,7 @@ export class AdmisionComponent implements OnInit {
   private inicializarFlagsYCarga(params: any): void {
     const origen = params.get('origen');
     const id = Number(params.get('id'));
-    const pacienteId = Number(params.get('pacienteId'));
+
 
     this.esEmergencia = origen === 'emergencia';
     this.esCoesx = origen === 'coex';
@@ -163,8 +190,7 @@ export class AdmisionComponent implements OnInit {
     if (this.consultaId !== undefined) {
       this.enEdicion = true;
       this.cargarConsulta(this.consultaId);
-    } else if (pacienteId && id === 0) {
-      this.cargarPaciente(pacienteId);
+    } else {
       this.enEdicion = false;
     }
   }
@@ -172,19 +198,7 @@ export class AdmisionComponent implements OnInit {
   // ══════════════════════════════════════════════════════════
   // CARGA DE DATOS
   // ══════════════════════════════════════════════════════════
-  cargarPaciente(idP: number): void {
-    this.apip.getPaciente(idP)
-      .pipe(catchError(err => { this.mostrarError('cargar paciente', err); return of(null); }))
-      .subscribe(data => {
-        if (data) {
-          this.paciente = data;
-          this.form.patchValue({
-            paciente_id: idP,
-            expediente: data.expediente || 'Se generará automáticamente'
-          });
-        }
-      });
-  }
+
 
   cargarConsulta(id: number): void {
     this.api.getConsultaId(id)
@@ -192,6 +206,12 @@ export class AdmisionComponent implements OnInit {
       .subscribe(data => {
         if (data) {
           this.consultaActual = data;
+
+          // ← Extraer paciente directo de la respuesta, sin llamada extra
+          if (data.paciente) {
+            this.paciente = data.paciente as any;
+          }
+
           this.form.patchValue({
             id: data.id,
             expediente: data.expediente,
@@ -203,10 +223,13 @@ export class AdmisionComponent implements OnInit {
             fecha_consulta: data.fecha_consulta,
             hora_consulta: data.hora_consulta,
             orden: data.orden,
-            indicadores: data.indicadores
+            indicadores: data.indicadores,
+            nuevo_servicio: data.servicio
           });
 
-          if (data.paciente_id) this.cargarPaciente(data.paciente_id);
+          // Filtrar especialidades según tipo cargado
+          this.filtrarEspecialidadesPorTipo(Number(data.tipo_consulta));
+
           this.historialCiclos = data.ciclo || [];
         }
       });
@@ -253,43 +276,48 @@ export class AdmisionComponent implements OnInit {
    *   - agrega un nuevo registro al ciclo (si se seleccionó estado)
    */
   private actualizarConsulta(): void {
-    if (!this.consultaId) {
-      this.mostrarError('actualizar', new Error('ID de consulta no encontrado'));
-      return;
-    }
-
+    if (!this.consultaId) return;
     const v = this.form.getRawValue();
 
-    // Construir payload — solo incluye lo que cambió
     const payload: ConsultaUpdate = {
       especialidad: v.especialidad || undefined,
       servicio: v.servicio || undefined,
       indicadores: v.indicadores as Indicador,
     };
 
-    // Si se seleccionó un nuevo estado, agrega el ciclo en el mismo PATCH
+    // Egreso — solo si viene condición
+    if (v.egreso_condicion) {
+      payload.egreso = {
+        condicion: v.egreso_condicion,
+        referencia: v.egreso_referencia || undefined,
+        medico: v.egreso_medico || undefined,
+        diagnosticos: v.egreso_diagnostico
+          ? [{ codigo: '', descripcion: v.egreso_diagnostico }]
+          : [],
+      };
+    }
+
     if (v.nuevo_estado) {
-      const nuevoCiclo: CicloClinico = {
+      payload.ciclo = {
         estado: v.nuevo_estado as EstadoCiclo,
         especialidad: v.especialidad || undefined,
         servicio: v.nuevo_servicio || v.servicio || undefined,
         comentario: v.nuevo_comentario || undefined,
       };
-      payload.ciclo = nuevoCiclo;
     }
 
     this.api.updateConsulta(this.consultaId, payload)
       .pipe(
-        tap(r => {
-          console.log('✅ Consulta actualizada:', r);
-          this.mostrarExito('Consulta actualizada exitosamente');
-        }),
+        tap(r => this.mostrarExito('Consulta actualizada exitosamente')),
         catchError(err => { this.mostrarError('actualizar consulta', err); return of(null); })
       )
       .subscribe(r => {
         if (r) {
-          // Limpiar campos de nuevo ciclo y recargar
-          this.form.patchValue({ nuevo_estado: '', nuevo_servicio: '', nuevo_comentario: '' });
+          this.form.patchValue({
+            nuevo_estado: '', nuevo_servicio: '', nuevo_comentario: '',
+            egreso_condicion: '', egreso_referencia: '', egreso_medico: '',
+            egreso_diagnostico: '', egreso_comentario: ''
+          });
           this.cargarConsulta(this.consultaId!);
         }
       });
@@ -313,40 +341,31 @@ export class AdmisionComponent implements OnInit {
   // ══════════════════════════════════════════════════════════
   // VALORES POR TIPO
   // ══════════════════════════════════════════════════════════
+  // Reemplazar valoresEmergencia, valoresCoex, valoresIngreso
   private valoresEmergencia(): void {
-    this.especialidades = especialidades.filter(e => e.ref === 'all');
-    this.servicios = servicios.filter(s => s.ref === 'emergencia');
     this.form.patchValue({ tipo_consulta: 3, servicio: 'REME' });
+    this.filtrarEspecialidadesPorTipo(3);
   }
 
   private valoresIngreso(): void {
-    this.especialidades = especialidades.filter(e => e.ref === 'all');
-    this.servicios = servicios.filter(s => s.ref === 'ingreso');
     this.form.patchValue({ tipo_consulta: 2, servicio: 'HOSPITALIZACION' });
+    this.filtrarEspecialidadesPorTipo(2);
   }
 
   private valoresCoex(): void {
-    this.especialidades = especialidades.filter(e => e.ref !== 'sop');
-    this.servicios = servicios.filter(s => s.ref === 'coex');
     this.form.patchValue({ tipo_consulta: 1, servicio: 'COEX' });
+    this.filtrarEspecialidadesPorTipo(1);
   }
-
   // ══════════════════════════════════════════════════════════
   // NAVEGACIÓN
   // ══════════════════════════════════════════════════════════
-  volver(): void {
-    if (this.esEmergencia) this.router.navigate(['/emergencias']);
-    else if (this.esCoesx) this.router.navigate(['/coex']);
-    else if (this.esIngreso) this.router.navigate(['/ingresos']);
-    else this.router.navigate(['/pacientes']);
-  }
+  volver(): void { this.location.back(); }
 
   // ══════════════════════════════════════════════════════════
   // HELPERS TEMPLATE
   // ══════════════════════════════════════════════════════════
-  get estadoActual(): EstadoCiclo | null {
-    if (!this.consultaActual?.ciclo?.length) return null;
-    return this.consultaActual.ciclo[this.consultaActual.ciclo.length - 1].estado;
+  get estadoActual(): string | null {
+    return this.consultaActual?.ultimo_estado ?? null;
   }
 
   get ultimoCiclo(): CicloClinico | null {

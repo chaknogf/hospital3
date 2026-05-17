@@ -52,6 +52,7 @@ export class RecepcionComponent implements OnInit {
   filtros: any = {
     skip: 0, limit: this.pageSize + 1,
     activo: true,
+    archivo: false,  // ← agregar esto
     tipo_consulta: '', primer_nombre: '', segundo_nombre: '',
     primer_apellido: '', segundo_apellido: '',
     fecha: '', ciclo: '', especialidad: '', servicio: '', identificador: '',
@@ -208,7 +209,8 @@ export class RecepcionComponent implements OnInit {
 
   cargarConsultas(): void {
     this.cargando = true;
-    this.api.getConsultas(this.filtros).subscribe({
+    const params = this.limpiarFiltrosVacios(this.filtros);
+    this.api.getConsultas(params).subscribe({
       next: resultado => {
         this.totalDeRegistros = resultado.total;
         this.consultas = resultado.consultas;
@@ -278,7 +280,11 @@ export class RecepcionComponent implements OnInit {
     const limpio: any = {};
     for (const key in filtros) {
       const val = filtros[key];
-      if (key === 'skip' || key === 'limit' || key === 'activo') { limpio[key] = val; continue; }
+      // ← agregar 'archivo' a los campos que siempre se incluyen
+      if (key === 'skip' || key === 'limit' || key === 'activo' || key === 'archivo') {
+        limpio[key] = val;
+        continue;
+      }
       if (val !== '' && val !== null && val !== undefined) limpio[key] = val;
     }
     return limpio;
@@ -295,6 +301,7 @@ export class RecepcionComponent implements OnInit {
   limpiarFiltros(): void {
     this.filtros = {
       skip: 0, limit: this.pageSize + 1, activo: true,
+      archivo: false,  // ← agregar esto
       tipo_consulta: '', primer_nombre: '', segundo_nombre: '',
       primer_apellido: '', segundo_apellido: '',
       fecha: '', ciclo: '', especialidad: '', servicio: '', identificador: ''

@@ -126,6 +126,7 @@
     <table class="aurora-tb">
       <thead>
         <tr>
+          <th>ID</th>
           <th>Identificador</th>
           <th>Nombre Completo</th>
           <th>Fecha Nacimiento</th>
@@ -142,20 +143,27 @@
           [class.touch-active]="rowActiva === data.id"
           (click)="activarFila(data.id)"
         >
+          <td style="font-size: xx-small">{{ data.id }}</td>
           <td class="text-justify">
-            <div class="ms-4" *ngIf="data?.paciente?.cui">
-              <strong>CUI:</strong>
-              <small> {{ data.paciente.cui | cui }}</small>
-            </div>
-            <div *ngIf="data?.paciente?.pasaporte">
-              <strong>Pasaporte:</strong> {{ data.paciente.pasaporte }}
-            </div>
-            <div *ngIf="data?.expediente">
-              <strong>Expediente:</strong> {{ data.expediente }}
-            </div>
-            <div *ngIf="data?.documento">
-              <strong>Hoja de Emergencia:</strong> {{ data.documento }}
-            </div>
+            @if (data?.paciente?.cui) {
+              <div class="ms-4">
+                <strong>CUI:</strong>
+                <small> {{ data.paciente.cui | cui }}</small>
+              </div>
+            }
+            @if (data?.paciente?.pasaporte) {
+              <div>
+                <strong>Pasaporte:</strong> {{ data.paciente.pasaporte }}
+              </div>
+            }
+            @if (data?.expediente) {
+              <div><strong>Expediente:</strong> {{ data.expediente }}</div>
+            }
+            @if (data?.documento) {
+              <div>
+                <strong>Hoja de Emergencia:</strong> {{ data.documento }}
+              </div>
+            }
           </td>
           <td>
             <p class="p-0 m-0 text-uppercase">
