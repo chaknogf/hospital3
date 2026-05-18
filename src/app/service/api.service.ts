@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse, Hijode, PacienteJoin } from '../interface/interfaces';
 import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHistorial, ConstanciaNacimientoUpdate } from '../interface/consNac';
-import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, SignosVitales, TotalesItem, TotalesResponse } from '../interface/consultas';
+import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, TotalesItem, TotalesResponse } from '../interface/consultas';
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
 import { FiltroConsulta, FiltroCitas } from '../interface/filtros.model';
 import { CitaCreate, CitaResponse, Citas, CitasBase, CitaUpdate } from '../interface/citas';

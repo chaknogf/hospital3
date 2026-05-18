@@ -166,8 +166,7 @@ export class FormConsultaComponent implements OnInit {
             registro: data.egreso?.registro
               ? new Date(data.egreso.registro).toISOString().slice(0, 16)
               : '',
-            codigo: data.egreso?.diagnosticos?.[0]?.codigo ?? '',
-            descripcion: data.egreso?.diagnosticos?.[0]?.descripcion ?? '',
+            diagnostico: data.egreso?.diagnosticos ?? ''
           },
         });
 
@@ -245,8 +244,7 @@ export class FormConsultaComponent implements OnInit {
         medico: v.egreso.medico || undefined,
         // Diagnóstico solo si hay descripción
         diagnosticos: v.egreso.descripcion
-          ? [{ codigo: v.egreso.codigo || '', descripcion: v.egreso.descripcion, tipo: 'egreso' } as Dx]
-          : [],
+
       } as Egreso;
     }
 

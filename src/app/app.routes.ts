@@ -65,7 +65,7 @@ export const routes: Routes = [
       { path: 'admisionPaciente/:origen/:pacienteId', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
       { path: 'editarAdmision/:id/:origen', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
       { path: 'editarAdmision/:id', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-      { path: 'formConsulta/:id', component: FormConsultaComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      // { path: 'formConsulta/:id', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
       { path: 'detalleAdmision/:id', component: DetalleConsultaComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
 
       { path: 'hijo/:id', component: HijosComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },

@@ -18,7 +18,6 @@ import {
   Indicador,
   RegistroConsultaCreate,
   RegistroConsultaResponse,
-  SignosVitales,
   TotalesItem,
   TotalesResponse,
   PacientesBuscado,
@@ -206,39 +205,10 @@ export class ConsultaService extends BaseApiService {
     return this.agregarCiclo(consultaId, estado);
   }
 
-  /**
-   * Registra signos vitales en el ciclo
-   */
-  registrarSignosVitales(
-    consultaId: number,
-    signos: SignosVitales
-  ): Observable<ConsultaOut> {
-    return this.agregarCiclo(consultaId, 'signos', {
-      signos_vitales: signos
-    });
-  }
+
 
   /**
-   * Completa la consulta médica con diagnóstico y tratamiento
-   */
-  completarConsulta(
-    consultaId: number,
-    datos: {
-      impresion_clinica?: any;
-      tratamiento?: any;
-      ordenes?: any;
-      estudios?: any;
-    }
-  ): Observable<ConsultaOut> {
-    return this.agregarCiclo(consultaId, 'consulta', datos);
-  }
 
-  /**
-   * Registra egreso del paciente
-   */
-  registrarEgreso(consultaId: number, egreso: Egreso): Observable<ConsultaOut> {
-    return this.agregarCiclo(consultaId, 'egreso', { egreso });
-  }
 
   /**
    * Actualiza indicadores (merge con los existentes)

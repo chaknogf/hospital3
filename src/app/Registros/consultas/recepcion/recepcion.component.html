@@ -404,16 +404,9 @@
         <input
           class="rc-input"
           type="text"
-          [(ngModel)]="formArchivar.diagnosticos[0].codigo"
+          [(ngModel)]="formArchivar.diagnosticos"
           name="diagnostico"
-          placeholder="Ej: I:10, S72.001A, E78.5..."
-        />
-        <input
-          class="rc-input"
-          type="text"
-          [(ngModel)]="formArchivar.diagnosticos[0].descripcion"
-          name="diagnostico"
-          placeholder="Ej: Hipertensión controlada, Fractura consolidada..."
+          placeholder="Ej: I:10 Hipertensión"
         />
       </div>
 
@@ -441,10 +434,7 @@
         </div>
         <div class="rc-preview-row" *ngIf="formArchivar.diagnosticos">
           <span class="rc-preview-key">diagnostico</span>
-          <span class="rc-preview-val"
-            >{{ formArchivar.diagnosticos[0].codigo }} -
-            {{ formArchivar.diagnosticos[0].descripcion }}</span
-          >
+          < class="rc-preview-val" >{{ formArchivar.diagnosticos }} - >
         </div>
       </div>
 

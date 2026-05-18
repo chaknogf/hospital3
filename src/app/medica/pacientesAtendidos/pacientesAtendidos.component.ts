@@ -130,7 +130,7 @@ export class PacientesAtendidosComponent implements OnInit {
     condicion: '',
     registro: '',
     referencia: '',     // referido a / hospital destino
-    diagnosticos: [{ codigo: '', descripcion: '' }],    // diagnóstico libre (se guarda como Dx)
+    diagnosticos: '',    // diagnóstico libre (se guarda como Dx)
     medico: '',         // médico responsable del egreso
     comentario: '',     // observaciones adicionales
     guardando: false,
@@ -152,7 +152,7 @@ export class PacientesAtendidosComponent implements OnInit {
       condicion: '',
       registro: '',
       referencia: '',
-      diagnosticos: [{ codigo: '', descripcion: '' }],
+      diagnosticos: '',
       medico: '',
       comentario: '',
       guardando: false,
@@ -180,9 +180,8 @@ export class PacientesAtendidosComponent implements OnInit {
       condicion: f.condicion || '',
       referencia: f.referencia || undefined,
       medico: f.medico || undefined,
-      diagnosticos: f.diagnosticos?.length
-        ? [{ codigo: '', descripcion: f.diagnosticos[0].descripcion } as Dx]
-        : [],
+      diagnosticos: f.diagnosticos || ''
+
     };
 
     const ciclo: CicloClinico = {

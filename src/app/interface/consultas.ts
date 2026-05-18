@@ -29,125 +29,19 @@ export type EstadoCiclo =
   | "triage"; // Consulta contraindicada
 
 
+export interface PresaQuirurgica {
+  programada: string;
+  reprogramada: string;
+  realizada: string;
+  detalle: string;
+  especialidad: string;
+}
 export interface Datos {
   ciclo: string;
   registro: string;
 }
 
-export interface SignosVitales {
-  pa: string;
-  fc: string;
-  fr: string;
-  sat02: string;
-  temp: string;
-  peso: string;
-  talla: string;
-  pt: string;
-  te: string;
-  pe: string;
-  gmt: string;
-}
 
-export interface Antecedentes {
-  familiares: any[];
-  medicos: any[];
-  quirurgicos: any[];
-  alergicos: any[];
-  traumaticos: any[];
-  ginecoobstetricos: any[];
-  habitos: any[];
-}
-
-export interface Nota {
-  usuario: string;
-  nota: string;
-  registro: string;
-}
-
-export interface Enfermeria {
-  usuario: string;
-  turno: string;
-  nota: string;
-  registro: string;
-  signos: { [key: string]: SignosVitales };
-}
-
-export interface Silverman {
-  retraso_esternal: number;
-  aleteo_nasal: number;
-  quejido_expiratorio: number;
-  movimiento_toracico: number;
-  retraccion_supraclavicular: number;
-  puntuacion_total: number;
-}
-
-export interface Downe {
-  frecuencia_respiratoria: number;
-  aleteo_nasal: number;
-  quejido_respiratorio: number;
-  retraccion_toracoabdominal: number;
-  cinoasis: number;
-  puntuacion_total: number;
-}
-
-export interface Cuerpo {
-  cabeza: string;
-  ojos: string;
-  oidos: string;
-  nariz: string;
-  boca: string;
-  cuello: string;
-  torax: string;
-  pulmones: string;
-  corazon: string;
-  abdomen: string;
-  genitales: string;
-  extremidades: string;
-  columna: string;
-  piel: string;
-  neurologico: string;
-}
-
-export interface Glasgow {
-  apertura_ocular: number;
-  respuesta_verbal: number;
-  respuesta_motora: number;
-  puntuacion_total: number;
-}
-
-export interface Bishop {
-  dilatacion: number;
-  borramiento: number;
-  posicion: number;
-  consistencia: number;
-  altura_presentacion: number;
-  puntuacion_total: number;
-}
-
-export interface Apgar {
-  tono_muscular: number;
-  respuesta_refleja: number;
-  llanto: number;
-  respiracion: number;
-  coloracion: number;
-  puntuacion_total: number;
-  interpretacion: string;
-}
-
-export interface ExamenFisico {
-  silverman: { [key: string]: Silverman };
-  downe: { [key: string]: Downe };
-  cuerpo: { [key: string]: Cuerpo };
-  glasgow: { [key: string]: Glasgow };
-  bishop: { [key: string]: Bishop };
-  apgar: { [key: string]: Apgar };
-}
-
-export interface Sistema {
-  usuario: string;
-  accion: string;
-  fecha: string;
-}
 
 export interface Dx {
   codigo: string;
@@ -159,18 +53,13 @@ export interface Egreso {
   registro?: string;
   condicion: string;
   referencia?: string;
-  lactancia_materna?: boolean;
-  diagnosticos?: Dx[];         // Lista de diagnósticos al egreso
+  lactancia_materna?: boolean | null;
+  diagnosticos?: string;         // Lista de diagnósticos al egreso
   medico?: string;
+
 }
 
-export interface PresaQuirurgica {
-  programada: string;
-  reprogramada: string;
-  realizada: string;
-  detalle: string;
-  especialidad: string;
-}
+
 
 export interface Indicador {
   estudiante_publico: boolean;
@@ -192,23 +81,9 @@ export interface CicloClinico {
   estado: EstadoCiclo;
   registro?: string;  // ISO timestamp
   usuario?: string;
-
-  // ✅ Campos clínicos opcionales
   especialidad?: string;
   servicio?: string;
-  detalle_clinicos?: { [key: string]: Datos };
-  signos_vitales?: SignosVitales | { [key: string]: SignosVitales };
-  antecedentes?: Antecedentes | { [key: string]: Antecedentes };
-  ordenes?: { [key: string]: Datos };
-  estudios?: { [key: string]: Datos };
-  comentario?: string | { [key: string]: Nota };  // ✅ Acepta string O dict
-  impresion_clinica?: { [key: string]: Nota };
-  tratamiento?: { [key: string]: Nota };
-  examen_fisico?: ExamenFisico | { [key: string]: ExamenFisico };
-  nota_enfermeria?: { [key: string]: Enfermeria };
-  contraindicado?: string;
-  presa_quirurgica?: PresaQuirurgica | { [key: string]: PresaQuirurgica };
-  egreso?: Egreso | { [key: string]: Egreso };
+  comentario?: string;
 }
 
 export type CicloPatch = Omit<
@@ -485,29 +360,7 @@ export function crearRegistroCiclo(
   };
 }
 
-/**
- * Obtiene los signos vitales del último ciclo
- */
-export function obtenerSignosVitalesActuales(consulta: ConsultaOut): SignosVitales | null {
-  const ultimo = obtenerUltimoCiclo(consulta);
-  if (!ultimo || !ultimo.signos_vitales) {
-    return null;
-  }
 
-  // Si signos_vitales es un objeto directo, retornarlo
-  if ('pa' in ultimo.signos_vitales || 'fc' in ultimo.signos_vitales) {
-    return ultimo.signos_vitales as SignosVitales;
-  }
-
-  // Si es un diccionario con timestamps, obtener el más reciente
-  const keys = Object.keys(ultimo.signos_vitales);
-  if (keys.length > 0) {
-    const ultimoKey = keys[keys.length - 1];
-    return ultimo.signos_vitales[ultimoKey];
-  }
-
-  return null;
-}
 
 /**
  * Cuenta los registros de ciclo por estado

@@ -1,8 +1,8 @@
 // consulta-util.service.ts
 import { Injectable } from '@angular/core';
 import {
-  ConsultaBase, Ciclo, Datos, Sistema, SignosVitales, Antecedentes,
-  Nota, ExamenFisico, Enfermeria, PresaQuirurgica, Egreso,
+  ConsultaBase, Ciclo, Datos,
+  PresaQuirurgica, Egreso,
   ConsultaOut,
   RegistroConsultaCreate,
   Indicador,
@@ -60,19 +60,8 @@ export class ConsultaUtilService {
       usuario: raw.usuario,
       especialidad: raw.especialidad,
       servicio: raw.servicio,
-      detalle_clinicos: this.limpiarDict(raw.detalle_clinicos),
-      signos_vitales: this.limpiarDict(raw.signos_vitales),
-      antecedentes: this.limpiarDict(raw.antecedentes),
-      ordenes: this.limpiarDict(raw.ordenes),
-      estudios: this.limpiarDict(raw.estudios),
-      comentario: raw.comentario,
-      impresion_clinica: this.limpiarDict(raw.impresion_clinica),
-      tratamiento: this.limpiarDict(raw.tratamiento),
-      examen_fisico: this.limpiarDict(raw.examen_fisico),
-      nota_enfermeria: this.limpiarDict(raw.nota_enfermeria),
-      contraindicado: raw.contraindicado,
-      presa_quirurgica: this.limpiarDict(raw.presa_quirurgica),
-      egreso: this.limpiarDict(raw.egreso)
+
+
     };
   }
 

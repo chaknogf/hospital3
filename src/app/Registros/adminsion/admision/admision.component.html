@@ -449,9 +449,19 @@
           <span class="sec-badge">OPCIONAL</span>
         </div>
         <div class="sec-body single">
+          <!-- Campo editable -->
+          <div class="field">
+            <span class="field-label">Fecha y Hora de Egreso</span>
+            <input
+              class="field-input"
+              type="datetime-local"
+              formControlName="registro"
+            />
+          </div>
+
           <div class="field">
             <span class="field-label">Condición al egreso</span>
-            <select class="field-input" formControlName="egreso_condicion">
+            <select class="field-input" formControlName="condicion">
               <option value="">— Sin egreso —</option>
               <option value="recuperado">Recuperado</option>
               <option value="mismo_estado">Mismo estado</option>
@@ -486,7 +496,7 @@
               <input
                 class="field-input"
                 type="text"
-                formControlName="egreso_referencia"
+                formControlName="referencia"
                 placeholder="Hospital o servicio de destino"
               />
             </div>
@@ -497,7 +507,7 @@
             <input
               class="field-input"
               type="text"
-              formControlName="egreso_medico"
+              formControlName="medico"
               placeholder="Nombre del médico"
             />
           </div>
@@ -507,19 +517,9 @@
             <input
               class="field-input"
               type="text"
-              formControlName="egreso_diagnostico"
+              formControlName="diagnosticos"
               placeholder="Descripción del diagnóstico"
             />
-          </div>
-
-          <div class="field">
-            <span class="field-label">Observaciones</span>
-            <textarea
-              class="field-input"
-              formControlName="egreso_comentario"
-              rows="2"
-              placeholder="Notas adicionales del egreso"
-            ></textarea>
           </div>
         </div>
       </div>

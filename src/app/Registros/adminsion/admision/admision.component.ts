@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,12 +13,8 @@ import { Location } from '@angular/common';
 import { Dict, ciclos, tipoConsulta, especialidades, servicios } from '../../../enum/diccionarios';
 import { Paciente } from '../../../interface/interfaces';
 import {
-  ConsultaOut,
-  ConsultaUpdate,
-  RegistroConsultaCreate,
-  CicloClinico,
-  EstadoCiclo,
-  Indicador
+  ConsultaOut, ConsultaUpdate, RegistroConsultaCreate,
+  CicloClinico, EstadoCiclo, Indicador
 } from './../../../interface/consultas';
 
 import { EdadPipe } from '../../../pipes/edad.pipe';
@@ -26,38 +22,33 @@ import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon, manIcon, womanIcon } from '../../../shared/icons/svg-icon';
 import { PacienteService } from '../../patient/paciente.service';
-import { IconService } from '../../../service/icon.service';
 
 @Component({
   selector: 'app-admision',
   templateUrl: './admision.component.html',
   styleUrls: ['./admision.component.css'],
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    EdadPipe,
-    DatosExtraPipe,
-    CuiPipe
-  ]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe]
 })
 export class AdmisionComponent implements OnInit {
 
   // ── Formulario ─────────────────────────────────────────────
   form: FormGroup = new FormGroup({});
 
-  // ======= INYECCIONES =======
-  private api = inject(ConsultaService);
-  private apis = inject(ApiService);
-  //private apip = inject(PacienteService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private iconService = inject(IconService);
-  private location = inject(Location);
-  private fb = inject(FormBuilder);
-  private consultaUtil = inject(ConsultaUtilService);
-
+  // ── Inyecciones ────────────────────────────────────────────
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private location: Location,
+    private api: ConsultaService,
+    private apis: ApiService,
+    private apip: PacienteService,
+    private sanitizer: DomSanitizer
+  ) {
+    this.inicializarFormulario();
+    this.inicializarSVG();
+  }
 
   // ── Datos ──────────────────────────────────────────────────
   paciente: Paciente = {} as Paciente;
@@ -65,20 +56,19 @@ export class AdmisionComponent implements OnInit {
   private consultaId?: number;
   historialCiclos: CicloClinico[] = [];
 
-  // ── Configuración ──────────────────────────────────────────
-  usuarioActual = '';
-  enEdicion = false;
-  public esEmergencia = false;
-  public esCoesx = false;
-  public esIngreso = false;
-  public esConsulta = false;
-
   // ── Listas ─────────────────────────────────────────────────
   tipoConsulta: Dict[] = tipoConsulta;
   ciclos: Dict[] = ciclos;
-  especialidades: Dict[] = [];
-  servicios: Dict[] = [];
   especialidadesFiltradas: Dict[] = [];
+  servicios: Dict[] = [];
+
+  // ── Configuración ──────────────────────────────────────────
+  usuarioActual = '';
+  enEdicion = false;
+  esEmergencia = false;
+  esCoesx = false;
+  esIngreso = false;
+  esConsulta = false;
 
   // ── SVG Icons ──────────────────────────────────────────────
   addIcon!: SafeHtml;
@@ -88,15 +78,6 @@ export class AdmisionComponent implements OnInit {
   findIcon!: SafeHtml;
   womanIcon!: SafeHtml;
   manIcon!: SafeHtml;
-
-  constructor(
-
-
-
-  ) {
-    this.inicializarFormulario();
-
-  }
 
   // ══════════════════════════════════════════════════════════
   // INICIALIZACIÓN
@@ -129,45 +110,29 @@ export class AdmisionComponent implements OnInit {
         ambulancia: [false],
         embarazo: [false]
       }),
-      nuevo_estado: ['actualizado'],
+      nuevo_estado: [''],
       nuevo_servicio: [''],
       nuevo_comentario: [''],
-
       // ── Egreso ──────────────────────────────────────────────
-      egreso_condicion: [''],
-      egreso_referencia: [''],
+      condicion: [''],
+      referencia: [''],
       lactancia_materna: [''],
-      egreso_medico: [''],
-      egreso_diagnostico: [''],   // descripción libre del dx
-      egreso_comentario: [''],
-    });
+      medico: [''],
+      diagnosticos: [''],
+      registro: ['']
 
-    // Listener: filtrar especialidades según tipo de consulta
-    this.form.get('tipo_consulta')?.valueChanges.subscribe(tipo => {
-      this.filtrarEspecialidadesPorTipo(Number(tipo));
     });
   }
 
-  private filtrarEspecialidadesPorTipo(tipo: number): void {
-    switch (tipo) {
-      case 1: // COEX
-        this.especialidadesFiltradas = especialidades.filter(e => e.ref !== 'sop');
-        this.servicios = servicios.filter(s => s.ref === 'coex');
-        break;
-      case 2: // Hospitalización/Ingreso
-        this.especialidadesFiltradas = especialidades.filter(e => e.ref === 'all');
-        this.servicios = servicios.filter(s => s.ref === 'ingreso');
-        break;
-      case 3: // Emergencia
-        this.especialidadesFiltradas = especialidades.filter(e => e.ref === 'all');
-        this.servicios = servicios.filter(s => s.ref === 'emergencia');
-        break;
-      default:
-        this.especialidadesFiltradas = especialidades;
-        this.servicios = servicios;
-    }
+  private inicializarSVG(): void {
+    this.addIcon = this.sanitizer.bypassSecurityTrustHtml(addIcon);
+    this.removeIcon = this.sanitizer.bypassSecurityTrustHtml(removeIcon);
+    this.saveIcon = this.sanitizer.bypassSecurityTrustHtml(saveIcon);
+    this.cancelIcon = this.sanitizer.bypassSecurityTrustHtml(cancelIcon);
+    this.findIcon = this.sanitizer.bypassSecurityTrustHtml(findIcon);
+    this.womanIcon = this.sanitizer.bypassSecurityTrustHtml(womanIcon);
+    this.manIcon = this.sanitizer.bypassSecurityTrustHtml(manIcon);
   }
-
 
   // ══════════════════════════════════════════════════════════
   // FLAGS Y CARGA
@@ -175,7 +140,7 @@ export class AdmisionComponent implements OnInit {
   private inicializarFlagsYCarga(params: any): void {
     const origen = params.get('origen');
     const id = Number(params.get('id'));
-
+    const pacienteId = Number(params.get('pacienteId'));
 
     this.esEmergencia = origen === 'emergencia';
     this.esCoesx = origen === 'coex';
@@ -190,14 +155,29 @@ export class AdmisionComponent implements OnInit {
     if (this.consultaId !== undefined) {
       this.enEdicion = true;
       this.cargarConsulta(this.consultaId);
-    } else {
+    } else if (pacienteId && id === 0) {
       this.enEdicion = false;
+      this.cargarPaciente(pacienteId);
     }
   }
 
   // ══════════════════════════════════════════════════════════
   // CARGA DE DATOS
   // ══════════════════════════════════════════════════════════
+  cargarPaciente(idP: number): void {
+    this.apip.getPaciente(idP)
+      .pipe(catchError(err => { this.mostrarError('cargar paciente', err); return of(null); }))
+      .subscribe(data => {
+        if (data) {
+          this.paciente = data;
+          this.form.patchValue({
+            paciente_id: idP,
+            expediente: data.expediente || 'Se generará automáticamente'
+          });
+        }
+      });
+  }
+
 
 
   cargarConsulta(id: number): void {
@@ -206,12 +186,9 @@ export class AdmisionComponent implements OnInit {
       .subscribe(data => {
         if (data) {
           this.consultaActual = data;
+          if (data.paciente) this.paciente = data.paciente as any;
 
-          // ← Extraer paciente directo de la respuesta, sin llamada extra
-          if (data.paciente) {
-            this.paciente = data.paciente as any;
-          }
-
+          // Datos principales
           this.form.patchValue({
             id: data.id,
             expediente: data.expediente,
@@ -223,61 +200,82 @@ export class AdmisionComponent implements OnInit {
             fecha_consulta: data.fecha_consulta,
             hora_consulta: data.hora_consulta,
             orden: data.orden,
-            indicadores: data.indicadores,
-            nuevo_servicio: data.servicio
+            indicadores: data.indicadores
           });
 
-          // Filtrar especialidades según tipo cargado
-          this.filtrarEspecialidadesPorTipo(Number(data.tipo_consulta));
+          // Cargar egreso
+          if (data.egreso) {
+            // Convertir de ISO string (2024-01-15T14:30:00) a datetime-local (2024-01-15T14:30)
+            let registroValue = '';
+            if (data.egreso.registro) {
+              registroValue = data.egreso.registro.substring(0, 16); // Toma YYYY-MM-DDThh:mm
+            }
 
+            this.form.patchValue({
+              condicion: data.egreso.condicion || '',
+              referencia: data.egreso.referencia || '',
+              lactancia_materna: data.egreso.lactancia_materna || false,
+              medico: data.egreso.medico || '',
+              diagnosticos: data.egreso.diagnosticos || '',
+              registro: registroValue  // ← Usar 'registro'
+            });
+          }
+
+          this.filtrarPorTipo(Number(data.tipo_consulta));
           this.historialCiclos = data.ciclo || [];
         }
       });
   }
-
   // ══════════════════════════════════════════════════════════
-  // GUARDAR — despacha según modo
+  // GUARDAR
   // ══════════════════════════════════════════════════════════
   guardar(): void {
-    if (this.enEdicion) this.actualizarConsulta();
-    else this.registrarNuevaAdmision();
-    this.router.navigate(['/consultas']);
+    const tipo = Number(this.form.getRawValue().tipo_consulta);
+
+    if (this.enEdicion) {
+      this.actualizarConsulta().subscribe(r => {
+        if (r) this.cargarConsulta(this.consultaId!);
+        if (r) this.navegarSegunTipo(tipo);
+      });
+    } else {
+      const v = this.form.getRawValue();
+      const datos: RegistroConsultaCreate = {
+        paciente_id: v.paciente_id,
+        tipo_consulta: v.tipo_consulta,
+        especialidad: v.especialidad,
+        servicio: v.servicio,
+        indicadores: v.indicadores,
+        ciclo: []
+      };
+
+
+      this.api.registrarAdmision(datos)
+        .pipe(
+          tap(() => this.mostrarExito('Admisión registrada exitosamente')),
+          catchError(err => { this.mostrarError('registrar admisión', err); return of(null); })
+        )
+        .subscribe(r => {
+          if (r) this.navegarSegunTipo(tipo);
+        });
+    }
   }
 
-  // ── Registro nuevo ─────────────────────────────────────────
-  private registrarNuevaAdmision(): void {
+  // ── Actualización ──────────────────────────────────────────
+
+
+  private actualizarConsulta() {
+    if (!this.consultaId) return of(null);
     const v = this.form.getRawValue();
+    const estadoActual = this.consultaActual?.ultimo_estado as EstadoCiclo;
 
-    const datos: RegistroConsultaCreate = {
-      paciente_id: v.paciente_id,
-      tipo_consulta: v.tipo_consulta,
-      especialidad: v.especialidad,
-      servicio: v.servicio,
-      indicadores: v.indicadores,
-      ciclo: []
-    };
+    // Estados terminales que no deben cambiar su estado principal
+    const estadosTerminales: EstadoCiclo[] = ['archivo', 'egreso', 'referido'];
+    const esEstadoTerminal = estadosTerminales.includes(estadoActual);
 
-    this.api.registrarAdmision(datos)
-      .pipe(
-        tap(r => {
-          console.log('✅ Admisión registrada:', r);
-          this.mostrarExito('Admisión registrada exitosamente');
-        }),
-        catchError(err => { this.mostrarError('registrar admisión', err); return of(null); })
-      )
-      .subscribe(r => { if (r) this.volver(); });
-  }
-
-  // ── Actualización completa ──────────────────────────────────
-  /**
-   * Actualiza en una sola llamada PATCH:
-   *   - especialidad y servicio (si cambiaron)
-   *   - indicadores
-   *   - agrega un nuevo registro al ciclo (si se seleccionó estado)
-   */
-  private actualizarConsulta(): void {
-    if (!this.consultaId) return;
-    const v = this.form.getRawValue();
+    // Estados que permiten transición normal
+    const estadosActivos: EstadoCiclo[] = ['iniciado', 'pendiente', 'admision', 'signos',
+      'consulta', 'estudios', 'tratamiento', 'observacion', 'evolucion',
+      'procedimiento', 'recuperacion', 'triage'];
 
     const payload: ConsultaUpdate = {
       especialidad: v.especialidad || undefined,
@@ -285,50 +283,163 @@ export class AdmisionComponent implements OnInit {
       indicadores: v.indicadores as Indicador,
     };
 
-    // Egreso — solo si viene condición
-    if (v.egreso_condicion) {
+    // 1. Manejo de Egreso
+    const tieneDatosEgreso = v.condicion || v.referencia || v.medico ||
+      v.diagnosticos || v.registro;
+
+    if (tieneDatosEgreso) {
+      let registroTimestamp = undefined;
+      if (v.registro) {
+        registroTimestamp = `${v.registro}:00`;
+      }
+
       payload.egreso = {
-        condicion: v.egreso_condicion,
-        referencia: v.egreso_referencia || undefined,
-        medico: v.egreso_medico || undefined,
-        diagnosticos: v.egreso_diagnostico
-          ? [{ codigo: '', descripcion: v.egreso_diagnostico }]
-          : [],
+        condicion: v.condicion || '',
+        referencia: v.referencia || undefined,
+        medico: v.medico || undefined,
+        lactancia_materna: v.lactancia_materna || false,
+        diagnosticos: v.diagnosticos || '',
+        registro: registroTimestamp
       };
+
+      console.log('📤 Actualizando egreso:', payload.egreso);
     }
 
+    // 2. Manejo de Ciclo/Estado
     if (v.nuevo_estado) {
+      // Validar transición de estado
+      const nuevoEstado = v.nuevo_estado as EstadoCiclo;
+      const transicionValida = this.validarTransicionEstado(estadoActual, nuevoEstado, estadosTerminales);
+
+      if (!transicionValida) {
+        console.warn(`⚠️ Transición inválida: ${estadoActual} -> ${nuevoEstado}`);
+        this.mostrarError('transición de estado',
+          new Error(`No se puede cambiar de ${estadoActual} a ${nuevoEstado}`));
+        return of(null);
+      }
+
+      // Caso 1: Estado terminal - Solo permitir 'actualizado'
+      if (esEstadoTerminal) {
+        if (nuevoEstado !== 'actualizado' && nuevoEstado !== estadoActual) {
+          console.warn(`⚠️ Intento de cambiar estado terminal '${estadoActual}' a '${nuevoEstado}'. Se usará 'actualizado'`);
+        }
+
+        payload.ciclo = {
+          estado: 'actualizado',
+          especialidad: v.especialidad || undefined,
+          servicio: v.nuevo_servicio || v.servicio || undefined,
+          comentario: this.construirComentarioActualizacion(estadoActual, v.nuevo_comentario, tieneDatosEgreso)
+        };
+      }
+      // Caso 2: Estado activo - Permitir cambio normal
+      else if (estadosActivos.includes(estadoActual)) {
+        payload.ciclo = {
+          estado: nuevoEstado,
+          especialidad: v.especialidad || undefined,
+          servicio: v.nuevo_servicio || v.servicio || undefined,
+          comentario: v.nuevo_comentario || `Transición de ${estadoActual} a ${nuevoEstado}`
+        };
+      }
+      // Caso 3: Estado no reconocido
+      else {
+        console.warn(`⚠️ Estado no reconocido: ${estadoActual}`);
+        payload.ciclo = {
+          estado: nuevoEstado,
+          especialidad: v.especialidad || undefined,
+          servicio: v.nuevo_servicio || v.servicio || undefined,
+          comentario: v.nuevo_comentario || `Cambio desde estado desconocido: ${estadoActual}`
+        };
+      }
+    }
+    // 3. Si no hay cambio de estado pero hay actualización de egreso en estado terminal
+    else if (tieneDatosEgreso && esEstadoTerminal) {
       payload.ciclo = {
-        estado: v.nuevo_estado as EstadoCiclo,
+        estado: 'actualizado',
         especialidad: v.especialidad || undefined,
-        servicio: v.nuevo_servicio || v.servicio || undefined,
-        comentario: v.nuevo_comentario || undefined,
+        servicio: v.servicio || undefined,
+        comentario: `Actualización de datos de egreso en consulta ${estadoActual}`
       };
+      console.log('📤 Registrando actualización de egreso post-terminal:', payload.ciclo);
     }
 
-    this.api.updateConsulta(this.consultaId, payload)
-      .pipe(
-        tap(r => this.mostrarExito('Consulta actualizada exitosamente')),
-        catchError(err => { this.mostrarError('actualizar consulta', err); return of(null); })
-      )
-      .subscribe(r => {
-        if (r) {
-          this.form.patchValue({
-            nuevo_estado: '', nuevo_servicio: '', nuevo_comentario: '',
-            egreso_condicion: '', egreso_referencia: '', egreso_medico: '',
-            egreso_diagnostico: '', egreso_comentario: ''
-          });
-          this.cargarConsulta(this.consultaId!);
-        }
-      });
+    console.log('📤 Payload final:', {
+      tieneEgreso: !!payload.egreso,
+      tieneCiclo: !!payload.ciclo,
+      estadoActual,
+      esEstadoTerminal
+    });
+
+    return this.api.updateConsulta(this.consultaId, payload).pipe(
+      tap((response) => {
+        this.mostrarExito('Consulta actualizada exitosamente');
+        console.log('✅ Respuesta del servidor:', response);
+
+        // Recargar la consulta para ver los datos actualizados
+        this.cargarConsulta(this.consultaId!);
+
+        // Limpiar campos temporales
+        this.form.patchValue({
+          nuevo_estado: '',
+          nuevo_servicio: '',
+          nuevo_comentario: ''
+        });
+      }),
+      catchError(err => {
+        this.mostrarError('actualizar consulta', err);
+        return of(null);
+      })
+    );
   }
 
-  // ── Solo indicadores (acción rápida desde el template) ──────
+  // Método auxiliar para validar transiciones
+  private validarTransicionEstado(
+    estadoActual: EstadoCiclo | undefined,
+    nuevoEstado: EstadoCiclo,
+    estadosTerminales: EstadoCiclo[]
+  ): boolean {
+    if (!estadoActual) return true;
+
+    // No permitir cambiar desde estado terminal a otro que no sea 'actualizado'
+    if (estadosTerminales.includes(estadoActual)) {
+      return nuevoEstado === 'actualizado' || nuevoEstado === estadoActual;
+    }
+
+    // No permitir volver a 'iniciado' o 'pendiente' desde estados avanzados
+    if ((nuevoEstado === 'iniciado' || nuevoEstado === 'pendiente') &&
+      !['iniciado', 'pendiente', 'admision'].includes(estadoActual)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  // Método auxiliar para construir comentarios de actualización
+  private construirComentarioActualizacion(
+    estadoTerminal: EstadoCiclo,
+    comentarioUsuario?: string,
+    tieneActualizacionEgreso?: boolean
+  ): string {
+    const partes: string[] = [`[Actualización post-${estadoTerminal}]`];
+
+    if (comentarioUsuario && comentarioUsuario.trim()) {
+      partes.push(comentarioUsuario.trim());
+    }
+
+    if (tieneActualizacionEgreso) {
+      partes.push('(Incluye actualización de datos de egreso)');
+    }
+
+    if (partes.length === 1) {
+      partes.push('Sin comentario adicional');
+    }
+
+    return partes.join(' ');
+  }
+
+  // ── Indicadores rápido ─────────────────────────────────────
   actualizarIndicadores(): void {
     if (!this.consultaId) return;
-
     const indicadores = this.form.get('indicadores')?.value as Indicador;
-
     this.api.updateConsulta(this.consultaId, { indicadores })
       .pipe(
         tap(() => this.mostrarExito('Indicadores actualizados')),
@@ -338,28 +449,65 @@ export class AdmisionComponent implements OnInit {
   }
 
   editarPaciente(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
+
   // ══════════════════════════════════════════════════════════
   // VALORES POR TIPO
   // ══════════════════════════════════════════════════════════
-  // Reemplazar valoresEmergencia, valoresCoex, valoresIngreso
+  private filtrarPorTipo(tipo: number): void {
+    switch (tipo) {
+      case 1:
+        this.especialidadesFiltradas = especialidades.filter(e => e.ref !== 'sop');
+        this.servicios = servicios.filter(s => s.ref === 'coex');
+        break;
+      case 2:
+        this.especialidadesFiltradas = especialidades.filter(e => e.ref === 'all');
+        this.servicios = servicios.filter(s => s.ref === 'ingreso');
+        break;
+      case 3:
+        this.especialidadesFiltradas = especialidades.filter(e => e.ref === 'all');
+        this.servicios = servicios.filter(s => s.ref === 'emergencia');
+        break;
+      default:
+        this.especialidadesFiltradas = especialidades;
+        this.servicios = servicios;
+    }
+  }
+
+
+
   private valoresEmergencia(): void {
+    this.filtrarPorTipo(3);
     this.form.patchValue({ tipo_consulta: 3, servicio: 'REME' });
-    this.filtrarEspecialidadesPorTipo(3);
   }
 
   private valoresIngreso(): void {
+    this.filtrarPorTipo(2);
     this.form.patchValue({ tipo_consulta: 2, servicio: 'HOSPITALIZACION' });
-    this.filtrarEspecialidadesPorTipo(2);
   }
 
   private valoresCoex(): void {
+    this.filtrarPorTipo(1);
     this.form.patchValue({ tipo_consulta: 1, servicio: 'COEX' });
-    this.filtrarEspecialidadesPorTipo(1);
   }
+
   // ══════════════════════════════════════════════════════════
   // NAVEGACIÓN
   // ══════════════════════════════════════════════════════════
-  volver(): void { this.location.back(); }
+  private navegarSegunTipo(tipo: number): void {
+    switch (tipo) {
+      case 1: this.router.navigate(['/coex']); break;
+      case 2: this.router.navigate(['/ingresos']); break;
+      case 3: this.router.navigate(['/emergencias']); break;
+      default: this.router.navigate(['/consultas']);
+    }
+  }
+
+  volver(): void {
+    if (this.esEmergencia) this.router.navigate(['/emergencias']);
+    else if (this.esCoesx) this.router.navigate(['/coex']);
+    else if (this.esIngreso) this.router.navigate(['/ingresos']);
+    else this.router.navigate(['/pacientes']);
+  }
 
   // ══════════════════════════════════════════════════════════
   // HELPERS TEMPLATE
