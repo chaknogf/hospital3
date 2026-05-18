@@ -23,7 +23,7 @@ const ESTADOS_INACTIVOS = new Set(['archivo', 'descartado', 'recepcion', 'egreso
   templateUrl: './pacientesAtendidos.component.html',
   styleUrls: ['./pacientesAtendidos.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe]
+  imports: [CommonModule, FormsModule]
 })
 export class PacientesAtendidosComponent implements OnInit {
 
