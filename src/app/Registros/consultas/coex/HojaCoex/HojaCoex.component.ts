@@ -17,6 +17,7 @@ import { takeUntil, finalize, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Dict, especialidades } from './../../../../enum/diccionarios';
 import { VecindadPipe } from '../../../../pipes/lugar.pipe';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-HojaCoex',
@@ -34,7 +35,7 @@ export class HojaCoexComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private iconService = inject(IconService);
-
+  private location = inject(Location);
   // ======= SIGNALS =======
   paciente = signal<Paciente | undefined>(undefined);
   consulta = signal<ConsultaBase | undefined>(undefined);
@@ -206,6 +207,6 @@ export class HojaCoexComponent implements OnInit, OnDestroy {
   }
 
   regresar(): void {
-    this.router.navigate(['/coex']);
+    this.location.back();
   }
 }

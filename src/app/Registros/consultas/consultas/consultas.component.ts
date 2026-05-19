@@ -1,6 +1,6 @@
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from './../../../pipes/edad.pipe';
 import { Paciente, Totales } from './../../../interface/interfaces';
@@ -12,6 +12,7 @@ import { ciclos, Dict, tipoConsulta } from './../../../enum/diccionarios';
 import { DatosExtraPipe } from './../../../pipes/datos-extra.pipe';
 import { CuiPipe } from './../../../pipes/cui.pipe';
 import { TimePipe } from '../../../pipes/time.pipe';
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -22,6 +23,8 @@ import { TimePipe } from '../../../pipes/time.pipe';
   imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe, EdadPipe]
 })
 export class ConsultasComponent implements OnInit {
+
+  private location = inject(Location);
 
   consultas: ConsultaResponse[] = [];
   totales: Totales[] = [];
@@ -201,7 +204,8 @@ export class ConsultasComponent implements OnInit {
   }
 
   volver() {
-    this.router.navigate(['/registros']);
+    //this.router.navigate(['/registros']);
+    this.location.back();
   }
 
 

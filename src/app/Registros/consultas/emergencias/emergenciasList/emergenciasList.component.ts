@@ -1,6 +1,6 @@
 import { tipoConsulta, ciclos, Dict } from './../../../../enum/diccionarios';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { Paciente, Totales } from '../../../../interface/interfaces';
@@ -12,6 +12,7 @@ import { ConsultaResponse, Ciclo, ConsultaOut, ConsultaListResponse } from '../.
 import { CuiPipe } from '../../../../pipes/cui.pipe';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { TimePipe } from '../../../../pipes/time.pipe';
+import { Location } from '@angular/common';
 
 
 
@@ -28,6 +29,7 @@ export class EmergenciasListComponent implements OnInit {
   consultas: ConsultaOut[] = [];
   totales: Totales[] = [];
 
+  private location = inject(Location);
 
   public status: 'activo' | 'inactivo' | 'none' = 'none';
   cargando = false;
@@ -217,7 +219,8 @@ export class EmergenciasListComponent implements OnInit {
   }
 
   volver() {
-    this.router.navigate(['/registros']);
+    //this.router.navigate(['/registros']);
+    this.location.back();
   }
 
 

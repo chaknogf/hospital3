@@ -173,7 +173,7 @@ export class DetalleConsultaComponent implements OnInit, OnDestroy {
     return (ind as unknown as Record<string, boolean>)[field] ?? false;
   }
   editar(id: number) {
-    this.router.navigate(['/formConsulta', id]);
+    this.router.navigate(['/editarAdmision', id]);
   }
 
   // ======= ACCIONES =======

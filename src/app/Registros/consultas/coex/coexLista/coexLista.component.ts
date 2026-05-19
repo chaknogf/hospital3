@@ -2,7 +2,7 @@
 
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EdadPipe } from '../../../../pipes/edad.pipe';
@@ -13,6 +13,7 @@ import { ConsultaResponse, Ciclo, TotalesResponse, TotalesItem } from '../../../
 import { ciclos, Dict } from '../../../../enum/diccionarios';
 import { ConsultaService } from '../../consultas.service';
 import { IconService } from '../../../../service/icon.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-coexLista',
@@ -22,6 +23,8 @@ import { IconService } from '../../../../service/icon.service';
   imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe]
 })
 export class CoexListaComponent implements OnInit {
+
+  private location = inject(Location);
 
   esEmergencia = true;
   consultas: ConsultaResponse[] = [];
@@ -300,9 +303,13 @@ export class CoexListaComponent implements OnInit {
     this.router.navigate(['/hojaCoex', consultaId]);
   }
 
-  volver() {
-    this.router.navigate(['/registros']);
+  volver(): void {
+    this.location.back();
   }
+
+  /* volver() {
+    this.router.navigate(['/registros']);
+  } */
 
   rowActiva: number | null = null;
   activarFila(id: number): void {

@@ -5,6 +5,7 @@ import { CitaService } from '../cita.service';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Location } from '@angular/common';
 import {
   addIcon, removeIcon, saveIcon, cancelIcon, findIcon, menuIcon,
   searchIcon, arrowDown, tablaShanonIcon, editIcon, skipRight, skipLeft
@@ -25,6 +26,7 @@ export class CitadosComponent implements OnInit {
   private router = inject(Router);
   private api = inject(CitaService);
   private fb = inject(FormBuilder);
+  private location = inject(Location);
   private sanitizer = inject(DomSanitizer);
   private hoy(): string {
     const hoy = new Date();
@@ -158,7 +160,7 @@ export class CitadosComponent implements OnInit {
   }
 
   volver() {
-    this.router.navigate(['/registros']);
+    this.location.back();
   }
 
 

@@ -19,6 +19,7 @@ import {
   OpcionBoolean,
   opcionesIngreso
 } from './../../../../enum/diccionarios';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-hoja',
@@ -40,6 +41,7 @@ export class HojaComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private iconService = inject(IconService);
+  private location = inject(Location);
 
   // ======= SIGNALS =======
   paciente = signal<Paciente | undefined>(undefined);
@@ -177,6 +179,7 @@ export class HojaComponent implements OnInit, OnDestroy {
   }
 
   regresar(): void {
-    this.router.navigate(['/emergencias']);
+    //this.router.navigate(['/emergencias']);
+    this.location.back();
   }
 }

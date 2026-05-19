@@ -19,7 +19,7 @@ import { Dict, especialidades } from '../../../enum/diccionarios';
 import { EdadPipe, GrupoEdadPipe } from '../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CitaConteoComponent } from '../citaConteo/citaConteo.component';
-
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-agendar',
@@ -39,6 +39,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
   private pservice = inject(PacienteService);
   private fb = inject(FormBuilder);
   private sanitizer = inject(DomSanitizer);
+  private location = inject(Location);
 
   // ======= PROPIEDADES =======
   form: FormGroup;
@@ -198,33 +199,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
       });
   }
 
-  // buscarPacientePorExpediente(): void {
-  //   const expediente = (this.busquedaExpediente || this.form.get('expediente')?.value || '').trim();
-  //   if (!expediente) return;
 
-  //   this.buscandoPaciente = true;
-  //   this.error.set(null);
-  //   this.pacienteEncontrado = null;
-
-  //   this.pservice.pacienteExpediente(expediente)
-  //     .pipe(
-  //       takeUntil(this.destroy$),
-  //       finalize(() => this.buscandoPaciente = false),
-  //       catchError(() => {
-  //         this.error.set('Paciente no encontrado: ' + expediente);
-  //         return of(null);
-  //       })
-  //     )
-  //     .subscribe((data: PacienteJoin | null) => {
-  //       if (!data) return;
-  //       this.pacienteEncontrado = data;
-  //       this.busquedaExpediente = data.expediente ?? expediente;
-  //       this.form.patchValue({
-  //         paciente_id: data.id,
-  //         expediente: data.expediente ?? expediente,
-  //       }, { emitEvent: false });
-  //     });
-  // }
 
   quediaes(fecha: string): void {
 
@@ -330,17 +305,18 @@ export class AgendarComponent implements OnInit, OnDestroy {
       .subscribe(response => {
         if (!response) return;
 
-        console.log('✅ Cita actulizada:', response);
+        // console.log('✅ Cita actulizada:', response);
         this.volver();
       });
   }
 
   // ======= NAVEGACIÓN =======
+  /*  volver(): void {
+     this.router.navigate(['/pacientes']);
+   } */
+
   volver(): void {
-    this.router.navigate(['/pacientes']);
+    this.location.back();
   }
 
-
-
 }
-

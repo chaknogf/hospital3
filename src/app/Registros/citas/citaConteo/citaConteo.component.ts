@@ -1,10 +1,10 @@
 import { FechasPipe } from './../../../pipes/fecha.pipe';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CitaService } from '../cita.service';
 import { ConteoCitas } from '../../../interface/citas';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
-
+import { Location } from '@angular/common';
 
 
 
@@ -19,6 +19,7 @@ import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 
 export class CitaConteoComponent implements OnInit, OnChanges {
 
+  private location = inject(Location);
   @Input() especialidad: string | null = null;
 
   datos: ConteoCitas[] = [];
