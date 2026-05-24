@@ -146,8 +146,29 @@
     </div>
   </div>
 
+  <div class="container">
+    <form class="busqueda-rapida" (ngSubmit)="buscar()">
+      <div class="">
+        <input
+          type="text"
+          class=""
+          [(ngModel)]="filtros.q"
+          name="rapida"
+          placeholder="Busqueda rapida..."
+          autocomplete="off"
+        />
+        <button type="submit" class="" aria-label="Buscar">
+          <span>⌕</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
   <!-- Tabla principal (desktop) -->
   <div class="aurora-container">
+    <!-- busqueda rapida -->
+
+    <!-- table -->
     <table class="aurora-tb">
       <thead>
         <tr>

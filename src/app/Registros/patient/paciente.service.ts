@@ -7,6 +7,7 @@ import { tap, catchError, finalize } from 'rxjs/operators';
 
 import { BaseApiService, PaginationState } from '../../service/base-api.service';
 import { Paciente, PacienteListResponse, Hijode, PacienteJoin } from '../../interface/interfaces';
+import { CitaResponse } from '../../interface/citas';
 
 @Injectable({ providedIn: 'root' })
 export class PacienteService extends BaseApiService {
@@ -171,4 +172,17 @@ export class PacienteService extends BaseApiService {
       catchError(error => this.manejarError(error, 'obtener datos RENAP'))
     );
   }
+
+  // ======= CITAS =======
+
+  private citasSubject = new BehaviorSubject<CitaResponse[]>([]);
+  citas$ = this.citasSubject.asObservable();
+
+  getCitasPaciente(id: number): Observable<CitaResponse[]> {
+    return this.http.get<CitaResponse[]>(`${this.baseUrl}/citas/paciente/${id}`).pipe(
+      tap(response => this.citasSubject.next(response)),
+      catchError(error => this.manejarError(error, 'obtener citas'))
+    );
+  }
+
 }

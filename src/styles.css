@@ -3420,7 +3420,7 @@ select.input-filtros option {
 
 .nombres-grid {
   display: flex;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   gap: 12px;
   width: 100%;
 }
