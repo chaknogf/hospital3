@@ -1,32 +1,32 @@
 /* ═══════════════════════════════════════════════════════════
-   CONSTANCIA NACIMIENTO — EDICIÓN
-   Estilo unificado: dark mode, targets 44px+, flujo secuencial
-   Compatible con la vista de creación
+   CONSTANCIA NACIMIENTO — UX VELOCIDAD
+   Principios: mínimos campos visibles, targets grandes,
+   flujo secuencial claro, contraste alto para escaneo rápido
 ══════════════════════════════════════════════════════════ */
 
-/* ── VARIABLES ── */
+/* ── VARIABLES (si no existen en el proyecto) ── */
 :host {
   --pulse: #3b82f6;
   --pulse-glow: rgba(59, 130, 246, 0.3);
   --success: #22c55e;
   --danger: #ef4444;
   --warning: #f59e0b;
-  --amber: #f59e0b;
   --surface: #0f172a;
-  --surface-elevated: #1a2236;
+  --surface-hover: #1e293b;
   --rim: #1e293b;
   --rim-light: #334155;
   --text: #e2e8f0;
   --text-muted: #64748b;
-  --text-dim: #475569;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --radius: 12px;
   --radius-sm: 8px;
-  --input-height: 44px;
 }
 
+/* ── RESET LOCAL ── */
+* { box-sizing: border-box; }
+
 /* ═══════════════════════════════════════════════ */
-/* HUD HEADER                                    */
+/* HUD HEADER (compacto, alta legibilidad)       */
 /* ═══════════════════════════════════════════════ */
 .hud-header {
   display: flex;
@@ -51,7 +51,7 @@
   font-family: var(--font-mono);
   font-size: 13px;
   color: #fff;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   font-weight: 700;
 }
@@ -75,7 +75,7 @@
 }
 
 /* ═══════════════════════════════════════════════ */
-/* ACTION DOCK (sticky, siempre visible)          */
+/* ACTION DOCK (sticky, botones grandes)          */
 /* ═══════════════════════════════════════════════ */
 .action-dock {
   position: sticky;
@@ -113,6 +113,7 @@
   align-items: center;
   gap: 6px;
   white-space: nowrap;
+  letter-spacing: 0.5px;
 }
 
 .btn-dock.btn {
@@ -120,20 +121,16 @@
   border-color: var(--rim-light);
   color: var(--text-muted);
 }
-.btn-dock.btn:hover:not(:disabled) {
+.btn-dock.btn:hover {
   border-color: var(--danger);
   color: var(--danger);
-}
-.btn-dock.btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
 }
 
 .btn-dock.btn--primary {
   background: var(--pulse);
   border-color: var(--pulse);
   color: #fff;
-  min-width: 130px;
+  min-width: 120px;
   justify-content: center;
 }
 .btn-dock.btn--primary:hover:not(:disabled) {
@@ -146,10 +143,10 @@
 }
 
 /* ═══════════════════════════════════════════════ */
-/* BODY (ancho máximo centrado)                   */
+/* BODY                                        */
 /* ═══════════════════════════════════════════════ */
 .adm-body {
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 16px;
   display: flex;
@@ -158,32 +155,7 @@
 }
 
 /* ═══════════════════════════════════════════════ */
-/* SKELETON LOADING                              */
-/* ═══════════════════════════════════════════════ */
-.skeleton-block {
-  height: 100px;
-  border-radius: var(--radius);
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.03) 25%,
-    rgba(255, 255, 255, 0.06) 50%,
-    rgba(255, 255, 255, 0.03) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-.skeleton-block--short {
-  height: 50px;
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* ═══════════════════════════════════════════════ */
-/* PACIENTE BANNER                               */
+/* PACIENTE BANNER (compacto, alta densidad)     */
 /* ═══════════════════════════════════════════════ */
 .paciente-banner {
   display: flex;
@@ -250,7 +222,7 @@
 }
 
 /* ═══════════════════════════════════════════════ */
-/* TABS                                          */
+/* TABS (targets grandes)                        */
 /* ═══════════════════════════════════════════════ */
 .tab-bar {
   display: flex;
@@ -262,7 +234,7 @@
   flex: 1;
   height: 48px;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -274,7 +246,6 @@
   transition: 0.15s;
   border-bottom: 3px solid transparent;
   margin-bottom: -2px;
-  white-space: nowrap;
 }
 
 .tab-btn:hover {
@@ -289,24 +260,7 @@
 }
 
 /* ═══════════════════════════════════════════════ */
-/* GRID LAYOUT (cols automáticas)                 */
-/* ═══════════════════════════════════════════════ */
-.adm-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-
-.adm-col {
-  flex: 1 1 280px;
-  min-width: 260px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* ═══════════════════════════════════════════════ */
-/* CARDS                                         */
+/* CARDS                                       */
 /* ═══════════════════════════════════════════════ */
 .section-card {
   background: var(--surface);
@@ -324,7 +278,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 14px;
+  padding: 10px 16px;
   background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid var(--rim);
   gap: 10px;
@@ -335,7 +289,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .sec-icon {
@@ -347,7 +300,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
 
 .sec-title {
@@ -369,11 +321,10 @@
   padding: 4px 10px;
   border-radius: 20px;
   border: 1px solid rgba(59, 130, 246, 0.2);
-  white-space: nowrap;
 }
 
 .readonly-badge {
-  color: var(--amber);
+  color: var(--warning);
   background: rgba(245, 158, 11, 0.1);
   border-color: rgba(245, 158, 11, 0.2);
 }
@@ -390,17 +341,28 @@
 }
 
 /* ═══════════════════════════════════════════════ */
-/* CAMPOS DE FORMULARIO                          */
+/* GRID LAYOUT (admin)                           */
+/* ═══════════════════════════════════════════════ */
+.adm-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.adm-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ═══════════════════════════════════════════════ */
+/* CAMPOS (targets de 44px+)                    */
 /* ═══════════════════════════════════════════════ */
 .field {
   display: flex;
   flex-direction: column;
   gap: 5px;
   width: 100%;
-}
-
-.field--full {
-  grid-column: 1 / -1;
 }
 
 .field-label {
@@ -411,22 +373,10 @@
   text-transform: uppercase;
   color: var(--text-muted);
   padding-left: 2px;
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
 }
 
-.field-calc {
-  font-size: 9px;
-  font-weight: 400;
-  color: var(--text-dim);
-  letter-spacing: 0.5px;
-  text-transform: none;
-}
-
-/* Inputs estándar */
 .field-input {
-  height: var(--input-height);
+  height: 44px;
   padding: 0 14px;
   background: #020817;
   border: 1.5px solid var(--rim-light);
@@ -436,7 +386,7 @@
   font-family: var(--font-mono);
   outline: none;
   width: 100%;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: 0.15s;
 }
 
 .field-input:focus {
@@ -446,83 +396,54 @@
 }
 
 .field-input::placeholder {
-  color: var(--text-dim);
+  color: #475569;
   font-size: 13px;
 }
 
-.field-input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Input readonly */
 .field-input--readonly {
   background: #0a1222;
   color: #64748b;
   cursor: default;
   border-style: dashed;
-  border-color: var(--rim-light);
-}
-.field-input--readonly:focus {
-  border-color: var(--rim-light);
-  box-shadow: none;
 }
 
-/* Date input */
 .field-input[type="date"] {
   color-scheme: dark;
 }
 
-/* Number input */
-.field-input[type="number"] {
-  -moz-appearance: textfield;
-}
-.field-input[type="number"]::-webkit-inner-spin-button,
-.field-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+/* Contenedor input + botón */
+.field .d-flex,
+.field div:has(.field-input + .btn) {
+  display: flex;
+  gap: 8px;
 }
 
-/* Textarea */
-textarea.field-input {
-  height: auto;
-  min-height: 100px;
-  padding: 12px 14px;
-  resize: vertical;
-  line-height: 1.5;
+.field .d-flex .field-input,
+.field div:has(.field-input + .btn) .field-input {
+  flex: 1;
 }
 
-/* Select */
-select.field-input {
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2338bdf8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  padding-right: 36px;
-  cursor: pointer;
-}
-
-select.field-input option {
-  background: #0b1120;
-  color: #cfe4f7;
-  font-size: 14px;
-}
-
-/* Valores mostrados como texto (span.btn) */
-.field span.btn,
-.field span.info-value {
-  display: inline-flex;
+/* Botón dentro del field (buscador) */
+.field .btn {
+  height: 44px;
+  width: 44px;
+  padding: 0;
+  display: flex;
   align-items: center;
-  height: var(--input-height);
-  padding: 0 14px;
-  background: #0a1222;
-  border: 1px solid var(--rim-light);
-  border-radius: var(--radius-sm);
-  color: #94a3b8;
-  font-size: 14px;
-  font-family: var(--font-mono);
-  font-weight: 500;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.field-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding-left: 2px;
+}
+
+.field-hint--error {
+  color: var(--danger);
+  font-weight: 600;
 }
 
 /* ═══════════════════════════════════════════════ */
@@ -548,7 +469,6 @@ select.field-input option {
   letter-spacing: 1px;
   color: var(--text-muted);
   font-family: var(--font-mono);
-  flex-shrink: 0;
 }
 
 .info-value {
@@ -557,11 +477,10 @@ select.field-input option {
   color: var(--text);
   font-family: var(--font-mono);
   text-align: right;
-  word-break: break-word;
 }
 
 /* ═══════════════════════════════════════════════ */
-/* BOTONES GENÉRICOS                             */
+/* BOTONES GENÉRICOS (dentro de cards)           */
 /* ═══════════════════════════════════════════════ */
 .btn {
   height: 40px;
@@ -581,10 +500,9 @@ select.field-input option {
   white-space: nowrap;
 }
 
-.btn:hover:not(:disabled) {
+.btn:hover {
   border-color: var(--pulse);
   color: var(--text);
-  background: rgba(59, 130, 246, 0.05);
 }
 
 .btn:disabled {
@@ -599,19 +517,10 @@ select.field-input option {
 }
 .btn--primary:hover:not(:disabled) {
   background: #2563eb;
-  border-color: #2563eb;
-}
-
-/* Botón dentro del sec-head-left */
-.sec-head-left .btn {
-  height: 32px;
-  padding: 0 12px;
-  font-size: 10px;
-  letter-spacing: 1px;
 }
 
 /* ═══════════════════════════════════════════════ */
-/* ALERTAS                                       */
+/* ALERTAS                                     */
 /* ═══════════════════════════════════════════════ */
 .alert-error {
   background: rgba(239, 68, 68, 0.1);
@@ -634,14 +543,38 @@ select.field-input option {
 }
 
 /* ═══════════════════════════════════════════════ */
-/* RESPONSIVE                                   */
+/* SKELETON LOADING                             */
+/* ═══════════════════════════════════════════════ */
+.skeleton-block {
+  height: 100px;
+  border-radius: var(--radius);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-block--short {
+  height: 50px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ═══════════════════════════════════════════════ */
+/* RESPONSIVE                                  */
 /* ═══════════════════════════════════════════════ */
 
 /* Tablet */
 @media (max-width: 900px) {
-  .adm-col {
-    flex: 1 1 100%;
-    min-width: 100%;
+  .adm-grid {
+    gap: 12px;
   }
 }
 
@@ -673,30 +606,14 @@ select.field-input option {
     font-size: 12px;
   }
 
-  .btn-dock.btn--primary {
-    min-width: 100px;
-  }
-
   .adm-body {
     padding: 10px;
-    gap: 10px;
-  }
-
-  .adm-grid {
-    gap: 10px;
-  }
-
-  .adm-col {
     gap: 10px;
   }
 
   .paciente-banner {
     padding: 10px 12px;
     gap: 10px;
-  }
-
-  .paciente-banner-accent {
-    height: 36px;
   }
 
   .paciente-avatar {
@@ -711,8 +628,7 @@ select.field-input option {
 
   .tab-btn {
     height: 44px;
-    font-size: 11px;
-    padding: 0 10px;
+    font-size: 12px;
   }
 
   .sec-head {
@@ -729,36 +645,15 @@ select.field-input option {
     font-size: 16px; /* Previene zoom en iOS */
   }
 
-  .field span.btn,
-  .field span.info-value {
+  .field .btn {
     height: 46px;
-    font-size: 15px;
-  }
-
-  textarea.field-input {
-    min-height: 80px;
+    width: 46px;
   }
 
   .btn {
     height: 44px;
     padding: 0 14px;
     font-size: 13px;
-  }
-
-  .sec-head-left .btn {
-    height: 36px;
-    font-size: 11px;
-  }
-
-  .info-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    padding: 8px 0;
-  }
-
-  .info-value {
-    text-align: left;
   }
 }
 
@@ -767,26 +662,14 @@ select.field-input option {
   .btn-dock {
     flex: 1;
     justify-content: center;
-    padding: 0 10px;
   }
 
-  .tab-bar {
-    overflow-x: auto;
+  .btn-dock.btn--primary {
+    min-width: 0;
   }
 
   .tab-btn {
-    flex: 1 0 auto;
-    padding: 0 12px;
-    font-size: 10px;
-    letter-spacing: 0.5px;
-  }
-
-  .sec-head-left {
-    gap: 4px;
-  }
-
-  .sec-title {
-    font-size: 10px;
-    letter-spacing: 1px;
+    padding: 0 10px;
+    font-size: 11px;
   }
 }

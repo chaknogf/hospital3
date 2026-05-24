@@ -20,52 +20,10 @@
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
     <form class="form-filtros" (ngSubmit)="buscar()">
-      <!-- 🔥 principal -->
-      <fieldset class="fieldset-filtros full">
-        <label class="label-filtros">Identificador</label>
-        <input
-          class="input-principal input-filtros"
-          type="text"
-          [(ngModel)]="filtros.q"
-          name="identificador"
-          placeholder="🔍 CUI, expediente, ID o nombre del paciente..."
-          autocomplete="off"
-        />
-      </fieldset>
-
-      <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Expediente</label>
-        <input
-          type="text"
-          class="input-filtros"
-          [(ngModel)]="filtros.expediente"
-          name="expediente"
-          placeholder="Ej: HGT-000123"
-        />
-      </fieldset>
-
-      <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Id</label>
-        <input
-          type="text"
-          class="input-filtros"
-          [(ngModel)]="filtros.id"
-          name="ID"
-          placeholder="Ej: 4521"
-        />
-      </fieldset>
-
-      <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Fecha de nacimiento</label>
-        <input
-          type="date"
-          class="input-filtros"
-          [(ngModel)]="filtros.fecha_nac"
-          name="fechaNacimiento"
-        />
-      </fieldset>
-
-      <div class="d-flex gap-1">
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- FILA 2: Nombres por separado (2×2 grid)    -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="nombres-grid">
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Primer nombre</label>
           <input
@@ -111,20 +69,64 @@
         </fieldset>
       </div>
 
-      <fieldset class="full">
-        <label class="label-filtros">Nombre completo</label>
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- BÚSQUEDA PRINCIPAL (siempre primero)       -->
+      <!-- ═══════════════════════════════════════════ -->
+      <fieldset class="fieldset-filtros full">
+        <label class="label-filtros">Búsqueda rápida</label>
         <input
+          class="input-principal input-filtros"
           type="text"
-          class="input-filtros"
-          [(ngModel)]="filtros.nombre"
-          name="nombreCompleto"
-          placeholder="Ej: Juan Carlos Pérez López"
+          [(ngModel)]="filtros.q"
+          name="identificador"
+          placeholder="CUI, expediente, ID o nombre del paciente..."
+          autocomplete="off"
+          autofocus
         />
       </fieldset>
 
-      <!-- botones -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- FILA 1: Identificadores principales        -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="filtros-row">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Expediente</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.expediente"
+            name="expediente"
+            placeholder="Ej: HGT-000123"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">ID</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.id"
+            name="ID"
+            placeholder="Ej: 4521"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Fecha de nacimiento</label>
+          <input
+            type="date"
+            class="input-filtros"
+            [(ngModel)]="filtros.fecha_nac"
+            name="fechaNacimiento"
+          />
+        </fieldset>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- BOTONES DE ACCIÓN                          -->
+      <!-- ═══════════════════════════════════════════ -->
       <div class="botones-filtros">
-        <button class="button-filtros" type="button" (click)="agregar()">
+        <button class="button-filtros nuevo" type="button" (click)="agregar()">
           ➕ Nuevo
         </button>
 
@@ -135,24 +137,24 @@
         </button>
       </div>
     </form>
+
+    <!-- TOGGLE COLAPSAR -->
     <div class="d-flex justify-content-center m-0 p-0">
       <button class="btn m-0 p-0" (click)="toggleFiltrar()">
         <span [innerHTML]="icons['arrowDown']"></span>
       </button>
     </div>
   </div>
+
   <!-- Tabla principal (desktop) -->
   <div class="aurora-container">
     <table class="aurora-tb">
       <thead>
         <tr>
           <th>Id</th>
+          <th class="oculto">Nombre Completo</th>
           <th>Identificador</th>
-          <th>Nombre Completo</th>
           <th>Fecha Nacimiento</th>
-          <!-- @if (!existePaciente) {
-            <th>Dirección</th>
-          } -->
           <th>Sexo</th>
           <th>Acciones</th>
         </tr>
@@ -165,7 +167,24 @@
           [class.paciente-fallecido]="paciente.estado === 'F'"
           (click)="activarFila(paciente.id)"
         >
-          <td data-label="ID:" class="oculto">{{ paciente.id }}</td>
+          <td data-label="ID:" class="oculto tb-id">{{ paciente.id }}</td>
+          <td data-label="Nombre:">
+            <div class="nombre-table">
+              <p class="">
+                {{ paciente.nombre.primer_nombre }}
+                {{ paciente.nombre.segundo_nombre }}
+                {{ paciente.nombre.otro_nombre }}
+              </p>
+              <p
+                class="p-0 m-0"
+                [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+              >
+                {{ paciente.nombre.primer_apellido }}
+                {{ paciente.nombre.segundo_apellido }}
+                {{ paciente.nombre.apellido_casada }}
+              </p>
+            </div>
+          </td>
           <td data-label="Identificador:" class="gap-2">
             @if (paciente?.cui) {
               <div class="ms-4">
@@ -186,23 +205,7 @@
               </div>
             }
           </td>
-          <td data-label="Nombre:">
-            <div class="nombre-table">
-              <p class="">
-                {{ paciente.nombre.primer_nombre }}
-                {{ paciente.nombre.segundo_nombre }}
-                {{ paciente.nombre.otro_nombre }}
-              </p>
-              <p
-                class="p-0 m-0"
-                [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-              >
-                {{ paciente.nombre.primer_apellido }}
-                {{ paciente.nombre.segundo_apellido }}
-                {{ paciente.nombre.apellido_casada }}
-              </p>
-            </div>
-          </td>
+
           <td data-label="Fecha de Nacimiento" class="oculto">
             {{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
 

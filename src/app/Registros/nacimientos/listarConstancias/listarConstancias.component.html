@@ -90,6 +90,7 @@
     <table class="aurora-tb">
       <thead>
         <tr>
+          <th class="text-justify">Id</th>
           <th>Documento</th>
           <th>Nombre Madre</th>
           <th>Fecha Parto</th>
@@ -103,6 +104,12 @@
           class="aurora-table-row"
           [class.touch-active]="rowActiva === data.id"
         >
+          <td class="text-justify tb-id">
+            <div *ngIf="data?.id">
+              {{ data.id }}
+            </div>
+          </td>
+
           <td class="text-justify">
             <div *ngIf="data?.documento">
               {{ data.documento }}

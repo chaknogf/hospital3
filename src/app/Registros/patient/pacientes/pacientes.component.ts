@@ -26,6 +26,7 @@ export class PacientesComponent implements OnInit {
   pacientes: Paciente[] = [];
   enRenap: Renap[] = [];
   existePaciente = false;
+  showNombres = false;
 
   // ── UI ─────────────────────────────────────────────────────
   cargando = false;

@@ -33,6 +33,17 @@
       </fieldset>
 
       <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Hoja Emergencia</label>
+        <input
+          type="text"
+          class="input-filtros"
+          [(ngModel)]="filtros.documento"
+          name="documento"
+          placeholder="Buscar por hoja de emergencia"
+        />
+      </fieldset>
+
+      <fieldset class="fieldset-filtros">
         <label class="label-filtros">CUI</label>
         <input
           type="text"

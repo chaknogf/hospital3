@@ -30,6 +30,7 @@ import {
 } from '../../../shared/icons/svg-icon';
 import { Parentescos } from '../../../enum/parentescos';
 import { PacienteService } from '../paciente.service';
+import { Location } from '@angular/common';
 
 
 interface Reference {
@@ -64,10 +65,12 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private sanitizer = inject(DomSanitizer);
   private pacienteUtil = inject(PacienteUtilService);
+  private location = inject(Location);
 
 
   // ======= SEÑALES =======
   enEdicion = signal(false);
+  currentStep = signal(0);
   accionExpediente = signal('mantener');
   crearExpediente = signal(false);
   usuarioActual = signal('');
@@ -130,6 +133,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
 
     this.cargarPacienteParaEdicion();
+    setTimeout(() => this.checkStepsDone(), 300);
     if (!this.enEdicion()) {
       this.agregarReferencia();
     }
@@ -511,7 +515,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
     const pacienteForm = this.form.getRawValue();
 
-    console.log(pacienteForm)
+    //console.log(pacienteForm)
 
 
 
@@ -544,7 +548,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
       )
       .subscribe(response => {
         if (response) {
-          this.router.navigate(['/pacientes']);
+          this.location.back();
         }
       });
   }
@@ -552,8 +556,8 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   private actualizar(paciente: any): void {
     this.isLoading.set(true);
 
-    console.log('🔵 accionExpediente:', this.accionExpediente()); // ← ¿qué imprime?
-    console.log('🔵 paciente.id:', paciente.id);                  // ← ¿tiene ID?
+    //console.log('🔵 accionExpediente:', this.accionExpediente()); // ← ¿qué imprime?
+    //console.log('🔵 paciente.id:', paciente.id);                  // ← ¿tiene ID?
 
     this.api.updatePaciente(paciente.id, paciente, this.accionExpediente())
       .pipe(
@@ -566,9 +570,9 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(response => {
-        console.log('✅ Paciente actualizado:', response);
+        //console.log('✅ Paciente actualizado:', response);
         if (response) {
-          this.router.navigate(['/pacientes']);
+          this.location.back();
         }
       });
   }
@@ -756,7 +760,8 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
   // ======= MÉTODOS DE NAVEGACIÓN =======
   volver(): void {
-    this.router.navigate(['/pacientes']);
+    //this.router.navigate(['/pacientes']);
+    this.location.back();
   }
 
   irRenap(): void {
@@ -769,7 +774,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     alert(`Error al ${accion}. Consulte la consola para más detalles.`);
   }
 
-  // ======= SOCIOECONÓMICO =======
+
   // ======= SOCIOECONÓMICO =======
   setSocio(
     campo: 'estudiante_publico' | 'empleado_publico' | 'discapacidad',
@@ -787,15 +792,93 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   sections = [true, true, true, true, true, true, true];
 
   steps = [
-    { label: 'EXPEDIENTE', done: true },
-    { label: 'NOMBRES', done: false },
-    { label: 'INFO', done: false },
-    { label: 'CONTACTO', done: false },
-    { label: 'REFS', done: false },
-    { label: 'DEMO', done: false },
-    { label: 'SOCIO', done: false }
+    { id: 'id', label: 'ID', done: false },
+    { id: 'nombre', label: 'Nombre', done: false },
+    { id: 'basicos', label: 'Básicos', done: false },
+    { id: 'contacto', label: 'Contacto', done: false },
+    { id: 'referencias', label: 'Ref.', done: false },
+    { id: 'demografia', label: 'Demog.', done: false },
+    { id: 'socioeco', label: 'Socioec.', done: false },
+    { id: 'neonatales', label: 'Neonatales', done: false }
+
   ];
 
+  goToStep(index: number) { this.currentStep.set(index); }
+  nextStep() { if (this.currentStep() < this.totalSteps() - 1) this.currentStep.update(n => n + 1); }
+  prevStep() { if (this.currentStep() > 0) this.currentStep.update(n => n - 1); }
+  isLastStep(): boolean { return this.currentStep() >= this.totalSteps() - 1; }
+  totalSteps(): number {
+    let total = 7;
+    if (this.esRecienNacido()) total++;
+    return total;
+  }
+
+  // En el componente, agrega este método:
+  private checkStepsDone(): void {
+    this.steps[0].done = this.isStep0Done();
+    this.steps[1].done = this.isStep1Done();
+    this.steps[2].done = this.isStep2Done();
+    this.steps[3].done = this.isStep3Done();
+    this.steps[4].done = this.isStep4Done();
+    this.steps[5].done = this.isStep5Done();
+    this.steps[6].done = this.isStep6Done();
+    if (this.esRecienNacido()) {
+      this.steps[7].done = this.isStep7Done();
+    }
+  }
+
+  private isStep0Done(): boolean {
+    const cui = this.form.get('cui')?.value;
+    return !!cui && String(cui).replace(/\s/g, '').length === 13;
+  }
+
+  private isStep1Done(): boolean {
+    const n = this.form.get('nombre');
+    return !!(n?.get('primer_nombre')?.value?.trim() &&
+      n?.get('primer_apellido')?.value?.trim());
+  }
+
+  private isStep2Done(): boolean {
+    return !!(this.form.get('sexo')?.value &&
+      (this.form.get('fecha_nacimiento')?.value ||
+        this.form.get('edad.anios')?.value ||
+        this.form.get('edad.meses')?.value));
+  }
+
+  private isStep3Done(): boolean {
+    const c = this.form.get('contacto');
+    return !!(c?.get('telefonos')?.value?.trim() &&
+      c?.get('domicilio')?.value?.trim() &&
+      c?.get('municipio')?.value);
+  }
+
+  private isStep4Done(): boolean {
+    return this.referencias.controls.some(ref =>
+      ref.get('nombre')?.value?.trim()
+    );
+  }
+
+  private isStep5Done(): boolean {
+    const d = this.form.get('datos_extra.demograficos');
+    return !!(d?.get('nacionalidad')?.value &&
+      d?.get('pueblo')?.value &&
+      d?.get('vecindad')?.value &&
+      d?.get('idioma')?.value);
+  }
+
+  private isStep6Done(): boolean {
+    const s = this.form.get('datos_extra.socioeconomicos');
+    return !!(s?.get('estado_civil')?.value ||
+      s?.get('ocupacion')?.value?.trim() ||
+      s?.get('educacion')?.value);
+  }
+
+  private isStep7Done(): boolean {
+    const neo = this.form.get('datos_extra.neonatales');
+    return !!(neo?.get('peso_nacimiento')?.value ||
+      neo?.get('tipo_parto')?.value ||
+      neo?.get('hora_nacimiento')?.value);
+  }
 
 
   references: Reference[] = [
@@ -826,6 +909,11 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
   estado: string = 'Vivo';
   sexo: string = 'Masculino';
+
+
+
+
+
 
 
 

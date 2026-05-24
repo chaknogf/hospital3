@@ -127,7 +127,7 @@ export class ListarConstanciasComponent implements OnInit {
   }
 
   agregar() {
-    this.router.navigate(['/pacientes']);
+    this.router.navigate(['/nueva-cons-nac']);
   }
 
 }

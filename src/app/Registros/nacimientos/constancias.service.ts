@@ -48,6 +48,18 @@ export class ConstanciasService extends BaseApiService {
     )
   }
 
+  createConstancia(data: any): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.post<any>(
+      `${this.baseUrl}/constancias-nacimiento/`,
+      data
+    ).pipe(
+      tap(() => this.refrescarConstancias()),
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'crear constancia'))
+    );
+  }
+
   updateConstancia(id: number, data: any): Observable<any> {
     this.isLoading.set(true);
     return this.http.put<any>(

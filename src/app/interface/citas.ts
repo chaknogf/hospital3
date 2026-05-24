@@ -55,6 +55,7 @@ export interface CitaResponse extends Citas {
 
 export interface ConteoCitas {
   fecha_cita: string;
+  dia_semana: string;
   razon_consulta?: string;
   total: number;
 }

@@ -39,6 +39,7 @@ import { roleGuard } from './role.guard';
 import { EstadisticaComponent } from './std/estadistica/estadistica.component';
 import { ConsultorComponent } from './std/consultor/consultor.component';
 import { MenutsComponent } from './trabajoSocial/trabajosocial/menuts.component';
+import { NuevaConstanciaNacimientoComponent } from './Registros/nacimientos/nuevaConstanciaNacimiento/nuevaConstanciaNacimiento.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -108,6 +109,7 @@ export const routes: Routes = [
       //Constancias Nacimiento
       { path: 'nacimientos', component: ListarConstanciasComponent },
       { path: 'cons-nac/:id', component: ConstanciasNacimientoComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      { path: 'nueva-cons-nac', component: NuevaConstanciaNacimientoComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
       { path: 'cnprint/:id', component: HojaCnacimientoComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
 
       //Estadistica
