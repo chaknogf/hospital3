@@ -1,6 +1,6 @@
 import { Keys } from './../../../interface/comunidadChimaltenango';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../service/api.service';
@@ -15,6 +15,7 @@ import { DetalleConsultaComponent } from "../../adminsion/detalleConsulta/detall
 import { TimePipe } from '../../../pipes/time.pipe';
 import { PacienteService } from '../paciente.service';
 import { ConsultaService } from '../../consultas/consultas.service';
+import { Citas } from '../../../interface/citas';
 
 @Component({
   selector: 'detallePaciente',
@@ -27,6 +28,14 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   @Input() pacienteId: number | null = null;
   paciente!: Paciente;
 
+  private ruta = inject(ActivatedRoute);
+  private api = inject(PacienteService);
+  private apic = inject(ConsultaService);
+  private router = inject(Router);
+  private sanitizer = inject(DomSanitizer);
+
+
+
   // Listas procesadas para la vista
   demograficosFiltrados: { key: string; valor: any }[] = [];
   socioeconomicosFiltrados: { key: string; valor: any }[] = [];
@@ -34,7 +43,9 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   metadatosArray: { key: string; valor: any }[] = [];
   neonatalesFiltrados: { key: string; valor: any }[] = [];
   consultasProcesadas: { titulo: string; campos: { key: string; valor: any }[] }[] = [];
+  citasProcesadas: { titulo: string; campos: { key: string; valor: any }[] }[] = [];
   consultasPorPaciente: ConsultasIdPaciente[] = [];
+  citasPorPaciente: Citas[] = [];
 
   cargando: boolean = true;
   error: string | null = null;
@@ -47,11 +58,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   regresarIcon: SafeHtml;
 
   constructor(
-    private ruta: ActivatedRoute,
-    private api: PacienteService,
-    private apic: ConsultaService,
-    private router: Router,
-    private sanitizer: DomSanitizer
+
   ) {
 
     this.manIcon = this.sanitizer.bypassSecurityTrustHtml(manIcon);
@@ -65,6 +72,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     if (this.pacienteId) {
       this.cargarPaciente();
       this.cargarConsultas();
+      this.cargarCitas();
 
     } else {
       const id = Number(this.ruta.snapshot.paramMap.get('id'));
@@ -72,6 +80,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
         this.pacienteId = id;
         this.cargarPacienteById(id);
         this.cargarConsultas();
+        this.cargarCitas();
       } else {
         this.error = 'No se proporcionó un ID de paciente';
         this.cargando = false;
@@ -138,7 +147,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     this.apic.getConsultasPorPaciente(this.pacienteId, {}).subscribe({
       next: (data) => {
         this.consultasPorPaciente = data;
-        console.log('Consultas del paciente:', this.consultasPorPaciente);
+        //console.log('Consultas del paciente:', this.consultasPorPaciente);
 
         this.consultasProcesadas = data.map((consulta, index) => ({
           titulo: `Consulta ${index + 1}`,
@@ -157,6 +166,33 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
       }
     });
   }
+
+  private cargarCitas(): void {
+    if (!this.pacienteId) return;
+
+    this.api.getCitasPaciente(this.pacienteId).subscribe({
+      next: (data) => {
+        this.citasPorPaciente = data;
+        console.log('Citas del paciente:', this.citasPorPaciente);
+
+        this.citasProcesadas = data.map((cita, index) => ({
+          titulo: `Cita ${index + 1}`,
+          campos: Object.entries(cita)
+            .filter(([_, valor]) =>
+              valor !== null && valor !== undefined && valor !== ''
+            )
+            .map(([key, valor]) => ({
+              key,
+              valor
+            }))
+        }));
+      },
+      error: (err: any) => {
+        console.error('Error al cargar las citas del paciente:', err);
+      }
+    });
+  }
+
 
   /** Prepara listas filtradas para mostrar en HTML */
   private procesarPaciente(): void {

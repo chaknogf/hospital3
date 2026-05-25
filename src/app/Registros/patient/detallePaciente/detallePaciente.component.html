@@ -253,7 +253,7 @@
 
     <!-- CONSULTAS -->
     @if (consultasPorPaciente.length > 0) {
-      <div class="dc-card consultas-card">
+      <div class="dc-card-cc consultas-card">
         <div class="card-header">
           <span class="card-icon">📂</span>
           <h3 class="card-title">Consultas</h3>
@@ -262,7 +262,7 @@
         <div class="table-container">
           <table class="dc-table">
             <thead>
-              <tr class="text-center" style="border-bottom: 2px dotted;">
+              <tr class="text-center" style="border-bottom: 2px dotted">
                 <th>Fecha y Hora</th>
                 <th>Especialidad</th>
                 <th>Tipo Consulta</th>
@@ -272,8 +272,9 @@
 
             <tbody>
               <tr *ngFor="let c of consultasPorPaciente">
-                <td>{{ c.fecha_consulta | date: "dd-MM-yyyy" }} 
-                  <br>
+                <td>
+                  {{ c.fecha_consulta | date: "dd-MM-yyyy" }}
+                  <br />
                   {{ c.hora_consulta | time }}
                 </td>
                 <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
@@ -281,6 +282,38 @@
                 <td class="text-center">
                   <button class="btn" (click)="verDetalle(c.id)">📁</button>
                 </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- CITAS -->
+    @if (citasPorPaciente.length > 0) {
+      <div class="dc-card-cc consultas-card">
+        <div class="card-header">
+          <span class="card-icon">🗓️</span>
+          <h3 class="card-title">Citas</h3>
+        </div>
+
+        <div class="table-container">
+          <table class="dc-table">
+            <thead>
+              <tr class="text-center" style="border-bottom: 2px dotted">
+                <th>Fecha</th>
+                <th>Especialidad</th>
+                <th>razon</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let c of citasPorPaciente">
+                <td>
+                  {{ c.fecha_cita | date: "dd-MM-yyyy" }}
+                </td>
+                <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
+                <td>{{ c.datos_extra.razon_consulta }}</td>
               </tr>
             </tbody>
           </table>

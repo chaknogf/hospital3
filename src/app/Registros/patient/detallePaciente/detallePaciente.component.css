@@ -150,6 +150,28 @@
   box-sizing: border-box;
 }
 
+.dc-card-cc {
+  flex: 0 370px;
+  flex-grow: 1;
+  flex-basis: 200;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 0;     /* clave */
+  width: 100%;      /* ocupa todo el col, no la card directamente */
+  box-sizing: border-box;
+
+  .card-header {
+    background: #08001061;
+     border: 1px solid var(--rim);
+     border-radius: 12px;
+    padding: 16px;
+     margin-bottom: 4px;
+  }
+}
+
+
+
 .dc-card:hover {
   border-color: var(--rim-hot);
   box-shadow: 0 4px 24px rgba(59,130,246,0.08);
@@ -549,15 +571,233 @@
    TABLA NORMAL
 ═══════════════════════════════════════ */
 
-.dc-table {
+/* .dc-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 10px;
+  font-size: 12px;
   font-family: var(--mono);
   table-layout: fixed;
+
 }
 
+.dc-table td {
+  text-align: start;
+}
 
+.dc-table th {
+  text-align: start;
+  font-weight: bold;
+} */
+
+/* Estilo tabla tipo consola moderna con colores pastel */
+.dc-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: rgba(20, 25, 35, 0.85);
+  backdrop-filter: blur(2px);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace;
+}
+
+/* Encabezados estilo terminal */
+.dc-table thead tr {
+  background: linear-gradient(135deg, #2a2f3a 0%, #1e222a 100%);
+  border-bottom: none;
+}
+
+.dc-table th {
+  padding: 14px 16px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #a5d8ff;
+  text-shadow: 0 0 4px rgba(100, 200, 255, 0.3);
+  border-bottom: 2px dotted #5b7c8f;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Celdas estilo consola */
+.dc-table td {
+  padding: 0px 4px;
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  border-bottom: 1px solid rgba(90, 120, 140, 0.3);
+  transition: all 0.2s ease;
+}
+
+/* Efecto hover tipo "línea de comandos" */
+.dc-table tbody tr:hover {
+  background: rgba(100, 180, 250, 0.12);
+  box-shadow: inset 0 0 15px rgba(100, 200, 255, 0.1);
+  cursor: pointer;
+}
+
+.dc-table tbody tr:hover td {
+  color: #ffffff;
+  text-shadow: 0 0 3px rgba(150, 200, 255, 0.5);
+}
+
+/* Primera columna (fecha) estilo prompt */
+.dc-table td:first-child,
+.dc-table th:first-child {
+  padding-left: 20px;
+  position: relative;
+}
+
+.dc-table td:first-child::before {
+  content: ">";
+  position: absolute;
+  left: 6px;
+  color: #6ee7b7;
+  font-weight: bold;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.dc-table tbody tr:hover td:first-child::before {
+  opacity: 1;
+  text-shadow: 0 0 6px #6ee7b7;
+}
+
+/* Badges/botones pastel dentro de celdas (ejemplo para especialidad o razón) */
+.dc-table td:nth-child(2),
+.dc-table td:nth-child(3) {
+  position: relative;
+}
+
+/* Estilo tipo botón pastel para contenido de especialidad */
+.dc-table td:nth-child(2) {
+  background: linear-gradient(135deg, rgba(255, 182, 193, 0.15), rgba(255, 218, 185, 0.1));
+  border-radius: 20px;
+  margin: 4px 0;
+  display: inline-block;
+  width: auto;
+  padding: 4px 12px;
+  backdrop-filter: blur(4px);
+}
+
+/* Pero necesitamos arreglar el display para la celda real */
+.dc-table td:nth-child(2) {
+  display: table-cell;
+  background: transparent;
+  border-radius: 0;
+  padding: 6px 12px;
+}
+
+/* Mejor: agregar spans estilizados internamente con JS? Mejor usamos pseudo-elementos */
+/* En su lugar, haremos que el texto dentro tenga estilo de botón suave */
+.dc-table td:nth-child(2) span,
+.dc-table td:nth-child(2) {
+  font-weight: 500;
+}
+
+.dc-table td:nth-child(2)::before {
+  content: "📟 ";
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+/* Botones pastel para la razón de consulta */
+.dc-table td:nth-child(3) {
+  background: rgba(167, 139, 250, 0.1);
+  border-left: 2px solid #c084fc;
+
+}
+
+/* Scrollbar estilo terminal */
+.dc-table::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dc-table::-webkit-scrollbar-track {
+  background: #1a1f2a;
+  border-radius: 10px;
+}
+
+.dc-table::-webkit-scrollbar-thumb {
+  background: #5b7c8f;
+  border-radius: 10px;
+}
+
+.dc-table::-webkit-scrollbar-thumb:hover {
+  background: #8bb4d0;
+}
+
+/* Filas alternas estilo consola */
+.dc-table tbody tr:nth-child(even) {
+  background: rgba(30, 40, 50, 0.4);
+}
+
+.dc-table tbody tr:nth-child(odd) {
+  background: rgba(20, 28, 35, 0.6);
+}
+
+/* Efecto de "cursor" al hacer clic (animación opcional) */
+.dc-table tbody tr:active {
+  transform: scale(0.998);
+  transition: transform 0.05s;
+}
+
+/* Animación de entrada tipo terminal */
+@keyframes glitch {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dc-table tbody tr {
+  animation: glitch 0.2s ease forwards;
+  animation-delay: calc(var(--order, 0) * 0.02s);
+}
+
+/* Para móviles responsive */
+@media (max-width: 768px) {
+  .dc-table {
+    font-size: 0.75rem;
+  }
+
+  .dc-table th,
+  .dc-table td {
+    padding: 8px 10px;
+  }
+
+  .dc-table td:first-child::before {
+    content: "$";
+    font-size: 0.7rem;
+  }
+}
+
+/* Si quieres agregar un "prompt" visual al inicio de cada fila al hacer hover */
+.dc-table tbody tr:hover::after {
+  content: "❯";
+  position: absolute;
+  left: -8px;
+  color: #fbbf24;
+  font-weight: bold;
+  text-shadow: 0 0 8px #f59e0b;
+}
+
+/* Ajuste para contenedor scroll horizontal si es necesario */
+.table-responsive {
+  overflow-x: auto;
+  border-radius: 16px;
+}
+
+/* Botones pastel interactivos simulados dentro de celdas especiales (opcional con data attributes) */
+.dc-table td[data-type="button"]:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 1px rgba(200, 162, 200, 0.5);
+}
 
 @media (max-width: 480px) {
   .patient-hero {
