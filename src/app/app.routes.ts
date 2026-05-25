@@ -10,7 +10,6 @@ import { PacientesComponent } from './Registros/patient/pacientes/pacientes.comp
 import { FormularioPacienteComponent } from './Registros/patient/formularioPaciente/formularioPaciente.component';
 import { ConsultasComponent } from './Registros/consultas/consultas/consultas.component';
 import { RecepcionComponent } from './Registros/consultas/recepcion/recepcion.component';
-import { PrestamoComponent } from './Registros/consultas/prestamo/prestamo.component';
 import { FormConsultaComponent } from './Registros/adminsion/formConsulta/formConsulta.component';
 import { RegistrosMedicosComponent } from './Registros/registrosMedicos/registrosMedicos.component';
 import { DetallePacienteComponent } from './Registros/patient/detallePaciente/detallePaciente.component';
@@ -40,6 +39,8 @@ import { EstadisticaComponent } from './std/estadistica/estadistica.component';
 import { ConsultorComponent } from './std/consultor/consultor.component';
 import { MenutsComponent } from './trabajoSocial/trabajosocial/menuts.component';
 import { NuevaConstanciaNacimientoComponent } from './Registros/nacimientos/nuevaConstanciaNacimiento/nuevaConstanciaNacimiento.component';
+import { ListarPrestamosComponent } from './Registros/prestamos/listarPrestamos/listarPrestamos.component';
+import { CrearPrestamoComponent } from './Registros/prestamos/crearPrestamo/crearPrestamo.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -90,9 +91,12 @@ export const routes: Routes = [
       // Consultas
       { path: 'consultas', component: ConsultasComponent },
       { path: 'recepcion', component: RecepcionComponent },
-      { path: 'prestamos', component: PrestamoComponent },
       { path: 'registro', component: FormConsultaComponent },
       { path: 'renap', component: RenapComponent },
+      //Prestamos
+      { path: 'prestamos', component: ListarPrestamosComponent, canActivate: [roleGuard(['admin', 'registro'])] },
+      { path: 'prestamo/:id', component: CrearPrestamoComponent, canActivate: [roleGuard(['admin', 'registro'])] },
+      { path: 'editarPrestamo/:id', component: CrearPrestamoComponent, canActivate: [roleGuard(['admin', 'registro'])] },
       // Médicas
       { path: 'clinica', component: MedicaComponent },
       { path: 'pacientesAtendidos', component: PacientesAtendidosComponent },

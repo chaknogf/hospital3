@@ -224,6 +224,13 @@
               >
                 <span [innerHTML]="icons['tabla']"></span>
               </button>
+              <button
+                (click)="prestar(data.id); $event.stopPropagation()"
+                data-label="Prestar"
+              >
+                <span [innerHTML]="icons['tabla']"></span>
+              </button>
+
               <!-- <button
                 (click)="imprimir(data.id); $event.stopPropagation()"
                 data-label="Imprimir"

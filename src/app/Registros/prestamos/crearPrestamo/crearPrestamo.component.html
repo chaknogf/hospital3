@@ -1,0 +1,277 @@
+<div class="crear-container">
+  <!-- ── CARGANDO ── -->
+  @if (cargandoConsulta()) {
+    <div class="estado-carga">
+      <div class="spinner"></div>
+      <p>
+        {{
+          modoEditar ? "Cargando préstamo…" : "Cargando datos de la consulta…"
+        }}
+      </p>
+    </div>
+  }
+
+  <!-- ── ERROR ── -->
+  @if (errorCarga()) {
+    <div class="alerta alerta--error estado-carga">
+      <span class="alerta__icono">⚠️</span>
+      <p>{{ errorCarga() }}</p>
+      <button class="btn btn--secondary" (click)="cancelar()">Volver</button>
+    </div>
+  }
+
+  <!-- ── CONTENIDO ── -->
+  @if (!cargandoConsulta() && !errorCarga()) {
+    <div class="card">
+      <!-- ENCABEZADO -->
+      <div class="card-header">
+        <div class="card-header__titulo">
+          <span class="icon">{{ modoEditar ? "✏️" : "📤" }}</span>
+          <h2 class="card-title">
+            {{
+              modoEditar
+                ? "Editar Préstamo #" + idPrestamo
+                : "Préstamo de Expediente"
+            }}
+          </h2>
+        </div>
+        @if (consulta(); as c) {
+          <div class="consulta-badge">
+            <span class="consulta-badge__label">Consulta #{{ c.id }}</span>
+            @if (c.especialidad) {
+              <span class="consulta-badge__esp">{{ c.especialidad }}</span>
+            }
+            <span class="consulta-badge__estado">{{
+              c.ultimo_estado ?? "—"
+            }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- FEEDBACK -->
+      @if (mensaje()) {
+        <div class="alerta" [ngClass]="'alerta--' + mensaje()!.tipo">
+          <span class="alerta__icono">{{
+            mensaje()!.tipo === "success" ? "✅" : "❌"
+          }}</span>
+          {{ mensaje()!.texto }}
+        </div>
+      }
+
+      <div class="card-body">
+        <!-- ── DATOS PACIENTE (solo lectura) ── -->
+        @if (consulta(); as c) {
+          <div class="seccion-readonly">
+            <p class="seccion-readonly__titulo">Datos del paciente</p>
+            <div class="readonly-grid">
+              <div class="readonly-item readonly-item--wide">
+                <span class="readonly-item__label">Paciente</span>
+                <span class="readonly-item__valor">{{
+                  construirNombre(c.paciente.nombre)
+                }}</span>
+              </div>
+              <div class="readonly-item">
+                <span class="readonly-item__label">Expediente</span>
+                <span class="readonly-item__valor">{{
+                  c.expediente ?? c.paciente.expediente ?? "—"
+                }}</span>
+              </div>
+              <div class="readonly-item">
+                <span class="readonly-item__label">ID Paciente</span>
+                <span class="readonly-item__valor">{{ form.id_paciente }}</span>
+              </div>
+              <div class="readonly-item">
+                <span class="readonly-item__label">ID Consulta</span>
+                <span class="readonly-item__valor">{{
+                  form.id_consulta ?? "—"
+                }}</span>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- ── REGISTRO DE USUARIOS (siempre visible si hay datos) ── -->
+        @if (
+          usuarioEntrega || usuarioRecibe || modoEditar || prestamoCreado()
+        ) {
+          <div
+            class="seccion-usuarios"
+            [class.seccion-usuarios--nueva]="prestamoCreado()"
+          >
+            <p class="seccion-readonly__titulo">Registro de usuarios</p>
+            <div class="readonly-grid">
+              <div class="readonly-item">
+                <span class="readonly-item__label">👤 Usuario entrega</span>
+                <span
+                  class="readonly-item__valor"
+                  [class.readonly-item__valor--highlight]="!!usuarioEntrega"
+                  [class.readonly-item__valor--muted]="!usuarioEntrega"
+                >
+                  {{
+                    usuarioEntrega ??
+                      (modoEditar ? "—" : "Se asignará al guardar")
+                  }}
+                </span>
+              </div>
+              <div class="readonly-item">
+                <span class="readonly-item__label">👤 Usuario recibe</span>
+                <span
+                  class="readonly-item__valor"
+                  [class.readonly-item__valor--highlight]="!!usuarioRecibe"
+                  [class.readonly-item__valor--muted]="!usuarioRecibe"
+                >
+                  {{ usuarioRecibe ?? "Pendiente de devolución" }}
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- ── Aviso usuario automático (solo en crear, antes de guardar) ── -->
+        @if (!modoEditar && !prestamoCreado()) {
+          <div class="aviso-auto">
+            🔐 <strong>Usuario entrega</strong> se registrará automáticamente
+            con la sesión activa.
+          </div>
+        }
+
+        <!-- ── FORMULARIO (se oculta tras crear exitosamente) ── -->
+        @if (!prestamoCreado()) {
+          <div class="form-grid">
+            <!-- Solicitante -->
+            <div class="form-grupo form-grupo--required form-grupo--full">
+              <label for="solicitante">Solicitante</label>
+              <input
+                id="solicitante"
+                type="text"
+                [(ngModel)]="form.solicitante"
+                placeholder="Nombre completo del solicitante"
+                maxlength="150"
+              />
+            </div>
+
+            <!-- Tipo Documento -->
+            <div class="form-grupo">
+              <label for="tipo_documento">Tipo de Documento</label>
+              <select id="tipo_documento" [(ngModel)]="form.tipo_documento">
+                @for (tipo of tiposDocumento; track tipo) {
+                  <option [value]="tipo">{{ tipo }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Ubicación -->
+            <div class="form-grupo">
+              <label for="ubicacion">Ubicación</label>
+              <input
+                id="ubicacion"
+                type="text"
+                [(ngModel)]="form.ubicacion"
+                placeholder="Ej: Archivo central, Estante 3"
+                maxlength="100"
+              />
+            </div>
+
+            <!-- Fecha Préstamo -->
+            <div class="form-grupo">
+              <label for="fecha_prestamo">Fecha de Préstamo</label>
+              <input
+                id="fecha_prestamo"
+                type="datetime-local"
+                [(ngModel)]="form.fecha_prestamo"
+              />
+            </div>
+
+            <!-- Fecha Límite -->
+            <div class="form-grupo">
+              <label for="fecha_limite">Fecha Límite</label>
+              <input
+                id="fecha_limite"
+                type="datetime-local"
+                [(ngModel)]="form.fecha_limite"
+              />
+            </div>
+
+            <!-- Fecha Devolución (solo en editar) -->
+            @if (modoEditar) {
+              <div class="form-grupo">
+                <label for="fecha_devolucion">
+                  Fecha Devolución
+                  <span class="label-hint"
+                    >— asigna usuario recibe automáticamente</span
+                  >
+                </label>
+                <input
+                  id="fecha_devolucion"
+                  type="datetime-local"
+                  [(ngModel)]="formUpdate.fecha_devolucion"
+                />
+              </div>
+
+              <!-- Estado -->
+              <div class="form-grupo">
+                <label for="activo">Estado</label>
+                <select id="activo" [(ngModel)]="form.activo">
+                  <option [ngValue]="true">Activo</option>
+                  <option [ngValue]="false">Inactivo</option>
+                </select>
+              </div>
+            }
+
+            <!-- Motivo -->
+            <div class="form-grupo form-grupo--full">
+              <label for="motivo">Motivo</label>
+              <textarea
+                id="motivo"
+                [(ngModel)]="form.motivo"
+                rows="2"
+                placeholder="Motivo del préstamo…"
+              ></textarea>
+            </div>
+
+            <!-- Nota -->
+            <div class="form-grupo form-grupo--full">
+              <label for="nota">Nota</label>
+              <textarea
+                id="nota"
+                [(ngModel)]="form.nota"
+                rows="2"
+                placeholder="Observaciones adicionales…"
+              ></textarea>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- ACCIONES -->
+      <div class="card-footer">
+        @if (!prestamoCreado()) {
+          <button class="btn btn--secondary" type="button" (click)="cancelar()">
+            Cancelar
+          </button>
+          <button
+            class="btn btn--primary"
+            type="button"
+            (click)="guardar()"
+            [disabled]="isLoading()"
+          >
+            @if (isLoading()) {
+              <span class="spinner spinner--sm"></span>
+              {{ modoEditar ? "Guardando…" : "Registrando…" }}
+            } @else {
+              {{ modoEditar ? "Guardar Cambios" : "Registrar Préstamo" }}
+            }
+          </button>
+        } @else {
+          <button
+            class="btn btn--primary"
+            type="button"
+            (click)="router.navigate(['/prestamos'])"
+          >
+            Ir a Préstamos →
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>

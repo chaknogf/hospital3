@@ -166,11 +166,11 @@ export class ApiService {
   // ======= USUARIOS =======
   getUsers(filtros: any): Observable<UsersListResponse> {
     const params = this.limpiarParametros(filtros);
-    console.log(params.toString())
+    //console.log(params.toString())
     return this.http.get<UsersListResponse>(`${this.baseUrl}/users/`, { params }).pipe(
       tap(response => {
         this.usuariosSubject.next(response.usuarios);
-        console.log(response)
+        //console.log(response)
       }),
       catchError(error => this.manejarError(error, 'obtener usuarios'))
     );

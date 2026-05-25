@@ -303,4 +303,8 @@ export class PacientesComponent implements OnInit {
   defuncion() {
     console.log('defuncion');
   }
+
+  prestar(id: number) {
+    this.router.navigate(['/prestamo', id]);
+  }
 }

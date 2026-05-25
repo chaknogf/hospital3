@@ -233,4 +233,8 @@ export class ConsultasComponent implements OnInit {
     return encontrado?.ref === 'inactivo' ? 'inactivo' : 'activo';
   }
 
+  prestar(id: number) {
+    this.router.navigate(['/prestamo', id]);
+  }
+
 }
