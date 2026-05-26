@@ -51,10 +51,10 @@ export class RegistrosMedicosComponent implements OnInit {
     this.options = [
 
       { nombre: 'Pacientes', descripcion: 'Pacientes Registrados', ruta: '/pacientes', icon: 'persons' },
+      { nombre: 'Consultas', descripcion: 'Todas las consultas registradas', ruta: '/consultas', icon: 'consultas' },
       { nombre: 'Emergencia', descripcion: 'Emergencias Registradas', ruta: '/emergencias', icon: 'ambulance' },
       { nombre: 'Coex', descripcion: 'Consulta Externa Registradas', ruta: '/coex', icon: 'cmedic' },
       { nombre: 'Ingresos', descripcion: 'Hospitalizaciones Registradas', ruta: '/ingresos', icon: 'ingresoIcon' },
-      { nombre: 'Consultas', descripcion: 'Todas las consultas registradas', ruta: '/consultas', icon: 'consultas' },
       { nombre: 'Recepcion', descripcion: 'Gestion de expedientes', ruta: '/recepcion', icon: 'archivo' },
       { nombre: 'Prestamo', descripcion: 'Gestor de expedientes prestados', ruta: '/prestamos', icon: 'compartir' },
       { nombre: 'Citas', descripcion: 'Gestor de citas', ruta: '/citas', icon: 'calendar' },

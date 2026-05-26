@@ -58,9 +58,22 @@ export interface PrestamoUpdate {
 }
 
 // =========================================================
-// FILTROS
+// RESPONSE PAGINADO (nuevo — coincide con PrestamoListResponse del backend)
+// =========================================================
+export interface PrestamoListResponse {
+  total: number;
+  items: Prestamo[];
+}
+
+// =========================================================
+// FILTROS — ampliados
 // =========================================================
 export interface FiltroPrestamos {
   activo?: boolean | null;
   id_paciente?: number | null;
+  expediente?: string | null;        // ← nuevo
+  tipo_documento?: string | null;    // ← nuevo
+  nombre_paciente?: string | null;   // ← nuevo
+  skip?: number;                     // ← paginación
+  limit?: number;                    // ← paginación
 }

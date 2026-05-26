@@ -1,10 +1,16 @@
+// listarPrestamos.component.ts
+
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PrestamosService } from '../prestamos.service';
 import { FiltroPrestamos, Prestamo } from '../../../interface/prestamos';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { addIcon, arrowDown, cancelIcon, editIcon, findIcon, menuIcon, removeIcon, searchIcon, skipLeft, tablaShanonIcon } from '../../../shared/icons/svg-icon';
+import {
+  addIcon, arrowDown, cancelIcon, editIcon, findIcon,
+  menuIcon, removeIcon, searchIcon, skipLeft, skipRight,  // ← skipRight correcto
+  tablaShanonIcon, compartirIcon
+} from '../../../shared/icons/svg-icon';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -17,49 +23,56 @@ import { Router } from '@angular/router';
 })
 export class ListarPrestamosComponent implements OnInit {
 
-  private prestamosService = inject(PrestamosService);
+  private api = inject(PrestamosService);
   private location = inject(Location);
   private sanitizer = inject(DomSanitizer);
   private router = inject(Router);
 
-  prestamos$ = this.prestamosService.prestamos$;
-  isLoading = this.prestamosService.isLoading;
+  prestamos: Prestamo[] = [];
   cargando = false;
   filtrar = false;
   visible = false;
-  modalActivo = false;
-  finPagina: boolean = false;
+  finPagina = false;
   rowActiva: number | null = null;
+
+  // Exponer total y página actual para el template
+  total = this.api.total;
+  readonly limit = 20;
 
   //======== ICONOS ======
   addIcon!: SafeHtml;
   removeIcon!: SafeHtml;
-  saveIcon!: SafeHtml;
   cancelIcon!: SafeHtml;
   findIcon!: SafeHtml;
   searchIcon!: SafeHtml;
   arrowDown!: SafeHtml;
-  tablaShanonIcon!: SafeHtml;
   editIcon!: SafeHtml;
-  skipRight!: SafeHtml;
-  skipLeft!: SafeHtml;
+  skipRightIcon!: SafeHtml;
+  skipLeftIcon!: SafeHtml;
   menuIcon!: SafeHtml;
+  compartirIcon!: SafeHtml;
 
-
-  // Filtros
+  // Filtros — incluye los nuevos campos y paginación
   filtros: FiltroPrestamos = {
     activo: true,
-    id_paciente: null
+    id_paciente: null,
+    expediente: null,
+    tipo_documento: null,
+    nombre_paciente: null,
+    skip: 0,
+    limit: this.limit,
   };
 
-  // Control del modal de edición
-  prestamoSeleccionado = signal<Prestamo | null>(null);
-  mostrarModal = signal(false);
-
-  // Mensaje de feedback
   mensaje = signal<{ texto: string; tipo: 'success' | 'error' } | null>(null);
 
   ngOnInit(): void {
+    this.inicializarIconos();
+    this.api.prestamos$.subscribe(data => {
+      this.prestamos = data;
+      this.cargando = false;
+      // Desactiva botón siguiente si hay menos registros que el límite
+      this.finPagina = data.length < this.limit;
+    });
     this.cargarPrestamos();
   }
 
@@ -71,11 +84,9 @@ export class ListarPrestamosComponent implements OnInit {
     this.findIcon = this.sanitizer.bypassSecurityTrustHtml(findIcon);
     this.searchIcon = this.sanitizer.bypassSecurityTrustHtml(searchIcon);
     this.arrowDown = this.sanitizer.bypassSecurityTrustHtml(arrowDown);
-    this.tablaShanonIcon = this.sanitizer.bypassSecurityTrustHtml(tablaShanonIcon);
     this.editIcon = this.sanitizer.bypassSecurityTrustHtml(editIcon);
-    this.skipLeft = this.sanitizer.bypassSecurityTrustHtml(skipLeft);
-    this.skipRight = this.sanitizer.bypassSecurityTrustHtml(skipLeft);
-
+    this.skipLeftIcon = this.sanitizer.bypassSecurityTrustHtml(skipLeft);
+    this.skipRightIcon = this.sanitizer.bypassSecurityTrustHtml(skipRight);  // ← corregido
   }
 
   toggleFiltros(): void {
@@ -83,47 +94,64 @@ export class ListarPrestamosComponent implements OnInit {
   }
 
   cargarPrestamos(): void {
-    // Limpia nulos para no enviar parámetros vacíos
-    const filtrosLimpios: FiltroPrestamos = {};
-    if (this.filtros.activo !== null && this.filtros.activo !== undefined) {
-      filtrosLimpios.activo = this.filtros.activo;
-    }
-    if (this.filtros.id_paciente) {
-      filtrosLimpios.id_paciente = this.filtros.id_paciente;
-    }
-
-    this.prestamosService.getPrestamos(filtrosLimpios).subscribe({
+    this.cargando = true;
+    this.api.getPrestamos(this.filtros).subscribe({
       error: () => this.mostrarMensaje('Error al cargar los préstamos', 'error')
     });
   }
 
-  abrirEdicion(prestamo: Prestamo): void {
-    this.prestamoSeleccionado.set({ ...prestamo });
-    this.mostrarModal.set(true);
+  limpiarFiltros(): void {
+    this.filtros = {
+      activo: true,
+      id_paciente: null,
+      expediente: null,
+      tipo_documento: null,
+      nombre_paciente: null,
+      skip: 0,
+      limit: this.limit,
+    };
+    this.cargarPrestamos();
   }
 
-  cerrarModal(): void {
-    this.prestamoSeleccionado.set(null);
-    this.mostrarModal.set(false);
+  // ======= PAGINACIÓN =======
+  get paginaActual(): number {
+    return Math.floor((this.filtros.skip ?? 0) / this.limit) + 1;
   }
 
+  get totalPaginas(): number {
+    return Math.ceil(this.total() / this.limit);
+  }
 
+  paginaAnterior(): void {
+    if ((this.filtros.skip ?? 0) === 0) return;
+    this.filtros.skip = (this.filtros.skip ?? 0) - this.limit;
+    this.cargarPrestamos();
+  }
 
+  paginaSiguiente(): void {
+    if (this.finPagina) return;
+    this.filtros.skip = (this.filtros.skip ?? 0) + this.limit;
+    this.cargarPrestamos();
+  }
+
+  // ======= ACCIONES =======
   desactivar(id: number): void {
     if (!confirm('¿Desea desactivar este préstamo?')) return;
-
-    this.prestamosService.eliminarPrestamo(id).subscribe({
+    this.api.eliminarPrestamo(id).subscribe({
       next: () => this.mostrarMensaje('Préstamo desactivado', 'success'),
       error: () => this.mostrarMensaje('Error al desactivar el préstamo', 'error')
     });
   }
 
-  private mostrarMensaje(texto: string, tipo: 'success' | 'error'): void {
-    this.mensaje.set({ texto, tipo });
-    setTimeout(() => this.mensaje.set(null), 3500);
+  editar(id: number): void {
+    this.router.navigate(['/editarPrestamo', id]);
   }
 
-  // Utilidad de formato
+  volver(): void {
+    this.location.back();
+  }
+
+  // ======= UTILIDADES =======
   formatearFecha(fecha?: string | null): string {
     if (!fecha) return '—';
     return new Date(fecha).toLocaleDateString('es-GT', {
@@ -136,16 +164,12 @@ export class ListarPrestamosComponent implements OnInit {
     return new Date(prestamo.fecha_limite) < new Date();
   }
 
-  // ======= UTILIDADES =======
   trackById(_index: number, prestamo: Prestamo): number {
     return prestamo.id;
   }
 
-  volver(): void {
-    this.location.back();
-  }
-
-  editar(id: number): void {
-    this.router.navigate(['/editarPrestamo', id]);
+  private mostrarMensaje(texto: string, tipo: 'success' | 'error'): void {
+    this.mensaje.set({ texto, tipo });
+    setTimeout(() => this.mensaje.set(null), 3500);
   }
 }

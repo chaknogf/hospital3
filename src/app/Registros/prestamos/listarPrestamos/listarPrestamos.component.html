@@ -56,7 +56,7 @@
           Buscar
         </button>
 
-        <button type="button" class="button-filtros">
+        <button type="button" (click)="limpiarFiltros()" class="button-filtros">
           <span [innerHTML]="removeIcon"></span>
           Limpiar
         </button>
@@ -71,11 +71,13 @@
   </div>
 
   <!-- Mensaje -->
-  @if (mensaje()) {
-    <div class="alerta" [ngClass]="'alerta--' + mensaje()!.tipo">
-      {{ mensaje()!.texto }}
-    </div>
-  }
+  <div
+    *ngIf="mensaje()"
+    class="alerta"
+    [ngClass]="'alerta--' + mensaje()!.tipo"
+  >
+    {{ mensaje()!.texto }}
+  </div>
 
   <!-- Tabla principal -->
   <div class="aurora-container">
@@ -93,133 +95,115 @@
       </thead>
 
       <tbody>
-        <!-- Cargando -->
-        @if (isLoading()) {
-          <tr>
-            <td colspan="7" class="text-center py-3">
-              <em>Cargando préstamos...</em>
-            </td>
-          </tr>
-        }
+        <!-- Filas de datos -->
+        <tr
+          *ngFor="let p of prestamos; let i = index; trackBy: trackById"
+          class="aurora-table-row"
+          [class.touch-active]="rowActiva === p.id"
+        >
+          <!-- Index -->
+          <td class="cell-index">{{ i + 1 }}</td>
 
-        <!-- Datos -->
-        @if (prestamos$ | async; as lista) {
-          @for (p of lista; track p.id; let i = $index) {
-            <tr
-              class="aurora-table-row"
-              [class.touch-active]="rowActiva === p.id"
+          <!-- Expediente -->
+          <td class="text-justify">
+            <div>
+              <strong>Expediente:</strong>
+              {{ p.expediente || "—" }}
+            </div>
+            <small class="d-block">
+              <strong>Ubicación:</strong>
+              {{ p.ubicacion || "—" }}
+            </small>
+          </td>
+
+          <!-- Solicitante -->
+          <td>
+            <p class="p-0 m-0 text-uppercase">{{ p.solicitante }}</p>
+          </td>
+
+          <!-- Tipo Documento -->
+          <td class="oculto">
+            <span class="badge-doc">
+              {{ p.tipo_documento || "EXPEDIENTE" }}
+            </span>
+          </td>
+
+          <!-- Fechas -->
+          <td class="oculto">
+            <div>
+              <strong>Préstamo:</strong>
+              {{ formatearFecha(p.fecha_prestamo) }}
+            </div>
+
+            <div [class.fecha--vencida]="estaVencido(p)">
+              <strong>Límite:</strong>
+              {{ formatearFecha(p.fecha_limite) }}
+              <span *ngIf="estaVencido(p)" class="tag-vencido"> VENCIDO </span>
+            </div>
+
+            <small class="d-block">
+              <strong>Devolución:</strong>
+              {{ formatearFecha(p.fecha_devolucion) }}
+            </small>
+          </td>
+
+          <!-- Estado -->
+          <td class="oculto">
+            <span
+              class="badge-estado"
+              [class.badge-activo]="p.activo"
+              [class.badge-inactivo]="!p.activo"
             >
-              <!-- Index -->
-              <td class="cell-index">
-                {{ i + 1 }}
-              </td>
+              {{ p.activo ? "Activo" : "Inactivo" }}
+            </span>
+          </td>
 
-              <!-- Expediente -->
-              <td class="text-justify">
-                <div>
-                  <strong>Expediente:</strong>
-                  {{ p.expediente || "—" }}
-                </div>
+          <!-- Acciones -->
+          <td class="secundario">
+            <div class="botones-opt">
+              <button (click)="editar(p.id); $event.stopPropagation()">
+                <span [innerHTML]="editIcon"></span>
+              </button>
 
-                <small class="d-block">
-                  <strong>Ubicación:</strong>
-                  {{ p.ubicacion || "—" }}
-                </small>
-              </td>
+              <!-- <button
+                *ngIf="p.activo"
+                (click)="desactivar(p.id); $event.stopPropagation()"
+              >
+                <span [innerHTML]="cancelIcon"></span>
+              </button> -->
+            </div>
+          </td>
+        </tr>
 
-              <!-- Solicitante -->
-              <td>
-                <p class="p-0 m-0 text-uppercase">
-                  {{ p.solicitante }}
-                </p>
-              </td>
+        <!-- Sin resultados -->
+        <tr *ngIf="!cargando && prestamos.length === 0">
+          <td colspan="7" class="text-center py-3">
+            <em>No se encontraron préstamos con los filtros aplicados.</em>
+          </td>
+        </tr>
 
-              <!-- Tipo Documento -->
-              <td class="oculto">
-                <span class="badge-doc">
-                  {{ p.tipo_documento || "EXPEDIENTE" }}
-                </span>
-              </td>
-
-              <!-- Fechas -->
-              <td class="oculto">
-                <div>
-                  <strong>Préstamo:</strong>
-                  {{ formatearFecha(p.fecha_prestamo) }}
-                </div>
-
-                <div [class.fecha--vencida]="estaVencido(p)">
-                  <strong>Límite:</strong>
-                  {{ formatearFecha(p.fecha_limite) }}
-
-                  @if (estaVencido(p)) {
-                    <span class="tag-vencido"> VENCIDO </span>
-                  }
-                </div>
-
-                <small class="d-block">
-                  <strong>Devolución:</strong>
-                  {{ formatearFecha(p.fecha_devolucion) }}
-                </small>
-              </td>
-
-              <!-- Estado -->
-              <td class="oculto">
-                <span
-                  class="badge-estado"
-                  [class.badge-activo]="p.activo"
-                  [class.badge-inactivo]="!p.activo"
-                >
-                  {{ p.activo ? "Activo" : "Inactivo" }}
-                </span>
-              </td>
-
-              <!-- Acciones -->
-              <td class="secundario">
-                <div class="botones-opt">
-                  <button (click)="editar(p.id); $event.stopPropagation()">
-                    <span [innerHTML]="editIcon"></span>
-                  </button>
-
-                  @if (p.activo) {
-                    <button
-                      (click)="desactivar(p.id); $event.stopPropagation()"
-                    >
-                      <span [innerHTML]="cancelIcon"></span>
-                    </button>
-                  }
-                </div>
-              </td>
-            </tr>
-          }
-
-          <!-- Sin resultados -->
-          @if (!isLoading() && lista.length === 0) {
-            <tr>
-              <td colspan="7" class="text-center py-3">
-                <em>
-                  No se encontraron préstamos con los filtros aplicados.
-                </em>
-              </td>
-            </tr>
-          }
-        }
+        <!-- Cargando -->
+        <tr *ngIf="cargando">
+          <td colspan="7" class="text-center py-3">
+            <em>Cargando préstamos...</em>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
 
   <!-- Paginación -->
   <div class="d-flex justify-content-center align-items-center p-0">
-    <button class="btn">
-      <span [innerHTML]="skipLeft"></span>
+    <button class="btn" [disabled]="filtros.skip === 0">
+      <span [innerHTML]="skipLeftIcon"></span>
     </button>
 
     <div>
-      <strong></strong>
+      <strong>{{ filtros.skip }}</strong>
     </div>
 
     <button class="btn" [disabled]="finPagina">
-      <span [innerHTML]="skipRight"></span>
+      <span [innerHTML]="skipRightIcon"></span>
     </button>
   </div>
 </div>

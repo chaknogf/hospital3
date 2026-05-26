@@ -87,6 +87,7 @@ export class ConsultasComponent implements OnInit {
       skipLeft: this.iconService.getIcon("skipLeft"),
       skipRight: this.iconService.getIcon("skipRight"),
       print: this.iconService.getIcon("printIcon"),
+      prestar: this.iconService.getIcon("prestarIcon"),
     };
   }
 

@@ -4,13 +4,23 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, catchError, finalize } from 'rxjs/operators';
 import { BaseApiService, PaginationState } from '../../service/base-api.service';
-import { Prestamo, PrestamoCreate, PrestamoUpdate, FiltroPrestamos } from '../../interface/prestamos';
+import {
+  Prestamo,
+  PrestamoCreate,
+  PrestamoUpdate,
+  PrestamoListResponse,
+  FiltroPrestamos
+} from '../../interface/prestamos';
+import { signal } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class PrestamosService extends BaseApiService {
 
   private prestamosSubject = new BehaviorSubject<Prestamo[]>([]);
   prestamos$ = this.prestamosSubject.asObservable();
+
+  // Total de registros para paginación
+  total = signal<number>(0);
 
   private ultimoFiltro: PaginationState = {
     filtro: {}
@@ -25,17 +35,22 @@ export class PrestamosService extends BaseApiService {
   }
 
   // =========================================================
-  // LISTAR PRESTAMOS
+  // LISTAR PRESTAMOS — ahora responde PrestamoListResponse
   // =========================================================
 
-  getPrestamos(filtros: FiltroPrestamos = {}): Observable<Prestamo[]> {
+  getPrestamos(filtros: FiltroPrestamos = {}): Observable<PrestamoListResponse> {
     this.ultimoFiltro.filtro = filtros;
     const params = this.limpiarParametros(filtros);
 
-    return this.http.get<Prestamo[]>(`${this.baseUrl}/prestamos/`, { params }).pipe(
-      tap(response => this.prestamosSubject.next(response)),
-      catchError(error => this.manejarError(error, 'obtener préstamos'))
-    );
+    return this.http
+      .get<PrestamoListResponse>(`${this.baseUrl}/prestamos/`, { params })
+      .pipe(
+        tap(response => {
+          this.prestamosSubject.next(response.items);  // ← items al subject
+          this.total.set(response.total);              // ← total al signal
+        }),
+        catchError(error => this.manejarError(error, 'obtener préstamos'))
+      );
   }
 
   // =========================================================
@@ -43,9 +58,11 @@ export class PrestamosService extends BaseApiService {
   // =========================================================
 
   getPrestamo(id: number): Observable<Prestamo> {
-    return this.http.get<Prestamo>(`${this.baseUrl}/prestamos/${id}`).pipe(
-      catchError(error => this.manejarError(error, 'obtener préstamo'))
-    );
+    return this.http
+      .get<Prestamo>(`${this.baseUrl}/prestamos/${id}`)
+      .pipe(
+        catchError(error => this.manejarError(error, 'obtener préstamo'))
+      );
   }
 
   // =========================================================
@@ -54,11 +71,13 @@ export class PrestamosService extends BaseApiService {
 
   crearPrestamo(data: PrestamoCreate): Observable<Prestamo> {
     this.isLoading.set(true);
-    return this.http.post<Prestamo>(`${this.baseUrl}/prestamos/`, data).pipe(
-      tap(() => this.refrescarPrestamos()),
-      catchError(error => this.manejarError(error, 'crear préstamo')),
-      finalize(() => this.isLoading.set(false))
-    );
+    return this.http
+      .post<Prestamo>(`${this.baseUrl}/prestamos/`, data)
+      .pipe(
+        tap(() => this.refrescarPrestamos()),
+        catchError(error => this.manejarError(error, 'crear préstamo')),
+        finalize(() => this.isLoading.set(false))
+      );
   }
 
   // =========================================================
@@ -67,11 +86,13 @@ export class PrestamosService extends BaseApiService {
 
   actualizarPrestamo(id: number, datos: PrestamoUpdate): Observable<Prestamo> {
     this.isLoading.set(true);
-    return this.http.put<Prestamo>(`${this.baseUrl}/prestamos/${id}`, datos).pipe(
-      tap(() => this.refrescarPrestamos()),
-      catchError(error => this.manejarError(error, 'actualizar préstamo')),
-      finalize(() => this.isLoading.set(false))
-    );
+    return this.http
+      .put<Prestamo>(`${this.baseUrl}/prestamos/${id}`, datos)
+      .pipe(
+        tap(() => this.refrescarPrestamos()),
+        catchError(error => this.manejarError(error, 'actualizar préstamo')),
+        finalize(() => this.isLoading.set(false))
+      );
   }
 
   // =========================================================
@@ -80,10 +101,12 @@ export class PrestamosService extends BaseApiService {
 
   eliminarPrestamo(id: number): Observable<{ detail: string }> {
     this.isLoading.set(true);
-    return this.http.delete<{ detail: string }>(`${this.baseUrl}/prestamos/${id}`).pipe(
-      tap(() => this.refrescarPrestamos()),
-      catchError(error => this.manejarError(error, 'eliminar préstamo')),
-      finalize(() => this.isLoading.set(false))
-    );
+    return this.http
+      .delete<{ detail: string }>(`${this.baseUrl}/prestamos/${id}`)
+      .pipe(
+        tap(() => this.refrescarPrestamos()),
+        catchError(error => this.manejarError(error, 'eliminar préstamo')),
+        finalize(() => this.isLoading.set(false))
+      );
   }
 }
