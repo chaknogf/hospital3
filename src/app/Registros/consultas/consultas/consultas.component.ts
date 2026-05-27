@@ -2,15 +2,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { EdadPipe } from './../../../pipes/edad.pipe';
-import { Paciente, Totales } from './../../../interface/interfaces';
-import { ConsultaService } from './../consultas.service';
+import { EdadPipe } from '../../../pipes/edad.pipe';
+import { Paciente, Totales } from '../../../interface/interfaces';
+import { ConsultaService } from '../consultas.service';
 import { Router } from '@angular/router';
-import { IconService } from './../../../service/icon.service';
-import { ConsultaResponse, Ciclo } from './../../../interface/consultas';
-import { ciclos, Dict, tipoConsulta } from './../../../enum/diccionarios';
-import { DatosExtraPipe } from './../../../pipes/datos-extra.pipe';
-import { CuiPipe } from './../../../pipes/cui.pipe';
+import { IconService } from '../../../service/icon.service';
+import { ConsultaResponse, Ciclo } from '../../../interface/consultas';
+import { ciclos, Dict, tipoConsulta } from '../../../enum/diccionarios';
+import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
+import { CuiPipe } from '../../../pipes/cui.pipe';
 import { TimePipe } from '../../../pipes/time.pipe';
 import { Location } from '@angular/common';
 

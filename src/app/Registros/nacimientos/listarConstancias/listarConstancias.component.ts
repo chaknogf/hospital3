@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ConstanciaNacimientoOut } from '../../../interface/consNac';
 import { ConstanciaNacimiento } from '../constancias.inteface';
-import { ApiService } from './../../../service/api.service';
+import { ApiService } from '../../../service/api.service';
 import { ConstanciasService } from '../constancias.service';
 import { Router } from '@angular/router';
-import { IconService } from './../../../service/icon.service';
+import { IconService } from '../../../service/icon.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({

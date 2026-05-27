@@ -38,7 +38,8 @@ export class EstadisticaComponent implements OnInit {
       compartir: this.iconService.getIcon("compartirIcon"),
       calendar: this.iconService.getIcon("calendarIcon"),
       baby: this.iconService.getIcon("babyIcon"),
-      persons: this.iconService.getIcon("persons2")
+      persons: this.iconService.getIcon("persons2"),
+      doctor: this.iconService.getIcon("doctorIcon")
 
     }
 
@@ -54,6 +55,7 @@ export class EstadisticaComponent implements OnInit {
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
       { nombre: 'Procedimientos', descripcion: 'Registro de procedimientos menores y mayores', ruta: '/procedimientosmenores', icon: '' },
       { nombre: 'Nacimientos', descripcion: 'Registro de Nacimientos', ruta: '/nacimientosCons', icon: '' },
+      { nombre: 'Medicos', descripcion: 'Medicos Registrados', ruta: '/medicos', icon: 'doctor' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];

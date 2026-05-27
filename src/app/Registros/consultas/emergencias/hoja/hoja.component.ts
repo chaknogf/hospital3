@@ -18,7 +18,7 @@ import {
   especialidadesConsulta,
   OpcionBoolean,
   opcionesIngreso
-} from './../../../../enum/diccionarios';
+} from '../../../../enum/diccionarios';
 import { Location } from '@angular/common';
 
 @Component({

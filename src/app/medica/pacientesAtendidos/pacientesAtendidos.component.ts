@@ -15,7 +15,7 @@ import { CuiPipe } from './../../pipes/cui.pipe';
 import { TimePipe } from '../../pipes/time.pipe';
 import { Dict, especialidades } from './../../enum/diccionarios';
 import { of } from 'rxjs';
-import { ConsultaService } from '../../Registros/consultas/consultas.service';
+import { ConsultaService } from '../../registros/consultas/consultas.service';
 
 const ESTADOS_INACTIVOS = new Set(['archivo', 'descartado', 'recepcion', 'egreso']);
 @Component({

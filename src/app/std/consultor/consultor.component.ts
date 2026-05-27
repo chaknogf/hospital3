@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ConsultaService } from '../../Registros/consultas/consultas.service';
+import { ConsultaService } from '../../registros/consultas/consultas.service';
 import { Router } from '@angular/router';
-import { PacienteService } from '../../Registros/patient/paciente.service';
+import { PacienteService } from '../../registros/patient/paciente.service';
 import { ConsultasIdPaciente, PacienteBuscado } from '../../interface/consultas';
 import { Paciente, Referencia } from '../../interface/interfaces';
 import { DatosExtraPipe } from '../../pipes/datos-extra.pipe';
@@ -21,8 +21,8 @@ import { Location } from '@angular/common';
 })
 export class ConsultorComponent implements OnInit {
 
-  private api    = inject(ConsultaService);
-  private apip   = inject(PacienteService);
+  private api = inject(ConsultaService);
+  private apip = inject(PacienteService);
   private router = inject(Router);
   private location = inject(Location);
 
@@ -61,7 +61,7 @@ export class ConsultorComponent implements OnInit {
   metadatosArray: { key: string; valor: any }[] = [];
   neonatalesFiltrados: { key: string; valor: any }[] = [];
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   // ── Control del sidebar / bottom sheet ─────────────────
   toggleSidebar(): void {
@@ -263,12 +263,12 @@ export class ConsultorComponent implements OnInit {
   }
 
   getNombreReferencia(ref: Referencia): string { return ref.nombre ?? 'Sin nombre'; }
-  getParentesco(ref: any): string  { return ref?.parentesco || 'Sin parentesco'; }
-  getTelefono(ref: any): string    { return ref?.telefono   || 'Sin teléfono'; }
-  getExpediente(ref: any): string  { return ref?.expediente || '—'; }
-  getIdPersona(ref: any): string   { return ref?.idpersona  || '—'; }
+  getParentesco(ref: any): string { return ref?.parentesco || 'Sin parentesco'; }
+  getTelefono(ref: any): string { return ref?.telefono || 'Sin teléfono'; }
+  getExpediente(ref: any): string { return ref?.expediente || '—'; }
+  getIdPersona(ref: any): string { return ref?.idpersona || '—'; }
 
   verDetalle(id: number): void { this.router.navigate(['/detalleAdmision', id]); }
-  editar(id: number): void     { this.router.navigate(['/pacienteEdit', id]); }
-  regresar(): void             { this.location.back(); }
+  editar(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
+  regresar(): void { this.location.back(); }
 }

@@ -13,7 +13,7 @@ import { Paciente } from '../../../interface/interfaces';
 import {
   ConsultaOut, ConsultaUpdate, RegistroConsultaCreate,
   CicloClinico, EstadoCiclo, Indicador, Egreso, Dx
-} from './../../../interface/consultas';
+} from '../../../interface/consultas';
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';

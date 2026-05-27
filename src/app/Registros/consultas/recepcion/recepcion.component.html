@@ -417,12 +417,36 @@
       <!-- Condición de egreso — campo principal del Egreso -->
       <div class="rc-field">
         <label class="rc-lbl">Condición de egreso *</label>
-        <select class="rc-input" [(ngModel)]="formArchivar.condicion">
-          <option value="">— Seleccionar —</option>
-          <option *ngFor="let c of condicionesEgreso" [value]="c.value">
-            {{ c.label }}
-          </option>
-        </select>
+
+        <div class="rc-condiciones-grid">
+          <button
+            type="button"
+            class="rc-condicion-btn"
+            *ngFor="let c of condicionesEgreso"
+            [class.rc-condicion-active]="formArchivar.condicion === c.value"
+            (click)="formArchivar.condicion = c.value"
+          >
+            <span class="rc-condicion-icon">
+              {{
+                c.value === "alta"
+                  ? "✅"
+                  : c.value === "referido"
+                    ? "🚑"
+                    : c.value === "fuga"
+                      ? "🏃"
+                      : c.value === "fallecido"
+                        ? "🕊️"
+                        : c.value === "traslado"
+                          ? "📦"
+                          : "📄"
+              }}
+            </span>
+
+            <span class="rc-condicion-label">
+              {{ c.label }}
+            </span>
+          </button>
+        </div>
       </div>
 
       <!-- Referencia — campo referencia del Egreso -->

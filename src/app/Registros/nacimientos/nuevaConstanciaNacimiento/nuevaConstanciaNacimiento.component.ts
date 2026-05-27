@@ -1,5 +1,5 @@
-import { TimePipe } from './../../../pipes/time.pipe';
-import { ConstanciasService } from './../constancias.service';
+import { TimePipe } from '../../../pipes/time.pipe';
+import { ConstanciasService } from '../constancias.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { PacienteService } from '../../patient/paciente.service';

@@ -1,4 +1,4 @@
-import { Keys } from './../../../interface/comunidadChimaltenango';
+import { Keys } from '../../../interface/comunidadChimaltenango';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { EdadPipe } from "../../../pipes/edad.pipe";
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { Paciente, Referencia } from '../../../interface/interfaces';
-import { manIcon, womanIcon, personFicha, regresarIcon } from './../../../shared/icons/svg-icon';
+import { manIcon, womanIcon, personFicha, regresarIcon } from '../../../shared/icons/svg-icon';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { ConsultasIdPaciente } from '../../../interface/consultas';
 import { DetalleConsultaComponent } from "../../adminsion/detalleConsulta/detalleConsulta.component";

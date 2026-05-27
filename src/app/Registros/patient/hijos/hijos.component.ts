@@ -1,4 +1,4 @@
-import { PacienteService } from './../paciente.service';
+import { PacienteService } from '../paciente.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';

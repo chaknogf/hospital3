@@ -1,18 +1,18 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
 import { ConsultaService } from '../../consultas/consultas.service';
-import { IconService } from './../../../service/icon.service';
-import { Paciente } from './../../../interface/interfaces';
+import { IconService } from '../../../service/icon.service';
+import { Paciente } from '../../../interface/interfaces';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ConsultaResponse, CicloClinico } from './../../../interface/consultas';
-import { DatosExtraPipe } from './../../../pipes/datos-extra.pipe';
-import { EdadPipe } from './../../../pipes/edad.pipe';
+import { ConsultaResponse, CicloClinico } from '../../../interface/consultas';
+import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
+import { EdadPipe } from '../../../pipes/edad.pipe';
 import { CommonModule, DatePipe } from '@angular/common';
-import { CuiPipe } from './../../../pipes/cui.pipe';
-import { TimePipe } from './../../../pipes/time.pipe';
+import { CuiPipe } from '../../../pipes/cui.pipe';
+import { TimePipe } from '../../../pipes/time.pipe';
 import { Subject } from 'rxjs';
 import { takeUntil, finalize, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Dict, especialidades, OpcionBoolean, opcionesIngreso } from './../../../enum/diccionarios';
+import { Dict, especialidades, OpcionBoolean, opcionesIngreso } from '../../../enum/diccionarios';
 import { Location } from '@angular/common';
 
 @Component({

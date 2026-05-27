@@ -1,4 +1,4 @@
-import { FechasPipe } from './../../../pipes/fecha.pipe';
+import { FechasPipe } from '../../../pipes/fecha.pipe';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CitaService } from '../cita.service';

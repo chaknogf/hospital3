@@ -15,7 +15,7 @@ import { IconService } from '../../../../service/icon.service';
 import { Subject } from 'rxjs';
 import { takeUntil, finalize, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Dict, especialidades } from './../../../../enum/diccionarios';
+import { Dict, especialidades } from '../../../../enum/diccionarios';
 import { VecindadPipe } from '../../../../pipes/lugar.pipe';
 import { Location } from '@angular/common';
 

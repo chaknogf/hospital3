@@ -1,6 +1,6 @@
 // renap.componente.ts
-import { agregarPersonaIcon, regresarIcon } from './../../../shared/icons/svg-icon';
-import { Renap } from './../../../interface/interfaces';
+import { agregarPersonaIcon, regresarIcon } from '../../../shared/icons/svg-icon';
+import { Renap } from '../../../interface/interfaces';
 import { CommonModule, formatDate } from '@angular/common';
 import { PacienteFiltros } from '../../../interface/filtros.model';
 import { FormsModule } from '@angular/forms';

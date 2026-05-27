@@ -1,4 +1,4 @@
-import { tipoConsulta, ciclos, Dict } from './../../../../enum/diccionarios';
+import { tipoConsulta, ciclos, Dict } from '../../../../enum/diccionarios';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';

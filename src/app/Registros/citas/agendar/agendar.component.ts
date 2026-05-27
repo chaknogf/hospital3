@@ -1,4 +1,4 @@
-import { ConteoCitas } from './../../../interface/citas';
+import { ConteoCitas } from '../../../interface/citas';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, signal, OnChanges } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
