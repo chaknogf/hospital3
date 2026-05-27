@@ -304,7 +304,8 @@ export class CoexListaComponent implements OnInit {
   }
 
   volver(): void {
-    this.location.back();
+    // this.location.back();
+    this.router.navigate(['/registros']);
   }
 
   /* volver() {

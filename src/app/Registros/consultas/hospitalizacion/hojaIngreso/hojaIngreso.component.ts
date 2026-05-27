@@ -176,8 +176,9 @@ export class HojaIngresoComponent implements OnInit, OnDestroy {
 
   // ======= ACCIONES =======
   imprimir(): void { window.print(); }
-  regresar(): void { //this.router.navigate(['/ingresos']);
-    this.location.back();
+  regresar(): void {
+    this.router.navigate(['/ingresos']);
+    // this.location.back();
   }
 
 }

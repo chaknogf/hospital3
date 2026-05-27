@@ -207,8 +207,8 @@ export class IngresosComponent implements OnInit {
   }
 
   volver() {
-    //this.router.navigate(['/registros']);
-    this.location.back();
+    this.router.navigate(['/registros']);
+    // this.location.back();
   }
 
 

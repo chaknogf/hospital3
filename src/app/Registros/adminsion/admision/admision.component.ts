@@ -207,9 +207,7 @@ export class AdmisionComponent implements OnInit {
     const tipo = Number(this.form.getRawValue().tipo_consulta);
 
     if (this.enEdicion) {
-      this.actualizarConsulta().subscribe(r => {
-        if (r) this.navegarSegunTipo(tipo);
-      });
+      this.actualizarConsulta().subscribe();
       return;
     }
 
@@ -228,7 +226,7 @@ export class AdmisionComponent implements OnInit {
         tap(),
         catchError(err => { this.mostrarError('registrar admisión', err); return of(null); })
       )
-      .subscribe(r => { if (r) this.navegarSegunTipo(tipo); });
+      .subscribe(r => { if (r) this.navegarSegunTipo(tipo, r.id); });
   }
 
   // ══════════════════════════════════════════════════════════
@@ -339,9 +337,15 @@ export class AdmisionComponent implements OnInit {
   // NAVEGACIÓN
   // ══════════════════════════════════════════════════════════
 
-  private navegarSegunTipo(tipo: number): void {
-    const rutas: Record<number, string> = { 1: '/coex', 2: '/ingresos', 3: '/emergencias' };
-    this.router.navigate([rutas[tipo] ?? '/consultas']);
+  private navegarSegunTipo(tipo: number, id?: number): void {
+    const rutas: Record<number, string> = {
+      1: '/coexHoja',
+      2: '/ingreso',
+      3: '/hojaEmergencia'
+    };
+    const base = rutas[tipo] ?? '/consultas';
+    const destino = id ? [base, id] : [base];
+    this.router.navigate(destino);
   }
 
   volver(): void { this.location.back(); }

@@ -179,7 +179,7 @@ export class HojaComponent implements OnInit, OnDestroy {
   }
 
   regresar(): void {
-    //this.router.navigate(['/emergencias']);
-    this.location.back();
+    this.router.navigate(['/emergencias']);
+    // this.location.back();
   }
 }
