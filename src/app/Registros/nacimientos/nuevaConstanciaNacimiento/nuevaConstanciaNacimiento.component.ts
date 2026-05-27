@@ -8,7 +8,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } 
 import { Subject, combineLatest } from 'rxjs';
 import { takeUntil, catchError, finalize, map, distinctUntilChanged } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { VecindadPipe } from '../../../pipes/lugar.pipe';
 import { ApiService } from '../../../service/api.service';
 import { Medico } from '../../../interface/medicos.interface';
 
@@ -16,7 +15,7 @@ import { Medico } from '../../../interface/medicos.interface';
   selector: 'app-nuevaConstanciaNacimiento',
   templateUrl: './nuevaConstanciaNacimiento.component.html',
   styleUrls: ['./nuevaConstanciaNacimiento.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, VecindadPipe],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   standalone: true
 })
 export class NuevaConstanciaNacimientoComponent implements OnInit, OnDestroy {
