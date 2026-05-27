@@ -21,16 +21,40 @@
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
     <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
       <!-- Campos -->
-      <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Expediente</label>
-        <input
-          type="text"
-          class="input-filtros"
-          [(ngModel)]="filtros.expediente"
-          name="expediente"
-          placeholder="E26-003"
-        />
-      </fieldset>
+
+      <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Expediente</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.expediente"
+            name="expediente"
+            placeholder="E26-003"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Hoja de Emergencia</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.documento"
+            name="documento"
+            placeholder="E26-003"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Fecha</label>
+          <input
+            type="date"
+            class="input-filtros"
+            [(ngModel)]="filtros.fecha"
+            name="fechaConsulta"
+          />
+        </fieldset>
+      </div>
 
       <div class="d-flex gap-1">
         <fieldset class="fieldset-filtros">
@@ -78,33 +102,9 @@
         </fieldset>
       </div>
 
-      <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Fecha de consulta</label>
-        <input
-          type="date"
-          class="input-filtros"
-          [(ngModel)]="filtros.fecha_consulta"
-          name="fechaConsulta"
-        />
-      </fieldset>
-
-      <!-- <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Ciclo</label>
-        <select
-          name="ciclo"
-          [(ngModel)]="filtros.ciclo"
-          id="cilo"
-          class="input-filtros"
-        >
-          <option *ngFor="let ciclo of ciclos" [value]="ciclo.value">
-            {{ ciclo.label }}
-          </option>
-        </select>
-      </fieldset> -->
-
       <!-- Botones -->
-      <div class="botones-filtros">
-        <button class="button-filtros" type="submit">
+      <div class="d-flex gap-1">
+        <button class="button-filtros" type="submit" (click)="toggleFiltrar()">
           <span [innerHTML]="icons['search']"></span> Buscar
         </button>
         <button class="button-filtros" type="button" (click)="limpiarFiltros()">
@@ -116,7 +116,7 @@
       </div>
     </form>
     <div class="d-flex justify-content-center m-0 p-0">
-      <button class="btn m-0 p-0" (click)="toggleFiltrar()">
+      <button class="toggle-panel-btn" (click)="toggleFiltrar()">
         <span [innerHTML]="icons['arrowDown']"></span>
       </button>
     </div>
@@ -126,11 +126,9 @@
     <table class="aurora-tb">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Identificador</th>
           <th>Nombre Completo</th>
+          <th>Identificador</th>
           <th>Fecha Nacimiento</th>
-
           <th>Fecha</th>
           <th>Ciclo & Estado</th>
           <th>Acciones</th>
@@ -143,8 +141,24 @@
           [class.touch-active]="rowActiva === data.id"
           (click)="activarFila(data.id)"
         >
-          <td style="font-size: xx-small">{{ data.id }}</td>
-          <td class="text-justify">
+          <td data-label="Nombre:">
+            <div class="nombre-table">
+              <p class="p-0 m-0 text-uppercase">
+                {{ data.paciente.nombre.primer_nombre }}
+                {{ data.paciente.nombre.segundo_nombre }}
+                {{ data.paciente.nombre.otro_nombre }}
+              </p>
+              <p
+                class="p-0 m-0 text-uppercase"
+                [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+              >
+                {{ data.paciente.nombre.primer_apellido }}
+                {{ data.paciente.nombre.segundo_apellido }}
+                {{ data.paciente.nombre.apellido_casada }}
+              </p>
+            </div>
+          </td>
+          <td class="text-justify" data-label="Identificadores:">
             @if (data?.paciente?.cui) {
               <div class="ms-4">
                 <strong>CUI:</strong>
@@ -164,22 +178,9 @@
                 <strong>Hoja de Emergencia:</strong> {{ data.documento }}
               </div>
             }
+            <p style="font-size: xx-small">id: {{ data.id }}</p>
           </td>
-          <td>
-            <p class="p-0 m-0 text-uppercase">
-              {{ data.paciente.nombre.primer_nombre }}
-              {{ data.paciente.nombre.segundo_nombre }}
-              {{ data.paciente.nombre.otro_nombre }}
-            </p>
-            <p
-              class="p-0 m-0 text-uppercase"
-              [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-            >
-              {{ data.paciente.nombre.primer_apellido }}
-              {{ data.paciente.nombre.segundo_apellido }}
-              {{ data.paciente.nombre.apellido_casada }}
-            </p>
-          </td>
+
           <td class="oculto">
             {{ data.paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
             <br />

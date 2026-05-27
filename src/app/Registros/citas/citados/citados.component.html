@@ -36,15 +36,17 @@
 
       <fieldset class="fieldset-filtros">
         <label class="label-filtros">Especialidad</label>
-        <input
-          type="text"
+        <select
           class="input-filtros"
           [(ngModel)]="filtros.especialidad"
           name="especialidad"
-          placeholder="Buscar por especialidad"
-        />
+        >
+          <option value="">Todas las especialidades</option>
+          <option *ngFor="let esp of especialidadesList" [value]="esp.value">
+            {{ esp.label }}
+          </option>
+        </select>
       </fieldset>
-
       <fieldset class="fieldset-filtros">
         <label class="label-filtros">Fecha</label>
         <input
@@ -57,14 +59,18 @@
       </fieldset>
 
       <!-- Botones -->
-      <div class="botones-filtros">
-        <button type="submit" class="button-filtros">
+      <div class="botones-filtros d-flex gap-2">
+        <button type="submit" class="button-filtros" (click)="toggleFiltros()">
           <span [innerHTML]="searchIcon"></span> Buscar
         </button>
         <button type="button" (click)="limpiarFiltros()" class="button-filtros">
           <span [innerHTML]="removeIcon"></span> Limpiar
         </button>
       </div>
+      <button type="button" (click)="imprimirCitas()" class="button-filtros">
+        <span [innerHTML]="printIcon"></span>
+        Imprimir Citas
+      </button>
     </form>
 
     <div class="d-flex justify-content-center m-0 p-0">
@@ -79,9 +85,8 @@
     <table class="aurora-tb">
       <thead>
         <tr>
-          <th>No.</th>
-          <th>Expediente</th>
           <th>Paciente</th>
+          <th>Expediente</th>
           <th>Especialidad</th>
           <th>Fecha & Agenda</th>
           <th>Acciones</th>
@@ -93,30 +98,30 @@
           class="aurora-table-row"
           [class.touch-active]="rowActiva === cita.id"
         >
-          <td class="cell-index">{{ i + 1 }}</td>
-
-          <!-- Expediente -->
-          <td class="text-justify">
-            <div *ngIf="cita">
-              <strong>Expediente:</strong> {{ cita.expediente }}
+          <!-- Paciente -->
+          <td data-label="Paciente:">
+            <div class="nombre-table">
+              <p class="p-0 m-0 text-uppercase">
+                {{ cita.paciente.nombre.primer_nombre }}
+                {{ cita.paciente.nombre.segundo_nombre }}
+                {{ cita.paciente.nombre.otro_nombre }}
+              </p>
+              <p
+                class="p-0 m-0 text-uppercase"
+                [ngClass]="cita.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+              >
+                {{ cita.paciente.nombre.primer_apellido }}
+                {{ cita.paciente.nombre.segundo_apellido }}
+                {{ cita.paciente.nombre.apellido_casada }}
+              </p>
             </div>
           </td>
 
-          <!-- Paciente -->
-          <td>
-            <p class="p-0 m-0 text-uppercase">
-              {{ cita.paciente.nombre.primer_nombre }}
-              {{ cita.paciente.nombre.segundo_nombre }}
-              {{ cita.paciente.nombre.otro_nombre }}
-            </p>
-            <p
-              class="p-0 m-0 text-uppercase"
-              [ngClass]="cita.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-            >
-              {{ cita.paciente.nombre.primer_apellido }}
-              {{ cita.paciente.nombre.segundo_apellido }}
-              {{ cita.paciente.nombre.apellido_casada }}
-            </p>
+          <!-- Expediente -->
+          <td class="text-justify" data-label="Expediente:">
+            <div *ngIf="cita">
+              <strong>Expediente:</strong> {{ cita.expediente }}
+            </div>
           </td>
 
           <!-- Especialidad -->
@@ -132,7 +137,11 @@
           </td>
 
           <!-- Acciones -->
-          <td class="secundario">
+          <td
+            class="secundario d-flex gap-2 align-items-center"
+            data-label="No.:"
+          >
+            <strong class="cell-index">{{ i + 1 }}</strong>
             <div class="botones-opt">
               <button (click)="editarCita(cita.id); $event.stopPropagation()">
                 <span [innerHTML]="editIcon"></span>

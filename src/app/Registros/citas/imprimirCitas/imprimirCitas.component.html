@@ -1,0 +1,149 @@
+<!-- ===================== CONTROLES (solo pantalla, se ocultan al imprimir) ===================== -->
+<div class="print-controls no-print">
+  <div class="controls-header">
+    <button class="btn-control btn-back" type="button" (click)="volver()">
+      ← Volver
+    </button>
+    <h2 class="controls-title">Vista previa — Listado de Citas</h2>
+    <button class="btn-control btn-print" type="button" (click)="imprimir()">
+      🖨 Imprimir
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <form
+    class="controls-filters"
+    (submit)="cargarCitas(); $event.preventDefault()"
+  >
+    <div class="filter-group">
+      <label>Fecha</label>
+      <input
+        type="date"
+        [(ngModel)]="filtros.fecha_cita"
+        name="fecha_cita"
+        (change)="cargarCitas()"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label>Especialidad</label>
+      <select
+        [(ngModel)]="filtros.especialidad"
+        name="especialidad"
+        (change)="cargarCitas()"
+      >
+        <option value="">Todas</option>
+        <option *ngFor="let esp of especialidadesList" [value]="esp.value">
+          {{ esp.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Expediente</label>
+      <input
+        type="text"
+        [(ngModel)]="filtros.expediente"
+        name="expediente"
+        placeholder="No. Expediente"
+      />
+    </div>
+
+    <div class="filter-actions">
+      <button type="submit" class="btn-control btn-search">Buscar</button>
+      <button
+        type="button"
+        class="btn-control btn-clear"
+        (click)="limpiarFiltros()"
+      >
+        Limpiar
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- ===================== DOCUMENTO IMPRIMIBLE ===================== -->
+<div class="documento print-page print-multipage" id="documento-imprimible">
+  <!-- ENCABEZADO -->
+  <header class="doc-header">
+    <div class="doc-header-logo">
+      <!-- Reemplaza con tu logo: <img src="assets/logo.png" alt="Logo" /> -->
+      <div class="logo-placeholder">LOGO</div>
+    </div>
+    <div class="doc-header-info">
+      <h1 class="doc-title">LISTADO DE CITAS MÉDICAS</h1>
+      <p class="doc-subtitle">{{ labelEspecialidad }}</p>
+    </div>
+    <div class="doc-header-meta">
+      <p>
+        <strong>Fecha de cita:</strong>
+        {{ filtros.fecha_cita | date: "dd/MM/yyyy" }}
+      </p>
+      <p><strong>Impreso el:</strong> {{ fechaImpresion }}</p>
+      <p><strong>Total de citas:</strong> {{ totalCitas }}</p>
+    </div>
+  </header>
+
+  <hr class="doc-divider" />
+
+  <!-- CARGANDO -->
+  <div *ngIf="cargando" class="doc-loading no-print">Cargando citas...</div>
+
+  <!-- TABLA -->
+  <table class="doc-table" *ngIf="!cargando && citas.length > 0">
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-paciente">Paciente</th>
+        <th class="col-expediente">Expediente</th>
+        <th class="col-especialidad">Especialidad</th>
+        <th class="col-fecha">Fecha / Hora</th>
+        <th class="col-motivo">Motivo de Consulta</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let cita of citas; let i = index; trackBy: trackById"
+        [class.fila-par]="i % 2 === 0"
+      >
+        <td class="col-num">{{ i + 1 }}</td>
+
+        <td class="col-paciente">
+          {{ nombreCompleto(cita) }}
+        </td>
+
+        <td class="col-expediente">{{ cita.expediente }}</td>
+
+        <td class="col-especialidad">
+          {{ cita.especialidad | datosExtra: "especialidad" }}
+        </td>
+
+        <td class="col-fecha">
+          {{ cita.fecha_cita | date: "dd/MM/yyyy" }}<br />
+          <span class="hora">{{ cita.fecha_cita | date: "HH:mm" }}</span>
+        </td>
+
+        <td class="col-motivo">
+          {{ cita.datos_extra?.razon_consulta || "—" }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SIN RESULTADOS -->
+  <div *ngIf="!cargando && citas.length === 0" class="doc-empty">
+    No se encontraron citas para los criterios seleccionados.
+  </div>
+
+  <!-- PIE DE PÁGINA -->
+  <footer class="doc-footer">
+    <div class="doc-footer-left">
+      <p>
+        Total de registros: <strong>{{ totalCitas }}</strong>
+      </p>
+    </div>
+    <div class="doc-footer-right">
+      <p>Firma y sello: ___________________________</p>
+    </div>
+  </footer>
+</div>

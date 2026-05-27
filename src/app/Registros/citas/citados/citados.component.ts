@@ -8,10 +8,11 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 import {
   addIcon, removeIcon, saveIcon, cancelIcon, findIcon, menuIcon,
-  searchIcon, arrowDown, tablaShanonIcon, editIcon, skipRight, skipLeft
+  searchIcon, arrowDown, tablaShanonIcon, editIcon, skipRight, skipLeft, printIcon
 
 } from '../../../shared/icons/svg-icon';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
+import { Especialidades, KeyValue } from '../../../enum/especialidades';
 
 @Component({
   selector: 'app-citados',
@@ -38,6 +39,7 @@ export class CitadosComponent implements OnInit {
   // ======= ESTADO =======
   citas: Citas[] = [];
   citasFiltradas: Citas[] = [];
+  especialidadesList: KeyValue[] = Especialidades;
   citaSeleccionada: Citas | null = null;
   cargando = false;
   filtrar = false;
@@ -66,6 +68,7 @@ export class CitadosComponent implements OnInit {
   editIcon!: SafeHtml;
   skipRight!: SafeHtml;
   skipLeft!: SafeHtml;
+  printIcon!: SafeHtml;
   menuIcon!: SafeHtml;
 
 
@@ -101,7 +104,8 @@ export class CitadosComponent implements OnInit {
     this.tablaShanonIcon = this.sanitizer.bypassSecurityTrustHtml(tablaShanonIcon);
     this.editIcon = this.sanitizer.bypassSecurityTrustHtml(editIcon);
     this.skipLeft = this.sanitizer.bypassSecurityTrustHtml(skipLeft);
-    this.skipRight = this.sanitizer.bypassSecurityTrustHtml(skipLeft);
+    this.skipRight = this.sanitizer.bypassSecurityTrustHtml(skipRight);
+    this.printIcon = this.sanitizer.bypassSecurityTrustHtml(printIcon);
 
   }
 
@@ -163,5 +167,8 @@ export class CitadosComponent implements OnInit {
     this.location.back();
   }
 
+  imprimirCitas(): void {
+    this.router.navigate(['/imprimirCitas']);
+  }
 
 }

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { PacienteService } from '../../patient/paciente.service';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { Subject, combineLatest } from 'rxjs';
 import { takeUntil, catchError, finalize, map, distinctUntilChanged } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -83,11 +83,11 @@ export class NuevaConstanciaNacimientoComponent implements OnInit, OnDestroy {
   // Misma estructura de IDs que el componente de edición
   private crearFormulario(): FormGroup {
     return this.fb.group({
-      paciente_id: [null],   // número puro — se llena via búsqueda por expediente
-      madre_id: [null],   // número puro — se llena via búsqueda por expediente
+      paciente_id: [null, [Validators.required]],   // número puro — se llena via búsqueda por expediente
+      madre_id: [null, [Validators.required]],   // número puro — se llena via búsqueda por expediente
       medico_id: [null],   // número puro — se llena via <select>
       registrador_id: [null],   // número puro — opcional, puede venir de sesión
-      documento: [''],
+      documento: ['', [Validators.required]],
       nombre_madre: [''],
       vecindad_madre: [''],
       fecha_registro: [new Date().toISOString().split('T')[0]],

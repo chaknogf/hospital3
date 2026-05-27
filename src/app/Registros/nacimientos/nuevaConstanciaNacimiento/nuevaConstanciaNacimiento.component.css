@@ -378,10 +378,10 @@
 .field-input {
   height: 44px;
   padding: 0 14px;
-  background: #020817;
+  background: #c9d6f1;
   border: 1.5px solid var(--rim-light);
   border-radius: var(--radius-sm);
-  color: #e8f4ff;
+  color: #041321;
   font-size: 15px;
   font-family: var(--font-mono);
   outline: none;
@@ -392,7 +392,10 @@
 .field-input:focus {
   border-color: var(--pulse);
   box-shadow: 0 0 0 3px var(--pulse-glow);
-  background: #030d1a;
+  background: #65a0ec;
+  color: #f7f9fc;
+  font-weight: bold;
+  font-size: 18px;
 }
 
 .field-input::placeholder {

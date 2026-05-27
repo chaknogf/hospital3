@@ -21,91 +21,91 @@
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
     <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
       <!-- Campos -->
-      <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Expediente</label>
-        <input
-          type="text"
-          class="input-filtros"
-          [(ngModel)]="filtros.expediente"
-          name="expediente"
-          placeholder="Buscar por expediente"
-        />
-      </fieldset>
 
-      <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Primer nombre</label>
-        <input
-          type="text"
-          class="input-filtros"
-          [(ngModel)]="filtros.primer_nombre"
-          name="primerNombre"
-          placeholder="Buscar por paciente.nombre"
-        />
-      </fieldset>
+      <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Expediente</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.expediente"
+            name="expediente"
+            placeholder="E26-003"
+          />
+        </fieldset>
 
-      <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Segundo nombre</label>
-        <input
-          type="text"
-          class="input-filtros"
-          [(ngModel)]="filtros.segundo_nombre"
-          name="segundoNombre"
-          placeholder="Buscar por paciente.nombre"
-        />
-      </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Fecha</label>
+          <input
+            type="date"
+            class="input-filtros"
+            [(ngModel)]="filtros.fecha"
+            name="fechaConsulta"
+          />
+        </fieldset>
+      </div>
 
-      <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Primer apellido</label>
-        <input
-          type="text"
-          class="input-filtros"
-          [(ngModel)]="filtros.primer_apellido"
-          name="primerApellido"
-          placeholder="Buscar por apellido"
-        />
-      </fieldset>
+      <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Primer nombre</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.primer_nombre"
+            name="primerNombre"
+            placeholder="Ej: Juan"
+          />
+        </fieldset>
 
-      <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Segundo apellido</label>
-        <input
-          type="text"
-          class="input-filtros"
-          [(ngModel)]="filtros.segundo_apellido"
-          name="segundoApellido"
-          placeholder="Buscar por apellido"
-        />
-      </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Segundo nombre</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.segundo_nombre"
+            name="segundoNombre"
+            placeholder="Ej: María"
+          />
+        </fieldset>
 
-      <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Fecha de consulta</label>
-        <input
-          type="date"
-          class="input-filtros"
-          [(ngModel)]="filtros.fecha"
-          name="fechaConsulta"
-        />
-      </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Primer apellido</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.primer_apellido"
+            name="primerApellido"
+            placeholder="Ej: García"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Segundo apellido</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.segundo_apellido"
+            name="segundoApellido"
+            placeholder="Ej: Pérez"
+          />
+        </fieldset>
+      </div>
 
       <!-- Botones -->
-      <div class="botones-filtros">
+      <div class="d-flex gap-1">
+        <button class="button-filtros" type="submit" (click)="toggleFiltrar()">
+          <span [innerHTML]="icons['search']"></span> Buscar
+        </button>
+        <button class="button-filtros" type="button" (click)="limpiarFiltros()">
+          <span [innerHTML]="icons['delete']"></span> Limpiar
+        </button>
         <button class="button-filtros" type="button" (click)="agregar()">
-          <span [innerHTML]="icons['addPerson']"></span>
-          Nuevo
-        </button>
-
-        <button type="submit" class="button-filtros">
-          <span [innerHTML]="icons['search']"></span>
-          Buscar
-        </button>
-
-        <button type="button" (click)="limpiarFiltros()" class="button-filtros">
-          <span [innerHTML]="icons['delete']"></span>
-          Limpiar
+          <span [innerHTML]="icons['create']"></span> Agregar
         </button>
       </div>
     </form>
     <div class="d-flex justify-content-center m-0 p-0">
-      <button class="btn m-0 p-0" (click)="toggleFiltrar()">
+      <button class="toggle-panel-btn" (click)="toggleFiltrar()">
         <span [innerHTML]="icons['arrowDown']"></span>
       </button>
     </div>
@@ -177,8 +177,8 @@
     <table class="aurora-tb">
       <thead>
         <tr>
+          <th>Nombre Completo</th>
           <th>Identificador</th>
-          <th>paciente.nombre Completo</th>
           <th>Orden</th>
           <th>Hora</th>
           <th>Ciclo & Estado</th>
@@ -192,7 +192,24 @@
           [class.touch-active]="data.id"
           (click)="activarFila(data.id)"
         >
-          <td class="text-justify identificador">
+          <td data-label="Nombre:">
+            <div class="nombre-table">
+              <p class="p-0 m-0 text-uppercase">
+                {{ data.paciente.nombre.primer_nombre }}
+                {{ data.paciente.nombre.segundo_nombre }}
+                {{ data.paciente.nombre.otro_nombre }}
+              </p>
+              <p
+                class="p-0 m-0 text-uppercase"
+                [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+              >
+                {{ data.paciente.nombre.primer_apellido }}
+                {{ data.paciente.nombre.segundo_apellido }}
+                {{ data.paciente.nombre.apellido_casada }}
+              </p>
+            </div>
+          </td>
+          <td class="text-justify" data-label="Identificadores:">
             @if (data?.paciente?.cui) {
               <div class="ms-4">
                 <strong>CUI:</strong>
@@ -200,35 +217,19 @@
               </div>
             }
             @if (data?.paciente?.pasaporte) {
-              <div class="ms-4">
+              <div>
                 <strong>Pasaporte:</strong> {{ data.paciente.pasaporte }}
               </div>
             }
             @if (data?.expediente) {
-              <div class="ms-4">
-                <strong>Expediente:</strong> {{ data.expediente }}
-              </div>
+              <div><strong>Expediente:</strong> {{ data.expediente }}</div>
             }
             @if (data?.documento) {
-              <div class="ms-4">
+              <div>
                 <strong>Hoja de Emergencia:</strong> {{ data.documento }}
               </div>
             }
-          </td>
-          <td>
-            <p class="p-0 m-0 text-uppercase">
-              {{ data.paciente.nombre.primer_nombre }}
-              {{ data.paciente.nombre.segundo_nombre }}
-              {{ data.paciente.nombre.otro_nombre }}
-            </p>
-            <p
-              class="p-0 m-0 text-uppercase"
-              [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-            >
-              {{ data.paciente.nombre.primer_apellido }}
-              {{ data.paciente.nombre.segundo_apellido }}
-              {{ data.paciente.nombre.apellido_casada }}
-            </p>
+            <p style="font-size: xx-small">id: {{ data.id }}</p>
           </td>
           <td>
             <div class="orden">{{ data.orden }}</div>

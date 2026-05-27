@@ -51,7 +51,7 @@ export class ConsultasComponent implements OnInit {
     segundo_nombre: '',
     primer_apellido: '',
     segundo_apellido: '',
-    fecha_consulta: '',
+    fecha: '',
     ciclo: '',
     especialidad: '',
     servicio: '',
@@ -182,7 +182,7 @@ export class ConsultasComponent implements OnInit {
       segundo_nombre: '',
       primer_apellido: '',
       segundo_apellido: '',
-      fecha_consulta: '',
+      fecha: '',
       ciclo: '',
       identificador: ''
     };

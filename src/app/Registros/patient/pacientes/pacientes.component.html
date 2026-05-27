@@ -20,10 +20,19 @@
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
     <form class="form-filtros" (ngSubmit)="buscar()">
-      <!-- ═══════════════════════════════════════════ -->
-      <!-- FILA 2: Nombres por separado (2×2 grid)    -->
-      <!-- ═══════════════════════════════════════════ -->
-      <div class="nombres-grid">
+      <fieldset class="fieldset-filtros full">
+        <label class="label-filtros">Búsqueda rápida</label>
+        <input
+          class="input-principal input-filtros"
+          type="text"
+          [(ngModel)]="filtros.q"
+          name="identificador"
+          placeholder="CUI, expediente, ID o nombre del paciente..."
+          autocomplete="off"
+          autofocus
+        />
+      </fieldset>
+      <div class="d-flex gap-1">
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Primer nombre</label>
           <input
@@ -70,25 +79,9 @@
       </div>
 
       <!-- ═══════════════════════════════════════════ -->
-      <!-- BÚSQUEDA PRINCIPAL (siempre primero)       -->
-      <!-- ═══════════════════════════════════════════ -->
-      <fieldset class="fieldset-filtros full">
-        <label class="label-filtros">Búsqueda rápida</label>
-        <input
-          class="input-principal input-filtros"
-          type="text"
-          [(ngModel)]="filtros.q"
-          name="identificador"
-          placeholder="CUI, expediente, ID o nombre del paciente..."
-          autocomplete="off"
-          autofocus
-        />
-      </fieldset>
-
-      <!-- ═══════════════════════════════════════════ -->
       <!-- FILA 1: Identificadores principales        -->
       <!-- ═══════════════════════════════════════════ -->
-      <div class="filtros-row">
+      <div class="d-flex gap-1">
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Expediente</label>
           <input
@@ -125,12 +118,14 @@
       <!-- ═══════════════════════════════════════════ -->
       <!-- BOTONES DE ACCIÓN                          -->
       <!-- ═══════════════════════════════════════════ -->
-      <div class="botones-filtros">
+      <div class="d-flex gap-1 justify-content-end align-items-end">
         <button class="button-filtros nuevo" type="button" (click)="agregar()">
           ➕ Nuevo
         </button>
 
-        <button type="submit" class="button-filtros">🔍 Buscar</button>
+        <button type="submit" class="button-filtros" (click)="toggleFiltrar()">
+          🔍 Buscar
+        </button>
 
         <button type="button" (click)="limpiarFiltros()" class="button-filtros">
           🗑️ Limpiar
@@ -140,7 +135,7 @@
 
     <!-- TOGGLE COLAPSAR -->
     <div class="d-flex justify-content-center m-0 p-0">
-      <button class="btn m-0 p-0" (click)="toggleFiltrar()">
+      <button class="toggle-panel-btn" (click)="toggleFiltrar()">
         <span [innerHTML]="icons['arrowDown']"></span>
       </button>
     </div>
@@ -172,7 +167,6 @@
     <table class="aurora-tb">
       <thead>
         <tr>
-          <th>Id</th>
           <th class="oculto">Nombre Completo</th>
           <th>Identificador</th>
           <th>Fecha Nacimiento</th>
@@ -188,7 +182,6 @@
           [class.paciente-fallecido]="paciente.estado === 'F'"
           (click)="activarFila(paciente.id)"
         >
-          <td data-label="ID:" class="oculto tb-id">{{ paciente.id }}</td>
           <td data-label="Nombre:">
             <div class="nombre-table">
               <p class="">
@@ -225,6 +218,7 @@
                 <strong>Otro Id:</strong> {{ paciente.datos_extra?.personaid }}
               </div>
             }
+            <p style="font-size: xx-small">id: {{ paciente.id }}</p>
           </td>
 
           <td data-label="Fecha de Nacimiento" class="oculto">

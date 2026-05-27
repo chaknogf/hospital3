@@ -41,6 +41,7 @@ import { MenutsComponent } from './trabajoSocial/trabajosocial/menuts.component'
 import { NuevaConstanciaNacimientoComponent } from './Registros/nacimientos/nuevaConstanciaNacimiento/nuevaConstanciaNacimiento.component';
 import { ListarPrestamosComponent } from './Registros/prestamos/listarPrestamos/listarPrestamos.component';
 import { CrearPrestamoComponent } from './Registros/prestamos/crearPrestamo/crearPrestamo.component';
+import { ImprimirCitasComponent } from './Registros/citas/imprimirCitas/imprimirCitas.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -109,6 +110,7 @@ export const routes: Routes = [
       { path: 'agendar', component: AgendarComponent },
       { path: 'agendar/paciente/:pacienteId', component: AgendarComponent },
       { path: 'reagendar/cita/:citaId', component: AgendarComponent },
+      { path: 'imprimirCitas', component: ImprimirCitasComponent },
 
       //Constancias Nacimiento
       { path: 'nacimientos', component: ListarConstanciasComponent },

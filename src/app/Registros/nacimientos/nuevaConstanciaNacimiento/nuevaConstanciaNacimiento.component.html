@@ -65,6 +65,36 @@
         ✖ Quitar
       </button>
     </div>
+    <div class="paciente-banner">
+      <div class="paciente-banner-accent"></div>
+      <div class="paciente-avatar">👩</div>
+      |
+      <div class="paciente-datos">
+        <!-- Banner madre -->
+        <div class="paciente-nombre">
+          {{ madrePreview?.nombre?.primer_nombre }}
+          {{ madrePreview?.nombre?.segundo_nombre }}
+          {{ madrePreview?.nombre?.primer_apellido }}
+          {{ madrePreview?.nombre?.segundo_apellido }}
+        </div>
+        <div class="paciente-chips">
+          @if (madrePreview?.expediente) {
+            <div class="p-chip">
+              📋 Expediente: {{ madrePreview.expediente }}
+            </div>
+          }
+          <div class="p-chip">🆔 ID: {{ form.value.madre_id }}</div>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="btn"
+        style="margin-left: auto"
+        (click)="limpiarMadre()"
+      >
+        ✖ Quitar
+      </button>
+    </div>
   }
 
   @if (!pacientePreview) {
@@ -98,7 +128,7 @@
       [class.tab-btn--active]="tabActivo() === 'madre'"
       (click)="setTab('madre')"
     >
-      👩 Madre
+      💾 Datos
     </button>
   </div>
 
@@ -148,15 +178,31 @@
               }
             </div>
 
-            <!-- ID resuelto — readonly igual que en edición -->
             <div class="field">
-              <label class="field-label">ID Paciente (neonato)</label>
-              <input
-                class="field-input field-input--readonly"
-                formControlName="paciente_id"
-                readonly
-                placeholder="Se asigna al buscar"
-              />
+              <label class="field-label">Expediente de la madre</label>
+              <div style="display: flex; gap: 0.5rem">
+                <input
+                  class="field-input"
+                  [(ngModel)]="expedienteMadre"
+                  [ngModelOptions]="{ standalone: true }"
+                  placeholder="Ej. 2020-00456"
+                  style="flex: 1"
+                  (keydown.enter)="buscarMadre()"
+                />
+                <button
+                  type="button"
+                  class="btn btn--primary"
+                  [disabled]="buscandoMadre()"
+                  (click)="buscarMadre()"
+                >
+                  {{ buscandoMadre() ? "⏳" : "🔍" }}
+                </button>
+              </div>
+              @if (errorMadre()) {
+                <span class="field-hint field-hint--error"
+                  >⚠️ {{ errorMadre() }}</span
+                >
+              }
             </div>
 
             <div class="field">
@@ -190,8 +236,8 @@
         <div class="section-card">
           <div class="sec-head">
             <div class="sec-head-left">
-              <div class="sec-icon">👩</div>
-              <div class="sec-title">Datos de la Madre</div>
+              <div class="sec-icon"></div>
+              <div class="sec-title">Datos</div>
             </div>
             <div class="sec-badge">
               madre_id: {{ form.value.madre_id ?? "—" }}
@@ -200,31 +246,16 @@
 
           <div class="sec-body single">
             <!-- Buscador por expediente — solo ayuda a obtener el id numérico -->
+
+            <!-- ID resuelto — readonly igual que en edición -->
             <div class="field">
-              <label class="field-label">Expediente de la madre</label>
-              <div style="display: flex; gap: 0.5rem">
-                <input
-                  class="field-input"
-                  [(ngModel)]="expedienteMadre"
-                  [ngModelOptions]="{ standalone: true }"
-                  placeholder="Ej. 2020-00456"
-                  style="flex: 1"
-                  (keydown.enter)="buscarMadre()"
-                />
-                <button
-                  type="button"
-                  class="btn btn--primary"
-                  [disabled]="buscandoMadre()"
-                  (click)="buscarMadre()"
-                >
-                  {{ buscandoMadre() ? "⏳" : "🔍" }}
-                </button>
-              </div>
-              @if (errorMadre()) {
-                <span class="field-hint field-hint--error"
-                  >⚠️ {{ errorMadre() }}</span
-                >
-              }
+              <label class="field-label">ID Paciente (neonato)</label>
+              <input
+                class="field-input field-input--readonly"
+                formControlName="paciente_id"
+                readonly
+                placeholder="Se asigna al buscar"
+              />
             </div>
 
             <!-- ID resuelto — readonly igual que en edición -->
@@ -237,72 +268,9 @@
                 placeholder="Se asigna al buscar"
               />
             </div>
-
-            <!-- Nombre editable — igual que en edición -->
-            <div class="field">
-              <label class="field-label">Nombre Completo</label>
-              <input
-                class="field-input field-input--readonly"
-                formControlName="nombre_madre"
-                placeholder="Nombre de la madre"
-                readonly
-              />
-            </div>
-
-            @if (madrePreview) {
-              <div class="field">
-                <label class="field-label">Vecindad</label>
-                <span class="info-value btn">
-                  {{
-                    madrePreview.datos_extra?.demograficos?.vecindad | vecindad
-                  }}
-                </span>
-              </div>
-
-              <button type="button" class="btn" (click)="limpiarMadre()">
-                ✖ Quitar madre
-              </button>
-            }
           </div>
         </div>
       </div>
-
-      <!-- COL 2 — Preview datos heredados (solo si encontró madre) -->
-      @if (madrePreview) {
-        <div class="adm-col">
-          <div class="section-card">
-            <div class="sec-head">
-              <div class="sec-head-left">
-                <div class="sec-icon">🔗</div>
-                <div class="sec-title">Datos heredados del paciente</div>
-              </div>
-              <div class="sec-badge readonly-badge">solo lectura</div>
-            </div>
-            <div class="sec-body single">
-              <div class="info-row">
-                <span class="info-label">Expediente Madre</span>
-                <span class="info-value">{{
-                  madrePreview.expediente ?? "—"
-                }}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Fecha nacimiento</span>
-                <span class="info-value">{{
-                  madrePreview.fecha_nacimiento ?? "—"
-                }}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Sexo</span>
-                <span class="info-value">{{ madrePreview.sexo ?? "—" }}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">ID asignado al form</span>
-                <span class="info-value">{{ form.value.madre_id }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      }
     </div>
   }
 

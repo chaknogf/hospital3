@@ -1,0 +1,325 @@
+/* ============================================================
+   IMPRIMIR CITAS — estilos de pantalla + @media print
+   ============================================================ */
+
+/* --- Variables -------------------------------------------- */
+:host {
+  --doc-font: 'Times New Roman', Times, serif;
+  --doc-font-size: 11pt;
+  --border-color: #333;
+  --header-bg: #1a1a2e;
+  --header-text: #ffffff;
+  --alt-row: #f5f5f5;
+  --accent: #1a1a2e;
+}
+
+/* --- Zona de controles (solo pantalla) -------------------- */
+.print-controls {
+  background: #f0f2f5;
+  border-bottom: 2px solid #ccc;
+  padding: 12px 20px;
+  font-family: Arial, sans-serif;
+}
+
+.controls-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.controls-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.controls-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 150px;
+}
+
+.filter-group label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 5px 8px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  background: #fff;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+/* Botones de controles */
+.btn-control {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+.btn-control:hover { opacity: 0.85; }
+
+.btn-back   { background: #6c757d; color: #fff; }
+.btn-print  { background: #1a1a2e; color: #fff; font-size: 0.9rem; }
+.btn-search { background: #2563eb; color: #fff; }
+.btn-clear  { background: #e5e7eb; color: #333; }
+
+/* ============================================================
+   DOCUMENTO — aspecto de hoja en pantalla
+   ============================================================ */
+.documento {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 28px 36px;
+  background: #fff;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.13);
+  font-family: var(--doc-font);
+  font-size: var(--doc-font-size);
+  color: #111;
+}
+
+/* --- Encabezado ------------------------------------------- */
+.doc-header {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+
+.logo-placeholder {
+  width: 70px;
+  height: 70px;
+  border: 2px solid #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: #999;
+  text-align: center;
+}
+
+.doc-header-info {
+  text-align: center;
+}
+
+.doc-title {
+  font-size: 14pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 4px;
+  color: var(--accent);
+}
+
+.doc-subtitle {
+  font-size: 11pt;
+  margin: 0;
+  color: #444;
+  font-style: italic;
+}
+
+.doc-header-meta {
+  text-align: right;
+  font-size: 9.5pt;
+  line-height: 1.7;
+}
+
+.doc-header-meta p { margin: 0; }
+
+.doc-divider {
+  border: none;
+  border-top: 2px solid var(--border-color);
+  margin: 10px 0 14px;
+}
+
+/* --- Tabla ------------------------------------------------ */
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.5pt;
+  margin-bottom: 20px;
+}
+
+.doc-table thead tr {
+  background: var(--header-bg);
+  color: var(--header-text);
+}
+
+.doc-table th {
+  padding: 6px 8px;
+  text-align: left;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 8.5pt;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--border-color);
+}
+
+.doc-table td {
+  padding: 5px 8px;
+  border: 1px solid #aaa;
+  vertical-align: top;
+  line-height: 1.4;
+}
+
+.fila-par td {
+  background: var(--alt-row);
+}
+
+.col-num        { width: 30px;  text-align: center; }
+.col-paciente   { width: 22%; }
+.col-expediente { width: 100px; text-align: center; }
+.col-especialidad { width: 14%; }
+.col-fecha      { width: 90px;  text-align: center; white-space: nowrap; }
+.col-motivo     { /* resto */ }
+
+.hora { font-size: 8.5pt; color: #555; }
+
+/* --- Sin resultados / cargando ---------------------------- */
+.doc-empty,
+.doc-loading {
+  text-align: center;
+  padding: 30px;
+  font-style: italic;
+  color: #666;
+  border: 1px dashed #ccc;
+  margin: 20px 0;
+}
+
+/* --- Pie de página ---------------------------------------- */
+.doc-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 30px;
+  padding-top: 10px;
+  border-top: 1px solid #999;
+  font-size: 9.5pt;
+}
+
+.doc-footer p { margin: 0; }
+
+/* ============================================================
+   @MEDIA PRINT — elimina todo lo que no es documento
+   ============================================================ */
+@media print {
+  /* Ocultar controles */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Resetear el host para impresión */
+  :host {
+    display: block;
+  }
+
+  /* El documento ocupa la página completa sin restricción de alto */
+  .documento {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0 !important;
+    box-shadow: none;
+    border: none;
+    font-size: 8pt;
+  }
+
+.doc-table {
+  width: 100% !important;
+  table-layout: auto !important;
+}
+
+  /* thead se repite automáticamente al saltar de página */
+  thead {
+    display: table-header-group;
+  }
+
+  tbody {
+    display: table-row-group;
+  }
+
+
+
+
+
+  /* Pie: bloque normal al final, no table-footer-group */
+  .doc-footer {
+    display: flex;
+
+    margin-top: 16px;
+  }
+
+  /* Colores forzados para impresión */
+  .doc-table thead tr {
+    background: #1a1a2e !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .fila-par td {
+    background: #f5f5f5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* TABLA NATURAL */
+.doc-table,
+.doc-table tbody,
+.doc-table tr,
+.doc-table td {
+  overflow: visible !important;
+}
+
+  /* FORZAR MULTIPÁGINA REAL */
+.print-page.print-multipage {
+  display: block !important;
+
+  overflow: visible !important;
+
+  height: auto !important;
+  max-height: none !important;
+
+  contain: none !important;
+}
+
+/* MUY IMPORTANTE */
+html,
+body {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+  /* Márgenes de página */
+  @page {
+    size: Letter portrait;
+    margin: 8mm 10mm;
+  }
+}
+
+
