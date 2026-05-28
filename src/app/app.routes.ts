@@ -42,6 +42,8 @@ import { NuevaConstanciaNacimientoComponent } from './registros/nacimientos/nuev
 import { ListarPrestamosComponent } from './registros/prestamos/listarPrestamos/listarPrestamos.component';
 import { CrearPrestamoComponent } from './registros/prestamos/crearPrestamo/crearPrestamo.component';
 import { ImprimirCitasComponent } from './registros/citas/imprimirCitas/imprimirCitas.component';
+import { DoctoresComponent } from './std/medicos/doctores/doctores.component';
+import { DoctorFormComponent } from './std/medicos/doctorForm/doctorForm.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -121,6 +123,10 @@ export const routes: Routes = [
       //Estadistica
       { path: 'estadistica', component: EstadisticaComponent, canActivate: [roleGuard(['admin', 'std'])] },
       { path: 'consultar', component: ConsultorComponent },
+      { path: 'medicos', component: DoctoresComponent, canActivate: [roleGuard(['admin', 'std', 'registro'])] },
+      { path: 'doctor', component: DoctorFormComponent, canActivate: [roleGuard(['admin', 'std', 'registro'])] },
+      { path: 'doctor/:id', component: DoctorFormComponent, canActivate: [roleGuard(['admin', 'std', 'registro'])] },
+
 
       //TrabajoSocial
       { path: 'TrabajoSocial', component: MenutsComponent, canActivate: [roleGuard(['admin', 'ts'])] },

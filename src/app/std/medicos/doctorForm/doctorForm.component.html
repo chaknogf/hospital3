@@ -1,3 +1,204 @@
-<p>
-  doctorForm works!
-</p>
+<!-- doctorForm.component.html -->
+
+<!-- ============================================================ -->
+<!-- MÉDICOS FORM                                                 -->
+<!-- ============================================================ -->
+
+<!-- HUD -->
+<div class="hud-header">
+  <span class="hud-id">
+    {{ enEdicion ? "MEDICO-EDIT" : "MEDICO-NUEVO" }}
+  </span>
+
+  <span class="hud-title">
+    {{ enEdicion ? "ACTUALIZAR MÉDICO" : "NUEVO MÉDICO" }}
+  </span>
+
+  <span class="hud-status">
+    {{ form.get("activo")?.value ? "ACTIVO" : "INACTIVO" }}
+  </span>
+</div>
+
+<!-- ACTION DOCK -->
+<div class="action-dock">
+  <span class="dock-hint">
+    {{ enEdicion ? "Modo edición" : "Nuevo registro" }}
+  </span>
+
+  <button type="button" class="btn-dock btn-dock-cancel" (click)="volver()">
+    <span [innerHTML]="cancelIcon"></span>
+    Cancelar
+  </button>
+
+  <button
+    type="button"
+    class="btn-dock btn-dock-save"
+    [disabled]="guardando"
+    (click)="guardar()"
+  >
+    <span [innerHTML]="saveIcon"></span>
+
+    {{ guardando ? "Guardando..." : enEdicion ? "Actualizar" : "Registrar" }}
+  </button>
+</div>
+
+<!-- FORM -->
+<form [formGroup]="form" class="adm-body">
+  <!-- GRID -->
+  <div class="adm-grid">
+    <!-- COLUMNA -->
+    <div class="adm-col">
+      <!-- DATOS GENERALES -->
+      <div class="section-card">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path d="M8 2a3 3 0 100 6 3 3 0 000-6z" />
+                <path d="M2 14a6 6 0 0112 0" />
+              </svg>
+            </div>
+
+            <span class="sec-title"> Información del Médico </span>
+          </div>
+        </div>
+
+        <div class="sec-body single">
+          <!-- NOMBRE -->
+          <div class="field">
+            <span class="field-label"> Nombre Completo * </span>
+
+            <input
+              class="field-input"
+              type="text"
+              formControlName="nombre"
+              placeholder="Dr. Juan Pérez"
+            />
+
+            <small
+              class="text-danger"
+              *ngIf="f['nombre'].invalid && f['nombre'].touched"
+            >
+              El nombre es obligatorio
+            </small>
+          </div>
+
+          <!-- COLEGIADO -->
+          <div class="field">
+            <span class="field-label"> Número de Colegiado </span>
+
+            <input
+              class="field-input"
+              type="text"
+              formControlName="colegiado"
+              placeholder="12345"
+            />
+          </div>
+
+          <!-- ESPECIALIDAD -->
+          <div class="field">
+            <span class="field-label"> Especialidad </span>
+
+            <input
+              class="field-input"
+              type="text"
+              formControlName="especialidad"
+              placeholder="Cardiología"
+            />
+          </div>
+
+          <!-- TEL -->
+          <div class="field">
+            <span class="field-label"> Teléfono </span>
+
+            <input
+              class="field-input"
+              type="text"
+              formControlName="telefono"
+              placeholder="5555-5555"
+            />
+          </div>
+
+          <!-- DIRECCIÓN -->
+          <div class="field">
+            <span class="field-label"> Dirección </span>
+
+            <textarea
+              class="field-input"
+              rows="3"
+              formControlName="direccion"
+              placeholder="Dirección del médico"
+            ></textarea>
+          </div>
+
+          <!-- ACTIVO -->
+          <label class="ind-chip">
+            <input type="checkbox" formControlName="activo" />
+
+            <span class="ind-check">
+              <svg
+                viewBox="0 0 12 12"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M2 6l3 3 5-5" />
+              </svg>
+            </span>
+
+            <span class="ind-label"> Médico activo </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- INFO EXTRA -->
+      <div class="section-card" *ngIf="enEdicion && medicoActual">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <rect x="2" y="2" width="12" height="12" rx="2" />
+              </svg>
+            </div>
+
+            <span class="sec-title"> Información del Registro </span>
+          </div>
+        </div>
+
+        <div class="sec-body triple">
+          <div class="field">
+            <span class="field-label"> ID </span>
+
+            <input
+              class="field-input"
+              type="text"
+              [value]="medicoActual.id"
+              readonly
+            />
+          </div>
+
+          <div class="field">
+            <span class="field-label"> Estado </span>
+
+            <input
+              class="field-input"
+              type="text"
+              [value]="medicoActual.activo ? 'Activo' : 'Inactivo'"
+              readonly
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

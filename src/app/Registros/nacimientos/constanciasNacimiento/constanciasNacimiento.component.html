@@ -1,462 +1,523 @@
-<!-- ───────── HEADER HUD ───────── -->
-<div class="hud-header">
-  <div class="hud-id">
-    {{ enEdicion() ? "EDIT · CONSTANCIA" : "NEW-ENTRY" }}
+<!-- constancia-nacimiento.component.html -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- HEADER                                     -->
+<!-- ═══════════════════════════════════════════ -->
+<header class="cn-header">
+  <div class="cn-header__left">
+    <div class="cn-header__eyebrow">
+      {{ enEdicion() ? "Editando constancia" : "Nueva constancia" }}
+    </div>
+
+    <h1 class="cn-header__title">Constancia de nacimiento</h1>
   </div>
 
-  <div class="hud-title">CONSTANCIA DE NACIMIENTO</div>
-
-  <div class="hud-status" [class.hud-status--loading]="isLoading()">
-    {{ isLoading() ? "PROCESANDO…" : guardadoOk() ? "✓ GUARDADO" : "LISTO" }}
+  <div class="cn-status" [class.cn-status--loading]="isLoading()">
+    {{ isLoading() ? "Procesando..." : guardadoOk() ? "Guardado" : "Listo" }}
   </div>
-</div>
+</header>
 
-<!-- ───────── ACTION DOCK ───────── -->
-<div class="action-dock">
-  <div class="dock-hint">constancia #{{ constancia?.id ?? "—" }}</div>
+<!-- ═══════════════════════════════════════════ -->
+<!-- BANNER PACIENTE                            -->
+<!-- ═══════════════════════════════════════════ -->
+@if (constancia?.paciente) {
+  <section class="cn-context">
+    <!-- RN -->
+    <div class="cn-context__item">
+      <div class="cn-context__main">
+        <span class="cn-context__tag"> RN 👶🏻</span>
+        <span
+          >{{ constancia?.paciente?.nombre?.primer_nombre }}
+          {{ constancia?.paciente?.nombre?.segundo_nombre }}
+          {{ constancia?.paciente?.nombre?.primer_apellido }}
+          {{ constancia?.paciente?.nombre?.segundo_apellido }}
+        </span>
+        <strong class="cn-context__name">
+          {{ constancia?.paciente?.nombre_completo }}
+        </strong>
+      </div>
 
-  <button class="btn-dock btn" type="button" (click)="volver()">
-    ❌ Cancelar
+      <div class="cn-context__meta">
+        @if (constancia?.paciente?.expediente) {
+          <span class="cn-context__pill">
+            EXP {{ constancia?.paciente?.expediente }}
+          </span>
+        }
+
+        @if (constancia?.paciente?.sexo) {
+          <span class="cn-context__pill">
+            {{ constancia?.paciente?.sexo }}
+          </span>
+        }
+
+        @if (constancia?.paciente?.fecha_nacimiento) {
+          <span class="cn-context__pill">
+            {{ constancia?.paciente?.fecha_nacimiento }}
+          </span>
+        }
+      </div>
+    </div>
+
+    <!-- MADRE -->
+    @if (constancia?.madre) {
+      <div class="cn-context__divider"></div>
+
+      <div class="cn-context__item">
+        <div class="cn-context__main">
+          <span class="cn-context__tag cn-context__tag--mother"> MADRE 👩🏻</span>
+          <span>
+            {{ constancia?.madre?.nombre?.primer_nombre }}
+            {{ constancia?.madre?.nombre?.segundo_nombre }}
+            {{ constancia?.madre?.nombre?.primer_apellido }}
+            {{ constancia?.madre?.nombre?.segundo_apellido }}
+          </span>
+
+          <strong class="cn-context__name">
+            {{ constancia?.madre?.nombre_completo }}
+          </strong>
+        </div>
+
+        <div class="cn-context__meta">
+          @if (constancia?.madre?.expediente) {
+            <span class="cn-context__pill">
+              EXP {{ constancia?.madre?.expediente }}
+            </span>
+          }
+
+          @if (constancia?.madre?.cui) {
+            <span class="cn-context__pill">
+              CUI {{ constancia?.madre?.cui }}
+            </span>
+          }
+        </div>
+      </div>
+    }
+  </section>
+} @else {
+  <section class="cn-context-empty">
+    <span class="cn-context-empty__icon"> 👶🏻 </span>
+
+    <div>
+      <div class="cn-context-empty__title">Sin neonato seleccionado</div>
+
+      <div class="cn-context-empty__hint">
+        Busque un expediente para comenzar
+      </div>
+    </div>
+  </section>
+}
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TABS                                       -->
+<!-- ═══════════════════════════════════════════ -->
+<nav class="cn-tabs">
+  <button
+    type="button"
+    class="cn-tabs__btn"
+    [class.cn-tabs__btn--active]="tabActivo() === 'datos'"
+    (click)="setTab('datos')"
+  >
+    Documento
   </button>
 
   <button
-    class="btn-dock btn btn--primary"
     type="button"
-    [disabled]="isLoading()"
-    (click)="guardar()"
+    class="cn-tabs__btn"
+    [class.cn-tabs__btn--active]="tabActivo() === 'madre'"
+    (click)="setTab('madre')"
   >
-    {{ isLoading() ? "⏳ Guardando…" : "💾 Guardar" }}
+    Madre
   </button>
-</div>
 
-<!-- ───────── SKELETON LOADER ───────── -->
+  <button
+    type="button"
+    class="cn-tabs__btn"
+    [class.cn-tabs__btn--active]="tabActivo() === 'medico'"
+    (click)="setTab('medico')"
+  >
+    Médico
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- LOADING                                    -->
+<!-- ═══════════════════════════════════════════ -->
 @if (isLoading() && !constancia) {
-  <div class="adm-body">
-    <div class="skeleton-block"></div>
-    <div class="skeleton-block skeleton-block--short"></div>
-  </div>
+  <section class="cn-content">
+    <div class="cn-skeleton"></div>
+    <div class="cn-skeleton"></div>
+    <div class="cn-skeleton cn-skeleton--short"></div>
+  </section>
 }
 
-<!-- ───────── BODY ───────── -->
+<!-- ═══════════════════════════════════════════ -->
+<!-- FORM                                        -->
+<!-- ═══════════════════════════════════════════ -->
 @if (!isLoading() || constancia) {
-  <form [formGroup]="form" class="adm-body" (submit)="$event.preventDefault()">
-    <!-- ── PACIENTE BANNER ── -->
-    @if (constancia?.paciente) {
-      <div class="paciente-banner">
-        <div class="paciente-banner-accent"></div>
-        <div class="paciente-avatar">👶🏻</div>
-        |
-        <div class="paciente-datos">
-          <div class="paciente-nombre">
-            {{ constancia?.paciente?.nombre_completo ?? "Neonato" }}
-          </div>
-          <div class="paciente-chips">
-            @if (constancia?.paciente?.expediente) {
-              <div class="p-chip">
-                📋 Expediente: {{ constancia?.paciente?.expediente }}
-              </div>
-            }
-            @if (constancia?.paciente?.fecha_nacimiento) {
-              <div class="p-chip">
-                📅 {{ constancia?.paciente?.fecha_nacimiento }}
-              </div>
-            }
-            @if (constancia?.paciente?.sexo) {
-              <div class="p-chip">🚻 {{ constancia?.paciente?.sexo }}</div>
-            }
-          </div>
-        </div>
-      </div>
-    }
-
-    <!-- ── TABS ── -->
-    <div class="tab-bar">
-      <button
-        type="button"
-        class="tab-btn"
-        [class.tab-btn--active]="tabActivo() === 'datos'"
-        (click)="setTab('datos')"
-      >
-        📄 Documento
-      </button>
-      <button
-        type="button"
-        class="tab-btn"
-        [class.tab-btn--active]="tabActivo() === 'madre'"
-        (click)="setTab('madre')"
-      >
-        👩 Madre
-      </button>
-      <button
-        type="button"
-        class="tab-btn"
-        [class.tab-btn--active]="tabActivo() === 'medico'"
-        (click)="setTab('medico')"
-      >
-        🩺 Médico / Parto
-      </button>
-    </div>
-
-    <!-- ══════════ TAB: DOCUMENTO ══════════ -->
+  <form
+    [formGroup]="form"
+    class="cn-content"
+    (submit)="$event.preventDefault()"
+  >
+    <!-- ═══════════════════════════════════════ -->
+    <!-- TAB DOCUMENTO                          -->
+    <!-- ═══════════════════════════════════════ -->
     @if (tabActivo() === "datos") {
-      <div class="adm-grid">
-        <!-- COL 1 — Identificación -->
-        <div class="adm-col">
-          <div class="section-card">
-            <div class="sec-head">
-              <div class="sec-head-left">
-                <div class="sec-icon">🪪</div>
-                <div class="sec-title">Identificación</div>
-              </div>
-              <div class="sec-badge">registro civil</div>
+      <!-- IDENTIFICACIÓN -->
+      <section class="cn-card">
+        <header class="cn-card__head">
+          <div class="cn-card__title-group">
+            <div class="cn-card__icon">🪪</div>
+
+            <div>
+              <h3 class="cn-card__title">Identificación</h3>
+
+              <p class="cn-card__subtitle">
+                Información principal del documento
+              </p>
+            </div>
+          </div>
+        </header>
+
+        <div class="cn-card__body">
+          <div class="cn-fields">
+            <div class="cn-field">
+              <label class="cn-field__label"> Documento </label>
+
+              <input
+                class="cn-input cn-input--readonly"
+                formControlName="documento"
+                readonly
+              />
             </div>
 
-            <div class="sec-body">
-              <div class="field">
-                <label class="field-label">Documento</label>
-                <input
-                  class="field-input field-input--readonly"
-                  formControlName="documento"
-                  placeholder="0360-2026"
-                  readonly
-                />
-              </div>
+            <div class="cn-field">
+              <label class="cn-field__label"> Fecha registro </label>
 
-              <div class="field">
-                <label class="field-label">Fecha de Registro</label>
-                <input
-                  type="date"
-                  class="field-input"
-                  formControlName="fecha_registro"
-                />
-              </div>
+              <input
+                type="date"
+                class="cn-input"
+                formControlName="fecha_registro"
+              />
+            </div>
 
-              <div class="field">
-                <label class="field-label">ID Paciente (neonato)</label>
-                <input
-                  class="field-input field-input--readonly"
-                  formControlName="paciente_id"
-                  readonly
-                />
-              </div>
+            <div class="cn-field">
+              <label class="cn-field__label"> ID paciente </label>
 
-              <div class="field">
-                <label class="field-label">ID Registrador</label>
-                <input
-                  class="field-input field-input--readonly"
-                  formControlName="registrador_id"
-                  readonly
-                />
-              </div>
+              <input
+                class="cn-input cn-input--readonly"
+                formControlName="paciente_id"
+                readonly
+              />
+            </div>
+
+            <div class="cn-field">
+              <label class="cn-field__label"> ID registrador </label>
+
+              <input
+                class="cn-input cn-input--readonly"
+                formControlName="registrador_id"
+                readonly
+              />
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- COL 2 — Menor edad -->
-        @if (!constancia?.madre?.cui) {
-          <div class="adm-col">
-            <div class="section-card">
-              <div class="sec-head">
-                <div class="sec-head-left">
-                  <div class="sec-icon">📚</div>
-                  <div class="sec-title">Registro Civil (Menor)</div>
-                </div>
-                <div class="sec-badge">menor_edad JSON</div>
-              </div>
+      <!-- NACIMIENTO -->
+      <section class="cn-card">
+        <header class="cn-card__head">
+          <div class="cn-card__title-group">
+            <div class="cn-card__icon">👩🏻‍🍼</div>
 
-              <div class="sec-body" formGroupName="menor_edad">
-                <div class="field">
-                  <label class="field-label">Libro</label>
-                  <input
-                    class="field-input"
-                    formControlName="libro"
-                    placeholder="Núm. de libro"
-                  />
-                </div>
+            <div>
+              <h3 class="cn-card__title">Datos del nacimiento</h3>
 
-                <div class="field">
-                  <label class="field-label">Folio</label>
-                  <input
-                    class="field-input"
-                    formControlName="folio"
-                    placeholder="Núm. de folio"
-                  />
-                </div>
-
-                <div class="field">
-                  <label class="field-label">Partida</label>
-                  <input
-                    class="field-input"
-                    formControlName="partida"
-                    placeholder="Núm. de partida"
-                  />
-                </div>
-
-                <div class="field">
-                  <label class="field-label">CUI Emitido</label>
-                  <input
-                    class="field-input"
-                    formControlName="cui"
-                    placeholder="CUI del menor"
-                  />
-                </div>
-
-                <div class="field field--full">
-                  <label class="field-label">Municipalidad</label>
-                  <input
-                    class="field-input"
-                    formControlName="municipalidad"
-                    placeholder="Municipio emisor"
-                  />
-                </div>
-              </div>
+              <p class="cn-card__subtitle">Información neonatal</p>
             </div>
           </div>
-        }
 
-        <!-- COL 3 — Hijos / Observaciones -->
-        <div class="adm-col">
-          <div class="section-card">
-            <div class="sec-head">
-              <div class="sec-head-left">
-                <div class="sec-icon">🧑‍🧒‍🧒</div>
-                <div class="sec-title">Hijos de la madre</div>
-              </div>
+          <button
+            type="button"
+            class="cn-btn"
+            (click)="editarHijo(constancia?.paciente_id)"
+          >
+            Editar niño
+          </button>
+        </header>
+
+        <div class="cn-card__body">
+          <div class="cn-info">
+            <div class="cn-info__row">
+              <span>Tipo parto</span>
+
+              <strong>
+                {{
+                  constancia?.paciente?.datos_extra?.neonatales?.tipo_parto ??
+                    "—"
+                }}
+              </strong>
             </div>
 
-            <div class="sec-body">
-              <div class="field">
-                <label class="field-label">Vivos</label>
-                <input
-                  type="number"
-                  min="0"
-                  class="field-input"
-                  formControlName="vivos"
-                  placeholder="0"
-                />
-              </div>
+            <div class="cn-info__row">
+              <span>Clase parto</span>
 
-              <div class="field">
-                <label class="field-label">Muertos</label>
-                <input
-                  type="number"
-                  min="0"
-                  class="field-input"
-                  formControlName="muertos"
-                  placeholder="0"
-                />
-              </div>
-
-              <div class="field">
-                <label class="field-label"
-                  >Total Hijos
-                  <span class="field-calc">= vivos + muertos</span></label
-                >
-                <input
-                  type="number"
-                  class="field-input field-input--readonly"
-                  formControlName="hijos"
-                  readonly
-                  placeholder="Auto-calculado"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- COL 4 — Datos del neonato -->
-        <div class="adm-col">
-          <div class="section-card">
-            <div class="sec-head">
-              <div class="sec-head-left">
-                <div class="sec-icon">👩🏻‍🍼</div>
-                <div class="sec-title">Datos del Nacimiento</div>
-                <div>
-                  <button
-                    (click)="editarHijo(constancia?.paciente_id)"
-                    class="btn"
-                  >
-                    Editar Niño
-                  </button>
-                </div>
-              </div>
+              <strong>
+                {{
+                  constancia?.paciente?.datos_extra?.neonatales?.clase_parto ??
+                    "—"
+                }}
+              </strong>
             </div>
 
-            <div class="sec-body">
-              <div class="field">
-                <label class="field-label">Tipo Parto</label>
-                <span class="btn">{{
-                  constancia?.paciente?.datos_extra?.neonatales?.tipo_parto
-                }}</span>
-              </div>
+            <div class="cn-info__row">
+              <span>Peso</span>
 
-              <div class="field">
-                <label class="field-label">Clase de Parto</label>
-                <span class="btn">{{
-                  constancia?.paciente?.datos_extra?.neonatales?.clase_parto
-                }}</span>
-              </div>
+              <strong>
+                {{
+                  constancia?.paciente?.datos_extra?.neonatales
+                    ?.peso_nacimiento ?? "—"
+                }}
+              </strong>
+            </div>
 
-              <div class="field">
-                <label class="field-label">Peso</label>
-                <span class="btn">{{
-                  constancia?.paciente?.datos_extra?.neonatales?.peso_nacimiento
-                }}</span>
-              </div>
+            <div class="cn-info__row">
+              <span>Hora nacimiento</span>
 
-              <div class="field">
-                <label class="field-label">Hora de Nacimiento</label>
-                <span class="btn">{{
+              <strong>
+                {{
                   constancia?.paciente?.datos_extra?.neonatales?.hora_nacimiento
                     | time
-                }}</span>
-              </div>
+                }}
+              </strong>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     }
 
-    <!-- ══════════ TAB: MADRE ══════════ -->
+    <!-- ═══════════════════════════════════════ -->
+    <!-- TAB MADRE                              -->
+    <!-- ═══════════════════════════════════════ -->
     @if (tabActivo() === "madre") {
-      <div class="adm-grid">
-        <div class="adm-col">
-          <div class="section-card">
-            <div class="sec-head">
-              <div class="sec-head-left">
-                <div class="sec-icon">👩</div>
-                <div class="sec-title">Datos de la Madre</div>
-                <div>
-                  <button
-                    (click)="editarHijo(constancia?.madre_id)"
-                    class="btn"
-                  >
-                    Editar Madre
-                  </button>
-                </div>
-              </div>
-              <div class="sec-badge">
-                madre_id: {{ constancia?.madre_id ?? "—" }}
+      <section class="cn-card">
+        <header class="cn-card__head">
+          <div class="cn-card__title-group">
+            <div class="cn-card__icon">👩</div>
+
+            <div>
+              <h3 class="cn-card__title">Datos de la madre</h3>
+
+              <p class="cn-card__subtitle">Información relacionada</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="cn-btn"
+            (click)="editarHijo(constancia?.madre_id)"
+          >
+            Editar madre
+          </button>
+        </header>
+
+        <div class="cn-card__body">
+          <div class="cn-fields">
+            <div class="cn-field">
+              <label class="cn-field__label"> Nombre completo </label>
+
+              <input class="cn-input" formControlName="nombre_madre" />
+            </div>
+
+            <div class="cn-field">
+              <label class="cn-field__label"> Vecindad </label>
+
+              <div class="cn-static">
+                {{
+                  constancia?.madre?.datos_extra?.demograficos?.vecindad
+                    | vecindad
+                }}
               </div>
             </div>
 
-            <div class="sec-body single">
-              <div class="field">
-                <label class="field-label">Nombre Completo</label>
-                <input
-                  class="field-input"
-                  formControlName="nombre_madre"
-                  placeholder="Nombre de la madre"
-                />
-              </div>
+            <div class="cn-field">
+              <label class="cn-field__label"> ID madre </label>
 
-              <div class="field">
-                <label class="field-label">Vecindad</label>
-                <span class="info-value btn">
-                  {{
-                    constancia?.madre?.datos_extra?.demograficos?.vecindad
-                      | vecindad
-                  }}
-                </span>
-              </div>
-
-              <div class="field">
-                <label class="field-label">ID Paciente Madre (FK)</label>
-                <input
-                  class="field-input field-input--readonly"
-                  formControlName="madre_id"
-                  readonly
-                />
-              </div>
+              <input
+                class="cn-input cn-input--readonly"
+                formControlName="madre_id"
+                readonly
+              />
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- Info heredada solo lectura -->
-        @if (constancia?.paciente) {
-          <div class="adm-col">
-            <div class="section-card">
-              <div class="sec-head">
-                <div class="sec-head-left">
-                  <div class="sec-icon">🔗</div>
-                  <div class="sec-title">Datos heredados del paciente</div>
-                </div>
-                <div class="sec-badge readonly-badge">solo lectura</div>
+      <!-- REGISTRO CIVIL -->
+      @if (!constancia?.madre?.cui) {
+        <section class="cn-card">
+          <header class="cn-card__head">
+            <div class="cn-card__title-group">
+              <div class="cn-card__icon">📚</div>
+
+              <div>
+                <h3 class="cn-card__title">Registro civil</h3>
+
+                <p class="cn-card__subtitle">Datos de inscripción del menor</p>
               </div>
-              <div class="sec-body single">
-                <div class="info-row">
-                  <span class="info-label">Expediente neonato</span>
-                  <span class="info-value">{{
-                    constancia?.paciente?.expediente ?? "—"
-                  }}</span>
-                </div>
-                <div class="info-row">
-                  <span class="info-label">Fecha nacimiento</span>
-                  <span class="info-value">{{
-                    constancia?.paciente?.fecha_nacimiento ?? "—"
-                  }}</span>
-                </div>
-                <div class="info-row">
-                  <span class="info-label">Sexo RN</span>
-                  <span class="info-value">{{
-                    constancia?.paciente?.sexo ?? "—"
-                  }}</span>
-                </div>
-                <div class="info-row">
-                  <span class="info-label">Expediente Madre</span>
-                  <span class="info-value">{{
-                    constancia?.madre?.expediente ?? "—"
-                  }}</span>
-                </div>
+            </div>
+          </header>
+
+          <div class="cn-card__body" formGroupName="menor_edad">
+            <div class="cn-fields">
+              <div class="cn-field">
+                <label class="cn-field__label"> Libro </label>
+
+                <input class="cn-input" formControlName="libro" />
+              </div>
+
+              <div class="cn-field">
+                <label class="cn-field__label"> Folio </label>
+
+                <input class="cn-input" formControlName="folio" />
+              </div>
+
+              <div class="cn-field">
+                <label class="cn-field__label"> Partida </label>
+
+                <input class="cn-input" formControlName="partida" />
+              </div>
+
+              <div class="cn-field">
+                <label class="cn-field__label"> CUI emitido </label>
+
+                <input class="cn-input" formControlName="cui" />
+              </div>
+
+              <div class="cn-field cn-field--full">
+                <label class="cn-field__label"> Municipalidad </label>
+
+                <input class="cn-input" formControlName="municipalidad" />
               </div>
             </div>
           </div>
-        }
-      </div>
+        </section>
+      }
+
+      <!-- HIJOS -->
+      <section class="cn-card">
+        <header class="cn-card__head">
+          <div class="cn-card__title-group">
+            <div class="cn-card__icon">🧑‍🧒‍🧒</div>
+
+            <div>
+              <h3 class="cn-card__title">Hijos de la madre</h3>
+
+              <p class="cn-card__subtitle">Conteo histórico</p>
+            </div>
+          </div>
+        </header>
+
+        <div class="cn-card__body">
+          <div class="cn-fields">
+            <div class="cn-field">
+              <label class="cn-field__label"> Vivos </label>
+
+              <input
+                type="number"
+                min="0"
+                class="cn-input"
+                formControlName="vivos"
+              />
+            </div>
+
+            <div class="cn-field">
+              <label class="cn-field__label"> Muertos </label>
+
+              <input
+                type="number"
+                min="0"
+                class="cn-input"
+                formControlName="muertos"
+              />
+            </div>
+
+            <div class="cn-field">
+              <label class="cn-field__label"> Total hijos </label>
+
+              <input
+                type="number"
+                class="cn-input cn-input--readonly"
+                formControlName="hijos"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </section>
     }
 
-    <!-- ══════════ TAB: MÉDICO ══════════ -->
+    <!-- ═══════════════════════════════════════ -->
+    <!-- TAB MÉDICO                             -->
+    <!-- ═══════════════════════════════════════ -->
     @if (tabActivo() === "medico") {
-      <div class="adm-grid">
-        <div class="adm-col">
-          <div class="section-card">
-            <div class="sec-head">
-              <div class="sec-head-left">
-                <div class="sec-icon">🩺</div>
-                <div class="sec-title">Médico</div>
-              </div>
-            </div>
-            <div class="sec-body single">
-              <div class="field">
-                <label class="field-label">Médico</label>
-                <select formControlName="medico_id">
-                  <option [value]="item.id" *ngFor="let item of medicos">
-                    {{ item.nombre }} ({{ item.colegiado }})
-                  </option>
-                </select>
-              </div>
+      <section class="cn-card">
+        <header class="cn-card__head">
+          <div class="cn-card__title-group">
+            <div class="cn-card__icon">🩺</div>
+
+            <div>
+              <h3 class="cn-card__title">Médico responsable</h3>
+
+              <p class="cn-card__subtitle">Profesional encargado</p>
             </div>
           </div>
+        </header>
+
+        <div class="cn-card__body">
+          <div class="cn-field">
+            <label class="cn-field__label"> Médico </label>
+
+            <select class="cn-input" formControlName="medico_id">
+              <option [value]="item.id" *ngFor="let item of medicos">
+                {{ item.nombre }} ({{ item.colegiado }})
+              </option>
+            </select>
+          </div>
         </div>
-      </div>
+      </section>
     }
 
-    <!-- ── ERROR ── -->
+    <!-- ERROR -->
     @if (error()) {
-      <div class="section-card">
-        <div class="sec-body single">
-          <div class="alert-error">⚠️ {{ error() }}</div>
-        </div>
-      </div>
+      <section class="cn-alert cn-alert--error">⚠️ {{ error() }}</section>
     }
 
-    <!-- ── ÉXITO ── -->
+    <!-- OK -->
     @if (guardadoOk()) {
-      <div class="section-card">
-        <div class="sec-body single">
-          <div class="alert-ok">✅ Constancia actualizada correctamente.</div>
-        </div>
-      </div>
+      <section class="cn-alert cn-alert--ok">
+        ✅ Constancia actualizada correctamente
+      </section>
     }
   </form>
 }
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ACTION BAR                                 -->
+<!-- ═══════════════════════════════════════════ -->
+<footer class="cn-actions">
+  <div class="cn-actions__meta">constancia #{{ constancia?.id ?? "—" }}</div>
+
+  <div class="cn-actions__buttons">
+    <button class="cn-btn" type="button" (click)="volver()">Cancelar</button>
+
+    <button
+      class="cn-btn cn-btn--primary"
+      type="button"
+      [disabled]="isLoading()"
+      (click)="guardar()"
+    >
+      {{ isLoading() ? "Guardando..." : "Guardar" }}
+    </button>
+  </div>
+</footer>

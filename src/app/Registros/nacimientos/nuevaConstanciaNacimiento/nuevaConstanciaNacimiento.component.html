@@ -29,71 +29,77 @@
 <form [formGroup]="form" class="adm-body" (submit)="$event.preventDefault()">
   <!-- ── BANNER NEONATO — mismo estilo que edición ── -->
   @if (pacientePreview) {
-    <div class="paciente-banner">
-      <div class="paciente-banner-accent"></div>
-      <div class="paciente-avatar">👶🏻</div>
-      |
-      <div class="paciente-datos">
-        <!-- Banner neonato -->
-        <div class="paciente-nombre">
-          {{ pacientePreview?.nombre?.primer_nombre }}
-          {{ pacientePreview?.nombre?.segundo_nombre }}
-          {{ pacientePreview?.nombre?.primer_apellido }}
-          {{ pacientePreview?.nombre?.segundo_apellido }}
+    <!-- Reemplaza los dos .paciente-banner separados por: -->
+    <div class="paciente-banner-group">
+      <div class="paciente-banner">
+        <div class="paciente-banner-accent"></div>
+        <div class="paciente-avatar">👶🏻</div>
+        |
+        <div class="paciente-datos">
+          <!-- Banner neonato -->
+          <div class="paciente-nombre">
+            {{ pacientePreview?.nombre?.primer_nombre }}
+            {{ pacientePreview?.nombre?.segundo_nombre }}
+            {{ pacientePreview?.nombre?.primer_apellido }}
+            {{ pacientePreview?.nombre?.segundo_apellido }}
+          </div>
+          <div class="paciente-chips">
+            @if (pacientePreview?.expediente) {
+              <div class="p-chip">
+                📋 Expediente: {{ pacientePreview.expediente }}
+              </div>
+            }
+            @if (pacientePreview?.fecha_nacimiento) {
+              <div class="p-chip">
+                📅 {{ pacientePreview.fecha_nacimiento }}
+              </div>
+            }
+            @if (pacientePreview?.sexo) {
+              <div class="p-chip">🚻 {{ pacientePreview.sexo }}</div>
+            }
+            <div class="p-chip">🆔 ID: {{ form.value.paciente_id }}</div>
+          </div>
         </div>
-        <div class="paciente-chips">
-          @if (pacientePreview?.expediente) {
-            <div class="p-chip">
-              📋 Expediente: {{ pacientePreview.expediente }}
-            </div>
-          }
-          @if (pacientePreview?.fecha_nacimiento) {
-            <div class="p-chip">📅 {{ pacientePreview.fecha_nacimiento }}</div>
-          }
-          @if (pacientePreview?.sexo) {
-            <div class="p-chip">🚻 {{ pacientePreview.sexo }}</div>
-          }
-          <div class="p-chip">🆔 ID: {{ form.value.paciente_id }}</div>
-        </div>
+        <button
+          type="button"
+          class="btn"
+          style="margin-left: auto"
+          (click)="limpiarPaciente()"
+        >
+          ✖ Quitar
+        </button>
       </div>
-      <button
-        type="button"
-        class="btn"
-        style="margin-left: auto"
-        (click)="limpiarPaciente()"
-      >
-        ✖ Quitar
-      </button>
-    </div>
-    <div class="paciente-banner">
-      <div class="paciente-banner-accent"></div>
-      <div class="paciente-avatar">👩</div>
-      |
-      <div class="paciente-datos">
-        <!-- Banner madre -->
-        <div class="paciente-nombre">
-          {{ madrePreview?.nombre?.primer_nombre }}
-          {{ madrePreview?.nombre?.segundo_nombre }}
-          {{ madrePreview?.nombre?.primer_apellido }}
-          {{ madrePreview?.nombre?.segundo_apellido }}
+      <div class="paciente-banner paciente-banner--secondary">
+        <div class="paciente-banner-accent"></div>
+        <div class="paciente-avatar">👩</div>
+        |
+        <div class="paciente-datos">
+          <!-- Banner madre -->
+          <div class="paciente-nombre">
+            {{ madrePreview?.nombre?.primer_nombre }}
+            {{ madrePreview?.nombre?.segundo_nombre }}
+            {{ madrePreview?.nombre?.primer_apellido }}
+            {{ madrePreview?.nombre?.segundo_apellido }}
+          </div>
+          <div class="paciente-chips">
+            @if (madrePreview?.expediente) {
+              <div class="p-chip">
+                📋 Expediente: {{ madrePreview.expediente }}
+              </div>
+            }
+            <div class="p-chip">🆔 ID: {{ form.value.madre_id }}</div>
+          </div>
         </div>
-        <div class="paciente-chips">
-          @if (madrePreview?.expediente) {
-            <div class="p-chip">
-              📋 Expediente: {{ madrePreview.expediente }}
-            </div>
-          }
-          <div class="p-chip">🆔 ID: {{ form.value.madre_id }}</div>
-        </div>
+        <button
+          type="button"
+          class="btn"
+          style="margin-left: auto"
+          (click)="limpiarMadre()"
+        >
+          ✖ Quitar
+        </button>
       </div>
-      <button
-        type="button"
-        class="btn"
-        style="margin-left: auto"
-        (click)="limpiarMadre()"
-      >
-        ✖ Quitar
-      </button>
+      <!-- madre -->
     </div>
   }
 

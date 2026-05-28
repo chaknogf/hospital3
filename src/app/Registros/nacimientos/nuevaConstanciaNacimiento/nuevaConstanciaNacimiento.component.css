@@ -1,3 +1,4 @@
+/* nuevaConstanciaNacimiento.css */
 /* ═══════════════════════════════════════════════════════════
    CONSTANCIA NACIMIENTO — UX VELOCIDAD
    Principios: mínimos campos visibles, targets grandes,
@@ -675,4 +676,24 @@
     padding: 0 10px;
     font-size: 11px;
   }
+}
+.paciente-banner-group {
+  border: 0.5px solid var(--rim);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.paciente-banner-group .paciente-banner {
+  border: none;
+  border-bottom: 0.5px solid var(--rim);
+  border-radius: 0;
+}
+.paciente-banner-group .paciente-banner:last-child {
+  border-bottom: none;
+}
+
+.adm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  align-items: start;
 }
