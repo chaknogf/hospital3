@@ -42,6 +42,7 @@ export interface Referencia {
   expediente?: string | null;
   idpersona?: string | null;
   responsable?: boolean | false;
+  acompanante?: boolean | false;
 }
 
 // ========== DATOS EXTRA ==========

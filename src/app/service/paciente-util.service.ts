@@ -110,7 +110,8 @@ export class PacienteUtilService {
         telefono: this.limpiarTelefono(ref.telefono), // ✅ CORRECTO
         expediente: ref.expediente || null,
         idpersona: ref.idpersona || null,
-        responsable: ref.responsable === true
+        responsable: ref.responsable === true,
+        acompanante: ref.acompanante === true
       }));
 
     return resultado.length ? resultado : null;
@@ -125,7 +126,8 @@ export class PacienteUtilService {
       telefonos: ref.telefono || '', // ✅ AQUÍ
       expediente: ref.expediente || null,
       idpersona: ref.idpersona || null,
-      responsable: ref.responsable === true
+      responsable: ref.responsable === true,
+      acompanante: ref.acompanante === true
     }));
   }
 

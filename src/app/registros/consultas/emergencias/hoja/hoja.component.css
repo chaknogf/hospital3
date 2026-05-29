@@ -21,6 +21,11 @@
 h1,h2,h3,h4,h5,h6,p {
   line-height: 1.05;
 }
+h6 {
+  margin-top: 4px;
+  margin-left: 30px;
+  font-size: 1.1rem;
+}
 span  { letter-spacing: 0; }
 
 body {
@@ -87,6 +92,12 @@ body,
 .nombre {
   font-size: 14px;
   line-height: 1;
+  font-family: var(--mono);
+  font-size: 13pt;
+  font-weight: 700;
+  color: var(--accent);
+  margin-left: 4px;
+
 }
 
 /* ══ HOJA OFICIO — 8.5in × 13.5in ════════════════════════════ */
@@ -150,20 +161,58 @@ body,
 
 /* ══ META ═════════════════════════════════════════════════════ */
 .doc-meta {
-  padding: 1px 0;
-  gap: 4px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1px;
+  gap: 8px;
+  padding: 1px 0;
+  /* border-bottom: .5px solid #d1d5db; */
+}
+
+.meta-left {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.meta-right {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.meta-inline {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.meta-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #4b5563;
+  letter-spacing: .3px;
+}
+.meta-separator {
+  opacity: .5;
 }
 
 .titulo-doc {
-  font-size: 8pt;
   line-height: 1.05;
+  font-family: var(--sans);
+  font-size: 9pt;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: .3px;
 }
 
 .doc-id {
-  font-size: 9pt;
-  margin-left: 2px;
+    font-family: var(--mono);
+    font-size: 13pt;
+    font-weight: 700;
+    color: var(--accent);
+    margin-left: 4px;
 }
 
 /* ══ SECCIONES ════════════════════════════════════════════════ */
@@ -508,6 +557,8 @@ label {
 .field {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+  border-bottom: #6b7280 solid 1px;
+  margin-bottom: 4px;
 }
 
 .compact-grid {

@@ -1,4 +1,3 @@
-```html
 <!-- ============================================================ -->
 <!-- HOJA DE ATENCIÓN EN EMERGENCIAS                             -->
 <!-- ============================================================ -->
@@ -52,27 +51,38 @@
       <!-- ── META ──────────────────────────────────────────── -->
 
       <div class="doc-meta">
-        <h4 class="titulo-doc">
-          Hoja de Emergencia:
-          <span class="doc-id">
-            {{ consulta()?.documento }}
-          </span>
+        <div class="meta-left">
+          <div class="meta-inline">
+            <span class="meta-label"> HE: </span>
 
-          <br />
+            <span class="doc-id">
+              {{ consulta()?.documento }}
+            </span>
+          </div>
 
           @if (consulta()?.expediente) {
-            Expediente:
-            <span class="doc-id">
-              {{ consulta()?.expediente }}
-            </span>
-          }
-        </h4>
+            <div class="meta-inline">
+              <span class="meta-label"> EXP: </span>
 
-        <div class="borderline-time text-center">
-          <label class="doc__label"> Fecha y Hora de Consulta </label>
+              <span class="doc-id">
+                {{ consulta()?.expediente }}
+              </span>
+            </div>
+          }
+        </div>
+
+        <div class="meta-right">
+          <span class="meta-label"> Fecha: </span>
 
           <span class="doc-id">
-            📅 {{ consulta()?.fecha_consulta | date: "dd-MM-yyyy" }} - 🕣
+            {{ consulta()?.fecha_consulta | date: "dd-MM-yyyy" }}
+          </span>
+
+          <span class="meta-separator"> — </span>
+
+          <span class="meta-label"> Hora: </span>
+
+          <span class="doc-id">
             {{ consulta()?.hora_consulta | time }}
           </span>
         </div>
@@ -88,7 +98,7 @@
 
       <!-- ── DATOS GENERALES ──────────────────────────────── -->
 
-      <div class="doc-row">
+      <div class="doc-row doc-row--compact">
         <div class="inline-field">
           <span class="doc__label">Edad:</span>
 
@@ -120,44 +130,41 @@
             {{ paciente()?.cui | cui }}
           </span>
         </div>
-      </div>
 
-      <div class="doc-row">
-        <div class="inline-field inline-field--grow">
-          <span class="doc__label"> Dirección: </span>
+        <div class="inline-field">
+          <span class="doc__label">Tel:</span>
 
           <span class="doc__value">
-            {{ direccionCompleta() }}
+            {{ telefonoPaciente() }}
           </span>
         </div>
       </div>
 
-      <div class="doc-row">
+      <div class="doc-row doc-row--compact">
         <div class="inline-field inline-field--grow">
-          <span class="doc__label"> Responsable: </span>
+          <span class="doc__label">Acompañante:</span>
 
           <span class="doc__value">
-            {{ responsable()?.nombre || "-" }}
+            {{ nombreAcompanante() }}
           </span>
         </div>
 
         <div class="inline-field">
-          <span class="doc__label"> Parentesco: </span>
+          <span class="doc__label">Par:</span>
 
           <span class="doc__value">
-            {{ responsable()?.parentesco | datosExtra: "parentesco" }}
+            {{ parentescoAcompanante() | datosExtra: "parentesco" }}
           </span>
         </div>
 
         <div class="inline-field">
-          <span class="doc__label"> Tel: </span>
+          <span class="doc__label">Tel:</span>
 
           <span class="doc__value">
-            {{ responsable()?.telefono || "-" }}
+            {{ telefonoAcompanante() }}
           </span>
         </div>
       </div>
-
       <!-- ── EXAMEN FÍSICO ────────────────────────────────── -->
 
       <div class="doc-section">
@@ -181,17 +188,12 @@
           <span>P/E:____________</span>
           <span>____________Puntaje Z</span>
         </div>
-
-        <span class="line line--mt"></span>
-        <span class="line"></span>
       </div>
 
       <!-- ── MOTIVO DE CONSULTA ───────────────────────────── -->
 
       <div class="doc-section">
         <h6>Motivo de la Consulta</h6>
-
-        <span class="line"></span>
         <span class="line"></span>
       </div>
 
@@ -199,8 +201,6 @@
 
       <div class="doc-section">
         <h6>Historia de la Enfermedad Actual</h6>
-
-        <span class="line"></span>
         <span class="line"></span>
         <span class="line"></span>
       </div>

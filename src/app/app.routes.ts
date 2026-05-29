@@ -101,7 +101,7 @@ export const routes: Routes = [
       { path: 'prestamo/:id', component: CrearPrestamoComponent, canActivate: [roleGuard(['admin', 'registro'])] },
       { path: 'editarPrestamo/:id', component: CrearPrestamoComponent, canActivate: [roleGuard(['admin', 'registro'])] },
       // Médicas
-      { path: 'clinica', component: MedicaComponent },
+      { path: 'clinica', component: MedicaComponent, canActivate: [roleGuard(['admin', 'medico'])] },
       { path: 'pacientesAtendidos', component: PacientesAtendidosComponent },
       { path: 'notaMedica/:consultaId', component: NotaMedicaComponent },
       { path: 'notaMedicas', component: NotaMedicaComponent },

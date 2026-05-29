@@ -446,6 +446,7 @@
                   border-bottom: 1px solid var(--rim);
                 "
               >
+                <!-- HEADER de la referencia -->
                 <div
                   style="
                     display: flex;
@@ -465,23 +466,51 @@
                     @if (ref.get("responsable")?.value) {
                       <span style="color: #f59e0b"> ★ Responsable</span>
                     }
+                    @if (ref.get("acompanante")?.value) {
+                      <span style="color: #3b82f6"> ✦ Acompañante</span>
+                    }
                   </span>
-                  <label
-                    style="
-                      font-size: 11px;
-                      color: var(--muted);
-                      cursor: pointer;
-                    "
-                  >
-                    <input
-                      type="checkbox"
-                      formControlName="responsable"
-                      (change)="marcarComoResponsable(i)"
-                    />
-                    Responsable
-                  </label>
+
+                  <!-- Checkboxes: Responsable y Acompañante -->
+                  <div style="display: flex; gap: 1rem">
+                    <label
+                      style="
+                        font-size: 11px;
+                        color: var(--muted);
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.25rem;
+                      "
+                    >
+                      <input
+                        type="checkbox"
+                        formControlName="responsable"
+                        (change)="marcarComoResponsable(i)"
+                      />
+                      Responsable
+                    </label>
+                    <label
+                      style="
+                        font-size: 11px;
+                        color: var(--muted);
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.25rem;
+                      "
+                    >
+                      <input
+                        type="checkbox"
+                        formControlName="acompanante"
+                        (change)="marcarComoAcompanante(i)"
+                      />
+                      Acompañante
+                    </label>
+                  </div>
                 </div>
 
+                <!-- Campos nombre y teléfono -->
                 <div class="row-2">
                   <div class="field">
                     <span class="field-label">Nombre</span>
@@ -503,6 +532,7 @@
                   </div>
                 </div>
 
+                <!-- Parentesco -->
                 <div class="field">
                   <span class="field-label">Parentesco</span>
                   <div class="chips-row">
@@ -517,6 +547,7 @@
                   </div>
                 </div>
 
+                <!-- Acciones -->
                 <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem">
                   <button
                     type="button"

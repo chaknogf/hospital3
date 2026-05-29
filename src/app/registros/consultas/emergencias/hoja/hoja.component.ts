@@ -82,6 +82,29 @@ export class HojaComponent implements OnInit, OnDestroy {
       .trim();
   });
 
+  telefonoPaciente = computed(() => {
+    return this.paciente()?.contacto?.telefonos || '-';
+  });
+
+  // Obtiene la referencia marcada como acompañante
+  acompanante = computed(() => {
+    const referencias = this.paciente()?.referencias;
+    if (!referencias || referencias.length === 0) return null;
+    return referencias.find(ref => ref.acompanante === true) ?? null;
+  });
+
+  // Datos del acompañante
+  nombreAcompanante = computed(() => {
+    return this.acompanante()?.nombre || '-';
+  });
+
+  telefonoAcompanante = computed(() => {
+    return this.acompanante()?.telefono || '-';
+  });
+
+  parentescoAcompanante = computed(() => {
+    return this.acompanante()?.parentesco || '-';
+  });
   /**
    * Dirección completa del paciente
    */

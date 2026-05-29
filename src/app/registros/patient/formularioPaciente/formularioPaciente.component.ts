@@ -229,11 +229,12 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   private crearReferencia(ref?: any): FormGroup {
     return this.fb.group({
       nombre: [ref?.nombre || ''],
-      telefono: [ref?.telefono || ''], // ⛔ AQUÍ
+      telefono: [ref?.telefono || ''],
       parentesco: [this.normalizarParentesco(ref?.parentesco)],
       expediente: [ref?.expediente || null],
       idpersona: [ref?.idpersona || null],
-      responsable: [ref?.responsable === true]
+      responsable: [ref?.responsable === true],
+      acompanante: [ref?.acompanante === true]
     });
   }
 
@@ -393,6 +394,18 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
       });
   }
 
+  marcarComoAcompanante(index: number): void {
+    const esAcompanante = this.referencias.at(index).get('acompanante')?.value;
+
+    // Si se está marcando, desmarcar los demás (solo un acompañante a la vez)
+    if (esAcompanante) {
+      this.referencias.controls.forEach((control, i) => {
+        if (i !== index) {
+          control.get('acompanante')?.setValue(false, { emitEvent: false });
+        }
+      });
+    }
+  }
 
   private cargarReferencias(referencias: any[]): void {
     this.referencias.clear();
