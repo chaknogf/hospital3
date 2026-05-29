@@ -211,7 +211,7 @@
       <div class="doc-section">
         <h6>Antecedentes</h6>
 
-        <div class="grid-1-1-1 mb-sm">
+        <div class="grid-triple mb-sm">
           <div class="borderline-time">
             <label>Familiares</label>
             <span class="line"></span>
@@ -223,54 +223,70 @@
           </div>
 
           <div class="borderline-time">
-            <label>Traumáticos</label>
+            <label>Alérgicos</label>
             <span class="line"></span>
           </div>
         </div>
 
-        <div class="grid-1-1 mb-sm">
+        <div class="grid-doble mb-sm">
           <div class="borderline-time">
-            <label>Quirúrgicos</label>
+            <label>Traumáticos</label>
             <span class="line"></span>
           </div>
 
           <div class="borderline-time">
-            <label>Alérgicos</label>
+            <label>Quirúrgicos</label>
             <span class="line"></span>
           </div>
         </div>
 
         @if (consulta()?.paciente?.sexo === "F") {
           <div class="borderline-time mb-sm">
-            <label>Ginecológicos</label>
+            <label>Gineco-obstetricos</label>
 
             <div class="campos-clinicos">
-              <span>G:____________</span>
-              <span>P:____________</span>
-              <span>C:____________</span>
-              <span>A:____________</span>
-              <span>HV:___________</span>
-              <span>HM:___________</span>
-              <span>FUR:__________</span>
-              <span>FPP:__________</span>
+              <span class="label-line">G:</span>
+              <span class="line-mini"></span>
+              <span class="label-line">P:</span>
+              <span class="line-mini"></span>
+              <span class="label-line">C:</span>
+              <span class="line-mini"></span>
+              <span class="label-line">A:</span>
+              <span class="line-mini"></span>
+              <span class="label-line">HV:</span>
+              <span class="line-mini"></span>
+              <span class="label-line">HM:</span>
+              <span class="line-mini"></span>
+              <span class="label-line">FUR:</span>
+              <span class="line-mini"></span>
+              <span class="label-line">FPP:</span>
+              <span class="line-mini"></span>
             </div>
 
-            <div
-              class="campos-clinicos campos-clinicos--spread campos-clinicos--mt-sm"
-            >
-              <span>Menarquía:____________</span>
-              <span>Ciclos:____________</span>
-              <span>FUP:____________</span>
-              <span>Control PN:____________</span>
+            <div class="campos-clinicos">
+              <span class="label-line">Menarquía:</span>
+              <span class="line-mini"></span>
+              <span class="label-line">Ciclos:</span>
+              <span class="line-mini"></span>
+              <span class="label-line">FUP:</span>
+              <span class="line-mini"></span>
+              <span class="label-line">PF:</span>
+              <span class="line-mini"></span>
+              <span class="label-line">Control PN:</span>
+              <span class="line-mini"></span>
             </div>
           </div>
         }
+      </div>
+      <!-- ── HALLAZGOS FÍSICOS ────────────────────────────── -->
 
-        <div class="borderline-time">
-          <label> Otros Antecedentes de Importancia </label>
-
-          <span class="line"></span>
-        </div>
+      <div class="doc-section">
+        <h6>Hallazgos Físicos</h6>
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
       </div>
 
       <!-- ── IMPRESIÓN CLÍNICA ────────────────────────────── -->
@@ -286,7 +302,7 @@
       <div class="doc-section">
         <h6>Órdenes Médicas</h6>
 
-        <div class="grid-1-1-1">
+        <div class="grid-doble">
           <div class="borderline">
             <span class="line"></span>
             <span class="line"></span>
@@ -339,8 +355,9 @@
       <div class="doc-section">
         <h6>Órdenes de Egreso</h6>
 
-        <div class="grid-1-1-1">
+        <div class="grid-doble">
           <div class="borderline">
+            <span class="line"></span>
             <span class="line"></span>
             <span class="line"></span>
             <span class="line"></span>
@@ -353,6 +370,7 @@
           </div>
 
           <div class="borderline">
+            <span class="line"></span>
             <span class="line"></span>
             <span class="line"></span>
             <span class="line"></span>
@@ -379,6 +397,7 @@
       <div class="doc-section">
         <h6>Notas de Enfermería</h6>
 
+        <span class="line"></span>
         <span class="line"></span>
         <span class="line"></span>
         <span class="line"></span>

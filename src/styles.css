@@ -262,6 +262,173 @@ html, body {
 
 }
 
+
+/* ═══════════════════════════════════════════════════════════
+   @PAGE GLOBAL — sin tamaño fijo, el usuario elige en el
+   diálogo de impresión. Solo define márgenes mínimos.
+   ═══════════════════════════════════════════════════════════ */
+@page {
+  margin: 0;   /* sin margen fijo — cada componente lo maneja */
+}
+
+
+@media print {
+
+  /* ═══════════════════════════════════════════════════════
+     RESET GLOBAL DE IMPRESIÓN
+     ═══════════════════════════════════════════════════════ */
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  * {
+    box-sizing: border-box !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     OCULTAR ELEMENTOS NO IMPRIMIBLES
+     ═══════════════════════════════════════════════════════ */
+
+  .no-print,
+  .no-imprimir,
+  nav,
+  .navbar,
+  .botones,
+  .alert,
+  .btn {
+    display: none !important;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     WRAPPER GENERAL
+     ═══════════════════════════════════════════════════════ */
+
+  .print-wrapper {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     MODO 1 PÁGINA
+     Clase:
+       .print-page
+
+     Diseñado para:
+       - constancias
+       - cartas
+       - reportes cortos
+       - documentos compactos
+     ═══════════════════════════════════════════════════════ */
+
+  .print-page:not(.print-multipage) {
+
+    width: 100vw !important;
+    max-width: 100% !important;
+
+    min-height: 0 !important;
+
+    /* height: 100vh !important;
+    max-height: 100vh !important; */
+
+
+    overflow: hidden !important;
+
+    margin: 0 !important;
+    padding: 2mm !important;
+
+    box-shadow: none !important;
+    border: none !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    transform-origin: top left;
+  }
+
+  /* Evitar cortes en documentos compactos */
+  .print-page:not(.print-multipage),
+  .print-page:not(.print-multipage) * {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .print-page:not(.print-multipage) {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+   MODO MULTIPÁGINA
+   ═══════════════════════════════════════════════════════ */
+
+.print-page.print-multipage {
+
+  /* RESET TOTAL del modo una página */
+  display: block !important;
+
+  width: auto !important;
+  max-width: none !important;
+
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+
+  overflow: visible !important;
+
+  transform: none !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  page-break-after: auto !important;
+  break-after: auto !important;
+}
+
+/* RESET TOTAL DE HIJOS */
+.print-page.print-multipage * {
+
+  max-height: none !important;
+  overflow: visible !important;
+
+  page-break-inside: auto !important;
+  break-inside: auto !important;
+}
+
+/* TABLAS */
+.print-page.print-multipage table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+/* REPETIR ENCABEZADO */
+.print-page.print-multipage thead {
+  display: table-header-group !important;
+}
+
+/* PIE */
+.print-page.print-multipage tfoot {
+  display: table-footer-group !important;
+}
+
+/* EVITAR CORTAR FILAS */
+.print-page.print-multipage tr {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+}
+
 .bg-stars {
   position: absolute;
   top: 0;
@@ -3152,171 +3319,6 @@ padding: 0;
 
 
 
-/* ═══════════════════════════════════════════════════════════
-   @PAGE GLOBAL — sin tamaño fijo, el usuario elige en el
-   diálogo de impresión. Solo define márgenes mínimos.
-   ═══════════════════════════════════════════════════════════ */
-@page {
-  margin: 0;   /* sin margen fijo — cada componente lo maneja */
-}
-
-
-@media print {
-
-  /* ═══════════════════════════════════════════════════════
-     RESET GLOBAL DE IMPRESIÓN
-     ═══════════════════════════════════════════════════════ */
-
-  body {
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-    color: #000 !important;
-
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  * {
-    box-sizing: border-box !important;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-  }
-
-  /* ═══════════════════════════════════════════════════════
-     OCULTAR ELEMENTOS NO IMPRIMIBLES
-     ═══════════════════════════════════════════════════════ */
-
-  .no-print,
-  .no-imprimir,
-  nav,
-  .navbar,
-  .botones,
-  .alert,
-  .btn {
-    display: none !important;
-  }
-
-  /* ═══════════════════════════════════════════════════════
-     WRAPPER GENERAL
-     ═══════════════════════════════════════════════════════ */
-
-  .print-wrapper {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-  }
-
-  /* ═══════════════════════════════════════════════════════
-     MODO 1 PÁGINA
-     Clase:
-       .print-page
-
-     Diseñado para:
-       - constancias
-       - cartas
-       - reportes cortos
-       - documentos compactos
-     ═══════════════════════════════════════════════════════ */
-
-  .print-page:not(.print-multipage) {
-
-    width: 100vw !important;
-    max-width: 100% !important;
-
-    min-height: 0 !important;
-
-    /* height: 100vh !important;
-    max-height: 100vh !important; */
-
-
-    overflow: hidden !important;
-
-    margin: 0 !important;
-    padding: 2mm !important;
-
-    box-shadow: none !important;
-    border: none !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-
-    transform-origin: top left;
-  }
-
-  /* Evitar cortes en documentos compactos */
-  .print-page:not(.print-multipage),
-  .print-page:not(.print-multipage) * {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  .print-page:not(.print-multipage) {
-    page-break-after: avoid !important;
-    break-after: avoid !important;
-  }
-
-  /* ═══════════════════════════════════════════════════════
-   MODO MULTIPÁGINA
-   ═══════════════════════════════════════════════════════ */
-
-.print-page.print-multipage {
-
-  /* RESET TOTAL del modo una página */
-  display: block !important;
-
-  width: auto !important;
-  max-width: none !important;
-
-  height: auto !important;
-  min-height: auto !important;
-  max-height: none !important;
-
-  overflow: visible !important;
-
-  transform: none !important;
-
-  margin: 0 !important;
-  padding: 0 !important;
-
-  page-break-after: auto !important;
-  break-after: auto !important;
-}
-
-/* RESET TOTAL DE HIJOS */
-.print-page.print-multipage * {
-
-  max-height: none !important;
-  overflow: visible !important;
-
-  page-break-inside: auto !important;
-  break-inside: auto !important;
-}
-
-/* TABLAS */
-.print-page.print-multipage table {
-  width: 100% !important;
-  border-collapse: collapse !important;
-}
-
-/* REPETIR ENCABEZADO */
-.print-page.print-multipage thead {
-  display: table-header-group !important;
-}
-
-/* PIE */
-.print-page.print-multipage tfoot {
-  display: table-footer-group !important;
-}
-
-/* EVITAR CORTAR FILAS */
-.print-page.print-multipage tr {
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-}
-
-}
 
 
 /* ═══════════════════════════════════════════════════════

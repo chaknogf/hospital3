@@ -37,6 +37,7 @@ body {
   line-height: 1.4;
   margin: 0;
   padding: 0;
+  overflow-x: hidden !important;
 }
 body,
 .container-impresion,
@@ -127,6 +128,8 @@ body,
   border-bottom: 1px solid var(--ink);
   padding-bottom: 2px;
   margin-bottom: 2px;
+  color: #051444;
+  font-weight: 400;
 }
 
 .aurora-textos { text-align: center; }
@@ -377,6 +380,20 @@ label {
   width: 100%;
 }
 
+.line-mini {
+  display: block;
+  border-radius: 4px;
+  border-bottom: 0.8px solid black;
+  border-right: 0.8px solid black;
+  margin: 0;
+  width: 64px;
+}
+
+.label-line {
+  font-size: 10px;
+  margin: 0;
+  padding: 0;
+}
 
 
 .line--mt { margin-top: 1px; }
@@ -393,9 +410,9 @@ label {
 .campos-clinicos {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 8px;
-  padding: 6px 0;
-  justify-content: space-between;
+  justify-content:center;
+  gap: 4px;
+  padding-top: 8px;
 }
 
 .campos-clinicos--spread { justify-content: space-around; }
@@ -410,9 +427,18 @@ label {
 }
 
 /* ══ GRILLAS ══════════════════════════════════════════════════ */
-.grid-1-1-1 {
+.grid-doble {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  text-align: center;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.grid-triple {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 6px;
   text-align: center;
   font-weight: bold;
