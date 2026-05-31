@@ -44,6 +44,10 @@ import { CrearPrestamoComponent } from './registros/prestamos/crearPrestamo/crea
 import { ImprimirCitasComponent } from './registros/citas/imprimirCitas/imprimirCitas.component';
 import { DoctoresComponent } from './std/medicos/doctores/doctores.component';
 import { DoctorFormComponent } from './std/medicos/doctorForm/doctorForm.component';
+import { HojaCoexOdontoComponent } from './registros/consultas/coex/HojaCoexOdonto/HojaCoexOdonto.component';
+import { HojaCoexPsicoComponent } from './registros/consultas/coex/HojaCoexPsico/HojaCoexPsico.component';
+import { UisauMenuComponent } from './uisau/uisaMenu/uisauMenu.component';
+import { EncamamientoComponent } from './uisau/encamamiento/encamamiento.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -88,6 +92,8 @@ export const routes: Routes = [
       // Consulta externa
       { path: 'coex', component: CoexListaComponent },
       { path: 'coexHoja/:id', component: HojaCoexComponent },
+      { path: 'hojaPsico/:id', component: HojaCoexPsicoComponent },
+      { path: 'hojaOdonto/:id', component: HojaCoexOdontoComponent },
       // Hospitalización
       { path: 'ingresos', component: IngresosComponent },
       { path: 'ingreso/:id', component: HojaIngresoComponent },
@@ -130,6 +136,10 @@ export const routes: Routes = [
 
       //TrabajoSocial
       { path: 'TrabajoSocial', component: MenutsComponent, canActivate: [roleGuard(['admin', 'ts'])] },
+
+      //UISAU
+      { path: 'uisau', component: UisauMenuComponent, canActivate: [roleGuard(['admin', 'uisau'])] },
+      { path: 'encamamiento', component: EncamamientoComponent, canActivate: [roleGuard(['admin', 'uisau'])] },
 
     ]
   }

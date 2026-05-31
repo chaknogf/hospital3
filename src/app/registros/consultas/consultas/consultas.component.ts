@@ -101,7 +101,7 @@ export class ConsultasComponent implements OnInit {
 
   cargarConsultas(): void {
     this.cargando = true;
-    console.log(this.filtros);
+    //console.log(this.filtros);
     this.api.getConsultas(this.filtros).subscribe({
       next: resultado => {
         this.totalDeRegistros = resultado.total;

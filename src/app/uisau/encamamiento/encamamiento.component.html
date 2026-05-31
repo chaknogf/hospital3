@@ -1,0 +1,296 @@
+<div class="aurora-paciente-container" [class.d-none]="modalActivo">
+  <!-- Botones superiores -->
+  <div
+    class="botones justify-content-between"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="icons['menu']"></span>
+      Menu
+    </button>
+
+    <h1 class="text-white">Encamamiento</h1>
+
+    <button type="button" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['find']"></span>
+      Buscar
+    </button>
+  </div>
+
+  <!-- Contenedor de Búsqueda -->
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
+    <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
+      <!-- Campos -->
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Expediente</label>
+        <input
+          type="text"
+          class="input-filtros"
+          [(ngModel)]="filtros.expediente"
+          name="expediente"
+          placeholder="E26-003"
+        />
+      </fieldset>
+
+      <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Primer nombre</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.primer_nombre"
+            name="primerNombre"
+            placeholder="Ej: Juan"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Segundo nombre</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.segundo_nombre"
+            name="segundoNombre"
+            placeholder="Ej: María"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Primer apellido</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.primer_apellido"
+            name="primerApellido"
+            placeholder="Ej: García"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Segundo apellido</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.segundo_apellido"
+            name="segundoApellido"
+            placeholder="Ej: Pérez"
+          />
+        </fieldset>
+      </div>
+
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Fecha de consulta</label>
+        <input
+          type="date"
+          class="input-filtros"
+          [(ngModel)]="filtros.fecha"
+          name="fechaConsulta"
+        />
+      </fieldset>
+
+      <!-- <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Ciclo</label>
+        <select
+          name="ciclo"
+          [(ngModel)]="filtros.ciclo"
+          id="cilo"
+          class="input-filtros"
+        >
+          <option *ngFor="let ciclo of ciclos" [value]="ciclo.value">
+            {{ ciclo.label }}
+          </option>
+        </select>
+      </fieldset> -->
+
+      <!-- Botones -->
+      <div class="botones-filtros">
+        <button class="button-filtros" type="submit">
+          <span [innerHTML]="icons['search']"></span> Buscar
+        </button>
+        <button class="button-filtros" type="button" (click)="limpiarFiltros()">
+          <span [innerHTML]="icons['delete']"></span> Limpiar
+        </button>
+        <button class="button-filtros" type="button" (click)="agregar()">
+          <span [innerHTML]="icons['create']"></span> Agregar
+        </button>
+      </div>
+    </form>
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="btn m-0 p-0" (click)="toggleFiltrar()">
+        <span [innerHTML]="icons['arrowDown']"></span>
+      </button>
+    </div>
+  </div>
+  <!-- Especialidades con conteo -->
+  <div class="filtro-grupo">
+    <button
+      [class.activo]="filtros.especialidad === ''"
+      (click)="seleccionarEspecialidad('')"
+    >
+      Todas <span class="badge">{{ totalDeRegistros }}</span>
+    </button>
+    <button
+      *ngFor="let e of especialidadesIngreso"
+      [class.activo]="filtros.especialidad === e.value"
+      (click)="seleccionarEspecialidad(e.value)"
+    >
+      {{ e.label }}
+      <span class="badge">{{ conteosPorEspecialidad[e.value] ?? 0 }}</span>
+    </button>
+  </div>
+  <!-- Tabla principal (desktop) -->
+  <div class="aurora-container">
+    <table class="aurora-tb">
+      <thead>
+        <tr>
+          <th>Nombre Completo</th>
+          <th>Identificador</th>
+          <th>Fecha</th>
+          <th>Ultimo Ciclo</th>
+          <th>Servicio</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let data of consultas"
+          class="aurora-table-row"
+          [class.touch-active]="rowActiva === data.id"
+          (click)="activarFila(data.id)"
+        >
+          <td data-label="Nombre:">
+            <div class="nombre-table">
+              <p class="p-0 m-0 text-uppercase">
+                {{ data.paciente.nombre.primer_nombre }}
+                {{ data.paciente.nombre.segundo_nombre }}
+                {{ data.paciente.nombre.otro_nombre }}
+              </p>
+              <p
+                class="p-0 m-0 text-uppercase"
+                [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+              >
+                {{ data.paciente.nombre.primer_apellido }}
+                {{ data.paciente.nombre.segundo_apellido }}
+                {{ data.paciente.nombre.apellido_casada }}
+              </p>
+            </div>
+          </td>
+          <td class="text-justify" data-label="Identificadores:">
+            @if (data?.paciente?.cui) {
+              <div class="ms-4">
+                <strong>CUI:</strong>
+                <small> {{ data.paciente.cui | cui }}</small>
+              </div>
+            }
+            @if (data?.paciente?.pasaporte) {
+              <div>
+                <strong>Pasaporte:</strong> {{ data.paciente.pasaporte }}
+              </div>
+            }
+            @if (data?.expediente) {
+              <div><strong>Expediente:</strong> {{ data.expediente }}</div>
+            }
+            @if (data?.documento) {
+              <div>
+                <strong>Hoja de Emergencia:</strong> {{ data.documento }}
+              </div>
+            }
+            <p style="font-size: xx-small">id: {{ data.id }}</p>
+          </td>
+
+          <td class="oculto">
+            <ng-container>
+              {{ data.fecha_consulta | date: "dd/MM/yy" }}
+            </ng-container>
+            <br />
+            <ng-container>
+              {{ data.hora_consulta | time }}
+            </ng-container>
+          </td>
+          <td class="oculto">
+            <small>{{ data.ultimo_estado }}</small>
+          </td>
+          <td class="" data-label="Servicio:">
+            <small>{{ data.servicio | datosExtra: "servicio" }}</small>
+          </td>
+
+          <td class="secundario">
+            <div class="d-flex gap-1">
+              <button (click)="verDetalle(data.id)" data-label="Detalle">
+                <span [innerHTML]="icons['tabla']"></span>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <!-- Sin resultados -->
+        <tr *ngIf="!cargando && consultas.length === 0">
+          <td colspan="5" class="text-center py-3">
+            <em>No se encontraron coincidencias.</em>
+          </td>
+        </tr>
+
+        <!-- Cargando -->
+        <tr *ngIf="cargando">
+          <td colspan="5" class="text-center py-3">
+            <em>Cargando...</em>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── PAGINADOR ── reemplaza el div de paginación actual ── -->
+  <div class="paginador">
+    <!-- Botón anterior -->
+    <button
+      class="pag-btn"
+      [disabled]="!hayPaginaAnterior"
+      (click)="cambiarPagina(-1)"
+    >
+      <span [innerHTML]="icons['skipLeft']"></span>
+    </button>
+
+    <!-- Primera página + ellipsis si el rango no empieza en 1 -->
+    @if (paginas[0] > 1) {
+      <button class="pag-num" (click)="irAPagina(1)">1</button>
+    }
+    @if (paginas[0] > 2) {
+      <span class="pag-ellipsis">…</span>
+    }
+
+    <!-- Páginas del rango visible -->
+    <button
+      *ngFor="let p of paginas"
+      class="pag-num"
+      [class.pag-num-active]="p === paginaActual"
+      (click)="irAPagina(p)"
+    >
+      {{ p }}
+    </button>
+
+    <!-- Ellipsis + última página si el rango no llega al final -->
+    @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+      <span class="pag-ellipsis">…</span>
+    }
+    @if (paginas[paginas.length - 1] < totalPaginas) {
+      <button class="pag-num" (click)="irAPagina(totalPaginas)">
+        {{ totalPaginas }}
+      </button>
+    }
+
+    <!-- Botón siguiente -->
+    <button
+      class="pag-btn"
+      [disabled]="!hayPaginaSiguiente"
+      (click)="cambiarPagina(1)"
+    >
+      <span [innerHTML]="icons['skipRight']"></span>
+    </button>
+
+    <!-- Total de registros -->
+    <span class="pag-info">
+      Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+      {{ totalDeRegistros }} registros
+    </span>
+  </div>
+</div>

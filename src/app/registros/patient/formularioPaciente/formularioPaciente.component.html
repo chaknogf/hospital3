@@ -102,46 +102,12 @@
             @if (enEdicion()) {
               <div class="field">
                 <span class="field-label">¿Qué hacemos con el expediente?</span>
-                <div class="chips-row">
-                  <span
-                    class="chip chip-lg"
-                    [class.on]="accionExpediente() === 'mantener'"
-                    (click)="accionExpediente.set('mantener')"
-                    >🔒 Mantener</span
-                  >
-                  <span
-                    class="chip chip-lg"
-                    [class.on]="accionExpediente() === 'generar'"
-                    (click)="accionExpediente.set('generar')"
-                    >⚡ Generar</span
-                  >
-                  <span
-                    class="chip chip-lg"
-                    [class.on]="accionExpediente() === 'sobrescribir'"
-                    (click)="accionExpediente.set('sobrescribir')"
-                    >♻ Sobrescribir</span
-                  >
-                </div>
               </div>
             }
 
             @if (!enEdicion()) {
               <div class="field">
                 <span class="field-label">Tipo de registro</span>
-                <div class="chips-row">
-                  <span
-                    class="chip chip-lg"
-                    [class.on-red]="!crearExpediente()"
-                    (click)="crearExpediente.set(false)"
-                    >📋 Sin Expediente</span
-                  >
-                  <span
-                    class="chip chip-lg"
-                    [class.on-green]="crearExpediente()"
-                    (click)="crearExpediente.set(true)"
-                    >📁 Con Expediente</span
-                  >
-                </div>
               </div>
             }
 
@@ -438,51 +404,23 @@
 
           <div class="step-body" formArrayName="referencias">
             @for (ref of referencias.controls; track i; let i = $index) {
-              <div
-                [formGroupName]="i"
-                style="
-                  margin-bottom: 1rem;
-                  padding-bottom: 1rem;
-                  border-bottom: 1px solid var(--rim);
-                "
-              >
-                <!-- HEADER de la referencia -->
-                <div
-                  style="
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 0.75rem;
-                  "
-                >
-                  <span
-                    style="
-                      font-family: var(--font-mono);
-                      font-size: 12px;
-                      color: var(--text);
-                    "
-                  >
+              <div [formGroupName]="i" class="referencia-card">
+                <!-- HEADER -->
+                <div class="referencia-header">
+                  <span class="referencia-titulo">
                     Referencia {{ (i + 1).toString().padStart(2, "0") }}
+
                     @if (ref.get("responsable")?.value) {
-                      <span style="color: #f59e0b"> ★ Responsable</span>
+                      <span class="badge-responsable">★ Responsable</span>
                     }
+
                     @if (ref.get("acompanante")?.value) {
-                      <span style="color: #3b82f6"> ✦ Acompañante</span>
+                      <span class="badge-acompanante">✦ Acompañante</span>
                     }
                   </span>
 
-                  <!-- Checkboxes: Responsable y Acompañante -->
-                  <div style="display: flex; gap: 1rem">
-                    <label
-                      style="
-                        font-size: 11px;
-                        color: var(--muted);
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        gap: 0.25rem;
-                      "
-                    >
+                  <div class="referencia-checks">
+                    <label class="check-label">
                       <input
                         type="checkbox"
                         formControlName="responsable"
@@ -490,16 +428,8 @@
                       />
                       Responsable
                     </label>
-                    <label
-                      style="
-                        font-size: 11px;
-                        color: var(--muted);
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        gap: 0.25rem;
-                      "
-                    >
+
+                    <label class="check-label">
                       <input
                         type="checkbox"
                         formControlName="acompanante"
@@ -510,7 +440,7 @@
                   </div>
                 </div>
 
-                <!-- Campos nombre y teléfono -->
+                <!-- Campos -->
                 <div class="row-2">
                   <div class="field">
                     <span class="field-label">Nombre</span>
@@ -521,6 +451,7 @@
                       placeholder="Nombre completo"
                     />
                   </div>
+
                   <div class="field">
                     <span class="field-label">Teléfono</span>
                     <input
@@ -535,29 +466,31 @@
                 <!-- Parentesco -->
                 <div class="field">
                   <span class="field-label">Parentesco</span>
+
                   <div class="chips-row">
                     @for (p of enums.parentescos; track p.value) {
                       <span
                         class="chip"
                         [class.on]="ref.get('parentesco')?.value === p.value"
                         (click)="ref.get('parentesco')?.setValue(p.value)"
-                        >{{ p.label }}</span
                       >
+                        {{ p.label }}
+                      </span>
                     }
                   </div>
                 </div>
 
                 <!-- Acciones -->
-                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem">
+                <div class="referencia-actions">
                   <button
                     type="button"
-                    class="btn-nav"
-                    style="color: #ef4444; border-color: #ef4444"
+                    class="btn-nav btn-delete"
                     (click)="eliminarReferencia(i)"
                     [disabled]="referencias.length === 1"
                   >
                     ✕ Eliminar
                   </button>
+
                   <button
                     type="button"
                     class="btn-nav"

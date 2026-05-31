@@ -182,7 +182,7 @@ export class AdmisionComponent implements OnInit {
           especialidad: data.especialidad,
           servicio: data.servicio,
           fecha_consulta: data.fecha_consulta,
-          hora_consulta: data.hora_consulta,
+          hora_consulta: data.hora_consulta?.substring(0, 5) ?? '',
           orden: data.orden,
           indicadores: data.indicadores,
           ...(data.egreso && {
@@ -203,15 +203,21 @@ export class AdmisionComponent implements OnInit {
   // GUARDAR
   // ══════════════════════════════════════════════════════════
 
+  // ══════════════════════════════════════════════════════════
+  // GUARDAR
+  // ══════════════════════════════════════════════════════════
+
   guardar(): void {
-    const tipo = Number(this.form.getRawValue().tipo_consulta);
+    const v = this.form.getRawValue();
+    const tipo = Number(v.tipo_consulta);
+    const especialidad = v.especialidad;
 
     if (this.enEdicion) {
+      // ✅ FIX: se agrega .subscribe() para que el observable se ejecute
       this.actualizarConsulta().subscribe();
       return;
     }
 
-    const v = this.form.getRawValue();
     const datos: RegistroConsultaCreate = {
       paciente_id: v.paciente_id,
       tipo_consulta: v.tipo_consulta,
@@ -226,7 +232,35 @@ export class AdmisionComponent implements OnInit {
         tap(),
         catchError(err => { this.mostrarError('registrar admisión', err); return of(null); })
       )
-      .subscribe(r => { if (r) this.navegarSegunTipo(tipo, r.id); });
+      .subscribe(r => { if (r) this.navegarSegunTipo(tipo, especialidad, r.id); });
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // NAVEGACIÓN
+  // ══════════════════════════════════════════════════════════
+
+  private navegarSegunTipo(tipo: number, especialidad: string, id?: number): void {
+    let base: string;
+
+    if (tipo === 1) {
+      // ✅ Dentro de COEX distinguir por especialidad
+      if (especialidad === 'PSIC') {
+        base = '/hojaPsico';
+      } else if (especialidad === 'ODON') {
+        base = '/hojaOdonto';
+      } else {
+        base = '/coexHoja';
+      }
+    } else {
+      const rutas: Record<number, string> = {
+        2: '/ingreso',
+        3: '/hojaEmergencia'
+      };
+      base = rutas[tipo] ?? '/consultas';
+    }
+
+    const destino = id ? [base, id] : [base];
+    this.router.navigate(destino);
   }
 
   // ══════════════════════════════════════════════════════════
@@ -282,9 +316,7 @@ export class AdmisionComponent implements OnInit {
 
     return this.api.updateConsulta(this.consultaId, payload).pipe(
       tap(() => {
-        // this.mostrarExito('Consulta actualizada exitosamente');
-        this.cargarConsulta(this.consultaId!);
-        this.form.patchValue({ nuevo_estado: '', nuevo_servicio: '', nuevo_comentario: '' });
+        this.volver(); // ✅ redirige al volver después de actualizar
       }),
       catchError(err => { this.mostrarError('actualizar consulta', err); return of(null); })
     );
@@ -332,21 +364,23 @@ export class AdmisionComponent implements OnInit {
   private valoresEmergencia(): void { this.filtrarPorTipo(3); this.form.patchValue({ tipo_consulta: 3, servicio: 'REME' }); }
   private valoresIngreso(): void { this.filtrarPorTipo(2); this.form.patchValue({ tipo_consulta: 2, servicio: 'HOSPITALIZACION' }); }
   private valoresCoex(): void { this.filtrarPorTipo(1); this.form.patchValue({ tipo_consulta: 1, servicio: 'COEX' }); }
+  private valoresCoexOdonto(): void { this.filtrarPorTipo(1); this.form.patchValue({ tipo_consulta: 1, servicio: 'COEX', especialidad: 'ODON' }); }
+  private valoresCoexPsico(): void { this.filtrarPorTipo(1); this.form.patchValue({ tipo_consulta: 1, servicio: 'COEX', especialidad: 'PSIC' }); }
 
   // ══════════════════════════════════════════════════════════
   // NAVEGACIÓN
   // ══════════════════════════════════════════════════════════
 
-  private navegarSegunTipo(tipo: number, id?: number): void {
-    const rutas: Record<number, string> = {
-      1: '/coexHoja',
-      2: '/ingreso',
-      3: '/hojaEmergencia'
-    };
-    const base = rutas[tipo] ?? '/consultas';
-    const destino = id ? [base, id] : [base];
-    this.router.navigate(destino);
-  }
+  // private navegarSegunTipo(tipo: number, id?: number): void {
+  //   const rutas: Record<number, string> = {
+  //     1: '/coexHoja',
+  //     2: '/ingreso',
+  //     3: '/hojaEmergencia'
+  //   };
+  //   const base = rutas[tipo] ?? '/consultas';
+  //   const destino = id ? [base, id] : [base];
+  //   this.router.navigate(destino);
+  // }
 
   volver(): void { this.location.back(); }
   /*  volver(): void {

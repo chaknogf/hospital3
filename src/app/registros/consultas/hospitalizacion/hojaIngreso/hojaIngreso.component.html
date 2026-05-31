@@ -241,13 +241,13 @@
     <!-- ══ DIAGNÓSTICO DE INGRESO ═════════════════════════════════ -->
     <div class="diag-bar">Diagnóstico de Ingreso</div>
     <div class="f-row f-row-diag">
-      <div class="f-cell" style="flex: 1"><span class="f-val"></span></div>
+      <div class="f-cell" style="flex: 1"><span class="f-val line"></span></div>
     </div>
     <div class="f-row f-row-diag">
-      <div class="f-cell" style="flex: 1"><span class="f-val"></span></div>
+      <div class="f-cell" style="flex: 1"><span class="f-val line"></span></div>
     </div>
     <div class="f-row f-row-diag">
-      <div class="f-cell" style="flex: 1"><span class="f-val"></span></div>
+      <div class="f-cell" style="flex: 1"><span class="f-val line"></span></div>
     </div>
 
     <!-- ══ DIAGNÓSTICO FINAL ══════════════════════════════════════ -->
@@ -259,25 +259,26 @@
     <ng-container *ngFor="let n of [1, 2, 3, 4, 5]">
       <div class="f-row f-row-diag">
         <span class="diag-n">{{ n }}.</span>
-        <div class="f-cell" style="flex: 1"><span class="f-val"></span></div>
-        <div class="f-cell f-cell-cie"><span class="f-val"></span></div>
+        <div class="f-cell" style="flex: 1">
+          <span class="f-val line"></span>
+        </div>
       </div>
     </ng-container>
 
     <div class="f-row f-row-diag">
       <span class="diag-n">P.</span>
       <div class="f-cell" style="flex: 1">
-        <span class="f-lbl">Principal</span><span class="f-val"></span>
+        <span class="f-lbl">Principal</span><span class="f-val line"></span>
       </div>
       <div class="f-cell" style="flex: 1">
-        <span class="f-lbl">Operaciones</span><span class="f-val"></span>
+        <span class="f-lbl">Operaciones</span><span class="f-val line"></span>
       </div>
-      <div class="f-cell f-cell-cie"><span class="f-val"></span></div>
+      <div class="f-cell f-cell-cie"><span class="f-val line"></span></div>
     </div>
     <div class="f-row f-row-diag">
       <span class="diag-n"></span>
       <div class="f-cell" style="flex: 1">
-        <span class="f-lbl">Otras</span><span class="f-val"></span>
+        <span class="f-lbl">Otras</span><span class="f-val line"></span>
       </div>
     </div>
 

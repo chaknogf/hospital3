@@ -49,14 +49,14 @@ export class DashboardComponent implements OnInit {
       {
         nombre: 'UISAU',
         descripcion: 'Gestor de Atención al Usuario',
-        ruta: '/usisau'
+        ruta: '/uisau'
       },
 
       {
-         nombre: 'Trabajo Social',
-         descripcion: 'Modulo de trabajo',
-         ruta: '/TrabajoSocial'
-       },
+        nombre: 'Trabajo Social',
+        descripcion: 'Modulo de trabajo',
+        ruta: '/TrabajoSocial'
+      },
       // {
       //   nombre: 'Personal',
       //   descripcion: 'Administración del personal médico',

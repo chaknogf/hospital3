@@ -88,7 +88,7 @@ export class DetalleConsultaComponent implements OnInit, OnDestroy {
   ultimoCiclo = computed(() => {
     const ciclos = this.consulta()?.ciclo;
     if (!ciclos?.length) return null;
-    console.log('Ciclos encontrados:', ciclos);
+    //console.log('Ciclos encontrados:', ciclos);
     return ciclos[ciclos.length - 1];
   });
 
