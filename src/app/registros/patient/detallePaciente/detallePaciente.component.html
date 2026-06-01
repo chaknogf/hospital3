@@ -278,7 +278,13 @@
                   {{ c.hora_consulta | time }}
                 </td>
                 <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
-                <td>{{ c.tipo_consulta | datosExtra: "tipo_consulta" }}</td>
+                <td>
+                  {{ c.tipo_consulta | datosExtra: "tipo_consulta" }}
+                  @if (c.documento) {
+                    <br />
+                    <span class="doc-badge">{{ c.documento }}</span>
+                  }
+                </td>
                 <td class="text-center">
                   <button class="btn" (click)="verDetalle(c.id)">📁</button>
                 </td>

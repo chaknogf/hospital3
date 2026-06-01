@@ -1,0 +1,110 @@
+<div class="aurora-paciente-container">
+  <div
+    class="botones justify-content-between"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="icons['menu']"></span>
+      Menu
+    </button>
+
+    <h1 class="text-white">Procedimientos Menores</h1>
+
+    <button type="button" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['find']"></span>
+      Buscar
+    </button>
+  </div>
+
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar }">
+    <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
+      <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros"> Especialidad </label>
+
+          <input
+            class="input-filtros"
+            type="text"
+            [(ngModel)]="filtros.especialidad"
+            name="especialidad"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros"> Servicio </label>
+
+          <input
+            class="input-filtros"
+            type="text"
+            [(ngModel)]="filtros.lugar_servicio"
+            name="lugar_servicio"
+          />
+        </fieldset>
+      </div>
+
+      <div class="d-flex gap-1">
+        <button type="submit">Buscar</button>
+
+        <button type="button" (click)="limpiarFiltros()">Limpiar</button>
+
+        <button type="button" (click)="agregar()">Agregar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="aurora-container">
+    <table class="aurora-tb">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Fecha</th>
+          <th>Especialidad</th>
+          <th>Servicio</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr
+          *ngFor="let data of procedimientos"
+          [class.touch-active]="rowActiva === data.id"
+          (click)="activarFila(data.id)"
+        >
+          <td>
+            {{ data.id }}
+          </td>
+
+          <td>
+            {{ data.fecha || "—" }}
+          </td>
+
+          <td>
+            {{ data.especialidad || "—" }}
+          </td>
+
+          <td>
+            {{ data.lugar_servicio || "—" }}
+          </td>
+
+          <td>
+            <button (click)="editar(data.id); $event.stopPropagation()">
+              <span [innerHTML]="icons['edit']"></span>
+            </button>
+          </td>
+        </tr>
+
+        @if (!cargando && procedimientos.length === 0) {
+          <tr>
+            <td colspan="5" class="text-center">No hay registros.</td>
+          </tr>
+        }
+
+        @if (cargando) {
+          <tr>
+            <td colspan="5" class="text-center">Cargando procedimientos...</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

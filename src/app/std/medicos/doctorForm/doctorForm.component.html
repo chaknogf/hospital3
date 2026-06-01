@@ -112,28 +112,39 @@
             />
           </div>
 
-          <!-- TEL -->
+          <!-- DPI -->
           <div class="field">
-            <span class="field-label"> Teléfono </span>
+            <span class="field-label"> DPI </span>
 
             <input
               class="field-input"
               type="text"
-              formControlName="telefono"
-              placeholder="5555-5555"
+              formControlName="dpi"
+              placeholder="13 digitos sin guiones"
             />
           </div>
 
-          <!-- DIRECCIÓN -->
+          <!-- SEXO -->
           <div class="field">
-            <span class="field-label"> Dirección </span>
+            <span class="field-label">Sexo</span>
 
-            <textarea
-              class="field-input"
-              rows="3"
-              formControlName="direccion"
-              placeholder="Dirección del médico"
-            ></textarea>
+            <div class="chips-row">
+              <span
+                class="chip chip-lg"
+                [class.on]="form.get('sexo')?.value === 'M'"
+                (click)="form.get('sexo')?.setValue('M')"
+              >
+                ♂ Masculino
+              </span>
+
+              <span
+                class="chip chip-lg"
+                [class.on]="form.get('sexo')?.value === 'F'"
+                (click)="form.get('sexo')?.setValue('F')"
+              >
+                ♀ Femenino
+              </span>
+            </div>
           </div>
 
           <!-- ACTIVO -->
@@ -153,50 +164,6 @@
 
             <span class="ind-label"> Médico activo </span>
           </label>
-        </div>
-      </div>
-
-      <!-- INFO EXTRA -->
-      <div class="section-card" *ngIf="enEdicion && medicoActual">
-        <div class="sec-head">
-          <div class="sec-head-left">
-            <div class="sec-icon">
-              <svg
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <rect x="2" y="2" width="12" height="12" rx="2" />
-              </svg>
-            </div>
-
-            <span class="sec-title"> Información del Registro </span>
-          </div>
-        </div>
-
-        <div class="sec-body triple">
-          <div class="field">
-            <span class="field-label"> ID </span>
-
-            <input
-              class="field-input"
-              type="text"
-              [value]="medicoActual.id"
-              readonly
-            />
-          </div>
-
-          <div class="field">
-            <span class="field-label"> Estado </span>
-
-            <input
-              class="field-input"
-              type="text"
-              [value]="medicoActual.activo ? 'Activo' : 'Inactivo'"
-              readonly
-            />
-          </div>
         </div>
       </div>
     </div>

@@ -50,15 +50,10 @@ export class DoctorFormComponent implements OnInit {
       Validators.required,
       Validators.minLength(4)
     ]],
-
     colegiado: [''],
-
     especialidad: [''],
-
-    telefono: [''],
-
-    direccion: [''],
-
+    dpi: [''],
+    sexo: [''],
     activo: [true]
 
   });
@@ -78,13 +73,9 @@ export class DoctorFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.medicoId = Number(this.route.snapshot.paramMap.get('id'));
-
     if (this.medicoId) {
-
       this.enEdicion = true;
-
       this.cargarMedico(this.medicoId);
     }
   }
@@ -92,21 +83,16 @@ export class DoctorFormComponent implements OnInit {
   // ======= API =======
 
   cargarMedico(id: number): void {
-
     this.cargando = true;
-
     this.api.getMedico(id).subscribe({
-
       next: (data) => {
-
         this.medicoActual = data;
-
         this.form.patchValue({
           nombre: data.nombre,
           colegiado: data.colegiado,
           especialidad: data.especialidad,
-          telefono: data.telefono,
-          direccion: data.direccion,
+          dpi: data.dpi,
+          sexo: data.sexo,
           activo: data.activo
         });
       },
@@ -123,84 +109,55 @@ export class DoctorFormComponent implements OnInit {
   }
 
   guardar(): void {
-
     if (this.form.invalid) {
-
       this.form.markAllAsTouched();
-
       return;
     }
-
     this.guardando = true;
-
     const payload: MedicoCreate | MedicoUpdate = {
       ...this.form.value
     };
-
     // ======= EDITAR =======
-
     if (this.enEdicion && this.medicoId) {
-
       this.api.actualizarMedico(
         this.medicoId,
         payload
       ).subscribe({
-
         next: () => {
-
           this.router.navigate(['/doctores']);
         },
-
         error: (err) => {
-
           console.error(err);
-
           this.guardando = false;
         },
-
         complete: () => {
-
           this.guardando = false;
         }
-
       });
 
       return;
     }
 
     // ======= CREAR =======
-
     this.api.crearMedico(payload as MedicoCreate).subscribe({
-
       next: () => {
-
         this.router.navigate(['/doctores']);
       },
-
       error: (err) => {
-
         console.error(err);
-
         this.guardando = false;
       },
-
       complete: () => {
-
         this.guardando = false;
       }
-
     });
   }
 
   // ======= UI =======
-
   volver(): void {
-
     this.location.back();
   }
-
   get f() {
-
     return this.form.controls;
   }
 

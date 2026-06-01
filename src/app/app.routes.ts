@@ -48,6 +48,10 @@ import { HojaCoexOdontoComponent } from './registros/consultas/coex/HojaCoexOdon
 import { HojaCoexPsicoComponent } from './registros/consultas/coex/HojaCoexPsico/HojaCoexPsico.component';
 import { UisauMenuComponent } from './uisau/uisaMenu/uisauMenu.component';
 import { EncamamientoComponent } from './uisau/encamamiento/encamamiento.component';
+import { ProcedimientosmenoresComponent } from './std/procedimientos/procedimientosmenores/procedimientosmenores.component';
+import { ProcemedicoComponent } from './std/procedimientos/procemedico/procemedico.component';
+import { CatalogoprocedimientoComponent } from './std/procedimientos/catalogoprocedimiento/catalogoprocedimiento.component';
+import { NuevoprocedimientoComponent } from './std/procedimientos/nuevoprocedimiento/nuevoprocedimiento.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -129,9 +133,16 @@ export const routes: Routes = [
       //Estadistica
       { path: 'estadistica', component: EstadisticaComponent, canActivate: [roleGuard(['admin', 'std'])] },
       { path: 'consultar', component: ConsultorComponent },
-      { path: 'medicos', component: DoctoresComponent, canActivate: [roleGuard(['admin', 'std', 'registro'])] },
+      { path: 'doctores', component: DoctoresComponent, canActivate: [roleGuard(['admin', 'std', 'registro'])] },
       { path: 'doctor', component: DoctorFormComponent, canActivate: [roleGuard(['admin', 'std', 'registro'])] },
       { path: 'doctor/:id', component: DoctorFormComponent, canActivate: [roleGuard(['admin', 'std', 'registro'])] },
+      { path: 'procedimientosmenores', component: ProcedimientosmenoresComponent },
+      { path: 'procemedic', component: ProcemedicoComponent },
+      { path: 'procemedicEdit/:id', component: ProcemedicoComponent },
+      { path: 'catalogoProcedimientos', component: CatalogoprocedimientoComponent },
+      { path: 'nuevoProce', component: NuevoprocedimientoComponent },
+      { path: 'editProce/:id', component: NuevoprocedimientoComponent },
+
 
 
       //TrabajoSocial

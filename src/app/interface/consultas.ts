@@ -205,6 +205,7 @@ export interface ConsultaResponse extends ConsultaBase {
 export interface ConsultasIdPaciente {
   id: number;
   tipo_consulta: number;
+  documento?: string;
   especialidad: string;
   fecha_consulta: string;
   hora_consulta: string;

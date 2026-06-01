@@ -55,7 +55,7 @@ export class EstadisticaComponent implements OnInit {
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
       { nombre: 'Procedimientos', descripcion: 'Registro de procedimientos menores y mayores', ruta: '/procedimientosmenores', icon: '' },
       { nombre: 'Nacimientos', descripcion: 'Registro de Nacimientos', ruta: '/nacimientosCons', icon: '' },
-      { nombre: 'Medicos', descripcion: 'Medicos Registrados', ruta: '/medicos', icon: 'doctor' },
+      { nombre: 'Medicos', descripcion: 'Medicos Registrados', ruta: '/doctores', icon: 'doctor' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];

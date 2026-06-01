@@ -1,5 +1,5 @@
 /* doctorForm.css */
-/* --- RESET BASE Y VARIABLES (manteniendo tu estilo) --- */
+/* --- RESET BASE Y VARIABLES --- */
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap');
 
 :root {
@@ -22,8 +22,6 @@
   --muted: #4a6fa5;
   --font-mono: 'Orbitron', monospace;
   --font-ui: 'Space Grotesk', sans-serif;
-
-  /* Nuevas variables para responsive */
   --border-radius-md: 1rem;
   --border-radius-sm: 0.75rem;
   --spacing-xs: 0.25rem;
@@ -32,8 +30,6 @@
   --spacing-lg: 1.5rem;
   --transition: all 0.2s ease;
 }
-
-
 
 /* ── HUD HEADER ── */
 .hud-header {
@@ -101,6 +97,7 @@
   gap: 0.6rem;
   justify-content: flex-end;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .dock-hint {
@@ -124,6 +121,7 @@
   cursor: pointer;
   transition: all 0.15s;
   border: 0.5px solid;
+  background: transparent;
 }
 
 .btn-dock-cancel {
@@ -132,17 +130,6 @@
   color: var(--red);
 }
 .btn-dock-cancel:hover { background: var(--red); color: #fff; }
-
-.btn-dock-renap {
-  background: rgba(139,92,246,0.12);
-  border-color: rgba(139,92,246,0.25);
-  color: #a78bfa;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-.btn-dock-renap:hover { background: rgba(139,92,246,0.25); color: #c4b5fd; }
 
 .btn-dock-save {
   background: var(--lime-dim);
@@ -156,7 +143,7 @@
 .adm-body {
   position: relative;
   z-index: 5;
-  max-width: 1100px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 1.25rem 1rem 3rem;
   display: flex;
@@ -165,84 +152,18 @@
   font-family: var(--font-ui);
 }
 
-/* ── BANNER PACIENTE ── */
-.paciente-banner {
-  background: rgba(255,255,255,0.88);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 0.5px solid rgba(255,255,255,0.7);
-  border-radius: 16px;
-  padding: 1.1rem 1.35rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.paciente-banner-accent {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--pulse), #8b5cf6, var(--pulse));
-}
-
-
-.paciente-datos {
+/* ── FLEX LAYOUT (reemplaza grid) ── */
+.adm-grid {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-  margin: 6px;
-}
-
-.paciente-nombre {
-  font-family: var(--font-ui);
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: #0f172a;
-  text-transform: capitalize;
-  letter-spacing: 0.3px;
-  line-height: 1.2;
-}
-
-.paciente-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.p-chip {
-  /* font-family: var(--font-mono); */
-  font-size: 13px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #f5f6f8;
-  background: rgba(1, 9, 23, 0.803);
-  border: 0.5px solid rgba(59,130,246,0.18);
-  padding: 3px 9px;
-  border-radius: 20px;
-  white-space: nowrap;
-}
-
-.p-chip-dir {
-  color: #334155;
-  background: rgba(0,0,0,0.04);
-  border-color: rgba(0,0,0,0.1);
-}
-
-/* ── GRID ── */
-.adm-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  align-items: start;
 }
 
 .adm-col {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 100%;
 }
 
 /* ── SECTION CARDS ── */
@@ -297,26 +218,18 @@
   text-transform: uppercase;
 }
 
-.sec-badge {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 1px;
-  color: #4a6fa5;
-  background: rgba(59,130,246,0.08);
-  border: 0.5px solid rgba(59,130,246,0.18);
-  padding: 2px 8px;
-  border-radius: 20px;
-}
-
 .sec-body {
   padding: 1.1rem 1.25rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.sec-body.single { grid-template-columns: 1fr; }
-.sec-body.triple { grid-template-columns: 1fr 1fr 1fr; }
+.sec-body.single {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
 /* ── FIELDS ── */
 .field {
@@ -354,38 +267,47 @@
   box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
 }
 
-.field-input[readonly] {
-  background: rgba(241,245,249,0.8);
-  color: #475569;
-  cursor: default;
+.field-input::placeholder {
+  color: rgba(74,111,165,0.5);
+  font-size: 0.9rem;
 }
 
-.field-input::placeholder { color: rgba(74,111,165,0.5); font-size: 0.9rem; }
+.text-danger {
+  color: var(--red);
+  font-size: 0.7rem;
+  margin-top: 0.2rem;
+}
 
-select.field-input {
+/* ── CHIPS ROW (Sexo) ── */
+.chips-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--rim);
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a6fa5' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.8rem center;
-  padding-right: 2rem;
-  background-color: rgba(255,255,255,0.9);
+  user-select: none;
+  background: rgb(178 194 234 / 50%);
+  color: var(--text);
+  transition: all .2s ease;
 }
 
-select.field-input option { background: #fff; color: #0f172a; }
-
-.adm-divider {
-  height: 0.5px;
-  background: rgba(0,0,0,0.08);
-  margin: 2px 0;
+.chip:hover {
+  transform: translateY(-1px);
 }
 
-/* ── INDICADORES — chips con checkbox ── */
-.indicadores-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 7px;
+.chip.on {
+  background: rgb(4, 4, 49);
+  color: #fff;
+  border-color: var(--pulse);
+  box-shadow: 0 0 0 1px var(--pulse), 0 0 18px rgba(59,130,246,.35);
 }
 
+/* ── INDICADORES (Checkbox activo) ── */
 .ind-chip {
   display: flex;
   align-items: center;
@@ -404,7 +326,9 @@ select.field-input option { background: #fff; color: #0f172a; }
   border-color: rgba(59,130,246,0.3);
 }
 
-.ind-chip input[type="checkbox"] { display: none; }
+.ind-chip input[type="checkbox"] {
+  display: none;
+}
 
 .ind-check {
   width: 18px;
@@ -431,23 +355,14 @@ select.field-input option { background: #fff; color: #0f172a; }
   border-color: var(--pulse);
 }
 
-.ind-chip input:checked ~ .ind-check svg { color: #fff; }
-
-.ind-chip input:checked ~ .ind-label { color: #1a3a6a; font-weight: 600; }
-
-.ind-chip.ind-chip-danger .ind-check { border-color: rgba(248,113,113,0.4); }
-.ind-chip.ind-chip-danger input:checked ~ .ind-check {
-  background: #ef4444;
-  border-color: #ef4444;
+.ind-chip input:checked ~ .ind-check svg {
+  color: #fff;
 }
-.ind-chip.ind-chip-danger input:checked ~ .ind-label { color: #7f1d1d; }
 
-.ind-chip.ind-chip-amber .ind-check { border-color: rgba(251,191,36,0.4); }
-.ind-chip.ind-chip-amber input:checked ~ .ind-check {
-  background: var(--amber);
-  border-color: var(--amber);
+.ind-chip input:checked ~ .ind-label {
+  color: #1a3a6a;
+  font-weight: 600;
 }
-.ind-chip.ind-chip-amber input:checked ~ .ind-label { color: #78350f; }
 
 .ind-label {
   font-family: var(--font-ui);
@@ -457,362 +372,51 @@ select.field-input option { background: #fff; color: #0f172a; }
   transition: color 0.15s;
 }
 
-/* ── HISTORIAL DE CICLOS ── */
-.historial-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.ciclo-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 0.7rem 0.85rem;
-  background: rgba(255,255,255,0.6);
-  border: 0.5px solid rgba(0,0,0,0.06);
-  border-radius: 10px;
-  transition: border-color 0.15s;
-}
-
-.ciclo-item:hover { border-color: rgba(59,130,246,0.25); }
-
-.ciclo-item.ciclo-actual {
-  background: rgba(59,130,246,0.06);
-  border-color: rgba(59,130,246,0.25);
-}
-
-.ciclo-num {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--muted);
-  letter-spacing: 1px;
-  min-width: 24px;
-  padding-top: 2px;
-}
-
-.ciclo-item.ciclo-actual .ciclo-num { color: var(--pulse); }
-
-.ciclo-content {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
-
-.ciclo-top {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.ciclo-estado {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 1.5px;
-  color: #1a3a6a;
-  background: rgba(59,130,246,0.1);
-  border: 0.5px solid rgba(59,130,246,0.2);
-  padding: 2px 8px;
-  border-radius: 20px;
-}
-
-.ciclo-item.ciclo-actual .ciclo-estado {
-  color: #166534;
-  background: rgba(163,230,53,0.15);
-  border-color: rgba(163,230,53,0.35);
-}
-
-.ciclo-fecha {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: #64748b;
-  letter-spacing: 0.5px;
-}
-
-.ciclo-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  color: #475569;
-}
-
-.ciclo-sep { color: #94a3b8; font-size: 10px; }
-
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-  .adm-grid { grid-template-columns: 1fr; }
-  .sec-body.triple { grid-template-columns: 1fr 1fr; }
-  .indicadores-grid { grid-template-columns: 1fr; }
-  .paciente-banner { flex-direction: column; align-items: flex-start; }
+  .adm-body {
+    max-width: 100%;
+  }
+
+  .action-dock {
+    justify-content: center;
+  }
+
+  .dock-hint {
+    margin-right: 0;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .chips-row {
+    flex-direction: column;
+  }
+
+  .chip {
+    text-align: center;
+  }
 }
 
 @media (max-width: 480px) {
-  .sec-body { grid-template-columns: 1fr; }
-  .sec-body.triple { grid-template-columns: 1fr; }
-  .action-dock { flex-wrap: wrap; }
-}
-
-/* ============================================
-   MEJORAS RESPONSIVE Y DE DISEÑO
-   ============================================ */
-
-
-
-
-
-.paciente-avatar:hover {
-  transform: scale(1.05);
-  border-color: var(--pulse);
-}
-
-.paciente-avatar svg {
-  width: 28px;
-  height: 28px;
-}
-
-/* Datos del paciente */
-.paciente-datos {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  flex: 1;
-  min-width: 0; /* Evita overflow */
-}
-
-.paciente-nombre {
-  font-family: var(--font-ui);
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #0f172a;
-  text-transform: capitalize;
-  letter-spacing: -0.3px;
-  line-height: 1.3;
-  word-break: break-word;
-}
-
-/* Chips - mejorados para móvil */
-.paciente-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.p-chip {
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  color: #f5f6f8;
-  background: rgba(1, 9, 23, 0.85);
-  border: 0.5px solid rgba(59, 130, 246, 0.2);
-  padding: 0.25rem 0.75rem;
-  border-radius: 2rem;
-  white-space: nowrap;
-  transition: var(--transition);
-}
-
-.p-chip:hover {
-  background: rgba(1, 9, 23, 0.95);
-  transform: translateY(-1px);
-}
-
-/* Chip de dirección - más legible */
-.p-chip-dir {
-  color: #1e293b;
-  background: rgba(0, 0, 0, 0.06);
-  border-color: rgba(0, 0, 0, 0.08);
-  white-space: normal; /* Permite wrap en móvil */
-  word-break: break-word;
-}
-
-/* Botón editar - más visible y táctil */
-.btn-editar {
-  background: var(--pulse-dim);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  color: var(--pulse);
-  padding: 0.25rem 0.85rem;
-  border-radius: 2rem;
-  font-family: var(--font-ui);
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.btn-editar:hover {
-  background: var(--pulse);
-  color: white;
-  border-color: var(--pulse);
-  transform: translateY(-1px);
-}
-
-/* ============================================
-   MEJORAS RESPONSIVE
-   ============================================ */
-
-/* Tablets (768px - 1024px) */
-@media (max-width: 1024px) {
-  .paciente-nombre {
-    font-size: 1.2rem;
-  }
-
-  .p-chip {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.65rem;
-  }
-}
-
-/* Móviles grandes (480px - 768px) */
-@media (max-width: 768px) {
-  .paciente-banner {
+  .sec-head {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md);
+    gap: 0.5rem;
   }
 
-  .paciente-avatar {
-    width: 48px;
-    height: 48px;
+  .sec-body {
+    padding: 1rem;
   }
 
-  .paciente-avatar svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  .paciente-nombre {
-    font-size: 1.1rem;
-    text-align: left;
-  }
-
-  .paciente-chips {
-    gap: 0.4rem;
-  }
-
-  .p-chip {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.6rem;
-    white-space: nowrap;
-  }
-
-  /* Para direcciones largas en móvil */
-  .p-chip-dir {
-    white-space: normal;
-    line-height: 1.3;
-  }
-
-  .btn-editar {
-    padding: 0.2rem 0.75rem;
-    font-size: 0.7rem;
+  .btn-dock {
+    padding: 0.5rem 1rem;
+    font-size: 12px;
   }
 }
 
-/* Móviles pequeños (hasta 480px) */
-@media (max-width: 480px) {
-  .paciente-banner {
-    padding: 0.85rem;
-  }
-
-  .paciente-avatar {
-    width: 40px;
-    height: 40px;
-  }
-
-  .paciente-avatar svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .paciente-nombre {
-    font-size: 1rem;
-  }
-
-  /* Los chips pueden ocupar más de una línea */
-  .paciente-chips {
-    gap: 0.35rem;
-  }
-
-  .p-chip {
-    font-size: 0.65rem;
-    padding: 0.15rem 0.55rem;
-  }
-
-  .btn-editar {
-    padding: 0.15rem 0.65rem;
-    font-size: 0.65rem;
-  }
-
-  /* Para pantallas muy pequeñas, mejor mostrar información esencial */
-  .p-chip:nth-child(n+4) {
-    /* Opcional: ocultar algunos chips en móvil extremo */
-    /* display: none; */
-  }
-}
-
-/* Orientación horizontal en móvil */
-@media (max-width: 768px) and (orientation: landscape) {
-  .paciente-banner {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .paciente-nombre {
-    font-size: 1rem;
-  }
-}
-
-/* ============================================
-   MEJORAS DE ACCESIBILIDAD Y TOUCH
-   ============================================ */
-
-/* Mejorar área táctil para botones en móvil */
-@media (hover: none) and (pointer: coarse) {
-  .btn-editar,
-  .p-chip {
-    cursor: pointer;
-    min-height: 32px; /* Área táctil mínima */
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .btn-editar {
-    padding: 0.35rem 0.85rem;
-  }
-}
-
-/* Sombra suave al hacer scroll */
-.paciente-banner {
-  border-radius: 8px;
-
-}
-
-/* Mejora para dark mode (opcional) */
-@media (prefers-color-scheme: dark) {
-  .paciente-banner {
-    background: rgba(10, 20, 40, 0.96);
-    border-color: rgba(59, 130, 246, 0.2);
-  }
-
-  .paciente-nombre {
-    color: var(--text);
-  }
-
-  .p-chip {
-    background: rgba(0, 0, 0, 0.7);
-    color: #cbd5e1;
-  }
-
-  .p-chip-dir {
-    background: rgba(255, 255, 255, 0.05);
-    color: #94a3b8;
-  }
+/* ── UTILIDADES ── */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
