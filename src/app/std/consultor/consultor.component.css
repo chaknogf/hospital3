@@ -125,7 +125,7 @@
 .field-group input {
   height: 30px;
   padding: 0 8px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(255, 255, 255);
   border: 1px solid var(--rim);
   border-radius: 6px;
   color: var(--text);

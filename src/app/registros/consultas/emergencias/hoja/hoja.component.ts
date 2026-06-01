@@ -20,6 +20,7 @@ import {
   opcionesIngreso
 } from '../../../../enum/diccionarios';
 import { Location } from '@angular/common';
+import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-hoja',
@@ -32,7 +33,8 @@ import { Location } from '@angular/common';
     DatePipe,
     CuiPipe,
     CommonModule,
-    TimePipe
+    TimePipe,
+    CapitalizePipe
   ],
 })
 export class HojaComponent implements OnInit, OnDestroy {

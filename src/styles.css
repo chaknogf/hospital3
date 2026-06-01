@@ -1990,6 +1990,10 @@ legend + * {
   text-align: right !important;
 }
 
+.text-capitalize {
+  text-transform: capitalize !important;
+}
+
 .text-center {
   text-align: center !important;
 }
@@ -3503,7 +3507,7 @@ padding: 0;
   font-family: inherit;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  background: #f9fafb;
+  /* background: #f9fafb; */
   color: #111827;
   outline: none;
   width: 100%;
@@ -3689,13 +3693,13 @@ select.input-filtros option {
 
   .input-principal,
   .input-filtros {
-    background: rgba(255,255,255,0.04);
+    background: rgb(255, 255, 255);
     border-color: rgba(255,255,255,0.09);
     color: #e2e8f0;
   }
 
   .input-principal::placeholder,
-  .input-filtros::placeholder { color: #3d5472; }
+  .input-filtros::placeholder { color: #091d36; }
 
   .input-principal:hover,
   .input-filtros:hover {

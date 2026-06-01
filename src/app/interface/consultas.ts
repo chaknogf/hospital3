@@ -199,6 +199,7 @@ export interface ConsultaListResponse {
 // Respuesta detallada con datos del paciente (si la usas)
 export interface ConsultaResponse extends ConsultaBase {
   id: number;
+  expediente?: string;
   paciente: Paciente;
 }
 

@@ -60,12 +60,12 @@
             </span>
           </div>
 
-          @if (consulta()?.expediente) {
+          @if (paciente()?.expediente) {
             <div class="meta-inline">
               <span class="meta-label"> EXP: </span>
 
               <span class="doc-id">
-                {{ consulta()?.expediente }}
+                {{ paciente()?.expediente }}
               </span>
             </div>
           }
@@ -136,6 +136,16 @@
 
           <span class="doc__value">
             {{ telefonoPaciente() }}
+          </span>
+        </div>
+      </div>
+      <div class="doc-row doc-row--compact">
+        <div class="inline-field">
+          <span class="doc__label">Dirección:</span>
+
+          <span class="doc__value text-capitalize">
+            {{ paciente()?.contacto?.domicilio | capitalize }},
+            {{ paciente()?.contacto?.municipio | datosExtra: "municipio" }}
           </span>
         </div>
       </div>
