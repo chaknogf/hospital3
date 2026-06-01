@@ -7,13 +7,15 @@ import { ApiService } from './service/api.service';
 import { filter } from 'rxjs/operators';
 import { ViewEncapsulation } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
+import { OfflineBannerComponent } from './pwa/offline-banner.component';
+import { UpdateNotificationComponent } from './pwa/update-notification.component';
 
 import localeEs from '@angular/common/locales/es';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, CommonModule],
+  imports: [RouterOutlet, NavbarComponent, CommonModule, OfflineBannerComponent, UpdateNotificationComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   encapsulation: ViewEncapsulation.None

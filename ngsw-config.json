@@ -26,5 +26,32 @@
         ]
       }
     }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-reference",
+      "urls": [
+        "/fah/municipios*",
+        "/fah/medicos*",
+        "/fah/especialidad*"
+      ],
+      "cacheConfig": {
+        "maxSize": 50,
+        "maxAge": "7d",
+        "strategy": "performance"
+      }
+    },
+    {
+      "name": "api-dynamic",
+      "urls": [
+        "/fah/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 200,
+        "maxAge": "1d",
+        "timeout": "5s",
+        "strategy": "freshness"
+      }
+    }
   ]
 }
