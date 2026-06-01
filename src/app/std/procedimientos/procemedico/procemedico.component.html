@@ -1,3 +1,213 @@
-<p>
-  procemedico works!
-</p>
+<!-- procemedico.component.html -->
+
+<!-- HUD -->
+<div class="hud-header">
+  <span class="hud-id">
+    {{ enEdicion ? "PROC-EDIT" : "PROC-NUEVO" }}
+  </span>
+
+  <span class="hud-title">
+    {{
+      enEdicion
+        ? "ACTUALIZAR PROCEDIMIENTO MÉDICO"
+        : "NUEVO PROCEDIMIENTO MÉDICO"
+    }}
+  </span>
+
+  <span class="hud-status"> {{ form.get("cantidad")?.value || 0 }} REG. </span>
+</div>
+
+<!-- ACTION DOCK -->
+<div class="action-dock">
+  <span class="dock-hint">
+    {{ enEdicion ? "Modo edición" : "Nuevo registro" }}
+  </span>
+
+  <button type="button" class="btn-dock btn-dock-cancel" (click)="volver()">
+    <span [innerHTML]="cancelIcon"></span>
+    Cancelar
+  </button>
+
+  <button
+    type="button"
+    class="btn-dock btn-dock-save"
+    [disabled]="guardando"
+    (click)="guardar()"
+  >
+    <span [innerHTML]="saveIcon"></span>
+
+    {{ guardando ? "Guardando..." : enEdicion ? "Actualizar" : "Registrar" }}
+  </button>
+</div>
+
+<!-- FORM -->
+<form [formGroup]="form" class="adm-body">
+  <div class="adm-grid">
+    <div class="adm-col">
+      <div class="section-card">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+              </svg>
+            </div>
+
+            <span class="sec-title"> Información del Procedimiento </span>
+          </div>
+        </div>
+
+        <div class="sec-body single">
+          <!-- FECHA -->
+          <div class="field">
+            <span class="field-label">Fecha</span>
+
+            <input class="field-input" type="date" formControlName="fecha" />
+          </div>
+
+          <!-- PROCEDIMIENTO -->
+          <div class="field">
+            <span class="field-label">Procedimiento *</span>
+
+            <select class="field-input" formControlName="id_procedimiento">
+              <option [ngValue]="null">Seleccione un procedimiento</option>
+
+              <option *ngFor="let item of catalogo" [ngValue]="item.id">
+                {{ item.nombre }} {{ item.abreviatura }}
+              </option>
+            </select>
+
+            <small
+              class="text-danger"
+              *ngIf="
+                f['id_procedimiento'].invalid && f['id_procedimiento'].touched
+              "
+            >
+              Debe seleccionar un procedimiento
+            </small>
+          </div>
+
+          <!-- ESPECIALIDAD -->
+          <div class="field">
+            <span class="field-label">Especialidad</span>
+            <select
+              class="field-input"
+              type="text"
+              formControlName="especialidad"
+            >
+              <option value="">Selecciona</option>
+              <option
+                *ngFor="let ep of especialidadesfiltradas"
+                [value]="ep.value"
+              >
+                {{ ep.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- LUGAR -->
+          <div class="field">
+            <span class="field-label">Lugar de Servicio</span>
+            <select
+              class="field-input"
+              type="text"
+              formControlName="lugar_servicio"
+            >
+              <option value="">Selecciona</option>
+              <option *ngFor="let ls of lugarServicios" [value]="ls.value">
+                {{ ls.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- RESPONSABLE -->
+          <div class="field">
+            <span class="field-label">Responsable</span>
+
+            <input
+              class="field-input"
+              type="text"
+              formControlName="responsable"
+              placeholder="Nombre del responsable"
+            />
+          </div>
+
+          <!-- CANTIDAD -->
+          <div class="field">
+            <span class="field-label">Cantidad *</span>
+
+            <input
+              class="field-input"
+              type="number"
+              min="1"
+              formControlName="cantidad"
+            />
+
+            <small
+              class="text-danger"
+              *ngIf="f['cantidad'].invalid && f['cantidad'].touched"
+            >
+              La cantidad es obligatoria
+            </small>
+          </div>
+
+          <!-- SEXO -->
+          <div class="field">
+            <span class="field-label">Sexo</span>
+
+            <div class="chips-row">
+              <span
+                class="chip chip-lg"
+                [class.on]="form.get('sexo')?.value === 'M'"
+                (click)="form.get('sexo')?.setValue('M')"
+              >
+                ♂ Masculino
+              </span>
+
+              <span
+                class="chip chip-lg"
+                [class.on]="form.get('sexo')?.value === 'F'"
+                (click)="form.get('sexo')?.setValue('F')"
+              >
+                ♀ Femenino
+              </span>
+
+              <span
+                class="chip chip-lg"
+                [class.on]="form.get('sexo')?.value === null"
+                (click)="form.get('sexo')?.setValue(null)"
+              >
+                none
+              </span>
+            </div>
+          </div>
+
+          <!-- INFO DE AUDITORÍA -->
+          @if (enEdicion && procedimientoActual) {
+            <div class="field">
+              <span class="field-label">Creado</span>
+
+              <div class="field-static">
+                {{ procedimientoActual.created_at | date: "dd/MM/yyyy HH:mm" }}
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="field-label">Actualizado</span>
+
+              <div class="field-static">
+                {{ procedimientoActual.updated_at | date: "dd/MM/yyyy HH:mm" }}
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,3 +1,4 @@
+import { especialidadesProcedimientos, lugarServicios } from './../enum/diccionarios';
 import { Pipe, PipeTransform } from '@angular/core';
 import { departamentos, municipios } from '../enum/departamentos';
 import { idiomas, servicios } from '../enum/diccionarios';
@@ -137,6 +138,16 @@ export class DatosExtraPipe implements PipeTransform {
       case 'servicio': {
         const servicio = servicios.find(s => s.value == valor);
         return servicio ? servicio.label : valorStr;
+      }
+
+      case 'lugarServicio': {
+        const servicio = lugarServicios.find(s => s.value == valor);
+        return servicio ? servicio.label : valorStr;
+      }
+
+      case 'espeProce': {
+        const especialidad = especialidadesProcedimientos.find(ep => ep.value == valor);
+        return especialidad ? especialidad.label : valorStr;
       }
 
       case 'tipo_consulta': {

@@ -145,6 +145,26 @@ export const especialidades: Dict[] = [
   { label: 'General', value: 'GENE', ref: 'admision' }
 ];
 
+export const especialidadesProcedimientos: Dict[] = [
+  { label: 'Pediatria', value: 'PEDI', ref: 'all' },
+  { label: 'Medicina Interna', value: 'MEDI', ref: 'all' }, // combinación para diferenciar
+  { label: 'Ginecologia', value: 'GINE', ref: 'all' },
+  { label: 'Cirugia', value: 'CIRU', ref: 'all' },
+  { label: 'Traumatologia', value: 'TRAU', ref: 'all' },
+  { label: 'Odontología', value: 'ODON', ref: 'coex' },
+  { label: 'Anestesia', value: 'ANES', ref: 'sop' },
+  { label: 'General', value: 'GENE', ref: 'admision' },
+  { label: 'Enfermeria', value: 'ENFE', ref: 'proce' }
+];
+
+export const lugarServicios: Dict[] = [
+  { label: 'Consulta Externa', value: 'COEX' },
+  { label: 'Hospitalización', value: 'HOSP' },
+  { label: 'Emergencia', value: 'EMER' },
+  { label: 'Quirofano Emergencias', value: 'SOPEM' },
+  { label: 'Quirofano Electivas', value: 'SOPEL' }
+]
+
 export const especialidadesConsulta: Dict[] = [
   { label: 'Pedia', value: 'PEDI', ref: 'all' },
   { label: 'Medi', value: 'MEDI', ref: 'all' }, // combinación para diferenciar

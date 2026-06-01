@@ -1,10 +1,12 @@
+import { Dict, especialidadesProcedimientos, lugarServicios } from './../../../enum/diccionarios';
+import { IconService } from './../../../service/icon.service';
 import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';;
-import { IconService } from '../../../service/icon.service';
 import { ProceMedico } from '../../../interface/procedimientos';
 import { StdService } from '../../std.service';
+import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 
 @Component({
   selector: 'app-procedimientosmenores',
@@ -13,23 +15,25 @@ import { StdService } from '../../std.service';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    DatosExtraPipe
   ]
 })
 export class ProcedimientosmenoresComponent implements OnInit {
 
   private location = inject(Location);
+  private api = inject(StdService);
+  private router = inject(Router);
+  private iconService = inject(IconService);
 
   procedimientos: ProceMedico[] = [];
-
+  especialidadesfiltradas: Dict[] = especialidadesProcedimientos;
+  lugarServicios: Dict[] = lugarServicios;
   cargando = false;
-
   filtrar = false;
   modalActivo = false;
-
   rowActiva: number | null = null;
-
-  pageSize = 50;
+  pageSize = 20;
   paginaActual = 1;
   totalDeRegistros = 0;
 
@@ -45,9 +49,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
   icons: { [key: string]: any } = {};
 
   constructor(
-    private api: StdService,
-    private router: Router,
-    private iconService: IconService
+
   ) {
 
     this.icons = {
@@ -73,57 +75,43 @@ export class ProcedimientosmenoresComponent implements OnInit {
   }
 
   cargarProcedimientos(): void {
-
     this.cargando = true;
-
-    this.filtros.skip =
-      (this.paginaActual - 1) * this.pageSize;
-
-    this.filtros.limit = this.pageSize;
-
     this.api.getProcedimientos(this.filtros).subscribe({
-
-      next: (response) => {
-
-        this.procedimientos = response.procedimientos;
-        this.totalDeRegistros = response.total;
+      next: resultado => {
+        this.procedimientos = resultado.procedimientos;
+        this.totalDeRegistros = resultado.total;
+        if (this.paginaActual > this.totalPaginas) {
+          this.paginaActual = this.totalPaginas;
+        }
       },
-
-      error: (err) => {
-
+      error: err => {
         console.error(err);
-
         this.procedimientos = [];
         this.totalDeRegistros = 0;
       },
-
       complete: () => {
         this.cargando = false;
       }
-
     });
   }
 
   buscar(): void {
-
     this.paginaActual = 1;
-
+    this.filtros.skip = 0;
     this.cargarProcedimientos();
   }
 
   limpiarFiltros(): void {
-
+    this.paginaActual = 1;
     this.filtros = {
+      skip: 0,
+      limit: this.pageSize,
       especialidad: '',
       lugar_servicio: '',
+      id_procedimiento: '',
       fecha_inicio: '',
-      fecha_fin: '',
-      skip: 0,
-      limit: this.pageSize
+      fecha_fin: ''
     };
-
-    this.paginaActual = 1;
-
     this.cargarProcedimientos();
   }
 
@@ -140,11 +128,15 @@ export class ProcedimientosmenoresComponent implements OnInit {
   }
 
   agregar(): void {
-    this.router.navigate(['/procedimiento-menor']);
+    this.router.navigate(['/procemedic']);
   }
 
   editar(id: number): void {
-    this.router.navigate(['/procedimiento-menor', id]);
+    this.router.navigate(['/procemedicEdit', id]);
+  }
+
+  catalogo(): void {
+    this.router.navigate(['/catalogoProcedimientos']);
   }
 
   get totalPaginas(): number {
@@ -157,19 +149,6 @@ export class ProcedimientosmenoresComponent implements OnInit {
 
   get hayPaginaSiguiente(): boolean {
     return this.paginaActual < this.totalPaginas;
-  }
-
-  cambiarPagina(paso: number): void {
-
-    const nueva = this.paginaActual + paso;
-
-    if (nueva < 1 || nueva > this.totalPaginas) {
-      return;
-    }
-
-    this.paginaActual = nueva;
-
-    this.cargarProcedimientos();
   }
 
   get paginas(): number[] {
@@ -190,4 +169,29 @@ export class ProcedimientosmenoresComponent implements OnInit {
 
     return rango;
   }
+
+  cambiarPagina(paso: number): void {
+    const nueva = this.paginaActual + paso;
+    if (nueva < 1 || nueva > this.totalPaginas) {
+      return;
+    }
+    this.paginaActual = nueva;
+    this.filtros.skip =
+      (this.paginaActual - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
+    this.cargarProcedimientos();
+  }
+
+  irAPagina(pagina: number): void {
+    if (pagina < 1 || pagina > this.totalPaginas) {
+      return;
+    }
+    this.paginaActual = pagina;
+    this.filtros.skip =
+      (pagina - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
+    this.cargarProcedimientos();
+  }
+
+
 }

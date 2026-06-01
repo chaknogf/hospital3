@@ -1,3 +1,190 @@
-<p>
-  catalogoprocedimiento works!
-</p>
+<div class="aurora-paciente-container">
+  <div
+    class="botones justify-content-between"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="icons['menu']"></span>
+      Menu
+    </button>
+
+    <h1 class="text-white">Catálogo de Procedimientos</h1>
+
+    <button type="button" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['find']"></span>
+      Buscar
+    </button>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
+    <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
+      <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Nombre</label>
+
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.nombre"
+            name="nombre"
+            placeholder="Nombre del procedimiento"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Abreviatura</label>
+
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.abreviatura"
+            name="abreviatura"
+            placeholder="Ej. APEND"
+          />
+        </fieldset>
+      </div>
+
+      <div class="d-flex gap-1">
+        <button class="button-filtros" type="submit">
+          <span [innerHTML]="icons['search']"></span>
+          Buscar
+        </button>
+
+        <button class="button-filtros" type="button" (click)="limpiarFiltros()">
+          <span [innerHTML]="icons['delete']"></span>
+          Limpiar
+        </button>
+
+        <button class="button-filtros" type="button" (click)="agregar()">
+          <span [innerHTML]="icons['create']"></span>
+          Agregar
+        </button>
+      </div>
+    </form>
+
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="toggle-panel-btn" (click)="toggleFiltrar()">
+        <span [innerHTML]="icons['arrowDown']"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <div class="aurora-container">
+    <table class="aurora-tb">
+      <thead>
+        <tr>
+          <th>Procedimiento</th>
+          <th>Abreviatura</th>
+          <th>Descripción</th>
+          <th>Anestesias</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let data of procedimientos" (click)="activarFila(data.id)">
+          <td data-label="Procedimiento">
+            <div class="nombre-table">
+              <strong>{{ data.nombre }}</strong>
+
+              <br />
+
+              <small>ID: {{ data.id }}</small>
+            </div>
+          </td>
+
+          <td data-label="Abreviatura">
+            {{ data.abreviatura || "—" }}
+          </td>
+
+          <td data-label="Descripción">
+            {{ data.descripcion || "—" }}
+          </td>
+
+          <td data-label="Anestesia">
+            {{ data.anestesia ?? 0 }}
+          </td>
+
+          <td class="secundario">
+            <div class="d-flex gap-1">
+              <button (click)="editar(data.id); $event.stopPropagation()">
+                <span [innerHTML]="icons['edit']"></span>
+              </button>
+              <button (click)="eliminar(data.id); $event.stopPropagation()">
+                <span [innerHTML]="icons['trash']"></span>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        @if (!cargando && procedimientos.length === 0) {
+          <tr>
+            <td colspan="5" class="text-center">
+              No hay procedimientos registrados.
+            </td>
+          </tr>
+        }
+
+        @if (cargando) {
+          <tr>
+            <td colspan="5" class="text-center">Cargando catálogo...</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PAGINADOR -->
+<div class="paginador">
+  <button
+    class="pag-btn"
+    [disabled]="!hayPaginaAnterior"
+    (click)="cambiarPagina(-1)"
+  >
+    <span [innerHTML]="icons['skipLeft']"></span>
+  </button>
+
+  @if (paginas[0] > 1) {
+    <button class="pag-num" (click)="irAPagina(1)">1</button>
+  }
+
+  @if (paginas[0] > 2) {
+    <span class="pag-ellipsis">…</span>
+  }
+
+  <button
+    *ngFor="let p of paginas"
+    class="pag-num"
+    [class.pag-num-active]="p === paginaActual"
+    (click)="irAPagina(p)"
+  >
+    {{ p }}
+  </button>
+
+  @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+    <span class="pag-ellipsis">…</span>
+  }
+
+  @if (paginas[paginas.length - 1] < totalPaginas) {
+    <button class="pag-num" (click)="irAPagina(totalPaginas)">
+      {{ totalPaginas }}
+    </button>
+  }
+
+  <button
+    class="pag-btn"
+    [disabled]="!hayPaginaSiguiente"
+    (click)="cambiarPagina(1)"
+  >
+    <span [innerHTML]="icons['skipRight']"></span>
+  </button>
+
+  <span class="pag-info">
+    Pág. {{ paginaActual }} / {{ totalPaginas }}
+    ·
+    {{ totalDeRegistros }} registros
+  </span>
+</div>

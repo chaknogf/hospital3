@@ -16,50 +16,86 @@
     </button>
   </div>
 
-  <div class="find-form" [ngClass]="{ 'd-none': !filtrar }">
+  <!-- Contenedor de Búsqueda -->
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
     <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
+      <!-- Campos -->
+
       <div class="d-flex gap-1">
         <fieldset class="fieldset-filtros">
-          <label class="label-filtros"> Especialidad </label>
-
-          <input
+          <label class="label-filtros">Servicio</label>
+          <select
+            name="lugarServicio"
+            [(ngModel)]="filtros.lugar_servicio"
             class="input-filtros"
-            type="text"
-            [(ngModel)]="filtros.especialidad"
-            name="especialidad"
-          />
+          >
+            <option value="">Todos</option>
+            <option *ngFor="let ls of lugarServicios" [value]="ls.value">
+              {{ ls.label }}
+            </option>
+          </select>
         </fieldset>
 
         <fieldset class="fieldset-filtros">
-          <label class="label-filtros"> Servicio </label>
-
-          <input
+          <label class="label-filtros">Especialidad</label>
+          <select
+            name="lugarServicio"
+            [(ngModel)]="filtros.especialidad"
             class="input-filtros"
-            type="text"
-            [(ngModel)]="filtros.lugar_servicio"
-            name="lugar_servicio"
+          >
+            <option value="">Todos</option>
+            <option
+              *ngFor="let ep of especialidadesfiltradas"
+              [value]="ep.value"
+            >
+              {{ ep.label }}
+            </option>
+          </select>
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Fecha</label>
+          <input
+            type="date"
+            class="input-filtros"
+            [(ngModel)]="filtros.fecha"
+            name="fechaConsulta"
           />
         </fieldset>
       </div>
 
+      <!-- Botones -->
       <div class="d-flex gap-1">
-        <button type="submit">Buscar</button>
-
-        <button type="button" (click)="limpiarFiltros()">Limpiar</button>
-
-        <button type="button" (click)="agregar()">Agregar</button>
+        <button class="button-filtros" type="submit" (click)="toggleFiltrar()">
+          <span [innerHTML]="icons['search']"></span> Buscar
+        </button>
+        <button class="button-filtros" type="button" (click)="limpiarFiltros()">
+          <span [innerHTML]="icons['delete']"></span> Limpiar
+        </button>
+        <button class="button-filtros" type="button" (click)="agregar()">
+          <span [innerHTML]="icons['create']"></span> Agregar
+        </button>
+        <button class="button-filtros" type="button" (click)="catalogo()">
+          <span [innerHTML]="icons['']"></span> Catalogo
+        </button>
       </div>
     </form>
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="toggle-panel-btn" (click)="toggleFiltrar()">
+        <span [innerHTML]="icons['arrowDown']"></span>
+      </button>
+    </div>
   </div>
 
   <div class="aurora-container">
     <table class="aurora-tb">
       <thead>
         <tr>
-          <th>ID</th>
+          <th>Procedimiento</th>
           <th>Fecha</th>
           <th>Especialidad</th>
-          <th>Servicio</th>
+          <th>Cantidades</th>
+          <th>Usuario</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -71,20 +107,26 @@
           (click)="activarFila(data.id)"
         >
           <td>
-            {{ data.id }}
+            {{ data.procedimiento?.nombre }}
+            <br />
+            <span style="font-size: xx-small">{{ data.id }}</span>
           </td>
 
           <td>
-            {{ data.fecha || "—" }}
+            {{ data.fecha | date: "dd-MM-yyyy" }}
           </td>
 
           <td>
-            {{ data.especialidad || "—" }}
+            {{ data.especialidad | datosExtra: "espeProce" }}
+            <br />
+            {{ data.lugar_servicio | datosExtra: "lugarServicio" }}
           </td>
-
           <td>
-            {{ data.lugar_servicio || "—" }}
+            Realizadas: {{ data.cantidad }}
+            <br />
+            Anestesias: {{ data.anestesia }}
           </td>
+          <td>{{ data.created_by }}</td>
 
           <td>
             <button (click)="editar(data.id); $event.stopPropagation()">
@@ -107,4 +149,55 @@
       </tbody>
     </table>
   </div>
+</div>
+
+<div class="paginador">
+  <button
+    class="pag-btn"
+    [disabled]="!hayPaginaAnterior"
+    (click)="cambiarPagina(-1)"
+  >
+    <span [innerHTML]="icons['skipLeft']"></span>
+  </button>
+
+  @if (paginas[0] > 1) {
+    <button class="pag-num" (click)="irAPagina(1)">1</button>
+  }
+
+  @if (paginas[0] > 2) {
+    <span class="pag-ellipsis">…</span>
+  }
+
+  <button
+    *ngFor="let p of paginas"
+    class="pag-num"
+    [class.pag-num-active]="p === paginaActual"
+    (click)="irAPagina(p)"
+  >
+    {{ p }}
+  </button>
+
+  @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+    <span class="pag-ellipsis">…</span>
+  }
+
+  @if (paginas[paginas.length - 1] < totalPaginas) {
+    <button class="pag-num" (click)="irAPagina(totalPaginas)">
+      {{ totalPaginas }}
+    </button>
+  }
+
+  <button
+    class="pag-btn"
+    [disabled]="!hayPaginaSiguiente"
+    (click)="cambiarPagina(1)"
+  >
+    <span [innerHTML]="icons['skipRight']"></span>
+  </button>
+
+  <span class="pag-info">
+    Pág. {{ paginaActual }} / {{ totalPaginas }}
+    ·
+    {{ totalDeRegistros }} registros
+  </span>
 </div>

@@ -1,3 +1,132 @@
-<p>
-  nuevoprocedimiento works!
-</p>
+<!-- HUD -->
+<div class="hud-header">
+  <span class="hud-id">
+    {{ enEdicion ? "CAT-EDIT" : "CAT-NUEVO" }}
+  </span>
+
+  <span class="hud-title">
+    {{ enEdicion ? "ACTUALIZAR PROCEDIMIENTO" : "NUEVO PROCEDIMIENTO" }}
+  </span>
+
+  <span class="hud-status">
+    {{ form.get("abreviatura")?.value || "CATÁLOGO" }}
+  </span>
+</div>
+
+<!-- ACTION DOCK -->
+<div class="action-dock">
+  <span class="dock-hint">
+    {{ enEdicion ? "Modo edición" : "Nuevo registro" }}
+  </span>
+
+  <button type="button" class="btn-dock btn-dock-cancel" (click)="volver()">
+    <span [innerHTML]="cancelIcon"></span>
+    Cancelar
+  </button>
+
+  <button
+    type="button"
+    class="btn-dock btn-dock-save"
+    [disabled]="guardando"
+    (click)="guardar()"
+  >
+    <span [innerHTML]="saveIcon"></span>
+
+    {{ guardando ? "Guardando..." : enEdicion ? "Actualizar" : "Registrar" }}
+  </button>
+</div>
+
+<!-- FORM -->
+<form [formGroup]="form" class="adm-body">
+  <div class="adm-grid">
+    <div class="adm-col">
+      <div class="section-card">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+              </svg>
+            </div>
+
+            <span class="sec-title"> Información del Procedimiento </span>
+          </div>
+        </div>
+
+        <div class="sec-body single">
+          <!-- NOMBRE -->
+          <div class="field">
+            <span class="field-label"> Nombre del Procedimiento * </span>
+
+            <input
+              class="field-input"
+              type="text"
+              formControlName="nombre"
+              placeholder="Ej. Apendicectomía"
+            />
+
+            <small
+              class="text-danger"
+              *ngIf="f['nombre'].invalid && f['nombre'].touched"
+            >
+              El nombre es obligatorio
+            </small>
+          </div>
+
+          <!-- ABREVIATURA -->
+          <div class="field">
+            <span class="field-label"> Abreviatura </span>
+
+            <input
+              class="field-input"
+              type="text"
+              formControlName="abreviatura"
+              placeholder="Ej. APD"
+            />
+          </div>
+
+          <!-- ANESTESIA -->
+          <div class="field">
+            <span class="field-label"> Cantidad de Anestesias </span>
+
+            <input
+              class="field-input"
+              type="number"
+              min="0"
+              formControlName="anestesia"
+            />
+          </div>
+
+          <!-- DESCRIPCIÓN -->
+          <div class="field">
+            <span class="field-label"> Descripción </span>
+
+            <textarea
+              class="field-input"
+              rows="5"
+              formControlName="descripcion"
+              placeholder="Descripción del procedimiento..."
+            ></textarea>
+          </div>
+
+          <!-- AUDITORÍA -->
+          @if (enEdicion && procedimientoActual) {
+            <div class="field">
+              <span class="field-label"> ID </span>
+
+              <div class="field-static">
+                {{ procedimientoActual.id }}
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
