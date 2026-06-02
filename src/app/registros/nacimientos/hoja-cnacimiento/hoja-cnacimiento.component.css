@@ -468,10 +468,6 @@ label { letter-spacing: 0.4px; }
 @page {
   size: letter portrait;
   margin: 12.7mm 12.7mm 12.7mm 12.7mm;
-}
-
-
-@media print {
   .cn-pie {
   margin-top: auto;
   padding-top: 8px;
@@ -481,3 +477,5 @@ label { letter-spacing: 0.4px; }
   break-inside: avoid;
 }
 }
+
+
