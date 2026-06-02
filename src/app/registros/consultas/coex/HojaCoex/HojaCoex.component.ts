@@ -57,7 +57,8 @@ export class HojaCoexComponent implements OnInit, OnDestroy {
       p.nombre.segundo_nombre,
       p.nombre.otro_nombre,
       p.nombre.primer_apellido,
-      p.nombre.segundo_apellido
+      p.nombre.segundo_apellido,
+      p.nombre.apellido_casada
     ]
       .filter(Boolean)
       .join(' ')

@@ -3701,11 +3701,12 @@ select.input-filtros option {
   .input-filtros {
     background: rgb(255, 255, 255);
     border-color: rgba(255,255,255,0.09);
-    color: #e2e8f0;
+    font-weight: 600;
+
   }
 
   .input-principal::placeholder,
-  .input-filtros::placeholder { color: #091d36; }
+  .input-filtros::placeholder { color: #444c55; font-weight: 300; }
 
   .input-principal:hover,
   .input-filtros:hover {

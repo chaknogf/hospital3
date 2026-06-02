@@ -10,13 +10,14 @@ import { Subject, of } from 'rxjs';
 import { takeUntil, finalize, catchError } from 'rxjs/operators';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { ApiService } from '../../../service/api.service';
+import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-hoja-cnacimiento',
   standalone: true,
   templateUrl: './hoja-cnacimiento.component.html',
   styleUrls: ['./hoja-cnacimiento.component.css'],
-  imports: [CommonModule, DatosExtraPipe, TimePipe, APipe, CuiPipe]
+  imports: [CommonModule, DatosExtraPipe, TimePipe, APipe, CuiPipe, CapitalizePipe]
 })
 export class HojaCnacimientoComponent implements OnInit, OnDestroy {
 

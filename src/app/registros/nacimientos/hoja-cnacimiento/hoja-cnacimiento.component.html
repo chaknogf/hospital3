@@ -75,12 +75,12 @@
       <div class="form-field" style="flex: 3">
         <span class="form-lbl">Nombre Completo</span>
         <span class="form-val form-val--name">
-          {{ constancia()?.madre?.nombre?.primer_nombre }}
-          {{ constancia()?.madre?.nombre?.segundo_nombre }}
-          {{ constancia()?.madre?.nombre?.primer_apellido }}
-          {{ constancia()?.madre?.nombre?.segundo_apellido }}
+          {{ constancia()?.madre?.nombre?.primer_nombre | capitalize }}
+          {{ constancia()?.madre?.nombre?.segundo_nombre | capitalize }}
+          {{ constancia()?.madre?.nombre?.primer_apellido | capitalize }}
+          {{ constancia()?.madre?.nombre?.segundo_apellido | capitalize }}
           <ng-container *ngIf="constancia()?.madre?.nombre?.apellido_casada">
-            de {{ constancia()?.madre?.nombre?.apellido_casada }}
+            de {{ constancia()?.madre?.nombre?.apellido_casada | capitalize }}
           </ng-container>
         </span>
       </div>

@@ -8,13 +8,14 @@ import { ConstanciasService } from '../constancias.service';
 import { Router } from '@angular/router';
 import { IconService } from '../../../service/icon.service';
 import { FormsModule } from '@angular/forms';
+import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-listarConstancias',
   templateUrl: './listarConstancias.component.html',
   styleUrls: ['./listarConstancias.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, CapitalizePipe]
 })
 export class ListarConstanciasComponent implements OnInit {
 

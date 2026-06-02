@@ -116,7 +116,7 @@
             </div>
           </td>
           <td>
-            {{ data.nombre_madre }}
+            {{ data.nombre_madre | capitalize }}
           </td>
           <td class="oculto">
             {{ data.paciente?.fecha_nacimiento | date: "dd-MM-yyyy" }}
