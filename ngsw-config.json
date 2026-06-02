@@ -26,19 +26,5 @@
         ]
       }
     }
-  ],
-  "dataGroups": [
-    {
-      "name": "api-fah",
-      "urls": [
-        "/fah/*"
-      ],
-      "cacheConfig": {
-        "maxSize": 100,
-        "maxAge": "1d",
-        "timeout": "10s",
-        "strategy": "freshness"
-      }
-    }
   ]
 }
