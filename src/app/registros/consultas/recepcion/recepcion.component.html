@@ -146,6 +146,33 @@
     </div>
   </div>
 
+  <div class="container">
+    <form class="busqueda-rapida" (ngSubmit)="buscar()">
+      <div class="">
+        <input
+          type="text"
+          class=""
+          [(ngModel)]="filtros.documento"
+          name="rapida"
+          placeholder="Busqueda HE..."
+          autocomplete="off"
+        />
+        <input
+          type="text"
+          class=""
+          [(ngModel)]="filtros.expediente"
+          name="rapida"
+          placeholder="Busqueda exp..."
+          autocomplete="off"
+        />
+
+        <button type="submit" class="" aria-label="Buscar">
+          <span>⌕</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
   <!-- ── TABLA ── -->
   <div class="aurora-container">
     <div
@@ -193,8 +220,8 @@
             <div class="ms-4" *ngIf="data?.paciente?.cui">
               <strong>CUI:</strong> <small>{{ data.paciente.cui | cui }}</small>
             </div>
-            <div *ngIf="data?.expediente" class="text-alert">
-              <strong>Exp:</strong> {{ data.expediente }}
+            <div *ngIf="data?.paciente?.expediente" class="text-alert">
+              <strong>Exp:</strong> {{ data.paciente.expediente }}
             </div>
             <div *ngIf="data?.documento">
               <strong>Doc:</strong> {{ data.documento }}

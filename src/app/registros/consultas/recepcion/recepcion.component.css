@@ -445,3 +445,17 @@
     padding: 10px 8px;
   }
 }
+.busqueda-rapida input {
+    background: white;
+    border-radius: 8px;
+    color: #8b5cf6;
+    font-weight: bold;
+
+}
+
+.busqueda-rapida button {
+  border-radius: 4px;
+  background: #0f172a;
+  border: none;
+  width: 40px;
+}
