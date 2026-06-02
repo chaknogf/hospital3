@@ -3,19 +3,23 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
-import { CuiPipe } from '../../../../pipes/cui.pipe';
 import { ConsultaResponse, TotalesResponse, TotalesItem } from '../../../../interface/consultas';
 import { ciclos, Dict } from '../../../../enum/diccionarios';
 import { ConsultaService } from '../../consultas.service';
 import { Location } from '@angular/common';
 import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
 
+// ── Tipo discriminado para filas de la tabla ───────────────────────────────
+export type FilaTabla =
+  | { tipo: 'consulta'; datos: ConsultaResponse; indice: number }
+  | { tipo: 'subtotal'; especialidad: string; label: string; count: number };
+
 @Component({
   selector: 'app-imprimirCoex',
   templateUrl: './imprimirCoex.component.html',
   styleUrls: ['./imprimirCoex.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, DatosExtraPipe, CapitalizePipe],
+  imports: [CommonModule, FormsModule, DatosExtraPipe, CapitalizePipe, CapitalizePipe],
 })
 export class ImprimirCoexComponent implements OnInit {
 
@@ -44,7 +48,6 @@ export class ImprimirCoexComponent implements OnInit {
   fechaActual = '';
   fechaImpresion = '';
 
-  // ✅ Mismo pageSize que coexLista — el backend acepta máximo 40
   readonly pageSize = 40;
 
   filtros: any = {
@@ -73,6 +76,12 @@ export class ImprimirCoexComponent implements OnInit {
     { value: 'ODON', label: 'Odontología' },
   ];
 
+  // Orden canónico para el sort
+  private readonly ordenEspecialidad: Record<string, number> = {
+    MEDI: 1, PEDI: 2, GINE: 3, CIRU: 4,
+    TRAU: 5, PSIC: 6, NUTR: 7, ODON: 8,
+  };
+
   constructor(
     private api: ConsultaService,
     private router: Router,
@@ -89,7 +98,6 @@ export class ImprimirCoexComponent implements OnInit {
       hour: '2-digit', minute: '2-digit'
     });
 
-    // 1️⃣ Totales
     this.api.getTotales(this.fechaActual).subscribe({
       next: (response: TotalesResponse) => {
         this.totales = response.totales;
@@ -98,19 +106,13 @@ export class ImprimirCoexComponent implements OnInit {
         );
         this.totalDeRegistros = coex?.total || 0;
       },
-      error: () => {
-        this.totales = [];
-        this.totalDeRegistros = 0;
-      }
+      error: () => { this.totales = []; this.totalDeRegistros = 0; }
     });
 
-    // 2️⃣ Cargar TODAS las páginas
     this.cargarTodasLasPaginas();
   }
 
-  // ── Carga paginada: trae todas las páginas y las acumula ──────────────────
-  // El backend solo acepta limit=40, así que hacemos skip=0, 40, 80...
-  // hasta que una página devuelva menos de `pageSize` registros.
+  // ── Carga paginada acumulativa ─────────────────────────────────────────────
   async cargarTodasLasPaginas(): Promise<void> {
     this.cargando = true;
     this.consultas = [];
@@ -126,25 +128,19 @@ export class ImprimirCoexComponent implements OnInit {
 
     while (seguir) {
       const lote = await this.obtenerPagina({ ...filtrosBase, skip });
-
       if (lote.length === 0) {
         seguir = false;
       } else {
         this.consultas = [...this.consultas, ...lote];
         skip += this.pageSize;
-
-        // Si el lote vino incompleto, ya llegamos al final
-        if (lote.length < this.pageSize) {
-          seguir = false;
-        }
+        if (lote.length < this.pageSize) seguir = false;
       }
     }
 
-    this.filtrarPorEspecialidadLocal();
+    this.ordenarYFiltrar();
     this.cargando = false;
   }
 
-  // Promesa que envuelve una petición individual al API
   private obtenerPagina(filtros: any): Promise<ConsultaResponse[]> {
     return new Promise((resolve) => {
       this.api.getConsultas(filtros).subscribe({
@@ -154,7 +150,75 @@ export class ImprimirCoexComponent implements OnInit {
     });
   }
 
-  // ── limpiarFiltrosVacios: idéntico a coexLista ────────────────────────────
+  // ── Ordenar + poblar sub-listas ────────────────────────────────────────────
+  private ordenarYFiltrar(): void {
+    this.consultas.sort((a, b) => {
+      const oa = this.ordenEspecialidad[a.especialidad ?? ''] ?? 99;
+      const ob = this.ordenEspecialidad[b.especialidad ?? ''] ?? 99;
+      return oa - ob;
+    });
+
+    this.medi = this.consultas.filter(c => c.especialidad === 'MEDI');
+    this.pedia = this.consultas.filter(c => c.especialidad === 'PEDI');
+    this.gine = this.consultas.filter(c => c.especialidad === 'GINE');
+    this.ciru = this.consultas.filter(c => c.especialidad === 'CIRU');
+    this.trauma = this.consultas.filter(c => c.especialidad === 'TRAU');
+    this.psico = this.consultas.filter(c => c.especialidad === 'PSIC');
+    this.nutri = this.consultas.filter(c => c.especialidad === 'NUTR');
+    this.odonto = this.consultas.filter(c => c.especialidad === 'ODON');
+  }
+
+  // ── consultasConSubtotales: filas intercaladas con subtotal ───────────────
+  // Devuelve FilaTabla[]: los registros ordenados por especialidad y,
+  // al final de cada grupo, una fila de tipo 'subtotal'.
+  get consultasConSubtotales(): FilaTabla[] {
+    const fuente = this.consultasVista;
+    if (!fuente.length) return [];
+
+    const filas: FilaTabla[] = [];
+    let grupoActual = fuente[0].especialidad ?? '';
+    let contadorGrupo = 0;
+    let indiceVisible = 0;          // numeración correlativa solo de consultas
+
+    for (const c of fuente) {
+      const esp = c.especialidad ?? '';
+
+      // ¿Cambió la especialidad? → insertar fila de subtotal del grupo anterior
+      if (esp !== grupoActual) {
+        filas.push({
+          tipo: 'subtotal',
+          especialidad: grupoActual,
+          label: this.labelDeEspecialidad(grupoActual),
+          count: contadorGrupo,
+        });
+        grupoActual = esp;
+        contadorGrupo = 0;
+      }
+
+      indiceVisible++;
+      contadorGrupo++;
+      filas.push({ tipo: 'consulta', datos: c, indice: indiceVisible });
+    }
+
+    // Subtotal del último grupo
+    if (contadorGrupo > 0) {
+      filas.push({
+        tipo: 'subtotal',
+        especialidad: grupoActual,
+        label: this.labelDeEspecialidad(grupoActual),
+        count: contadorGrupo,
+      });
+    }
+
+    return filas;
+  }
+
+  // Helper: obtiene el label legible de un código de especialidad
+  private labelDeEspecialidad(codigo: string): string {
+    return this.especialidadesList.find(e => e.value === codigo)?.label ?? codigo;
+  }
+
+  // ── limpiarFiltrosVacios ──────────────────────────────────────────────────
   private limpiarFiltrosVacios(filtros: any): any {
     const limpio: any = {};
     for (const key in filtros) {
@@ -169,19 +233,7 @@ export class ImprimirCoexComponent implements OnInit {
     return limpio;
   }
 
-  // ── filtrarPorEspecialidadLocal: idéntico a coexLista ─────────────────────
-  private filtrarPorEspecialidadLocal(): void {
-    this.medi = this.consultas.filter(c => c.especialidad === 'MEDI');
-    this.pedia = this.consultas.filter(c => c.especialidad === 'PEDI');
-    this.gine = this.consultas.filter(c => c.especialidad === 'GINE');
-    this.ciru = this.consultas.filter(c => c.especialidad === 'CIRU');
-    this.trauma = this.consultas.filter(c => c.especialidad === 'TRAU');
-    this.psico = this.consultas.filter(c => c.especialidad === 'PSIC');
-    this.nutri = this.consultas.filter(c => c.especialidad === 'NUTR');
-    this.odonto = this.consultas.filter(c => c.especialidad === 'ODON');
-  }
-
-  // ── buscar ────────────────────────────────────────────────────────────────
+  // ── Acciones ──────────────────────────────────────────────────────────────
   buscar(): void {
     this.filtros.skip = 0;
     this.especialidadSeleccionada = '';
@@ -190,7 +242,6 @@ export class ImprimirCoexComponent implements OnInit {
     this.cargarTodasLasPaginas();
   }
 
-  // ── limpiarFiltros ────────────────────────────────────────────────────────
   limpiarFiltros(): void {
     this.filtros = {
       skip: 0, limit: this.pageSize, tipo_consulta: 1,
@@ -203,7 +254,6 @@ export class ImprimirCoexComponent implements OnInit {
     this.cargarTodasLasPaginas();
   }
 
-  // ── cambiarFecha ──────────────────────────────────────────────────────────
   cambiarFecha(): void {
     this.filtros.skip = 0;
     this.especialidadSeleccionada = '';
@@ -223,7 +273,6 @@ export class ImprimirCoexComponent implements OnInit {
     this.cargarTodasLasPaginas();
   }
 
-  // ── seleccionarEspecialidad ───────────────────────────────────────────────
   seleccionarEspecialidad(especialidad: string): void {
     this.especialidadSeleccionada = especialidad;
     this.filtros.especialidad = especialidad;
@@ -250,6 +299,7 @@ export class ImprimirCoexComponent implements OnInit {
 
   get totalCitas(): number { return this.consultasVista.length; }
 
+  // ── Helpers ────────────────────────────────────────────────────────────────
   nombreCompleto(c: ConsultaResponse): string {
     return [
       c.paciente?.nombre?.primer_nombre,
@@ -259,7 +309,10 @@ export class ImprimirCoexComponent implements OnInit {
     ].filter(Boolean).join(' ');
   }
 
-  trackById(_i: number, c: ConsultaResponse): number { return c.id; }
+  trackByFila(_i: number, f: FilaTabla): string {
+    if (f.tipo === 'consulta') return 'c-' + f.datos.id;
+    return 'sub-' + f.especialidad;
+  }
 
   getCicloStatus(ciclo: Record<string, any>): 'activo' | 'inactivo' {
     if (!ciclo) return 'activo';

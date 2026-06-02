@@ -1,5 +1,5 @@
 <!-- ══════════════════════════════════════════════════════════════
-     CONTROLES  (solo en pantalla, se ocultan al imprimir)
+     CONTROLES  (solo en pantalla)
      ══════════════════════════════════════════════════════════════ -->
 <div class="print-controls no-print">
   <div class="controls-header">
@@ -12,9 +12,7 @@
     </button>
   </div>
 
-  <!-- Filtros -->
   <form class="controls-filters" (submit)="buscar(); $event.preventDefault()">
-    <!-- Fecha: cambia con cambiarFecha() para recargar + actualizar totales -->
     <div class="filter-group">
       <label>Fecha</label>
       <input
@@ -25,7 +23,6 @@
       />
     </div>
 
-    <!-- Especialidad: dispara seleccionarEspecialidad() igual que coexLista -->
     <div class="filter-group">
       <label>Especialidad</label>
       <select
@@ -90,14 +87,12 @@
   <!-- ENCABEZADO ──────────────────────────────────────── -->
   <header class="doc-header">
     <div class="doc-header-logo">
-      <!-- <img src="assets/logo.png" alt="Logo" /> -->
+      <div class="logo-placeholder">LOGO</div>
     </div>
-
     <div class="doc-header-info">
       <h1 class="doc-title">LISTADO DE CONSULTAS — COEX</h1>
       <p class="doc-subtitle">{{ labelEspecialidad }}</p>
     </div>
-
     <div class="doc-header-meta">
       <p><strong>Fecha:</strong> {{ filtros.fecha | date: "dd/MM/yyyy" }}</p>
       <p><strong>Impreso el:</strong> {{ fechaImpresion }}</p>
@@ -110,8 +105,11 @@
   <!-- CARGANDO ─────────────────────────────────────────── -->
   <div *ngIf="cargando" class="doc-loading no-print">Cargando consultas…</div>
 
-  <!-- TABLA: usa consultasVista (sub-lista o todas según especialidad) ────── -->
-  <table class="doc-table" *ngIf="!cargando && consultasVista.length > 0">
+  <!-- TABLA ──────────────────────────────────────────────── -->
+  <table
+    class="doc-table"
+    *ngIf="!cargando && consultasConSubtotales.length > 0"
+  >
     <thead>
       <tr>
         <th class="col-num">#</th>
@@ -123,37 +121,55 @@
       </tr>
     </thead>
     <tbody>
-      <tr
-        *ngFor="let c of consultasVista; let i = index; trackBy: trackById"
-        [class.fila-par]="i % 2 === 0"
+      <ng-container
+        *ngFor="let fila of consultasConSubtotales; trackBy: trackByFila"
       >
-        <td class="col-num">{{ i + 1 }}</td>
+        <!-- Fila normal de consulta -->
+        <tr
+          *ngIf="fila.tipo === 'consulta'"
+          [class.fila-par]="fila.tipo === 'consulta' && fila.indice % 2 === 0"
+        >
+          <td class="col-num">{{ fila.indice }}</td>
 
-        <td class="col-paciente">
-          <span class="paciente-nombre">{{
-            nombreCompleto(c) | capitalize
-          }}</span>
-        </td>
+          <td class="col-paciente">
+            <span class="paciente-nombre">
+              {{ nombreCompleto(fila.datos) | capitalize }}
+            </span>
+          </td>
 
-        <td class="col-expediente">{{ c.expediente }}</td>
+          <td class="col-expediente">{{ fila.datos.expediente }}</td>
 
-        <td class="col-especialidad">
-          {{ c.especialidad | datosExtra: "especialidad" }}
-        </td>
+          <td class="col-especialidad">
+            {{ fila.datos.especialidad | datosExtra: "especialidad" }}
+          </td>
 
-        <td class="col-servicio">{{ c.servicio || "—" }}</td>
+          <td class="col-servicio">{{ fila.datos.servicio || "—" }}</td>
 
-        <td class="col-estado">
-          <span class="badge">
-            {{ c.ultimo_estado }}
-          </span>
-        </td>
-      </tr>
+          <td class="col-estado">
+            <span class="badge">
+              {{ fila.datos.ultimo_estado }}
+            </span>
+          </td>
+        </tr>
+
+        <!-- Fila de subtotal al final de cada especialidad -->
+        <tr *ngIf="fila.tipo === 'subtotal'" class="fila-subtotal">
+          <td colspan="3" class="subtotal-label">
+            Subtotal — {{ fila.tipo === "subtotal" ? fila.label : "" }}
+          </td>
+          <td colspan="3" class="subtotal-count">
+            {{ fila.tipo === "subtotal" ? fila.count : "" }} paciente(s)
+          </td>
+        </tr>
+      </ng-container>
     </tbody>
   </table>
 
   <!-- SIN RESULTADOS ─────────────────────────────────────── -->
-  <div *ngIf="!cargando && consultasVista.length === 0" class="doc-empty">
+  <div
+    *ngIf="!cargando && consultasConSubtotales.length === 0"
+    class="doc-empty"
+  >
     No se encontraron consultas para los criterios seleccionados.
   </div>
 
