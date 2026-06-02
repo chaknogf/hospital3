@@ -1,8 +1,3 @@
-/* ============================================================
-   IMPRIMIR CITAS — estilos de pantalla + @media print
-   ============================================================ */
-
-/* --- Variables -------------------------------------------- */
 :host {
   --doc-font: 'Times New Roman', Times, serif;
   --doc-font-size: 11pt;
@@ -13,7 +8,7 @@
   --accent: #1a1a2e;
 }
 
-/* --- Zona de controles (solo pantalla) -------------------- */
+/* ── CONTROLES (solo pantalla) ── */
 .print-controls {
   background: #f0f2f5;
   border-bottom: 2px solid #ccc;
@@ -72,7 +67,6 @@
   align-items: flex-end;
 }
 
-/* Botones de controles */
 .btn-control {
   padding: 6px 14px;
   border: none;
@@ -83,15 +77,12 @@
   transition: opacity 0.15s;
 }
 .btn-control:hover { opacity: 0.85; }
-
 .btn-back   { background: #6c757d; color: #fff; }
-.btn-print  { background: #1a1a2e; color: #fff; font-size: 0.9rem; }
+.btn-print  { background: #1a1a2e; color: #fff; }
 .btn-search { background: #2563eb; color: #fff; }
 .btn-clear  { background: #e5e7eb; color: #333; }
 
-/* ============================================================
-   DOCUMENTO — aspecto de hoja en pantalla
-   ============================================================ */
+/* ── DOCUMENTO (pantalla) ── */
 .documento {
   max-width: 900px;
   margin: 24px auto;
@@ -103,7 +94,6 @@
   color: #111;
 }
 
-/* --- Encabezado ------------------------------------------- */
 .doc-header {
   display: grid;
   grid-template-columns: 80px 1fr auto;
@@ -124,9 +114,7 @@
   text-align: center;
 }
 
-.doc-header-info {
-  text-align: center;
-}
+.doc-header-info { text-align: center; }
 
 .doc-title {
   font-size: 14pt;
@@ -149,7 +137,6 @@
   font-size: 9.5pt;
   line-height: 1.7;
 }
-
 .doc-header-meta p { margin: 0; }
 
 .doc-divider {
@@ -158,7 +145,6 @@
   margin: 10px 0 14px;
 }
 
-/* --- Tabla ------------------------------------------------ */
 .doc-table {
   width: 100%;
   border-collapse: collapse;
@@ -188,20 +174,15 @@
   line-height: 1.4;
 }
 
-.fila-par td {
-  background: var(--alt-row);
-}
+.fila-par td { background: var(--alt-row); }
 
 .col-num        { width: 30px;  text-align: center; }
 .col-paciente   { width: 22%; }
 .col-expediente { width: 100px; text-align: center; }
 .col-especialidad { width: 14%; }
-.col-fecha      { width: 90px;  text-align: center; white-space: nowrap; }
-.col-motivo     { /* resto */ }
+.col-fecha      { width: 90px; text-align: center; white-space: nowrap; }
+.hora           { font-size: 8.5pt; color: #555; }
 
-.hora { font-size: 8.5pt; color: #555; }
-
-/* --- Sin resultados / cargando ---------------------------- */
 .doc-empty,
 .doc-loading {
   text-align: center;
@@ -212,7 +193,6 @@
   margin: 20px 0;
 }
 
-/* --- Pie de página ---------------------------------------- */
 .doc-footer {
   display: flex;
   justify-content: space-between;
@@ -222,104 +202,105 @@
   border-top: 1px solid #999;
   font-size: 9.5pt;
 }
-
 .doc-footer p { margin: 0; }
 
-/* ============================================================
-   @MEDIA PRINT — elimina todo lo que no es documento
-   ============================================================ */
+/* ══════════════════════════════════════════
+   IMPRESIÓN
+   ══════════════════════════════════════════ */
 @media print {
-  /* Ocultar controles */
-  .no-print {
-    display: none !important;
+
+  /* 1. Ocultar controles */
+  .no-print { display: none !important; }
+
+  /* 2. Neutralizar html/body del layout global */
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
   }
 
-  /* Resetear el host para impresión */
-  :host {
-    display: block;
-  }
-
-  /* El documento ocupa la página completa sin restricción de alto */
-  .documento {
-    max-width: 100%;
-    width: 100%;
-    margin: 0;
+  /* 3. Neutralizar el selector del componente y todos sus ancestros */
+  app-imprimir-citas,
+  app-imprimir-citas > *,
+  app-root,
+  main,
+  .main-content,
+  .content-wrapper,
+  .page-wrapper,
+  router-outlet + * {
+    display: block !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
     padding: 0 !important;
-    box-shadow: none;
-    border: none;
-    font-size: 8pt;
+    margin: 0 !important;
+    background: transparent !important;
   }
 
-.doc-table {
-  width: 100% !important;
-  table-layout: auto !important;
-}
-
-  /* thead se repite automáticamente al saltar de página */
-  thead {
-    display: table-header-group;
+  /* 4. El documento ocupa toda la hoja */
+  .documento {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    font-size: 8pt !important;
+    background: #fff !important;
   }
 
-  tbody {
-    display: table-row-group;
+  /* 5. Tabla fluye libre entre páginas */
+  .doc-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    font-size: 7.5pt !important;
   }
 
-
-
-
-
-  /* Pie: bloque normal al final, no table-footer-group */
-  .doc-footer {
-    display: flex;
-
-    margin-top: 16px;
+  .doc-table th,
+  .doc-table td {
+    padding: 3px 5px !important;
   }
 
-  /* Colores forzados para impresión */
+  /* 6. Encabezado se repite en cada página */
+  thead { display: table-header-group !important; }
+  tbody { display: table-row-group !important; }
+
+  /* 7. No cortar filas a la mitad */
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* 8. Colores forzados */
   .doc-table thead tr {
     background: #1a1a2e !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    color: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .fila-par td {
     background: #f5f5f5 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  /* TABLA NATURAL */
-.doc-table,
-.doc-table tbody,
-.doc-table tr,
-.doc-table td {
-  overflow: visible !important;
-}
-
-  /* FORZAR MULTIPÁGINA REAL */
-.print-page.print-multipage {
-  display: block !important;
-
-  overflow: visible !important;
-
-  height: auto !important;
-  max-height: none !important;
-
-  contain: none !important;
-}
-
-/* MUY IMPORTANTE */
-html,
-body {
-  height: auto !important;
-  overflow: visible !important;
-}
-
-  /* Márgenes de página */
+  /* 9. Página */
   @page {
     size: Letter portrait;
     margin: 8mm 10mm;
   }
 }
 
-
+@media print {
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  /* ... resto del print que ya tienes */
+}

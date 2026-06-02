@@ -90,9 +90,31 @@ export class ImprimirCitasComponent implements OnInit {
     this.cargarCitas();
   }
 
-  // ======= ACCIONES =======
   imprimir(): void {
-    window.print();
+    const body = document.body;
+    const html = document.documentElement;
+
+    // Guardar estilos originales
+    const bodyOverflow = body.style.overflow;
+    const bodyHeight = body.style.height;
+    const htmlOverflow = html.style.overflow;
+    const htmlHeight = html.style.height;
+
+    // Liberar para impresión
+    body.style.overflow = 'visible';
+    body.style.height = 'auto';
+    html.style.overflow = 'visible';
+    html.style.height = 'auto';
+
+    setTimeout(() => {
+      window.print();
+
+      // Restaurar después de imprimir
+      body.style.overflow = bodyOverflow;
+      body.style.height = bodyHeight;
+      html.style.overflow = htmlOverflow;
+      html.style.height = htmlHeight;
+    }, 100);
   }
 
   volver(): void {
