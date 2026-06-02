@@ -26,7 +26,7 @@ export class BaseApiService {
     protected router: Router
   ) { }
 
-  protected cacheGet<T>(key: string, request$: Observable<T>, ttl = 5 * 60 * 1000): Observable<T> {
+  protected cacheGet<T>(key: string, request$: Observable<T>, ttl = 25 * 60 * 1000): Observable<T> {
     return this.sync.cacheGet(key, request$, ttl);
   }
 
