@@ -308,6 +308,11 @@ label { letter-spacing: 0.4px; }
   break-inside: avoid;
 }
 
+.bloque-espacio{
+  display: block;
+  margin: 50px;
+}
+
 .cn-firma-bloque {
   display: flex; flex-direction: column;
   align-items: center; gap: 2px;
@@ -465,3 +470,14 @@ label { letter-spacing: 0.4px; }
   margin: 12.7mm 12.7mm 12.7mm 12.7mm;
 }
 
+
+@media print {
+  .cn-pie {
+  margin-top: auto;
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  break-inside: avoid;
+}
+}
