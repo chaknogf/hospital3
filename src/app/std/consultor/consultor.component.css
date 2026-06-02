@@ -129,7 +129,9 @@
   border: 1px solid var(--rim);
   border-radius: 6px;
   color: black;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1.1px;
   outline: none;
   transition: border-color 0.2s;
 }

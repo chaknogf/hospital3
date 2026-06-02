@@ -3526,15 +3526,21 @@ padding: 0;
   background: #f3f4f6;
 }
 
-.input-filtros:focus {
+/* .input-filtros:focus {
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.10);
   background: #ffffff;
   color: #111827;
-}
+} */
 
 .input-filtros[type="date"] {
   color-scheme: light;
+  color: #000;
+}
+
+.input-filtros[type="select"] {
+  color-scheme: light;
+  color: #000;
 }
 
 /* ── SELECT CON ÍCONO ── */
@@ -3703,18 +3709,19 @@ select.input-filtros option {
 
   .input-principal:hover,
   .input-filtros:hover {
-    border-color: rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.06);
+
+   border: 3px rgb(107, 107, 255) solid;
+
   }
 
-  .input-principal:focus,
+  /* .input-principal:focus,
   .input-filtros:focus {
     border-color: #3b82f6;
     background: rgba(0,0,0,0.2);
     color: #e2e8f0;
-  }
+  } */
 
-  .input-filtros[type="date"] { color-scheme: dark; }
+  /* .input-filtros[type="date"] { color-scheme: dark; } */
 
   select.input-filtros option {
     background: #1e293b;

@@ -669,8 +669,8 @@ export const municipios: Municipio[] = [
     codigo: "1407"
   },
   {
-    vecindad: "Santo Tomás Chichicastenango, Guatemala",
-    municipio: "Santo Tomás Chichicastenango",
+    vecindad: "Chichicastenango, Guatemala",
+    municipio: "Chichicastenango",
     departamento: "Guatemala",
     codigo: "1406"
   },
