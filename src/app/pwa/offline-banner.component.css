@@ -12,3 +12,25 @@
   font-weight: 500;
   box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
 }
+
+.sync-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: #ffc107;
+  color: #212529;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 -2px 8px rgba(255, 193, 7, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sync-banner button {
+  font-weight: 600;
+}

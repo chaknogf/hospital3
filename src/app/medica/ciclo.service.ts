@@ -52,36 +52,31 @@ export class ConsultaService extends BaseApiService {
    * GET /consultas/
    */
   getCiclosDeConsulta(consulta_id: number): Observable<CicloConsulta[]> {
-
-
-    return this.http.get<CicloConsulta[]>(
-      `${this.baseUrl}/ciclos/consulta/${consulta_id}?activo=true`,
-    ).pipe(
-      tap(response => this.ciclosSubject.next(response as any)),
-      catchError(error => this.manejarError(error, 'obtener ciclos'))
+    const url = `${this.baseUrl}/ciclos/consulta/${consulta_id}?activo=true`;
+    const key = this.cacheKey(url);
+    return this.cacheGet(key,
+      this.http.get<CicloConsulta[]>(url).pipe(
+        tap(response => this.ciclosSubject.next(response as any)),
+        catchError(error => this.manejarError(error, 'obtener ciclos'))
+      )
     );
   }
 
 
-  /**
-   * Obtiene la primera consulta que coincida con los filtros
-   * GET /consultas/
-   */
   getCiclo(id: number): Observable<CicloConsulta> {
-    return this.http.get<CicloConsulta>(
-      `${this.baseUrl}/ciclos/${id}`,
-    ).pipe(
-      catchError(error => this.manejarError(error, 'obtener ciclo por ID'))
+    const url = `${this.baseUrl}/ciclos/${id}`;
+    const key = this.cacheKey(url);
+    return this.cacheGet(key,
+      this.http.get<CicloConsulta>(url).pipe(
+        catchError(error => this.manejarError(error, 'obtener ciclo por ID'))
+      )
     );
   }
-
-
 
   iniciarClico(ciclo: CicloConsulta): Observable<any> {
     this.isLoading.set(true);
-    return this.http.post<any>(`${this.baseUrl}/ciclos/`, ciclo).pipe(
+    return this.offMutation('POST', `${this.baseUrl}/ciclos/`, ciclo).pipe(
       tap(() => this.refrescarCiclos()),
-      catchError(error => this.manejarError(error, 'al crear ciclo')),
       finalize(() => this.isLoading.set(false))
     );
   }

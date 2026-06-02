@@ -51,13 +51,16 @@ export class MedicosService extends BaseApiService {
     this.ultimoFiltro.filtro = filtros ?? {};
 
     const params = this.limpiarParametros(filtros ?? {});
+    const key = this.cacheKey(`${this.baseUrl}/medicos`, params);
 
-    return this.http.get<MedicoOut[]>(
-      `${this.baseUrl}/medicos`,
-      { params }
-    ).pipe(
-      tap(medicos => this.medicosSubject.next(medicos)),
-      catchError(error => this.manejarError(error, 'obtener médicos'))
+    return this.cacheGet(key,
+      this.http.get<MedicoOut[]>(
+        `${this.baseUrl}/medicos`,
+        { params }
+      ).pipe(
+        tap(medicos => this.medicosSubject.next(medicos)),
+        catchError(error => this.manejarError(error, 'obtener médicos'))
+      )
     );
   }
 
@@ -96,53 +99,27 @@ export class MedicosService extends BaseApiService {
    */
   crearMedico(data: MedicoCreate): Observable<MedicoOut> {
     this.isLoading.set(true);
-
-    return this.http.post<MedicoOut>(
-      `${this.baseUrl}/medicos`,
-      data
-    ).pipe(
+    return this.offMutation('POST', `${this.baseUrl}/medicos`, data).pipe(
       tap(() => this.refrescarMedicos()),
-      catchError(error => this.manejarError(error, 'crear médico')),
       finalize(() => this.isLoading.set(false))
     );
   }
 
-  // ======= PUT =======
-
-  /**
-   * Actualizar médico
-   * PUT /medicos/{id}
-   */
   actualizarMedico(
     medicoId: number,
     data: MedicoUpdate
   ): Observable<MedicoOut> {
     this.isLoading.set(true);
-
-    return this.http.put<MedicoOut>(
-      `${this.baseUrl}/medicos/${medicoId}`,
-      data
-    ).pipe(
+    return this.offMutation('PUT', `${this.baseUrl}/medicos/${medicoId}`, data).pipe(
       tap(() => this.refrescarMedicos()),
-      catchError(error => this.manejarError(error, 'actualizar médico')),
       finalize(() => this.isLoading.set(false))
     );
   }
 
-  // ======= DELETE =======
-
-  /**
-   * Eliminar médico
-   * DELETE /medicos/{id}
-   */
   eliminarMedico(medicoId: number): Observable<void> {
     this.isLoading.set(true);
-
-    return this.http.delete<void>(
-      `${this.baseUrl}/medicos/${medicoId}`
-    ).pipe(
+    return this.offMutation('DELETE', `${this.baseUrl}/medicos/${medicoId}`).pipe(
       tap(() => this.refrescarMedicos()),
-      catchError(error => this.manejarError(error, 'eliminar médico')),
       finalize(() => this.isLoading.set(false))
     );
   }

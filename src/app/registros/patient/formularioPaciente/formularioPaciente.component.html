@@ -122,6 +122,34 @@
                   autocomplete="off"
                 />
               </div>
+
+              <div class="expedientes" *ngIf="sections[0]">
+                <div class="grupo1">
+                  <!-- Modo expediente en edición -->
+                  @if (enEdicion()) {
+                    <div class="field">
+                      <span class="field-label"
+                        >¿Qué hacemos con el expediente?</span
+                      >
+                      <div class="chips-row">
+                        <span
+                          class="chip chip-block"
+                          [class.on]="accionExpediente() === 'mantener'"
+                          (click)="accionExpediente.set('mantener')"
+                          >🔒 Mantener</span
+                        >
+
+                        <span
+                          class="chip chip-block"
+                          [class.on]="accionExpediente() === 'sobrescribir'"
+                          (click)="accionExpediente.set('sobrescribir')"
+                          >♻ Sobrescribir</span
+                        >
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
             }
           </div>
         </div>

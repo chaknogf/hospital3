@@ -36,52 +36,53 @@ export class PacienteService extends BaseApiService {
   getPacientes(filtros: any): Observable<PacienteListResponse> {
     this.ultimoFiltroPaciente.filtro = filtros;
     const params = this.limpiarParametros(filtros);
-
-    return this.http.get<PacienteListResponse>(
-      `${this.baseUrl}/pacientes/`,
-      { params }
-    ).pipe(
-      tap(response => this.pacientesSubject.next(response.pacientes)),
-      catchError(error => this.manejarError(error, 'obtener pacientes'))
+    const key = this.cacheKey(`${this.baseUrl}/pacientes/`, params);
+    return this.cacheGet(key,
+      this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/`, { params }).pipe(
+        tap(response => this.pacientesSubject.next(response.pacientes)),
+        catchError(error => this.manejarError(error, 'obtener pacientes'))
+      )
     );
   }
 
   buscarPaciente(q: any): Observable<PacienteListResponse> {
     const params = this.limpiarParametros(q);
-
-    return this.http.get<PacienteListResponse>(
-      `${this.baseUrl}/pacientes/buscar/`,
-      { params }
-    ).pipe(
-      tap(response => this.pacientesSubject.next(response.pacientes)),
-      catchError(error => this.manejarError(error, 'buscar pacientes'))
+    const key = this.cacheKey(`${this.baseUrl}/pacientes/buscar/`, params);
+    return this.cacheGet(key,
+      this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/buscar/`, { params }).pipe(
+        tap(response => this.pacientesSubject.next(response.pacientes)),
+        catchError(error => this.manejarError(error, 'buscar pacientes'))
+      )
     );
   }
 
   getPaciente(id: number): Observable<Paciente> {
-    return this.http.get<Paciente>(`${this.baseUrl}/pacientes/${id}`).pipe(
-      catchError(error => this.manejarError(error, 'obtener paciente'))
+    const url = `${this.baseUrl}/pacientes/${id}`;
+    const key = this.cacheKey(url);
+    return this.cacheGet(key,
+      this.http.get<Paciente>(url).pipe(
+        catchError(error => this.manejarError(error, 'obtener paciente'))
+      )
     );
   }
 
   pacienteExpediente(expediente: string): Observable<PacienteJoin> {
-    return this.http.get<PacienteJoin>(
-      `${this.baseUrl}/pacientes/expediente/${expediente}`
-    ).pipe(
-      catchError(error => this.manejarError(error, 'obtener paciente por expediente'))
+    const url = `${this.baseUrl}/pacientes/expediente/${expediente}`;
+    const key = this.cacheKey(url);
+    return this.cacheGet(key,
+      this.http.get<PacienteJoin>(url).pipe(
+        catchError(error => this.manejarError(error, 'obtener paciente por expediente'))
+      )
     );
   }
 
   crearPaciente(paciente: Paciente, generar_expediente: boolean = false): Observable<any> {
     this.isLoading.set(true);
-
     const url = generar_expediente
       ? `${this.baseUrl}/pacientes/?gen_expediente=true`
       : `${this.baseUrl}/pacientes`;
-
-    return this.http.post<any>(url, paciente).pipe(
+    return this.offMutation('POST', url, paciente).pipe(
       tap(() => this.refrescarPacientes()),
-      catchError(error => this.manejarError(error, 'crear paciente')),
       finalize(() => this.isLoading.set(false))
     );
   }
@@ -92,25 +93,16 @@ export class PacienteService extends BaseApiService {
     accion: string = 'mantener'
   ): Observable<any> {
     this.isLoading.set(true);
-
-    return this.http.patch<any>(
-      `${this.baseUrl}/pacientes/${pacienteId}?accion=${accion}`,
-      paciente
-    ).pipe(
+    return this.offMutation('PATCH', `${this.baseUrl}/pacientes/${pacienteId}?accion=${accion}`, paciente).pipe(
       tap(() => this.refrescarPacientes()),
-      catchError(error => this.manejarError(error, 'actualizar paciente')),
       finalize(() => this.isLoading.set(false))
     );
   }
 
   deletePaciente(pacienteId: number): Observable<any> {
     this.isLoading.set(true);
-
-    return this.http.delete<any>(
-      `${this.baseUrl}/paciente/eliminar/${pacienteId}`
-    ).pipe(
+    return this.offMutation('DELETE', `${this.baseUrl}/paciente/eliminar/${pacienteId}`).pipe(
       tap(() => this.refrescarPacientes()),
-      catchError(error => this.manejarError(error, 'eliminar paciente')),
       finalize(() => this.isLoading.set(false))
     );
   }
@@ -123,20 +115,14 @@ export class PacienteService extends BaseApiService {
    */
   hijoDe(paciente: Hijode, idMadre: number): Observable<any> {
     this.isLoading.set(true);
-
     const payload = {
       sexo: paciente.sexo,
       fecha_nacimiento: paciente.fecha_nacimiento,
       estado: paciente.estado,
       datos_extra: paciente.datos_extra || {}
     };
-
-    return this.http.post<any>(
-      `${this.baseUrl}/pacientes/madre-hijo/${idMadre}?auto_expediente=true`,
-      payload
-    ).pipe(
+    return this.offMutation('POST', `${this.baseUrl}/pacientes/madre-hijo/${idMadre}?auto_expediente=true`, payload).pipe(
       tap(() => this.refrescarPacientes()),
-      catchError(error => this.manejarError(error, 'registrar hijo')),
       finalize(() => this.isLoading.set(false))
     );
   }
@@ -163,13 +149,13 @@ export class PacienteService extends BaseApiService {
 
   getRenapITD(filtros: any): Observable<any> {
     const params = this.limpiarParametros(filtros);
-
-    return this.http.get<{ resultado: any }>(
-      `${this.baseUrl}/renap-persona`,
-      { params }
-    ).pipe(
-      tap(response => response.resultado),
-      catchError(error => this.manejarError(error, 'obtener datos RENAP'))
+    const key = this.cacheKey(`${this.baseUrl}/renap-persona`, params);
+    return this.cacheGet(key,
+      this.http.get<{ resultado: any }>(`${this.baseUrl}/renap-persona`, { params }).pipe(
+        tap(response => response.resultado),
+        catchError(error => this.manejarError(error, 'obtener datos RENAP'))
+      ),
+      10 * 60 * 1000
     );
   }
 
@@ -179,9 +165,13 @@ export class PacienteService extends BaseApiService {
   citas$ = this.citasSubject.asObservable();
 
   getCitasPaciente(id: number): Observable<CitaResponse[]> {
-    return this.http.get<CitaResponse[]>(`${this.baseUrl}/citas/paciente/${id}`).pipe(
-      tap(response => this.citasSubject.next(response)),
-      catchError(error => this.manejarError(error, 'obtener citas'))
+    const url = `${this.baseUrl}/citas/paciente/${id}`;
+    const key = this.cacheKey(url);
+    return this.cacheGet(key,
+      this.http.get<CitaResponse[]>(url).pipe(
+        tap(response => this.citasSubject.next(response)),
+        catchError(error => this.manejarError(error, 'obtener citas'))
+      )
     );
   }
 

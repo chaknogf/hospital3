@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { OfflineSyncService } from '../service/offline-sync.service';
 
 @Component({
   selector: 'app-offline-banner',
@@ -10,10 +11,16 @@ import { CommonModule } from '@angular/common';
 })
 export class OfflineBannerComponent {
   isOnline = navigator.onLine;
+  sync: OfflineSyncService;
+
+  constructor(sync: OfflineSyncService) {
+    this.sync = sync;
+  }
 
   @HostListener('window:online')
   onOnline() {
     this.isOnline = true;
+    this.sync.syncNow();
   }
 
   @HostListener('window:offline')

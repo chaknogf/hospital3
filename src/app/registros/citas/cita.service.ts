@@ -28,33 +28,37 @@ export class CitaService extends BaseApiService {
   getCitas(filtros: FiltroCitas): Observable<CitaResponse[]> {
     this.ultimoFiltroCitas.filtro = filtros;
     const params = this.limpiarParametros(filtros);
-
-    return this.http.get<CitaResponse[]>(`${this.baseUrl}/citas/`, { params }).pipe(
-      tap(response => this.citasSubject.next(response)),
-      catchError(error => this.manejarError(error, 'obtener citas'))
+    const key = this.cacheKey(`${this.baseUrl}/citas/`, params);
+    return this.cacheGet(key,
+      this.http.get<CitaResponse[]>(`${this.baseUrl}/citas/`, { params }).pipe(
+        tap(response => this.citasSubject.next(response)),
+        catchError(error => this.manejarError(error, 'obtener citas'))
+      )
     );
   }
 
   getCita(id: number): Observable<Citas> {
-    return this.http.get<Citas>(`${this.baseUrl}/citas/${id}`).pipe(
-      catchError(error => this.manejarError(error, 'obtener cita'))
+    const url = `${this.baseUrl}/citas/${id}`;
+    const key = this.cacheKey(url);
+    return this.cacheGet(key,
+      this.http.get<Citas>(url).pipe(
+        catchError(error => this.manejarError(error, 'obtener cita'))
+      )
     );
   }
 
   crearCita(cita: CitaCreate): Observable<any> {
     this.isLoading.set(true);
-    return this.http.post<any>(`${this.baseUrl}/citas/`, cita).pipe(
+    return this.offMutation('POST', `${this.baseUrl}/citas/`, cita).pipe(
       tap(() => this.refrescarCitas()),
-      catchError(error => this.manejarError(error, 'crear cita')),
       finalize(() => this.isLoading.set(false))
     );
   }
 
   updateCita(id: number, datos: any): Observable<any> {
     this.isLoading.set(true);
-    return this.http.put<any>(`${this.baseUrl}/citas/${id}`, datos).pipe(
+    return this.offMutation('PUT', `${this.baseUrl}/citas/${id}`, datos).pipe(
       tap(() => this.refrescarCitas()),
-      catchError(error => this.manejarError(error, 'actualizar cita')),
       finalize(() => this.isLoading.set(false))
     );
   }
@@ -62,10 +66,12 @@ export class CitaService extends BaseApiService {
   conteoCitas(filtros: any): Observable<ConteoCitas[]> {
     this.ultimoFiltroCitas.filtro = filtros;
     const params = this.limpiarParametros(filtros);
-
-    return this.http.get<ConteoCitas[]>(`${this.baseUrl}/citas/disponibles`, { params }).pipe(
-      catchError(error => this.manejarError(error, 'obtener regsitradas'))
+    const key = this.cacheKey(`${this.baseUrl}/citas/disponibles`, params);
+    return this.cacheGet(key,
+      this.http.get<ConteoCitas[]>(`${this.baseUrl}/citas/disponibles`, { params }).pipe(
+        catchError(error => this.manejarError(error, 'obtener regsitradas'))
+      ),
+      5 * 60 * 1000
     );
-
   }
 }

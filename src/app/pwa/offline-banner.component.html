@@ -1,3 +1,10 @@
 <div class="offline-banner" *ngIf="!isOnline">
-  <span>Sin conexion — algunos datos pueden no estar disponibles</span>
+  <span>Sin conexion — modo offline activo</span>
+  <span class="badge bg-light text-dark ms-2" *ngIf="sync.pendingMutations() > 0">
+    {{ sync.pendingMutations() }} pendiente(s)
+  </span>
+</div>
+<div class="sync-banner" *ngIf="isOnline && sync.pendingMutations() > 0">
+  <span>{{ sync.pendingMutations() }} cambio(s) pendientes de sincronizar</span>
+  <button class="btn btn-sm btn-light ms-2" (click)="sync.syncNow()">Sincronizar ahora</button>
 </div>

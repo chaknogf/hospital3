@@ -3,8 +3,9 @@ import { ConsultasIdPaciente } from './../interface/consultas';
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
+import { OfflineSyncService } from './offline-sync.service';
 import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse, Hijode, PacienteJoin } from '../interface/interfaces';
 import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHistorial, ConstanciaNacimientoUpdate } from '../interface/consNac';
 import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, TotalesItem, TotalesResponse } from '../interface/consultas';
@@ -42,9 +43,34 @@ export class ApiService {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private sync: OfflineSyncService
   ) {
     this.cargarTokenDelStorage();
+  }
+
+  private offMutation<T>(method: 'POST' | 'PUT' | 'PATCH' | 'DELETE', url: string, body?: any): Observable<any> {
+    const operacion = url.split('/').pop() || 'operación';
+    if (!this.sync.isOnline()) {
+      this.sync.enqueueMutation(method, url, body);
+      return of({ queued: true, mensaje: 'Guardado localmente, se sincronizará cuando haya conexión' });
+    }
+    let req$: Observable<any>;
+    switch (method) {
+      case 'POST': req$ = this.http.post(url, body); break;
+      case 'PUT': req$ = this.http.put(url, body); break;
+      case 'PATCH': req$ = this.http.patch(url, body); break;
+      case 'DELETE': req$ = this.http.delete(url); break;
+    }
+    return req$.pipe(
+      catchError(error => {
+        if (error.status === 0 || error.status === 502 || error.status === 503) {
+          this.sync.enqueueMutation(method, url, body);
+          return of({ queued: true, mensaje: 'Guardado localmente, se sincronizará cuando haya conexión' });
+        }
+        return this.manejarError(error, operacion);
+      })
+    );
   }
 
   // ======= UTILITARIOS =======
@@ -83,6 +109,25 @@ export class ApiService {
     return throwError(() => error);
   }
 
+  private preCacheReferenceData(): void {
+    const ttl = 60 * 60 * 1000;
+    this.sync.preCache(
+      this.sync.cacheKey(`${this.baseUrl}/municipios/departamentos`),
+      this.http.get(`${this.baseUrl}/municipios/departamentos`),
+      ttl
+    );
+    this.sync.preCache(
+      this.sync.cacheKey(`${this.baseUrl}/paises/`),
+      this.http.get(`${this.baseUrl}/paises/`),
+      ttl
+    );
+    this.sync.preCache(
+      this.sync.cacheKey(`${this.baseUrl}/consultas/`, new HttpParams().set('skip', '0').set('limit', '14')),
+      this.http.get(`${this.baseUrl}/consultas/`, { params: new HttpParams().set('skip', '0').set('limit', '14') }),
+      30 * 60 * 1000
+    );
+  }
+
   // ======= AUTENTICACIÓN =======
   login(username: string, password: string): Observable<any> {
     this.isLoading.set(true);
@@ -99,10 +144,11 @@ export class ApiService {
         localStorage.setItem('access_token', response.access_token);
         this.token.set(response.access_token);
 
-        // ✅ Primero obtener el usuario, luego navegar (evita condición de carrera)
+        this.preCacheReferenceData();
+
         this.getCurrentUser().subscribe({
           next: () => this.router.navigate(['/dash']),
-          error: () => this.router.navigate(['/dash']) // navegar igual aunque falle /me
+          error: () => this.router.navigate(['/dash'])
         });
       }),
       catchError(error => this.manejarError(error, 'iniciar sesión')),
@@ -166,13 +212,12 @@ export class ApiService {
   // ======= USUARIOS =======
   getUsers(filtros: any): Observable<UsersListResponse> {
     const params = this.limpiarParametros(filtros);
-    //console.log(params.toString())
-    return this.http.get<UsersListResponse>(`${this.baseUrl}/users/`, { params }).pipe(
-      tap(response => {
-        this.usuariosSubject.next(response.usuarios);
-        //console.log(response)
-      }),
-      catchError(error => this.manejarError(error, 'obtener usuarios'))
+    const key = this.sync.cacheKey(`${this.baseUrl}/users/`, params);
+    return this.sync.cacheGet(key,
+      this.http.get<UsersListResponse>(`${this.baseUrl}/users/`, { params }).pipe(
+        tap(response => this.usuariosSubject.next(response.usuarios)),
+        catchError(error => this.manejarError(error, 'obtener usuarios'))
+      )
     );
   }
 
@@ -184,32 +229,28 @@ export class ApiService {
 
   createUser(user: any): Observable<any> {
     this.isLoading.set(true);
-    return this.http.post<any>(`${this.baseUrl}/users/`, user).pipe(
-      catchError(error => this.manejarError(error, 'crear usuario')),
+    return this.offMutation('POST', `${this.baseUrl}/users/`, user).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }
 
   passReset(user: any): Observable<any> {
     this.isLoading.set(true);
-    return this.http.patch<any>(`${this.baseUrl}/users/recuperar`, user).pipe(
-      catchError(error => this.manejarError(error, 'actualizar password')),
+    return this.offMutation('PATCH', `${this.baseUrl}/users/recuperar`, user).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }
 
   updateUser(userId: number, user: any): Observable<any> {
     this.isLoading.set(true);
-    return this.http.put<any>(`${this.baseUrl}/users/${userId}`, user).pipe(
-      catchError(error => this.manejarError(error, 'actualizar usuario')),
+    return this.offMutation('PUT', `${this.baseUrl}/users/${userId}`, user).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }
 
   deleteUser(userId: number | string): Observable<any> {
     this.isLoading.set(true);
-    return this.http.delete<any>(`${this.baseUrl}/user/eliminar/${userId}`).pipe(
-      catchError(error => this.manejarError(error, 'eliminar usuario')),
+    return this.offMutation('DELETE', `${this.baseUrl}/user/eliminar/${userId}`).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }
@@ -261,15 +302,23 @@ export class ApiService {
   // ======= MUNICIPIOS =======
 
   getDepartamentos(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/municipios/departamentos`).pipe(
-      catchError(error => this.manejarError(error, 'obtener departamentos'))
+    const key = this.sync.cacheKey(`${this.baseUrl}/municipios/departamentos`);
+    return this.sync.cacheGet(key,
+      this.http.get<any>(`${this.baseUrl}/municipios/departamentos`).pipe(
+        catchError(error => this.manejarError(error, 'obtener departamentos'))
+      ),
+      30 * 60 * 1000
     );
   }
 
   getMunicipios(filtros: any): Observable<any> {
     const params = this.limpiarParametros(filtros);
-    return this.http.get<any>(`${this.baseUrl}/municipios/`, { params }).pipe(
-      catchError(error => this.manejarError(error, 'obtener municipios'))
+    const key = this.sync.cacheKey(`${this.baseUrl}/municipios/`, params);
+    return this.sync.cacheGet(key,
+      this.http.get<any>(`${this.baseUrl}/municipios/`, { params }).pipe(
+        catchError(error => this.manejarError(error, 'obtener municipios'))
+      ),
+      30 * 60 * 1000
     );
   }
 
@@ -278,48 +327,56 @@ export class ApiService {
       .set('codigo', codigo)
       .set('skip', '0')
       .set('limit', '1');
-
-    return this.http.get<Municipio>(`${this.baseUrl}/municipios/`, { params }).pipe(
-      catchError(error => this.manejarError(error, 'obtener municipio'))
+    const key = this.sync.cacheKey(`${this.baseUrl}/municipios/`, params);
+    return this.sync.cacheGet(key,
+      this.http.get<Municipio>(`${this.baseUrl}/municipios/`, { params }).pipe(
+        catchError(error => this.manejarError(error, 'obtener municipio'))
+      ),
+      30 * 60 * 1000
     );
   }
 
   createMunicipio(municipio: any): Observable<any> {
     this.isLoading.set(true);
-    return this.http.post<any>(`${this.baseUrl}/municipio/crear`, municipio).pipe(
-      catchError(error => this.manejarError(error, 'crear municipio')),
+    return this.offMutation('POST', `${this.baseUrl}/municipio/crear`, municipio).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }
 
   updateMunicipio(codigo: string, municipio: any): Observable<any> {
     this.isLoading.set(true);
-    return this.http.put<any>(`${this.baseUrl}/municipio/actualizar/${codigo}`, municipio).pipe(
-      catchError(error => this.manejarError(error, 'actualizar municipio')),
+    return this.offMutation('PUT', `${this.baseUrl}/municipio/actualizar/${codigo}`, municipio).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }
 
   deleteMunicipio(codigo: string): Observable<any> {
     this.isLoading.set(true);
-    return this.http.delete<any>(`${this.baseUrl}/municipio/eliminar/${codigo}`).pipe(
-      catchError(error => this.manejarError(error, 'eliminar municipio')),
+    return this.offMutation('DELETE', `${this.baseUrl}/municipio/eliminar/${codigo}`).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }
 
   // ======= PAÍSES ISO =======
   getPaisesIso(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/paises/`).pipe(
-      catchError(error => this.manejarError(error, 'obtener países'))
+    const key = this.sync.cacheKey(`${this.baseUrl}/paises/`);
+    return this.sync.cacheGet(key,
+      this.http.get<any>(`${this.baseUrl}/paises/`).pipe(
+        catchError(error => this.manejarError(error, 'obtener países'))
+      ),
+      30 * 60 * 1000
     );
   }
 
   getRenapITD(filtros: any): Observable<any> {
     const params = this.limpiarParametros(filtros);
-    return this.http.get<{ resultado: any }>(`${this.baseUrl}/renap-persona`, { params }).pipe(
-      tap(response => response.resultado),
-      catchError(error => this.manejarError(error, 'obtener datos RENAP'))
+    const key = this.sync.cacheKey(`${this.baseUrl}/renap-persona`, params);
+    return this.sync.cacheGet(key,
+      this.http.get<{ resultado: any }>(`${this.baseUrl}/renap-persona`, { params }).pipe(
+        tap(response => response.resultado),
+        catchError(error => this.manejarError(error, 'obtener datos RENAP'))
+      ),
+      10 * 60 * 1000
     );
   }
 
@@ -327,10 +384,13 @@ export class ApiService {
   getMedicos(filtros: any): Observable<Medico[]> {
     this.isLoading.set(true);
     const params = this.limpiarParametros(filtros);
+    const key = this.sync.cacheKey(`${this.baseUrl}/medicos/`, params);
 
-    return this.http.get<Medico[]>(`${this.baseUrl}/medicos/`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener datos'))
+    return this.sync.cacheGet(key,
+      this.http.get<Medico[]>(`${this.baseUrl}/medicos/`, { params }).pipe(
+        finalize(() => this.isLoading.set(false)),
+        catchError(error => this.manejarError(error, 'obtener datos'))
+      )
     );
   }
 

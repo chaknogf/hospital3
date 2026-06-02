@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
 import { ConsultaBase } from '../interface/consultas';
+import { OfflineSyncService } from './offline-sync.service';
 
 
 @Injectable({
@@ -13,6 +14,7 @@ export class ConsultaService {
   public token: string | null = null;
   public username: string | null = null;
   public role: string | null = null;
+  private sync = inject(OfflineSyncService);
 
   constructor(
     private router: Router
@@ -33,7 +35,6 @@ export class ConsultaService {
         if (token) {
           config.headers['Authorization'] = `Bearer ${token}`;
         }
-        //console.log('🛰️ Interceptor ejecutado:', config);
         return config;
       },
       error => Promise.reject(error)
@@ -56,9 +57,15 @@ export class ConsultaService {
       const response = await this.api.get('/consultas/', {
         params: filtrosLimpiados
       });
-      // console.log('👤 Consultas obtenidas correctamente');
+      const key = this.sync.cacheKey(`${this.baseUrl}/consultas/`, JSON.stringify(filtros));
+      await this.sync.setCachedData(key, response.data, 5 * 60 * 1000);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (!navigator.onLine || error?.response?.status === 0) {
+        const key = this.sync.cacheKey(`${this.baseUrl}/consultas/`, JSON.stringify(filtros));
+        const cached = await this.sync.getCachedData(key);
+        if (cached) return cached;
+      }
       console.error('❌ Error al obtener consultas:', error);
       throw error;
     }
@@ -69,17 +76,26 @@ export class ConsultaService {
       const filtrosLimpiados = this.limpiarParametros(filtros);
       const response = await this.api.get<ConsultaBase[]>('/consulta/', {
         params: filtrosLimpiados
-
       })
-      // console.log('👤 Consulta obtenida correctamente');
+      const key = this.sync.cacheKey(`${this.baseUrl}/consulta/`, JSON.stringify(filtros));
+      await this.sync.setCachedData(key, response.data, 5 * 60 * 1000);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (!navigator.onLine || error?.response?.status === 0) {
+        const key = this.sync.cacheKey(`${this.baseUrl}/consulta/`, JSON.stringify(filtros));
+        const cached = await this.sync.getCachedData(key);
+        if (cached) return cached;
+      }
       console.error('❌ Error al obtener consulta:', error);
       throw error;
     }
   }
 
   async crearConsulta(consulta: any): Promise<any> {
+    if (!navigator.onLine) {
+      await this.sync.enqueueMutation('POST', `${this.baseUrl}/consulta/crear/`, consulta);
+      return { queued: true, mensaje: 'Guardado localmente, se sincronizará cuando haya conexión' };
+    }
     try {
       const response = await this.api.post(
         '/consulta/crear/', consulta,
@@ -89,15 +105,22 @@ export class ConsultaService {
           }
         }
       );
-      // console.log('👤 Consulta creada correctamente');
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.response?.status === 0 || error?.response?.status === 502 || error?.response?.status === 503) {
+        await this.sync.enqueueMutation('POST', `${this.baseUrl}/consulta/crear/`, consulta);
+        return { queued: true, mensaje: 'Guardado localmente, se sincronizará cuando haya conexión' };
+      }
       console.error('❌ Error al crear consulta:', error);
       throw error;
     }
   }
 
   async updateConsulta(consultaId: number, consulta: any): Promise<any> {
+    if (!navigator.onLine) {
+      await this.sync.enqueueMutation('PUT', `${this.baseUrl}/consulta/actualizar/${consultaId}`, consulta);
+      return { queued: true, mensaje: 'Guardado localmente, se sincronizará cuando haya conexión' };
+    }
     try {
       const response = await this.api.put(
         `/consulta/actualizar/${consultaId}`
@@ -107,29 +130,44 @@ export class ConsultaService {
             'Content-Type': 'application/json',
           }
         });
-      // console.log('👤 Consulta actualizada correctamente');
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.response?.status === 0 || error?.response?.status === 502 || error?.response?.status === 503) {
+        await this.sync.enqueueMutation('PUT', `${this.baseUrl}/consulta/actualizar/${consultaId}`, consulta);
+        return { queued: true, mensaje: 'Guardado localmente, se sincronizará cuando haya conexión' };
+      }
       console.error('❌ Error al actualizar consulta:', error);
       throw error;
     }
   }
 
   async deleteConsulta(id: number): Promise<any> {
+    if (!navigator.onLine) {
+      await this.sync.enqueueMutation('DELETE', `${this.baseUrl}/consulta/eliminar/${id}`);
+      return { queued: true, mensaje: 'Guardado localmente, se sincronizará cuando haya conexión' };
+    }
     try {
       const response = await this.api.delete(`/consulta/eliminar/${id}`);
-      // console.log('👤 Consulta eliminada correctamente');
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.response?.status === 0 || error?.response?.status === 502 || error?.response?.status === 503) {
+        await this.sync.enqueueMutation('DELETE', `${this.baseUrl}/consulta/eliminar/${id}`);
+        return { queued: true, mensaje: 'Guardado localmente, se sincronizará cuando haya conexión' };
+      }
       console.error('❌ Error al eliminar consulta:', error);
       throw error;
     }
   }
 
   async corEmergencia(): Promise<any> {
+    if (!navigator.onLine) {
+      const key = this.sync.cacheKey(`${this.baseUrl}/correlativo-emergencia`);
+      const cached = await this.sync.getCachedData<{ correlativo: string }>(key);
+      if (cached) return cached.correlativo;
+      throw new Error('Sin conexión — no se puede generar correlativo');
+    }
     try {
       const response = await this.api.post<{ 'correlativo': string }>('/generar/emergencia');
-      // console.log('👤 Correlativo obtenido correctamente:', response.data['correlativo']);
       return response.data['correlativo'];
     } catch (error) {
       console.error('❌ Error al obtener correlativo:', error);

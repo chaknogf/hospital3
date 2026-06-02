@@ -27,7 +27,10 @@ export class AppComponent implements OnInit {
   role = '';
   modalActivo = false;
 
-  constructor(private router: Router, private api: ApiService) { registerLocaleData(localeEs); }
+  constructor(
+    private router: Router,
+    private api: ApiService
+  ) { registerLocaleData(localeEs); }
 
   ngOnInit() {
     this.detectarRuta();
@@ -44,7 +47,6 @@ export class AppComponent implements OnInit {
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe((evento) => {
         const url = evento.urlAfterRedirects;
-        // console.log('Ruta actual:', url);
 
         if (url === '/' || url.includes('/inicio')) {
           this.estaAutenticado = false;

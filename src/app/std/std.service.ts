@@ -48,11 +48,15 @@ export class StdService extends BaseApiService {
   // =====================================================
 
   getCatalogo(): Observable<Procedimiento[]> {
-    return this.http.get<Procedimiento[]>(
-      `${this.baseUrl}/procedimientos/catalogo`
-    ).pipe(
-      tap(data => this.catalogoSubject.next(data)),
-      catchError(error => this.manejarError(error, 'obtener catálogo'))
+    const key = this.cacheKey(`${this.baseUrl}/procedimientos/catalogo`);
+    return this.cacheGet(key,
+      this.http.get<Procedimiento[]>(
+        `${this.baseUrl}/procedimientos/catalogo`
+      ).pipe(
+        tap(data => this.catalogoSubject.next(data)),
+        catchError(error => this.manejarError(error, 'obtener catálogo'))
+      ),
+      30 * 60 * 1000
     );
   }
 
@@ -68,13 +72,8 @@ export class StdService extends BaseApiService {
     datos: ProcedimientoCreate
   ): Observable<Procedimiento> {
     this.isLoading.set(true);
-
-    return this.http.post<Procedimiento>(
-      `${this.baseUrl}/procedimientos/catalogo`,
-      datos
-    ).pipe(
+    return this.offMutation('POST', `${this.baseUrl}/procedimientos/catalogo`, datos).pipe(
       tap(() => this.getCatalogo().subscribe()),
-      catchError(error => this.manejarError(error, 'crear procedimiento')),
       finalize(() => this.isLoading.set(false))
     );
   }
@@ -84,25 +83,16 @@ export class StdService extends BaseApiService {
     datos: ProcedimientoUpdate
   ): Observable<Procedimiento> {
     this.isLoading.set(true);
-
-    return this.http.put<Procedimiento>(
-      `${this.baseUrl}/procedimientos/catalogo/${id}`,
-      datos
-    ).pipe(
+    return this.offMutation('PUT', `${this.baseUrl}/procedimientos/catalogo/${id}`, datos).pipe(
       tap(() => this.getCatalogo().subscribe()),
-      catchError(error => this.manejarError(error, 'actualizar procedimiento')),
       finalize(() => this.isLoading.set(false))
     );
   }
 
   deleteProcedimiento(id: number): Observable<any> {
     this.isLoading.set(true);
-
-    return this.http.delete(
-      `${this.baseUrl}/procedimientos/catalogo/${id}`
-    ).pipe(
+    return this.offMutation('DELETE', `${this.baseUrl}/procedimientos/catalogo/${id}`).pipe(
       tap(() => this.getCatalogo().subscribe()),
-      catchError(error => this.manejarError(error, 'eliminar procedimiento')),
       finalize(() => this.isLoading.set(false))
     );
   }
@@ -118,16 +108,19 @@ export class StdService extends BaseApiService {
     this.ultimoFiltro.filtro = filtros;
 
     const params = this.limpiarParametros(filtros);
+    const key = this.cacheKey(`${this.baseUrl}/procedimientos`, params);
 
-    return this.http.get<ProcedimientosListResponse>(
-      `${this.baseUrl}/procedimientos`,
-      { params }
-    ).pipe(
-      tap(response =>
-        this.procedimientosSubject.next(response.procedimientos)
-      ),
-      catchError(error =>
-        this.manejarError(error, 'obtener procedimientos')
+    return this.cacheGet(key,
+      this.http.get<ProcedimientosListResponse>(
+        `${this.baseUrl}/procedimientos`,
+        { params }
+      ).pipe(
+        tap(response =>
+          this.procedimientosSubject.next(response.procedimientos)
+        ),
+        catchError(error =>
+          this.manejarError(error, 'obtener procedimientos')
+        )
       )
     );
   }
@@ -154,17 +147,9 @@ export class StdService extends BaseApiService {
   createProcedimientoMedico(
     datos: ProceMedicoCreate
   ): Observable<ProceMedico> {
-
     this.isLoading.set(true);
-
-    return this.http.post<ProceMedico>(
-      `${this.baseUrl}/procedimientos`,
-      datos
-    ).pipe(
+    return this.offMutation('POST', `${this.baseUrl}/procedimientos`, datos).pipe(
       tap(() => this.refrescarProcedimientos()),
-      catchError(error =>
-        this.manejarError(error, 'crear procedimiento médico')
-      ),
       finalize(() => this.isLoading.set(false))
     );
   }
@@ -173,17 +158,9 @@ export class StdService extends BaseApiService {
     id: number,
     datos: ProceMedicoUpdate
   ): Observable<ProceMedico> {
-
     this.isLoading.set(true);
-
-    return this.http.put<ProceMedico>(
-      `${this.baseUrl}/procedimientos/${id}`,
-      datos
-    ).pipe(
+    return this.offMutation('PUT', `${this.baseUrl}/procedimientos/${id}`, datos).pipe(
       tap(() => this.refrescarProcedimientos()),
-      catchError(error =>
-        this.manejarError(error, 'actualizar procedimiento médico')
-      ),
       finalize(() => this.isLoading.set(false))
     );
   }
@@ -191,16 +168,9 @@ export class StdService extends BaseApiService {
   deleteProcedimientoMedico(
     id: number
   ): Observable<any> {
-
     this.isLoading.set(true);
-
-    return this.http.delete(
-      `${this.baseUrl}/procedimientos/${id}`
-    ).pipe(
+    return this.offMutation('DELETE', `${this.baseUrl}/procedimientos/${id}`).pipe(
       tap(() => this.refrescarProcedimientos()),
-      catchError(error =>
-        this.manejarError(error, 'eliminar procedimiento médico')
-      ),
       finalize(() => this.isLoading.set(false))
     );
   }
