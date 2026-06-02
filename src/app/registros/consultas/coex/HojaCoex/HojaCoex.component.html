@@ -83,7 +83,7 @@
     >
       <div class="borderline">
         <label>Nombre</label>
-        <p class="nombres-fila">{{ nombreCompleto() }}</p>
+        <p class="nombres-fila">{{ nombreCompleto() | capitalize }}</p>
       </div>
       <div class="borderline">
         <label>Sexo</label>
@@ -130,18 +130,23 @@
       <div class="borderline">
         <label>Dirección</label>
         <p>
-          {{ paciente()?.contacto?.domicilio }}
-          {{ paciente()?.contacto?.municipio | vecindad }}
+          {{ paciente()?.contacto?.domicilio | capitalize }}
+          {{ paciente()?.contacto?.municipio | vecindad | capitalize }}
         </p>
       </div>
       <div class="borderline">
         <label>Ocupación</label>
-        <p>{{ paciente()?.datos_extra?.["r4"]?.valor || "-" }}</p>
+        <p>
+          {{ paciente()?.datos_extra?.socioeconomicos?.ocupacion | capitalize }}
+        </p>
       </div>
       <div class="borderline">
         <label>Educación</label>
         <p>
-          {{ paciente()?.datos_extra?.["r5"]?.valor | datosExtra: "educacion" }}
+          {{
+            paciente()?.datos_extra?.socioeconomicos?.educacion
+              | datosExtra: "educacion"
+          }}
         </p>
       </div>
     </div>
@@ -154,7 +159,11 @@
       </div>
       <div class="borderline">
         <label>Parentesco</label>
-        <p>{{ responsable()?.parentesco | datosExtra: "parentesco" }}</p>
+        <p>
+          {{
+            responsable()?.parentesco | datosExtra: "parentesco" | capitalize
+          }}
+        </p>
       </div>
     </div>
   </div>

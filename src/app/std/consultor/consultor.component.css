@@ -128,7 +128,7 @@
   background: rgb(255, 255, 255);
   border: 1px solid var(--rim);
   border-radius: 6px;
-  color: var(--text);
+  color: black;
   font-size: 12px;
   outline: none;
   transition: border-color 0.2s;

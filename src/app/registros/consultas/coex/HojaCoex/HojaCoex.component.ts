@@ -18,13 +18,14 @@ import { of } from 'rxjs';
 import { Dict, especialidades } from '../../../../enum/diccionarios';
 import { VecindadPipe } from '../../../../pipes/lugar.pipe';
 import { Location } from '@angular/common';
+import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-HojaCoex',
   templateUrl: './HojaCoex.component.html',
   styleUrls: ['./HojaCoex.component.css'],
   standalone: true,
-  imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, TimePipe, CommonModule, VecindadPipe],
+  imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, TimePipe, CommonModule, VecindadPipe, CapitalizePipe],
 })
 export class HojaCoexComponent implements OnInit, OnDestroy {
 
