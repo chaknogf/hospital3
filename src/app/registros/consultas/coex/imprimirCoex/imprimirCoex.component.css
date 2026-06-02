@@ -255,15 +255,7 @@
   color: var(--accent);
 }
 
-@media print {
-  .fila-subtotal td {
-    background: #dde2e8 !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    font-size: 7pt !important;
-    padding: 3px 5px !important;
-  }
-}
+
 
 /* Estados vacíos */
 .doc-empty,
@@ -295,82 +287,119 @@
    ══════════════════════════════════════════════════════ */
 @media print {
 
-  /* 1. Ocultar controles */
-  .no-print { display: none !important; }
+  /* Ocultar controles */
+  .no-print,
+  .print-controls {
+    display: none !important;
+  }
 
-  /* 2. Normalizar html/body */
-  html, body {
+  /* Reset global para impresión */
+  *,
+  *::before,
+  *::after {
+    overflow: visible !important;
+    max-height: none !important;
+    max-width: none !important;
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    width: auto !important;
     height: auto !important;
+    min-height: auto !important;
     overflow: visible !important;
     background: #fff !important;
   }
 
-  /* 3. Neutralizar posibles wrappers del layout */
+  /* Angular y layouts */
+  app-root,
   app-imprimir-coex,
   app-imprimir-coex > *,
-  app-root,
+  router-outlet,
+  router-outlet + *,
   main,
+  section,
+  article,
   .main-content,
   .content-wrapper,
   .page-wrapper,
-  router-outlet + * {
+  .container,
+  .container-fluid {
     display: block !important;
+    position: static !important;
     height: auto !important;
+    min-height: auto !important;
     max-height: none !important;
     overflow: visible !important;
-    padding: 0 !important;
     margin: 0 !important;
-    background: transparent !important;
+    padding: 0 !important;
+    transform: none !important;
   }
 
-  /* 4. Documento ocupa toda la hoja */
+  /* Documento */
   .documento {
     display: block !important;
+    position: static !important;
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
+    min-height: auto !important;
     max-height: none !important;
     overflow: visible !important;
     margin: 0 !important;
     padding: 0 !important;
-    box-shadow: none !important;
     border: none !important;
-    font-size: 8pt !important;
+    box-shadow: none !important;
     background: #fff !important;
+    font-size: 8pt !important;
   }
 
-  /* 5. Tabla libre entre páginas */
+  /* Tabla */
   .doc-table {
     width: 100% !important;
-    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    table-layout: auto !important;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
     font-size: 7pt !important;
   }
 
-  .doc-table th,
-  .doc-table td {
-    padding: 3px 4px !important;
-    word-break: break-word !important;
+  thead {
+    display: table-header-group !important;
   }
 
-  /* Columnas ajustadas para vertical Letter */
-  .col-num          { width: 22px !important; }
-  .col-paciente     { width: 26%  !important; }
-  .col-expediente   { width: 70px !important; }
-  .col-especialidad { width: 15%  !important; }
-  .col-servicio     { width: 12%  !important; }
-  .col-estado       { width: 52px !important; }
+  tfoot {
+    display: table-footer-group !important;
+  }
 
-  /* 6. Encabezado de tabla repetido en cada página */
-  thead { display: table-header-group !important; }
-  tbody { display: table-row-group  !important; }
+  tbody {
+    display: table-row-group !important;
+  }
 
-  /* 7. No cortar filas */
   tr {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
 
-  /* 8. Colores forzados */
+  td,
+  th {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    padding: 3px 4px !important;
+  }
+
+  /* Anchos */
+  .col-num          { width: 22px !important; }
+  .col-paciente     { width: 26% !important; }
+  .col-expediente   { width: 70px !important; }
+  .col-especialidad { width: 15% !important; }
+  .col-servicio     { width: 12% !important; }
+  .col-estado       { width: 52px !important; }
+
+  /* Colores */
   .doc-table thead tr {
     background: #1a1a2e !important;
     color: #fff !important;
@@ -384,23 +413,37 @@
     print-color-adjust: exact !important;
   }
 
-  .badge-activo {
-    background: #dcfce7 !important;
-    color: #16a34a !important;
+  .fila-subtotal td {
+    background: #dde2e8 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
+  .badge-activo,
   .badge-inactivo {
-    background: #fee2e2 !important;
-    color: #dc2626 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* 9. Configuración de página */
+  /* Evitar cortes raros */
+  .doc-header,
+  .doc-footer,
+  .fila-subtotal {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Página */
   @page {
     size: Letter portrait;
     margin: 8mm 10mm;
   }
+}
+@media print {
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  /* ... resto del print que ya tienes */
 }

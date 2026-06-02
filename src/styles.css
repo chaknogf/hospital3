@@ -233,8 +233,20 @@
   --bs-form-invalid-border-color: #e97f82;
 }
 
+:host {
+  display: block;
+  overflow: hidden;
+}
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE / Edge */
+}
+
+*::-webkit-scrollbar {
+  display: none;                /* Chrome / Safari */
+}
 
 @media (prefers-reduced-motion: no-preference) {
   :root {

@@ -326,6 +326,32 @@ export class ImprimirCoexComponent implements OnInit {
     return encontrado?.ref === 'inactivo' ? 'inactivo' : 'activo';
   }
 
-  imprimir(): void { window.print(); }
+  imprimir(): void {
+    const body = document.body;
+    const html = document.documentElement;
+
+    // Guardar estilos originales
+    const bodyOverflow = body.style.overflow;
+    const bodyHeight = body.style.height;
+    const htmlOverflow = html.style.overflow;
+    const htmlHeight = html.style.height;
+
+    // Liberar para impresión
+    body.style.overflow = 'visible';
+    body.style.height = 'auto';
+    html.style.overflow = 'visible';
+    html.style.height = 'auto';
+
+    setTimeout(() => {
+      window.print();
+
+      // Restaurar después de imprimir
+      body.style.overflow = bodyOverflow;
+      body.style.height = bodyHeight;
+      html.style.overflow = htmlOverflow;
+      html.style.height = htmlHeight;
+    }, 100);
+  }
+
   volver(): void { this.location.back(); }
 }
