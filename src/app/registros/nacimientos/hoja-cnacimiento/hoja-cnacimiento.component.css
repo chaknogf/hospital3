@@ -468,14 +468,6 @@ label { letter-spacing: 0.4px; }
 @page {
   size: letter portrait;
   margin: 12.7mm 12.7mm 12.7mm 12.7mm;
-  .cn-pie {
-  margin-top: auto;
-  padding-top: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  break-inside: avoid;
-}
 }
 
 
