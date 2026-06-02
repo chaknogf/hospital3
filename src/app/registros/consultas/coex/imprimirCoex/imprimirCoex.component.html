@@ -1,0 +1,171 @@
+<!-- ══════════════════════════════════════════════════════════════
+     CONTROLES  (solo en pantalla, se ocultan al imprimir)
+     ══════════════════════════════════════════════════════════════ -->
+<div class="print-controls no-print">
+  <div class="controls-header">
+    <button class="btn-control btn-back" type="button" (click)="volver()">
+      ← Volver
+    </button>
+    <h2 class="controls-title">Vista previa — Listado COEX</h2>
+    <button class="btn-control btn-print" type="button" (click)="imprimir()">
+      🖨&nbsp;Imprimir
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <form class="controls-filters" (submit)="buscar(); $event.preventDefault()">
+    <!-- Fecha: cambia con cambiarFecha() para recargar + actualizar totales -->
+    <div class="filter-group">
+      <label>Fecha</label>
+      <input
+        type="date"
+        [(ngModel)]="filtros.fecha"
+        name="fecha"
+        (change)="cambiarFecha()"
+      />
+    </div>
+
+    <!-- Especialidad: dispara seleccionarEspecialidad() igual que coexLista -->
+    <div class="filter-group">
+      <label>Especialidad</label>
+      <select
+        [(ngModel)]="filtros.especialidad"
+        name="especialidad"
+        (change)="seleccionarEspecialidad(filtros.especialidad)"
+      >
+        <option value="">Todas</option>
+        <option *ngFor="let esp of especialidadesList" [value]="esp.value">
+          {{ esp.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Expediente</label>
+      <input
+        type="text"
+        [(ngModel)]="filtros.expediente"
+        name="expediente"
+        placeholder="No. Expediente"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label>1er Nombre</label>
+      <input
+        type="text"
+        [(ngModel)]="filtros.primer_nombre"
+        name="primer_nombre"
+        placeholder="Primer nombre"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label>1er Apellido</label>
+      <input
+        type="text"
+        [(ngModel)]="filtros.primer_apellido"
+        name="primer_apellido"
+        placeholder="Primer apellido"
+      />
+    </div>
+
+    <div class="filter-actions">
+      <button type="submit" class="btn-control btn-search">Buscar</button>
+      <button
+        type="button"
+        class="btn-control btn-clear"
+        (click)="limpiarFiltros()"
+      >
+        Limpiar
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     DOCUMENTO IMPRIMIBLE
+     ══════════════════════════════════════════════════════════════ -->
+<div class="documento" id="documento-imprimible">
+  <!-- ENCABEZADO ──────────────────────────────────────── -->
+  <header class="doc-header">
+    <div class="doc-header-logo">
+      <!-- <img src="assets/logo.png" alt="Logo" /> -->
+    </div>
+
+    <div class="doc-header-info">
+      <h1 class="doc-title">LISTADO DE CONSULTAS — COEX</h1>
+      <p class="doc-subtitle">{{ labelEspecialidad }}</p>
+    </div>
+
+    <div class="doc-header-meta">
+      <p><strong>Fecha:</strong> {{ filtros.fecha | date: "dd/MM/yyyy" }}</p>
+      <p><strong>Impreso el:</strong> {{ fechaImpresion }}</p>
+      <p><strong>Total:</strong> {{ totalCitas }}</p>
+    </div>
+  </header>
+
+  <hr class="doc-divider" />
+
+  <!-- CARGANDO ─────────────────────────────────────────── -->
+  <div *ngIf="cargando" class="doc-loading no-print">Cargando consultas…</div>
+
+  <!-- TABLA: usa consultasVista (sub-lista o todas según especialidad) ────── -->
+  <table class="doc-table" *ngIf="!cargando && consultasVista.length > 0">
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-paciente">Paciente</th>
+        <th class="col-expediente">Expediente</th>
+        <th class="col-especialidad">Especialidad</th>
+        <th class="col-servicio">Servicio</th>
+        <th class="col-estado">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let c of consultasVista; let i = index; trackBy: trackById"
+        [class.fila-par]="i % 2 === 0"
+      >
+        <td class="col-num">{{ i + 1 }}</td>
+
+        <td class="col-paciente">
+          <span class="paciente-nombre">{{
+            nombreCompleto(c) | capitalize
+          }}</span>
+        </td>
+
+        <td class="col-expediente">{{ c.expediente }}</td>
+
+        <td class="col-especialidad">
+          {{ c.especialidad | datosExtra: "especialidad" }}
+        </td>
+
+        <td class="col-servicio">{{ c.servicio || "—" }}</td>
+
+        <td class="col-estado">
+          <span class="badge">
+            {{ c.ultimo_estado }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SIN RESULTADOS ─────────────────────────────────────── -->
+  <div *ngIf="!cargando && consultasVista.length === 0" class="doc-empty">
+    No se encontraron consultas para los criterios seleccionados.
+  </div>
+
+  <!-- PIE DE PÁGINA ──────────────────────────────────────── -->
+  <footer class="doc-footer">
+    <div class="doc-footer-left">
+      <p>
+        Total de registros: <strong>{{ totalCitas }}</strong>
+      </p>
+    </div>
+    <div class="doc-footer-right">
+      <p>Firma y sello: ___________________________</p>
+    </div>
+  </footer>
+</div>

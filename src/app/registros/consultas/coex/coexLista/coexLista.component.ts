@@ -404,5 +404,8 @@ export class CoexListaComponent implements OnInit {
     )?.total || 0;
   }
 
+  imprimircoex(): void {
+    this.router.navigate(['/imprimircoex'])
+  }
 
 }

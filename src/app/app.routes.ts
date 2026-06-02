@@ -52,6 +52,7 @@ import { ProcedimientosmenoresComponent } from './std/procedimientos/procedimien
 import { ProcemedicoComponent } from './std/procedimientos/procemedico/procemedico.component';
 import { CatalogoprocedimientoComponent } from './std/procedimientos/catalogoprocedimiento/catalogoprocedimiento.component';
 import { NuevoprocedimientoComponent } from './std/procedimientos/nuevoprocedimiento/nuevoprocedimiento.component';
+import { ImprimirCoexComponent } from './registros/consultas/coex/imprimirCoex/imprimirCoex.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -98,6 +99,7 @@ export const routes: Routes = [
       { path: 'coexHoja/:id', component: HojaCoexComponent },
       { path: 'hojaPsico/:id', component: HojaCoexPsicoComponent },
       { path: 'hojaOdonto/:id', component: HojaCoexOdontoComponent },
+      { path: 'imprimircoex', component: ImprimirCoexComponent },
       // Hospitalización
       { path: 'ingresos', component: IngresosComponent },
       { path: 'ingreso/:id', component: HojaIngresoComponent },
