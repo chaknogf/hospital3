@@ -1,0 +1,184 @@
+<div class="aurora-paciente-container" [class.d-none]="visible">
+  <!-- Botones superiores -->
+  <div
+    class="botones justify-content-between"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="menuIcon"></span>
+      Menu
+    </button>
+
+    <h1 class="text-white">Citas</h1>
+
+    <button type="button" (click)="toggleFiltros()">
+      <span [innerHTML]="findIcon"></span>
+      Buscar
+    </button>
+  </div>
+
+  <!-- Contenedor de Búsqueda -->
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar || visible }">
+    <form
+      class="form-filtros"
+      (submit)="cargarCitas(); $event.preventDefault()"
+    >
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Expediente</label>
+        <input
+          type="text"
+          class="input-filtros"
+          [(ngModel)]="filtros.expediente"
+          name="expediente"
+          placeholder="Buscar por expediente"
+        />
+      </fieldset>
+
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Especialidad</label>
+        <select
+          class="input-filtros"
+          [(ngModel)]="filtros.especialidad"
+          name="especialidad"
+        >
+          <option value="">Todas las especialidades</option>
+          <option *ngFor="let esp of especialidadesList" [value]="esp.value">
+            {{ esp.label }}
+          </option>
+        </select>
+      </fieldset>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Fecha</label>
+        <input
+          type="date"
+          class="input-filtros"
+          [(ngModel)]="filtros.fecha_cita"
+          (change)="cargarCitas()"
+          name="fecha"
+        />
+      </fieldset>
+
+      <!-- Botones -->
+      <div class="botones-filtros d-flex gap-2">
+        <button type="submit" class="button-filtros" (click)="toggleFiltros()">
+          <span [innerHTML]="searchIcon"></span> Buscar
+        </button>
+        <button type="button" (click)="limpiarFiltros()" class="button-filtros">
+          <span [innerHTML]="removeIcon"></span> Limpiar
+        </button>
+      </div>
+      <button type="button" (click)="imprimirCitas()" class="button-filtros">
+        <span [innerHTML]="printIcon"></span>
+        Imprimir Citas
+      </button>
+    </form>
+
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="btn m-0 p-0" (click)="toggleFiltros()">
+        <span [innerHTML]="arrowDown"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla principal -->
+  <div class="aurora-container">
+    <table class="aurora-tb">
+      <thead>
+        <tr>
+          <th>Paciente</th>
+          <th>Expediente</th>
+          <th>Especialidad</th>
+          <th>Fecha & Agenda</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let cita of citas; let i = index; trackBy: trackById"
+          class="aurora-table-row"
+          [class.touch-active]="rowActiva === cita.id"
+        >
+          <!-- Paciente -->
+          <td data-label="Paciente:">
+            <div class="nombre-table">
+              <p class="p-0 m-0 text-uppercase">
+                {{ cita.paciente.nombre.primer_nombre }}
+                {{ cita.paciente.nombre.segundo_nombre }}
+                {{ cita.paciente.nombre.otro_nombre }}
+              </p>
+              <p
+                class="p-0 m-0 text-uppercase"
+                [ngClass]="cita.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+              >
+                {{ cita.paciente.nombre.primer_apellido }}
+                {{ cita.paciente.nombre.segundo_apellido }}
+                {{ cita.paciente.nombre.apellido_casada }}
+              </p>
+            </div>
+          </td>
+
+          <!-- Expediente -->
+          <td class="text-justify" data-label="Expediente:">
+            <div *ngIf="cita">
+              <strong>Expediente:</strong> {{ cita.expediente }}
+            </div>
+          </td>
+
+          <!-- Especialidad -->
+          <td class="oculto">
+            {{ cita.especialidad | datosExtra: "especialidad" }}
+          </td>
+
+          <!-- Fecha y Agenda -->
+          <td class="oculto">
+            {{ cita.fecha_cita | date: "dd/MM/yyyy" }}
+            <br />
+            <small>{{ cita.datos_extra.razon_consulta }}</small>
+          </td>
+
+          <!-- Acciones -->
+          <td
+            class="secundario d-flex gap-2 align-items-center"
+            data-label="No.:"
+          >
+            <strong class="cell-index">{{ i + 1 }}</strong>
+            <div class="botones-opt">
+              <button (click)="editarCita(cita.id); $event.stopPropagation()">
+                <span [innerHTML]="editIcon"></span>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Sin resultados -->
+        <tr *ngIf="!cargando && citas.length === 0">
+          <td colspan="5" class="text-center py-3">
+            <em>No se encontraron citas para esta fecha.</em>
+          </td>
+        </tr>
+
+        <!-- Cargando -->
+        <tr *ngIf="cargando">
+          <td colspan="5" class="text-center py-3">
+            <em>Cargando...</em>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación -->
+  <div class="d-flex justify-content-center align-items-center p-0">
+    <button class="btn" [disabled]="filtros.skip === 0">
+      <span [innerHTML]="skipLeft"></span>
+    </button>
+
+    <div>
+      <strong>{{ filtros.skip }}</strong>
+    </div>
+
+    <button class="btn" [disabled]="finPagina">
+      <span [innerHTML]="skipRight"></span>
+    </button>
+  </div>
+</div>

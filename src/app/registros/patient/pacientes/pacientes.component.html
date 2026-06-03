@@ -185,17 +185,17 @@
           <td data-label="Nombre:">
             <div class="nombre-table">
               <p class="">
-                {{ paciente.nombre.primer_nombre }}
-                {{ paciente.nombre.segundo_nombre }}
-                {{ paciente.nombre.otro_nombre }}
+                {{ paciente.nombre.primer_nombre | capitalize }}
+                {{ paciente.nombre.segundo_nombre | capitalize }}
+                {{ paciente.nombre.otro_nombre | capitalize }}
               </p>
               <p
                 class="p-0 m-0"
                 [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'"
               >
-                {{ paciente.nombre.primer_apellido }}
-                {{ paciente.nombre.segundo_apellido }}
-                {{ paciente.nombre.apellido_casada }}
+                {{ paciente.nombre.primer_apellido | capitalize }}
+                {{ paciente.nombre.segundo_apellido | capitalize }}
+                {{ paciente.nombre.apellido_casada | capitalize }}
               </p>
             </div>
           </td>

@@ -100,7 +100,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$), debounceTime(100), distinctUntilChanged())
       .subscribe((fecha: string) => {
         if (!fecha) return;
-        const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
         this.form.get('dia_semana')?.setValue(dias[new Date(fecha).getDay()], { emitEvent: false });
       });
   }
@@ -151,7 +151,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
   actualizarDiaSemana(fecha: string) {
     if (!fecha) return;
 
-    const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
     const d = new Date(fecha);
     const dia = dias[d.getDay()];
 

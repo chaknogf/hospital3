@@ -38,7 +38,8 @@ export class ConsultorComponent implements OnInit {
     primer_nombre: '',
     segundo_nombre: '',
     primer_apellido: '',
-    segundo_apellido: ''
+    segundo_apellido: '',
+    fecha_nacimiento: ''
   };
   limit: number = 10;
 

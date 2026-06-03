@@ -8,7 +8,7 @@ import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { OfflineSyncService } from './offline-sync.service';
 import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse, Hijode, PacienteJoin } from '../interface/interfaces';
 import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHistorial, ConstanciaNacimientoUpdate } from '../interface/consNac';
-import { ConsultaBase, ConsultaCreate, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, TotalesItem, TotalesResponse } from '../interface/consultas';
+import { ConsultaBase, ConsultaCreate, ConsultaListResponse, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, TotalesItem, TotalesResponse } from '../interface/consultas';
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
 import { FiltroConsulta, FiltroCitas } from '../interface/filtros.model';
 import { CitaCreate, CitaResponse, Citas, CitasBase, CitaUpdate } from '../interface/citas';
@@ -109,6 +109,57 @@ export class ApiService {
     return throwError(() => error);
   }
 
+  private preCacheAllPatients(): void {
+    if (!this.sync.isOnline()) return;
+    const limit = 100;
+    const url = `${this.baseUrl}/pacientes/`;
+    const ttl = 30 * 60 * 1000;
+
+    this.http.get<PacienteListResponse>(url, { params: new HttpParams().set('skip', '0').set('limit', String(limit)) }).pipe(
+      catchError(() => of(null))
+    ).subscribe(firstResponse => {
+      if (!firstResponse) return;
+      const total = firstResponse.total;
+      this.sync.setCachedData(
+        this.sync.cacheKey(url, new HttpParams().set('skip', '0').set('limit', String(limit))),
+        firstResponse, ttl
+      );
+      this.preCachePageSequentially(url, limit, limit, total, ttl);
+    });
+  }
+
+  private preCachePageSequentially(url: string, skip: number, limit: number, total: number, ttl: number): void {
+    if (skip >= total) return;
+    const params = new HttpParams().set('skip', String(skip)).set('limit', String(limit));
+    this.http.get<PacienteListResponse>(url, { params }).pipe(
+      catchError(() => of(null))
+    ).subscribe(data => {
+      if (data) {
+        this.sync.setCachedData(this.sync.cacheKey(url, params), data, ttl);
+      }
+      this.preCachePageSequentially(url, skip + limit, limit, total, ttl);
+    });
+  }
+
+  private preCacheAllConsultations(): void {
+    if (!this.sync.isOnline()) return;
+    const limit = 100;
+    const url = `${this.baseUrl}/consultas/`;
+    const ttl = 30 * 60 * 1000;
+
+    this.http.get<ConsultaListResponse>(url, { params: new HttpParams().set('skip', '0').set('limit', String(limit)) }).pipe(
+      catchError(() => of(null))
+    ).subscribe(firstResponse => {
+      if (!firstResponse) return;
+      const total = firstResponse.total;
+      this.sync.setCachedData(
+        this.sync.cacheKey(url, new HttpParams().set('skip', '0').set('limit', String(limit))),
+        firstResponse, ttl
+      );
+      this.preCachePageSequentially(url, limit, limit, total, ttl);
+    });
+  }
+
   private preCacheReferenceData(): void {
     const ttl = 60 * 60 * 1000;
     this.sync.preCache(
@@ -121,11 +172,8 @@ export class ApiService {
       this.http.get(`${this.baseUrl}/paises/`),
       ttl
     );
-    this.sync.preCache(
-      this.sync.cacheKey(`${this.baseUrl}/consultas/`, new HttpParams().set('skip', '0').set('limit', '14')),
-      this.http.get(`${this.baseUrl}/consultas/`, { params: new HttpParams().set('skip', '0').set('limit', '14') }),
-      30 * 60 * 1000
-    );
+    this.preCacheAllPatients();
+    this.preCacheAllConsultations();
   }
 
   // ======= AUTENTICACIÓN =======

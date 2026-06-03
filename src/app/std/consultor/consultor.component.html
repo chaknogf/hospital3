@@ -37,7 +37,7 @@
           type="text"
           name="expediente"
           [(ngModel)]="filtros.expediente"
-          placeholder="EXP-0001"
+          placeholder="26A-33"
         />
       </div>
       <div class="field-group">
@@ -50,12 +50,12 @@
         />
       </div>
       <div class="field-group">
-        <label>Documento</label>
+        <label>Hoja de Emergencia</label>
         <input
           type="text"
           name="documento"
           [(ngModel)]="filtros.documento"
-          placeholder="DOC-001"
+          placeholder="09-E26"
         />
       </div>
       <div class="sidebar-divider"></div>
@@ -93,6 +93,14 @@
           name="segundo_apellido"
           [(ngModel)]="filtros.segundo_apellido"
           placeholder="López"
+        />
+      </div>
+      <div class="field-group">
+        <label>Fecha de nacimiento</label>
+        <input
+          type="date"
+          name="fecha_nacimiento"
+          [(ngModel)]="filtros.fecha_nacimiento"
         />
       </div>
 
@@ -140,7 +148,9 @@
             <tbody>
               <tr *ngFor="let p of resultados">
                 <td>{{ p.id }}</td>
-                <td>{{ p.expediente || "—" }}</td>
+                <td [ngClass]="p.expediente ? 'text-normal' : 'text-muted'">
+                  {{ p.expediente || "—" }}
+                </td>
                 <td>{{ p.nombre_completo }}</td>
                 <td>{{ p.cui | cui }}</td>
                 <td>{{ p.fecha_nacimiento | date: "dd/MM/yyyy" }}</td>

@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { PacienteService } from '../paciente.service';
+import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
 
 
 @Component({
@@ -18,7 +19,7 @@ import { PacienteService } from '../paciente.service';
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe]
+  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe, CapitalizePipe]
 })
 export class PacientesComponent implements OnInit {
 

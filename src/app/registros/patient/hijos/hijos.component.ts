@@ -114,7 +114,7 @@ export class HijosComponent implements OnInit, OnDestroy {
         tipo_parto: [''],          // Simple, Gemelar, Múltiple
         clase_parto: [''],         // Eutocico, Distocico
         gemelo: [''],
-        extrahositalario: [false],
+        extrahositalario: ['no'],
         hora_nacimiento: [''],
       }),
     });
@@ -194,7 +194,7 @@ export class HijosComponent implements OnInit, OnDestroy {
     this.form.get('datos_extra.clase_parto')?.setValue(valor);
   }
 
-  setExtrahospitalario(valor: boolean): void {
+  setExtrahospitalario(valor: string): void {
     this.form.get('datos_extra.extrahositalario')?.setValue(valor);
   }
 
@@ -239,7 +239,7 @@ export class HijosComponent implements OnInit, OnDestroy {
         tipo_parto: raw.datos_extra.tipo_parto || undefined,
         clase_parto: raw.datos_extra.clase_parto || undefined,
         gemelo: raw.datos_extra.gemelo || undefined,
-        extrahositalario: raw.datos_extra.extrahositalario || false,
+        extrahositalario: raw.datos_extra.extrahositalario || 'no',
         hora_nacimiento: hora || undefined,
       }
     };
