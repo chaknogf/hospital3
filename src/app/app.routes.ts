@@ -54,6 +54,7 @@ import { CatalogoprocedimientoComponent } from './std/procedimientos/catalogopro
 import { NuevoprocedimientoComponent } from './std/procedimientos/nuevoprocedimiento/nuevoprocedimiento.component';
 import { ImprimirCoexComponent } from './registros/consultas/coex/imprimirCoex/imprimirCoex.component';
 import { CitasEspecialidadComponent } from './registros/citas/citasEspecialidad/citasEspecialidad.component';
+import { MenuNutriComponent } from './nutricion/menu-nutri/menu-nutri.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -137,9 +138,9 @@ export const routes: Routes = [
       //Estadistica
       { path: 'estadistica', component: EstadisticaComponent, canActivate: [roleGuard(['admin', 'std'])] },
       { path: 'consultar', component: ConsultorComponent },
-      { path: 'doctores', component: DoctoresComponent, canActivate: [roleGuard(['admin', 'std', 'registro'])] },
-      { path: 'doctor', component: DoctorFormComponent, canActivate: [roleGuard(['admin', 'std', 'registro'])] },
-      { path: 'doctor/:id', component: DoctorFormComponent, canActivate: [roleGuard(['admin', 'std', 'registro'])] },
+      { path: 'doctores', component: DoctoresComponent },
+      { path: 'doctor', component: DoctorFormComponent },
+      { path: 'doctor/:id', component: DoctorFormComponent },
       { path: 'procedimientosmenores', component: ProcedimientosmenoresComponent },
       { path: 'procemedic', component: ProcemedicoComponent },
       { path: 'procemedicEdit/:id', component: ProcemedicoComponent },
@@ -148,6 +149,8 @@ export const routes: Routes = [
       { path: 'editProce/:id', component: NuevoprocedimientoComponent },
 
 
+      // Nutricion
+      { path: 'menu-nutri', component: MenuNutriComponent, canActivate: [roleGuard(['admin', 'nutricion'])] },
 
       //TrabajoSocial
       { path: 'TrabajoSocial', component: MenutsComponent, canActivate: [roleGuard(['admin', 'ts'])] },

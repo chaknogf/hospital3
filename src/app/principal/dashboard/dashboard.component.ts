@@ -78,11 +78,11 @@ export class DashboardComponent implements OnInit {
         descripcion: 'Imprime reportes y sigsas',
         ruta: '/reportes'
       },
-      // {
-      //   nombre: 'Rayos X',
-      //   descripcion: 'Gestor de rayos x',
-      //   ruta: '/rayos'
-      // },
+      {
+        nombre: 'Nutrición',
+        descripcion: 'Gestor de nutrición',
+        ruta: '/menu-nutri'
+      },
       // {
       //   nombre: 'Laboratorio',
       //   descripcion: 'Gestor de laboratorio',
