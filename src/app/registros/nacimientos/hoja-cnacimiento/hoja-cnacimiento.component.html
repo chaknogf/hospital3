@@ -24,7 +24,7 @@
           Ministerio de Salud Pública y Asistencia Social
         </p>
         <p class="h-hospital">Hospital General Tipo I de Tecpán Guatemala</p>
-        <p class="h-titulo">Constancia de Nacimiento</p>
+        <p class="h-titulo">Informe de Nacimiento</p>
       </div>
       <div class="hoja-exp">
         <span class="exp-lbl">Documento No.</span>
@@ -191,7 +191,7 @@
           }}
         </span>
       </div>
-      @if (constancia()?.paciente?.datos_extra?.neonatales?.edad_gestacional) {
+      <!-- @if (constancia()?.paciente?.datos_extra?.neonatales?.edad_gestacional) {
         <div class="form-field" style="flex: 1">
           <span class="form-lbl">Edad Gestacional</span>
           <span class="form-val">
@@ -202,7 +202,7 @@
             semanas
           </span>
         </div>
-      }
+      } -->
     </div>
 
     <div class="form-row">
@@ -232,11 +232,13 @@
         </span>
       </div>
       <div class="form-field" style="flex: 2">
-        <span class="form-lbl">Médico Responsable</span>
-        <span class="form-val">
+        <span class="form-lbl text-center">Médico Responsable</span>
+        <span class="form-val text-center">
           <ng-container *ngIf="constancia()?.medico; else sinMedico">
             {{ constancia()?.medico?.nombre }} — Colegiado
             <strong>{{ constancia()?.medico?.colegiado }}</strong>
+            <br />
+            CUI: {{ constancia()?.medico?.dpi | cui }}
           </ng-container>
           <ng-template #sinMedico>Atendido en esta institución</ng-template>
         </span>
@@ -293,7 +295,7 @@
     </div>
 
     <div class="hoja-pie-label">
-      Constancia de Nacimiento — {{ constancia()?.documento }}
+      Informe de Nacimiento — {{ constancia()?.documento }}
     </div>
   </div>
   <!-- /hoja-carta -->

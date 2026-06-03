@@ -79,7 +79,7 @@ label { letter-spacing: 0.4px; }
 /* ══ HEADER ═══════════════════════════════════════════════════ */
 .hoja-header {
   display: grid;
-  grid-template-columns: 52px 1fr 88px;
+  grid-template-columns: 33px 1fr 125px;
   align-items: center; gap: 6px;
   border-bottom: 2px solid var(--ink);
   padding-bottom: 6px; margin-bottom: 3px;
@@ -95,7 +95,7 @@ label { letter-spacing: 0.4px; }
 
 .h-ministerio {
   font-family: var(--serif);
-  font-size: 7.5pt; font-weight: 700; color: var(--ink);
+  font-size: 9.5pt; font-weight: 700; color: var(--ink);
 }
 .h-hospital {
   font-family: var(--serif);
@@ -116,7 +116,7 @@ label { letter-spacing: 0.4px; }
 }
 .exp-lbl {
   font-family: var(--mono);
-  font-size: 5.5pt; font-weight: 500;
+  font-size: 9.5pt; font-weight: 500;
   text-transform: uppercase; letter-spacing: 0.5px;
   color: var(--ink-muted);
 }
@@ -166,7 +166,7 @@ label { letter-spacing: 0.4px; }
 .f-row-diag {
   display: flex; align-items: center;
   border-bottom: 0.5px solid var(--border-lt);
-  min-height: 20px;
+  min-height: 29px;
 }
 .f-row-diag:nth-child(even) { background: rgba(0,0,0,0.015); }
 
@@ -190,7 +190,7 @@ label { letter-spacing: 0.4px; }
 .f-lbl {
   display: block;
   font-family: var(--mono);
-  font-size: 5.8pt; font-weight: 500;
+  font-size: 7.8pt; font-weight: 500;
   text-transform: uppercase; letter-spacing: 0.4px;
   color: var(--ink-muted); margin-bottom: 1px; line-height: 1.2;
 }
@@ -198,7 +198,7 @@ label { letter-spacing: 0.4px; }
 .f-val {
   display: block;
   font-family: var(--serif);
-  font-size: 9pt; font-weight: 600;
+  font-size: 12pt; font-weight: 600;
   color: var(--ink); letter-spacing: 0;
   line-height: 1.3; min-height: 12px;
   /* box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 8px 32px rgba(0,0,0,0.16); */

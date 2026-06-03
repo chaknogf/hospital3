@@ -208,6 +208,7 @@ export interface ConsultasIdPaciente {
   tipo_consulta: number;
   documento?: string;
   especialidad: string;
+  servicio?: string;
   fecha_consulta: string;
   hora_consulta: string;
   ultimo_estado?: string;

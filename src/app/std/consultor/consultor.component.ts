@@ -11,6 +11,7 @@ import { TimePipe } from '../../pipes/time.pipe';
 import { CuiPipe } from '../../pipes/cui.pipe';
 import { EdadPipe } from '../../pipes/edad.pipe';
 import { Location } from '@angular/common';
+import { Citas } from '../../interface/citas';
 
 @Component({
   selector: 'app-consultor',
@@ -54,6 +55,8 @@ export class ConsultorComponent implements OnInit {
   cargandoPaciente: boolean = false;
   cargandoConsultas: boolean = false;
   error: string | null = null;
+  citasPorPaciente: Citas[] = [];
+  citasProcesadas: { titulo: string; campos: { key: string; valor: any }[] }[] = [];
 
   // ── Listas procesadas ──────────────────────────────────
   demograficosFiltrados: { key: string; valor: any }[] = [];
@@ -62,7 +65,9 @@ export class ConsultorComponent implements OnInit {
   metadatosArray: { key: string; valor: any }[] = [];
   neonatalesFiltrados: { key: string; valor: any }[] = [];
 
-  ngOnInit() { }
+  ngOnInit() {
+
+  }
 
   // ── Control del sidebar / bottom sheet ─────────────────
   toggleSidebar(): void {
@@ -126,6 +131,7 @@ export class ConsultorComponent implements OnInit {
     this.cerrarSidebarEnMobile();
     this.cargarPaciente();
     this.cargarConsultas();
+    this.cargarCitas();
   }
 
   private cargarPaciente(): void {
@@ -162,6 +168,32 @@ export class ConsultorComponent implements OnInit {
       },
       error: () => {
         this.cargandoConsultas = false;
+      }
+    });
+  }
+
+  private cargarCitas(): void {
+    if (!this.pacienteId) return;
+
+    this.apip.getCitasPaciente(this.pacienteId).subscribe({
+      next: (data) => {
+        this.citasPorPaciente = data;
+        console.log('Citas del paciente:', this.citasPorPaciente);
+
+        this.citasProcesadas = data.map((cita, index) => ({
+          titulo: `Cita ${index + 1}`,
+          campos: Object.entries(cita)
+            .filter(([_, valor]) =>
+              valor !== null && valor !== undefined && valor !== ''
+            )
+            .map(([key, valor]) => ({
+              key,
+              valor
+            }))
+        }));
+      },
+      error: (err: any) => {
+        console.error('Error al cargar las citas del paciente:', err);
       }
     });
   }
@@ -272,4 +304,15 @@ export class ConsultorComponent implements OnInit {
   verDetalle(id: number): void { this.router.navigate(['/detalleAdmision', id]); }
   editar(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
   regresar(): void { this.location.back(); }
+
+  copiarTexto(texto: string): void {
+    navigator.clipboard.writeText(texto)
+      .then(() => {
+        console.log('Texto copiado');
+        // Aquí puedes mostrar un toast
+      })
+      .catch(err => {
+        console.error('Error al copiar:', err);
+      });
+  }
 }

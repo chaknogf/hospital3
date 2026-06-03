@@ -193,9 +193,11 @@
       <div class="hud-header">
         <div class="hud-title">
           <span class="hud-label">Paciente</span>
-          <span class="hud-id">{{ paciente.expediente || "—" }}</span>
+          <span class="hud-id">
+            Expediente: {{ paciente.expediente || "—" }}</span
+          >
           <span class="hud-sep">·</span>
-          <span class="hud-doc">{{ paciente.cui | cui }}</span>
+          <span class="hud-doc">CUI: {{ paciente.cui | cui }}</span>
         </div>
         <div class="hud-actions">
           <div
@@ -216,21 +218,21 @@
         <div class="dc-card">
           <div class="patient-hero">
             <div class="patient-avatar">
-              <span class="avatar-letter">
+              <span class="avatar-letter m-0">
                 {{ paciente.nombre.primer_nombre[0] }}
                 {{ paciente.nombre.primer_apellido[0] }}
               </span>
             </div>
             <div class="patient-name-block">
+              <p class="patient-firstname m-0">
+                {{ paciente.nombre.primer_nombre }}
+                {{ paciente.nombre.segundo_nombre }}
+                {{ paciente.nombre.otro_nombre }}
+              </p>
               <p class="patient-name">
                 {{ paciente.nombre.primer_apellido }}
                 {{ paciente.nombre.segundo_apellido }}
                 {{ paciente.nombre.apellido_casada }}
-              </p>
-              <p class="patient-firstname">
-                {{ paciente.nombre.primer_nombre }}
-                {{ paciente.nombre.segundo_nombre }}
-                {{ paciente.nombre.otro_nombre }}
               </p>
               <div class="patient-tags">
                 <span
@@ -261,6 +263,10 @@
               </div>
             }
             <div class="dc-field">
+              <span class="dc-lbl">CUI:</span>
+              <span class="dc-val">{{ paciente.cui || "—" }}</span>
+            </div>
+            <div class="dc-field">
               <span class="dc-lbl">Pasaporte</span>
               <span class="dc-val">{{ paciente.pasaporte || "—" }}</span>
             </div>
@@ -284,9 +290,14 @@
               @if (paciente.contacto.domicilio) {
                 <div class="dc-field dc-field-full">
                   <span class="dc-lbl">Dirección</span>
-                  <span class="dc-val">{{
-                    paciente.contacto.domicilio | titlecase
-                  }}</span>
+
+                  <span
+                    class="dc-val dc-copy"
+                    (click)="copiarTexto(paciente.contacto.domicilio)"
+                    title="Copiar dirección"
+                  >
+                    {{ paciente.contacto.domicilio | titlecase }}
+                  </span>
                 </div>
               }
               @if (paciente.contacto.municipio) {
@@ -405,7 +416,7 @@
         </div>
 
         @if (consultasPorPaciente.length > 0) {
-          <div class="dc-card consultas-card">
+          <div class="dc-card-cc consultas-card">
             <div class="card-header">
               <span class="card-icon">📂</span>
               <h3 class="card-title">Consultas</h3>
@@ -429,7 +440,15 @@
                       <br />
                       {{ c.hora_consulta | time }}
                     </td>
-                    <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
+                    <td>
+                      <span>{{
+                        c.especialidad | datosExtra: "especialidad"
+                      }}</span>
+                      <br />
+                      <span class="doc-badge">{{
+                        c.servicio | datosExtra: "servicio"
+                      }}</span>
+                    </td>
                     <td>
                       {{ c.tipo_consulta | datosExtra: "tipo_consulta" }}
                       @if (c.documento) {
@@ -438,8 +457,49 @@
                       }
                     </td>
                     <td class="text-center">
-                      <button class="btn" (click)="verDetalle(c.id)">📁</button>
+                      <span class="doc-badge">
+                        {{ c.ultimo_estado }}
+                      </span>
+                      <button
+                        [class.estado-pendiente]="c.ultimo_estado !== 'archivo'"
+                        class="btn"
+                        (click)="verDetalle(c.id)"
+                      >
+                        📁
+                      </button>
                     </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+
+        <!-- CITAS -->
+        @if (citasPorPaciente.length > 0) {
+          <div class="dc-card-cc consultas-card">
+            <div class="card-header">
+              <span class="card-icon">🗓️</span>
+              <h3 class="card-title">Citas</h3>
+            </div>
+
+            <div class="table-container">
+              <table class="dc-table">
+                <thead>
+                  <tr class="text-center" style="border-bottom: 2px dotted">
+                    <th>Fecha</th>
+                    <th>Especialidad</th>
+                    <th>razon</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let c of citasPorPaciente">
+                    <td>
+                      {{ c.fecha_cita | date: "dd-MM-yyyy" }}
+                    </td>
+                    <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
+                    <td>{{ c.datos_extra.razon_consulta }}</td>
                   </tr>
                 </tbody>
               </table>
