@@ -53,6 +53,7 @@ import { ProcemedicoComponent } from './std/procedimientos/procemedico/procemedi
 import { CatalogoprocedimientoComponent } from './std/procedimientos/catalogoprocedimiento/catalogoprocedimiento.component';
 import { NuevoprocedimientoComponent } from './std/procedimientos/nuevoprocedimiento/nuevoprocedimiento.component';
 import { ImprimirCoexComponent } from './registros/consultas/coex/imprimirCoex/imprimirCoex.component';
+import { CitasEspecialidadComponent } from './registros/citas/citasEspecialidad/citasEspecialidad.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -125,6 +126,7 @@ export const routes: Routes = [
       { path: 'agendar/paciente/:pacienteId', component: AgendarComponent },
       { path: 'reagendar/cita/:citaId', component: AgendarComponent },
       { path: 'imprimirCitas', component: ImprimirCitasComponent },
+      { path: 'citaspacientes', component: CitasEspecialidadComponent },
 
       //Constancias Nacimiento
       { path: 'nacimientos', component: ListarConstanciasComponent },
