@@ -579,129 +579,129 @@ export const municipios: Municipio[] = [
     codigo: "1501"
   },
   {
-    vecindad: "Pachalum, Guatemala",
+    vecindad: "Pachalum, Quiche",
     municipio: "Pachalum",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1421"
   },
   {
-    vecindad: "Playa Grande Ixcán, Guatemala",
+    vecindad: "Playa Grande Ixcán, Quiche",
     municipio: "Playa Grande Ixcán",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1420"
   },
   {
-    vecindad: "Chicamán, Guatemala",
+    vecindad: "Chicamán, Quiche",
     municipio: "Chicamán",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1419"
   },
   {
-    vecindad: "Canillá, Guatemala",
+    vecindad: "Canillá, Quiche",
     municipio: "Canillá",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1418"
   },
   {
-    vecindad: "San Bartolomé Jocotenango, Guatemala",
+    vecindad: "San Bartolomé Jocotenango, Quiche",
     municipio: "San Bartolomé Jocotenango",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1417"
   },
   {
-    vecindad: "Sacapulas, Guatemala",
+    vecindad: "Sacapulas, Quiche",
     municipio: "Sacapulas",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1416"
   },
   {
-    vecindad: "San Miguel Uspantán, Guatemala",
+    vecindad: "San Miguel Uspantán, Quiche",
     municipio: "San Miguel Uspantán",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1415"
   },
   {
-    vecindad: "San Andrés Sajcabajá, Guatemala",
+    vecindad: "San Andrés Sajcabajá, Quiche",
     municipio: "San Andrés Sajcabajá",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1414"
   },
   {
-    vecindad: "Santa María Nebaj, Guatemala",
+    vecindad: "Santa María Nebaj, Quiche",
     municipio: "Santa María Nebaj",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1413"
   },
   {
-    vecindad: "Joyabaj, Guatemala",
+    vecindad: "Joyabaj, Quiche",
     municipio: "Joyabaj",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1412"
   },
   {
-    vecindad: "San Juan Cotzal, Guatemala",
+    vecindad: "San Juan Cotzal, Quiche",
     municipio: "San Juan Cotzal",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1411"
   },
   {
-    vecindad: "Cunén, Guatemala",
+    vecindad: "Cunén, Quiche",
     municipio: "Cunén",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1410"
   },
   {
-    vecindad: "San Pedro Jocopilas, Guatemala",
+    vecindad: "San Pedro Jocopilas, Quiche",
     municipio: "San Pedro Jocopilas",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1409"
   },
   {
-    vecindad: "San Antonio Ilotenango, Guatemala",
+    vecindad: "San Antonio Ilotenango, Quiche",
     municipio: "San Antonio Ilotenango",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1408"
   },
   {
-    vecindad: "Patzité, Guatemala",
+    vecindad: "Patzité, Quiche",
     municipio: "Patzité",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1407"
   },
   {
     vecindad: "Chichicastenango, Quiché",
     municipio: "Chichicastenango",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1406"
   },
   {
-    vecindad: "Chajul, Guatemala",
+    vecindad: "Chajul, Quiche",
     municipio: "Chajul",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1405"
   },
   {
-    vecindad: "Zacualpa, Guatemala",
+    vecindad: "Zacualpa, Quiche",
     municipio: "Zacualpa",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1404"
   },
   {
-    vecindad: "Chinique, Guatemala",
+    vecindad: "Chinique, Quiche",
     municipio: "Chinique",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1403"
   },
   {
-    vecindad: "Chiché, Guatemala",
+    vecindad: "Chiché, Quiche",
     municipio: "Chiché",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1402"
   },
   {
-    vecindad: "Santa Cruz del Quiché, Guatemala",
+    vecindad: "Santa Cruz del Quiché, Quiche",
     municipio: "Santa Cruz del Quiché",
-    departamento: "Guatemala",
+    departamento: "Quiche",
     codigo: "1401"
   },
   {

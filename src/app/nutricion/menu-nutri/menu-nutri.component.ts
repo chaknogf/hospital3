@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { menuIcon, patientIcon, ambulanceIcon, enfermoIcon, hospitalconsvg, consultasIcon, archivoIcon, compartirIcon, calendarIcon } from '../../shared/icons/svg-icon';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
@@ -20,26 +20,27 @@ export class MenuNutriComponent implements OnInit {
   // iconos
   icons: { [key: string]: any } = {};
 
+  private router = inject(Router);
+  private iconS = inject(IconService);
 
 
   constructor(
-    private router: Router,
-    private sanitizer: DomSanitizer,
-    private iconService: IconService
+
   ) {
     this.icons = {
-      menu: this.iconService.getIcon("menuIcon"),
-      paciente: this.iconService.getIcon("patientIcon"),
-      ambulance: this.iconService.getIcon("ambulanceIcon"),
-      cmedic: this.iconService.getIcon("consultaMedica"),
-      ingresoIcon: this.iconService.getIcon("ingresoIcon"),
-      consultas: this.iconService.getIcon("consultasIcon"),
-      archivo: this.iconService.getIcon("archivoIcon"),
-      compartir: this.iconService.getIcon("compartirIcon"),
-      calendar: this.iconService.getIcon("calendarIcon"),
-      baby: this.iconService.getIcon("babyIcon"),
-      persons: this.iconService.getIcon("persons2"),
-      doctor: this.iconService.getIcon("doctorIcon")
+      menu: this.iconS.getIcon("menuIcon"),
+      paciente: this.iconS.getIcon("patientIcon"),
+      ambulance: this.iconS.getIcon("ambulanceIcon"),
+      cmedic: this.iconS.getIcon("consultaMedica"),
+      ingresoIcon: this.iconS.getIcon("ingresoIcon"),
+      consultas: this.iconS.getIcon("consultasIcon"),
+      archivo: this.iconS.getIcon("archivoIcon"),
+      compartir: this.iconS.getIcon("compartirIcon"),
+      calendar: this.iconS.getIcon("calendarIcon"),
+      baby: this.iconS.getIcon("babyIcon"),
+      persons: this.iconS.getIcon("persons2"),
+      doctor: this.iconS.getIcon("doctorIcon"),
+      nutric: this.iconS.getIcon("nutritionIcon"),
 
     }
 
@@ -53,7 +54,7 @@ export class MenuNutriComponent implements OnInit {
     this.options = [
 
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
-
+      { nombre: 'Citas', descripcion: 'Agendar y Consultar Citas', ruta: '/citas-nutri', icon: 'calendar' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];

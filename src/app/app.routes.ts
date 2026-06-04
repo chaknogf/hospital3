@@ -55,6 +55,7 @@ import { NuevoprocedimientoComponent } from './std/procedimientos/nuevoprocedimi
 import { ImprimirCoexComponent } from './registros/consultas/coex/imprimirCoex/imprimirCoex.component';
 import { CitasEspecialidadComponent } from './registros/citas/citasEspecialidad/citasEspecialidad.component';
 import { MenuNutriComponent } from './nutricion/menu-nutri/menu-nutri.component';
+import { CitasNutriComponent } from './nutricion/citas-nutri/citas-nutri.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -150,7 +151,8 @@ export const routes: Routes = [
 
 
       // Nutricion
-      { path: 'menu-nutri', component: MenuNutriComponent, canActivate: [roleGuard(['admin', 'nutricion'])] },
+      { path: 'menu-nutri', component: MenuNutriComponent, canActivate: [roleGuard(['admin', 'nutric'])] },
+      { path: 'citas-nutri', component: CitasNutriComponent, canActivate: [roleGuard(['admin', 'nutric'])] },
 
       //TrabajoSocial
       { path: 'TrabajoSocial', component: MenutsComponent, canActivate: [roleGuard(['admin', 'ts'])] },

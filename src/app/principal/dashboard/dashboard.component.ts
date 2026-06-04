@@ -1,10 +1,11 @@
 import { logoicon, rocketIcon } from './../../shared/icons/svg-icon';
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { tarjetaPaciente, datosIcon } from '../../shared/icons/svg-icon';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
+import { IconService } from '../../service/icon.service';
 
 
 
@@ -17,22 +18,26 @@ import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-brows
 })
 export class DashboardComponent implements OnInit {
 
-  modulos: { nombre: string; descripcion: string; ruta: string; icon?: SafeResourceUrl }[] = [];
-  // svg
-  tarjetaPaciente: SafeHtml = tarjetaPaciente;
-  datosIcon: SafeHtml = datosIcon;
-  logoicon: SafeHtml = logoicon;
-  rocket: SafeHtml = rocketIcon;
+  modulos: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
+
+  private router = inject(Router);
+  private iconS = inject(IconService);
+
+  // iconos
+  icons: { [key: string]: any } = {};
+
   constructor(
-    private router: Router,
-    private sanitizer: DomSanitizer
+
   ) {
 
-    this.tarjetaPaciente = this.sanitizer.bypassSecurityTrustHtml(tarjetaPaciente);
-    this.datosIcon = this.sanitizer.bypassSecurityTrustHtml(datosIcon);
-    this.logoicon = this.sanitizer.bypassSecurityTrustHtml(logoicon);
-    this.rocket = this.sanitizer.bypassSecurityTrustHtml(rocketIcon);
+    this.icons = {
+      pacientes: this.iconS.getIcon("tarjetaPaciente"),
+      datosIcon: this.iconS.getIcon("datosIcon"),
+      logoicon: this.iconS.getIcon("logoicon"),
+      rocket: this.iconS.getIcon("rocketIcon"),
+      nutric: this.iconS.getIcon("nutritionIcon"),
 
+    }
   }
 
 
@@ -44,18 +49,20 @@ export class DashboardComponent implements OnInit {
         nombre: 'Registros Medicos',
         descripcion: 'Gestión de pacientes y registros médicos',
         ruta: '/registros',
-        icon: this.tarjetaPaciente
+        icon: 'pacientes'
       },
       {
         nombre: 'UISAU',
         descripcion: 'Gestor de Atención al Usuario',
-        ruta: '/uisau'
+        ruta: '/uisau',
+        icon: 'datosIcon'
       },
 
       {
         nombre: 'Trabajo Social',
         descripcion: 'Modulo de trabajo',
-        ruta: '/TrabajoSocial'
+        ruta: '/TrabajoSocial',
+        icon: 'logoicon'
       },
       // {
       //   nombre: 'Personal',
@@ -66,22 +73,25 @@ export class DashboardComponent implements OnInit {
         nombre: 'Estadística',
         descripcion: 'Gestión de reportes y datos estadísticos',
         ruta: '/estadistica',
-        icon: this.datosIcon
+        icon: 'datosIcon'
       },
       {
         nombre: 'Clínica',
         descripcion: 'Gestión de consulta médica',
-        ruta: '/clinica'
+        ruta: '/clinica',
+        icon: 'datosIcon'
       },
       {
         nombre: 'Reportes y SIGSA',
         descripcion: 'Imprime reportes y sigsas',
-        ruta: '/reportes'
+        ruta: '/reportes',
+        icon: 'datosIcon'
       },
       {
         nombre: 'Nutrición',
         descripcion: 'Gestor de nutrición',
-        ruta: '/menu-nutri'
+        ruta: '/menu-nutri',
+        icon: 'nutric'
       },
       // {
       //   nombre: 'Laboratorio',
@@ -112,7 +122,7 @@ export class DashboardComponent implements OnInit {
         nombre: 'Huston',
         descripcion: 'Panel de Control',
         ruta: '/adminsys',
-        icon: this.rocket
+        icon: 'rocket'
       },
     ]
   }

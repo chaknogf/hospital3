@@ -14,7 +14,9 @@ export const roles: Values[] = [
   { label: 'Enfermería', value: 'paramedic' },
   { label: 'Laboratorio', value: 'lab' },
   { label: 'Rayos X', value: 'rx' },
-  { label: 'Epidemiología', value: 'epi' }
+  { label: 'Epidemiología', value: 'epi' },
+  { label: 'Nutrición', value: 'nutric' },
+  { label: 'Odontología', value: 'odonto' },
 
 
 ];
