@@ -75,6 +75,7 @@ export class CoexFiltradoComponent implements OnInit {
       skipLeft: this.iconService.getIcon('skipLeft'),
       skipRight: this.iconService.getIcon('skipRight'),
       print: this.iconService.getIcon('printIcon'),
+      calendar: this.iconService.getIcon('calendarIcon'),
     };
 
     // ======= EFFECT =======
@@ -187,6 +188,10 @@ export class CoexFiltradoComponent implements OnInit {
 
   toggleFiltrar(): void {
     this.filtrar = !this.filtrar;
+  }
+
+  cita(id: number): void {
+    this.router.navigate(['/agendar/paciente', id]);
   }
 
   // ======= NAVEGACIÓN =======

@@ -25,7 +25,7 @@ export class ListarConstanciasComponent implements OnInit {
   visible = false;
   modalActivo = false;
   error: string | null = null;
-  pageSize: number = 8;
+  pageSize: number = 50;
   paginaActual: number = 1;
   finPagina: boolean = false;
   rowActiva: number | null = null;

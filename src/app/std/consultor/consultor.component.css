@@ -1234,3 +1234,9 @@
       0 0 12px rgba(255,255,255,.6);
   }
 }
+
+.btn-small{
+  border-radius: 6px;
+  margin: 0.5px;
+  border: none;
+}

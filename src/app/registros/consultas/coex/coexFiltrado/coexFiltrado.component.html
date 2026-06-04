@@ -200,6 +200,10 @@
               <button data-label="Nota de Consulta">
                 <span [innerHTML]="icons['medical']"></span>
               </button>
+
+              <button (click)="cita(data.paciente.id)" data-label="Cita">
+                <span [innerHTML]="icons['calendar']"></span>
+              </button>
             </div>
           </td>
         </tr>

@@ -123,6 +123,11 @@ export class ConsultorComponent implements OnInit {
     this.mostrarTabla = false;
   }
 
+  editarCita(id: number): void {
+
+    this.router.navigate(['/reagendar/cita', id]);
+  }
+
   // ── Selección de paciente ───────────────────────────────
   seleccionarPaciente(p: PacienteBuscado): void {
     this.pacienteId = p.id;
@@ -232,6 +237,8 @@ export class ConsultorComponent implements OnInit {
 
     this.procesarMetadatos();
   }
+
+
 
   private procesarMetadatos(): void {
     this.metadatosArray = [];

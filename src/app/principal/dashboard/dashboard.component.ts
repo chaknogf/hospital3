@@ -36,6 +36,7 @@ export class DashboardComponent implements OnInit {
       logoicon: this.iconS.getIcon("logoicon"),
       rocket: this.iconS.getIcon("rocketIcon"),
       nutric: this.iconS.getIcon("nutritionIcon"),
+      diente: this.iconS.getIcon("dienteIcon")
 
     }
   }
@@ -75,23 +76,29 @@ export class DashboardComponent implements OnInit {
         ruta: '/estadistica',
         icon: 'datosIcon'
       },
-      {
-        nombre: 'Clínica',
-        descripcion: 'Gestión de consulta médica',
-        ruta: '/clinica',
-        icon: 'datosIcon'
-      },
-      {
-        nombre: 'Reportes y SIGSA',
-        descripcion: 'Imprime reportes y sigsas',
-        ruta: '/reportes',
-        icon: 'datosIcon'
-      },
+      // {
+      //   nombre: 'Clínica',
+      //   descripcion: 'Gestión de consulta médica',
+      //   ruta: '/clinica',
+      //   icon: 'datosIcon'
+      // },
+      // {
+      //   nombre: 'Reportes y SIGSA',
+      //   descripcion: 'Imprime reportes y sigsas',
+      //   ruta: '/reportes',
+      //   icon: 'datosIcon'
+      // },
       {
         nombre: 'Nutrición',
         descripcion: 'Gestor de nutrición',
         ruta: '/menu-nutri',
         icon: 'nutric'
+      },
+      {
+        nombre: 'Odontología',
+        descripcion: 'Gestor de odontología',
+        ruta: '/menu-odonto',
+        icon: 'diente'
       },
       // {
       //   nombre: 'Laboratorio',

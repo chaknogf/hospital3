@@ -193,6 +193,10 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     });
   }
 
+  editarCita(id: number): void {
+
+    this.router.navigate(['/reagendar/cita', id]);
+  }
 
   /** Prepara listas filtradas para mostrar en HTML */
   private procesarPaciente(): void {

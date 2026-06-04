@@ -500,6 +500,14 @@
                     </td>
                     <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
                     <td>{{ c.datos_extra.razon_consulta }}</td>
+                    <td>
+                      <button
+                        class="btn-small"
+                        (click)="editarCita(c.id); $event.stopPropagation()"
+                      >
+                        <span>✏️</span>
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>

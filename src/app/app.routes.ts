@@ -57,6 +57,9 @@ import { CitasEspecialidadComponent } from './registros/citas/citasEspecialidad/
 import { MenuNutriComponent } from './nutricion/menu-nutri/menu-nutri.component';
 import { CitasNutriComponent } from './nutricion/citas-nutri/citas-nutri.component';
 import { CoexNutriComponent } from './nutricion/coex-nutri/coex-nutri.component';
+import { MenuOdontoComponent } from './odontologia/menu-odonto/menu-odonto.component';
+import { CoexOdontoComponent } from './odontologia/coex-odonto/coex-odonto.component';
+import { CitasOdontoComponent } from './odontologia/citas-odonto/citas-odonto.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -155,6 +158,12 @@ export const routes: Routes = [
       { path: 'menu-nutri', component: MenuNutriComponent, canActivate: [roleGuard(['admin', 'nutric'])] },
       { path: 'citas-nutri', component: CitasNutriComponent, canActivate: [roleGuard(['admin', 'nutric'])] },
       { path: 'coex-nutri', component: CoexNutriComponent, canActivate: [roleGuard(['admin', 'nutric'])] },
+
+      // Odonto
+      { path: 'menu-odonto', component: MenuOdontoComponent, canActivate: [roleGuard(['admin', 'odonto'])] },
+      { path: 'citas-odonto', component: CitasOdontoComponent, canActivate: [roleGuard(['admin', 'odonto'])] },
+      { path: 'coex-odonto', component: CoexOdontoComponent, canActivate: [roleGuard(['admin', 'odonto'])] },
+
 
       //TrabajoSocial
       { path: 'TrabajoSocial', component: MenutsComponent, canActivate: [roleGuard(['admin', 'ts'])] },
