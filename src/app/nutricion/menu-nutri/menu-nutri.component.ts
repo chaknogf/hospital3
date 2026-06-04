@@ -42,6 +42,7 @@ export class MenuNutriComponent implements OnInit {
       doctor: this.iconS.getIcon("doctorIcon"),
       nutric: this.iconS.getIcon("nutritionIcon"),
 
+
     }
 
 
@@ -54,6 +55,7 @@ export class MenuNutriComponent implements OnInit {
     this.options = [
 
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
+      { nombre: 'COEX', descripcion: 'Consulta Externa de Nutrición', ruta: '/coex-nutri', icon: 'cmedic' },
       { nombre: 'Citas', descripcion: 'Agendar y Consultar Citas', ruta: '/citas-nutri', icon: 'calendar' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
