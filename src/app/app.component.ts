@@ -5,12 +5,13 @@ import { CommonModule } from '@angular/common';
 import { NavbarComponent } from './principal/navbar/navbar.component';
 import { ApiService } from './service/api.service';
 import { OfflineSyncService } from './service/offline-sync.service';
+import { FullSyncService } from './service/full-sync.service';
 import { filter } from 'rxjs/operators';
 import { ViewEncapsulation } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import { OfflineBannerComponent } from './pwa/offline-banner.component';
 import { UpdateNotificationComponent } from './pwa/update-notification.component';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 import localeEs from '@angular/common/locales/es';
 
@@ -33,6 +34,7 @@ export class AppComponent implements OnInit {
     private router: Router,
     private api: ApiService,
     private sync: OfflineSyncService,
+    public fullSync: FullSyncService,
     private http: HttpClient
   ) { registerLocaleData(localeEs); }
 
@@ -44,7 +46,14 @@ export class AppComponent implements OnInit {
     if (this.username) {
       this.estaAutenticado = true;
       this.preCacheReferenceData();
+      this.triggerFullSync();
     }
+  }
+
+  private triggerFullSync(): void {
+    this.fullSync.syncAll(false).catch(err => {
+      console.warn('Sincronización inicial falló, se reintentará:', err);
+    });
   }
 
   private preCacheReferenceData(): void {
@@ -58,11 +67,6 @@ export class AppComponent implements OnInit {
       this.sync.cacheKey(`${this.api.baseUrl}/paises/`),
       this.http.get(`${this.api.baseUrl}/paises/`),
       ttl
-    );
-    this.sync.preCache(
-      this.sync.cacheKey(`${this.api.baseUrl}/consultas/`, new HttpParams().set('skip', '0').set('limit', '14')),
-      this.http.get(`${this.api.baseUrl}/consultas/`, { params: new HttpParams().set('skip', '0').set('limit', '14') }),
-      30 * 60 * 1000
     );
   }
 
@@ -87,7 +91,10 @@ export class AppComponent implements OnInit {
 
   }
 
-
-
+  reSync(): void {
+    this.fullSync.syncAll(true).catch(err => {
+      console.warn('Re-sincronización falló:', err);
+    });
+  }
 
 }

@@ -5,8 +5,17 @@
   <span class="star"></span>
   <span class="star"></span>
   <span class="star"></span>
-  <span class="star"></span>
 </section>
+
+<div class="sync-indicator" *ngIf="fullSync.isSyncing()">
+  <div class="spinner-border spinner-border-sm me-1" role="status"></div>
+  {{ fullSync.syncProgress() }}
+</div>
+
+<button class="sync-button btn btn-sm" *ngIf="!fullSync.isSyncing() && estaAutenticado"
+        (click)="reSync()" title="Sincronizar datos offline">
+  <i class="bi bi-arrow-repeat"></i>
+</button>
 
 <app-navbar
   [usuario]="username"

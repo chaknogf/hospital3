@@ -1,16 +1,21 @@
 // paciente.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap, catchError, finalize } from 'rxjs/operators';
+import { BehaviorSubject, Observable, from } from 'rxjs';
+import { tap, catchError, finalize, map } from 'rxjs/operators';
 
 import { BaseApiService, PaginationState } from '../../service/base-api.service';
 import { Paciente, PacienteListResponse, Hijode, PacienteJoin } from '../../interface/interfaces';
 import { CitaResponse } from '../../interface/citas';
+import { OfflineDatabaseService } from '../../service/offline-database.service';
+import { FullSyncService } from '../../service/full-sync.service';
 
 @Injectable({ providedIn: 'root' })
 export class PacienteService extends BaseApiService {
+
+  private offlineDb = inject(OfflineDatabaseService);
+  private fullSync = inject(FullSyncService);
 
   // ======= BEHAVIOR SUBJECTS =======
   private pacientesSubject = new BehaviorSubject<Paciente[]>([]);
@@ -31,48 +36,126 @@ export class PacienteService extends BaseApiService {
     this.getPacientes(this.ultimoFiltroPaciente.filtro).subscribe();
   }
 
+  private async getPacientesOffline(filtros: any): Promise<PacienteListResponse> {
+    const { skip = 0, limit = 14 } = filtros;
+    let pacientes = await this.offlineDb.getAllPacientes();
+
+    if (filtros.q) {
+      pacientes = await this.offlineDb.searchPacientesLocal(filtros.q);
+    }
+
+    const total = pacientes.length;
+    const paginados = pacientes.slice(skip, skip + limit);
+    return { total, pacientes: paginados };
+  }
+
   // ======= CRUD PACIENTES =======
 
   getPacientes(filtros: any): Observable<PacienteListResponse> {
     this.ultimoFiltroPaciente.filtro = filtros;
     const params = this.limpiarParametros(filtros);
-    const key = this.cacheKey(`${this.baseUrl}/pacientes/`, params);
-    return this.cacheGet(key,
-      this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/`, { params }).pipe(
-        tap(response => this.pacientesSubject.next(response.pacientes)),
-        catchError(error => this.manejarError(error, 'obtener pacientes'))
-      )
+
+    if (!this.sync.isOnline()) {
+      return from(this.getPacientesOffline(filtros)).pipe(
+        tap(response => this.pacientesSubject.next(response.pacientes))
+      );
+    }
+
+    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/`, { params }).pipe(
+      tap(response => {
+        this.pacientesSubject.next(response.pacientes);
+        this.offlineDb.savePacientes(response.pacientes);
+      }),
+      catchError(error => {
+        if (error.status === 0 || error.status === 502 || error.status === 503) {
+          return from(this.getPacientesOffline(filtros)).pipe(
+            tap(response => this.pacientesSubject.next(response.pacientes))
+          );
+        }
+        return this.manejarError(error, 'obtener pacientes');
+      })
     );
   }
 
   buscarPaciente(q: any): Observable<PacienteListResponse> {
     const params = this.limpiarParametros(q);
-    const key = this.cacheKey(`${this.baseUrl}/pacientes/buscar/`, params);
-    return this.cacheGet(key,
-      this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/buscar/`, { params }).pipe(
-        tap(response => this.pacientesSubject.next(response.pacientes)),
-        catchError(error => this.manejarError(error, 'buscar pacientes'))
-      )
+
+    if (!this.sync.isOnline()) {
+      return from(this.getPacientesOffline(q)).pipe(
+        tap(response => this.pacientesSubject.next(response.pacientes))
+      );
+    }
+
+    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/buscar/`, { params }).pipe(
+      tap(response => {
+        this.pacientesSubject.next(response.pacientes);
+        this.offlineDb.savePacientes(response.pacientes);
+      }),
+      catchError(error => {
+        if (error.status === 0 || error.status === 502 || error.status === 503) {
+          return from(this.getPacientesOffline(q)).pipe(
+            tap(response => this.pacientesSubject.next(response.pacientes))
+          );
+        }
+        return this.manejarError(error, 'buscar pacientes');
+      })
     );
   }
 
   getPaciente(id: number): Observable<Paciente> {
     const url = `${this.baseUrl}/pacientes/${id}`;
-    const key = this.cacheKey(url);
-    return this.cacheGet(key,
-      this.http.get<Paciente>(url).pipe(
-        catchError(error => this.manejarError(error, 'obtener paciente'))
-      )
+
+    if (!this.sync.isOnline()) {
+      return from(this.offlineDb.getPacienteById(id)).pipe(
+        map(p => {
+          if (!p) throw new Error('Paciente no encontrado offline');
+          return p;
+        })
+      );
+    }
+
+    return this.http.get<Paciente>(url).pipe(
+      tap(paciente => this.offlineDb.savePacientes([paciente])),
+      catchError(error => {
+        if (error.status === 0 || error.status === 502 || error.status === 503) {
+          return from(this.offlineDb.getPacienteById(id)).pipe(
+            map(p => {
+              if (!p) throw error;
+              return p;
+            })
+          );
+        }
+        return this.manejarError(error, 'obtener paciente');
+      })
     );
   }
 
   pacienteExpediente(expediente: string): Observable<PacienteJoin> {
     const url = `${this.baseUrl}/pacientes/expediente/${expediente}`;
-    const key = this.cacheKey(url);
-    return this.cacheGet(key,
-      this.http.get<PacienteJoin>(url).pipe(
-        catchError(error => this.manejarError(error, 'obtener paciente por expediente'))
-      )
+
+    if (!this.sync.isOnline()) {
+      return from(this.offlineDb.getAllPacientes()).pipe(
+        map(lista => {
+          const p = lista.find(x => x.expediente === expediente);
+          if (!p) throw new Error('Paciente no encontrado offline');
+          return p as unknown as PacienteJoin;
+        })
+      );
+    }
+
+    return this.http.get<PacienteJoin>(url).pipe(
+      catchError(error => {
+        if (error.status === 0 || error.status === 502 || error.status === 503) {
+          return from(this.offlineDb.getAllPacientes()).pipe(
+            map(lista => {
+              const p = lista.find(x => x.expediente === expediente);
+              if (!p) throw error;
+              return p as unknown as PacienteJoin;
+            })
+          );
+        }
+        return this.manejarError(error, 'obtener paciente por expediente');
+      })
     );
   }
 
@@ -109,10 +192,6 @@ export class PacienteService extends BaseApiService {
 
   // ======= RELACIONES =======
 
-  /**
-   * Registra un recién nacido vinculado a una madre
-   * POST /fah/pacientes/madre-hijo/{idMadre}
-   */
   hijoDe(paciente: Hijode, idMadre: number): Observable<any> {
     this.isLoading.set(true);
     const payload = {
