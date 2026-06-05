@@ -1,9 +1,13 @@
 {
-  "name": "hospital3",
-  "short_name": "hospital3",
+  "name": "MedicalApp",
+  "short_name": "MedicalApp",
+  "description": "Aplicación médica",
   "display": "standalone",
-  "scope": "./",
-  "start_url": "./",
+  "scope": "/medicapp/",
+  "start_url": "/medicapp/?v=2",
+  "id": "/medicapp/",
+  "theme_color": "#0d6efd",
+  "background_color": "#212529",
   "icons": [
     {
       "src": "icons/icon-72x72.png",
