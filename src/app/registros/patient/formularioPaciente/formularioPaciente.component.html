@@ -176,7 +176,7 @@
                   formControlName="primer_nombre"
                   placeholder="Ej: Juan"
                   unaPalabra
-                  [permitirEspacios]="true"
+                  [permitirEspacios]="false"
                   autocomplete="off"
                 />
               </div>
@@ -187,6 +187,7 @@
                   formControlName="segundo_nombre"
                   placeholder="Ej: Carlos"
                   unaPalabra
+                  [permitirEspacios]="true"
                   autocomplete="off"
                 />
               </div>
@@ -197,6 +198,7 @@
                   formControlName="otro_nombre"
                   placeholder="Ej: de Jesús"
                   unaPalabra
+                  [permitirEspacios]="true"
                   autocomplete="off"
                 />
               </div>
@@ -211,6 +213,8 @@
                   class="field-input"
                   formControlName="primer_apellido"
                   placeholder="Ej: Pérez"
+                  unaPalabra
+                  [permitirEspacios]="true"
                   autocomplete="off"
                 />
               </div>
@@ -220,6 +224,8 @@
                   class="field-input"
                   formControlName="segundo_apellido"
                   placeholder="Ej: García"
+                  unaPalabra
+                  [permitirEspacios]="true"
                   autocomplete="off"
                 />
               </div>
@@ -230,6 +236,8 @@
                     class="field-input"
                     formControlName="apellido_casada"
                     placeholder="Apellido de casada"
+                    unaPalabra
+                    [permitirEspacios]="false"
                     autocomplete="off"
                   />
                 </div>

@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, catchError, finalize } from 'rxjs/operators';
 import { BaseApiService, PaginationState } from '../../service/base-api.service';
 import { FiltroCitas } from '../../interface/filtros.model';
-import { CitaCreate, CitaResponse, Citas, ConteoCitas } from '../../interface/citas';
+import { CitaCreate, CitaListResponse, CitaResponse, Citas, ConteoCitas } from '../../interface/citas';
 
 @Injectable({ providedIn: 'root' })
 export class CitaService extends BaseApiService {
@@ -25,13 +25,13 @@ export class CitaService extends BaseApiService {
     this.getCitas(this.ultimoFiltroCitas.filtro).subscribe();
   }
 
-  getCitas(filtros: FiltroCitas): Observable<CitaResponse[]> {
+  getCitas(filtros: FiltroCitas): Observable<CitaListResponse> {
     this.ultimoFiltroCitas.filtro = filtros;
     const params = this.limpiarParametros(filtros);
     const key = this.cacheKey(`${this.baseUrl}/citas/`, params);
     return this.cacheGet(key,
-      this.http.get<CitaResponse[]>(`${this.baseUrl}/citas/`, { params }).pipe(
-        tap(response => this.citasSubject.next(response)),
+      this.http.get<CitaListResponse>(`${this.baseUrl}/citas/`, { params }).pipe(
+        tap(response => this.citasSubject.next(response.citas)),
         catchError(error => this.manejarError(error, 'obtener citas'))
       )
     );

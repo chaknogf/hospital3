@@ -19,7 +19,10 @@
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
-    <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
+    <form
+      class="form-filtros"
+      (submit)="cargarDatos(); $event.preventDefault()"
+    >
       <!-- Campos -->
       <fieldset class="fieldset-filtros">
         <label class="label-filtros">Documento</label>
@@ -33,6 +36,17 @@
       </fieldset>
 
       <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Expediente</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.expediente"
+            name="expediente"
+            placeholder="Ej: 26A-99"
+          />
+        </fieldset>
+
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Nombre de la Madre</label>
           <input
@@ -138,21 +152,58 @@
     </table>
   </div>
 
-  <!-- paginación -->
-  <div class="d-flex justify-content-center align-items-center p-0">
+  <!-- Paginación -->
+  <div class="paginador">
     <!-- Botón anterior -->
-    <button class="btn" [disabled]="filtros.skip === 0">
+    <button
+      class="pag-btn"
+      [disabled]="!hayPaginaAnterior"
+      (click)="cambiarPagina(-1)"
+    >
       <span [innerHTML]="icons['skipLeft']"></span>
     </button>
 
-    <!-- Página actual -->
-    <div>
-      <strong>{{ filtros.skip }}</strong>
-    </div>
+    <!-- Primera página + ellipsis si el rango no empieza en 1 -->
+    @if (paginas[0] > 1) {
+      <button class="pag-num" (click)="irAPagina(1)">1</button>
+    }
+    @if (paginas[0] > 2) {
+      <span class="pag-ellipsis">…</span>
+    }
+
+    <!-- Páginas del rango visible -->
+    <button
+      *ngFor="let p of paginas"
+      class="pag-num"
+      [class.pag-num-active]="p === paginaActual"
+      (click)="irAPagina(p)"
+    >
+      {{ p }}
+    </button>
+
+    <!-- Ellipsis + última página si el rango no llega al final -->
+    @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+      <span class="pag-ellipsis">…</span>
+    }
+    @if (paginas[paginas.length - 1] < totalPaginas) {
+      <button class="pag-num" (click)="irAPagina(totalPaginas)">
+        {{ totalPaginas }}
+      </button>
+    }
 
     <!-- Botón siguiente -->
-    <button class="btn" [disabled]="finPagina">
+    <button
+      class="pag-btn"
+      [disabled]="!hayPaginaSiguiente"
+      (click)="cambiarPagina(1)"
+    >
       <span [innerHTML]="icons['skipRight']"></span>
     </button>
+
+    <!-- Total de registros -->
+    <span class="pag-info">
+      Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+      {{ totalDeRegistros }} registros
+    </span>
   </div>
 </div>

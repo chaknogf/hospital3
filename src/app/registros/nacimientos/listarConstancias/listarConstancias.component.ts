@@ -25,10 +25,11 @@ export class ListarConstanciasComponent implements OnInit {
   visible = false;
   modalActivo = false;
   error: string | null = null;
-  pageSize: number = 50;
-  paginaActual: number = 1;
   finPagina: boolean = false;
   rowActiva: number | null = null;
+  pageSize: number = 10;
+  paginaActual: number = 1;
+  totalDeRegistros = 0;
 
   filtros: any = {
     id_usuario: '',
@@ -36,6 +37,7 @@ export class ListarConstanciasComponent implements OnInit {
     nombre_madre: '',
     fecha: '',
     documento: '',
+    expediente: '',
     limit: this.pageSize,
     offser: 0
   }
@@ -73,30 +75,35 @@ export class ListarConstanciasComponent implements OnInit {
 
   }
 
-  async cargarDatos() {
+  cargarDatos() {
     this.cargando = true;
-    try {
-      this.api.getConstancias(this.filtros).subscribe((data) => {
-        this.datos = data;
-      });
-    } catch (error) {
-      this.error = 'Error al cargar los datos';
-    } finally {
-      this.cargando = false;
-    }
+
+    this.api.getConstancias(this.filtros).subscribe({
+      next: resultado => {
+        this.totalDeRegistros = resultado.total;
+        this.datos = resultado.constancias;
+        this.cargando = false;
+        // Ajustar página si el backend devolvió menos de lo esperado
+        if (this.paginaActual > this.totalPaginas) {
+          this.paginaActual = this.totalPaginas;
+        }
+      },
+      error: error => {
+        console.error('Error al cargar citas:', error);
+        this.cargando = false;
+      },
+      complete: () => {
+        this.cargando = false;
+      }
+    });
   }
+
 
   toggleFiltrar() {
     this.filtrar = !this.filtrar;
   }
 
-  buscar() {
-    this.filtros = {
-      nombre_madre: this.filtros.nombre_madre,
-      fecha: this.filtros.fecha,
-      documento: this.filtros.documento,
-    }
-  }
+
 
   limpiarFiltros() {
     this.filtros = {
@@ -105,6 +112,7 @@ export class ListarConstanciasComponent implements OnInit {
       nombre_madre: '',
       fecha: '',
       documento: '',
+      expediente: '',
       limit: this.pageSize,
       offser: 0
     };
@@ -129,6 +137,48 @@ export class ListarConstanciasComponent implements OnInit {
 
   agregar() {
     this.router.navigate(['/nueva-cons-nac']);
+  }
+
+  activarFila(id: number): void {
+    this.rowActiva = this.rowActiva === id ? null : id;
+  }
+
+  get totalPaginas(): number {
+    return Math.ceil(this.totalDeRegistros / this.pageSize) || 1;
+  }
+
+  get hayPaginaAnterior(): boolean { return this.paginaActual > 1; }
+  get hayPaginaSiguiente(): boolean { return this.paginaActual < this.totalPaginas; }
+
+
+  cambiarPagina(paso: number): void {
+    const nueva = this.paginaActual + paso;
+    if (nueva < 1 || nueva > this.totalPaginas) return;
+
+    this.paginaActual = nueva;
+    this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
+    this.cargarDatos();
+  }
+
+  irAPagina(pagina: number): void {
+    if (pagina < 1 || pagina > this.totalPaginas) return;
+    this.paginaActual = pagina;
+    this.filtros.skip = (pagina - 1) * this.pageSize;
+    this.filtros.limit = this.pageSize;
+    this.cargarDatos();
+  }
+
+  get paginas(): number[] {
+    const total = this.totalPaginas;
+    const actual = this.paginaActual;
+    const delta = 2; // páginas a cada lado de la actual
+
+    const rango: number[] = [];
+    for (let i = Math.max(1, actual - delta); i <= Math.min(total, actual + delta); i++) {
+      rango.push(i);
+    }
+    return rango;
   }
 
 }

@@ -23,3 +23,13 @@ export interface ConstanciaNacimiento {
   madre?: Paciente;
   medico?: Medico;
 }
+
+export interface InformeNacimientoListResponse {
+  total: number;
+  constancias: ConstanciaNacimiento[];
+}
+
+export interface InformeNacimiento extends ConstanciaNacimiento {
+  id: number;
+  expediente?: string;
+}

@@ -19,32 +19,49 @@ export class UnaPalabraDirective {
   @HostListener('compositionend', ['$event.target.value'])
   onCompositionEnd(value: string) {
     this.componiendo = false;
-    this.limpiar(value);
+    this.limpiar(value, false);
   }
 
   @HostListener('input', ['$event.target.value'])
   onInput(value: string) {
-    if (this.componiendo) return; // esperar a que termine la composición
-    this.limpiar(value);
+    if (this.componiendo) return;
+    this.limpiar(value, false); // durante escritura: no recortar aún
   }
 
-  private limpiar(value: string): void {
-    const sinEspacios = this.permitirEspacios
-      ? value
-      : value.replace(/\s/g, '');
+  @HostListener('blur', ['$event.target.value'])
+  onBlur(value: string) {
+    this.limpiar(value, true); // al salir: normalizar espacios completo
+  }
 
-    const limpio = sinEspacios.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ0-9_\s]/g, '');
+  private limpiar(value: string, normalizar: boolean): void {
+    let limpio: string;
+
+    if (!this.permitirEspacios) {
+      // Sin espacios: quitar todos
+      limpio = value.replace(/\s/g, '');
+    } else {
+      // Con espacios: quitar caracteres inválidos
+      limpio = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ0-9_\s]/g, '');
+
+      if (normalizar) {
+        // Al hacer blur: quitar espacios al inicio/fin y colapsar espacios múltiples
+        limpio = limpio.replace(/\s+/g, ' ').trim();
+      } else {
+        // Durante escritura: solo colapsar múltiples espacios consecutivos
+        // (no recortar al inicio para no interrumpir mientras se escribe)
+        limpio = limpio.replace(/\s{2,}/g, ' ');
+      }
+    }
 
     if (limpio !== value) {
-      // Preservar posición del cursor
       const input = this.control.valueAccessor as any;
       const el: HTMLInputElement = input?._elementRef?.nativeElement;
       const pos = el?.selectionStart ?? limpio.length;
 
       this.control.control?.setValue(limpio, { emitEvent: false });
 
-      // Restaurar cursor después del re-render
-      if (el) {
+      if (el && !normalizar) {
+        // Solo restaurar cursor durante input, no en blur
         setTimeout(() => el.setSelectionRange(pos, pos), 0);
       }
     }

@@ -57,6 +57,7 @@ export class ConsultorComponent implements OnInit {
   error: string | null = null;
   citasPorPaciente: Citas[] = [];
   citasProcesadas: { titulo: string; campos: { key: string; valor: any }[] }[] = [];
+  rol: string | null = '';
 
   // ── Listas procesadas ──────────────────────────────────
   demograficosFiltrados: { key: string; valor: any }[] = [];
@@ -66,6 +67,9 @@ export class ConsultorComponent implements OnInit {
   neonatalesFiltrados: { key: string; valor: any }[] = [];
 
   ngOnInit() {
+
+    this.rol = localStorage.getItem('role');
+    console.log(this.rol);
 
   }
 

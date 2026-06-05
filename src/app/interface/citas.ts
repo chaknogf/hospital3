@@ -38,6 +38,11 @@ export interface Citas {
 
 }
 
+export interface CitaListResponse {
+  total: number;
+  citas: Citas[];
+}
+
 export interface CitaUpdate {
   id?: number;
   expediente: string;

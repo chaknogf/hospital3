@@ -462,7 +462,7 @@
                       </span>
                       <button
                         [class.estado-pendiente]="c.ultimo_estado !== 'archivo'"
-                        class="btn"
+                        class="btn-small"
                         (click)="verDetalle(c.id)"
                       >
                         📁
@@ -490,6 +490,7 @@
                     <th>Fecha</th>
                     <th>Especialidad</th>
                     <th>razon</th>
+                    <th>Editar</th>
                   </tr>
                 </thead>
 
@@ -500,13 +501,15 @@
                     </td>
                     <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
                     <td>{{ c.datos_extra.razon_consulta }}</td>
-                    <td>
-                      <button
-                        class="btn-small"
-                        (click)="editarCita(c.id); $event.stopPropagation()"
-                      >
-                        <span>✏️</span>
-                      </button>
+                    <td class="">
+                      @if (rol != "std") {
+                        <button
+                          class="btn-small"
+                          (click)="editarCita(c.id); $event.stopPropagation()"
+                        >
+                          <span>✏️</span>
+                        </button>
+                      }
                     </td>
                   </tr>
                 </tbody>

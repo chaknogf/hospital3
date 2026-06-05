@@ -5,7 +5,7 @@ import { BaseApiService, PaginationState } from '../../service/base-api.service'
 import { BehaviorSubject, Cons, Observable } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHistorial, ConstanciaNacimientoUpdate } from '../../interface/consNac';
-import { ConstanciaNacimiento } from './constancias.inteface';
+import { ConstanciaNacimiento, InformeNacimientoListResponse } from './constancias.inteface';
 
 @Injectable({ providedIn: 'root' })
 export class ConstanciasService extends BaseApiService {
@@ -27,14 +27,14 @@ export class ConstanciasService extends BaseApiService {
     this.getConstancias(this.ultimimoFiltroConstancia.filtro).subscribe();
   }
 
-  getConstancias(filtros: any): Observable<ConstanciaNacimiento[]> {
+  getConstancias(filtros: any): Observable<InformeNacimientoListResponse> {
     this.ultimimoFiltroConstancia.filtro = filtros;
     const params = this.limpiarParametros(filtros);
-    return this.http.get<ConstanciaNacimiento[]>(
+    return this.http.get<InformeNacimientoListResponse>(
       `${this.baseUrl}/constancias-nacimiento/`,
       { params }
     ).pipe(
-      tap(response => this.constanciasSubject.next(response)),
+      tap(response => this.constanciasSubject.next(response.constancias)),
       catchError(error => this.manejarError(error, 'obtener constancias'))
     )
   }

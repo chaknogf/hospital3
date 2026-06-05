@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { Citas } from '../../../interface/citas';
+import { CitaResponse, Citas } from '../../../interface/citas';
 import { CitaService } from '../cita.service';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { Especialidades, KeyValue } from '../../../enum/especialidades';
@@ -23,7 +23,7 @@ export class ImprimirCitasComponent implements OnInit {
   private location = inject(Location);
 
   // ======= ESTADO =======
-  citas: Citas[] = [];
+  citas: CitaResponse[] = [];
   cargando = false;
   especialidadesList: KeyValue[] = Especialidades;
 
@@ -70,13 +70,21 @@ export class ImprimirCitasComponent implements OnInit {
   cargarCitas(): void {
     this.cargando = true;
     this.api.getCitas(this.filtros).subscribe({
-      next: (data) => {
-        this.citas = data;
+      next: resultado => {
+
+        this.citas = resultado.citas;
+
+        this.cargando = false;
+        // Ajustar página si el backend devolvió menos de lo esperado
+
+      },
+      error: error => {
+        console.error('Error al cargar citas:', error);
         this.cargando = false;
       },
-      error: () => {
+      complete: () => {
         this.cargando = false;
-      },
+      }
     });
   }
 

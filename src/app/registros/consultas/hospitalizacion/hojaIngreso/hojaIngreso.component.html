@@ -80,19 +80,14 @@
           paciente()?.contacto?.domicilio | titlecase
         }}</span>
       </div>
-      <div class="f-cell" style="flex: 1.2">
-        <span class="f-lbl">Municipio</span>
+      <div class="f-cell" style="flex: 3.5">
+        <span class="f-lbl">Municipio y Departamento</span>
         <span class="f-val">{{
           paciente()?.contacto?.municipio | datosExtra: "municipio"
         }}</span>
       </div>
-      <div class="f-cell" style="flex: 1.2">
-        <span class="f-lbl">Departamento</span>
-        <span class="f-val">{{
-          paciente()?.contacto?.municipio | departamento
-        }}</span>
-      </div>
-      <div class="f-cell" style="flex: 0.9">
+
+      <div class="f-cell" style="flex: 1.5">
         <span class="f-lbl">Teléfono</span>
         <span class="f-val">{{ paciente()?.contacto?.telefonos }}</span>
       </div>

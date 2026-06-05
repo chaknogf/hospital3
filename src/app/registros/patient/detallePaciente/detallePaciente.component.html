@@ -60,16 +60,15 @@
         </div>
 
         <div class="patient-name-block">
+          <p class="patient-firstname m-0">
+            {{ paciente.nombre.primer_nombre }}
+            {{ paciente.nombre.segundo_nombre }}
+            {{ paciente.nombre.otro_nombre }}
+          </p>
           <p class="patient-name">
             {{ paciente.nombre.primer_apellido }}
             {{ paciente.nombre.segundo_apellido }}
             {{ paciente.nombre.apellido_casada }}
-          </p>
-
-          <p class="patient-firstname">
-            {{ paciente.nombre.primer_nombre }}
-            {{ paciente.nombre.segundo_nombre }}
-            {{ paciente.nombre.otro_nombre }}
           </p>
 
           <div class="patient-tags">
@@ -287,7 +286,9 @@
                 </td>
                 <td class="text-center">
                   <span class="doc-badge">{{ c.ultimo_estado }}</span>
-                  <button class="btn" (click)="verDetalle(c.id)">📁</button>
+                  <button class="btn-small" (click)="verDetalle(c.id)">
+                    📁
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -311,6 +312,7 @@
                 <th>Fecha</th>
                 <th>Especialidad</th>
                 <th>razon</th>
+                <th>Editar</th>
               </tr>
             </thead>
 
@@ -321,6 +323,14 @@
                 </td>
                 <td>{{ c.especialidad | datosExtra: "especialidad" }}</td>
                 <td>{{ c.datos_extra.razon_consulta }}</td>
+                <td class="">
+                  <button
+                    class="btn-small"
+                    (click)="editarCita(c.id); $event.stopPropagation()"
+                  >
+                    <span>✏️</span>
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
