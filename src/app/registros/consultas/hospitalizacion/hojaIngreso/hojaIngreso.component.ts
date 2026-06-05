@@ -21,7 +21,7 @@ import { Location } from '@angular/common';
   templateUrl: './hojaIngreso.component.html',
   styleUrls: ['./hojaIngreso.component.css'],
   standalone: true,
-  imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, TimePipe, CommonModule, TitleCasePipe, DepartamentoPipe],
+  imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, TimePipe, CommonModule, TitleCasePipe],
 })
 export class HojaIngresoComponent implements OnInit, OnDestroy {
 
