@@ -17,7 +17,7 @@
     <!-- ══ CABECERA ══════════════════════════════════════════════ -->
     <div class="hoja-header">
       <div class="hoja-logo">
-        <img src="assets/logo-gobierno.png" alt="Logo" />
+        <span class="logo" [innerHTML]="icons['logo']"></span>
       </div>
       <div class="hoja-header-centro">
         <p class="h-ministerio">
@@ -93,7 +93,7 @@
     </div>
 
     <div class="form-row">
-      <div class="form-field" style="flex: 1">
+      <div class="form-field" style="flex: 2">
         <span class="form-lbl">Tipo de Documento</span>
         <span class="form-val">
           <ng-container *ngIf="constancia()?.madre?.cui"
@@ -118,6 +118,15 @@
           </ng-container>
         </span>
       </div>
+      <div class="form-field" style="flex: 3">
+        <span class="form-lbl">Vecindad</span>
+        <span class="form-val">
+          {{
+            constancia()?.madre?.datos_extra?.demograficos?.vecindad
+              | datosExtra: "municipio"
+          }}
+        </span>
+      </div>
     </div>
 
     <div class="form-row">
@@ -132,15 +141,6 @@
         <span class="form-val">
           {{
             constancia()?.madre?.datos_extra?.demograficos?.lugar_nacimiento
-              | datosExtra: "municipio"
-          }}
-        </span>
-      </div>
-      <div class="form-field" style="flex: 1">
-        <span class="form-lbl">Vecindad</span>
-        <span class="form-val">
-          {{
-            constancia()?.madre?.datos_extra?.demograficos?.vecindad
               | datosExtra: "municipio"
           }}
         </span>
@@ -172,9 +172,6 @@
           hrs.
         </span>
       </div>
-    </div>
-
-    <div class="form-row">
       <div class="form-field" style="flex: 1">
         <span class="form-lbl">Sexo del Neonato</span>
         <span class="form-val">
@@ -191,6 +188,9 @@
           }}
         </span>
       </div>
+    </div>
+
+    <div class="form-row">
       <!-- @if (constancia()?.paciente?.datos_extra?.neonatales?.edad_gestacional) {
         <div class="form-field" style="flex: 1">
           <span class="form-lbl">Edad Gestacional</span>

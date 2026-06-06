@@ -11,6 +11,7 @@ import { takeUntil, finalize, catchError } from 'rxjs/operators';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { ApiService } from '../../../service/api.service';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
+import { IconService } from '../../../service/icon.service';
 
 @Component({
   selector: 'app-hoja-cnacimiento',
@@ -26,6 +27,7 @@ export class HojaCnacimientoComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private api = inject(ConstanciasService);
   private apis = inject(ApiService);
+  private iconS = inject(IconService);
 
   // ======= SIGNALS =======
   constancia = signal<ConstanciaNacimiento | undefined>(undefined);
@@ -34,11 +36,18 @@ export class HojaCnacimientoComponent implements OnInit, OnDestroy {
   detalleVisible = signal(false);
   // Nombre del usuario actual
   responsable = this.apis.nombreUsuario;
-
+  icons: { [key: string]: any } = {};
 
   // ======= CONTROL DE VIDA =======
   private destroy$ = new Subject<void>();
 
+  constructor() {
+    this.icons = {
+
+      logo: this.iconS.getIcon("logoicon2"),
+
+    };
+  }
   // ======= INIT =======
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));

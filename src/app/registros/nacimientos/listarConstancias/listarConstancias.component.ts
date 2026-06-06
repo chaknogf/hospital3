@@ -156,7 +156,7 @@ export class ListarConstanciasComponent implements OnInit {
     if (nueva < 1 || nueva > this.totalPaginas) return;
 
     this.paginaActual = nueva;
-    this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
+    this.filtros.offset = (this.paginaActual - 1) * this.pageSize;
     this.filtros.limit = this.pageSize;
     this.cargarDatos();
   }
@@ -164,7 +164,7 @@ export class ListarConstanciasComponent implements OnInit {
   irAPagina(pagina: number): void {
     if (pagina < 1 || pagina > this.totalPaginas) return;
     this.paginaActual = pagina;
-    this.filtros.skip = (pagina - 1) * this.pageSize;
+    this.filtros.offset = (pagina - 1) * this.pageSize;
     this.filtros.limit = this.pageSize;
     this.cargarDatos();
   }
