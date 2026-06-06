@@ -57,7 +57,9 @@
         <span class="f-val f-name">
           {{ paciente()?.nombre?.primer_apellido }}
           {{ paciente()?.nombre?.segundo_apellido }}
-          {{ paciente()?.nombre?.apellido_casada }}
+          @if (paciente()?.nombre?.apellido_casada) {
+            de {{ paciente()?.nombre?.apellido_casada }}
+          }
         </span>
       </div>
       <div class="f-cell" style="flex: 1">
@@ -266,7 +268,7 @@
         <span class="f-lbl">Principal</span><span class="f-val line"></span>
       </div>
       <div class="f-cell" style="flex: 1">
-        <span class="f-lbl">Operaciones</span><span class="f-val line"></span>
+        <span class="f-lbl"></span><span class="f-val line"></span>
       </div>
       <div class="f-cell f-cell-cie"><span class="f-val line"></span></div>
     </div>
@@ -296,10 +298,16 @@
         <span class="f-val"></span>
       </div>
       <div class="f-cell" style="flex: 1.2">
-        <span class="f-lbl">D) Se practicó autopsia</span>
-        <div class="autopsia-row">
-          <span class="autopsia-opt">Sí</span>
-          <span class="autopsia-opt">No</span>
+        <span class="f-lbl">D) Se practicó necropcia</span>
+        <div class="referido-si-no">
+          <div>
+            <div class="salida-box"></div>
+            SI
+          </div>
+          <div>
+            <div class="salida-box"></div>
+            NO
+          </div>
         </div>
       </div>
     </div>
@@ -323,7 +331,7 @@
         </div>
         <div class="salida-item">
           <div class="salida-box"></div>
-          <span>Fallecido sin autopsia</span>
+          <span>Fallecido sin necropcia</span>
         </div>
       </div>
       <div class="salida-col">
@@ -337,13 +345,24 @@
         </div>
         <div class="salida-item">
           <div class="salida-box"></div>
-          <span>Fallecido con autopsia</span>
+          <span>Fallecido con necropcia</span>
         </div>
       </div>
       <div class="salida-col salida-referido">
         <span class="f-lbl" style="margin-bottom: 3px"
           >Referido o trasladado al:</span
         >
+        <div class="referido-si-no">
+          <div>
+            <div class="salida-box"></div>
+            SI
+          </div>
+          <div>
+            <div class="salida-box"></div>
+            NO
+          </div>
+        </div>
+
         <div class="f-cell f-cell-full">
           <span class="f-lbl">Servicio</span><span class="f-val"></span>
         </div>

@@ -34,6 +34,10 @@
       <!-- ── ENCABEZADO ───────────────────────────────────── -->
 
       <div class="aurora-header">
+        <div class="header-logo">
+          <span class="logo" [innerHTML]="icons['logo']"></span>
+        </div>
+
         <div class="aurora-textos">
           <h3>Hoja de Emergencia</h3>
           <h4>Ministerio de Salud Pública y Asistencia Social</h4>
@@ -42,7 +46,7 @@
 
         <div class="header-chips">
           <span class="meta-chip meta-chip-muted">
-            impreso: {{ horaActual }} — {{ fechaActual }} - id:
+            impreso: {{ horaActual }} <br />{{ fechaActual }} - id:
             {{ consulta()?.id }}
           </span>
         </div>
@@ -180,23 +184,54 @@
       <div class="doc-section">
         <h6>Examen Físico (Signos Vitales)</h6>
 
-        <div class="campos-clinicos campos-clinicos--spread">
-          <span>P/A:____________mmHg</span>
-          <span>FC:____________lpm</span>
-          <span>FR:____________rpm</span>
-          <span>SatO2:____________%</span>
-          <span>Temp:____________°C</span>
+        <div class="campos-clinicos--spread">
+          <div class="signus">
+            <span class="label-line">P/A:</span>
+            <span class="line-signus"></span>mmHg
+          </div>
+          <div class="signus">
+            <span class="label-line">FC:</span>
+            <span class="line-signus"></span>lpm
+          </div>
+          <div class="signus">
+            <span class="label-line">FR:</span>
+            <span class="line-signus"></span>rpm
+          </div>
+          <div class="signus">
+            <span class="label-line">SatO2:</span>
+            <span class="line-signus"></span>%
+          </div>
+          <div class="signus">
+            <span class="label-line">Temp:</span>
+            <span class="line-signus"></span>°C
+          </div>
         </div>
 
-        <div
-          class="campos-clinicos campos-clinicos--spread campos-clinicos--mt"
-        >
-          <span>Peso:____________kg</span>
-          <span>Talla:____________cm</span>
-          <span>P/T:____________</span>
-          <span>T/E:____________</span>
-          <span>P/E:____________</span>
-          <span>____________Puntaje Z</span>
+        <div class="campos-clinicos--spread">
+          <div class="signus">
+            <span class="label-line">Peso:</span>
+            <span class="line-signus"></span>kg
+          </div>
+          <div class="signus">
+            <span class="label-line">Talla:</span>
+            <span class="line-signus"></span>cm
+          </div>
+          <div class="signus">
+            <span class="label-line">P/T:</span>
+            <span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">T/E:</span>
+            <span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">P/E:</span>
+            <span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">Puntaje Z:</span>
+            <span class="line-signus"></span>
+          </div>
         </div>
       </div>
 
@@ -254,36 +289,63 @@
           <div class="borderline-time mb-sm">
             <label>Gineco-obstetricos</label>
 
-            <div class="campos-clinicos">
-              <span class="label-line">G:</span>
-              <span class="line-mini"></span>
-              <span class="label-line">P:</span>
-              <span class="line-mini"></span>
-              <span class="label-line">C:</span>
-              <span class="line-mini"></span>
-              <span class="label-line">A:</span>
-              <span class="line-mini"></span>
-              <span class="label-line">HV:</span>
-              <span class="line-mini"></span>
-              <span class="label-line">HM:</span>
-              <span class="line-mini"></span>
-              <span class="label-line">FUR:</span>
-              <span class="line-mini"></span>
-              <span class="label-line">FPP:</span>
-              <span class="line-mini"></span>
+            <div class="campos-clinicos--spread">
+              <div class="signus">
+                <span class="label-line">G:</span>
+                <span class="line-signus"></span>
+              </div>
+              <div class="signus">
+                <span class="label-line">P:</span>
+                <span class="line-signus"></span>
+              </div>
+              <div class="signus">
+                <span class="label-line">C:</span>
+                <span class="line-signus"></span>
+              </div>
+              <div class="signus">
+                <span class="label-line">A:</span>
+                <span class="line-signus"></span>
+              </div>
+              <div class="signus">
+                <span class="label-line">HV:</span>
+                <span class="line-signus"></span>
+              </div>
+              <div class="signus">
+                <span class="label-line">HM:</span>
+                <span class="line-signus"></span>
+              </div>
+              <div class="signus">
+                <span class="label-line">FUR:</span>
+                <span class="line-signus"></span>
+              </div>
+
+              <div class="signus">
+                <span class="label-line">FPP:</span>
+                <span class="line-signus"></span>
+              </div>
             </div>
 
-            <div class="campos-clinicos">
-              <span class="label-line">Menarquía:</span>
-              <span class="line-mini"></span>
-              <span class="label-line">Ciclos:</span>
-              <span class="line-mini"></span>
-              <span class="label-line">FUP:</span>
-              <span class="line-mini"></span>
-              <span class="label-line">PF:</span>
-              <span class="line-mini"></span>
-              <span class="label-line">Control PN:</span>
-              <span class="line-mini"></span>
+            <div class="campos-clinicos--spread">
+              <div class="signus">
+                <span class="label-line">Menarquía:</span>
+                <span class="line-signus"></span>
+              </div>
+              <div class="signus">
+                <span class="label-line">Ciclos:</span>
+                <span class="line-signus"></span>
+              </div>
+              <div class="signus">
+                <span class="label-line">FUP:</span>
+                <span class="line-signus"></span>
+              </div>
+              <div class="signus">
+                <span class="label-line">PF:</span>
+                <span class="line-signus"></span>
+              </div>
+              <div class="signus">
+                <span class="label-line">Control PN:</span>
+                <span class="line-signus"></span>
+              </div>
             </div>
           </div>
         }
@@ -314,26 +376,72 @@
 
         <div class="grid-doble">
           <div class="borderline">
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
-            <div class="firma-row">
-              <p>Fecha</p>
-              <p>Hora</p>
-              <p>Firma</p>
+            <div class="encabezado-fecha">
+              <span class="fecha-ord-m">Fecha</span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">1</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">2</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">3</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">4</span>
+              <span class="line"></span>
+            </div>
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">5</span>
+              <span class="line"></span>
             </div>
           </div>
 
           <div class="borderline">
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
-            <div class="firma-row">
-              <p>Fecha</p>
-              <p>Hora</p>
-              <p>Firma</p>
+            <div class="encabezado-fecha">
+              <span class="fecha-ord-m">Fecha</span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">6</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">7</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">8</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">9</span>
+              <span class="line"></span>
+            </div>
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">10</span>
+              <span class="line"></span>
             </div>
           </div>
         </div>
@@ -367,28 +475,124 @@
 
         <div class="grid-doble">
           <div class="borderline">
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
+            <div class="encabezado-fecha">
+              <span class="fecha-ord-m">Fecha</span>
+            </div>
 
-            <div class="firma-row">
-              <p>Fecha</p>
-              <p>Hora</p>
-              <p>Firma</p>
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">1</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">2</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">3</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">4</span>
+              <span class="line"></span>
+            </div>
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">5</span>
+              <span class="line"></span>
             </div>
           </div>
 
           <div class="borderline">
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
+            <div class="encabezado-fecha">
+              <span class="fecha-ord-m">Fecha</span>
+            </div>
 
-            <div class="firma-row">
-              <p>Fecha</p>
-              <p>Hora</p>
-              <p>Firma</p>
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">6</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">7</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">8</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">9</span>
+              <span class="line"></span>
+            </div>
+            <div class="ord-m">
+              <span class="line-f"></span>
+              <span class="numero">10</span>
+              <span class="line"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ── EVOLUCIÓN Y DIAGNOSTICOS DE EGRESO ───────────────────────── -->
+      <div class="doc-section">
+        <h6>Evolución y diagnosticos de Egreso</h6>
+
+        <div class="grid-doble">
+          <div class="borderline">
+            <label>Evolución</label>
+            <div class="ord-m">
+              <span class="numero">1</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="numero">2</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="numero">3</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="numero">4</span>
+              <span class="line"></span>
+            </div>
+          </div>
+
+          <div class="borderline">
+            <label>Diagnosticos de Egreso</label>
+            <div class="ord-m">
+              <span class="numero">1</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="numero">2</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="numero">3</span>
+              <span class="line"></span>
+            </div>
+
+            <div class="ord-m">
+              <span class="numero">4</span>
+              <span class="line"></span>
             </div>
           </div>
         </div>
@@ -413,6 +617,7 @@
         <span class="line"></span>
         <span class="line"></span>
         <span class="line"></span>
+        <span class="line"></span>
 
         <div class="firma-row firma-row--mt">
           <p>Fecha</p>
@@ -423,7 +628,7 @@
 
       <!-- ── EGRESO CONTRAINDICADO ──────────────────── -->
 
-      <div class="doc-section">
+      <!-- <div class="doc-section">
         <h6>Egreso Contraindicado</h6>
 
         <p class="parrafo">
@@ -460,11 +665,11 @@
             <p>Firma y Sello del Médico</p>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- ── NOTA DE DESCARGO ───────────────────────── -->
 
-      <div class="doc-section">
+      <!-- <div class="doc-section">
         <h6>Nota de Descargo</h6>
 
         <p class="parrafo">
@@ -480,7 +685,7 @@
           posterior a su retiro será responsabilidad exclusiva del paciente o de
           su representante legal.
         </p>
-      </div>
+      </div> -->
     </div>
 
     <!-- ═══════════════════════════════════════════════════════ -->

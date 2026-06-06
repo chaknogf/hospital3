@@ -195,7 +195,9 @@
               >
                 {{ paciente.nombre.primer_apellido | capitalize }}
                 {{ paciente.nombre.segundo_apellido | capitalize }}
-                {{ paciente.nombre.apellido_casada | capitalize }}
+                @if (paciente.nombre.apellido_casada) {
+                  de {{ paciente.nombre.apellido_casada | capitalize }}
+                }
               </p>
             </div>
           </td>

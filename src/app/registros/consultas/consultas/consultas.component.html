@@ -154,7 +154,9 @@
               >
                 {{ data.paciente.nombre.primer_apellido }}
                 {{ data.paciente.nombre.segundo_apellido }}
-                {{ data.paciente.nombre.apellido_casada }}
+                @if (data.paciente.nombre.apellido_casada) {
+                  de {{ data.paciente.nombre.apellido_casada }}
+                }
               </p>
             </div>
           </td>

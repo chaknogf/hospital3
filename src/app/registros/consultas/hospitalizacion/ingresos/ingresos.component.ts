@@ -12,6 +12,7 @@ import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
 import { TimePipe } from '../../../../pipes/time.pipe';
 import { Location } from '@angular/common';
+import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
 
 
 @Component({
@@ -19,7 +20,7 @@ import { Location } from '@angular/common';
   templateUrl: './ingresos.component.html',
   styleUrls: ['./ingresos.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, CuiPipe, TimePipe]
+  imports: [CommonModule, FormsModule, CuiPipe, TimePipe, CapitalizePipe]
 })
 export class IngresosComponent implements OnInit {
 

@@ -59,6 +59,8 @@ export class HojaCoexComponent implements OnInit, OnDestroy {
       p.nombre.primer_apellido,
       p.nombre.segundo_apellido,
       p.nombre.apellido_casada
+        ? `de ${p.nombre.apellido_casada}`
+        : null
     ]
       .filter(Boolean)
       .join(' ')

@@ -68,7 +68,9 @@
           <p class="patient-name">
             {{ paciente.nombre.primer_apellido }}
             {{ paciente.nombre.segundo_apellido }}
-            {{ paciente.nombre.apellido_casada }}
+            @if (paciente.nombre.apellido_casada) {
+              de {{ paciente.nombre.apellido_casada }}
+            }
           </p>
 
           <div class="patient-tags">

@@ -122,7 +122,7 @@ body,
 /* ══ ENCABEZADO ═══════════════════════════════════════════════ */
 .aurora-header {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 70px 1fr 70px;
   align-items: center;
   gap: 4px;
   border-bottom: 1px solid var(--ink);
@@ -130,6 +130,31 @@ body,
   margin-bottom: 2px;
   color: #051444;
   font-weight: 400;
+}
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-logo {
+  width: 60px;
+  height: 60px;
+}
+
+.logo svg {
+  width: 100%;
+  height: 100%;
+}
+
+.aurora-textos {
+  text-align: center;
+}
+
+.header-chips {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
 }
 
 .aurora-textos { text-align: center; }
@@ -246,6 +271,51 @@ body,
   padding: 0;
 }
 
+.ord-m {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+
+}
+
+.encabezado-fecha {
+  width: 55px; /* mismo ancho que line-f */
+  text-align: center;
+  margin-bottom: 2px;
+}
+
+.fecha-ord-m {
+  font-size: 7pt;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.numero {
+  min-width: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+
+.line-f {
+
+  text-align: center;
+  flex-shrink: 0;
+}
+.line-f::before {
+  content: "_/_/_";
+  font-size: 9.5pt;
+  font-weight: 300;
+  color: #000;
+  letter-spacing: 6.5px;
+  line-height: 1px;
+}
+
+.line {
+  flex: 1;
+  border-bottom: 0.8px solid #000;
+  height: 12px;
+}
 /* ══ ESPECIALIDADES ═══════════════════════════════════════════ */
 .especialidades-hoja {
   display: flex;
@@ -388,11 +458,23 @@ label {
   margin: 0;
   width: 64px;
 }
+.line-signus {
+  display: block;
+  border-bottom: 0.8px solid black;
+  margin: 0;
+  width: 64px;
+}
 
 .label-line {
   font-size: 10px;
   margin: 0;
   padding: 0;
+  text-align: end;
+}
+
+.signus {
+  display: flex;
+  font-size: 0.7rem;
 }
 
 
@@ -415,7 +497,7 @@ label {
   padding-top: 8px;
 }
 
-.campos-clinicos--spread { justify-content: space-around; }
+.campos-clinicos--spread { justify-content: space-between; gap: 1px; display: flex; line-height: 20px;}
 .campos-clinicos--mt     { margin-top: 3px; }
 .campos-clinicos--mt-sm  { margin-top: 2px; }
 

@@ -13,6 +13,7 @@ import { CuiPipe } from '../../../../pipes/cui.pipe';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { TimePipe } from '../../../../pipes/time.pipe';
 import { Location } from '@angular/common';
+import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
 
 
 
@@ -21,7 +22,7 @@ import { Location } from '@angular/common';
   templateUrl: './emergenciasList.component.html',
   styleUrls: ['./emergenciasList.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe, DatosExtraPipe, TimePipe]
+  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe, DatosExtraPipe, TimePipe, CapitalizePipe]
 })
 export class EmergenciasListComponent implements OnInit {
 
