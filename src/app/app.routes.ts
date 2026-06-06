@@ -1,177 +1,354 @@
-import { HojaCnacimientoComponent } from './registros/nacimientos/hoja-cnacimiento/hoja-cnacimiento.component';
-import { HojaIngresoComponent } from './registros/consultas/hospitalizacion/hojaIngreso/hojaIngreso.component';
-import { EmergenciasListComponent } from './registros/consultas/emergencias/emergenciasList/emergenciasList.component';
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
-import { LoginComponent } from './principal/login/login.component';
-import { DashboardComponent } from './principal/dashboard/dashboard.component';
-import { HomeComponent } from './principal/home/home.component';
-import { PacientesComponent } from './registros/patient/pacientes/pacientes.component';
-import { FormularioPacienteComponent } from './registros/patient/formularioPaciente/formularioPaciente.component';
-import { ConsultasComponent } from './registros/consultas/consultas/consultas.component';
-import { RecepcionComponent } from './registros/consultas/recepcion/recepcion.component';
-import { FormConsultaComponent } from './registros/adminsion/formConsulta/formConsulta.component';
-import { RegistrosMedicosComponent } from './registros/registrosMedicos/registrosMedicos.component';
-import { DetallePacienteComponent } from './registros/patient/detallePaciente/detallePaciente.component';
-import { RenapComponent } from './registros/patient/renap/renap.component';
-import { HojaComponent } from './registros/consultas/emergencias/hoja/hoja.component';
-import { AdmisionComponent } from './registros/adminsion/admision/admision.component';
-import { DetalleConsultaComponent } from './registros/adminsion/detalleConsulta/detalleConsulta.component';
-import { CoexListaComponent } from './registros/consultas/coex/coexLista/coexLista.component';
-import { HojaCoexComponent } from './registros/consultas/coex/HojaCoex/HojaCoex.component';
-import { IngresosComponent } from './registros/consultas/hospitalizacion/ingresos/ingresos.component';
-import { MedicaComponent } from './medica/medica/medica.component';
-import { PacientesAtendidosComponent } from './medica/pacientesAtendidos/pacientesAtendidos.component';
-import { ConstanciasNacimientoComponent } from './registros/nacimientos/constanciasNacimiento/constanciasNacimiento.component';
-import { ListarConstanciasComponent } from './registros/nacimientos/listarConstancias/listarConstancias.component';
-import { HijosComponent } from './registros/patient/hijos/hijos.component';
-import { CitadosComponent } from './registros/citas/citados/citados.component';
-import { AgendarComponent } from './registros/citas/agendar/agendar.component';
-import { NotaMedicaComponent } from './medica/notaMedica/notaMedica.component';
-import { HistoriaClinicaComponent } from './medica/historiaClinica/historiaClinica.component';
-import { AdminComponent } from './principal/administrador/admin/admin.component';
-import { UsuariosComponent } from './principal/administrador/usuarios/usuarios.component';
-import { UsuarioComponent } from './principal/administrador/usuario/usuario.component';
-import { RegistrarComponent } from './principal/administrador/registrar/registrar.component';
-import { RecuperarComponent } from './principal/administrador/recuperar/recuperar.component';
 import { roleGuard } from './role.guard';
-import { EstadisticaComponent } from './std/estadistica/estadistica.component';
-import { ConsultorComponent } from './std/consultor/consultor.component';
-import { MenutsComponent } from './trabajoSocial/trabajosocial/menuts.component';
-import { NuevaConstanciaNacimientoComponent } from './registros/nacimientos/nuevaConstanciaNacimiento/nuevaConstanciaNacimiento.component';
-import { ListarPrestamosComponent } from './registros/prestamos/listarPrestamos/listarPrestamos.component';
-import { CrearPrestamoComponent } from './registros/prestamos/crearPrestamo/crearPrestamo.component';
-import { ImprimirCitasComponent } from './registros/citas/imprimirCitas/imprimirCitas.component';
-import { DoctoresComponent } from './std/medicos/doctores/doctores.component';
-import { DoctorFormComponent } from './std/medicos/doctorForm/doctorForm.component';
-import { HojaCoexOdontoComponent } from './registros/consultas/coex/HojaCoexOdonto/HojaCoexOdonto.component';
-import { HojaCoexPsicoComponent } from './registros/consultas/coex/HojaCoexPsico/HojaCoexPsico.component';
-import { UisauMenuComponent } from './uisau/uisaMenu/uisauMenu.component';
-import { EncamamientoComponent } from './uisau/encamamiento/encamamiento.component';
-import { ProcedimientosmenoresComponent } from './std/procedimientos/procedimientosmenores/procedimientosmenores.component';
-import { ProcemedicoComponent } from './std/procedimientos/procemedico/procemedico.component';
-import { CatalogoprocedimientoComponent } from './std/procedimientos/catalogoprocedimiento/catalogoprocedimiento.component';
-import { NuevoprocedimientoComponent } from './std/procedimientos/nuevoprocedimiento/nuevoprocedimiento.component';
-import { ImprimirCoexComponent } from './registros/consultas/coex/imprimirCoex/imprimirCoex.component';
-import { CitasEspecialidadComponent } from './registros/citas/citasEspecialidad/citasEspecialidad.component';
-import { MenuNutriComponent } from './nutricion/menu-nutri/menu-nutri.component';
-import { CitasNutriComponent } from './nutricion/citas-nutri/citas-nutri.component';
-import { CoexNutriComponent } from './nutricion/coex-nutri/coex-nutri.component';
-import { MenuOdontoComponent } from './odontologia/menu-odonto/menu-odonto.component';
-import { CoexOdontoComponent } from './odontologia/coex-odonto/coex-odonto.component';
-import { CitasOdontoComponent } from './odontologia/citas-odonto/citas-odonto.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
-  { path: 'inicio', component: HomeComponent },
-  { path: 'resetpass', component: RecuperarComponent },
+  {
+    path: 'inicio',
+    loadComponent: () => import('./principal/home/home.component').then(c => c.HomeComponent)
+  },
+  {
+    path: 'resetpass',
+    loadComponent: () => import('./principal/administrador/recuperar/recuperar.component').then(c => c.RecuperarComponent)
+  },
 
   // ── Rutas protegidas agrupadas ──
   {
     path: '',
-    canActivate: [AuthGuard], // ← se aplica a todas las hijas
+    canActivate: [AuthGuard],
     children: [
-      { path: 'dash', component: DashboardComponent },
+      {
+        path: 'dash',
+        loadComponent: () => import('./principal/dashboard/dashboard.component').then(c => c.DashboardComponent)
+      },
       //admin
-      { path: 'adminsys', component: AdminComponent, canActivate: [roleGuard(['admin'])] },
-      { path: 'usuarios', component: UsuariosComponent, canActivate: [roleGuard(['admin'])] },
-      { path: 'usuario/:id', component: UsuarioComponent },
-      { path: 'newuser', component: RegistrarComponent },
-
+      {
+        path: 'adminsys',
+        loadComponent: () => import('./principal/administrador/admin/admin.component').then(c => c.AdminComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
+      {
+        path: 'usuarios',
+        loadComponent: () => import('./principal/administrador/usuarios/usuarios.component').then(c => c.UsuariosComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
+      {
+        path: 'usuario/:id',
+        loadComponent: () => import('./principal/administrador/usuario/usuario.component').then(c => c.UsuarioComponent)
+      },
+      {
+        path: 'newuser',
+        loadComponent: () => import('./principal/administrador/registrar/registrar.component').then(c => c.RegistrarComponent)
+      },
 
       // Registros Médicos
-      { path: 'registros', component: RegistrosMedicosComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-      { path: 'admision', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-      { path: 'admision/:origen', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-      { path: 'admisionPaciente/:origen/:pacienteId', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-      { path: 'editarAdmision/:id/:origen', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-      { path: 'editarAdmision/:id', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-      // { path: 'formConsulta/:id', component: AdmisionComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-      { path: 'detalleAdmision/:id', component: DetalleConsultaComponent },
+      {
+        path: 'registros',
+        loadComponent: () => import('./registros/registrosMedicos/registrosMedicos.component').then(c => c.RegistrosMedicosComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'admision',
+        loadComponent: () => import('./registros/adminsion/admision/admision.component').then(c => c.AdmisionComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'admision/:origen',
+        loadComponent: () => import('./registros/adminsion/admision/admision.component').then(c => c.AdmisionComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'admisionPaciente/:origen/:pacienteId',
+        loadComponent: () => import('./registros/adminsion/admision/admision.component').then(c => c.AdmisionComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'editarAdmision/:id/:origen',
+        loadComponent: () => import('./registros/adminsion/admision/admision.component').then(c => c.AdmisionComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'editarAdmision/:id',
+        loadComponent: () => import('./registros/adminsion/admision/admision.component').then(c => c.AdmisionComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'detalleAdmision/:id',
+        loadComponent: () => import('./registros/adminsion/detalleConsulta/detalleConsulta.component').then(c => c.DetalleConsultaComponent)
+      },
 
-      { path: 'hijo/:id', component: HijosComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-
+      {
+        path: 'hijo/:id',
+        loadComponent: () => import('./registros/patient/hijos/hijos.component').then(c => c.HijosComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
 
       // Pacientes
-      { path: 'pacientes', component: PacientesComponent },
-      { path: 'paciente', component: FormularioPacienteComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-      { path: 'paciente/:modo', component: FormularioPacienteComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-      { path: 'detallePaciente/:id', component: DetallePacienteComponent },
-      { path: 'pacienteEdit/:id', component: FormularioPacienteComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      {
+        path: 'pacientes',
+        loadComponent: () => import('./registros/patient/pacientes/pacientes.component').then(c => c.PacientesComponent)
+      },
+      {
+        path: 'paciente',
+        loadComponent: () => import('./registros/patient/formularioPaciente/formularioPaciente.component').then(c => c.FormularioPacienteComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'paciente/:modo',
+        loadComponent: () => import('./registros/patient/formularioPaciente/formularioPaciente.component').then(c => c.FormularioPacienteComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'detallePaciente/:id',
+        loadComponent: () => import('./registros/patient/detallePaciente/detallePaciente.component').then(c => c.DetallePacienteComponent)
+      },
+      {
+        path: 'pacienteEdit/:id',
+        loadComponent: () => import('./registros/patient/formularioPaciente/formularioPaciente.component').then(c => c.FormularioPacienteComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
       // Emergencias
-      { path: 'emergencias', component: EmergenciasListComponent },
-      { path: 'hojaEmergencia/:id', component: HojaComponent },
+      {
+        path: 'emergencias',
+        loadComponent: () => import('./registros/consultas/emergencias/emergenciasList/emergenciasList.component').then(c => c.EmergenciasListComponent)
+      },
+      {
+        path: 'hojaEmergencia/:id',
+        loadComponent: () => import('./registros/consultas/emergencias/hoja/hoja.component').then(c => c.HojaComponent)
+      },
       // Consulta externa
-      { path: 'coex', component: CoexListaComponent },
-      { path: 'coexHoja/:id', component: HojaCoexComponent },
-      { path: 'hojaPsico/:id', component: HojaCoexPsicoComponent },
-      { path: 'hojaOdonto/:id', component: HojaCoexOdontoComponent },
-      { path: 'imprimircoex', component: ImprimirCoexComponent },
+      {
+        path: 'coex',
+        loadComponent: () => import('./registros/consultas/coex/coexLista/coexLista.component').then(c => c.CoexListaComponent)
+      },
+      {
+        path: 'coexHoja/:id',
+        loadComponent: () => import('./registros/consultas/coex/HojaCoex/HojaCoex.component').then(c => c.HojaCoexComponent)
+      },
+      {
+        path: 'hojaPsico/:id',
+        loadComponent: () => import('./registros/consultas/coex/HojaCoexPsico/HojaCoexPsico.component').then(c => c.HojaCoexPsicoComponent)
+      },
+      {
+        path: 'hojaOdonto/:id',
+        loadComponent: () => import('./registros/consultas/coex/HojaCoexOdonto/HojaCoexOdonto.component').then(c => c.HojaCoexOdontoComponent)
+      },
+      {
+        path: 'imprimircoex',
+        loadComponent: () => import('./registros/consultas/coex/imprimirCoex/imprimirCoex.component').then(c => c.ImprimirCoexComponent)
+      },
       // Hospitalización
-      { path: 'ingresos', component: IngresosComponent },
-      { path: 'ingreso/:id', component: HojaIngresoComponent },
+      {
+        path: 'ingresos',
+        loadComponent: () => import('./registros/consultas/hospitalizacion/ingresos/ingresos.component').then(c => c.IngresosComponent)
+      },
+      {
+        path: 'ingreso/:id',
+        loadComponent: () => import('./registros/consultas/hospitalizacion/hojaIngreso/hojaIngreso.component').then(c => c.HojaIngresoComponent)
+      },
       // Consultas
-      { path: 'consultas', component: ConsultasComponent },
-      { path: 'recepcion', component: RecepcionComponent },
-      { path: 'registro', component: FormConsultaComponent },
-      { path: 'renap', component: RenapComponent },
+      {
+        path: 'consultas',
+        loadComponent: () => import('./registros/consultas/consultas/consultas.component').then(c => c.ConsultasComponent)
+      },
+      {
+        path: 'recepcion',
+        loadComponent: () => import('./registros/consultas/recepcion/recepcion.component').then(c => c.RecepcionComponent)
+      },
+      {
+        path: 'registro',
+        loadComponent: () => import('./registros/adminsion/formConsulta/formConsulta.component').then(c => c.FormConsultaComponent)
+      },
+      {
+        path: 'renap',
+        loadComponent: () => import('./registros/patient/renap/renap.component').then(c => c.RenapComponent)
+      },
       //Prestamos
-      { path: 'prestamos', component: ListarPrestamosComponent, canActivate: [roleGuard(['admin', 'registro'])] },
-      { path: 'prestamo/:id', component: CrearPrestamoComponent, canActivate: [roleGuard(['admin', 'registro'])] },
-      { path: 'editarPrestamo/:id', component: CrearPrestamoComponent, canActivate: [roleGuard(['admin', 'registro'])] },
+      {
+        path: 'prestamos',
+        loadComponent: () => import('./registros/prestamos/listarPrestamos/listarPrestamos.component').then(c => c.ListarPrestamosComponent),
+        canActivate: [roleGuard(['admin', 'registro'])]
+      },
+      {
+        path: 'prestamo/:id',
+        loadComponent: () => import('./registros/prestamos/crearPrestamo/crearPrestamo.component').then(c => c.CrearPrestamoComponent),
+        canActivate: [roleGuard(['admin', 'registro'])]
+      },
+      {
+        path: 'editarPrestamo/:id',
+        loadComponent: () => import('./registros/prestamos/crearPrestamo/crearPrestamo.component').then(c => c.CrearPrestamoComponent),
+        canActivate: [roleGuard(['admin', 'registro'])]
+      },
       // Médicas
-      { path: 'clinica', component: MedicaComponent, canActivate: [roleGuard(['admin', 'medico'])] },
-      { path: 'pacientesAtendidos', component: PacientesAtendidosComponent },
-      { path: 'notaMedica/:consultaId', component: NotaMedicaComponent },
-      { path: 'notaMedicas', component: NotaMedicaComponent },
-      { path: 'historiaClinica/:consultaId', component: HistoriaClinicaComponent },
+      {
+        path: 'clinica',
+        loadComponent: () => import('./medica/medica/medica.component').then(c => c.MedicaComponent),
+        canActivate: [roleGuard(['admin', 'medico'])]
+      },
+      {
+        path: 'pacientesAtendidos',
+        loadComponent: () => import('./medica/pacientesAtendidos/pacientesAtendidos.component').then(c => c.PacientesAtendidosComponent)
+      },
+      {
+        path: 'notaMedica/:consultaId',
+        loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+      },
+      {
+        path: 'notaMedicas',
+        loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+      },
+      {
+        path: 'historiaClinica/:consultaId',
+        loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
+      },
 
       //Citas
-      { path: 'citas', component: CitadosComponent },
-      { path: 'agendar', component: AgendarComponent },
-      { path: 'agendar/paciente/:pacienteId', component: AgendarComponent },
-      { path: 'reagendar/cita/:citaId', component: AgendarComponent },
-      { path: 'imprimirCitas', component: ImprimirCitasComponent },
-      { path: 'citaspacientes', component: CitasEspecialidadComponent },
+      {
+        path: 'citas',
+        loadComponent: () => import('./registros/citas/citados/citados.component').then(c => c.CitadosComponent)
+      },
+      {
+        path: 'agendar',
+        loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+      },
+      {
+        path: 'agendar/paciente/:pacienteId',
+        loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+      },
+      {
+        path: 'reagendar/cita/:citaId',
+        loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+      },
+      {
+        path: 'imprimirCitas',
+        loadComponent: () => import('./registros/citas/imprimirCitas/imprimirCitas.component').then(c => c.ImprimirCitasComponent)
+      },
+      {
+        path: 'citaspacientes',
+        loadComponent: () => import('./registros/citas/citasEspecialidad/citasEspecialidad.component').then(c => c.CitasEspecialidadComponent)
+      },
 
       //Constancias Nacimiento
-      { path: 'nacimientos', component: ListarConstanciasComponent },
-      { path: 'cons-nac/:id', component: ConstanciasNacimientoComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-      { path: 'nueva-cons-nac', component: NuevaConstanciaNacimientoComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
-      { path: 'cnprint/:id', component: HojaCnacimientoComponent, canActivate: [roleGuard(['admin', 'registro', 'std'])] },
+      {
+        path: 'nacimientos',
+        loadComponent: () => import('./registros/nacimientos/listarConstancias/listarConstancias.component').then(c => c.ListarConstanciasComponent)
+      },
+      {
+        path: 'cons-nac/:id',
+        loadComponent: () => import('./registros/nacimientos/constanciasNacimiento/constanciasNacimiento.component').then(c => c.ConstanciasNacimientoComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'nueva-cons-nac',
+        loadComponent: () => import('./registros/nacimientos/nuevaConstanciaNacimiento/nuevaConstanciaNacimiento.component').then(c => c.NuevaConstanciaNacimientoComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'cnprint/:id',
+        loadComponent: () => import('./registros/nacimientos/hoja-cnacimiento/hoja-cnacimiento.component').then(c => c.HojaCnacimientoComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
 
       //Estadistica
-      { path: 'estadistica', component: EstadisticaComponent, canActivate: [roleGuard(['admin', 'std'])] },
-      { path: 'consultar', component: ConsultorComponent },
-      { path: 'doctores', component: DoctoresComponent },
-      { path: 'doctor', component: DoctorFormComponent },
-      { path: 'doctor/:id', component: DoctorFormComponent },
-      { path: 'procedimientosmenores', component: ProcedimientosmenoresComponent },
-      { path: 'procemedic', component: ProcemedicoComponent },
-      { path: 'procemedicEdit/:id', component: ProcemedicoComponent },
-      { path: 'catalogoProcedimientos', component: CatalogoprocedimientoComponent },
-      { path: 'nuevoProce', component: NuevoprocedimientoComponent },
-      { path: 'editProce/:id', component: NuevoprocedimientoComponent },
-
+      {
+        path: 'estadistica',
+        loadComponent: () => import('./std/estadistica/estadistica.component').then(c => c.EstadisticaComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
+        path: 'consultar',
+        loadComponent: () => import('./std/consultor/consultor.component').then(c => c.ConsultorComponent)
+      },
+      {
+        path: 'doctores',
+        loadComponent: () => import('./std/medicos/doctores/doctores.component').then(c => c.DoctoresComponent)
+      },
+      {
+        path: 'doctor',
+        loadComponent: () => import('./std/medicos/doctorForm/doctorForm.component').then(c => c.DoctorFormComponent)
+      },
+      {
+        path: 'doctor/:id',
+        loadComponent: () => import('./std/medicos/doctorForm/doctorForm.component').then(c => c.DoctorFormComponent)
+      },
+      {
+        path: 'procedimientosmenores',
+        loadComponent: () => import('./std/procedimientos/procedimientosmenores/procedimientosmenores.component').then(c => c.ProcedimientosmenoresComponent)
+      },
+      {
+        path: 'procemedic',
+        loadComponent: () => import('./std/procedimientos/procemedico/procemedico.component').then(c => c.ProcemedicoComponent)
+      },
+      {
+        path: 'procemedicEdit/:id',
+        loadComponent: () => import('./std/procedimientos/procemedico/procemedico.component').then(c => c.ProcemedicoComponent)
+      },
+      {
+        path: 'catalogoProcedimientos',
+        loadComponent: () => import('./std/procedimientos/catalogoprocedimiento/catalogoprocedimiento.component').then(c => c.CatalogoprocedimientoComponent)
+      },
+      {
+        path: 'nuevoProce',
+        loadComponent: () => import('./std/procedimientos/nuevoprocedimiento/nuevoprocedimiento.component').then(c => c.NuevoprocedimientoComponent)
+      },
+      {
+        path: 'editProce/:id',
+        loadComponent: () => import('./std/procedimientos/nuevoprocedimiento/nuevoprocedimiento.component').then(c => c.NuevoprocedimientoComponent)
+      },
 
       // Nutricion
-      { path: 'menu-nutri', component: MenuNutriComponent, canActivate: [roleGuard(['admin', 'nutric'])] },
-      { path: 'citas-nutri', component: CitasNutriComponent, canActivate: [roleGuard(['admin', 'nutric'])] },
-      { path: 'coex-nutri', component: CoexNutriComponent, canActivate: [roleGuard(['admin', 'nutric'])] },
+      {
+        path: 'menu-nutri',
+        loadComponent: () => import('./nutricion/menu-nutri/menu-nutri.component').then(c => c.MenuNutriComponent),
+        canActivate: [roleGuard(['admin', 'nutric'])]
+      },
+      {
+        path: 'citas-nutri',
+        loadComponent: () => import('./nutricion/citas-nutri/citas-nutri.component').then(c => c.CitasNutriComponent),
+        canActivate: [roleGuard(['admin', 'nutric'])]
+      },
+      {
+        path: 'coex-nutri',
+        loadComponent: () => import('./nutricion/coex-nutri/coex-nutri.component').then(c => c.CoexNutriComponent),
+        canActivate: [roleGuard(['admin', 'nutric'])]
+      },
 
       // Odonto
-      { path: 'menu-odonto', component: MenuOdontoComponent, canActivate: [roleGuard(['admin', 'odonto'])] },
-      { path: 'citas-odonto', component: CitasOdontoComponent, canActivate: [roleGuard(['admin', 'odonto'])] },
-      { path: 'coex-odonto', component: CoexOdontoComponent, canActivate: [roleGuard(['admin', 'odonto'])] },
-
+      {
+        path: 'menu-odonto',
+        loadComponent: () => import('./odontologia/menu-odonto/menu-odonto.component').then(c => c.MenuOdontoComponent),
+        canActivate: [roleGuard(['admin', 'odonto'])]
+      },
+      {
+        path: 'citas-odonto',
+        loadComponent: () => import('./odontologia/citas-odonto/citas-odonto.component').then(c => c.CitasOdontoComponent),
+        canActivate: [roleGuard(['admin', 'odonto'])]
+      },
+      {
+        path: 'coex-odonto',
+        loadComponent: () => import('./odontologia/coex-odonto/coex-odonto.component').then(c => c.CoexOdontoComponent),
+        canActivate: [roleGuard(['admin', 'odonto'])]
+      },
 
       //TrabajoSocial
-      { path: 'TrabajoSocial', component: MenutsComponent, canActivate: [roleGuard(['admin', 'ts'])] },
+      {
+        path: 'TrabajoSocial',
+        loadComponent: () => import('./trabajoSocial/trabajosocial/menuts.component').then(c => c.MenutsComponent),
+        canActivate: [roleGuard(['admin', 'ts'])]
+      },
 
       //UISAU
-      { path: 'uisau', component: UisauMenuComponent, canActivate: [roleGuard(['admin', 'uisau'])] },
-      { path: 'encamamiento', component: EncamamientoComponent, canActivate: [roleGuard(['admin', 'uisau'])] },
-
+      {
+        path: 'uisau',
+        loadComponent: () => import('./uisau/uisaMenu/uisauMenu.component').then(c => c.UisauMenuComponent),
+        canActivate: [roleGuard(['admin', 'uisau'])]
+      },
+      {
+        path: 'encamamiento',
+        loadComponent: () => import('./uisau/encamamiento/encamamiento.component').then(c => c.EncamamientoComponent),
+        canActivate: [roleGuard(['admin', 'uisau'])]
+      },
     ]
   }
 ];
