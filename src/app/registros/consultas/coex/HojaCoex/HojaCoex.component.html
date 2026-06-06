@@ -32,7 +32,9 @@
 >
   <!-- HEADER con chips integrados -->
   <div class="aurora-header">
-    <span></span>
+    <div class="header-logo">
+      <span class="logo" [innerHTML]="icons['logo']"></span>
+    </div>
     <div class="aurora-textos">
       <h3>Historia Clínica Consulta Externa</h3>
       <h4>Ministerio de Salud Pública y Asistencia Social</h4>
@@ -61,26 +63,20 @@
     </div>
     <span>
       Fecha de la Consulta {{ consulta()?.hora_consulta | time }} -
-      {{ consulta()?.fecha_consulta | date: "dd-MM-yyyy" }}</span
-    >
+      {{ consulta()?.fecha_consulta | date: "dd-MM-yyyy" }}
+    </span>
     <div class="meta-right">
       <span class="meta-exp">Exp: {{ consulta()?.expediente }}</span>
     </div>
   </div>
 
   <!-- ── DATOS DEL PACIENTE ── -->
+
   <div class="doc-section">
     <h6>Datos del Paciente</h6>
 
     <!-- Fila 1: Nombre · Sexo · Edad -->
-    <div
-      style="
-        display: grid;
-        grid-template-columns: 3fr 0.8fr 0.8fr;
-        gap: 4px;
-        margin-bottom: 4px;
-      "
-    >
+    <div class="paciente-row paciente-row--nombre">
       <div class="borderline">
         <label>Nombre</label>
         <p class="nombres-fila">{{ nombreCompleto() | capitalize }}</p>
@@ -96,14 +92,7 @@
     </div>
 
     <!-- Fila 2: Fecha Nac · DPI · Teléfono -->
-    <div
-      style="
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 4px;
-        margin-bottom: 4px;
-      "
-    >
+    <div class="paciente-row paciente-row--3">
       <div class="borderline">
         <label>Fecha de Nacimiento</label>
         <p>{{ paciente()?.fecha_nacimiento | date: "dd-MM-yyyy" }}</p>
@@ -119,14 +108,7 @@
     </div>
 
     <!-- Fila 3: Dirección · Ocupación · Educación -->
-    <div
-      style="
-        display: grid;
-        grid-template-columns: 2fr 1fr 1fr;
-        gap: 4px;
-        margin-bottom: 4px;
-      "
-    >
+    <div class="paciente-row paciente-row--dir">
       <div class="borderline">
         <label>Dirección</label>
         <p>
@@ -152,7 +134,7 @@
     </div>
 
     <!-- Fila 4: Responsable · Parentesco -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px">
+    <div class="paciente-row paciente-row--2">
       <div class="borderline">
         <label>Responsable</label>
         <p>{{ responsable()?.nombre || "N/A" }}</p>
@@ -171,123 +153,192 @@
   <!-- ── SIGNOS VITALES ── -->
   <div class="doc-section">
     <h6>
-      Signos Vitales
-      <span class="sec-hora"
-        >Hora: ______________________________________________________</span
-      >
-    </h6>
-    <div class="vitales-grid">
-      <div class="vital-item">
-        <label>P/A</label
-        ><span class="vital-val">____________________ mmHg</span>
-      </div>
-      <div class="vital-item">
-        <label>FC</label><span class="vital-val">____________________ lpm</span>
-      </div>
-      <div class="vital-item">
-        <label>FR</label><span class="vital-val">____________________ rpm</span>
-      </div>
-      <div class="vital-item">
-        <label>Temp</label
-        ><span class="vital-val">______________________ °C</span>
-      </div>
-      <div class="vital-item">
-        <label>Peso</label
-        ><span class="vital-val">______________________ kg</span>
-      </div>
-      <div class="vital-item">
-        <label>Talla</label
-        ><span class="vital-val">______________________ cm</span>
-      </div>
-      <div class="vital-item">
-        <label>SatO2</label
-        ><span class="vital-val">______________________ %</span>
-      </div>
-      <div class="vital-item">
-        <label>GMT</label><span class="vital-val">______________________</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── DATOS DE LA CONSULTA ── -->
-  <div class="doc-section">
-    <h6>
-      Datos de la Consulta
+      Examen Físico (Signos Vitales)
       <span class="sec-hora">Hora: ______________________</span>
     </h6>
 
-    <div class="campo-hc">
-      <label>Motivo de la consulta</label>
-      <span class="line"></span>
-      <span class="line"></span>
+    <!-- Fila 1: hemodinámicos -->
+    <div class="campos-clinicos--spread">
+      <div class="signus">
+        <span class="label-line">P/A:</span
+        ><span class="line-signus"></span>mmHg
+      </div>
+      <div class="signus">
+        <span class="label-line">FC:</span><span class="line-signus"></span>lpm
+      </div>
+      <div class="signus">
+        <span class="label-line">FR:</span><span class="line-signus"></span>rpm
+      </div>
+      <div class="signus">
+        <span class="label-line">SatO2:</span><span class="line-signus"></span>%
+      </div>
+      <div class="signus">
+        <span class="label-line">Temp:</span><span class="line-signus"></span>°C
+      </div>
     </div>
 
-    <div class="campo-hc">
-      <label>Historia Clínica</label>
-      <span class="line"></span>
-      <span class="line"></span>
-    </div>
-
-    <div class="campo-hc">
-      <label>Antecedentes</label>
-      <span class="line"></span>
-      <span class="line"></span>
-      <span class="line"></span>
-    </div>
-
-    <div class="campo-hc">
-      <label>Examen Físico</label>
-      <span class="line"></span>
-      <span class="line"></span>
-      <span class="line"></span>
-    </div>
-
-    <div class="campo-hc">
-      <label>Diagnósticos</label>
-      <span class="line"></span>
-      <span class="line"></span>
-    </div>
-
-    <div class="campo-hc">
-      <label>Tratamiento</label>
-      <span class="line"></span>
-      <span class="line"></span>
-      <span class="line"></span>
-    </div>
-
-    <div class="campo-hc">
-      <label>Estudios Complementarios</label>
-      <span class="line"></span>
-      <span class="line"></span>
+    <!-- Fila 2: antropométricos -->
+    <div class="campos-clinicos--spread">
+      <div class="signus">
+        <span class="label-line">Peso:</span><span class="line-signus"></span>kg
+      </div>
+      <div class="signus">
+        <span class="label-line">Talla:</span
+        ><span class="line-signus"></span>cm
+      </div>
+      <div class="signus">
+        <span class="label-line">P/T:</span><span class="line-signus"></span>
+      </div>
+      <div class="signus">
+        <span class="label-line">T/E:</span><span class="line-signus"></span>
+      </div>
+      <div class="signus">
+        <span class="label-line">P/E:</span><span class="line-signus"></span>
+      </div>
+      <div class="signus">
+        <span class="label-line">GMT:</span><span class="line-signus"></span>
+      </div>
+      <div class="signus">
+        <span class="label-line">Puntaje Z:</span
+        ><span class="line-signus"></span>
+      </div>
     </div>
   </div>
 
-  <!-- ── SEGUIMIENTO DE CASO ── -->
+  <!-- ── MOTIVO DE CONSULTA ── -->
   <div class="doc-section">
-    <h6>Seguimiento de Caso</h6>
+    <h6>Motivo de la Consulta</h6>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+  </div>
 
-    <div class="campo-hc">
-      <label>Fecha</label>
-      <span class="line"></span>
+  <!-- ── HISTORIA DE LA ENFERMEDAD ACTUAL ── -->
+  <div class="doc-section">
+    <h6>Historia de la Enfermedad Actual</h6>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+  </div>
+
+  <!-- ── ANTECEDENTES ── -->
+  <div class="doc-section">
+    <h6>Antecedentes</h6>
+
+    <div class="grid-triple mb-sm">
+      <div class="borderline-time">
+        <label>Familiares</label>
+        <span class="line"></span>
+      </div>
+      <div class="borderline-time">
+        <label>Médicos</label>
+        <span class="line"></span>
+      </div>
+      <div class="borderline-time">
+        <label>Alérgicos</label>
+        <span class="line"></span>
+      </div>
     </div>
 
-    <div class="campo-hc">
-      <label>Datos Subjetivos</label>
-      <span class="line"></span>
+    <div class="grid-doble mb-sm">
+      <div class="borderline-time">
+        <label>Traumáticos</label>
+        <span class="line"></span>
+      </div>
+      <div class="borderline-time">
+        <label>Quirúrgicos</label>
+        <span class="line"></span>
+      </div>
     </div>
 
-    <div class="campo-hc">
-      <label>Datos Objetivos</label>
-      <span class="line"></span>
+    @if (paciente()?.sexo === "F") {
+      <div class="borderline-time mb-sm">
+        <label>Gineco-obstétricos</label>
+        <div class="campos-clinicos--spread">
+          <div class="signus">
+            <span class="label-line">G:</span><span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">P:</span><span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">C:</span><span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">A:</span><span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">HV:</span><span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">HM:</span><span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">FUR:</span
+            ><span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">FPP:</span
+            ><span class="line-signus"></span>
+          </div>
+        </div>
+        <div class="campos-clinicos--spread">
+          <div class="signus">
+            <span class="label-line">Menarquía:</span
+            ><span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">Ciclos:</span
+            ><span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">FUP:</span
+            ><span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">PF:</span><span class="line-signus"></span>
+          </div>
+          <div class="signus">
+            <span class="label-line">Control PN:</span
+            ><span class="line-signus"></span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 
-      <br />
-    </div>
+  <!-- ── HALLAZGOS FÍSICOS ── -->
+  <div class="doc-section">
+    <h6>Hallazgos Físicos</h6>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+  </div>
 
-    <!-- Firma médico -->
-    <div class="firma-row" style="margin-top: 16px">
-      <p>Fecha</p>
-      <p>Hora</p>
-      <p>Firma y Sello del Médico</p>
-    </div>
+  <!-- ── IMPRESIÓN CLÍNICA / DIAGNÓSTICOS ── -->
+  <div class="doc-section">
+    <h6>Impresión Clínica / Diagnósticos</h6>
+    <span class="line"></span>
+    <span class="line"></span>
+  </div>
+
+  <!-- ── TRATAMIENTO ── -->
+  <div class="doc-section">
+    <h6>Tratamiento</h6>
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+  </div>
+
+  <!-- ── ESTUDIOS COMPLEMENTARIOS ── -->
+  <div class="doc-section">
+    <h6>Estudios Complementarios</h6>
+    <span class="line"></span>
+    <span class="line"></span>
   </div>
 </div>

@@ -79,7 +79,7 @@ label { letter-spacing: 0.4px; }
 /* ══ META-CHIPS (fecha/hora de impresión) ═════════════════════ */
 .aurora-header {
   display: grid;
-  grid-template-columns: 12px 1fr auto; /* auto para que los chips tomen su espacio natural */
+  grid-template-columns: 55px 1fr 48px; /* auto para que los chips tomen su espacio natural */
   align-items: center; gap: 6px;
   border-bottom: 2px solid var(--ink);
   padding-bottom: 5px; margin-bottom: 3px;
@@ -109,11 +109,11 @@ label { letter-spacing: 0.4px; }
 }
 .aurora-textos h4 {
   font-family: var(--serif);
-  font-size: 9pt; font-weight: 700; color: var(--ink);
+  font-size: 12pt; font-weight: 700; color: var(--ink);
 }
 .aurora-textos h5 {
   font-family: var(--serif);
-  font-size: 8pt; font-weight: 400; color: var(--ink-muted);
+  font-size: 10pt; font-weight: 400; color: var(--ink-muted);
 }
 
 /* ══ META HC ══════════════════════════════════════════════════ */
@@ -147,137 +147,500 @@ label { letter-spacing: 0.4px; }
   color: var(--accent);
 }
 
-/* ══ SECCIONES ════════════════════════════════════════════════ */
-/* Mismo estilo que .doc-section del CSS referencia */
+/* ══ SECCIONES ══════════════════════════════════════════════ */
 .doc-section {
-  /* border: 0.8px solid #888; */
-  border-radius: 6px;
-  padding: 4px 7px;
-  margin: 2.5px 0;
+  border-left: 2.5px solid var(--teal);
   break-inside: avoid;
   page-break-inside: avoid;
-  position: relative; z-index: 1;
+  position: relative;
 }
 
 .doc-section h6 {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: var(--teal);
+  border-bottom: 0.5px solid var(--border-lt);
+  padding-bottom: 3px;
+  margin-bottom: 5px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: var(--mono);
-  font-size: 6pt; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.9px;
-  color: var(--accent);
-  border-bottom: 0.5px solid #ddd;
-  padding-bottom: 2px; margin-bottom: 5px;
+  margin: 0 0 0 38px;
 }
 
 .sec-hora {
   font-family: var(--mono);
-  font-size: 6pt; font-weight: 400;
-  color: var(--ink-muted); letter-spacing: 0;
+  font-size: 6pt;
+  font-weight: 400;
+  color: var(--ink-muted);
+  letter-spacing: 0;
   text-transform: none;
 }
 
-/* ══ CAMPOS — mismo sistema que .borderline del referencia ════ */
-.borderline {
-  border-bottom: 0.8px solid #c0c0c0;
-  border-radius: 6px;
-  /* padding: 2px 5px 3px; */
-  min-height: 34px;
-  overflow-wrap: anywhere; word-break: break-word;
-}
-
-/* ══ CAMPO HC — escritura libre con acento lateral ════════════ */
-.campo-hc {
+/* ══ FILAS DE PACIENTE ══════════════════════════════════════ */
+.paciente-row {
+  display: grid;
+  gap: 4px;
+  border-bottom: #00000092 solid 1px;
   margin-bottom: 4px;
-  padding: 0 1px;
 }
-.campo-hc > label {
-  font-family: var(--mono);
-  font-size: 9.8pt; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.5px;
-  color: var(--accent);
-  display: block; margin-bottom: 1px;
-  border-left: 2px solid var(--accent);
-  padding-left: 4px; line-height: 1.4;
+.paciente-row:last-child { margin-bottom: 0; }
+
+.paciente-row--nombre { grid-template-columns: 3fr 0.8fr 1.2fr; }
+.paciente-row--3      { grid-template-columns: 1fr 1fr 1fr; }
+.paciente-row--dir    { grid-template-columns: 2fr 1fr 1fr; }
+.paciente-row--2      { grid-template-columns: 1fr 1fr; }
+
+/* ══ CAMPOS BORDERLINE ══════════════════════════════════════ */
+.borderline {
+  background: var(--bg-soft);
+  border: 0.5px solid var(--border-lt);
+  border-bottom: 1.8px solid var(--border);   /* ← borde inferior destacado */
+  border-radius: 5px;
+  padding: 3px 6px 5px;
+  min-height: 32px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  break-inside: avoid;
 }
 
-/* ══ LABELS — igual que el referencia ════════════════════════ */
+.borderline label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9pt;                             /* ← era 5.5pt */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ink-muted);
+  margin-bottom: 2px;
+  line-height: 1;
+}
+
+.borderline p {
+  font-family: var(--serif);
+  font-size: 9pt;                             /* ← era 8pt */
+  font-weight: 500;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.25;
+}
+
+/* Nombre destacado */
+.nombres-fila {
+  font-size: 12pt !important;                 /* ← era 10.5pt */
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  color: var(--navy) !important;
+  letter-spacing: 0.3px !important;
+  line-height: 1.1 !important;
+}
+
+
+
+
+/* ══ LABELS ═════════════════════════════════════════════════ */
 label {
   display: block;
   font-family: var(--mono);
-  font-size: 8.8pt; font-weight: 500;
-  text-transform: uppercase; letter-spacing: 0.4px;
+  font-size: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
   color: var(--ink-muted);
-  margin-bottom: 1px; line-height: 1.2;
+  margin-bottom: 0;
+  line-height: 1;
 }
 
-/* ══ VALORES — igual que .borderline p del referencia ════════ */
-.borderline p,
-.doc-section > p {
-  font-family: var(--serif);
-  font-size: 9pt; font-weight: 600;
-  color: var(--ink); letter-spacing: 0;
-  line-height: 1.3; margin: 0;
+/* ══ CAMPOS DE DATOS ════════════════════════════════════════ */
+.borderline,
+.borderline-time {
+  border: 0.5px solid var(--border-lt);
+  border-radius: 5px;
+  padding: 3px 6px 4px;
+  background: var(--bg-soft);
+  margin-bottom: 1px;
+  min-height: 32px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
+
+.borderline p,
+.borderline-time p {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+  letter-spacing: 0;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.borderline-time label {
+  color: var(--ink-muted);
+  font-size: 10px;
+  margin-bottom: 2px;
+}
+
+/* Bloque gineco-obstétrico */
+.borderline-time.mb-sm {
+  background: var(--gold-lt);
+  border-color: #e6c97a;
+}
+.borderline-time.mb-sm > label { color: var(--gold); }
+.borderline-time.mb-sm .label-line { color: var(--gold); }
+.borderline-time.mb-sm .line-signus { border-bottom-color: var(--gold); width: 65px; }
 
 .nombres-fila {
-  font-size: 12pt !important; font-weight: 700 !important;
-  text-transform: uppercase; letter-spacing: 0.2px !important;
+  font-size: 11pt !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  color: var(--navy) !important;
+  letter-spacing: 0.3px !important;
 }
 
-/* ══ LÍNEA — igual que .line del referencia ══════════════════ */
+.nombre {
+  font-family: var(--mono);
+  font-size: 13pt;
+  font-weight: 700;
+  color: var(--accent);
+  margin-left: 4px;
+  line-height: 1;
+}
+
+/* ══ CAMPOS CONECTADOS ══════════════════════════════════════ */
+.field-group {
+  display: flex;
+  gap: 0;
+  margin-bottom: var(--gap-md);
+}
+
+.field {
+  flex: 1;
+  padding: 4px 7px;
+  border: 0.5px solid var(--border-lt);
+  border-radius: 0;
+  min-width: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-bottom: 1px;
+}
+.field:first-child { border-radius: 5px 0 0 5px; }
+.field:last-child  { border-radius: 0 5px 5px 0; }
+.field + .field    { border-left: none; }
+.field--w2 { flex: 2; }
+.field--w3 { flex: 3; }
+
+.field label {
+  font-size: 9px;
+  color: var(--ink-muted);
+  letter-spacing: 0.4px;
+  margin-bottom: 2px;
+}
+.field p {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: #111827;
+  margin: 0;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+/* ══ SIGNOS VITALES ═════════════════════════════════════════ */
+.campos-clinicos--spread {
+  display: flex;
+  justify-content: space-between;
+  gap: 1px;
+  line-height: 20px;
+  margin-bottom: 4px;
+}
+
+.signus {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--mono);
+  font-size: 9pt;
+  color: var(--ink-dim);
+}
+
+.label-line {
+  font-family: var(--mono);
+  font-size: 8.5pt;
+  font-weight: 600;
+  color: var(--teal);
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+  text-align: end;
+}
+
+.line-signus {
+  display: block;
+  border-bottom: 0.8px solid var(--ink-muted);
+  margin: 0;
+  width: 60px;
+  min-height: 14px;
+}
+
+.line-mini {
+  display: block;
+  border-radius: 4px;
+  border-bottom: 0.8px solid black;
+  border-right: 0.8px solid black;
+  margin: 0;
+  width: 64px;
+}
+
+/* ══ LÍNEAS DE ESCRITURA ════════════════════════════════════ */
 .line {
   display: block;
   border: none;
-  border-bottom: 1.8px solid #888;
-  min-height: 24px;
-  margin-bottom: 3px; width: 100%;
+  border-bottom: 0.8px solid #000;
+  min-height: 20px;
+  width: 100%;
+  margin-bottom: 2px;
+}
+.line:last-child { margin-bottom: 0; }
+.line--mt { margin-top: 1px; }
+
+.line-min {
+  display: block;
+  border-bottom: 0.8px solid #aab0bb;
+  min-height: 20px;
+  margin-bottom: 3px;
+  width: 100%;
 }
 
-/* ══ SIGNOS VITALES — grid 4 cols ════════════════════════════ */
-.vitales-grid {
+/* ══ GRILLAS ════════════════════════════════════════════════ */
+.grid-doble {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px; padding: 2px 0;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+.grid-triple {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px;
+}
+.grid-1-1 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-sm);
 }
 
-.vital-item {
-  border-bottom: 0.8px solid #c0c0c0;
-  border-radius: 6px;
-  /* padding: 2px 5px; */
-  display: flex; flex-direction: column;
+/* ══ INGRESO / EGRESO ═══════════════════════════════════════ */
+.ingreso-egreso-row { display: flex; align-items: center; gap: 10px; }
+.ingreso-egreso-servicio { flex: 1; }
+
+/* ══ ÓRDENES MÉDICAS ════════════════════════════════════════ */
+.ord-m { display: flex; align-items: center; gap: 1px; }
+
+.encabezado-fecha { width: 55px; text-align: center; margin-bottom: 2px; }
+
+.fecha-ord-m { font-size: 7pt; font-weight: 600; text-transform: uppercase; }
+
+.numero { min-width: 12px; font-weight: 800; text-align: center; }
+
+.line-f { text-align: center; flex-shrink: 0; }
+.line-f::before {
+  content: "_/_/_";
+  font-size: 9.5pt;
+  font-weight: 300;
+  color: #000;
+  letter-spacing: 6.5px;
+  line-height: 1px;
 }
 
-/* label dentro de vitales — usa color accent como referencia */
-.vital-item label {
-  font-family: var(--mono);
-  font-size: 8.5pt; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.5px;
-  color: var(--accent);
-  margin-bottom: 1px; line-height: 1;
+/* ══ ESPECIALIDADES ═════════════════════════════════════════ */
+.especialidades-hoja {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  justify-content: center;
 }
 
-.vital-val {
-  font-family: var(--mono);
-  font-size: 8pt; font-weight: 500;
-  color: var(--ink); letter-spacing: 0;
+.especialidad-cuadro { display: flex; align-items: center; }
+.especialidad-cuadro label {
+  font-family: var(--sans);
+  font-size: 8pt;
+  font-weight: 400;
+  white-space: nowrap;
+  letter-spacing: 0;
+  color: var(--ink-muted);
+  text-transform: none;
+}
+.especialidad-cuadro span svg { width: 12px; height: 12px; }
+
+/* ══ INDICADORES ════════════════════════════════════════════ */
+.indicadores-grid {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  padding: 1px 0;
 }
 
-/* ══ FIRMA — igual que .firma-row del referencia ════════════ */
+.centered-container { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.centered-container label {
+  font-family: var(--sans);
+  font-size: 7pt;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--ink);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.centered-container span svg { width: 13px; height: 13px; }
+
+/* ══ SIDEBAR ESPECIALIDADES ═════════════════════════════════ */
+.layout-hoja {
+  display: grid;
+  grid-template-columns: 1fr 20px;
+  gap: 6px;
+  align-items: start;
+}
+
+.especialidades-sidebar {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 11px;
+}
+
+.sidebar-item { display: flex; flex-direction: column; align-items: center; gap: 3px; line-height: 1; }
+.sidebar-label { font-size: 11px; color: #020f24; white-space: nowrap; }
+.sidebar-icon svg { width: 8px; height: 8px; }
+
+/* ══ FIRMA ══════════════════════════════════════════════════ */
 .firma-row {
-  display: flex; gap: 16px;
-  align-items: flex-end; margin-top: 12px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  justify-content: space-around;
+  margin-top: 6px;
 }
+.firma-row--mt { margin-top: 6px; }
+.firma-row--3 > div { flex: 1; }
+
 .firma-row p {
   flex: 1;
-  border-top: 0.8px solid #444;
-  padding-top: 2px; text-align: center;
+  text-align: center;
   font-family: var(--mono) !important;
-  font-size: 8.5pt !important; font-weight: 400 !important;
-  color: #0c0000 !important; text-transform: uppercase;
-  letter-spacing: 0.3px !important; margin: 0 !important;
+  font-size: 6.5pt !important;
+  font-weight: 400 !important;
+  color: #374151 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.3px !important;
+  margin: 0 !important;
+  border-top: 0.8px solid var(--ink-dim);
+  padding-top: 3px;
 }
+
+/* ══ DOC UTILIDADES ═════════════════════════════════════════ */
+.doc { font-family: var(--sans); color: var(--ink); }
+
+.doc__title { font-size: 11px; margin-bottom: 3px; line-height: 1; }
+
+.doc__label {
+  flex-shrink: 0;
+  font-size: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #4b5563;
+  letter-spacing: 0.2px;
+  margin: 0;
+  line-height: 1;
+}
+
+.doc__value {
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  color: #111827;
+  word-break: break-word;
+  text-align: end;
+}
+
+.doc__grid { gap: 3px 8px; margin-bottom: 3px; }
+.doc__grid--4 { grid-template-columns: repeat(4, 1fr); }
+.doc__grid--3 { grid-template-columns: repeat(3, 1fr); }
+.doc__grid--1 { grid-template-columns: 1fr; }
+
+.doc__field { gap: 0; padding-top: 0; padding-bottom: 0; margin-bottom: 1px; }
+
+.doc__divider { height: 0.5px; background: #d1d5db; margin: 3px 0; }
+
+.doc-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 28px;
+  padding: 1px 0;
+  border-bottom: 0.5px dotted #d1d5db;
+}
+
+.doc-id {
+  font-family: var(--mono);
+  font-size: 13pt;
+  font-weight: 700;
+  color: var(--accent);
+  margin-left: 4px;
+}
+
+.doc-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 1px 0;
+}
+
+.meta-left { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.meta-inline { display: flex; align-items: center; gap: 2px; }
+.meta-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #4b5563;
+  letter-spacing: 0.3px;
+}
+.meta-separator { opacity: 0.5; }
+
+.inline-field { display: flex; align-items: baseline; gap: 6px; min-width: 0; white-space: nowrap; }
+.inline-field--grow { flex: 1; min-width: 200px; }
+
+/* ══ PÁRRAFO LEGAL ══════════════════════════════════════════ */
+.parrafo {
+  font-family: var(--sans);
+  font-size: 6.5pt;
+  line-height: 1.5;
+  color: var(--ink);
+  text-align: justify;
+  margin-bottom: 4px;
+}
+
+/* ══ UTILIDADES ═════════════════════════════════════════════ */
+.d-flex                  { display: flex; }
+.justify-content-between { justify-content: space-between; }
+.justify-content-around  { justify-content: space-around; }
+.align-items-center      { align-items: center; }
+.flex-wrap               { flex-wrap: wrap; }
+.text-center             { text-align: center; }
+.text-black              { color: var(--ink); }
+.mb-sm                   { margin-bottom: 3px; }
+.section-inline-label    { white-space: nowrap; margin: 0; border: none; padding: 0; }
+.compact-grid            { gap: 2px 10px; }
+.titulo-doc              { font-family: var(--sans); font-size: 9pt; font-weight: 500; color: var(--ink); letter-spacing: 0.3px; line-height: 1.05; }
+
+
+
 
 /* ══ @PAGE — oficio ════════════════════════════════════════════ */
 @page {

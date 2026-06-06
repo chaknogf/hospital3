@@ -18,6 +18,7 @@ type EstadoCiclo =
   | "recepcion"
   | "actualizado"
   | "descartado"
+  | "borrado"
   | "reprogramado";
 
 
