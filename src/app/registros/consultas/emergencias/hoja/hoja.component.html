@@ -10,6 +10,14 @@
   <button (click)="imprimir()" [disabled]="isLoading()" title="Imprimir">
     🖨️ Imprimir
   </button>
+  <!-- NUEVO BOTÓN PARA REVERSO -->
+  <button
+    (click)="imprimirReverso()"
+    [disabled]="isLoading()"
+    title="Imprimir Reverso"
+  >
+    🔄 Imprimir Reverso
+  </button>
 </div>
 
 <div *ngIf="error()" class="alert alert-danger no-imprimir">
@@ -715,4 +723,88 @@
     </aside>
   </div>
 </div>
-```
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- DOCUMENTO REVERSO (oculto en pantalla, visible al imprimir) -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<div class="container-impresion container-reverso" *ngIf="consulta()">
+  <div class="layout-hoja-reverso">
+    <!-- ── EGRESO CONTRAINDICADO ──────────────────── -->
+
+    <div class="doc-section">
+      <h6>Egreso Contraindicado</h6>
+
+      <p class="parrafo">
+        Por la presente dejo constancia que yo,
+        ________________________________________________________________,
+        identificado con DPI No. ______________________________________________,
+        atendido en el servicio de ________________________________________,
+        decido retirarme voluntariamente del establecimiento de salud, aun
+        cuando el personal médico me ha indicado la conveniencia de continuar
+        con la atención.
+      </p>
+
+      <p class="parrafo">
+        Declaro que he sido informado(a) de los riesgos y posibles
+        complicaciones que pueden derivarse de esta decisión, y en pleno uso de
+        mis facultades, libero de toda responsabilidad al médico tratante, al
+        personal de salud, así como a la administración del hospital, asumiendo
+        por completo las consecuencias que pudieran presentarse.
+      </p>
+
+      <div class="firma-row firma-row--mt firma-row--3">
+        <div>
+          <span class="line"></span>
+          <p>Firma del Paciente o Responsable</p>
+        </div>
+
+        <div>
+          <span class="line"></span>
+          <p>Firma del Testigo</p>
+        </div>
+
+        <div>
+          <span class="line"></span>
+          <p>Firma y Sello del Médico</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── NOTA DE DESCARGO ───────────────────────── -->
+
+    <div class="doc-section">
+      <h6>Nota de Descargo</h6>
+
+      <p class="parrafo">
+        El paciente manifiesta su voluntad expresa de abandonar el
+        establecimiento de salud en contra de la recomendación médica, habiendo
+        recibido información clara, suficiente y comprensible sobre su estado de
+        salud y las implicaciones de su decisión.
+      </p>
+
+      <p class="parrafo">
+        Se deja constancia que el personal médico cumplió con brindar la
+        orientación correspondiente, por lo que cualquier evento adverso
+        posterior a su retiro será responsabilidad exclusiva del paciente o de
+        su representante legal.
+      </p>
+    </div>
+
+    <!-- Información adicional de la consulta para referencia -->
+    <!-- <div class="reverso-footer">
+      <div class="meta-inline">
+        <span class="meta-label">Consulta ID:</span>
+        <span class="doc-id">{{ consulta()?.id }}</span>
+      </div>
+      <div class="meta-inline">
+        <span class="meta-label">Paciente:</span>
+        <span class="doc-id">{{ nombreCompleto() }}</span>
+      </div>
+      <div class="meta-inline">
+        <span class="meta-label">Fecha impresión:</span>
+        <span class="doc-id">{{ fechaActual }} - {{ horaActual }}</span>
+      </div>
+    </div> -->
+  </div>
+</div>

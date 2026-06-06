@@ -571,7 +571,7 @@ label {
 .parrafo {
   font-family: var(--sans);
   font-size: 6.5pt;
-  line-height: 1.5;
+  line-height: 3.5;
   color: var(--ink);
   text-align: justify;
   margin-bottom: 4px;
@@ -648,21 +648,17 @@ label {
   margin: 4px 0;
 }
 
-/* ══ @PAGE + @MEDIA PRINT ════════════════════════════════════ */
+/* ══ @PAGE ═════════════════════════════════════════════════════ */
 @page {
-  size: 8.5in 13.5in portrait !important;
+  size: 8.5in 13.5in portrait;
   margin: 0;
-   overflow: hidden !important;
 }
 
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-
   }
-
-
 }
 
 .doc__field,
@@ -783,4 +779,65 @@ label {
 .sidebar-icon svg {
   width: 8px;
   height: 8px;
+}
+
+/* ══ REVERSO ════════════════════════════════════════════════════ */
+.container-reverso {
+  display: none;
+}
+
+.layout-hoja-reverso {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10mm;
+  min-height: 342.9mm;
+}
+
+.reverso-footer {
+  margin-top: 30px;
+  padding-top: 15px;
+  border-top: 1px dashed var(--border);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 9px;
+  color: var(--ink-muted);
+}
+
+.reverso-footer .meta-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reverso-footer .meta-label {
+  font-size: 8px;
+  font-weight: 600;
+}
+
+.reverso-footer .doc-id {
+  font-size: 9px;
+  font-weight: 500;
+}
+
+/* ══ @MEDIA PRINT ════════════════════════════════════════════════ */
+@media print {
+  .no-imprimir {
+    display: none !important;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white;
+  }
+
+  .container-impresion {
+    box-shadow: none;
+    margin: 0;
+    width: 100%;
+    min-height: auto;
+  }
 }

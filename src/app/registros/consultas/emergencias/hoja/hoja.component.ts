@@ -206,6 +206,25 @@ export class HojaComponent implements OnInit, OnDestroy {
     window.print();
   }
 
+  imprimirReverso(): void {
+    const front = document.querySelector<HTMLElement>('.container-impresion:not(.container-reverso)');
+    const reverse = document.querySelector<HTMLElement>('.container-reverso');
+
+    if (!front || !reverse) return;
+
+    front.style.setProperty('display', 'none', 'important');
+    reverse.style.setProperty('display', 'block', 'important');
+
+    const cleanup = () => {
+      front.style.removeProperty('display');
+      reverse.style.removeProperty('display');
+      window.removeEventListener('afterprint', cleanup);
+    };
+
+    window.addEventListener('afterprint', cleanup);
+    window.print();
+  }
+
   regresar(): void {
     this.router.navigate(['/emergencias']);
     // this.location.back();
