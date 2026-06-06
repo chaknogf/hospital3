@@ -570,8 +570,8 @@ label {
 /* ══ PÁRRAFO LEGAL ════════════════════════════════════════════ */
 .parrafo {
   font-family: var(--sans);
-  font-size: 6.5pt;
-  line-height: 3.5;
+  font-size: 8.5pt;
+  line-height: 1.8;
   color: var(--ink);
   text-align: justify;
   margin-bottom: 4px;
