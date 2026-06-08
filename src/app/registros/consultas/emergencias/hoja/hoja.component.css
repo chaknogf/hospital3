@@ -122,7 +122,7 @@ body,
 /* ══ ENCABEZADO ═══════════════════════════════════════════════ */
 .aurora-header {
   display: grid;
-  grid-template-columns: 70px 1fr 70px;
+  grid-template-columns: 110px 1fr 70px;
   align-items: center;
   gap: 4px;
   border-bottom: 1px solid var(--ink);
@@ -160,19 +160,20 @@ body,
 .aurora-textos { text-align: center; }
 
 .aurora-textos h3 {
-  font-size: 11pt;
+  font-size: 13pt;
   letter-spacing: .5px;
   margin-bottom: 0;
   line-height: 1;
 }
 
 .aurora-textos h4 {
-  font-size: 8pt;
+  font-size: 10pt;
   line-height: 1;
+  margin: 0;
 }
 
 .aurora-textos h5 {
-  font-size: 7pt;
+  font-size: 9pt;
   line-height: 1;
 }
 
