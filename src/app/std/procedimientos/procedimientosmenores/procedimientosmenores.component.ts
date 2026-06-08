@@ -124,7 +124,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
   }
 
   volver(): void {
-    this.location.back();
+    this.router.navigate(['/estadistica'])
   }
 
   agregar(): void {
