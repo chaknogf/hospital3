@@ -26,6 +26,7 @@ export type EstadoCiclo =
   | "actualizado"   // Registro actualizado
   | "reprogramado"  // Consulta reprogramada
   | "descartado"   // Consulta descartada/cancelada
+  | "borrado"   // Consulta descartada/cancelada
   | "triage"; // Consulta contraindicada
 
 
@@ -63,7 +64,7 @@ export interface Egreso {
 
 export interface Indicador {
   estudiante_publico: boolean;
-  empleado_publico: boolean;
+  personal_hospital: boolean;
   accidente_laboral: boolean;
   discapacidad: boolean;
   accidente_transito: boolean;
@@ -337,7 +338,7 @@ export function obtenerUltimoCiclo(consulta: ConsultaOut): CicloClinico | null {
 export function crearIndicadorVacio(): Indicador {
   return {
     estudiante_publico: false,
-    empleado_publico: false,
+    personal_hospital: false,
     accidente_laboral: false,
     discapacidad: false,
     accidente_transito: false,

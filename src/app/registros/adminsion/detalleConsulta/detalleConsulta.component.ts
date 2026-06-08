@@ -14,7 +14,14 @@ import { takeUntil, finalize, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Dict, especialidades, OpcionBoolean, opcionesIngreso } from '../../../enum/diccionarios';
 import { Location } from '@angular/common';
+import { municipios } from '../../../enum/departamentos'
 
+
+function getVecindad(codigo: string | null | undefined): string {
+  if (!codigo) return '';
+  const match = municipios.find(m => m.codigo === codigo);
+  return match ? match.vecindad : codigo;
+}
 @Component({
   selector: 'app-detalleConsulta',
   templateUrl: './detalleConsulta.component.html',
@@ -38,6 +45,11 @@ export class DetalleConsultaComponent implements OnInit, OnDestroy {
   error = signal<string | null>(null);
   detalleVisible = signal(false);
 
+  direccionCompleta = computed(() => {
+    const c = this.paciente()?.contacto;
+    if (!c) return '';
+    return [c.domicilio, getVecindad(c.municipio)].filter(Boolean).join(', ');
+  });
   // ======= FLAGS DE ORIGEN =======
   esEmergencia = false;
   esCoex = false;
@@ -73,11 +85,7 @@ export class DetalleConsultaComponent implements OnInit, OnDestroy {
     ].filter(Boolean).join(' ').trim();
   });
 
-  direccionCompleta = computed(() => {
-    const c = this.paciente()?.contacto;
-    if (!c) return '';
-    return [c.domicilio, c.municipio].filter(Boolean).join(', ');
-  });
+
 
   estadoActual = computed(() => {
     const ciclos = this.consulta()?.ciclo;
@@ -112,6 +120,8 @@ export class DetalleConsultaComponent implements OnInit, OnDestroy {
       cuadroNegro: this.iconService.getIcon('cuadroNegro'),
       edit: this.iconService.getIcon("editIcon"),
     };
+
+
   }
 
   // ======= CICLO DE VIDA =======
@@ -167,6 +177,7 @@ export class DetalleConsultaComponent implements OnInit, OnDestroy {
   }
 
   // ======= INDICADORES =======
+
   getIndicador(field: string): boolean {
     const ind = this.consulta()?.indicadores;
     if (!ind) return false;

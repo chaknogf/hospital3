@@ -172,7 +172,7 @@ export class PacienteUtilService {
         ocupacion: socio.ocupacion || null,
         educacion: socio.educacion ? Number(socio.educacion) : null,
         estudiante_publico: socio.estudiante_publico === 'SI' ? 'S' : 'N',
-        empleado_publico: socio.empleado_publico === 'SI' ? 'S' : 'N',
+        personal_hospital: socio.empleado_publico === 'SI' ? 'S' : 'N',
         discapacidad: socio.discapacidad === 'SI' ? 'S' : 'N'
       },
       neonatales: {
@@ -212,7 +212,7 @@ export class PacienteUtilService {
         ocupacion: socio.ocupacion || '',
         educacion: socio.educacion ? String(socio.educacion) : '',
         estudiante_publico: socio.estudiante_publico === 'S' ? 'SI' : 'NO',
-        empleado_publico: socio.empleado_publico === 'S' ? 'SI' : 'NO',
+        personal_hospital: socio.personal_hospital === 'S' ? 'SI' : 'NO',
         discapacidad: socio.discapacidad === 'S' ? 'SI' : 'NO'
       },
       neonatales: {
@@ -281,7 +281,7 @@ export class PacienteUtilService {
         ocupacion: null,
         educacion: null,
         estudiante_publico: 'N',
-        empleado_publico: 'N',
+        personal_hospital: 'N',
         discapacidad: 'N'
       },
       neonatales: {

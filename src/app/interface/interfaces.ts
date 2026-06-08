@@ -61,7 +61,7 @@ export interface Socioeconomicos {
   ocupacion?: string | null;
   educacion?: number | null;
   estudiante_publico?: 'S' | 'N';
-  empleado_publico?: 'S' | 'N';
+  personal_hospital?: 'S' | 'N';
   discapacidad?: 'S' | 'N';
 }
 

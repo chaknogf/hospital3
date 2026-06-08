@@ -2842,8 +2842,8 @@ padding: 0;
 
 .aurora-tb tr:hover {background:  radial-gradient(circle at top left, #3317d098, #10b4b179, #2b081a8f);
   font-weight: bold;
-  .hombre {font-weight: bold !important;  background: #000; border-radius: 10px; padding: 0 6px !important;}
-  .mujer {font-weight: bold !important;  background: #000;border-radius: 10px; padding: 0 6px !important;}
+  .hombre {font-weight: bold !important;  background: #000; border-radius: 10px; }
+  .mujer {font-weight: bold !important;  background: #000;border-radius: 10px; }
 }
 
 /* --- RESPONSIVE MOBILE: FORMATO TARJETAS --- */
