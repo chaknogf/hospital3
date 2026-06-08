@@ -78,7 +78,7 @@ label { letter-spacing: 0.4px; }
 /* ══ HEADER ═══════════════════════════════════════════════════ */
 .hoja-header {
   display: grid;
-  grid-template-columns: 112px 1fr 135px;
+  grid-template-columns: 170px 1fr 135px;
   align-items: center; gap: 6px;
   border-bottom: 2px solid var(--ink);
   padding-bottom: 6px; margin-bottom: 3px;
