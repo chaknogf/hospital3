@@ -5,7 +5,6 @@
   <span class="hud-id">
     {{ enEdicion ? "PROC-EDIT" : "PROC-NUEVO" }}
   </span>
-
   <span class="hud-title">
     {{
       enEdicion
@@ -13,7 +12,6 @@
         : "NUEVO PROCEDIMIENTO MÉDICO"
     }}
   </span>
-
   <span class="hud-status"> {{ form.get("cantidad")?.value || 0 }} REG. </span>
 </div>
 
@@ -22,12 +20,10 @@
   <span class="dock-hint">
     {{ enEdicion ? "Modo edición" : "Nuevo registro" }}
   </span>
-
   <button type="button" class="btn-dock btn-dock-cancel" (click)="volver()">
     <span [innerHTML]="cancelIcon"></span>
     Cancelar
   </button>
-
   <button
     type="button"
     class="btn-dock btn-dock-save"
@@ -35,7 +31,6 @@
     (click)="guardar()"
   >
     <span [innerHTML]="saveIcon"></span>
-
     {{ guardando ? "Guardando..." : enEdicion ? "Actualizar" : "Registrar" }}
   </button>
 </div>
@@ -58,49 +53,15 @@
                 <path d="M5 12h14" />
               </svg>
             </div>
-
-            <span class="sec-title"> Información del Procedimiento </span>
+            <span class="sec-title">Información del Procedimiento</span>
           </div>
         </div>
 
         <div class="sec-body single">
-          <!-- FECHA -->
-          <div class="field">
-            <span class="field-label">Fecha</span>
-
-            <input class="field-input" type="date" formControlName="fecha" />
-          </div>
-
-          <!-- PROCEDIMIENTO -->
-          <div class="field">
-            <span class="field-label">Procedimiento *</span>
-
-            <select class="field-input" formControlName="id_procedimiento">
-              <option [ngValue]="null">Seleccione un procedimiento</option>
-
-              <option *ngFor="let item of catalogo" [ngValue]="item.id">
-                {{ item.nombre }} {{ item.abreviatura }}
-              </option>
-            </select>
-
-            <small
-              class="text-danger"
-              *ngIf="
-                f['id_procedimiento'].invalid && f['id_procedimiento'].touched
-              "
-            >
-              Debe seleccionar un procedimiento
-            </small>
-          </div>
-
-          <!-- ESPECIALIDAD -->
+          <!-- 1. ESPECIALIDAD -->
           <div class="field">
             <span class="field-label">Especialidad</span>
-            <select
-              class="field-input"
-              type="text"
-              formControlName="especialidad"
-            >
+            <select class="field-input" formControlName="especialidad">
               <option value="">Selecciona</option>
               <option
                 *ngFor="let ep of especialidadesfiltradas"
@@ -111,14 +72,10 @@
             </select>
           </div>
 
-          <!-- LUGAR -->
+          <!-- 2. LUGAR -->
           <div class="field">
             <span class="field-label">Lugar de Servicio</span>
-            <select
-              class="field-input"
-              type="text"
-              formControlName="lugar_servicio"
-            >
+            <select class="field-input" formControlName="lugar_servicio">
               <option value="">Selecciona</option>
               <option *ngFor="let ls of lugarServicios" [value]="ls.value">
                 {{ ls.label }}
@@ -126,41 +83,47 @@
             </select>
           </div>
 
-          <!-- RESPONSABLE -->
+          <!-- 3. FECHA -->
           <div class="field">
-            <span class="field-label">Responsable</span>
+            <span class="field-label">Fecha</span>
+            <input class="field-input" type="date" formControlName="fecha" />
+          </div>
 
+          <!-- 4. BÚSQUEDA POR ABREVIATURA -->
+          <div class="field">
+            <span class="field-label">Buscar por abreviatura</span>
             <input
               class="field-input"
               type="text"
-              formControlName="responsable"
-              placeholder="Nombre del responsable"
+              placeholder="Ej: LAP, CIR..."
+              [ngModel]="busquedaAbreviatura"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="filtrarPorAbreviatura($event)"
             />
           </div>
 
-          <!-- CANTIDAD -->
+          <!-- 5. PROCEDIMIENTO -->
           <div class="field">
-            <span class="field-label">Cantidad *</span>
-
-            <input
-              class="field-input"
-              type="number"
-              min="1"
-              formControlName="cantidad"
-            />
-
+            <span class="field-label">Procedimiento *</span>
+            <select class="field-input" formControlName="id_procedimiento">
+              <option [ngValue]="null">Seleccione un procedimiento</option>
+              <option *ngFor="let item of catalogoFiltrado" [ngValue]="item.id">
+                {{ item.nombre }} {{ item.abreviatura }}
+              </option>
+            </select>
             <small
               class="text-danger"
-              *ngIf="f['cantidad'].invalid && f['cantidad'].touched"
+              *ngIf="
+                f['id_procedimiento'].invalid && f['id_procedimiento'].touched
+              "
             >
-              La cantidad es obligatoria
+              Debe seleccionar un procedimiento
             </small>
           </div>
 
-          <!-- SEXO -->
+          <!-- 6. SEXO -->
           <div class="field">
             <span class="field-label">Sexo</span>
-
             <div class="chips-row">
               <span
                 class="chip chip-lg"
@@ -169,7 +132,6 @@
               >
                 ♂ Masculino
               </span>
-
               <span
                 class="chip chip-lg"
                 [class.on]="form.get('sexo')?.value === 'F'"
@@ -177,7 +139,6 @@
               >
                 ♀ Femenino
               </span>
-
               <span
                 class="chip chip-lg"
                 [class.on]="form.get('sexo')?.value === null"
@@ -188,19 +149,44 @@
             </div>
           </div>
 
+          <!-- 7. CANTIDAD -->
+          <div class="field">
+            <span class="field-label">Cantidad *</span>
+            <input
+              class="field-input"
+              type="number"
+              min="1"
+              formControlName="cantidad"
+            />
+            <small
+              class="text-danger"
+              *ngIf="f['cantidad'].invalid && f['cantidad'].touched"
+            >
+              La cantidad es obligatoria
+            </small>
+          </div>
+
+          <!-- 8. RESPONSABLE -->
+          <div class="field">
+            <span class="field-label">Responsable</span>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="responsable"
+              placeholder="Nombre del responsable"
+            />
+          </div>
+
           <!-- INFO DE AUDITORÍA -->
           @if (enEdicion && procedimientoActual) {
             <div class="field">
               <span class="field-label">Creado</span>
-
               <div class="field-static">
                 {{ procedimientoActual.created_at | date: "dd/MM/yyyy HH:mm" }}
               </div>
             </div>
-
             <div class="field">
               <span class="field-label">Actualizado</span>
-
               <div class="field-static">
                 {{ procedimientoActual.updated_at | date: "dd/MM/yyyy HH:mm" }}
               </div>

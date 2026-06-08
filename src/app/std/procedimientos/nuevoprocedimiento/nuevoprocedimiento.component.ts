@@ -220,7 +220,9 @@ export class NuevoprocedimientoComponent implements OnInit {
 
   volver(): void {
 
-    this.location.back();
+    this.router.navigate([
+      '/catalogoProcedimientos'
+    ]);
   }
 
   get f() {

@@ -3,6 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
@@ -19,7 +20,8 @@ import { Dict, especialidadesProcedimientos, lugarServicios } from '../../../enu
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ]
 })
 export class ProcemedicoComponent implements OnInit {
@@ -29,7 +31,10 @@ export class ProcemedicoComponent implements OnInit {
   private router = inject(Router);
   private location = inject(Location);
 
+
   procedimientoId: number | null = null;
+  busquedaAbreviatura = '';
+  catalogoFiltrado: Procedimiento[] = [];
 
   procedimientoActual: ProceMedico | null = null;
   especialidadesfiltradas: Dict[] = especialidadesProcedimientos;
@@ -98,15 +103,30 @@ export class ProcemedicoComponent implements OnInit {
     }
   }
 
+  // En cargarCatalogo, inicializa el filtrado:
   cargarCatalogo(): void {
     this.api.getCatalogo().subscribe({
       next: data => {
         this.catalogo = data;
+        this.catalogoFiltrado = data; // ← inicializa
       },
-      error: err => {
-        console.error(err);
-      }
+      error: err => console.error(err)
     });
+  }
+
+  filtrarPorAbreviatura(termino: string): void {
+    this.busquedaAbreviatura = termino;
+    const t = termino.trim().toLowerCase();
+
+    if (!t) {
+      this.catalogoFiltrado = this.catalogo;
+      return;
+    }
+
+    this.catalogoFiltrado = this.catalogo.filter(p =>
+      p.abreviatura?.toLowerCase().includes(t) ||
+      p.nombre?.toLowerCase().includes(t)
+    );
   }
 
   cargarProcedimiento(id: number): void {
@@ -236,10 +256,12 @@ export class ProcemedicoComponent implements OnInit {
   }
 
   volver(): void {
-    this.location.back();
+    this.router.navigate(['/procedimientosmenores']);
   }
 
   get f() {
     return this.form.controls;
   }
+
+
 }
