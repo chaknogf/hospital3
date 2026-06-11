@@ -103,6 +103,10 @@
           [(ngModel)]="filtros.fecha_nacimiento"
         />
       </div>
+      <div class="field-group">
+        <label>Busqueda rapida</label>
+        <input type="text" name="q" [(ngModel)]="filtros.q" placeholder="q" />
+      </div>
 
       <button class="btn-buscar btn" type="submit" [disabled]="buscando">
         {{ buscando ? "Buscando..." : "Buscar" }}

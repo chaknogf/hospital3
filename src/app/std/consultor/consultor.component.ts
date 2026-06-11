@@ -32,6 +32,7 @@ export class ConsultorComponent implements OnInit {
 
   // ── Estado de búsqueda ──────────────────────────────────
   filtros = {
+    q: '',
     paciente_id: '',
     expediente: '',
     documento: '',
