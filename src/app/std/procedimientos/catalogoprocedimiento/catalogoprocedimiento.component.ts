@@ -121,7 +121,7 @@ export class CatalogoprocedimientoComponent implements OnInit {
   }
 
   volver(): void {
-    this.location.back();
+    this.router.navigate(['/procedimientosmenores']);
   }
 
   agregar(): void {

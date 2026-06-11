@@ -35,7 +35,8 @@ export class ProcemedicoComponent implements OnInit {
   procedimientoId: number | null = null;
   busquedaAbreviatura = '';
   catalogoFiltrado: Procedimiento[] = [];
-
+  mostrarAlerta = false;
+  mensajeAlerta = '';
   procedimientoActual: ProceMedico | null = null;
   especialidadesfiltradas: Dict[] = especialidadesProcedimientos;
   lugarServicios: Dict[] = lugarServicios;
@@ -67,7 +68,7 @@ export class ProcemedicoComponent implements OnInit {
 
     responsable: [''],
 
-    anestesia: [0]
+
 
   });
 
@@ -234,10 +235,9 @@ export class ProcemedicoComponent implements OnInit {
     ).subscribe({
 
       next: () => {
+        this.mostrarMensaje('Procedimiento guardado correctamente');
+        this.limpiarForm();
 
-        this.router.navigate([
-          '/procedimientosmenores'
-        ]);
       },
 
       error: err => {
@@ -263,5 +263,34 @@ export class ProcemedicoComponent implements OnInit {
     return this.form.controls;
   }
 
+  limpiarForm(): void {
+    this.form.reset({
+      fecha: '',
+      lugar_servicio: '',
+      sexo: '',
+      id_procedimiento: null,
+      especialidad: '',
+      cantidad: 1,
+      responsable: ''
+    });
+    this.busquedaAbreviatura = '';
+    this.catalogoFiltrado = this.catalogo;
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+  }
+
+  mostrarMensaje(
+    mensaje: string,
+    duracion: number = 5000
+  ): void {
+
+    this.mensajeAlerta = mensaje;
+    this.mostrarAlerta = true;
+
+    setTimeout(() => {
+      this.mostrarAlerta = false;
+    }, duracion);
+
+  }
 
 }

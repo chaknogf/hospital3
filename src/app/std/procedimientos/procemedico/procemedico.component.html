@@ -35,6 +35,10 @@
   </button>
 </div>
 
+<div *ngIf="mostrarAlerta" class="alerta-exito">
+  {{ mensajeAlerta }}
+</div>
+
 <!-- FORM -->
 <form [formGroup]="form" class="adm-body">
   <div class="adm-grid">
@@ -176,6 +180,22 @@
               placeholder="Nombre del responsable"
             />
           </div>
+
+          <button
+            type="button"
+            class="btn-dock btn-dock-save"
+            [disabled]="guardando"
+            (click)="guardar()"
+          >
+            <span [innerHTML]="saveIcon"></span>
+            {{
+              guardando
+                ? "Guardando..."
+                : enEdicion
+                  ? "Actualizar"
+                  : "Registrar"
+            }}
+          </button>
 
           <!-- INFO DE AUDITORÍA -->
           @if (enEdicion && procedimientoActual) {
