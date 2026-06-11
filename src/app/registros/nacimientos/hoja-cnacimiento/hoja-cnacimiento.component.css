@@ -2,7 +2,7 @@
 :root {
   --ink:       #0d0d0d;
   --ink-dim:   #444;
-  --ink-muted: #6b7280;
+  --ink-muted: #041536;
   --accent:    #1a3a6a;
   --accent-lt: rgba(26,58,106,0.07);
   --border:    #999;
@@ -404,7 +404,7 @@ label { letter-spacing: 0.4px; }
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  color: var(--ink-muted);
+  color: rgb(5, 5, 49);
   margin-bottom: 2px;
 }
 
