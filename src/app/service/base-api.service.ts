@@ -11,8 +11,8 @@ export interface PaginationState {
 
 @Injectable({ providedIn: 'root' })
 export class BaseApiService {
-  public readonly baseUrl = 'http://localhost:8000';
-  //public readonly baseUrl = 'https://www.htecpan.com/fah';
+  //public readonly baseUrl = 'http://localhost:8000';
+  public readonly baseUrl = 'https://www.htecpan.com/fah';
 
   isLoading = signal(false);
   token = signal<string | null>(null);
