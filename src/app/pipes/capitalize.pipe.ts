@@ -9,6 +9,12 @@ export class CapitalizePipe implements PipeTransform {
 
     return String(value)
       .toLowerCase()
-      .replace(/\b\w/g, l => l.toUpperCase());
+      .split(' ')
+      .map(word =>
+        word.length > 0
+          ? word.charAt(0).toUpperCase() + word.slice(1)
+          : word
+      )
+      .join(' ');
   }
 }

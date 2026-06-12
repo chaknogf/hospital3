@@ -55,15 +55,14 @@
       <p class="cn-parrafo">
         Para los efectos legales de la inscripción correspondiente ante el
         Registro Nacional de las Personas —RENAP—, el/la infrascrito/a Auxiliar
-        de Registros Médicos del Hospital General Tipo I de Tecpán Guatemala,
-        hace constar que en las instalaciones de este centro asistencial,
-        Hospital General Tipo I de Tecpán Guatemala ubicado en el Barrio San
-        Antonio, Sector Pachulalí de Tecpán Guatemala, Chimaltenango, se atendió
-        el parto de la paciente que a continuación se identifica, habiéndose
-        producido el nacimiento de un producto vivo en la fecha y hora que se
-        indican en el presente documento, extendiéndose la presente constancia a
-        solicitud de parte interesada para los usos legales que estime
-        convenientes.
+        de Registros Médicos del Hospital General Tipo I de Tecpán Guatemala
+        hace constar que en las instalaciones del Hospital General Tipo I de
+        Tecpán Guatemala, ubicado en el Barrio San Antonio, Sector Pachulalí de
+        Tecpán Guatemala, Chimaltenango, se atendió el parto de la paciente que
+        a continuación se identifica, habiéndose producido el nacimiento de un
+        producto vivo en la fecha y hora que se indican en el presente
+        documento. Se extiende la presente constancia a solicitud de la parte
+        interesada, para los usos legales que estime convenientes.
       </p>
     </div>
 
@@ -195,11 +194,11 @@
       </div>
       <div class="form-field" style="flex: 1; text-align: center">
         <span class="form-lbl">Peso al Nacer</span>
-        <span class="form-lbl">(Libras . Onzas)</span>
+
         <span class="form-val">
           {{
             constancia()?.paciente?.datos_extra?.neonatales?.peso_nacimiento ??
-              "—"
+              "—" | librasOnzas
           }}
         </span>
       </div>
