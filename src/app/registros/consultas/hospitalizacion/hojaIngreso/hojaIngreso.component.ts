@@ -15,13 +15,14 @@ import { of } from 'rxjs';
 import { DepartamentoPipe } from '../../../../pipes/lugar.pipe';
 import { PacienteService } from '../../../patient/paciente.service';
 import { Location } from '@angular/common';
+import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-hojaIngreso',
   templateUrl: './hojaIngreso.component.html',
   styleUrls: ['./hojaIngreso.component.css'],
   standalone: true,
-  imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, TimePipe, CommonModule, TitleCasePipe],
+  imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, TimePipe, CommonModule, TitleCasePipe, CapitalizePipe],
 })
 export class HojaIngresoComponent implements OnInit, OnDestroy {
 

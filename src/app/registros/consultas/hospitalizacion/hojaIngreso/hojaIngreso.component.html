@@ -55,19 +55,19 @@
       <div class="f-cell" style="flex: 1">
         <span class="f-lbl">Apellidos</span>
         <span class="f-val f-name">
-          {{ paciente()?.nombre?.primer_apellido }}
-          {{ paciente()?.nombre?.segundo_apellido }}
+          {{ paciente()?.nombre?.primer_apellido | capitalize }}
+          {{ paciente()?.nombre?.segundo_apellido | capitalize }}
           @if (paciente()?.nombre?.apellido_casada) {
-            de {{ paciente()?.nombre?.apellido_casada }}
+            de {{ paciente()?.nombre?.apellido_casada | capitalize }}
           }
         </span>
       </div>
       <div class="f-cell" style="flex: 1">
         <span class="f-lbl">Nombres</span>
         <span class="f-val f-name">
-          {{ paciente()?.nombre?.primer_nombre }}
-          {{ paciente()?.nombre?.segundo_nombre }}
-          {{ paciente()?.nombre?.otro_nombre }}
+          {{ paciente()?.nombre?.primer_nombre | capitalize }}
+          {{ paciente()?.nombre?.segundo_nombre | capitalize }}
+          {{ paciente()?.nombre?.otro_nombre | capitalize }}
         </span>
       </div>
     </div>
@@ -253,14 +253,36 @@
       <span class="cie-th">Código CIE-10</span>
     </div>
 
-    <ng-container *ngFor="let n of [1, 2, 3, 4, 5]">
-      <div class="f-row f-row-diag">
-        <span class="diag-n">{{ n }}.</span>
-        <div class="f-cell" style="flex: 1">
-          <span class="f-val line"></span>
-        </div>
+    <div class="f-row f-row-diag">
+      <span class="diag-n">1.</span>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-val line"></span>
       </div>
-    </ng-container>
+    </div>
+    <div class="f-row f-row-diag">
+      <span class="diag-n">2.</span>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-val line"></span>
+      </div>
+    </div>
+    <div class="f-row f-row-diag">
+      <span class="diag-n">3.</span>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-val line"></span>
+      </div>
+    </div>
+    <div class="f-row f-row-diag">
+      <span class="diag-n">4.</span>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-val line"></span>
+      </div>
+    </div>
+    <div class="f-row f-row-diag">
+      <span class="diag-n">5.</span>
+      <div class="f-cell" style="flex: 1">
+        <span class="f-val line"></span>
+      </div>
+    </div>
 
     <div class="f-row f-row-diag">
       <span class="diag-n">P.</span>
@@ -296,19 +318,6 @@
       <div class="f-cell" style="flex: 1">
         <span class="f-lbl">C) Resultados</span>
         <span class="f-val"></span>
-      </div>
-      <div class="f-cell" style="flex: 1.2">
-        <span class="f-lbl">D) Se practicó necropcia</span>
-        <div class="referido-si-no">
-          <div>
-            <div class="salida-box"></div>
-            SI
-          </div>
-          <div>
-            <div class="salida-box"></div>
-            NO
-          </div>
-        </div>
       </div>
     </div>
 
@@ -380,6 +389,20 @@
       <div class="f-cell f-cell-full">
         <span class="f-lbl">Causa de Muerte</span>
         <span class="f-val"></span>
+      </div>
+
+      <div class="f-cell" style="flex: 1.2">
+        <span class="f-lbl">D) Se practicó necropcia</span>
+        <div class="referido-si-no">
+          <div>
+            <div class="salida-box"></div>
+            SI
+          </div>
+          <div>
+            <div class="salida-box"></div>
+            NO
+          </div>
+        </div>
       </div>
     </div>
 

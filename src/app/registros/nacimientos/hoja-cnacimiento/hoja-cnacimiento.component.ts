@@ -12,13 +12,14 @@ import { CuiPipe } from '../../../pipes/cui.pipe';
 import { ApiService } from '../../../service/api.service';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
 import { IconService } from '../../../service/icon.service';
+import { LibrasOnzasPipe } from '../../../pipes/librasOnza.pipe';
 
 @Component({
   selector: 'app-hoja-cnacimiento',
   standalone: true,
   templateUrl: './hoja-cnacimiento.component.html',
   styleUrls: ['./hoja-cnacimiento.component.css'],
-  imports: [CommonModule, DatosExtraPipe, TimePipe, APipe, CuiPipe, CapitalizePipe]
+  imports: [CommonModule, DatosExtraPipe, TimePipe, APipe, CuiPipe, CapitalizePipe, LibrasOnzasPipe]
 })
 export class HojaCnacimientoComponent implements OnInit, OnDestroy {
 
