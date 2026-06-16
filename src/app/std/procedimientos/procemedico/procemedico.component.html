@@ -39,10 +39,11 @@
   {{ mensajeAlerta }}
 </div>
 
-<!-- FORM -->
-<form [formGroup]="form" class="adm-body">
-  <div class="adm-grid">
-    <div class="adm-col">
+<!-- LAYOUT EN DOS COLUMNAS: FORM | CATÁLOGO -->
+<div class="adm-grid adm-grid--2col">
+  <!-- ══ COLUMNA IZQUIERDA: FORMULARIO ══════════════ -->
+  <div class="adm-col">
+    <form [formGroup]="form" class="adm-body">
       <div class="section-card">
         <div class="sec-head">
           <div class="sec-head-left">
@@ -170,17 +171,6 @@
             </small>
           </div>
 
-          <!-- 8. RESPONSABLE -->
-          <div class="field">
-            <span class="field-label">Responsable</span>
-            <input
-              class="field-input"
-              type="text"
-              formControlName="responsable"
-              placeholder="Nombre del responsable"
-            />
-          </div>
-
           <button
             type="button"
             class="btn-dock btn-dock-save"
@@ -214,6 +204,11 @@
           }
         </div>
       </div>
-    </div>
+    </form>
   </div>
-</form>
+
+  <!-- ══ COLUMNA DERECHA: CATÁLOGO ══════════════════ -->
+  <div class="adm-col">
+    <app-catalogopro></app-catalogopro>
+  </div>
+</div>

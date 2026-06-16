@@ -1,0 +1,256 @@
+<div class="aurora-paciente-container">
+  <!-- FILTROS -->
+  <div class="find-form">
+    <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
+      <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Nombre</label>
+
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.nombre"
+            name="nombre"
+            placeholder="Nombre del procedimiento"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Abreviatura</label>
+
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.abreviatura"
+            name="abreviatura"
+            placeholder="Ej. APEND"
+          />
+        </fieldset>
+      </div>
+
+      <div class="d-flex gap-1">
+        <button class="button-filtros" type="submit">
+          <span [innerHTML]="icons['search']"></span>
+          Buscar
+        </button>
+
+        <button class="button-filtros" type="button" (click)="limpiarFiltros()">
+          <span [innerHTML]="icons['delete']"></span>
+          Limpiar
+        </button>
+
+        <button class="button-filtros" type="button" (click)="agregar()">
+          <span [innerHTML]="icons['create']"></span>
+          Agregar
+        </button>
+      </div>
+    </form>
+
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="toggle-panel-btn" (click)="toggleFiltrar()">
+        <span [innerHTML]="icons['arrowDown']"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <div class="aurora-container">
+    <table class="aurora-tb">
+      <thead>
+        <tr>
+          <th>Procedimiento</th>
+          <th>Abreviatura</th>
+          <th>Descripción</th>
+          <th>Anestesias</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let data of procedimientos" (click)="activarFila(data.id)">
+          <td data-label="Procedimiento">
+            <div class="nombre-table">
+              <strong>{{ data.nombre }}</strong>
+
+              <br />
+
+              <small>ID: {{ data.id }}</small>
+            </div>
+          </td>
+
+          <td data-label="Abreviatura">
+            {{ data.abreviatura || "—" }}
+          </td>
+
+          <td data-label="Descripción">
+            {{ data.descripcion || "—" }}
+          </td>
+
+          <td data-label="Anestesia">
+            {{ data.anestesia ?? 0 }}
+          </td>
+
+          <td class="secundario">
+            <div class="d-flex gap-1">
+              <button (click)="editar(data.id); $event.stopPropagation()">
+                <span [innerHTML]="icons['edit']"></span>
+              </button>
+              <button (click)="eliminar(data.id); $event.stopPropagation()">
+                <span [innerHTML]="icons['trash']"></span>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        @if (!cargando && procedimientos.length === 0) {
+          <tr>
+            <td colspan="5" class="text-center">
+              No hay procedimientos registrados.
+            </td>
+          </tr>
+        }
+
+        @if (cargando) {
+          <tr>
+            <td colspan="5" class="text-center">Cargando catálogo...</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PAGINADOR -->
+<div class="paginador">
+  <button
+    class="pag-btn"
+    [disabled]="!hayPaginaAnterior"
+    (click)="cambiarPagina(-1)"
+  >
+    <span [innerHTML]="icons['skipLeft']"></span>
+  </button>
+
+  @if (paginas[0] > 1) {
+    <button class="pag-num" (click)="irAPagina(1)">1</button>
+  }
+
+  @if (paginas[0] > 2) {
+    <span class="pag-ellipsis">…</span>
+  }
+
+  <button
+    *ngFor="let p of paginas"
+    class="pag-num"
+    [class.pag-num-active]="p === paginaActual"
+    (click)="irAPagina(p)"
+  >
+    {{ p }}
+  </button>
+
+  @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+    <span class="pag-ellipsis">…</span>
+  }
+
+  @if (paginas[paginas.length - 1] < totalPaginas) {
+    <button class="pag-num" (click)="irAPagina(totalPaginas)">
+      {{ totalPaginas }}
+    </button>
+  }
+
+  <button
+    class="pag-btn"
+    [disabled]="!hayPaginaSiguiente"
+    (click)="cambiarPagina(1)"
+  >
+    <span [innerHTML]="icons['skipRight']"></span>
+  </button>
+
+  <span class="pag-info">
+    Pág. {{ paginaActual }} / {{ totalPaginas }}
+    ·
+    {{ totalDeRegistros }} registros
+  </span>
+</div>
+
+<!-- MODAL -->
+@if (modalActivo) {
+  <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <!-- HUD -->
+      <div class="hud-header">
+        <span class="hud-id">
+          {{ modoEdicion ? "CAT-EDIT" : "CAT-NUEVO" }}
+        </span>
+        <span class="hud-title">
+          {{ modoEdicion ? "ACTUALIZAR PROCEDIMIENTO" : "NUEVO PROCEDIMIENTO" }}
+        </span>
+        <span class="hud-status">
+          {{ form.get("abreviatura")?.value || "CATÁLOGO" }}
+        </span>
+      </div>
+
+      <!-- ACTION DOCK -->
+      <div class="action-dock">
+        <span class="dock-hint">
+          {{ modoEdicion ? "Modo edición" : "Nuevo registro" }}
+        </span>
+        <button type="button" class="btn-dock btn-dock-cancel" (click)="cerrarModal()">
+          <span [innerHTML]="cancelIcon"></span>
+          Cancelar
+        </button>
+        <button type="button" class="btn-dock btn-dock-save" [disabled]="guardando" (click)="guardarProcedimiento()">
+          <span [innerHTML]="saveIcon"></span>
+          {{ guardando ? "Guardando..." : modoEdicion ? "Actualizar" : "Registrar" }}
+        </button>
+      </div>
+
+      <!-- FORM -->
+      <form [formGroup]="form" class="adm-body">
+        <div class="adm-grid">
+          <div class="adm-col">
+            <div class="section-card">
+              <div class="sec-head">
+                <div class="sec-head-left">
+                  <div class="sec-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M12 5v14" />
+                      <path d="M5 12h14" />
+                    </svg>
+                  </div>
+                  <span class="sec-title"> Información del Procedimiento </span>
+                </div>
+              </div>
+              <div class="sec-body single">
+                <div class="field">
+                  <span class="field-label"> Nombre del Procedimiento * </span>
+                  <input class="field-input" type="text" formControlName="nombre" placeholder="Ej. Apendicectomía" />
+                  <small class="text-danger" *ngIf="f['nombre'].invalid && f['nombre'].touched">
+                    El nombre es obligatorio
+                  </small>
+                </div>
+                <div class="field">
+                  <span class="field-label"> Abreviatura </span>
+                  <input class="field-input" type="text" formControlName="abreviatura" placeholder="Ej. APD" />
+                </div>
+                <div class="field">
+                  <span class="field-label"> Cantidad de Anestesias </span>
+                  <input class="field-input" type="number" min="0" formControlName="anestesia" />
+                </div>
+                <div class="field">
+                  <span class="field-label"> Descripción </span>
+                  <textarea class="field-input" rows="5" formControlName="descripcion" placeholder="Descripción del procedimiento..."></textarea>
+                </div>
+                @if (modoEdicion && procedimientoId) {
+                  <div class="field">
+                    <span class="field-label"> ID </span>
+                    <div class="field-static">{{ procedimientoId }}</div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+}

@@ -12,6 +12,7 @@ import { IconService } from '../../../service/icon.service';
 import { ProceMedico, Procedimiento, ProceMedicoCreate, ProceMedicoUpdate } from '../../../interface/procedimientos';
 import { StdService } from '../../std.service';
 import { Dict, especialidadesProcedimientos, lugarServicios } from '../../../enum/diccionarios';
+import { CatalogoproComponent } from "../catalogopro/catalogopro.component";
 
 @Component({
   selector: 'app-procemedico',
@@ -21,7 +22,8 @@ import { Dict, especialidadesProcedimientos, lugarServicios } from '../../../enu
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    CatalogoproComponent
   ]
 })
 export class ProcemedicoComponent implements OnInit {

@@ -40,7 +40,7 @@ src/
 │   │                        #   admissions, birth certs, loans, RENAP
 │   ├── service/             # api.service, base-api, offline-db, sync, axios
 │   ├── shared/              # Shared assets
-│   ├── std/                 # Statistics, doctors, procedures
+│   ├── std/                 # Statistics, doctors, procedures (catalogopro uses modal CRUD)
 │   ├── trabajoSocial/       # Social work
 │   ├── uisau/               # Bed management (encamamiento)
 │   └── validators/          # Custom validators
