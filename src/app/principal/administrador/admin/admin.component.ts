@@ -51,6 +51,10 @@ export class AdminComponent implements OnInit {
 
       { nombre: 'Usuarios', descripcion: 'Gestionar Usuarios', ruta: '/usuarios', icon: '' },
       { nombre: 'Registrar', descripcion: 'Registrar Usuario', ruta: '/newuser', icon: '' },
+      { nombre: 'Fusionar Pacientes', descripcion: 'Unir registros duplicados', ruta: '/merge-pacientes', icon: '' },
+      { nombre: 'Desactivar Consulta', descripcion: 'Cambiar estado a descartado', ruta: '/desactivar-consulta', icon: '' },
+      { nombre: 'Eliminar Consulta', descripcion: 'Eliminar consulta permanentemente', ruta: '/eliminar-consulta', icon: '' },
+      { nombre: 'Eliminar Constancia', descripcion: 'Eliminar constancia de nacimiento', ruta: '/eliminar-constancia', icon: '' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];

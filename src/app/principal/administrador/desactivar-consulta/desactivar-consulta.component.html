@@ -1,0 +1,45 @@
+<div class="hud-header">
+  <div class="hud-title">Desactivar Consulta</div>
+</div>
+
+<div class="action-dock">
+  <span class="dock-hint">Cambiar estado a descartado</span>
+
+  <button class="btn" (click)="desactivar()" [disabled]="isLoading()">
+    {{ isLoading() ? 'Desactivando...' : 'Desactivar' }}
+  </button>
+
+  <button class="btn" (click)="volver()">Cancelar</button>
+</div>
+
+<div class="adm-body">
+  <div *ngIf="error()" class="alert-error">
+    {{ error() }}
+  </div>
+
+  <div *ngIf="success()" class="alert-success">
+    {{ success() }}
+  </div>
+
+  <form [formGroup]="form" class="adm-grid">
+    <div class="adm-col">
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Datos de la consulta</span>
+        </div>
+
+        <div class="sec-body">
+          <div class="field">
+            <label class="field-label">ID de Consulta</label>
+            <input
+              class="field-input"
+              formControlName="consulta_id"
+              type="number"
+              placeholder="ID de la consulta a desactivar"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

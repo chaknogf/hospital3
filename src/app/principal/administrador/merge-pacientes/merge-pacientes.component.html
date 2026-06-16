@@ -1,0 +1,70 @@
+<div class="hud-header">
+  <div class="hud-title">Fusionar Pacientes Duplicados</div>
+</div>
+
+<div class="action-dock">
+  <span class="dock-hint">Unir registros duplicados</span>
+
+  <button class="btn" (click)="fusionar()" [disabled]="isLoading()">
+    {{ isLoading() ? 'Fusionando...' : 'Fusionar' }}
+  </button>
+
+  <button class="btn" (click)="volver()">Cancelar</button>
+</div>
+
+<div class="adm-body">
+  @if (error(); as msg) {
+    <div class="alert alert-error">{{ msg }}</div>
+  }
+
+  @if (success(); as msg) {
+    <div class="alert alert-success">{{ msg }}</div>
+  }
+
+  <div class="section-card">
+    <div class="sec-head">
+      <span class="sec-title">Pacientes a fusionar</span>
+    </div>
+
+    <div class="sec-body">
+      <div class="field merge-field-principal">
+        <label class="field-label">ID Principal <span class="badge-keep">se conserva</span></label>
+        <input
+          class="field-input"
+          type="number"
+          [ngModel]="principalId()"
+          (ngModelChange)="principalId.set($event)"
+          placeholder="ID del paciente principal"
+        />
+      </div>
+
+      <div class="merge-divider">
+        <span>Pacientes a fusionar en el principal</span>
+      </div>
+
+      @for (adicional of adicionales(); track idx; let idx = $index) {
+        <div class="field merge-field-adicional">
+          <label class="field-label">ID a fusionar #{{ idx + 1 }}</label>
+          <div class="merge-input-row">
+            <input
+              class="field-input"
+              type="number"
+              [ngModel]="adicional"
+              (ngModelChange)="setAdicional(idx, $event)"
+              placeholder="ID del paciente a fusionar"
+            />
+            @if (adicionales().length > 2) {
+              <button class="btn-remove" (click)="quitarInput(idx)" title="Quitar">
+                <span class="icon-close">&times;</span>
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <button class="btn-add" (click)="agregarInput()">
+        + Agregar otro paciente
+      </button>
+    </div>
+  </div>
+</div>

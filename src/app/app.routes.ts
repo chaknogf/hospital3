@@ -41,6 +41,26 @@ export const routes: Routes = [
         path: 'newuser',
         loadComponent: () => import('./principal/administrador/registrar/registrar.component').then(c => c.RegistrarComponent)
       },
+      {
+        path: 'merge-pacientes',
+        loadComponent: () => import('./principal/administrador/merge-pacientes/merge-pacientes.component').then(c => c.MergePacientesComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
+      {
+        path: 'desactivar-consulta',
+        loadComponent: () => import('./principal/administrador/desactivar-consulta/desactivar-consulta.component').then(c => c.DesactivarConsultaComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
+      {
+        path: 'eliminar-consulta',
+        loadComponent: () => import('./principal/administrador/eliminar-consulta/eliminar-consulta.component').then(c => c.EliminarConsultaComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
+      {
+        path: 'eliminar-constancia',
+        loadComponent: () => import('./principal/administrador/eliminar-constancia/eliminar-constancia.component').then(c => c.EliminarConstanciaComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
 
       // Registros Médicos
       {

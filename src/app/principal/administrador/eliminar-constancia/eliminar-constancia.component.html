@@ -1,0 +1,45 @@
+<div class="hud-header">
+  <div class="hud-title">Eliminar Constancia de Nacimiento</div>
+</div>
+
+<div class="action-dock">
+  <span class="dock-hint">Eliminar constancia permanentemente</span>
+
+  <button class="btn" (click)="eliminar()" [disabled]="isLoading()">
+    {{ isLoading() ? 'Eliminando...' : 'Eliminar' }}
+  </button>
+
+  <button class="btn" (click)="volver()">Cancelar</button>
+</div>
+
+<div class="adm-body">
+  <div *ngIf="error()" class="alert-error">
+    {{ error() }}
+  </div>
+
+  <div *ngIf="success()" class="alert-success">
+    {{ success() }}
+  </div>
+
+  <form [formGroup]="form" class="adm-grid">
+    <div class="adm-col">
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Datos de la constancia</span>
+        </div>
+
+        <div class="sec-body">
+          <div class="field">
+            <label class="field-label">ID de Constancia</label>
+            <input
+              class="field-input"
+              formControlName="constancia_id"
+              type="number"
+              placeholder="ID de la constancia de nacimiento a eliminar"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

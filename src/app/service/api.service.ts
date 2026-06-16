@@ -428,6 +428,20 @@ export class ApiService {
     );
   }
 
+  // ======= PACIENTES MERGE =======
+  mergePacientes(principalId: number, ids: number[]): Observable<any> {
+    this.isLoading.set(true);
+    let params = new HttpParams()
+      .set('principal_id', principalId.toString());
+    ids.forEach(id => {
+      params = params.append('ids', id.toString());
+    });
+    return this.http.post<any>(`${this.baseUrl}/pacientes/merge`, null, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'fusionar pacientes'))
+    );
+  }
+
   //======== MEDICOS =============
   getMedicos(filtros: any): Observable<Medico[]> {
     this.isLoading.set(true);
