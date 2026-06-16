@@ -104,18 +104,40 @@ export class ConsultorComponent implements OnInit {
       }
     });
 
-    this.api.getPacientesBuscados(params).subscribe({
-      next: (data) => {
-        this.resultados = data;
-        this.mostrarTabla = true;
-        this.buscando = false;
-        // En mobile cerramos el sidebar para ver la tabla
-        this.cerrarSidebarEnMobile();
-      },
-      error: () => {
-        this.buscando = false;
-      }
-    });
+    const tieneDocumento = !!this.filtros.documento && this.filtros.documento.trim() !== '';
+
+    if (tieneDocumento) {
+      this.api.getPacientesBuscados(params).subscribe({
+        next: (data) => {
+          this.resultados = data;
+          this.mostrarTabla = true;
+          this.buscando = false;
+          this.cerrarSidebarEnMobile();
+        },
+        error: () => {
+          this.buscando = false;
+        }
+      });
+    } else {
+      this.apip.getPacientes(params).subscribe({
+        next: (data) => {
+          this.resultados = data.pacientes.map(p => ({
+            id: p.id,
+            cui: p.cui ?? 0,
+            expediente: p.expediente ?? '',
+            nombre_completo: p.nombre_completo
+              ?? `${p.nombre.primer_nombre} ${p.nombre.primer_apellido}`,
+            fecha_nacimiento: p.fecha_nacimiento ?? ''
+          }));
+          this.mostrarTabla = true;
+          this.buscando = false;
+          this.cerrarSidebarEnMobile();
+        },
+        error: () => {
+          this.buscando = false;
+        }
+      });
+    }
   }
 
   limpiarFiltros(): void {
