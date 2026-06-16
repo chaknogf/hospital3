@@ -77,6 +77,7 @@
         <span class="form-val form-val--name">
           {{ constancia()?.madre?.nombre?.primer_nombre | capitalize }}
           {{ constancia()?.madre?.nombre?.segundo_nombre | capitalize }}
+          {{ constancia()?.madre?.nombre?.otro_nombre | capitalize }}
           {{ constancia()?.madre?.nombre?.primer_apellido | capitalize }}
           {{ constancia()?.madre?.nombre?.segundo_apellido | capitalize }}
           <ng-container *ngIf="constancia()?.madre?.nombre?.apellido_casada">

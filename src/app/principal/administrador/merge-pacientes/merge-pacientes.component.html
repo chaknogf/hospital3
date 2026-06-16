@@ -5,7 +5,8 @@
 <div class="action-dock">
   <span class="dock-hint">Unir registros duplicados</span>
 
-  <button class="btn" (click)="fusionar()" [disabled]="isLoading()">
+  <button class="btn" (click)="fusionar()"
+    [disabled]="isLoading() || !todosCargados() || confirmText() !== 'confirmar'">
     {{ isLoading() ? 'Fusionando...' : 'Fusionar' }}
   </button>
 
@@ -21,50 +22,143 @@
     <div class="alert alert-success">{{ msg }}</div>
   }
 
-  <div class="section-card">
-    <div class="sec-head">
-      <span class="sec-title">Pacientes a fusionar</span>
-    </div>
+  <div class="adm-grid">
+    <div class="adm-col">
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Paciente principal</span>
+        </div>
 
-    <div class="sec-body">
-      <div class="field merge-field-principal">
-        <label class="field-label">ID Principal <span class="badge-keep">se conserva</span></label>
-        <input
-          class="field-input"
-          type="number"
-          [ngModel]="principalId()"
-          (ngModelChange)="principalId.set($event)"
-          placeholder="ID del paciente principal"
-        />
-      </div>
-
-      <div class="merge-divider">
-        <span>Pacientes a fusionar en el principal</span>
-      </div>
-
-      @for (adicional of adicionales(); track idx; let idx = $index) {
-        <div class="field merge-field-adicional">
-          <label class="field-label">ID a fusionar #{{ idx + 1 }}</label>
-          <div class="merge-input-row">
-            <input
-              class="field-input"
-              type="number"
-              [ngModel]="adicional"
-              (ngModelChange)="setAdicional(idx, $event)"
-              placeholder="ID del paciente a fusionar"
-            />
-            @if (adicionales().length > 2) {
-              <button class="btn-remove" (click)="quitarInput(idx)" title="Quitar">
-                <span class="icon-close">&times;</span>
+        <div class="sec-body">
+          <div class="field merge-field-principal">
+            <label class="field-label">ID Principal <span class="badge-keep">se conserva</span></label>
+            <div class="merge-input-row">
+              <input
+                class="field-input"
+                type="number"
+                [ngModel]="principalId()"
+                (ngModelChange)="principalId.set($event); principalDetail.set(null)"
+                placeholder="ID del paciente principal"
+              />
+              <button class="btn-add" (click)="cargarPrincipal()" [disabled]="!principalId() || loadingPrincipal()">
+                {{ loadingPrincipal() ? '...' : 'Cargar' }}
               </button>
-            }
+            </div>
+          </div>
+
+          @if (principalDetail(); as p) {
+            <div class="detail-grid">
+              <div class="detail-row">
+                <span class="detail-label">ID</span>
+                <span class="detail-value">{{ p.id }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Expediente</span>
+                <span class="detail-value">{{ p.expediente || '—' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Nombre</span>
+                <span class="detail-value">{{ p.nombre_completo || '—' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">CUI</span>
+                <span class="detail-value">{{ p.cui || '—' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Sexo</span>
+                <span class="detail-value">{{ p.sexo || '—' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Edad / F.Nac.</span>
+                <span class="detail-value">{{ p.fecha_nacimiento || '—' }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Pacientes a fusionar</span>
+        </div>
+
+        <div class="sec-body">
+          @for (adicional of adicionales(); track idx; let idx = $index) {
+            <div class="field merge-field-adicional">
+              <label class="field-label">ID a fusionar #{{ idx + 1 }}</label>
+              <div class="merge-input-row">
+                <input
+                  class="field-input"
+                  type="number"
+                  [ngModel]="adicional"
+                  (ngModelChange)="setAdicional(idx, $event)"
+                  placeholder="ID del paciente a fusionar"
+                />
+                <button class="btn-add" (click)="cargarAdicional(idx)"
+                  [disabled]="!adicional || loadingAdicional()[idx]">
+                  {{ loadingAdicional()[idx] ? '...' : 'Cargar' }}
+                </button>
+                @if (adicionales().length > 2) {
+                  <button class="btn-remove" (click)="quitarInput(idx)" title="Quitar">
+                    <span class="icon-close">&times;</span>
+                  </button>
+                }
+              </div>
+
+              @if (adicionalesDetails()[idx]; as p) {
+                <div class="detail-grid">
+                  <div class="detail-row">
+                    <span class="detail-label">ID</span>
+                    <span class="detail-value">{{ p.id }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Expediente</span>
+                    <span class="detail-value">{{ p.expediente || '—' }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Nombre</span>
+                    <span class="detail-value">{{ p.nombre_completo || '—' }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">CUI</span>
+                    <span class="detail-value">{{ p.cui || '—' }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Sexo</span>
+                    <span class="detail-value">{{ p.sexo || '—' }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <button class="btn-add" (click)="agregarInput()">
+            + Agregar otro paciente
+          </button>
+        </div>
+      </div>
+
+      @if (todosCargados()) {
+        <div class="section-card">
+          <div class="sec-head">
+            <span class="sec-title">Confirmar acción</span>
+          </div>
+
+          <div class="sec-body">
+            <div class="field">
+              <label class="field-label">Escribe <strong>confirmar</strong> para habilitar el botón</label>
+              <input
+                class="field-input"
+                type="text"
+                [ngModel]="confirmText()"
+                (ngModelChange)="confirmText.set($event)"
+                placeholder="Escribe 'confirmar'"
+                autocomplete="off"
+              />
+            </div>
           </div>
         </div>
       }
-
-      <button class="btn-add" (click)="agregarInput()">
-        + Agregar otro paciente
-      </button>
     </div>
   </div>
 </div>

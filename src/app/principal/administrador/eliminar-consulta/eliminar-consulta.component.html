@@ -5,7 +5,8 @@
 <div class="action-dock">
   <span class="dock-hint">Eliminar consulta permanentemente</span>
 
-  <button class="btn" (click)="eliminar()" [disabled]="isLoading()">
+  <button class="btn btn-danger" (click)="eliminar()"
+    [disabled]="isLoading() || !consultaDetail() || confirmText() !== 'confirmar'">
     {{ isLoading() ? 'Eliminando...' : 'Eliminar' }}
   </button>
 
@@ -13,19 +14,19 @@
 </div>
 
 <div class="adm-body">
-  <div *ngIf="error()" class="alert-error">
-    {{ error() }}
-  </div>
+  @if (error(); as msg) {
+    <div class="alert-error">{{ msg }}</div>
+  }
 
-  <div *ngIf="success()" class="alert-success">
-    {{ success() }}
-  </div>
+  @if (success(); as msg) {
+    <div class="alert-success">{{ msg }}</div>
+  }
 
-  <form [formGroup]="form" class="adm-grid">
+  <div class="adm-grid">
     <div class="adm-col">
       <div class="section-card">
         <div class="sec-head">
-          <span class="sec-title">Datos de la consulta</span>
+          <span class="sec-title">Buscar consulta</span>
         </div>
 
         <div class="sec-body">
@@ -33,13 +34,77 @@
             <label class="field-label">ID de Consulta</label>
             <input
               class="field-input"
-              formControlName="consulta_id"
               type="number"
+              [ngModel]="consultaId()"
+              (ngModelChange)="consultaId.set($event)"
               placeholder="ID de la consulta a eliminar"
             />
           </div>
+
+          <button class="btn-add" (click)="cargar()" [disabled]="!consultaId() || loadingDetail()">
+            {{ loadingDetail() ? 'Cargando...' : 'Cargar datos' }}
+          </button>
         </div>
       </div>
+
+      @if (consultaDetail(); as c) {
+        <div class="section-card">
+          <div class="sec-head">
+            <span class="sec-title">Detalle de la consulta</span>
+          </div>
+
+          <div class="sec-body detail-grid">
+            <div class="detail-row">
+              <span class="detail-label">ID</span>
+              <span class="detail-value">{{ c.id }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Expediente</span>
+              <span class="detail-value">{{ c.expediente || '—' }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Paciente</span>
+              <span class="detail-value">{{ c.paciente?.nombre_completo || '—' }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Especialidad</span>
+              <span class="detail-value">{{ c.especialidad || '—' }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Servicio</span>
+              <span class="detail-value">{{ c.servicio || '—' }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Fecha</span>
+              <span class="detail-value">{{ c.fecha_consulta || '—' }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Estado</span>
+              <span class="detail-value">{{ c.ultimo_estado || '—' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="sec-head">
+            <span class="sec-title">Confirmar acción</span>
+          </div>
+
+          <div class="sec-body">
+            <div class="field">
+              <label class="field-label">Escribe <strong>confirmar</strong> para habilitar el botón</label>
+              <input
+                class="field-input"
+                type="text"
+                [ngModel]="confirmText()"
+                (ngModelChange)="confirmText.set($event)"
+                placeholder="Escribe 'confirmar'"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+        </div>
+      }
     </div>
-  </form>
+  </div>
 </div>

@@ -5,8 +5,8 @@
     "paths": {
       "@enums/*": ["app/enum/*"],
       "@shared/*": ["app/shared/*"],
-      "@services/*": ["app/services/*"],
-      "@models/*": ["app/models/*"]
+      "@services/*": ["app/service/*"],
+      "@models/*": ["app/interface/*"]
     }
   },
   "files": [

@@ -347,7 +347,7 @@
   font-family: var(--font);
   font-size: 13px;
   font-weight: 500;
-  border-radius: var(--radius-sm);
+  border-radius: 10px;
   border: 1px solid transparent;
   cursor: pointer;
   transition: background var(--transition), color var(--transition),
@@ -360,14 +360,14 @@
 
 /* Primary action (first .btn in dock) */
 .action-dock .btn:not(:last-child) {
-  background: var(--color-accent);
+  background: rgb(7, 7, 36);
   color: #fff;
-  border-color: var(--color-accent);
+  border-color: #15159499;
 }
 
 .action-dock .btn:not(:last-child):hover:not(:disabled) {
-  background: var(--color-accent-dark);
-  border-color: var(--color-accent-dark);
+  background:#15159499;
+  border-color:#15159499;
 }
 
 /* Danger primary — eliminar / acciones destructivas */
@@ -383,8 +383,9 @@
 
 /* Cancel / secondary (last .btn in dock) */
 .action-dock .btn:last-child {
-  background: transparent;
-  color: var(--color-ink-muted);
+  background: rgba(0, 0, 0, 0.658);
+  color: rgb(45, 43, 66);
+  color: white;
   border-color: var(--color-border);
   width: 90px;
 }
@@ -436,6 +437,8 @@
   margin-top: 0;
   flex-shrink: 0;
   border-style: solid;
+  color: rgb(5, 5, 48);
+  border-radius: 8px;
 }
 
 /* ── Remove button ───────────────────────────────────────── */

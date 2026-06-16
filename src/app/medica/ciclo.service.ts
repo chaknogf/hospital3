@@ -12,7 +12,7 @@ import {
 } from './../interface/ciclo';
 
 @Injectable({ providedIn: 'root' })
-export class ConsultaService extends BaseApiService {
+export class CicloService extends BaseApiService {
 
   // ======= BEHAVIOR SUBJECTS =======
   private ciclosSubject = new BehaviorSubject<CicloConsulta[]>([]);

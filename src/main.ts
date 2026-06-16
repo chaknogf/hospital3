@@ -6,7 +6,7 @@ import { isDevMode } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
-import { authInterceptor } from './app/interceptors/auth.interceptor';
+import { authInterceptor } from './app/service/auth.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [

@@ -10,7 +10,7 @@ import { ConstanciasService } from '../../../registros/nacimientos/constancias.s
 @Component({
   selector: 'app-eliminar-constancia',
   templateUrl: './eliminar-constancia.component.html',
-  styleUrls: ['./eliminar-constancia.component.css'],
+  styleUrls: ['../admin.css'],
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule]
 })
@@ -32,7 +32,7 @@ export class EliminarConstanciaComponent implements OnInit {
     this.form = this.crearFormulario();
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   ngOnDestroy(): void {
     this.destroy$.next();

@@ -202,6 +202,14 @@ export class ConsultaService extends BaseApiService {
     );
   }
 
+  deleteConsulta(consultaId: number): Observable<any> {
+    this.isLoading.set(true);
+    return this.offMutation('DELETE', `${this.baseUrl}/consulta/eliminar/${consultaId}`).pipe(
+      tap(() => this.refrescarConsultas()),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
   updateConsulta(consultaId: number, datos: ConsultaUpdate): Observable<ConsultaOut> {
     this.isLoading.set(true);
     return this.offMutation('PATCH', `${this.baseUrl}/consultas/${consultaId}`, datos).pipe(

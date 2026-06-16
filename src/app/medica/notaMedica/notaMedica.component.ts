@@ -19,7 +19,7 @@ import { DatosExtraPipe } from '../../pipes/datos-extra.pipe';
 import { EdadPipe } from '../../pipes/edad.pipe';
 import { Router } from '@angular/router';
 import { IconService } from '../../service/icon.service';
-import { ConsultaService } from '../ciclo.service';
+import { CicloService } from '../ciclo.service';
 
 @Component({
   selector: 'app-notaMedica',
@@ -30,7 +30,7 @@ import { ConsultaService } from '../ciclo.service';
 })
 export class NotaMedicaComponent implements OnInit {
 
-  private api = inject(ConsultaService);
+  private api = inject(CicloService);
   private router = inject(Router);
   private iconService = inject(IconService);
 
