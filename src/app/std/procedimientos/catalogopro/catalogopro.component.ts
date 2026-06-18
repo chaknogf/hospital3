@@ -83,10 +83,17 @@ export class CatalogoproComponent implements OnInit {
   ngOnInit(): void {
     this.api.catalogo$.subscribe(data => {
       this.catalogoCompleto = data;
-
+      this.actualizarPagina();
     });
 
     this.cargarCatalogo();
+  }
+
+  private actualizarPagina(): void {
+    this.totalDeRegistros = this.catalogoCompleto.length;
+    const inicio = (this.paginaActual - 1) * this.pageSize;
+    const fin = inicio + this.pageSize;
+    this.procedimientos = this.catalogoCompleto.slice(inicio, fin);
   }
 
   cargarCatalogo(): void {
@@ -188,7 +195,6 @@ export class CatalogoproComponent implements OnInit {
       this.api.updateProcedimiento(this.procedimientoId, payload).subscribe({
         next: () => {
           this.cerrarModal();
-          this.cargarCatalogo();
         },
         error: err => {
           console.error(err);
@@ -197,10 +203,10 @@ export class CatalogoproComponent implements OnInit {
         complete: () => { this.guardando = false; }
       });
     } else {
+      this.paginaActual = 1;
       this.api.createProcedimiento(payload as ProcedimientoCreate).subscribe({
         next: () => {
           this.cerrarModal();
-          this.cargarCatalogo();
         },
         error: err => {
           console.error(err);
@@ -223,7 +229,7 @@ export class CatalogoproComponent implements OnInit {
     this.api.deleteProcedimiento(id).subscribe({
 
       next: () => {
-        this.cargarCatalogo();
+        // catálogo se actualiza via catalogo$
       },
 
       error: (err) => {
@@ -272,7 +278,7 @@ export class CatalogoproComponent implements OnInit {
       return;
     }
     this.paginaActual = nueva;
-    this.cargarCatalogo();
+    this.actualizarPagina();
   }
 
   irAPagina(pagina: number): void {
@@ -280,7 +286,7 @@ export class CatalogoproComponent implements OnInit {
       return;
     }
     this.paginaActual = pagina;
-    this.cargarCatalogo();
+    this.actualizarPagina();
   }
 
 
