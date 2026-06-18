@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { Encamamiento } from '../../../interface/interfaces';
@@ -18,6 +18,7 @@ export class GestionEncamamientoComponent {
   private api = inject(ApiService);
 
   servicios = signal<Encamamiento[]>([]);
+  totalCamas = computed(() => this.servicios().reduce((sum, s) => sum + (s.camas_censables || 0), 0));
   loading = signal(false);
   error = signal<string | null>(null);
   success = signal<string | null>(null);
