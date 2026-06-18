@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { OfflineSyncService } from './offline-sync.service';
-import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse, Hijode, PacienteJoin } from '../interface/interfaces';
+import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse, Hijode, PacienteJoin, Encamamiento } from '../interface/interfaces';
 import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHistorial, ConstanciaNacimientoUpdate } from '../interface/consNac';
 import { ConsultaBase, ConsultaCreate, ConsultaListResponse, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, TotalesItem, TotalesResponse } from '../interface/consultas';
 import { CicloClinico, EstadoCiclo } from '../interface/consultas';
@@ -21,8 +21,8 @@ export interface PaginationState {
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  // public readonly baseUrl = 'http://localhost:8000';
-  public readonly baseUrl = 'https://www.htecpan.com/fah';
+  public readonly baseUrl = 'http://localhost:8000';
+  // public readonly baseUrl = 'https://www.htecpan.com/fah';
   // ======= SIGNALS =======
   token = signal<string | null>(null);
   username = signal<string | null>(null);
@@ -386,22 +386,62 @@ export class ApiService {
 
   createMunicipio(municipio: any): Observable<any> {
     this.isLoading.set(true);
-    return this.offMutation('POST', `${this.baseUrl}/municipio/crear`, municipio).pipe(
-      finalize(() => this.isLoading.set(false))
+    return this.http.post<any>(`${this.baseUrl}/municipios/`, municipio).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'crear municipio'))
     );
   }
 
   updateMunicipio(codigo: string, municipio: any): Observable<any> {
     this.isLoading.set(true);
-    return this.offMutation('PUT', `${this.baseUrl}/municipio/actualizar/${codigo}`, municipio).pipe(
-      finalize(() => this.isLoading.set(false))
+    return this.http.put<any>(`${this.baseUrl}/municipios/${codigo}`, municipio).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'actualizar municipio'))
     );
   }
 
   deleteMunicipio(codigo: string): Observable<any> {
     this.isLoading.set(true);
-    return this.offMutation('DELETE', `${this.baseUrl}/municipio/eliminar/${codigo}`).pipe(
-      finalize(() => this.isLoading.set(false))
+    return this.http.delete<any>(`${this.baseUrl}/municipios/${codigo}`).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'eliminar municipio'))
+    );
+  }
+
+  // ======= ENCAMAMIENTO =======
+  getServiciosEncamamiento(activo?: boolean | null): Observable<any> {
+    this.isLoading.set(true);
+    let params = new HttpParams();
+    if (activo !== null && activo !== undefined) {
+      params = params.set('activo', activo.toString());
+    }
+    return this.http.get<any>(`${this.baseUrl}/encamamiento/`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener servicios encamamiento'))
+    );
+  }
+
+  createServicioEncamamiento(data: any): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.post<any>(`${this.baseUrl}/encamamiento/`, data).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'crear servicio encamamiento'))
+    );
+  }
+
+  updateServicioEncamamiento(id: number, data: any): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.patch<any>(`${this.baseUrl}/encamamiento/${id}`, data).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'actualizar servicio encamamiento'))
+    );
+  }
+
+  deleteServicioEncamamiento(id: number): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.delete<any>(`${this.baseUrl}/encamamiento/${id}`).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'eliminar servicio encamamiento'))
     );
   }
 

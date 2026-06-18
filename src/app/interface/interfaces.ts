@@ -205,3 +205,23 @@ export interface PacienteJoin {
   contacto?: Contacto;
   defuncion?: string;
 }
+
+export interface Encamamiento {
+  id: number;
+  nombre_servicio: string;
+  descripcion?: string | null;
+  camas_censables: number;
+  activo: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MunicipioListResponse {
+  total: number;
+  municipios: Municipio[];
+}
+
+export interface DepartamentoOut {
+  codigo: string;
+  departamento: string;
+}

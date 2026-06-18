@@ -47,6 +47,16 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin'])]
       },
       {
+        path: 'gestion-municipios',
+        loadComponent: () => import('./principal/administrador/gestion-municipios/gestion-municipios.component').then(c => c.GestionMunicipiosComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
+      {
+        path: 'gestion-encamamiento',
+        loadComponent: () => import('./principal/administrador/gestion-encamamiento/gestion-encamamiento.component').then(c => c.GestionEncamamientoComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
+      {
         path: 'desactivar-consulta',
         loadComponent: () => import('./principal/administrador/desactivar-consulta/desactivar-consulta.component').then(c => c.DesactivarConsultaComponent),
         canActivate: [roleGuard(['admin'])]

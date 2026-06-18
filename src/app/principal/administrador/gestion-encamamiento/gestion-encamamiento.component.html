@@ -1,0 +1,138 @@
+<div class="hud-header">
+  <div class="hud-title">Gesti&oacute;n de Encamamiento</div>
+</div>
+
+<div class="action-dock">
+  <span class="dock-hint">Servicios y camas del hospital</span>
+  <button class="btn" (click)="abrirNuevo()">+ Nuevo Servicio</button>
+  <button class="btn" (click)="volver()">Volver</button>
+</div>
+
+<div class="adm-body">
+  @if (error(); as msg) {
+    <div class="alert alert-error">{{ msg }}</div>
+  }
+  @if (success(); as msg) {
+    <div class="alert alert-success">{{ msg }}</div>
+  }
+
+  <div class="adm-grid">
+    <div class="adm-col">
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Filtrar</span>
+        </div>
+        <div class="sec-body">
+          <div class="filter-row">
+            <div class="field">
+              <label class="field-label">Estado</label>
+              <select class="field-input" [ngModel]="filtroActivo()" (ngModelChange)="filtroActivo.set($event); cargar()">
+                <option value="todos">Todos</option>
+                <option value="activos">Activos</option>
+                <option value="inactivos">Inactivos</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Servicios ({{ servicios().length }})</span>
+        </div>
+        <div class="sec-body">
+          @if (loading()) {
+            <div class="table-status">Cargando...</div>
+          } @else if (servicios().length === 0) {
+            <div class="table-status">No se encontraron servicios</div>
+          } @else {
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Servicio</th>
+                    <th>Descripci&oacute;n</th>
+                    <th>Camas</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (s of servicios(); track s.id) {
+                    <tr>
+                      <td><code>{{ s.id }}</code></td>
+                      <td>{{ s.nombre_servicio }}</td>
+                      <td>{{ s.descripcion || '&mdash;' }}</td>
+                      <td>{{ s.camas_censables }}</td>
+                      <td>
+                        <span class="badge" [class.badge-active]="s.activo" [class.badge-inactive]="!s.activo">
+                          {{ s.activo ? 'Activo' : 'Inactivo' }}
+                        </span>
+                      </td>
+                      <td class="cell-actions">
+                        <button class="btn-sm" (click)="abrirEditar(s)" title="Editar">Editar</button>
+                        @if (confirmarEliminar() === s.id) {
+                          <span class="confirm-group">
+                            <span class="confirm-msg">¿Eliminar?</span>
+                            <button class="btn-sm btn-danger" (click)="eliminar(s.id)">S&iacute;</button>
+                            <button class="btn-sm" (click)="cancelarEliminacion()">No</button>
+                          </span>
+                        } @else {
+                          <button class="btn-sm btn-danger" (click)="confirmarEliminacion(s.id)" title="Eliminar">Eliminar</button>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (mostrarFormulario()) {
+  <div class="modal-overlay" (click)="cerrarFormulario()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="sec-head">
+        <span class="sec-title">{{ editando() ? 'Editar' : 'Nuevo' }} Servicio</span>
+        <button class="btn-close" (click)="cerrarFormulario()">&times;</button>
+      </div>
+      <div class="sec-body">
+        @if (error(); as msg) {
+          <div class="alert alert-error">{{ msg }}</div>
+        }
+
+        <div class="field">
+          <label class="field-label">Nombre del servicio</label>
+          <input class="field-input" type="text" [ngModel]="formNombre()" (ngModelChange)="formNombre.set($event)" placeholder="Ej: Medicina de Mujeres" />
+        </div>
+
+        <div class="field">
+          <label class="field-label">Descripci&oacute;n</label>
+          <input class="field-input" type="text" [ngModel]="formDescripcion()" (ngModelChange)="formDescripcion.set($event)" placeholder="Opcional" />
+        </div>
+
+        <div class="field">
+          <label class="field-label">Camas censables</label>
+          <input class="field-input" type="number" min="0" [ngModel]="formCamas()" (ngModelChange)="onCamasChange($event)" placeholder="0" />
+        </div>
+
+        <div class="field">
+          <label class="field-label">
+            <input type="checkbox" [ngModel]="formActivo()" (ngModelChange)="formActivo.set($event)" />
+            &nbsp;Servicio activo
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn" (click)="guardar()" [disabled]="guardando()">{{ guardando() ? 'Guardando...' : 'Guardar' }}</button>
+          <button class="btn" (click)="cerrarFormulario()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

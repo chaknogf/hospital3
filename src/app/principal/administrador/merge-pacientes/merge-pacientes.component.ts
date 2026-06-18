@@ -5,7 +5,7 @@ import { PacienteService } from '../../../registros/patient/paciente.service';
 import { Paciente } from '../../../interface/interfaces';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { catchError, finalize } from 'rxjs';
+import { catchError, finalize, EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-merge-pacientes',
@@ -23,7 +23,7 @@ export class MergePacientesComponent {
   principalDetail = signal<Paciente | null>(null);
   loadingPrincipal = signal(false);
 
-  adicionales = signal<number[]>([null!, null!]);
+  adicionales = signal<(number | null)[]>([null, null]);
   adicionalesDetails = signal<(Paciente | null)[]>([null, null]);
   loadingAdicional = signal<boolean[]>([]);
 
@@ -37,7 +37,7 @@ export class MergePacientesComponent {
   }
 
   agregarInput(): void {
-    this.adicionales.update(arr => [...arr, null!]);
+    this.adicionales.update(arr => [...arr, null]);
     this.adicionalesDetails.update(arr => [...arr, null]);
     this.loadingAdicional.update(arr => [...arr, false]);
   }
@@ -49,9 +49,9 @@ export class MergePacientesComponent {
   }
 
   setAdicional(index: number, value: string): void {
-    const num = Number(value);
+    const parsed = value ? Number(value) : null;
     this.adicionales.update(arr => {
-      arr[index] = value ? num : null!;
+      arr[index] = parsed;
       return [...arr];
     });
     this.adicionalesDetails.update(arr => {
@@ -132,30 +132,29 @@ export class MergePacientesComponent {
     const principal = this.principalId();
     if (!principal) return;
 
-    const adicionalesValidos = this.adicionales().filter(id => id !== null && id !== undefined && id > 0);
+    const adicionalesValidos = this.adicionales().filter((id): id is number => id !== null && id !== undefined && id > 0);
     if (adicionalesValidos.length < 1) return;
 
     this.error.set(null);
     this.success.set(null);
     this.isLoading.set(true);
 
-    const ids = [principal, ...adicionalesValidos];
+    const ids = [...new Set([principal, ...adicionalesValidos])];
 
     this.api.mergePacientes(principal, ids)
       .pipe(
         finalize(() => this.isLoading.set(false)),
         catchError(err => {
           console.error('error al fusionar: ', err);
-          this.error.set('Error al fusionar pacientes');
-          return [];
+          this.error.set(`Error al fusionar pacientes: ${err.error?.detail || err.message || 'Error desconocido'}`);
+          return EMPTY;
         })
       )
-      .subscribe(response => {
-        if (!response) return;
+      .subscribe(() => {
         this.success.set('Pacientes fusionados exitosamente');
         this.principalId.set(null);
         this.principalDetail.set(null);
-        this.adicionales.set([null!, null!]);
+        this.adicionales.set([null, null]);
         this.adicionalesDetails.set([null, null]);
         this.confirmText.set('');
       });

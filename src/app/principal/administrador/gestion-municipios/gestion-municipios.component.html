@@ -1,0 +1,135 @@
+<div class="hud-header">
+  <div class="hud-title">Gesti&oacute;n de Municipios</div>
+</div>
+
+<div class="action-dock">
+  <span class="dock-hint">Cat&aacute;logo de municipios y departamentos</span>
+  <button class="btn" (click)="abrirNuevo()">+ Nuevo</button>
+  <button class="btn" (click)="volver()">Volver</button>
+</div>
+
+<div class="adm-body">
+  @if (error(); as msg) {
+    <div class="alert alert-error">{{ msg }}</div>
+  }
+  @if (success(); as msg) {
+    <div class="alert alert-success">{{ msg }}</div>
+  }
+
+  <div class="adm-grid">
+    <div class="adm-col">
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Filtrar</span>
+        </div>
+        <div class="sec-body">
+          <div class="filter-row">
+            <div class="field">
+              <label class="field-label">Buscar</label>
+              <input class="field-input" type="text" [ngModel]="filtro()" (ngModelChange)="filtro.set($event); cargar()" placeholder="Nombre o departamento" />
+            </div>
+            <div class="field">
+              <label class="field-label">Departamento</label>
+              <select class="field-input" [ngModel]="departamentoFiltro()" (ngModelChange)="departamentoFiltro.set($event); cargar()">
+                <option value="">Todos</option>
+                @for (d of departamentos(); track d) {
+                  <option [value]="d">{{ d }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Municipios ({{ municipios().length }})</span>
+        </div>
+        <div class="sec-body">
+          @if (loading()) {
+            <div class="table-status">Cargando...</div>
+          } @else if (municipios().length === 0) {
+            <div class="table-status">No se encontraron municipios</div>
+          } @else {
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>C&oacute;digo</th>
+                    <th>Municipio</th>
+                    <th>Departamento</th>
+                    <th>Vecindad</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (m of municipios(); track m.codigo) {
+                    <tr>
+                      <td><code>{{ m.codigo }}</code></td>
+                      <td>{{ m.municipio }}</td>
+                      <td>{{ m.departamento }}</td>
+                      <td>{{ m.vecindad || '&mdash;' }}</td>
+                      <td class="cell-actions">
+                        <button class="btn-sm" (click)="abrirEditar(m)" title="Editar">Editar</button>
+                        @if (confirmarEliminar() === m.codigo) {
+                          <span class="confirm-group">
+                            <span class="confirm-msg">¿Eliminar?</span>
+                            <button class="btn-sm btn-danger" (click)="eliminar(m.codigo)">S&iacute;</button>
+                            <button class="btn-sm" (click)="cancelarEliminacion()">No</button>
+                          </span>
+                        } @else {
+                          <button class="btn-sm btn-danger" (click)="confirmarEliminacion(m.codigo)" title="Eliminar">Eliminar</button>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (mostrarFormulario()) {
+  <div class="modal-overlay" (click)="cerrarFormulario()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="sec-head">
+        <span class="sec-title">{{ editando() ? 'Editar' : 'Nuevo' }} Municipio</span>
+        <button class="btn-close" (click)="cerrarFormulario()">&times;</button>
+      </div>
+      <div class="sec-body">
+        @if (error(); as msg) {
+          <div class="alert alert-error">{{ msg }}</div>
+        }
+
+        <div class="field">
+          <label class="field-label">C&oacute;digo (4 d&iacute;gitos)</label>
+          <input class="field-input" type="text" maxlength="4" [ngModel]="formCodigo()" (ngModelChange)="formCodigo.set($event)" placeholder="Ej: 0101" [disabled]="editando()" />
+        </div>
+
+        <div class="field">
+          <label class="field-label">Municipio</label>
+          <input class="field-input" type="text" [ngModel]="formMunicipio()" (ngModelChange)="formMunicipio.set($event)" placeholder="Nombre del municipio" />
+        </div>
+
+        <div class="field">
+          <label class="field-label">Departamento</label>
+          <input class="field-input" type="text" [ngModel]="formDepartamento()" (ngModelChange)="formDepartamento.set($event)" placeholder="Nombre del departamento" />
+        </div>
+
+        <div class="field">
+          <label class="field-label">Vecindad / Aldea</label>
+          <input class="field-input" type="text" [ngModel]="formVecindad()" (ngModelChange)="formVecindad.set($event)" placeholder="Opcional" />
+        </div>
+
+        <div class="form-actions">
+          <button class="btn" (click)="guardar()" [disabled]="guardando()">{{ guardando() ? 'Guardando...' : 'Guardar' }}</button>
+          <button class="btn" (click)="cerrarFormulario()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
