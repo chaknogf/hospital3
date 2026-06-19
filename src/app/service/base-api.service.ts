@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { throwError, of, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { OfflineSyncService } from './offline-sync.service';
+import { environment } from '@environments/environment';
 
 export interface PaginationState {
   filtro: any;
@@ -11,8 +12,7 @@ export interface PaginationState {
 
 @Injectable({ providedIn: 'root' })
 export class BaseApiService {
-  // public readonly baseUrl = 'http://localhost:8000';
-  public readonly baseUrl = 'https://www.htecpan.com/fah';
+  public readonly baseUrl = environment.apiUrl;
 
   isLoading = signal(false);
   token = signal<string | null>(null);

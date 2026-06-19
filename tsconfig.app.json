@@ -6,7 +6,8 @@
       "@enums/*": ["app/enum/*"],
       "@shared/*": ["app/shared/*"],
       "@services/*": ["app/service/*"],
-      "@models/*": ["app/interface/*"]
+      "@models/*": ["app/interface/*"],
+      "@environments/*": ["environments/*"]
     }
   },
   "files": [

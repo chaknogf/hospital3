@@ -4,6 +4,14 @@
   "compileOnSave": false,
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
+    "baseUrl": "./src",
+    "paths": {
+      "@enums/*": ["app/enum/*"],
+      "@shared/*": ["app/shared/*"],
+      "@services/*": ["app/service/*"],
+      "@models/*": ["app/interface/*"],
+      "@environments/*": ["environments/*"]
+    },
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,

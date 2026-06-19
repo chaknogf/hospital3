@@ -14,6 +14,7 @@ import { FiltroConsulta, FiltroCitas } from '../interface/filtros.model';
 import { CitaCreate, CitaResponse, Citas, CitasBase, CitaUpdate } from '../interface/citas';
 import { Medico } from '../interface/medicos.interface';
 import { Usuario, UsuarioOut, UsersListResponse } from '../interface/usuarios.interface';
+import { environment } from '@environments/environment';
 
 export interface PaginationState {
   filtro: any;
@@ -21,8 +22,7 @@ export interface PaginationState {
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  // public readonly baseUrl = 'http://localhost:8000';
-  public readonly baseUrl = 'https://www.htecpan.com/fah';
+  public readonly baseUrl = environment.apiUrl;
   // ======= SIGNALS =======
   token = signal<string | null>(null);
   username = signal<string | null>(null);
