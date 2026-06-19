@@ -49,32 +49,34 @@ src/
 
 ## Backend API
 
-All requests go to `https://www.htecpan.com/fah` (FastAPI backend = `back_sys`).
+All requests go to `https://www.htecpan.com/fah` (FastAPI backend = `back_sys`). Auth: `admin` = requires admin role; `auth` = requires authenticated user; `public` = no auth.
 
-Backend runs at `http://localhost:8000/fah/...` (FastAPI). Full endpoint reference in `back_sys/AGENTS.md`.
+Full endpoint reference in `back_sys/AGENTS.md`.
 
 | Module | Key Endpoints |
 |--------|---------------|
-| Auth | `POST /auth/login`, `GET /auth/me` |
-| Users | `GET/POST /users/`, `GET/PUT/DELETE /users/{id}`, `PATCH /users/recuperar` |
-| Patients | `GET/POST /pacientes/`, `GET/PATCH /pacientes/{id}`, `POST /pacientes/madre-hijo/{id}`, `POST /pacientes/merge`, `GET /pacientes/duplicados/nombres-similares` |
-| Consultations | `GET/POST /consultas/`, `GET/PATCH/DELETE /consultas/{id}`, `POST /consultas/registro`, `GET /consultas/pacienteId/{id}`, `DELETE /consultas/{id}/eliminar` |
-| Appointments | `GET/POST /citas/`, `GET/PUT/DELETE /citas/{id}`, `GET /citas/disponibles`, `GET /citas/paciente/{id}` |
-| Doctors | `GET/POST /medicos/`, `GET/PUT/DELETE /medicos/{id}` |
-| Birth Certs | `GET/POST /constancias-nacimiento/`, `GET/PUT/DELETE /constancias-nacimiento/{id}`, `GET /constancias-nacimiento/historial/{id}` |
-| Procedures | `GET/POST /procedimientos/`, `GET/PUT/DELETE /procedimientos/{id}`, `GET/POST /procedimientos/catalogo`, `PUT/DELETE /procedimientos/catalogo/{id}` |
-| Record Loans | `GET/POST /prestamos/`, `GET/PUT/DELETE /prestamos/{id}` |
-| Correlatives | `POST /correlativos/expediente`, `/emergencia`, `/constancia_nacimiento`, `/constancia_defuncion`, `/constancia_medica` |
-| Municipios | `GET/POST /municipios/`, `PUT/DELETE /municipios/{codigo}`, `GET /municipios/departamentos` |
-| Encamamiento | `GET/POST /encamamiento/`, `GET/PATCH/DELETE /encamamiento/{servicio_id}` |
-| Countries | `GET /paises/`, `GET /paises/select`, `GET /paises/{codigo}` |
-| Nacimientos | `GET/POST /nacimientos/`, `GET/PATCH/DELETE /nacimientos/{id}`, `POST /nacimientos/desde-paciente/{id}`, `POST /nacimientos/sincronizar` |
-| Events | `GET/POST /eventos/`, `GET/PATCH/DELETE /eventos/{id}` |
-| Cycles | `GET /ciclos/consulta/{id}`, `GET /ciclos/{id}`, `POST /ciclos/` |
-| RENAP | `GET /renap/persona` |
-| Totals | `GET /totales/` |
-| Statistics | `GET /estadisticas/resumen`, `/consultas/por-dia`, `/por-especialidad`, `/pacientes/piramide`, `/procedimientos/top`, `/ocupacion`, `/reporte`, `/personal-salud` |
-| Audit | `GET /audit-log/` |
+| Auth | `POST /auth/login` (public), `GET /auth/me` (auth) |
+| Users | `GET/POST /users/` (admin), `GET/PUT /users/{id}` (auth), `DELETE /users/{id}` (admin, soft), `PATCH /users/recuperar` (public) |
+| Patients | `GET/POST /pacientes/` (auth), `GET/PATCH /pacientes/{id}` (auth), `POST /pacientes/madre-hijo/{id}` (auth), `POST /pacientes/merge` (admin), `GET /pacientes/duplicados/nombres-similares` (auth), `GET /pacientes/neonatales` (auth), `GET /pacientes/expediente/{expediente}` (auth), `GET /pacientes/debug/count` (auth), `DELETE /pacientes/{id}/eliminar-permanente` (admin) |
+| Consultations | `GET/POST /consultas/` (auth), `GET/PATCH/DELETE /consultas/{id}` (auth), `POST /consultas/registro` (auth), `GET /consultas/pacienteId/{id}` (auth), `GET /consultas/buscarpaciente` (auth), `PATCH /consultas/sincronizar-indicadores` (auth), `DELETE /consultas/{id}/eliminar` (admin) |
+| Appointments | `GET/POST /citas/` (auth), `GET/PUT/DELETE /citas/{id}` (auth), `GET /citas/disponibles` (auth), `GET /citas/paciente/{id}` (auth) |
+| Doctors | `GET/POST /medicos/` (public), `GET/PUT/DELETE /medicos/{id}` (public) |
+| Birth Certs | `GET/POST /constancias-nacimiento/` (auth), `GET/PUT /constancias-nacimiento/{id}` (auth), `DELETE /constancias-nacimiento/{id}` (admin), `GET /constancias-nacimiento/historial/{id}` (auth) |
+| Procedures | `GET/POST /procedimientos/` (auth), `GET/PUT/DELETE /procedimientos/{id}` (auth), `GET/POST /procedimientos/catalogo` (auth), `PUT/DELETE /procedimientos/catalogo/{id}` (admin), `GET /procedimientos/reporte` (auth), `GET /procedimientos/estadisticas/resumen` (auth) |
+| Record Loans | `GET/POST /prestamos/` (auth), `GET/PUT/DELETE /prestamos/{id}` (auth) |
+| Correlatives | `POST /correlativos/expediente` (auth), `/emergencia` (auth), `/constancia_nacimiento` (auth), `/constancia_defuncion` (auth), `/constancia_medica` (auth) |
+| Municipios | `GET/POST /municipios/` (public), `PUT/DELETE /municipios/{codigo}` (admin), `GET /municipios/departamentos` (public) |
+| Encamamiento | `GET/POST /encamamiento/` (public), `GET/PATCH/DELETE /encamamiento/{servicio_id}` (public) |
+| Countries | `GET /paises/` (public), `GET /paises/select` (public), `GET /paises/{codigo}` (public) |
+| Nacimientos | `GET/POST /nacimientos/` (auth), `GET/PATCH/DELETE /nacimientos/{id}` (auth), `POST /nacimientos/desde-paciente/{id}` (auth), `POST /nacimientos/sincronizar` (auth), `GET /nacimientos/referenciar-legacy` (auth) |
+| Nac. Legacy | `GET /nacimientos-legacy/` (auth), `PUT /nacimientos-legacy/{id}` (auth) |
+| Events | `GET/POST /eventos/` (auth), `GET/PATCH/DELETE /eventos/{id}` (auth) |
+| Cycles | `GET /ciclos/consulta/{id}` (auth), `GET /ciclos/{id}` (auth), `POST /ciclos/` (auth) |
+| RENAP | `GET /renap/persona` (auth) |
+| Totales | `GET /totales/` (auth) |
+| Statistics | `GET /estadisticas/resumen` (auth), `/consultas/por-dia` (auth), `/por-especialidad` (auth), `/pacientes/piramide` (auth), `/procedimientos/top` (auth), `/ocupacion` (auth), `/reporte` (auth), `/personal-salud` (auth) |
+| SIGSA-3 | `GET/POST /sigsa3/` (auth), `GET/PUT/DELETE /sigsa3/{id}` (auth) |
+| Audit | `GET /audit-log/` (admin) |
 
 ## Offline Architecture
 
@@ -129,18 +131,18 @@ All API calls go through `ApiService` (`service/api.service.ts`) to `http://loca
 |-----------|-------|-----------------------------|------------------|
 | `PacientesComponent` | `/pacientes` | `ApiService` (via `BaseApiService`) | `GET /pacientes/` |
 | `FormularioPacienteComponent` | `/paciente`, `/paciente/:modo`, `/pacienteEdit/:id` | `ApiService` | `GET/POST /pacientes/`, `PATCH /pacientes/{id}` |
-| `DetallePacienteComponent` | `/detallePaciente/:id` | `ApiService` | `GET /pacientes/{id}` |
-| `AdmisionComponent` | `/admision*`, `/editarAdmision*` | `ApiService` | `POST /consultas/registro`, `PATCH /consultas/{id}` |
-| `ConsultasComponent` | `/consultas` | `ApiService` via `ConsultaService` | `GET /consultas/` |
-| `RecepcionComponent` | `/recepcion` | `ApiService` via `ConsultaService` | `GET /consultas/buscarpaciente` |
-| `EmergenciasListComponent` | `/emergencias` | `ApiService` via `ConsultaService` | `GET /consultas/` (especialidad=emergencia) |
-| `HojaComponent` | `/hojaEmergencia/:id` | `ApiService` via `ConsultaService` | `GET /consultas/{id}` |
-| `CoexListaComponent` | `/coex` | `ApiService` via `ConsultaService` | `GET /consultas/` (especialidad=coex) |
-| `HojaCoexComponent` | `/coexHoja/:id` | `ApiService` via `ConsultaService` | `GET /consultas/{id}` |
-| `IngresosComponent` | `/ingresos` | `ApiService` via `ConsultaService` | `GET /consultas/` (especialidad=hospitalizacion) |
-| `HojaIngresoComponent` | `/ingreso/:id` | `ApiService` via `ConsultaService` | `GET /consultas/{id}` |
-| `NotaMedicaComponent` | `/notaMedica/:consultaId` | `ApiService` via `ConsultaService` | `GET /consultas/{id}` |
-| `HistoriaClinicaComponent` | `/historiaClinica/:consultaId` | `ApiService` | `GET /consultas/pacienteId/{paciente_id}` |
+| `DetallePacienteComponent` | `/detallePaciente/:id` | `PacienteService.getPaciente()` | `GET /pacientes/{id}` |
+| `AdmisionComponent` | `/admision*`, `/editarAdmision*` | `ConsultaService` | `POST /consultas/registro`, `PATCH /consultas/{id}` |
+| `ConsultasComponent` | `/consultas` | `ConsultaService` | `GET /consultas/` |
+| `RecepcionComponent` | `/recepcion` | `ConsultaService.getPacientesBuscados()` | `GET /consultas/buscarpaciente` |
+| `EmergenciasListComponent` | `/emergencias` | `ConsultaService` | `GET /consultas/` (especialidad=emergencia) |
+| `HojaComponent` | `/hojaEmergencia/:id` | `ConsultaService` | `GET /consultas/{id}` |
+| `CoexListaComponent` | `/coex` | `ConsultaService` | `GET /consultas/` (especialidad=coex) |
+| `HojaCoexComponent` | `/coexHoja/:id` | `ConsultaService` | `GET /consultas/{id}` |
+| `IngresosComponent` | `/ingresos` | `ConsultaService` | `GET /consultas/` (especialidad=hospitalizacion) |
+| `HojaIngresoComponent` | `/ingreso/:id` | `ConsultaService` | `GET /consultas/{id}` |
+| `NotaMedicaComponent` | `/notaMedica/:consultaId` | `ConsultaService` | `GET /consultas/{id}` |
+| `HistoriaClinicaComponent` | `/historiaClinica/:consultaId` | `ConsultaService` | `GET /consultas/pacienteId/{paciente_id}` |
 | `DesactivarConsultaComponent` | `/desactivar-consulta` | `ConsultaService.updateConsulta()` | `PATCH /consultas/{id}` |
 | `EliminarConsultaComponent` | `/eliminar-consulta` | `ConsultaService.deleteConsulta()` | `DELETE /consultas/{id}/eliminar` |
 
@@ -160,6 +162,7 @@ All API calls go through `ApiService` (`service/api.service.ts`) to `http://loca
 | `ConstanciasNacimientoComponent` | `/cons-nac/:id` | `ConstanciasService` | `GET/PUT /constancias-nacimiento/{id}` |
 | `NuevaConstanciaNacimientoComponent` | `/nueva-cons-nac` | `ConstanciasService` | `POST /constancias-nacimiento/` |
 | `EliminarConstanciaComponent` | `/eliminar-constancia` | `ConstanciasService.deleteConstancia()` | `DELETE /constancias-nacimiento/{id}` |
+| `NuevaConstanciaNacimientoComponent` | `/nueva-cons-nac` | `PacienteService.pacienteExpediente()` | `GET /pacientes/expediente/{expediente}` |
 
 ### STD / Catalog Components
 
