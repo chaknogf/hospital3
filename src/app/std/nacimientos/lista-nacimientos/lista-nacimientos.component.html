@@ -47,12 +47,14 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Nombre</th>
           <th>Expediente</th>
+          <th>Neonato</th>
           <th>Sexo</th>
+          <th>Estado</th>
           <th>Fecha Nacimiento</th>
-          <th>Peso</th>
-          <th>Tipo Parto</th>
+          <th>Clase Parto</th>
+          <th>Clasificación</th>
+          <th>Trabajo Parto</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -60,22 +62,24 @@
         @for (n of nacimientos; track n.id) {
           <tr [class.touch-active]="rowActiva === n.id" (click)="activarFila(n.id)">
             <td><small>{{ n.id }}</small></td>
-            <td>{{ n.nombre_completo || '—' }}</td>
-            <td>{{ n.expediente || '—' }}</td>
-            <td>{{ sexoLabel(n.sexo) }}</td>
-            <td>{{ n.fecha_nacimiento | date:'dd-MM-yyyy' }}</td>
-            <td>{{ n.peso_nacimiento || '—' }}</td>
-            <td>{{ n.tipo_parto || '—' }}</td>
+            <td>{{ n.paciente?.expediente || n.expediente || '—' }}</td>
+            <td>{{ n.paciente?.nombre_completo || n.nombre_completo || '—' }}</td>
+            <td>{{ sexoLabel(n.paciente?.sexo || n.sexo) }}</td>
+            <td>{{ n.paciente?.estado || n.estado || '—' }}</td>
+            <td>{{ (n.paciente?.fecha_nacimiento || n.fecha_nacimiento) | date:'dd-MM-yyyy' }}</td>
+            <td>{{ n.neonatales?.clase_parto || '—' }}</td>
+            <td>{{ n.clasificacion_nacimiento || '—' }}</td>
+            <td>{{ n.trabajo_parto || '—' }}</td>
             <td>
               <button (click)="editar(n.id); $event.stopPropagation()">Editar</button>
             </td>
           </tr>
         }
         @if (!cargando && nacimientos.length === 0) {
-          <tr><td colspan="8" class="text-center">No hay registros.</td></tr>
+          <tr><td colspan="10" class="text-center">No hay registros.</td></tr>
         }
         @if (cargando) {
-          <tr><td colspan="8" class="text-center">Cargando nacimientos...</td></tr>
+          <tr><td colspan="10" class="text-center">Cargando nacimientos...</td></tr>
         }
       </tbody>
     </table>
@@ -106,3 +110,114 @@
   <button class="pag-btn" [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">Siguiente</button>
   <span class="pag-info">Pág. {{ paginaActual }} / {{ totalPaginas }} · {{ totalDeRegistros }} registros</span>
 </div>
+
+@if (mostrarModal()) {
+  <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title">{{ editando() ? 'Editar' : 'Nuevo' }} Nacimiento</span>
+        <button class="modal-close" (click)="cerrarModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        @if (editando() && pacienteInfo) {
+          <div class="readonly-bar">
+            <span>{{ pacienteInfo.nombre_completo || '—' }}</span>
+            <span class="sep">|</span>
+            <span>Exp. {{ pacienteInfo.expediente || '—' }}</span>
+            <span class="sep">|</span>
+            <span>Madre: {{ nombreMadre || '—' }}</span>
+          </div>
+        }
+
+        @if (modalError(); as msg) {
+          <div class="alert alert-error">{{ msg }}</div>
+        }
+        @if (modalSuccess(); as msg) {
+          <div class="alert alert-success">{{ msg }}</div>
+        }
+
+        <div class="form-grid">
+          @if (!editando()) {
+            <div class="field">
+              <label class="field-label">Nombre del neonato <span class="req">*</span></label>
+              <input class="field-input" type="text" [(ngModel)]="modelo.nombre_completo" name="nombre_completo" placeholder="Nombre completo" />
+            </div>
+            <div class="field">
+              <label class="field-label">Sexo</label>
+              <select class="field-input" [(ngModel)]="modelo.sexo" name="sexo">
+                <option value="">Seleccionar</option>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Expediente</label>
+              <input class="field-input" type="text" [(ngModel)]="modelo.expediente" name="expediente" placeholder="Expediente" />
+            </div>
+            <div class="field">
+              <label class="field-label">Fecha de nacimiento</label>
+              <input class="field-input" type="date" [(ngModel)]="modelo.fecha_nacimiento" name="fecha_nacimiento" />
+            </div>
+          }
+
+          <div class="field">
+            <label class="field-label">Hora de nacimiento</label>
+            <input class="field-input" type="time" [(ngModel)]="modelo.hora_nacimiento" name="hora_nacimiento" />
+          </div>
+          <div class="field">
+            <label class="field-label">Peso (g)</label>
+            <input class="field-input" type="number" [(ngModel)]="modelo.peso_nacimiento" name="peso_nacimiento" placeholder="Ej: 3200" />
+          </div>
+          <div class="field">
+            <label class="field-label">Edad gestacional</label>
+            <input class="field-input" type="text" [(ngModel)]="modelo.edad_gestacional" name="edad_gestacional" placeholder="Ej: 38 semanas" />
+          </div>
+          <div class="field">
+            <label class="field-label">Tipo de parto</label>
+            <select class="field-input" [(ngModel)]="modelo.tipo_parto" name="tipo_parto">
+              <option value="">Seleccionar</option>
+              <option value="Simple">Simple</option>
+              <option value="Multiple">Múltiple</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Clase de parto</label>
+            <select class="field-input" [(ngModel)]="modelo.clase_parto" name="clase_parto">
+              <option value="">Seleccionar</option>
+              <option value="Pes">Vaginal</option>
+              <option value="Cstp">Cesárea</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Gemelo</label>
+            <select class="field-input" [(ngModel)]="modelo.gemelo" name="gemelo">
+              <option value="">Seleccionar</option>
+              <option value="Unico">Único</option>
+              <option value="Gemelo 1">Gemelo 1</option>
+              <option value="Gemelo 2">Gemelo 2</option>
+              <option value="Gemelo 3">Gemelo 3</option>
+            </select>
+          </div>
+          <div class="field checkbox-field">
+            <label class="field-label-check">
+              <input type="checkbox" [(ngModel)]="modelo.extrahospitalario" name="extrahospitalario" />
+              <span>Extrahospitalario</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-secondary" type="button" (click)="cerrarModal()">Cancelar</button>
+          <button class="btn btn-primary" type="button" (click)="guardar()" [disabled]="guardando()">
+            @if (guardando()) {
+              <span class="spinner"></span>
+              Guardando...
+            } @else {
+              Guardar
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

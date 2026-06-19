@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { BaseApiService } from '../../service/base-api.service';
-import { NacimientoOut, NacimientoCreate, NacimientoUpdate, NacimientoListResponse } from '../../interface/nacimientos';
+import { NacimientoOut, NacimientoCreate, NacimientoUpdate, NeonatalesPayload, NacimientoListResponse } from '../../interface/nacimientos';
 
 @Injectable({ providedIn: 'root' })
 export class NacimientosService extends BaseApiService {
@@ -52,6 +52,15 @@ export class NacimientosService extends BaseApiService {
     this.isLoading.set(true);
     return this.offMutation('PATCH', `${this.baseUrl}/nacimientos/${id}`, datos).pipe(
       tap(() => this.refrescarNacimientos()),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  updatePacienteNeonatales(pacienteId: number, neonatales: NeonatalesPayload): Observable<any> {
+    this.isLoading.set(true);
+    return this.offMutation('PATCH', `${this.baseUrl}/pacientes/${pacienteId}`, {
+      datos_extra: { neonatales }
+    }).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }

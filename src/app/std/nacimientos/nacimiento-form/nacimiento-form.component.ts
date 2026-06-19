@@ -2,7 +2,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NacimientoOut, NacimientoCreate, NacimientoUpdate } from '../../../interface/nacimientos';
+import { NacimientoOut, NacimientoCreate, NeonatalesPayload, PacienteResumen } from '../../../interface/nacimientos';
 import { NacimientosService } from '../nacimientos.service';
 
 @Component({
@@ -19,6 +19,9 @@ export class NacimientoFormComponent implements OnInit {
 
   editando = false;
   nacimientoId: number | null = null;
+  pacienteId: number | null = null;
+  pacienteInfo: PacienteResumen | null = null;
+  nombreMadre: string | null = null;
   guardando = false;
   error: string | null = null;
   success: string | null = null;
@@ -53,19 +56,22 @@ export class NacimientoFormComponent implements OnInit {
   cargarNacimiento(id: number): void {
     this.api.getNacimiento(id).subscribe({
       next: n => {
-        this.modelo.paciente_id = n.paciente_id;
+        this.pacienteId = n.paciente_id ?? null;
+        this.pacienteInfo = n.paciente ?? null;
+        this.nombreMadre = n.nombre_madre ?? null;
+        this.modelo.paciente_id = n.paciente_id ?? null;
         this.modelo.madre_id = n.madre_id;
-        this.modelo.expediente = n.expediente;
-        this.modelo.nombre_completo = n.nombre_completo;
-        this.modelo.sexo = n.sexo;
-        this.modelo.fecha_nacimiento = n.fecha_nacimiento;
-        this.modelo.peso_nacimiento = n.peso_nacimiento;
-        this.modelo.edad_gestacional = n.edad_gestacional;
-        this.modelo.tipo_parto = n.tipo_parto;
-        this.modelo.clase_parto = n.clase_parto;
-        this.modelo.gemelo = n.gemelo;
-        this.modelo.hora_nacimiento = n.hora_nacimiento;
-        this.modelo.extrahospitalario = n.extrahospitalario ?? false;
+        this.modelo.expediente = n.paciente?.expediente ?? n.expediente;
+        this.modelo.nombre_completo = n.paciente?.nombre_completo ?? n.nombre_completo;
+        this.modelo.sexo = n.paciente?.sexo ?? n.sexo;
+        this.modelo.fecha_nacimiento = n.paciente?.fecha_nacimiento ?? n.fecha_nacimiento;
+        this.modelo.peso_nacimiento = n.neonatales?.peso_nacimiento;
+        this.modelo.edad_gestacional = n.neonatales?.edad_gestacional;
+        this.modelo.tipo_parto = n.neonatales?.tipo_parto;
+        this.modelo.clase_parto = n.neonatales?.clase_parto;
+        this.modelo.gemelo = n.neonatales?.gemelo;
+        this.modelo.hora_nacimiento = n.neonatales?.hora_nacimiento;
+        this.modelo.extrahospitalario = n.neonatales?.extrahospitalario ?? false;
       },
       error: () => {
         this.error = 'Error al cargar el nacimiento';
@@ -84,8 +90,8 @@ export class NacimientoFormComponent implements OnInit {
 
     this.guardando = true;
 
-    if (this.editando && this.nacimientoId) {
-      const update: NacimientoUpdate = {
+    if (this.editando && this.pacienteId) {
+      const neonatales: NeonatalesPayload = {
         peso_nacimiento: this.modelo.peso_nacimiento,
         edad_gestacional: this.modelo.edad_gestacional,
         tipo_parto: this.modelo.tipo_parto,
@@ -94,7 +100,7 @@ export class NacimientoFormComponent implements OnInit {
         hora_nacimiento: this.modelo.hora_nacimiento,
         extrahospitalario: this.modelo.extrahospitalario
       };
-      this.api.updateNacimiento(this.nacimientoId, update).subscribe({
+      this.api.updatePacienteNeonatales(this.pacienteId, neonatales).subscribe({
         next: () => {
           this.success = 'Nacimiento actualizado exitosamente';
           this.guardando = false;

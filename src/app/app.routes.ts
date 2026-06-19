@@ -386,16 +386,6 @@ export const routes: Routes = [
         loadComponent: () => import('./std/nacimientos/lista-nacimientos/lista-nacimientos.component').then(c => c.ListaNacimientosComponent),
         canActivate: [roleGuard(['admin', 'std'])]
       },
-      {
-        path: 'nacimiento-nuevo',
-        loadComponent: () => import('./std/nacimientos/nacimiento-form/nacimiento-form.component').then(c => c.NacimientoFormComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
-      },
-      {
-        path: 'nacimiento-editar/:id',
-        loadComponent: () => import('./std/nacimientos/nacimiento-form/nacimiento-form.component').then(c => c.NacimientoFormComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
-      },
     ]
   }
 ];

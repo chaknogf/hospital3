@@ -1,8 +1,8 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NacimientoOut } from '../../../interface/nacimientos';
+import { NacimientoOut, NacimientoCreate, NeonatalesPayload, PacienteResumen } from '../../../interface/nacimientos';
 import { NacimientosService } from '../nacimientos.service';
 
 @Component({
@@ -33,6 +33,35 @@ export class ListaNacimientosComponent implements OnInit {
     fecha_hasta: '',
     skip: 0,
     limit: this.pageSize
+  };
+
+  // Modal state
+  mostrarModal = signal(false);
+  editando = signal(false);
+  guardando = signal(false);
+  modalError = signal<string | null>(null);
+  modalSuccess = signal<string | null>(null);
+  pacienteId: number | null = null;
+  pacienteInfo: PacienteResumen | null = null;
+  nombreMadre: string | null = null;
+  nacimientoId: number | null = null;
+
+  modelo: NacimientoCreate = {
+    paciente_id: null,
+    madre_id: null,
+    expediente: null,
+    nombre_completo: null,
+    sexo: null,
+    fecha_nacimiento: null,
+    peso_nacimiento: null,
+    edad_gestacional: null,
+    tipo_parto: null,
+    clase_parto: null,
+    gemelo: null,
+    hora_nacimiento: null,
+    extrahospitalario: false,
+    registrador_id: null,
+    datos_extra: undefined
   };
 
   constructor() { }
@@ -97,11 +126,121 @@ export class ListaNacimientosComponent implements OnInit {
   }
 
   agregar(): void {
-    this.router.navigate(['/nacimiento-nuevo']);
+    this.resetFormulario();
+    this.editando.set(false);
+    this.mostrarModal.set(true);
   }
 
   editar(id: number): void {
-    this.router.navigate(['/nacimiento-editar', id]);
+    this.resetFormulario();
+    this.editando.set(true);
+    this.nacimientoId = id;
+    this.mostrarModal.set(true);
+    this.api.getNacimiento(id).subscribe({
+      next: n => {
+        this.pacienteId = n.paciente_id ?? null;
+        this.pacienteInfo = n.paciente ?? null;
+        this.nombreMadre = n.nombre_madre ?? null;
+        this.modelo.paciente_id = n.paciente_id ?? null;
+        this.modelo.madre_id = n.madre_id;
+        this.modelo.expediente = n.paciente?.expediente ?? n.expediente;
+        this.modelo.nombre_completo = n.paciente?.nombre_completo ?? n.nombre_completo;
+        this.modelo.sexo = n.paciente?.sexo ?? n.sexo;
+        this.modelo.fecha_nacimiento = n.paciente?.fecha_nacimiento ?? n.fecha_nacimiento;
+        this.modelo.peso_nacimiento = n.neonatales?.peso_nacimiento;
+        this.modelo.edad_gestacional = n.neonatales?.edad_gestacional;
+        this.modelo.tipo_parto = n.neonatales?.tipo_parto;
+        this.modelo.clase_parto = n.neonatales?.clase_parto;
+        this.modelo.gemelo = n.neonatales?.gemelo;
+        this.modelo.hora_nacimiento = n.neonatales?.hora_nacimiento;
+        this.modelo.extrahospitalario = n.neonatales?.extrahospitalario ?? false;
+      },
+      error: () => {
+        this.modalError.set('Error al cargar el nacimiento');
+      }
+    });
+  }
+
+  cerrarModal(): void {
+    this.mostrarModal.set(false);
+    this.modalError.set(null);
+    this.modalSuccess.set(null);
+    this.guardando.set(false);
+  }
+
+  guardar(): void {
+    this.modalError.set(null);
+    this.modalSuccess.set(null);
+
+    if (!this.modelo.nombre_completo?.trim()) {
+      this.modalError.set('El nombre del neonato es requerido');
+      return;
+    }
+
+    this.guardando.set(true);
+
+    if (this.editando() && this.pacienteId) {
+      const neonatales: NeonatalesPayload = {
+        peso_nacimiento: this.modelo.peso_nacimiento,
+        edad_gestacional: this.modelo.edad_gestacional,
+        tipo_parto: this.modelo.tipo_parto,
+        clase_parto: this.modelo.clase_parto,
+        gemelo: this.modelo.gemelo,
+        hora_nacimiento: this.modelo.hora_nacimiento,
+        extrahospitalario: this.modelo.extrahospitalario
+      };
+      this.api.updatePacienteNeonatales(this.pacienteId, neonatales).subscribe({
+        next: () => {
+          this.modalSuccess.set('Nacimiento actualizado exitosamente');
+          this.guardando.set(false);
+          this.cargarNacimientos();
+          setTimeout(() => this.cerrarModal(), 1500);
+        },
+        error: () => {
+          this.modalError.set('Error al actualizar nacimiento');
+          this.guardando.set(false);
+        }
+      });
+    } else {
+      this.api.createNacimiento(this.modelo).subscribe({
+        next: () => {
+          this.modalSuccess.set('Nacimiento registrado exitosamente');
+          this.guardando.set(false);
+          this.cargarNacimientos();
+          setTimeout(() => this.cerrarModal(), 1500);
+        },
+        error: () => {
+          this.modalError.set('Error al registrar nacimiento');
+          this.guardando.set(false);
+        }
+      });
+    }
+  }
+
+  private resetFormulario(): void {
+    this.modelo = {
+      paciente_id: null,
+      madre_id: null,
+      expediente: null,
+      nombre_completo: null,
+      sexo: null,
+      fecha_nacimiento: null,
+      peso_nacimiento: null,
+      edad_gestacional: null,
+      tipo_parto: null,
+      clase_parto: null,
+      gemelo: null,
+      hora_nacimiento: null,
+      extrahospitalario: false,
+      registrador_id: null,
+      datos_extra: undefined
+    };
+    this.pacienteId = null;
+    this.pacienteInfo = null;
+    this.nombreMadre = null;
+    this.nacimientoId = null;
+    this.modalError.set(null);
+    this.modalSuccess.set(null);
   }
 
   get totalPaginas(): number {

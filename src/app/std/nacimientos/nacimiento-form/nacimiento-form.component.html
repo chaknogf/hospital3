@@ -12,32 +12,44 @@
     <div class="alert alert-success">{{ success }}</div>
   }
 
+  @if (editando && pacienteInfo) {
+    <div class="aurora-container" style="margin-bottom: 0.5rem">
+      <div class="d-flex gap-1 flex-wrap" style="padding: 0.5rem 1rem">
+        <span><strong>Neonato:</strong> {{ pacienteInfo.nombre_completo || '—' }}</span>
+        <span><strong>Expediente:</strong> {{ pacienteInfo.expediente || '—' }}</span>
+        <span><strong>Madre:</strong> {{ nombreMadre || '—' }}</span>
+      </div>
+    </div>
+  }
+
   <div class="aurora-container">
     <form class="p-3">
       <div class="d-flex gap-1 flex-wrap">
-        <fieldset class="fieldset-filtros flex-grow-1">
-          <label class="label-filtros">Nombre del neonato *</label>
-          <input type="text" class="input-filtros w-100" [(ngModel)]="modelo.nombre_completo" name="nombre_completo" placeholder="Nombre completo" />
-        </fieldset>
+        @if (!editando) {
+          <fieldset class="fieldset-filtros flex-grow-1">
+            <label class="label-filtros">Nombre del neonato *</label>
+            <input type="text" class="input-filtros w-100" [(ngModel)]="modelo.nombre_completo" name="nombre_completo" placeholder="Nombre completo" />
+          </fieldset>
 
-        <fieldset class="fieldset-filtros">
-          <label class="label-filtros">Sexo</label>
-          <select class="input-filtros" [(ngModel)]="modelo.sexo" name="sexo">
-            <option value="">Seleccionar</option>
-            <option value="M">Masculino</option>
-            <option value="F">Femenino</option>
-          </select>
-        </fieldset>
+          <fieldset class="fieldset-filtros">
+            <label class="label-filtros">Sexo</label>
+            <select class="input-filtros" [(ngModel)]="modelo.sexo" name="sexo">
+              <option value="">Seleccionar</option>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+            </select>
+          </fieldset>
 
-        <fieldset class="fieldset-filtros">
-          <label class="label-filtros">Expediente</label>
-          <input type="text" class="input-filtros" [(ngModel)]="modelo.expediente" name="expediente" placeholder="Expediente" />
-        </fieldset>
+          <fieldset class="fieldset-filtros">
+            <label class="label-filtros">Expediente</label>
+            <input type="text" class="input-filtros" [(ngModel)]="modelo.expediente" name="expediente" placeholder="Expediente" />
+          </fieldset>
 
-        <fieldset class="fieldset-filtros">
-          <label class="label-filtros">Fecha de nacimiento</label>
-          <input type="date" class="input-filtros" [(ngModel)]="modelo.fecha_nacimiento" name="fecha_nacimiento" />
-        </fieldset>
+          <fieldset class="fieldset-filtros">
+            <label class="label-filtros">Fecha de nacimiento</label>
+            <input type="date" class="input-filtros" [(ngModel)]="modelo.fecha_nacimiento" name="fecha_nacimiento" />
+          </fieldset>
+        }
 
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Hora de nacimiento</label>
@@ -58,9 +70,8 @@
           <label class="label-filtros">Tipo de parto</label>
           <select class="input-filtros" [(ngModel)]="modelo.tipo_parto" name="tipo_parto">
             <option value="">Seleccionar</option>
-            <option value="Vaginal">Vaginal</option>
-            <option value="Cesarea">Cesárea</option>
-            <option value="Instrumentado">Instrumentado</option>
+            <option value="Simple">Simple</option>
+            <option value="Multiple">Múltiple</option>
           </select>
         </fieldset>
 
@@ -68,8 +79,8 @@
           <label class="label-filtros">Clase de parto</label>
           <select class="input-filtros" [(ngModel)]="modelo.clase_parto" name="clase_parto">
             <option value="">Seleccionar</option>
-            <option value="Simple">Simple</option>
-            <option value="Multiple">Múltiple</option>
+            <option value="Pes">Vaginal</option>
+            <option value="Cstp">Cesárea</option>
           </select>
         </fieldset>
 
