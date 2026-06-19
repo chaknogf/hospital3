@@ -804,27 +804,27 @@
                       class="chip chip-lg"
                       [class.on]="
                         form.get('datos_extra.neonatales.tipo_parto')?.value ===
-                        'Pes'
+                        'Simple'
                       "
                       (click)="
                         form
                           .get('datos_extra.neonatales.tipo_parto')
-                          ?.setValue('Pes')
+                          ?.setValue('Simple')
                       "
-                      >Vaginal</span
+                      >Simple</span
                     >
                     <span
                       class="chip chip-lg"
                       [class.on]="
                         form.get('datos_extra.neonatales.tipo_parto')?.value ===
-                        'Cstp'
+                        'Multiple'
                       "
                       (click)="
                         form
                           .get('datos_extra.neonatales.tipo_parto')
-                          ?.setValue('Cstp')
+                          ?.setValue('Multiple')
                       "
-                      >Cesárea</span
+                      >Múltiple</span
                     >
                   </div>
                 </div>
@@ -835,27 +835,27 @@
                       class="chip chip-lg"
                       [class.on]="
                         form.get('datos_extra.neonatales.clase_parto')
-                          ?.value === 'Simple'
+                          ?.value === 'Pes'
                       "
                       (click)="
                         form
                           .get('datos_extra.neonatales.clase_parto')
-                          ?.setValue('Simple')
+                          ?.setValue('Pes')
                       "
-                      >Simple</span
+                      >Vaginal</span
                     >
                     <span
                       class="chip chip-lg"
                       [class.on]="
                         form.get('datos_extra.neonatales.clase_parto')
-                          ?.value === 'Multiple'
+                          ?.value === 'Cstp'
                       "
                       (click)="
                         form
                           .get('datos_extra.neonatales.clase_parto')
-                          ?.setValue('Multiple')
+                          ?.setValue('Cstp')
                       "
-                      >Multiple</span
+                      >Cesárea</span
                     >
                   </div>
                 </div>

@@ -68,8 +68,8 @@ export interface Socioeconomicos {
 export interface Neonatales {
   peso_nacimiento?: string | null;
   edad_gestacional?: string | null;
-  tipo_parto?: 'Pes' | 'Cstp' | null; // P = Vaginal, C = Cesárea
-  clase_parto?: 'Simple' | 'Multiple' | null;
+  tipo_parto?: 'Simple' | 'Multiple' | null;
+  clase_parto?: 'Pes' | 'Cstp' | null;
   gemelo?: string | null;
   expediente_madre?: string | null;
   extrahositalario?: boolean | false;

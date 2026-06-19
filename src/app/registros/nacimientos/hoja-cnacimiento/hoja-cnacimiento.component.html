@@ -225,7 +225,7 @@
         <span class="form-lbl">Tipo de Parto</span>
         <span class="form-val">
           {{
-            constancia()?.paciente?.datos_extra?.neonatales?.clase_parto ?? "—"
+            constancia()?.paciente?.datos_extra?.neonatales?.tipo_parto ?? "—"
           }}
         </span>
       </div>
@@ -233,13 +233,13 @@
         <span class="form-lbl">Clase de Parto</span>
         <span class="form-val">
           @if (
-            constancia()?.paciente?.datos_extra?.neonatales?.tipo_parto ===
+            constancia()?.paciente?.datos_extra?.neonatales?.clase_parto ===
             "Pes"
           ) {
             Eutócico (Parto Vaginal Espontaneo)
           }
           @if (
-            constancia()?.paciente?.datos_extra?.neonatales?.tipo_parto ===
+            constancia()?.paciente?.datos_extra?.neonatales?.clase_parto ===
             "Cstp"
           ) {
             Distócico (Cesárea)
