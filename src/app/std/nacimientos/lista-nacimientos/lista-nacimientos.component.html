@@ -1,0 +1,108 @@
+<div class="aurora-paciente-container">
+  <div class="botones justify-content-between" [ngClass]="{ 'd-none': filtrar }">
+    <button type="button" (click)="volver()">Menu</button>
+    <h1 class="text-white">Nacimientos</h1>
+    <button type="button" (click)="toggleFiltrar()">Buscar</button>
+    <button type="button" (click)="agregar()">Agregar</button>
+  </div>
+
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar }">
+    <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
+      <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Nombre</label>
+          <input type="text" class="input-filtros" [(ngModel)]="filtros.q" name="q" placeholder="Buscar por nombre" />
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Expediente</label>
+          <input type="text" class="input-filtros" [(ngModel)]="filtros.expediente" name="expediente" placeholder="Expediente" />
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Sexo</label>
+          <select class="input-filtros" [(ngModel)]="filtros.sexo" name="sexo">
+            <option value="">Todos</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+          </select>
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Fecha desde</label>
+          <input type="date" class="input-filtros" [(ngModel)]="filtros.fecha_desde" name="fecha_desde" />
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Fecha hasta</label>
+          <input type="date" class="input-filtros" [(ngModel)]="filtros.fecha_hasta" name="fecha_hasta" />
+        </fieldset>
+      </div>
+      <div class="d-flex gap-1">
+        <button class="button-filtros" type="submit">Buscar</button>
+        <button class="button-filtros" type="button" (click)="limpiarFiltros()">Limpiar</button>
+        <button class="button-filtros" type="button" (click)="agregar()">Agregar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="aurora-container">
+    <table class="aurora-tb">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Expediente</th>
+          <th>Sexo</th>
+          <th>Fecha Nacimiento</th>
+          <th>Peso</th>
+          <th>Tipo Parto</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (n of nacimientos; track n.id) {
+          <tr [class.touch-active]="rowActiva === n.id" (click)="activarFila(n.id)">
+            <td><small>{{ n.id }}</small></td>
+            <td>{{ n.nombre_completo || '—' }}</td>
+            <td>{{ n.expediente || '—' }}</td>
+            <td>{{ sexoLabel(n.sexo) }}</td>
+            <td>{{ n.fecha_nacimiento | date:'dd-MM-yyyy' }}</td>
+            <td>{{ n.peso_nacimiento || '—' }}</td>
+            <td>{{ n.tipo_parto || '—' }}</td>
+            <td>
+              <button (click)="editar(n.id); $event.stopPropagation()">Editar</button>
+            </td>
+          </tr>
+        }
+        @if (!cargando && nacimientos.length === 0) {
+          <tr><td colspan="8" class="text-center">No hay registros.</td></tr>
+        }
+        @if (cargando) {
+          <tr><td colspan="8" class="text-center">Cargando nacimientos...</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="paginador">
+  <button class="pag-btn" [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">Anterior</button>
+
+  @if (paginas[0] > 1) {
+    <button class="pag-num" (click)="irAPagina(1)">1</button>
+  }
+  @if (paginas[0] > 2) {
+    <span class="pag-ellipsis">…</span>
+  }
+
+  @for (p of paginas; track p) {
+    <button class="pag-num" [class.pag-num-active]="p === paginaActual" (click)="irAPagina(p)">{{ p }}</button>
+  }
+
+  @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+    <span class="pag-ellipsis">…</span>
+  }
+  @if (paginas[paginas.length - 1] < totalPaginas) {
+    <button class="pag-num" (click)="irAPagina(totalPaginas)">{{ totalPaginas }}</button>
+  }
+
+  <button class="pag-btn" [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">Siguiente</button>
+  <span class="pag-info">Pág. {{ paginaActual }} / {{ totalPaginas }} · {{ totalDeRegistros }} registros</span>
+</div>

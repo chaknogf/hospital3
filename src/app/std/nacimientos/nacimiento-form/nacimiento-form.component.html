@@ -1,0 +1,94 @@
+<div class="aurora-paciente-container">
+  <div class="botones justify-content-between">
+    <button type="button" (click)="volver()">Volver</button>
+    <h1 class="text-white">{{ editando ? 'Editar' : 'Nuevo' }} Nacimiento</h1>
+    <button type="button" (click)="guardar()" [disabled]="guardando">{{ guardando ? 'Guardando...' : 'Guardar' }}</button>
+  </div>
+
+  @if (error) {
+    <div class="alert alert-error">{{ error }}</div>
+  }
+  @if (success) {
+    <div class="alert alert-success">{{ success }}</div>
+  }
+
+  <div class="aurora-container">
+    <form class="p-3">
+      <div class="d-flex gap-1 flex-wrap">
+        <fieldset class="fieldset-filtros flex-grow-1">
+          <label class="label-filtros">Nombre del neonato *</label>
+          <input type="text" class="input-filtros w-100" [(ngModel)]="modelo.nombre_completo" name="nombre_completo" placeholder="Nombre completo" />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Sexo</label>
+          <select class="input-filtros" [(ngModel)]="modelo.sexo" name="sexo">
+            <option value="">Seleccionar</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+          </select>
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Expediente</label>
+          <input type="text" class="input-filtros" [(ngModel)]="modelo.expediente" name="expediente" placeholder="Expediente" />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Fecha de nacimiento</label>
+          <input type="date" class="input-filtros" [(ngModel)]="modelo.fecha_nacimiento" name="fecha_nacimiento" />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Hora de nacimiento</label>
+          <input type="time" class="input-filtros" [(ngModel)]="modelo.hora_nacimiento" name="hora_nacimiento" />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Peso (g)</label>
+          <input type="text" class="input-filtros" [(ngModel)]="modelo.peso_nacimiento" name="peso_nacimiento" placeholder="Ej: 3200" />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Edad gestacional</label>
+          <input type="text" class="input-filtros" [(ngModel)]="modelo.edad_gestacional" name="edad_gestacional" placeholder="Ej: 38 semanas" />
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Tipo de parto</label>
+          <select class="input-filtros" [(ngModel)]="modelo.tipo_parto" name="tipo_parto">
+            <option value="">Seleccionar</option>
+            <option value="Vaginal">Vaginal</option>
+            <option value="Cesarea">Cesárea</option>
+            <option value="Instrumentado">Instrumentado</option>
+          </select>
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Clase de parto</label>
+          <select class="input-filtros" [(ngModel)]="modelo.clase_parto" name="clase_parto">
+            <option value="">Seleccionar</option>
+            <option value="Simple">Simple</option>
+            <option value="Multiple">Múltiple</option>
+          </select>
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Gemelo</label>
+          <select class="input-filtros" [(ngModel)]="modelo.gemelo" name="gemelo">
+            <option value="">Seleccionar</option>
+            <option value="Unico">Único</option>
+            <option value="Gemelo 1">Gemelo 1</option>
+            <option value="Gemelo 2">Gemelo 2</option>
+            <option value="Gemelo 3">Gemelo 3</option>
+          </select>
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Extrahospitalario</label>
+          <input type="checkbox" class="ms-2" [(ngModel)]="modelo.extrahospitalario" name="extrahospitalario" />
+        </fieldset>
+      </div>
+    </form>
+  </div>
+</div>
