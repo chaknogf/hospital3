@@ -88,7 +88,7 @@
       <div class="form-field" style="flex: 1">
         <span class="form-lbl">Edad</span>
         <span class="form-val">
-          {{ constancia()?.madre?.fecha_nacimiento | aedad }}
+          {{ constancia()?.madre?.fecha_nacimiento | aedad }} años
         </span>
       </div>
     </div>
@@ -99,24 +99,12 @@
           >Tipo de documento que se identifica la madre</span
         >
         <span class="form-val">
-          @if (constancia()?.madre?.cui) {
+          @if ((constancia()?.madre?.fecha_nacimiento | aedad) < 18) {
+            <ng-container>Certificado de Nacimiento - CUI</ng-container>
+          } @else if (constancia()?.madre?.cui) {
             <ng-container>DPI - CUI</ng-container>
-          }
-          @if (constancia()?.madre?.pasaporte && !constancia()?.madre?.cui) {
-            <ng-container
-              constancia()?.madre?.pasaporte
-              &&
-              !constancia()?.madre?.cui
-              >Pasaporte</ng-container
-            >
-          }
-          @if (constancia()?.menor_edad) {
-            <ng-container
-              constancia()?.madre?.pasaporte
-              &&
-              !constancia()?.madre?.cui
-              >Certificado de Nacimiento</ng-container
-            >
+          } @else if (constancia()?.madre?.pasaporte) {
+            <ng-container>Pasaporte</ng-container>
           }
         </span>
       </div>

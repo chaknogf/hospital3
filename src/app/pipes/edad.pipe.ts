@@ -36,8 +36,8 @@ export class EdadPipe implements PipeTransform {
 })
 export class APipe implements PipeTransform {
 
-  transform(value: any | any): any {
-    if (!value) return '';
+  transform(value: any | any): number {
+    if (!value) return 0;
 
     const birthDate = new Date(value);
     const today = new Date();
@@ -57,7 +57,7 @@ export class APipe implements PipeTransform {
       months += 12;
     }
 
-    return `${years} años`;
+    return years;
   }
 
 }
