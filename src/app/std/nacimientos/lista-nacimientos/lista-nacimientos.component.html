@@ -7,7 +7,29 @@
     <h1 class="text-white">Nacimientos</h1>
     <button type="button" (click)="toggleFiltrar()">Buscar</button>
     <button type="button" (click)="agregar()">Agregar</button>
-    <button type="button" (click)="descargarExcel()">Descargar Excel</button>
+  </div>
+
+  <!-- Rango de fechas para Excel (siempre visible) -->
+  <div class="excel-date-range d-flex align-items-center gap-2 p-2 bg-light">
+    <label class="label-filtros m-0">Rango para Excel:</label>
+    <input
+      type="date"
+      class="input-filtros"
+      [(ngModel)]="filtros.fecha_desde"
+      name="fecha_desde_excel"
+      placeholder="Desde"
+    />
+    <span>a</span>
+    <input
+      type="date"
+      class="input-filtros"
+      [(ngModel)]="filtros.fecha_hasta"
+      name="fecha_hasta_excel"
+      placeholder="Hasta"
+    />
+    <button class="button-filtros" type="button" (click)="descargarExcel()">
+      Descargar Excel
+    </button>
   </div>
 
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar }">
@@ -40,24 +62,6 @@
             <option value="M">Masculino</option>
             <option value="F">Femenino</option>
           </select>
-        </fieldset>
-        <fieldset class="fieldset-filtros">
-          <label class="label-filtros">Fecha desde</label>
-          <input
-            type="date"
-            class="input-filtros"
-            [(ngModel)]="filtros.fecha_desde"
-            name="fecha_desde"
-          />
-        </fieldset>
-        <fieldset class="fieldset-filtros">
-          <label class="label-filtros">Fecha hasta</label>
-          <input
-            type="date"
-            class="input-filtros"
-            [(ngModel)]="filtros.fecha_hasta"
-            name="fecha_hasta"
-          />
         </fieldset>
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Clasificación</label>
@@ -97,6 +101,9 @@
         </button>
       </div>
     </form>
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="btn m-0 p-0" (click)="toggleFiltrar()">▲</button>
+    </div>
   </div>
 
   <div class="aurora-container">

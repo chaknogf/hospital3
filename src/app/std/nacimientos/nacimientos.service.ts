@@ -73,7 +73,7 @@ export class NacimientosService extends BaseApiService {
   }
 
   getAllNacimientos(filtros: any): Observable<NacimientoOut[]> {
-    const params = this.limpiarParametros({ ...filtros, skip: 0, limit: 0 });
+    const params = this.limpiarParametros({ ...filtros, skip: 0, limit: 500 });
     return this.http.get<NacimientoListResponse>(`${this.baseUrl}/nacimientos/`, { params }).pipe(
       map(r => r.nacimientos),
       catchError(error => this.manejarError(error, 'obtener todos los nacimientos'))
