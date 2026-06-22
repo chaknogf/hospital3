@@ -33,6 +33,25 @@
           <label class="label-filtros">Fecha hasta</label>
           <input type="date" class="input-filtros" [(ngModel)]="filtros.fecha_hasta" name="fecha_hasta" />
         </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Clasificación</label>
+          <select class="input-filtros" [(ngModel)]="filtros.clasificacion" name="clasificacion">
+            <option value="">Todas</option>
+            <option value="PN">PN - Peso Normal</option>
+            <option value="BP">BP - Bajo Peso</option>
+            <option value="MBP">MBP - Muy Bajo Peso</option>
+            <option value="EBP">EBP - Extremo Bajo Peso</option>
+          </select>
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Trabajo Parto</label>
+          <select class="input-filtros" [(ngModel)]="filtros.trabajo_parto" name="trabajo_parto">
+            <option value="">Todos</option>
+            <option value="A Termino">A Término</option>
+            <option value="Prematuro">Prematuro</option>
+            <option value="Prolongado">Prolongado</option>
+          </select>
+        </fieldset>
       </div>
       <div class="d-flex gap-1">
         <button class="button-filtros" type="submit">Buscar</button>

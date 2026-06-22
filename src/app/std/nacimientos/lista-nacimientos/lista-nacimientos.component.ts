@@ -37,6 +37,8 @@ export class ListaNacimientosComponent implements OnInit {
     sexo: '',
     fecha_desde: '',
     fecha_hasta: '',
+    clasificacion: '',
+    trabajo_parto: '',
     skip: 0,
     limit: this.pageSize
   };
@@ -113,6 +115,8 @@ export class ListaNacimientosComponent implements OnInit {
       sexo: '',
       fecha_desde: '',
       fecha_hasta: '',
+      clasificacion: '',
+      trabajo_parto: '',
       skip: 0,
       limit: this.pageSize
     };
