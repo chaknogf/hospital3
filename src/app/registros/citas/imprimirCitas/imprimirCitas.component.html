@@ -112,7 +112,7 @@
           {{ nombreCompleto(cita) }}
         </td>
 
-        <td class="col-expediente">{{ cita.expediente }}</td>
+        <td class="col-expediente">{{ cita.paciente.expediente }}</td>
 
         <td class="col-especialidad">
           {{ cita.especialidad | datosExtra: "especialidad" }}

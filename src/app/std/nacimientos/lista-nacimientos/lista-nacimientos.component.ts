@@ -2,6 +2,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import * as XLSX from 'xlsx';
 import { NacimientoOut, NacimientoCreate, NeonatalesPayload, PacienteResumen } from '../../../interface/nacimientos';
 import { NacimientosService } from '../nacimientos.service';
 import { ApiService } from '../../../service/api.service';
@@ -299,5 +300,37 @@ export class ListaNacimientosComponent implements OnInit {
     if (s === 'M') return 'Masculino';
     if (s === 'F') return 'Femenino';
     return '—';
+  }
+
+  descargarExcel(): void {
+    this.api.getAllNacimientos(this.filtros).subscribe(data => {
+      const rows = data.map(n => ({
+        ID: n.id,
+        Expediente: n.paciente?.expediente || n.expediente || '',
+        Neonato: n.paciente?.nombre_completo || n.nombre_completo || '',
+        Sexo: this.sexoLabel(n.paciente?.sexo || n.sexo),
+        Estado: n.paciente?.estado || n.estado || '',
+        'Fecha Nacimiento': n.paciente?.fecha_nacimiento || n.fecha_nacimiento || '',
+        'Hora Nacimiento': n.neonatales?.hora_nacimiento || '',
+        'Peso (g)': n.neonatales?.peso_nacimiento || n.peso_gramos || '',
+        'Edad Gestacional': n.neonatales?.edad_gestacional || '',
+        'Tipo Parto': n.neonatales?.tipo_parto || '',
+        'Clase Parto': n.neonatales?.clase_parto || '',
+        Gemelo: n.neonatales?.gemelo || '',
+        Clasificación: n.clasificacion_nacimiento || '',
+        'Trabajo Parto': n.trabajo_parto || '',
+        Extrahospitalario: n.neonatales?.extrahospitalario ? 'Sí' : 'No',
+        'Nombre Madre': n.nombre_madre || '',
+        'ID Paciente': n.paciente_id ?? '',
+        'ID Madre': n.madre_id ?? ''
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const colWidths = Object.keys(rows[0] || {}).map(k => ({ wch: Math.max(k.length, 18) }));
+      ws['!cols'] = colWidths;
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Nacimientos');
+      XLSX.writeFile(wb, `nacimientos_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    });
   }
 }
