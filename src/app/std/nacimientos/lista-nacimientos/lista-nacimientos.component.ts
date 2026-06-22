@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NacimientoOut, NacimientoCreate, NeonatalesPayload, PacienteResumen } from '../../../interface/nacimientos';
 import { NacimientosService } from '../nacimientos.service';
+import { ApiService } from '../../../service/api.service';
 
 @Component({
   selector: 'app-lista-nacimientos',
@@ -16,6 +17,11 @@ export class ListaNacimientosComponent implements OnInit {
   private location = inject(Location);
   private api = inject(NacimientosService);
   private router = inject(Router);
+  private authApi = inject(ApiService);
+
+  get esAdmin(): boolean {
+    return this.authApi.role() === 'admin';
+  }
 
   nacimientos: NacimientoOut[] = [];
   cargando = false;

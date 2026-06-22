@@ -160,6 +160,17 @@
             </div>
           }
 
+          @if (editando()) {
+            <div class="field">
+              <label class="field-label">ID Paciente</label>
+              <input class="field-input" type="number" [(ngModel)]="modelo.paciente_id" name="paciente_id" [disabled]="!esAdmin" />
+            </div>
+            <div class="field">
+              <label class="field-label">ID Madre</label>
+              <input class="field-input" type="number" [(ngModel)]="modelo.madre_id" name="madre_id" [disabled]="!esAdmin" />
+            </div>
+          }
+
           <div class="field">
             <label class="field-label">Hora de nacimiento</label>
             <input class="field-input" type="time" [(ngModel)]="modelo.hora_nacimiento" name="hora_nacimiento" />
