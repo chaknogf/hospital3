@@ -5,13 +5,15 @@ import { Router } from '@angular/router';
 import { NacimientoOut, NacimientoCreate, NeonatalesPayload, PacienteResumen } from '../../../interface/nacimientos';
 import { NacimientosService } from '../nacimientos.service';
 import { ApiService } from '../../../service/api.service';
+import { DatosExtraPipe } from 'app/pipes/datos-extra.pipe';
+import { LibrasOnzasPipe } from 'app/pipes/librasOnza.pipe';
 
 @Component({
   selector: 'app-lista-nacimientos',
   templateUrl: './lista-nacimientos.component.html',
   styleUrls: ['./lista-nacimientos.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, DatosExtraPipe, LibrasOnzasPipe]
 })
 export class ListaNacimientosComponent implements OnInit {
   private location = inject(Location);

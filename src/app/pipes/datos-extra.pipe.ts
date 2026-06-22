@@ -130,6 +130,11 @@ export class DatosExtraPipe implements PipeTransform {
         return sexoUpper === 'M' ? 'Masculino' : sexoUpper === 'F' ? 'Femenino' : valorStr;
       }
 
+      case 'vivo': {
+        const estadoUpper = valorStr.trim().toUpperCase();
+        return estadoUpper === 'V' ? 'Vivo' : estadoUpper === 'F' ? 'Fallecido' : valorStr;
+      }
+
       case 'especialidad': {
         const especialidad = especialidades.find(e => e.value == valor);
         return especialidad ? especialidad.label : valorStr;
@@ -158,6 +163,17 @@ export class DatosExtraPipe implements PipeTransform {
       case 'ocupacion': {
         // Si es solo un string, devolverlo capitalizado
         return valorStr.charAt(0).toUpperCase() + valorStr.slice(1).toLowerCase();
+      }
+
+      case 'clasiparto':
+      case 'clasiparto_id': {
+        const clasificaciones: { [key: string]: string } = {
+          'PN': 'Peso Normal',
+          'BP': 'Bajo peso',
+          'MBP': 'Muy Bajo Peso',
+          'EBP': 'Extremo Bajo Peso',
+        };
+        return clasificaciones[valorStr] || '-';
       }
 
       // Para cualquier otro tipo, devolver el valor tal cual

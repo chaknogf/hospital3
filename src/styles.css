@@ -3939,3 +3939,7 @@ select.input-filtros option {
 .field:focus-within {
   filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.25));
 }
+
+.text-small {
+  font-size: xx-small !important;
+}
