@@ -21,7 +21,9 @@ export class OfflineSyncService {
     if (isPlatformBrowser(this.platformId)) {
       this.online = navigator.onLine;
       this.isOnline.set(navigator.onLine);
-      this.refreshPendingCount();
+      this.refreshPendingCount().then(() => {
+        if (this.online) this.syncNow();
+      });
 
       window.addEventListener('online', () => this.goOnline());
       window.addEventListener('offline', () => this.goOffline());

@@ -19,7 +19,7 @@ export class FullSyncService {
   lastSyncAt = signal<Date | null>(null);
   syncStats = signal<{ pacientes: number; detalles: number; consultas: number }>({ pacientes: 0, detalles: 0, consultas: 0 });
 
-  private readonly PAGE_SIZE = 1000;
+  private readonly PAGE_SIZE = 100;
   private readonly CONCURRENCY = 5;
   private readonly FULL_DETAIL_THRESHOLD = 4000;
 

@@ -6,7 +6,9 @@
     <button type="button" (click)="volver()">Menu</button>
     <h1 class="text-white">Nacimientos</h1>
     <button type="button" (click)="toggleFiltrar()">Buscar</button>
-    <button type="button" (click)="agregar()">Agregar</button>
+    @if (!sinEditar) {
+      <button type="button" (click)="agregar()">Agregar</button>
+    }
   </div>
 
   <!-- Rango de fechas para Excel (siempre visible) -->
@@ -96,9 +98,11 @@
         <button class="button-filtros" type="button" (click)="limpiarFiltros()">
           Limpiar
         </button>
-        <button class="button-filtros" type="button" (click)="agregar()">
-          Agregar
-        </button>
+        @if (!sinEditar) {
+          <button class="button-filtros" type="button" (click)="agregar()">
+            Agregar
+          </button>
+        }
       </div>
     </form>
     <div class="d-flex justify-content-center m-0 p-0">
@@ -119,7 +123,9 @@
           <th>Clase Parto</th>
           <th>Clasificación</th>
           <th>Trabajo Parto</th>
-          <th>Acciones</th>
+          @if (!sinEditar) {
+            <th>Acciones</th>
+          }
         </tr>
       </thead>
       <tbody>
@@ -155,11 +161,13 @@
               {{ n.trabajo_parto }} <br />
               <p class="text-small">{{ n.neonatales?.edad_gestacional }}</p>
             </td>
-            <td>
-              <button (click)="editar(n.id); $event.stopPropagation()">
-                Editar
-              </button>
-            </td>
+            @if (!sinEditar) {
+              <td>
+                <button (click)="editar(n.id); $event.stopPropagation()">
+                  Editar
+                </button>
+              </td>
+            }
           </tr>
         }
         @if (!cargando && nacimientos.length === 0) {

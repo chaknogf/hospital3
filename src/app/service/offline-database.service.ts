@@ -70,7 +70,7 @@ export class OfflineDatabaseService extends Dexie {
   }
 
   async getPendingMutations(): Promise<PendingMutation[]> {
-    return this.mutations.orderBy('timestamp').toArray();
+    return this.mutations.toArray();
   }
 
   async getPendingCount(): Promise<number> {

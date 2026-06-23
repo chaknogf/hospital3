@@ -588,6 +588,20 @@
             </div>
 
             @if (
+              form.get("datos_extra.demograficos.nacionalidad")?.value &&
+              form.get("datos_extra.demograficos.nacionalidad")?.value !== "GTM"
+            ) {
+              <div class="field">
+                <span class="field-label">Pasaporte</span>
+                <input
+                  class="field-input"
+                  [formControl]="$any(form.get('pasaporte'))"
+                  placeholder="Número de pasaporte"
+                />
+              </div>
+            }
+
+            @if (
               form.get("datos_extra.demograficos.nacionalidad")?.value === "GTM"
             ) {
               <div class="row-2">

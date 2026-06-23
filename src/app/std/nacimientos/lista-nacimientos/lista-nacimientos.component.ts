@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, Input, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
@@ -17,6 +17,9 @@ import { LibrasOnzasPipe } from 'app/pipes/librasOnza.pipe';
   imports: [CommonModule, FormsModule, DatosExtraPipe, LibrasOnzasPipe]
 })
 export class ListaNacimientosComponent implements OnInit {
+  @Input() sinEditar = false;
+  @Input() rutaVolver = '/estadistica';
+
   private location = inject(Location);
   private api = inject(NacimientosService);
   private router = inject(Router);
@@ -135,7 +138,7 @@ export class ListaNacimientosComponent implements OnInit {
   }
 
   volver(): void {
-    this.router.navigate(['/estadistica']);
+    this.router.navigate([this.rutaVolver]);
   }
 
   agregar(): void {

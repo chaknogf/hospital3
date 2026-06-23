@@ -52,8 +52,7 @@ export class MenutsComponent implements OnInit {
     this.options = [
 
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
-     //{ nombre: 'Procedimientos', descripcion: 'Registro de procedimientos menores y mayores', ruta: '/procedimientosmenores', icon: '' },
-      //{ nombre: 'Nacimientos', descripcion: 'Registro de Nacimientos', ruta: '/nacimientosCons', icon: '' },
+      { nombre: 'Nacimientos', descripcion: 'Registro de Nacimientos (solo lectura)', ruta: '/ts-nacimientos', icon: 'baby' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];

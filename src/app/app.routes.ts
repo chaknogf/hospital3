@@ -367,6 +367,11 @@ export const routes: Routes = [
         loadComponent: () => import('./trabajoSocial/trabajosocial/menuts.component').then(c => c.MenutsComponent),
         canActivate: [roleGuard(['admin', 'ts'])]
       },
+      {
+        path: 'ts-nacimientos',
+        loadComponent: () => import('./trabajoSocial/nacimientos/nacimientos-ts.component').then(c => c.NacimientosTsComponent),
+        canActivate: [roleGuard(['admin', 'ts'])]
+      },
 
       //UISAU
       {
