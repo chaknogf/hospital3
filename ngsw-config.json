@@ -1,6 +1,35 @@
 {
   "$schema": "./node_modules/@angular/service-worker/config/schema.json",
   "index": "/index.html",
+  "dataGroups": [
+    {
+      "name": "api-pacientes",
+      "urls": ["/fah/pacientes/"],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "1h",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "api-consultas",
+      "urls": ["/fah/consultas/"],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "1h",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "api-catalogos",
+      "urls": ["/fah/municipios/", "/fah/paises/", "/fah/medicos/", "/fah/procedimientos/catalogo"],
+      "cacheConfig": {
+        "maxSize": 50,
+        "maxAge": "6h",
+        "strategy": "performance"
+      }
+    }
+  ],
   "assetGroups": [
     {
       "name": "app",
@@ -9,7 +38,6 @@
       "resources": {
         "files": [
           "/favicon.ico",
-          "/index.csr.html",
           "/index.html",
           "/*.css",
           "/*.js"

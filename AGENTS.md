@@ -3,10 +3,10 @@
 ## Quick Start
 
 ```bash
-yarn start            # Dev server http://localhost:4200
-yarn build            # Production build → dist/medicapp/browser
-yarn watch            # Dev build with watch
-yarn test             # Jasmine/Karma tests
+pnpm start            # Dev server http://localhost:4200
+pnpm build            # Production build → dist/medicapp/browser
+pnpm watch            # Dev build with watch
+pnpm test             # Jasmine/Karma tests
 ```
 
 ## Stack
@@ -16,9 +16,9 @@ yarn test             # Jasmine/Karma tests
 - **Styling**: CSS + PostCSS + PurgeCSS + Autoprefixer (Bootstrap-like classes)
 - **State**: Angular Signals + RxJS BehaviorSubject
 - **PWA**: Angular Service Worker + Dexie.js (IndexedDB) for offline-first
-- **Charts**: Chart.js, ApexCharts, CanvasJS, ngx-charts, D3.js
+- **Charts**: none (all chart libraries removed — unused)
 - **Build**: Vite/esbuild via Angular CLI
-- **Package manager**: Yarn (primary)
+- **Package manager**: pnpm (primary)
 
 ## Architecture
 
@@ -47,36 +47,197 @@ src/
 │   └── validators/          # Custom validators
 ```
 
-## Backend API
+## Backend API (`back_sys`)
 
-All requests go to `https://www.htecpan.com/fah` (FastAPI backend = `back_sys`). Auth: `admin` = requires admin role; `auth` = requires authenticated user; `public` = no auth.
+Base URL: `https://www.htecpan.com/fah` (root_path=`/fah`).
+Auth: `admin` = requires admin role; `auth` = requires authenticated user; `public` = no auth.
 
-Full endpoint reference in `back_sys/AGENTS.md`.
+### Stack
 
-| Module | Key Endpoints |
-|--------|---------------|
-| Auth | `POST /auth/login` (public), `GET /auth/me` (auth) |
-| Users | `GET/POST /users/` (admin), `GET/PUT /users/{id}` (auth), `DELETE /users/{id}` (admin, soft), `PATCH /users/recuperar` (public) |
-| Patients | `GET/POST /pacientes/` (auth), `GET/PATCH /pacientes/{id}` (auth), `POST /pacientes/madre-hijo/{id}` (auth), `POST /pacientes/merge` (admin), `GET /pacientes/duplicados/nombres-similares` (auth), `GET /pacientes/neonatales` (auth), `GET /pacientes/expediente/{expediente}` (auth), `GET /pacientes/debug/count` (auth), `DELETE /pacientes/{id}/eliminar-permanente` (admin) |
-| Consultations | `GET/POST /consultas/` (auth), `GET/PATCH/DELETE /consultas/{id}` (auth), `POST /consultas/registro` (auth), `GET /consultas/pacienteId/{id}` (auth), `GET /consultas/buscarpaciente` (auth), `PATCH /consultas/sincronizar-indicadores` (auth), `DELETE /consultas/{id}/eliminar` (admin) |
-| Appointments | `GET/POST /citas/` (auth), `GET/PUT/DELETE /citas/{id}` (auth), `GET /citas/disponibles` (auth), `GET /citas/paciente/{id}` (auth) |
-| Doctors | `GET/POST /medicos/` (public), `GET/PUT/DELETE /medicos/{id}` (public) |
-| Birth Certs | `GET/POST /constancias-nacimiento/` (auth), `GET/PUT /constancias-nacimiento/{id}` (auth), `DELETE /constancias-nacimiento/{id}` (admin), `GET /constancias-nacimiento/historial/{id}` (auth) |
-| Procedures | `GET/POST /procedimientos/` (auth), `GET/PUT/DELETE /procedimientos/{id}` (auth), `GET/POST /procedimientos/catalogo` (auth), `PUT/DELETE /procedimientos/catalogo/{id}` (admin), `GET /procedimientos/reporte` (auth), `GET /procedimientos/estadisticas/resumen` (auth) |
-| Record Loans | `GET/POST /prestamos/` (auth), `GET/PUT/DELETE /prestamos/{id}` (auth) |
-| Correlatives | `POST /correlativos/expediente` (auth), `/emergencia` (auth), `/constancia_nacimiento` (auth), `/constancia_defuncion` (auth), `/constancia_medica` (auth) |
-| Municipios | `GET/POST /municipios/` (public), `PUT/DELETE /municipios/{codigo}` (admin), `GET /municipios/departamentos` (public) |
-| Encamamiento | `GET/POST /encamamiento/` (public), `GET/PATCH/DELETE /encamamiento/{servicio_id}` (public) |
-| Countries | `GET /paises/` (public), `GET /paises/select` (public), `GET /paises/{codigo}` (public) |
-| Nacimientos | `GET/POST /nacimientos/` (auth), `GET/PATCH/DELETE /nacimientos/{id}` (auth), `POST /nacimientos/desde-paciente/{id}` (auth), `POST /nacimientos/sincronizar` (auth), `GET /nacimientos/referenciar-legacy` (auth) |
-| Nac. Legacy | `GET /nacimientos-legacy/` (auth), `PUT /nacimientos-legacy/{id}` (auth) |
-| Events | `GET/POST /eventos/` (auth), `GET/PATCH/DELETE /eventos/{id}` (auth) |
-| Cycles | `GET /ciclos/consulta/{id}` (auth), `GET /ciclos/{id}` (auth), `POST /ciclos/` (auth) |
-| RENAP | `GET /renap/persona` (auth) |
-| Totales | `GET /totales/` (auth) |
-| Statistics | `GET /estadisticas/resumen` (auth), `/consultas/por-dia` (auth), `/por-especialidad` (auth), `/pacientes/piramide` (auth), `/procedimientos/top` (auth), `/ocupacion` (auth), `/reporte` (auth), `/personal-salud` (auth) |
-| SIGSA-3 | `GET/POST /sigsa3/` (auth), `GET/PUT/DELETE /sigsa3/{id}` (auth) |
-| Audit | `GET /audit-log/` (admin) |
+- **Framework**: FastAPI 0.122 (Python 3.11+)
+- **Server**: Uvicorn 0.38
+- **Database**: PostgreSQL 18 (db: `hospital`)
+- **ORM**: SQLAlchemy 2.0 + psycopg2-binary
+- **Auth**: JWT (python-jose HS256) + Argon2 (passlib)
+- **Validation**: Pydantic 2.12
+- **Email**: FastAPI-Mail (SMTP Gmail) + Jinja2 templates
+- **Testing**: pytest 9 + FastAPI TestClient
+- **Analytics**: pandas, matplotlib, numpy, plotly
+- **Excel**: openpyxl
+- **Package manager**: Poetry (primary) + pip
+
+### Architecture: Modular Monolith
+
+```
+back_sys/
+├── main.py                    # FastAPI app entry point (root_path="/fah")
+├── core/                      # Shared framework
+│   ├── config.py              # Env vars (JWT, mail, DB)
+│   ├── database.py            # SQLAlchemy engine + session
+│   ├── security.py            # JWT create/verify, Argon2 hash
+│   ├── dependencies.py        # FastAPI DI re-exports
+│   ├── exceptions.py          # Global error handlers (422, 409, 500)
+│   └── mail.py                # FastAPI-Mail config
+├── modules/                   # 25 domain modules
+│   ├── auth/                  # POST /auth/login, GET /auth/me
+│   ├── users/                 # Full user CRUD
+│   ├── pacientes/             # Patient CRUD, duplicates (trigram/soundex), merge, neonates
+│   ├── consultas/             # Medical consultations registry
+│   ├── ciclos/                # Clinical cycles
+│   ├── encamamiento/          # Bed census by service
+│   ├── eventos/               # Clinical events (admission, evolution, discharge)
+│   ├── medicos/               # Doctors CRUD
+│   ├── citas/                 # Appointments
+│   ├── expediente/            # Correlative number generation
+│   ├── constancias_nacimiento/ # Birth certificates
+│   ├── prestamos/             # Record/file loans
+│   ├── procedimientos/        # Procedure catalog + records
+│   ├── municipios/            # Guatemalan municipalities
+│   ├── nacimientos/           # Birth records from madre-hijo
+│   ├── paises_iso/            # ISO country codes
+│   ├── renap/                 # RENAP civil registry integration
+│   ├── totales/               # Real-time dashboard KPIs
+│   ├── estadisticas/          # Statistics & reports
+│   ├── audit_log/             # Access audit logging
+│   ├── laboratorios/          # Lab tests (models only)
+│   ├── rayos_x/               # X-rays (models only)
+│   ├── sigsa3/                # SIGSA-3 consultation registry
+│   └── common/schemas.py      # Shared Pydantic schemas
+├── app/                       # Legacy (being migrated to modules/)
+│   ├── models/                # 18 legacy model files
+│   ├── routes/                # 20 legacy route files
+│   └── schemas/               # 19 legacy schema files
+└── api-cie11/                 # ICD-11 medical coding data
+```
+
+### Module Convention
+
+Each module in `modules/` contains:
+- `router.py` → Route definitions
+- `schemas.py` → Pydantic models
+- `models.py` → SQLAlchemy ORM models
+- `service.py` → Business logic
+
+### Endpoint Reference
+
+| Module | Method | Path | Auth | Description |
+|--------|--------|------|------|-------------|
+| Health | GET | `/health` | public | Health check (DB) |
+| Auth | POST | `/auth/login` | public | Login → JWT |
+| Auth | GET | `/auth/me` | auth | Current user |
+| Users | GET | `/users/` | admin | List (filtros: username, id, email, rol) |
+| Users | GET | `/users/{user_id}` | auth | By ID |
+| Users | POST | `/users/` | admin | Create (envía email) |
+| Users | PUT | `/users/{user_id}` | admin/self | Update |
+| Users | PATCH | `/users/recuperar` | public | Reset password |
+| Users | DELETE | `/users/{user_id}` | admin | Soft delete |
+| Pacientes | GET | `/pacientes/` | auth | Search (15+ filtros: q, id, cui, expediente, nombre, sexo, estado, etc.) |
+| Pacientes | GET | `/pacientes/neonatales` | auth | Neonatales |
+| Pacientes | GET | `/pacientes/{paciente_id}` | auth | By ID |
+| Pacientes | POST | `/pacientes/` | auth | Create (201) |
+| Pacientes | PATCH | `/pacientes/{paciente_id}` | auth | Update/activar/desactivar/expediente |
+| Pacientes | DELETE | `/pacientes/{paciente_id}/eliminar-permanente` | admin | Hard delete (204) |
+| Pacientes | GET | `/pacientes/debug/count` | auth | Conteo |
+| Pacientes | GET | `/pacientes/expediente/{expediente}` | auth | By expediente |
+| Pacientes | GET | `/pacientes/duplicados/nombres-similares` | auth | Trigram/soundex |
+| Pacientes | POST | `/pacientes/merge` | admin | Merge duplicados |
+| Pacientes | POST | `/pacientes/madre-hijo/{madre_id}` | auth | Crear desde madre (201) |
+| Consultas | GET | `/consultas/` | auth | List (15+ filtros) |
+| Consultas | GET | `/consultas/buscarpaciente` | auth | Buscar pacientes |
+| Consultas | GET | `/consultas/{consulta_id}` | auth | By ID |
+| Consultas | PATCH | `/consultas/sincronizar-indicadores` | auth | Sync indicadores |
+| Consultas | PATCH | `/consultas/{consulta_id}` | auth | Update |
+| Consultas | POST | `/consultas/registro` | auth | Nueva consulta (201) |
+| Consultas | GET | `/consultas/pacienteId/{paciente_id}` | auth | By patient |
+| Consultas | DELETE | `/consultas/{consulta_id}` | auth | Desactivar |
+| Consultas | DELETE | `/consultas/{consulta_id}/eliminar` | admin | Hard delete |
+| Ciclos | GET | `/ciclos/consulta/{consulta_id}` | auth | By consulta |
+| Ciclos | GET | `/ciclos/{ciclo_id}` | auth | By ID |
+| Ciclos | POST | `/ciclos/` | auth | Create (201) |
+| Citas | POST | `/citas/` | auth | Create (201) |
+| Citas | GET | `/citas/` | auth | List (filtros: id, expediente, paciente_id, especialidad, fecha_cita) |
+| Citas | GET | `/citas/paciente/{paciente_id}` | auth | By patient |
+| Citas | GET | `/citas/disponibles` | auth | Disponibles |
+| Citas | GET | `/citas/{cita_id}` | auth | By ID |
+| Citas | PUT | `/citas/{cita_id}` | auth | Update |
+| Citas | DELETE | `/citas/{cita_id}` | auth | Soft delete |
+| Medicos | POST | `/medicos/` | public | Create (201) |
+| Medicos | GET | `/medicos/` | public | List (filtros: id, activo, nombre, colegiado, especialidad) |
+| Medicos | GET | `/medicos/{medico_id}` | public | By ID |
+| Medicos | PUT | `/medicos/{medico_id}` | public | Update |
+| Medicos | DELETE | `/medicos/{medico_id}` | public | Delete (204) |
+| Nac. Legacy | GET | `/nacimientos-legacy/` | auth | List (filtros: id, madre, doc, fecha) |
+| Nac. Legacy | PUT | `/nacimientos-legacy/{id}` | auth | Update |
+| Const. Nac. | POST | `/constancias-nacimiento/` | auth | Create (201) |
+| Const. Nac. | GET | `/constancias-nacimiento/` | auth | List (6 filtros) |
+| Const. Nac. | GET | `/constancias-nacimiento/historial/{constancia_id}` | auth | Historial |
+| Const. Nac. | GET | `/constancias-nacimiento/{constancia_id}` | auth | By ID |
+| Const. Nac. | PUT | `/constancias-nacimiento/{constancia_id}` | auth | Update (guarda historial) |
+| Const. Nac. | DELETE | `/constancias-nacimiento/{constancia_id}` | admin | Delete |
+| Correlativos | POST | `/correlativos/expediente` | auth | EXP-YYYY-###### (201) |
+| Correlativos | POST | `/correlativos/emergencia` | auth | EMERG-###### (201) |
+| Correlativos | POST | `/correlativos/constancia_nacimiento` | auth | CN-###### (201) |
+| Correlativos | POST | `/correlativos/constancia_defuncion` | auth | DF-###### (201) |
+| Correlativos | POST | `/correlativos/constancia_medica` | auth | CM-###### (201) |
+| Municipios | GET | `/municipios/` | public | List (filtros: q, codigo, municipio, departamento, vecindad) |
+| Municipios | POST | `/municipios/` | admin | Create (201) |
+| Municipios | PUT | `/municipios/{codigo}` | admin | Update |
+| Municipios | DELETE | `/municipios/{codigo}` | admin | Delete (204) |
+| Municipios | GET | `/municipios/departamentos` | public | Departamentos distinct |
+| Paises | GET | `/paises/` | public | All ISO countries |
+| Paises | GET | `/paises/select` | public | For select/autocomplete |
+| Paises | GET | `/paises/{codigo}` | public | By ISO code |
+| RENAP | GET | `/renap/persona` | auth | By CUI or names+dob |
+| Totales | GET | `/totales/` | auth | Dashboard KPIs |
+| Prestamos | POST | `/prestamos/` | auth | Create |
+| Prestamos | GET | `/prestamos/` | auth | List (6 filtros) |
+| Prestamos | GET | `/prestamos/{prestamo_id}` | auth | By ID |
+| Prestamos | PUT | `/prestamos/{prestamo_id}` | auth | Update (devuelve si fecha_devolucion) |
+| Prestamos | DELETE | `/prestamos/{prestamo_id}` | auth | Desactivar |
+| Procedimientos | GET | `/procedimientos/catalogo` | auth | Catálogo (filtros: abreviatura, nombre) |
+| Procedimientos | GET | `/procedimientos/catalogo/{id}` | auth | Catálogo by ID |
+| Procedimientos | POST | `/procedimientos/catalogo` | admin | Crear en catálogo |
+| Procedimientos | PUT | `/procedimientos/catalogo/{id}` | admin | Update catálogo |
+| Procedimientos | DELETE | `/procedimientos/catalogo/{id}` | admin | Delete (si sin registros) |
+| Procedimientos | GET | `/procedimientos/` | auth | List realizados (5 filtros) |
+| Procedimientos | GET | `/procedimientos/reporte` | auth | Reporte agregado |
+| Procedimientos | GET | `/procedimientos/{id}` | auth | Realizado by ID |
+| Procedimientos | POST | `/procedimientos/` | auth | Create realizado (201) |
+| Procedimientos | PUT | `/procedimientos/{id}` | auth | Update realizado |
+| Procedimientos | DELETE | `/procedimientos/{id}` | admin | Delete realizado |
+| Procedimientos | GET | `/procedimientos/estadisticas/resumen` | auth | Stats por año/mes |
+| Eventos | GET | `/eventos/` | auth | List (4 filtros) |
+| Eventos | GET | `/eventos/{evento_id}` | auth | By ID |
+| Eventos | POST | `/eventos/` | auth | Create (ingreso/evolucion/egreso) (201) |
+| Eventos | PATCH | `/eventos/{evento_id}` | auth | Update |
+| Eventos | DELETE | `/eventos/{evento_id}` | auth | Delete (204) |
+| Estadisticas | GET | `/estadisticas/resumen` | auth | Dashboard resumen |
+| Estadisticas | GET | `/estadisticas/consultas/por-dia` | auth | Por día en rango |
+| Estadisticas | GET | `/estadisticas/consultas/por-especialidad` | auth | Por especialidad |
+| Estadisticas | GET | `/estadisticas/pacientes/piramide` | auth | Pirámide poblacional |
+| Estadisticas | GET | `/estadisticas/procedimientos/top` | auth | Top procedimientos |
+| Estadisticas | GET | `/estadisticas/ocupacion` | auth | Ocupación hospitalaria |
+| Estadisticas | GET | `/estadisticas/reporte` | auth | Reporte personalizado |
+| Estadisticas | GET | `/estadisticas/personal-salud` | auth | Personal de salud |
+| Audit | GET | `/audit-log/` | admin | Logs (filtros: tabla, username, desde, hasta) |
+| Encamamiento | POST | `/encamamiento/` | public | Create servicio (201) |
+| Encamamiento | GET | `/encamamiento/` | public | List (filtro: activo) |
+| Encamamiento | GET | `/encamamiento/{servicio_id}` | public | By ID |
+| Encamamiento | PATCH | `/encamamiento/{servicio_id}` | public | Update |
+| Encamamiento | DELETE | `/encamamiento/{servicio_id}` | public | Delete (204) |
+| Nacimientos | POST | `/nacimientos/` | auth | Create (solo requiere `paciente_id`) (201) |
+| Nacimientos | POST | `/nacimientos/desde-paciente/{paciente_id}` | auth | Desde paciente (201) |
+| Nacimientos | GET | `/nacimientos/` | auth | List (6 filtros, JOIN con pacientes) |
+| Nacimientos | GET | `/nacimientos/{nacimiento_id}` | auth | By ID (incluye neonatales + paciente) |
+| Nacimientos | PATCH | `/nacimientos/{nacimiento_id}` | auth | Update (solo `madre_id`) |
+| Nacimientos | DELETE | `/nacimientos/{nacimiento_id}` | auth | Delete (204) |
+| Nacimientos | POST | `/nacimientos/sincronizar` | auth | Sincronizar madre-hijo + legacy |
+| Nacimientos | GET | `/nacimientos/referenciar-legacy` | auth | Referenciar legacy |
+| SIGSA-3 | GET | `/sigsa3/` | auth | List (9 filtros) |
+| SIGSA-3 | GET | `/sigsa3/{id}` | auth | By ID |
+| SIGSA-3 | POST | `/sigsa3/` | auth | Create (201) |
+| SIGSA-3 | PUT | `/sigsa3/{id}` | auth | Update |
+| SIGSA-3 | DELETE | `/sigsa3/{id}` | auth | Delete (204) |
 
 ## Offline Architecture
 
