@@ -1,0 +1,25 @@
+<div class="page-container">
+  <div class="page-header">
+    <button class="btn-back" routerLink="/reportes">← Volver</button>
+    <h1>Activos Mayores a 30 Días</h1>
+  </div>
+  <div *ngIf="cargando" class="state-box spinner"></div>
+  <div *ngIf="error" class="state-box error">{{ error }}</div>
+  <div *ngIf="!cargando && datos.length > 0">
+    <div class="total-badge">Total: {{ total }} registros</div>
+    <div class="table-wrap">
+      <table class="reporte-table">
+        <thead><tr><th>Paciente</th><th>Especialidad</th><th>Fecha</th><th>Documento</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let d of datos">
+            <td>{{ d.paciente?.nombre?.primer || d.paciente_nombre || '—' }}</td>
+            <td>{{ d.especialidad }}</td>
+            <td>{{ d.fecha_consulta }}</td>
+            <td>{{ d.documento || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="!cargando && !error && datos.length === 0" class="state-box">Sin datos disponibles.</div>
+</div>

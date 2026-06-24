@@ -2301,11 +2301,18 @@ background-color: #6bf3e121;
 /* Contenedor de botones */
 .botones {
   display: flex;
-  flex-wrap: nowrap;           /* permite que los botones se envuelvan */
-  justify-content: center;   /* centra horizontalmente */
+  flex-wrap: nowrap;
+  justify-content: center;
   align-items: center;
-  gap: 0.2rem;                 /* separación entre botones */
+  gap: 0.2rem;
   margin: 0.5rem;
+}
+
+.botones h1 {
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Botones */
@@ -2340,14 +2347,21 @@ background-color: #6bf3e121;
 /* Media query para móviles: fila horizontal */
 @media (max-width: 600px) {
   .botones {
-    align-items: stretch;
-    flex-direction: row;       /* permite ajuste si no caben */
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .botones h1 {
+    font-size: clamp(0.9rem, 4.5vw, 1.3rem);
+    order: -1;
+    flex: 1 1 100%;
+    text-align: center;
   }
   .botones button {
-    flex: 1 1 45%;         /* cada botón ocupa ~45% del ancho */
+    flex: 1 1 45%;
     max-width: none;
     width: auto;
-    flex-wrap: wrap;
   }
 }
 
@@ -2688,7 +2702,7 @@ background-color: #6bf3e121;
   font-family: 'Inter', system-ui, sans-serif;
   background: #0b0f19;
   border-radius: 12px;
-  overflow: hidden;
+  overflow-x: auto;
   border: 1px solid #1e293b;
   text-align: center;
 }

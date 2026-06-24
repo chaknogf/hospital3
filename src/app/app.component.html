@@ -8,8 +8,7 @@
 </section>
 
 <div class="sync-indicator" *ngIf="fullSync.isSyncing()">
-  <div class="spinner-border spinner-border-sm me-1" role="status"></div>
-  {{ fullSync.syncProgress() }}
+  <div class="sync-spinner"></div>
 </div>
 
 <button class="sync-button btn btn-sm" *ngIf="!fullSync.isSyncing() && estaAutenticado"

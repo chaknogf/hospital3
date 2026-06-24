@@ -13,5 +13,5 @@ form {
 }
 
 .input-filtros {
-  font-size: 18px;
+  font-size: clamp(13px, 4vw, 18px);
 }

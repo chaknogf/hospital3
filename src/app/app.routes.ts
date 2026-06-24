@@ -391,6 +391,63 @@ export const routes: Routes = [
         loadComponent: () => import('./std/nacimientos/lista-nacimientos/lista-nacimientos.component').then(c => c.ListaNacimientosComponent),
         canActivate: [roleGuard(['admin', 'std'])]
       },
+
+      // Reportes y Estadísticas — submenú lateral con rutas hijas
+      {
+        path: 'reportes',
+        loadComponent: () => import('./std/reportes/reportes.component').then(c => c.ReportesComponent),
+        canActivate: [roleGuard(['admin', 'std'])],
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./std/reportes/reportes-inicio.component').then(c => c.ReportesInicioComponent)
+          },
+          {
+            path: 'pacientes-atendidos',
+            loadComponent: () => import('./std/reportes/pacientes-atendidos/pacientes-atendidos.component').then(c => c.PacientesAtendidosComponent)
+          },
+          {
+            path: 'hospitalizacion-infantil',
+            loadComponent: () => import('./std/reportes/hospitalizacion-infantil/hospitalizacion-infantil.component').then(c => c.HospitalizacionInfantilComponent)
+          },
+          {
+            path: 'promedio-diario',
+            loadComponent: () => import('./std/reportes/promedio-diario/promedio-diario.component').then(c => c.PromedioDiarioComponent)
+          },
+          {
+            path: 'personal-hospital',
+            loadComponent: () => import('./std/reportes/personal-hospital/personal-hospital.component').then(c => c.PersonalHospitalComponent)
+          },
+          {
+            path: 'estudiante-publico',
+            loadComponent: () => import('./std/reportes/estudiante-publico/estudiante-publico.component').then(c => c.EstudiantePublicoComponent)
+          },
+          {
+            path: 'reingresos',
+            loadComponent: () => import('./std/reportes/reingresos/reingresos.component').then(c => c.ReingresosComponent)
+          },
+          {
+            path: 'reingresos-tipo3',
+            loadComponent: () => import('./std/reportes/reingresos-tipo3/reingresos-tipo3.component').then(c => c.ReingresosTipo3Component)
+          },
+          {
+            path: 'activos-mayores-30-dias',
+            loadComponent: () => import('./std/reportes/activos-mayores-30-dias/activos-mayores-30-dias.component').then(c => c.ActivosMayores30DiasComponent)
+          },
+          {
+            path: 'estadisticas-nacimientos',
+            loadComponent: () => import('./std/reportes/estadisticas-nacimientos/estadisticas-nacimientos.component').then(c => c.EstadisticasNacimientosComponent)
+          },
+          {
+            path: 'reporte-procedimientos',
+            loadComponent: () => import('./std/reportes/reporte-procedimientos/reporte-procedimientos.component').then(c => c.ReporteProcedimientosComponent)
+          },
+          {
+            path: 'resumen-procedimientos',
+            loadComponent: () => import('./std/reportes/resumen-procedimientos/resumen-procedimientos.component').then(c => c.ResumenProcedimientosComponent)
+          },
+        ]
+      },
     ]
   }
 ];

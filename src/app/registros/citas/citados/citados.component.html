@@ -125,12 +125,12 @@
           </td>
 
           <!-- Especialidad -->
-          <td class="oculto">
+          <td data-label="Especialidad:">
             {{ cita.especialidad | datosExtra: "especialidad" }}
           </td>
 
           <!-- Fecha y Agenda -->
-          <td class="oculto">
+          <td data-label="Fecha:">
             {{ cita.fecha_cita | date: "dd/MM/yyyy" }}
             <br />
             <small>{{ cita.datos_extra.razon_consulta }}</small>

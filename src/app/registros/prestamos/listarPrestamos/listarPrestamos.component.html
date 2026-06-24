@@ -122,14 +122,14 @@
           </td>
 
           <!-- Tipo Documento -->
-          <td class="oculto">
+          <td data-label="Tipo Documento">
             <span class="badge-doc">
               {{ p.tipo_documento || "EXPEDIENTE" }}
             </span>
           </td>
 
           <!-- Fechas -->
-          <td class="oculto">
+          <td data-label="Fechas">
             <div>
               <strong>Préstamo:</strong>
               {{ formatearFecha(p.fecha_prestamo) }}
@@ -148,7 +148,7 @@
           </td>
 
           <!-- Estado -->
-          <td class="oculto">
+          <td data-label="Estado">
             <span
               class="badge-estado"
               [class.badge-activo]="p.activo"

@@ -104,27 +104,27 @@
           class="aurora-table-row"
           [class.touch-active]="rowActiva === u.id"
         >
-          <td class="text-justify">
+          <td data-label="ID">
             {{ u.id }}
           </td>
-          <td>
+          <td data-label="Nombre">
             {{ u.nombre }}
           </td>
-          <td class="oculto">
+          <td class="oculto" data-label="Username">
             {{ u.username }}
           </td>
-          <td class="oculto">
+          <td class="oculto" data-label="Rol">
             {{ u.role }}
           </td>
-          <td class="oculto">
+          <td class="oculto" data-label="Email">
             {{ u.email }}
           </td>
-          <td class="oculto">
+          <td class="oculto" data-label="Estado">
             {{ u.estado }}
           </td>
 
           <!-- Acciones -->
-          <td class="secundario">
+          <td class="secundario" data-label="Acciones">
             <div class="botones-opt">
               <button (click)="editar(u.id); $event.stopPropagation()">
                 <span [innerHTML]="editIcon"></span>

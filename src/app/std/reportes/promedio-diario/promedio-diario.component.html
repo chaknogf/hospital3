@@ -1,0 +1,30 @@
+<div class="page-container">
+  <div class="page-header">
+    <button class="btn-back" routerLink="/reportes">← Volver</button>
+    <h1>{{ data?.titulo || 'Promedio Diario de Consultas' }}</h1>
+  </div>
+  <div class="filtros-bar">
+    <label>Desde: <input type="date" [(ngModel)]="desde" (change)="cargar()"></label>
+    <label>Hasta: <input type="date" [(ngModel)]="hasta" (change)="cargar()"></label>
+    <button class="btn-primary" (click)="cargar()">Actualizar</button>
+  </div>
+  <div *ngIf="cargando" class="state-box spinner"></div>
+  <div *ngIf="error" class="state-box error">{{ error }}</div>
+  <div *ngIf="!cargando && datos.length > 0">
+    <div class="total-badge">Total: {{ data?.total_general }} consultas</div>
+    <div class="table-wrap">
+      <table class="reporte-table">
+        <thead><tr><th>Especialidad</th><th class="text-right">Consultas</th><th class="text-right">Días</th><th class="text-right">Promedio/día</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let d of datos">
+            <td>{{ d.especialidad }}</td>
+            <td class="text-right">{{ d.total_consultas }}</td>
+            <td class="text-right">{{ d.dias_con_registros }}</td>
+            <td class="text-right">{{ d.promedio_diario }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="!cargando && !error && datos.length === 0" class="state-box">Sin datos para el rango seleccionado.</div>
+</div>

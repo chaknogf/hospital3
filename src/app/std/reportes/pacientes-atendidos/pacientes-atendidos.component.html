@@ -1,0 +1,73 @@
+<div class="page-container">
+  <div class="page-header">
+    <button class="btn-back" routerLink="/reportes">← Volver</button>
+    <h1>{{ data?.titulo || "Pacientes Atendidos" }}</h1>
+  </div>
+
+  <div class="filtros-bar">
+    <label
+      >Desde: <input type="date" [(ngModel)]="desde" (change)="cargar()"
+    /></label>
+    <label
+      >Hasta: <input type="date" [(ngModel)]="hasta" (change)="cargar()"
+    /></label>
+    <button class="btn-primary" (click)="cargar()">Actualizar</button>
+  </div>
+
+  <div *ngIf="cargando" class="state-box spinner"></div>
+  <div *ngIf="error" class="state-box error">{{ error }}</div>
+
+  <div *ngIf="!cargando && !error && rows.length === 0" class="state-box">
+    Sin datos para el rango seleccionado.
+  </div>
+
+  <div *ngIf="!cargando && rows.length > 0">
+    <div class="total-badge">Total general: {{ totalGeneral }} consultas</div>
+    <div class="table-wrap">
+      <table class="reporte-table pivot-table">
+        <thead>
+          <tr>
+            <th rowspan="2">Especialidad</th>
+            <th
+              *ngFor="let tc of tipoConsultas"
+              [attr.colspan]="3"
+              class="tc-header"
+            >
+              {{ tc }}
+            </th>
+            <th rowspan="2">Total</th>
+          </tr>
+          <tr>
+            <ng-container *ngFor="let tc of tipoConsultas">
+              <th class="sub-header">M</th>
+              <th class="sub-header">F</th>
+              <th class="sub-header">Sub</th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows" class="text-center">
+            <td class="esp-label">{{ row.especialidad }}</td>
+            <ng-container *ngFor="let t of row.tipos">
+              <td class="num text-center">{{ t.M }}</td>
+              <td class="num text-center">{{ t.F }}</td>
+              <td class="num total-sub text-center">{{ t.total }}</td>
+            </ng-container>
+            <td class="num total-row">{{ row.totalEspecialidad }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>Total</th>
+            <ng-container *ngFor="let t of totalesFila">
+              <th class="num">{{ t.M }}</th>
+              <th class="num">{{ t.F }}</th>
+              <th class="num total-sub">{{ t.total }}</th>
+            </ng-container>
+            <th class="num total-row">{{ totalGeneral }}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

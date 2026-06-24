@@ -1163,18 +1163,127 @@
 
 /* Para móviles responsive */
 @media (max-width: 768px) {
-  .dc-table {
-    font-size: 0.75rem;
+  .consultor-layout {
+    grid-template-columns: 1fr;
   }
 
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(300px, 85vw);
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    height: 100vh;
+  }
+
+  .sidebar.sidebar--open {
+    transform: translateX(0);
+  }
+
+  .sidebar-handle {
+    display: flex;
+  }
+
+  .sidebar-backdrop {
+    display: block;
+  }
+
+  .sidebar-backdrop--visible {
+    background: rgba(0, 0, 0, 0.6);
+    pointer-events: auto;
+  }
+
+  .fab-search {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .empty-hint-mobile {
+    display: block;
+  }
+
+  .dc-grid {
+    grid-template-columns: 1fr;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .dc-card {
+    flex: 1 1 100%;
+  }
+
+  .dc-card-cc {
+    flex: 1 1 100%;
+  }
+
+  .overlay {
+    padding-top: 20px;
+  }
+
+  .results-box {
+    width: 95%;
+    max-width: none;
+  }
+
+  .results-table {
+    font-size: 10px;
+  }
+  .results-table thead th,
+  .results-table tbody td {
+    padding: 6px 8px;
+  }
+
+  .hud-title {
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 10px;
+  }
+  .hud-id {
+    font-size: 12px;
+  }
+  .hud-actions {
+    gap: 4px;
+  }
+
+  .dc-table {
+    font-size: 0.65rem;
+  }
   .dc-table th,
   .dc-table td {
-    padding: 8px 10px;
+    padding: 4px 6px;
   }
-
   .dc-table td:first-child::before {
     content: "$";
-    font-size: 0.7rem;
+    font-size: 0.6rem;
+  }
+  .dc-table td:first-child,
+  .dc-table th:first-child {
+    padding-left: 14px;
+  }
+
+  .patient-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .patient-firstname {
+    font-size: 18px;
+  }
+  .patient-name {
+    font-size: 13px;
+  }
+
+  .consultas-card {
+    max-height: none;
+  }
+
+  .table-container {
+    overflow-x: auto;
   }
 }
 
@@ -1201,23 +1310,25 @@
 }
 
 @media (max-width: 480px) {
-  .patient-hero {
+  .hud-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 6px;
+    padding: 8px 12px;
   }
-
-  .hud-header {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
   .hud-actions {
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
-
-
+  .sidebar {
+    width: 100vw;
+  }
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+  .dc-field-full {
+    grid-column: 1;
+  }
 }
 
 .estado-pendiente {

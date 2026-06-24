@@ -22,7 +22,7 @@
     <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
       <!-- Campos -->
 
-      <div class="d-flex gap-1">
+      <div class="d-flex gap-1 flex-wrap">
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Expediente</label>
           <input
@@ -56,7 +56,7 @@
         </fieldset>
       </div>
 
-      <div class="d-flex gap-1">
+      <div class="d-flex gap-1 flex-wrap">
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Primer nombre</label>
           <input
@@ -103,7 +103,7 @@
       </div>
 
       <!-- Botones -->
-      <div class="d-flex gap-1">
+      <div class="d-flex gap-1 flex-wrap">
         <button class="button-filtros" type="submit" (click)="toggleFiltrar()">
           <span [innerHTML]="icons['search']"></span> Buscar
         </button>

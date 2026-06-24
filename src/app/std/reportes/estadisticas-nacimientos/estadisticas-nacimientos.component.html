@@ -1,0 +1,195 @@
+<div class="page-container">
+  <div class="page-header">
+    <button class="btn-back" routerLink="/reportes">← Volver</button>
+    <h1>{{ data?.titulo || 'Estadísticas de Nacimientos' }}</h1>
+  </div>
+  <div class="filtros-bar">
+    <label>Desde: <input type="date" [(ngModel)]="desde" (change)="cargar()"></label>
+    <label>Hasta: <input type="date" [(ngModel)]="hasta" (change)="cargar()"></label>
+    <button class="btn-primary" (click)="cargar()">Actualizar</button>
+  </div>
+  <div *ngIf="cargando" class="state-box spinner"></div>
+  <div *ngIf="error" class="state-box error">{{ error }}</div>
+
+  <div *ngIf="!cargando && data">
+    <div class="total-badge">Total de Nacimientos: {{ data.total }}</div>
+
+    <div class="section-card">
+      <h3 class="section-title">Por Sexo y Estado</h3>
+      <div class="table-wrap">
+        <table class="reporte-table pivot-table">
+          <thead>
+            <tr>
+              <th>Estado</th>
+              <th class="sub-header">M</th>
+              <th class="sub-header">F</th>
+              <th class="sub-header">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of sexoEstadoRows">
+              <td class="esp-label">{{ r.estado }}</td>
+              <td class="num">{{ r.M }}</td>
+              <td class="num">{{ r.F }}</td>
+              <td class="num total-row">{{ r.total }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>Total</th>
+              <th class="num">{{ sexoEstadoTotalM }}</th>
+              <th class="num">{{ sexoEstadoTotalF }}</th>
+              <th class="num total-row">{{ sexoEstadoTotalGeneral }}</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3 class="section-title">Por Clase de Parto</h3>
+      <div class="table-wrap">
+        <table class="reporte-table pivot-table">
+          <thead>
+            <tr>
+              <th rowspan="2">Clase</th>
+              <th [attr.colspan]="3" class="tc-header">Vivo</th>
+              <th [attr.colspan]="3" class="tc-header">Fallecido</th>
+              <th rowspan="2">Total</th>
+            </tr>
+            <tr>
+              <th class="sub-header">M</th>
+              <th class="sub-header">F</th>
+              <th class="sub-header">Sub</th>
+              <th class="sub-header">M</th>
+              <th class="sub-header">F</th>
+              <th class="sub-header">Sub</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of clasePartoRows">
+              <td class="esp-label">{{ r.clase }}</td>
+              <td class="num">{{ r.V.M }}</td>
+              <td class="num">{{ r.V.F }}</td>
+              <td class="num total-sub">{{ r.V.total }}</td>
+              <td class="num">{{ r.F.M }}</td>
+              <td class="num">{{ r.F.F }}</td>
+              <td class="num total-sub">{{ r.F.total }}</td>
+              <td class="num total-row">{{ r.total }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>Total</th>
+              <th class="num">{{ cpColV.M }}</th>
+              <th class="num">{{ cpColV.F }}</th>
+              <th class="num total-sub">{{ cpColV.total }}</th>
+              <th class="num">{{ cpColF.M }}</th>
+              <th class="num">{{ cpColF.F }}</th>
+              <th class="num total-sub">{{ cpColF.total }}</th>
+              <th class="num total-row">{{ cpTotalGeneral }}</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3 class="section-title">Por Clasificación de Parto</h3>
+      <div class="table-wrap">
+        <table class="reporte-table pivot-table">
+          <thead>
+            <tr>
+              <th rowspan="2">Clasificación</th>
+              <th [attr.colspan]="3" class="tc-header">Vivo</th>
+              <th [attr.colspan]="3" class="tc-header">Fallecido</th>
+              <th rowspan="2">Total</th>
+            </tr>
+            <tr>
+              <th class="sub-header">M</th>
+              <th class="sub-header">F</th>
+              <th class="sub-header">Sub</th>
+              <th class="sub-header">M</th>
+              <th class="sub-header">F</th>
+              <th class="sub-header">Sub</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of clasifRows">
+              <td class="esp-label">{{ r.clasif }}</td>
+              <td class="num">{{ r.V.M }}</td>
+              <td class="num">{{ r.V.F }}</td>
+              <td class="num total-sub">{{ r.V.total }}</td>
+              <td class="num">{{ r.F.M }}</td>
+              <td class="num">{{ r.F.F }}</td>
+              <td class="num total-sub">{{ r.F.total }}</td>
+              <td class="num total-row">{{ r.total }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>Total</th>
+              <th class="num">{{ clasifColV.M }}</th>
+              <th class="num">{{ clasifColV.F }}</th>
+              <th class="num total-sub">{{ clasifColV.total }}</th>
+              <th class="num">{{ clasifColF.M }}</th>
+              <th class="num">{{ clasifColF.F }}</th>
+              <th class="num total-sub">{{ clasifColF.total }}</th>
+              <th class="num total-row">{{ clasifTotalGeneral }}</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3 class="section-title">Por Trabajo de Parto</h3>
+      <div class="table-wrap">
+        <table class="reporte-table pivot-table">
+          <thead>
+            <tr>
+              <th rowspan="2">Trabajo</th>
+              <th [attr.colspan]="3" class="tc-header">Vivo</th>
+              <th [attr.colspan]="3" class="tc-header">Fallecido</th>
+              <th rowspan="2">Total</th>
+            </tr>
+            <tr>
+              <th class="sub-header">M</th>
+              <th class="sub-header">F</th>
+              <th class="sub-header">Sub</th>
+              <th class="sub-header">M</th>
+              <th class="sub-header">F</th>
+              <th class="sub-header">Sub</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of trabajoRows">
+              <td class="esp-label">{{ r.trabajo }}</td>
+              <td class="num">{{ r.V.M }}</td>
+              <td class="num">{{ r.V.F }}</td>
+              <td class="num total-sub">{{ r.V.total }}</td>
+              <td class="num">{{ r.F.M }}</td>
+              <td class="num">{{ r.F.F }}</td>
+              <td class="num total-sub">{{ r.F.total }}</td>
+              <td class="num total-row">{{ r.total }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>Total</th>
+              <th class="num">{{ trabajoColV.M }}</th>
+              <th class="num">{{ trabajoColV.F }}</th>
+              <th class="num total-sub">{{ trabajoColV.total }}</th>
+              <th class="num">{{ trabajoColF.M }}</th>
+              <th class="num">{{ trabajoColF.F }}</th>
+              <th class="num total-sub">{{ trabajoColF.total }}</th>
+              <th class="num total-row">{{ trabajoTotalGeneral }}</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!cargando && !error && !data" class="state-box">Sin datos disponibles.</div>
+</div>

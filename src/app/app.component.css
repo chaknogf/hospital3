@@ -1,16 +1,31 @@
 .sync-indicator {
   position: fixed;
-  bottom: 70px;
+  bottom: 75px;
   right: 20px;
   z-index: 9999;
-  background: #198754;
+  background: rgba(25, 135, 84, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: white;
-  padding: 8px 16px;
+  padding: 6px 10px;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 11px;
   display: flex;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+@keyframes sync-spin {
+  to { transform: rotate(360deg); }
+}
+.sync-indicator .sync-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: sync-spin 0.7s linear infinite;
 }
 .sync-button {
   position: fixed;

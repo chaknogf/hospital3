@@ -1,0 +1,32 @@
+<div class="page-container">
+  <div class="page-header">
+    <button class="btn-back" routerLink="/reportes">← Volver</button>
+    <h1>{{ data?.titulo || 'Personal del Hospital' }}</h1>
+  </div>
+  <div class="filtros-bar">
+    <label>Desde: <input type="date" [(ngModel)]="desde" (change)="cargar()"></label>
+    <label>Hasta: <input type="date" [(ngModel)]="hasta" (change)="cargar()"></label>
+    <button class="btn-primary" (click)="cargar()">Actualizar</button>
+  </div>
+  <div *ngIf="cargando" class="state-box spinner"></div>
+  <div *ngIf="error" class="state-box error">{{ error }}</div>
+  <div *ngIf="!cargando && datos.length > 0">
+    <div class="total-badge">Total: {{ data?.total_general }} registros</div>
+    <div class="table-wrap">
+      <table class="reporte-table">
+        <thead><tr><th>Expediente</th><th>Paciente</th><th>Especialidad</th><th>Tipo</th><th>Sexo</th><th>Edad</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let d of datos">
+            <td>{{ d.expediente || '-' }}</td>
+            <td>{{ d.nombre?.primer || d.nombre?.primer_nombre || d.nombre?.nombres || '—' }}</td>
+            <td>{{ d.especialidad }}</td>
+            <td>{{ d.tipo_consulta_nombre }}</td>
+            <td>{{ d.sexo || '-' }}</td>
+            <td>{{ d.edad ?? '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="!cargando && !error && datos.length === 0" class="state-box">Sin datos para el rango seleccionado.</div>
+</div>

@@ -482,6 +482,110 @@ export class ApiService {
     );
   }
 
+  // ======= ESTADÍSTICAS / REPORTES (back_sys/modules/estadisticas/) =======
+  getPacientesAtendidos(desde: string, hasta: string): Observable<any> {
+    this.isLoading.set(true);
+    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/pacientesAtendidos`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener pacientes atendidos'))
+    );
+  }
+
+  getHospitalizacionInfantil(desde: string, hasta: string): Observable<any> {
+    this.isLoading.set(true);
+    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/hospitalizacion-infantil`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener hospitalización infantil'))
+    );
+  }
+
+  getPromedioDiario(desde: string, hasta: string): Observable<any> {
+    this.isLoading.set(true);
+    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/promedioDiario`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener promedio diario'))
+    );
+  }
+
+  getPersonalHospital(desde: string, hasta: string): Observable<any> {
+    this.isLoading.set(true);
+    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/personal-hospital`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener personal hospital'))
+    );
+  }
+
+  getEstudiantePublico(desde: string, hasta: string): Observable<any> {
+    this.isLoading.set(true);
+    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/estudiante-publico`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener estudiante público'))
+    );
+  }
+
+  getReingresos(desde: string, hasta: string): Observable<any> {
+    this.isLoading.set(true);
+    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/reingresos`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener reingresos'))
+    );
+  }
+
+  getReingresosTipo3(skip = 0, limit = 50): Observable<any> {
+    this.isLoading.set(true);
+    const params = new HttpParams().set('skip', String(skip)).set('limit', String(limit));
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/reingresos-tipo3`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener reingresos tipo 3'))
+    );
+  }
+
+  getActivosMayores30Dias(skip = 0, limit = 50): Observable<any> {
+    this.isLoading.set(true);
+    const params = new HttpParams().set('skip', String(skip)).set('limit', String(limit));
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/activos-mayores-a-30-dias`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener activos >30 días'))
+    );
+  }
+
+  getEstadisticasNacimientos(desde: string, hasta: string): Observable<any> {
+    this.isLoading.set(true);
+    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/nacimientos`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener estadísticas de nacimientos'))
+    );
+  }
+
+  // ======= PROCEDIMIENTOS / REPORTES =======
+  getReporteProcedimientos(filtros: {
+    desde?: string; hasta?: string; especialidad?: string;
+    lugar_servicio?: string; sexo?: string;
+  }): Observable<any> {
+    this.isLoading.set(true);
+    const params = this.limpiarParametros(filtros);
+    return this.http.get<any>(`${this.baseUrl}/procedimientos/reporte`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener reporte de procedimientos'))
+    );
+  }
+
+  getResumenProcedimientos(filtros?: { anio?: number; mes?: number }): Observable<any> {
+    this.isLoading.set(true);
+    const params = this.limpiarParametros(filtros || {});
+    return this.http.get<any>(`${this.baseUrl}/procedimientos/estadisticas/resumen`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener resumen de procedimientos'))
+    );
+  }
+
   //======== MEDICOS =============
   getMedicos(filtros: any): Observable<Medico[]> {
     this.isLoading.set(true);

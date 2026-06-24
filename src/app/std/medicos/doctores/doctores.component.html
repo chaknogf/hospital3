@@ -22,7 +22,7 @@
   <!-- FILTROS -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
     <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
-      <div class="d-flex gap-1">
+      <div class="d-flex gap-1 flex-wrap">
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Nombre</label>
 
@@ -61,7 +61,7 @@
       </div>
 
       <!-- BOTONES -->
-      <div class="d-flex gap-1">
+      <div class="d-flex gap-1 flex-wrap">
         <button class="button-filtros" type="submit" (click)="toggleFiltrar()">
           <span [innerHTML]="icons['search']"></span>
           Buscar
