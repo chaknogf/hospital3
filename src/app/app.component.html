@@ -7,11 +7,24 @@
   <span class="star"></span>
 </section>
 
-<div class="sync-indicator" *ngIf="fullSync.isSyncing()">
-  <div class="sync-spinner"></div>
+<div class="sync-indicator"
+     *ngIf="fullSync.isSyncing() || fullSync.syncState() === 'paused'"
+     (click)="toggleSyncPause()"
+     [class.paused]="fullSync.syncState() === 'paused'"
+     [title]="fullSync.syncState() === 'paused' ? 'Reanudar sincronización' : 'Pausar sincronización'">
+
+  <ng-container [ngSwitch]="fullSync.syncState()">
+    <div class="sync-spinner" *ngSwitchCase="'syncing'"></div>
+    <i class="bi bi-play-fill sync-play-icon" *ngSwitchCase="'paused'"></i>
+    <div class="sync-spinner" *ngSwitchDefault></div>
+  </ng-container>
+
+  <span class="sync-label">{{ fullSync.syncProgress() }}</span>
+
+  <button class="sync-stop btn btn-sm p-0 ms-1" (click)="cancelSync($event)" title="Detener sincronización">&times;</button>
 </div>
 
-<button class="sync-button btn btn-sm" *ngIf="!fullSync.isSyncing() && estaAutenticado"
+<button class="sync-button btn btn-sm" *ngIf="!fullSync.isSyncing() && fullSync.syncState() === 'idle' && estaAutenticado"
         (click)="reSync()" title="Sincronizar datos offline">
   <i class="bi bi-arrow-repeat"></i>
 </button>

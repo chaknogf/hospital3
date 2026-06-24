@@ -18,10 +18,54 @@ export class FullSyncService {
   syncProgress = signal<string>('');
   lastSyncAt = signal<Date | null>(null);
   syncStats = signal<{ pacientes: number; detalles: number; consultas: number }>({ pacientes: 0, detalles: 0, consultas: 0 });
+  syncState = signal<'idle' | 'syncing' | 'paused'>('idle');
+
+  private cancelFlag = false;
+  private pausePromise: Promise<void> | null = null;
+  private pauseResolve: (() => void) | null = null;
 
   private readonly PAGE_SIZE = 100;
   private readonly CONCURRENCY = 5;
   private readonly FULL_DETAIL_THRESHOLD = 4000;
+
+  pause(): void {
+    if (this.syncState() === 'syncing') {
+      this.syncState.set('paused');
+      this.syncProgress.set('⏸ Sincronización pausada');
+      this.pausePromise = new Promise(resolve => {
+        this.pauseResolve = resolve;
+      });
+    }
+  }
+
+  resume(): void {
+    if (this.syncState() === 'paused') {
+      this.syncState.set('syncing');
+      this.syncProgress.set('Reanudando...');
+      this.pauseResolve?.();
+      this.pausePromise = null;
+      this.pauseResolve = null;
+    }
+  }
+
+  cancel(): void {
+    this.cancelFlag = true;
+    this.pauseResolve?.();
+    this.pausePromise = null;
+    this.pauseResolve = null;
+  }
+
+  private async checkPauseCancel(): Promise<void> {
+    if (this.cancelFlag) {
+      throw new Error('Sincronización cancelada por el usuario');
+    }
+    if (this.syncState() === 'paused' && this.pausePromise) {
+      await this.pausePromise;
+      if (this.cancelFlag) {
+        throw new Error('Sincronización cancelada por el usuario');
+      }
+    }
+  }
 
   // Tiempos de re-sincronización por tipo de dato
   private readonly TTL = {
@@ -38,6 +82,8 @@ export class FullSyncService {
 
   async syncAll(force: boolean = false): Promise<void> {
     if (this.isSyncing()) return;
+    this.cancelFlag = false;
+    this.syncState.set('syncing');
     this.isSyncing.set(true);
     this.syncStats.set({ pacientes: 0, detalles: 0, consultas: 0 });
     try {
@@ -57,12 +103,12 @@ export class FullSyncService {
         await this.syncPacientesResumen();
       }
 
-      if (syncDet) {
+      if (syncDet && !this.cancelFlag) {
         this.syncProgress.set('Descargando detalles completos de pacientes...');
         await this.syncPacientesDetalle();
       }
 
-      if (syncCon) {
+      if (syncCon && !this.cancelFlag) {
         this.syncProgress.set('Actualizando consultas...');
         await this.syncConsultas();
       }
@@ -75,10 +121,14 @@ export class FullSyncService {
       if (s.consultas) partes.push(`${s.consultas} consultas`);
       this.syncProgress.set(partes.length ? `Sincronizado: ${partes.join(' · ')}` : 'Sin cambios');
     } catch (err) {
-      console.error('Error en sincronización completa:', err);
-      this.syncProgress.set('Error en sincronización');
-      throw err;
+      if ((err as Error)?.message === 'Sincronización cancelada por el usuario') {
+        this.syncProgress.set('⏹ Sincronización cancelada');
+      } else {
+        console.error('Error en sincronización completa:', err);
+        this.syncProgress.set('Error en sincronización');
+      }
     } finally {
+      this.syncState.set('idle');
       this.isSyncing.set(false);
     }
   }
@@ -89,6 +139,8 @@ export class FullSyncService {
     let total = 0;
 
     do {
+      await this.checkPauseCancel();
+
       const params = new HttpParams()
         .set('skip', skip.toString())
         .set('limit', this.PAGE_SIZE.toString());
@@ -100,7 +152,7 @@ export class FullSyncService {
       if (total === 0) total = res.total;
       todos.push(...res.pacientes as any);
       skip += this.PAGE_SIZE;
-    } while (skip < total);
+    } while (skip < total && !this.cancelFlag);
 
     if (todos.length > 0) {
       await this.db.savePacientes(todos);
@@ -120,7 +172,8 @@ export class FullSyncService {
     if (ids.length === 0) return;
 
     let count = 0;
-    for (let i = 0; i < ids.length; i += this.CONCURRENCY) {
+    for (let i = 0; i < ids.length && !this.cancelFlag; i += this.CONCURRENCY) {
+      await this.checkPauseCancel();
       const batch = ids.slice(i, i + this.CONCURRENCY);
       const results = await Promise.allSettled(
         batch.map(id =>
@@ -155,6 +208,8 @@ export class FullSyncService {
     let total = 0;
 
     do {
+      await this.checkPauseCancel();
+
       const params = new HttpParams()
         .set('skip', skip.toString())
         .set('limit', this.PAGE_SIZE.toString());
@@ -166,7 +221,7 @@ export class FullSyncService {
       if (total === 0) total = res.total;
       todas.push(...res.consultas);
       skip += this.PAGE_SIZE;
-    } while (skip < total);
+    } while (skip < total && !this.cancelFlag);
 
     if (todas.length > 0) {
       await this.db.saveConsultas(todas);

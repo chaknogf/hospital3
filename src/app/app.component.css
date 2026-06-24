@@ -15,6 +15,52 @@
   gap: 4px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.sync-indicator:hover {
+  transform: scale(1.05);
+}
+.sync-indicator:active {
+  transform: scale(0.95);
+}
+.sync-indicator.paused {
+  background: rgba(255, 193, 7, 0.3);
+  border-color: rgba(255, 193, 7, 0.4);
+}
+.sync-indicator .sync-stop {
+  opacity: 0;
+  transition: opacity 0.15s;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.sync-indicator:hover .sync-stop {
+  opacity: 1;
+}
+.sync-indicator .sync-stop:hover {
+  color: #ff6b6b;
+  background: rgba(255,0,0,0.15);
+}
+.sync-indicator .sync-play-icon {
+  font-size: 14px;
+  color: rgba(255,255,255,0.9);
+}
+.sync-label {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 @keyframes sync-spin {
   to { transform: rotate(360deg); }
@@ -26,6 +72,7 @@
   border-top-color: white;
   border-radius: 50%;
   animation: sync-spin 0.7s linear infinite;
+  flex-shrink: 0;
 }
 .sync-button {
   position: fixed;

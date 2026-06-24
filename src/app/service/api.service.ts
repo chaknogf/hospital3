@@ -519,6 +519,13 @@ export class ApiService {
     );
   }
 
+  getPersonalHospitalPacientes(skip: number = 0, limit: number = 100): Observable<PacienteListResponse> {
+    const params = new HttpParams().set('skip', skip.toString()).set('limit', limit.toString());
+    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/personal-hospital`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'obtener lista personal hospital'))
+    );
+  }
+
   getEstudiantePublico(desde: string, hasta: string): Observable<any> {
     this.isLoading.set(true);
     const params = new HttpParams().set('desde', desde).set('hasta', hasta);

@@ -1,0 +1,52 @@
+<div class="page-container">
+  <div class="page-header">
+    <button class="btn-back" routerLink="/estadistica">← Volver</button>
+    <h1>Personal del Hospital</h1>
+  </div>
+
+  <div *ngIf="cargando" class="state-box spinner"></div>
+  <div *ngIf="error" class="state-box error">{{ error }}</div>
+
+  <div *ngIf="!cargando && !error">
+    <div class="total-badge">Total: {{ total }} registros</div>
+
+    <div class="table-wrap" *ngIf="pacientes.length > 0">
+      <table class="reporte-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Expediente</th>
+            <th>Nombre</th>
+            <th>Sexo</th>
+            <th>Fecha Nacimiento</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of pacientes; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ p.expediente || '-' }}</td>
+            <td class="text-left">{{ p.nombre_completo || '—' }}</td>
+            <td>{{ p.sexo || '-' }}</td>
+            <td>{{ p.fecha_nacimiento ? (p.fecha_nacimiento | date:'dd/MM/yyyy') : '-' }}</td>
+            <td>
+              <span class="badge-estado" [class.activo]="p.estado === 'V'" [class.inactivo]="p.estado !== 'V'">
+                {{ p.estado === 'V' ? 'Vivo' : p.estado === 'F' ? 'Fallecido' : 'Inactivo' }}
+              </span>
+            </td>
+            <td data-label="Detalle">
+              <a class="btn-detail" [routerLink]="['/detallePaciente', p.id]" title="Ver detalle del paciente">
+                <i class="bi bi-person-lines-fill"></i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="pacientes.length === 0" class="state-box">
+      No se encontró personal del hospital registrado.
+    </div>
+  </div>
+</div>

@@ -97,4 +97,18 @@ export class AppComponent implements OnInit {
     });
   }
 
+  toggleSyncPause(): void {
+    const state = this.fullSync.syncState();
+    if (state === 'syncing') {
+      this.fullSync.pause();
+    } else if (state === 'paused') {
+      this.fullSync.resume();
+    }
+  }
+
+  cancelSync(event: MouseEvent): void {
+    event.stopPropagation();
+    this.fullSync.cancel();
+  }
+
 }
