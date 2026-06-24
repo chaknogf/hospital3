@@ -111,8 +111,17 @@
         </div>
 
         <div class="dc-field">
+          <span class="dc-lbl">DPI-CUI</span>
+          <span class="dc-val">{{ paciente.cui | cui }}</span>
+        </div>
+
+        <div class="dc-field">
           <span class="dc-lbl">ID alterno</span>
           <span class="dc-val">{{ paciente.datos_extra?.personaid }}</span>
+        </div>
+        <div class="dc-field">
+          <span class="dc-lbl">Expediente</span>
+          <span class="dc-val">{{ paciente.expediente }}</span>
         </div>
       </div>
     </div>
