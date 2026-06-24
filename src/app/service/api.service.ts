@@ -519,8 +519,23 @@ export class ApiService {
     );
   }
 
-  getPersonalHospitalPacientes(skip: number = 0, limit: number = 100): Observable<PacienteListResponse> {
-    const params = new HttpParams().set('skip', skip.toString()).set('limit', limit.toString());
+  getPersonalHospitalPacientes(filtros: {
+    skip?: number;
+    limit?: number;
+    expediente?: string | null;
+    cui?: string | null;
+    primer_nombre?: string | null;
+    segundo_nombre?: string | null;
+    primer_apellido?: string | null;
+    segundo_apellido?: string | null;
+  } = {}): Observable<PacienteListResponse> {
+    const { skip = 0, limit = 50, ...rest } = filtros;
+    let params = new HttpParams().set('skip', skip.toString()).set('limit', limit.toString());
+    for (const [key, value] of Object.entries(rest)) {
+      if (value != null && value !== '') {
+        params = params.set(key, value);
+      }
+    }
     return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/personal-hospital`, { params }).pipe(
       catchError(error => this.manejarError(error, 'obtener lista personal hospital'))
     );

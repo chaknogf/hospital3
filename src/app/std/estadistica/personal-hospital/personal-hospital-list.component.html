@@ -4,11 +4,49 @@
     <h1>Personal del Hospital</h1>
   </div>
 
+  <!-- ── BARRA DE BÚSQUEDA ── -->
+  <div class="filter-row">
+    <div class="field">
+      <label class="field-label">Expediente</label>
+      <input class="field-input" type="text" [(ngModel)]="filtros.expediente"
+        (keyup.enter)="buscar()" placeholder="Ej: EXP-000001" />
+    </div>
+    <div class="field">
+      <label class="field-label">CUI</label>
+      <input class="field-input" type="text" [(ngModel)]="filtros.cui"
+        (keyup.enter)="buscar()" placeholder="Ej: 1234567890101" />
+    </div>
+    <div class="field">
+      <label class="field-label">Primer nombre</label>
+      <input class="field-input" type="text" [(ngModel)]="filtros.primer_nombre"
+        (keyup.enter)="buscar()" placeholder="Ej: Juan" />
+    </div>
+    <div class="field">
+      <label class="field-label">Segundo nombre</label>
+      <input class="field-input" type="text" [(ngModel)]="filtros.segundo_nombre"
+        (keyup.enter)="buscar()" placeholder="Ej: Alberto" />
+    </div>
+    <div class="field">
+      <label class="field-label">Primer apellido</label>
+      <input class="field-input" type="text" [(ngModel)]="filtros.primer_apellido"
+        (keyup.enter)="buscar()" placeholder="Ej: Pérez" />
+    </div>
+    <div class="field">
+      <label class="field-label">Segundo apellido</label>
+      <input class="field-input" type="text" [(ngModel)]="filtros.segundo_apellido"
+        (keyup.enter)="buscar()" placeholder="Ej: López" />
+    </div>
+    <div class="field-actions">
+      <button class="btn-search" (click)="buscar()">Buscar</button>
+      <button class="btn-clear" (click)="limpiarFiltros()">Limpiar</button>
+    </div>
+  </div>
+
   <div *ngIf="cargando" class="state-box spinner"></div>
   <div *ngIf="error" class="state-box error">{{ error }}</div>
 
   <div *ngIf="!cargando && !error">
-    <div class="total-badge">Total: {{ total }} registros</div>
+    <div class="total-badge">Total: {{ totalDeRegistros }} registros</div>
 
     <div class="table-wrap" *ngIf="pacientes.length > 0">
       <table class="reporte-table">
@@ -25,7 +63,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let p of pacientes; let i = index">
-            <td>{{ i + 1 }}</td>
+            <td>{{ i + 1 + (paginaActual - 1) * pageSize }}</td>
             <td>{{ p.expediente || '-' }}</td>
             <td class="text-left">{{ p.nombre_completo || '—' }}</td>
             <td>{{ p.sexo || '-' }}</td>
@@ -47,6 +85,30 @@
 
     <div *ngIf="pacientes.length === 0" class="state-box">
       No se encontró personal del hospital registrado.
+    </div>
+
+    <!-- ── PAGINADOR ── -->
+    <div class="paginador">
+      <button class="pag-btn" [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">‹</button>
+
+      <button class="pag-num" *ngIf="paginas[0] > 1" (click)="irAPagina(1)">1</button>
+      <span class="pag-ellipsis" *ngIf="paginas[0] > 2">…</span>
+
+      <button *ngFor="let p of paginas" class="pag-num"
+        [class.pag-num-active]="p === paginaActual" (click)="irAPagina(p)">
+        {{ p }}
+      </button>
+
+      <span class="pag-ellipsis" *ngIf="paginas[paginas.length - 1] < totalPaginas - 1">…</span>
+      <button class="pag-num" *ngIf="paginas[paginas.length - 1] < totalPaginas"
+        (click)="irAPagina(totalPaginas)">{{ totalPaginas }}</button>
+
+      <button class="pag-btn" [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">›</button>
+
+      <span class="pag-info">
+        Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+        {{ totalDeRegistros }} registros
+      </span>
     </div>
   </div>
 </div>
