@@ -3,6 +3,11 @@
   background: rgba(1, 12, 30, 0.76);
 }
 
+.paciente-personal-hospital {
+  outline: 2px solid #f97316 !important;
+  outline-offset: -2px;
+}
+
 
 /* ── DIALOG RESET ── */
 .cosmos-dialog {

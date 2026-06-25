@@ -24,14 +24,14 @@
         <tbody>
           <tr *ngFor="let d of datos">
             <td>{{ d.paciente_id }}</td>
-            <td class="text-left">{{ d.paciente?.nombre_completo }}</td>
-            <td>{{ d.paciente?.sexo || "—" }}</td>
+            <td class="text-left">{{ d.paciente.nombre_completo }}</td>
+            <td>{{ d.paciente.sexo || "—" }}</td>
             <td>{{ d.especialidad || "—" }}</td>
             <td>{{ d.fecha_consulta || "—" }}</td>
             <td>{{ d.hora_consulta?.slice(0, 5) || "—" }}</td>
             <td>
               {{ d.documento || "-" }} <br />
-              {{ d.expediente || d.paciente?.expediente || "—" }}
+              {{ d.expediente || d.paciente.expediente || "—" }}
             </td>
             <td>
               <span class="estado-badge" [class.activo]="d.activo">{{

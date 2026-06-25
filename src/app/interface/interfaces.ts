@@ -118,6 +118,7 @@ export interface Paciente {
   creado_en?: string | null;
   actualizado_en?: string | null;
   defuncion?: string;
+  personal_hospital?: 'S' | 'N' | null;
 }
 
 export interface PacienteResumen {

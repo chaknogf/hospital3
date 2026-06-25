@@ -177,13 +177,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="let paciente of pacientes"
-          class="aurora-table-row"
-          [class.touch-active]="rowActiva === paciente.id"
-          [class.paciente-fallecido]="paciente.estado === 'F'"
-          (click)="activarFila(paciente.id)"
-        >
+          <tr
+            *ngFor="let paciente of pacientes"
+            class="aurora-table-row"
+            [class.touch-active]="rowActiva === paciente.id"
+            [class.paciente-fallecido]="paciente.estado === 'F'"
+            [class.paciente-personal-hospital]="paciente.personal_hospital === 'S'"
+            (click)="activarFila(paciente.id)"
+          >
           <td data-label="Nombre:">
             <div class="nombre-table">
               <p class="">
