@@ -87,9 +87,11 @@
           <input
             type="text"
             class="input-filtros"
-            [(ngModel)]="filtros.expediente"
+            [ngModel]="filtros.expediente"
+            (ngModelChange)="filtros.expediente = $event.toUpperCase()"
             name="expediente"
             placeholder="Ej: HGT-000123"
+            style="text-transform: uppercase"
           />
         </fieldset>
 

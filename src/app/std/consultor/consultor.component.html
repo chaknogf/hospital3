@@ -36,8 +36,10 @@
         <input
           type="text"
           name="expediente"
-          [(ngModel)]="filtros.expediente"
+          [ngModel]="filtros.expediente"
+          (ngModelChange)="filtros.expediente = $event.toUpperCase()"
           placeholder="26A-33"
+          style="text-transform: uppercase"
         />
       </div>
       <div class="field-group">
@@ -54,8 +56,10 @@
         <input
           type="text"
           name="documento"
-          [(ngModel)]="filtros.documento"
+          [ngModel]="filtros.documento"
+          (ngModelChange)="filtros.documento = $event.toUpperCase()"
           placeholder="09-E26"
+          style="text-transform: uppercase"
         />
       </div>
       <div class="sidebar-divider"></div>

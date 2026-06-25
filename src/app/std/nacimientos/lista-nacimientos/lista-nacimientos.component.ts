@@ -6,6 +6,8 @@ import * as XLSX from 'xlsx';
 import { NacimientoOut, NacimientoCreate, NeonatalesPayload, PacienteResumen } from '../../../interface/nacimientos';
 import { NacimientosService } from '../nacimientos.service';
 import { ApiService } from '../../../service/api.service';
+import { PacienteService } from '../../../registros/patient/paciente.service';
+import { Paciente } from '../../../interface/interfaces';
 import { DatosExtraPipe } from 'app/pipes/datos-extra.pipe';
 import { LibrasOnzasPipe } from 'app/pipes/librasOnza.pipe';
 
@@ -24,6 +26,7 @@ export class ListaNacimientosComponent implements OnInit {
   private api = inject(NacimientosService);
   private router = inject(Router);
   private authApi = inject(ApiService);
+  private pacienteApi = inject(PacienteService);
 
   get esAdmin(): boolean {
     return this.authApi.role() === 'admin';
@@ -59,6 +62,11 @@ export class ListaNacimientosComponent implements OnInit {
   pacienteInfo: PacienteResumen | null = null;
   nombreMadre: string | null = null;
   nacimientoId: number | null = null;
+
+  // Paciente detail modal
+  mostrarPacienteModal = signal(false);
+  pacienteDetalle = signal<Paciente | null>(null);
+  cargandoPaciente = signal(false);
 
   modelo: NacimientoCreate = {
     paciente_id: null,
@@ -297,6 +305,62 @@ export class ListaNacimientosComponent implements OnInit {
     this.filtros.skip = (pagina - 1) * this.pageSize;
     this.filtros.limit = this.pageSize;
     this.cargarNacimientos();
+  }
+
+  verPaciente(id: number | null | undefined): void {
+    if (!id) return;
+    this.cargandoPaciente.set(true);
+    this.mostrarPacienteModal.set(true);
+    this.pacienteDetalle.set(null);
+    this.pacienteApi.getPaciente(id).subscribe({
+      next: p => {
+        this.pacienteDetalle.set(p);
+        this.cargandoPaciente.set(false);
+      },
+      error: () => {
+        this.cargandoPaciente.set(false);
+      }
+    });
+  }
+
+  cerrarPacienteModal(): void {
+    this.mostrarPacienteModal.set(false);
+    this.pacienteDetalle.set(null);
+  }
+
+  filtrarDatosExtra(obj: Record<string, any> | null | undefined): { key: string; valor: any }[] {
+    if (!obj) return [];
+    return Object.entries(obj)
+      .filter(([, valor]) => valor !== null && valor !== undefined && valor !== '' && valor !== 0)
+      .map(([key, valor]) => ({ key, valor }));
+  }
+
+  convertirClave(key: string): string {
+    const mapa: Record<string, string> = {
+      idioma: 'Idioma',
+      pueblo: 'Pueblo',
+      nacionalidad: 'Nacionalidad',
+      lugar_nacimiento: 'Lugar de nacimiento',
+      departamento_nacimiento: 'Departamento de nacimiento',
+      vecindad: 'Vecindad',
+      estado_civil: 'Estado civil',
+      ocupacion: 'Ocupación',
+      educacion: 'Nivel educativo',
+      estudiante_publico: 'Estudiante público',
+      personal_hospital: 'Personal del hospital',
+      discapacidad: 'Discapacidad',
+      peso_nacimiento: 'Peso al nacimiento',
+      edad_gestacional: 'Edad gestacional',
+      tipo_parto: 'Tipo de parto',
+      clase_parto: 'Clase de parto',
+      gemelo: 'Gemelo',
+      hora_nacimiento: 'Hora de nacimiento',
+      extrahospitalario: 'Extrahospitalario',
+      expediente_madre: 'Expediente madre',
+      personaid: 'ID Persona',
+      defuncion: 'Defunción',
+    };
+    return mapa[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   }
 
   sexoLabel(s: string | null | undefined): string {

@@ -137,7 +137,7 @@
             <td>
               <small>{{ n.id }}</small>
             </td>
-            <td>{{ n.paciente?.expediente || n.expediente || "—" }}</td>
+            <td class="exp-clickable" (click)="verPaciente(n.paciente?.id); $event.stopPropagation()">{{ n.paciente?.expediente || n.expediente || "—" }}</td>
             <td>
               {{ n.paciente?.nombre_completo || n.nombre_completo || "—" }}
             </td>
@@ -427,6 +427,166 @@
             }
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (mostrarPacienteModal()) {
+  <div class="modal-overlay" (click)="cerrarPacienteModal()">
+    <div class="modal-card modal-card-lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title">Resumen del Paciente</span>
+        <button class="modal-close" (click)="cerrarPacienteModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        @if (cargandoPaciente()) {
+          <div class="loading-state">
+            <span class="spinner"></span>
+            Cargando paciente...
+          </div>
+        } @else if (pacienteDetalle(); as p) {
+          <!-- Información básica -->
+          <div class="patient-summary-hero">
+            <div class="ps-name">{{ p.nombre_completo || "—" }}</div>
+            <div class="ps-badges">
+              <span class="ps-badge ps-badge-sexo" [class.ps-m]="p.sexo === 'M'" [class.ps-f]="p.sexo === 'F'">
+                {{ p.sexo === "M" ? "Masculino" : p.sexo === "F" ? "Femenino" : "—" }}
+              </span>
+              <span class="ps-badge ps-badge-estado" [class.ps-vivo]="p.estado === 'V'" [class.ps-fallecido]="p.estado === 'F'">
+                {{ p.estado === "V" ? "Vivo" : p.estado === "F" ? "Fallecido" : "Inactivo" }}
+              </span>
+            </div>
+          </div>
+
+          <div class="ps-grid">
+            <div class="ps-field">
+              <span class="ps-lbl">Expediente</span>
+              <span class="ps-val">{{ p.expediente || "—" }}</span>
+            </div>
+            <div class="ps-field">
+              <span class="ps-lbl">CUI</span>
+              <span class="ps-val">{{ p.cui | datosExtra: "cui" }}</span>
+            </div>
+            <div class="ps-field">
+              <span class="ps-lbl">Fecha nacimiento</span>
+              <span class="ps-val">{{ p.fecha_nacimiento | date: "dd-MM-yyyy" }}</span>
+            </div>
+            <div class="ps-field">
+              <span class="ps-lbl">ID</span>
+              <span class="ps-val">{{ p.id }}</span>
+            </div>
+            <div class="ps-field">
+              <span class="ps-lbl">Pasaporte</span>
+              <span class="ps-val">{{ p.pasaporte || "—" }}</span>
+            </div>
+            @if (p.datos_extra?.personaid) {
+              <div class="ps-field">
+                <span class="ps-lbl">ID Persona</span>
+                <span class="ps-val">{{ p.datos_extra?.personaid }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Demográficos -->
+          @let demograficos = filtrarDatosExtra(p.datos_extra?.demograficos);
+          @if (demograficos.length > 0) {
+            <div class="ps-section">
+              <h4 class="ps-section-title">Demográficos</h4>
+              <div class="ps-grid">
+                @for (d of demograficos; track d.key) {
+                  <div class="ps-field">
+                    <span class="ps-lbl">{{ convertirClave(d.key) }}</span>
+                    <span class="ps-val">{{ d.valor | datosExtra: d.key }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Socioeconómicos -->
+          @let socioeconomicos = filtrarDatosExtra(p.datos_extra?.socioeconomicos);
+          @if (socioeconomicos.length > 0) {
+            <div class="ps-section">
+              <h4 class="ps-section-title">Socioeconómicos</h4>
+              <div class="ps-grid">
+                @for (d of socioeconomicos; track d.key) {
+                  <div class="ps-field">
+                    <span class="ps-lbl">{{ convertirClave(d.key) }}</span>
+                    <span class="ps-val">{{ d.valor | datosExtra: d.key }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Neonatales -->
+          @let neonatales = filtrarDatosExtra(p.datos_extra?.neonatales);
+          @if (neonatales.length > 0) {
+            <div class="ps-section">
+              <h4 class="ps-section-title">Neonatales</h4>
+              <div class="ps-grid">
+                @for (d of neonatales; track d.key) {
+                  <div class="ps-field">
+                    <span class="ps-lbl">{{ convertirClave(d.key) }}</span>
+                    <span class="ps-val">{{ d.valor | datosExtra: d.key }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Contacto -->
+          @if (p.contacto) {
+            <div class="ps-section">
+              <h4 class="ps-section-title">Contacto</h4>
+              <div class="ps-grid">
+                @if (p.contacto.domicilio) {
+                  <div class="ps-field ps-field-full">
+                    <span class="ps-lbl">Dirección</span>
+                    <span class="ps-val">{{ p.contacto.domicilio }}</span>
+                  </div>
+                }
+                @if (p.contacto.municipio) {
+                  <div class="ps-field">
+                    <span class="ps-lbl">Municipio</span>
+                    <span class="ps-val">{{ p.contacto.municipio | datosExtra: "municipio" }}</span>
+                  </div>
+                }
+                @if (p.contacto.telefonos) {
+                  <div class="ps-field">
+                    <span class="ps-lbl">Teléfono</span>
+                    <span class="ps-val">{{ p.contacto.telefonos }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Referencias -->
+          @if (p.referencias && p.referencias.length > 0) {
+            <div class="ps-section">
+              <h4 class="ps-section-title">Referencias ({{ p.referencias.length }})</h4>
+              <div class="ps-ref-list">
+                @for (ref of p.referencias; track ref.nombre) {
+                  <div class="ps-ref-item">
+                    <span class="ps-ref-name">{{ ref.nombre }}</span>
+                    @if (ref.parentesco) {
+                      <span class="ps-ref-detail">{{ ref.parentesco }}</span>
+                    }
+                    @if (ref.telefono) {
+                      <span class="ps-ref-detail">Tel: {{ ref.telefono }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <div class="form-actions">
+            <button class="btn btn-secondary" type="button" (click)="cerrarPacienteModal()">Cerrar</button>
+          </div>
+        }
       </div>
     </div>
   </div>

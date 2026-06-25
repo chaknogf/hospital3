@@ -38,13 +38,15 @@
     </div>
 
     <div class="filter-group">
-      <label>Expediente</label>
-      <input
-        type="text"
-        [(ngModel)]="filtros.expediente"
-        name="expediente"
-        placeholder="No. Expediente"
-      />
+        <label>Expediente</label>
+        <input
+          type="text"
+          [ngModel]="filtros.expediente"
+          (ngModelChange)="filtros.expediente = $event.toUpperCase()"
+          name="expediente"
+          placeholder="No. Expediente"
+          style="text-transform: uppercase"
+        />
     </div>
 
     <div class="filter-group">

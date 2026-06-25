@@ -28,9 +28,11 @@
           <input
             type="text"
             class="input-filtros"
-            [(ngModel)]="filtros.expediente"
+            [ngModel]="filtros.expediente"
+            (ngModelChange)="filtros.expediente = $event.toUpperCase()"
             name="expediente"
             placeholder="E26-003"
+            style="text-transform: uppercase"
           />
         </fieldset>
 
@@ -39,9 +41,11 @@
           <input
             type="text"
             class="input-filtros"
-            [(ngModel)]="filtros.documento"
+            [ngModel]="filtros.documento"
+            (ngModelChange)="filtros.documento = $event.toUpperCase()"
             name="documento"
             placeholder="E26-003"
+            style="text-transform: uppercase"
           />
         </fieldset>
 
