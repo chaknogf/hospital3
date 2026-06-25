@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 interface ReporteOption {
@@ -16,6 +16,7 @@ interface ReporteOption {
   styleUrls: ['./reportes.component.css']
 })
 export class ReportesComponent {
+  private router = inject(Router);
   reportes: ReporteOption[] = [
     { ruta: '/reportes/pacientes-atendidos', icono: '📊', nombre: 'Pacientes Atendidos', descripcion: 'Por tipo consulta, especialidad y sexo' },
     { ruta: '/reportes/hospitalizacion-infantil', icono: '👶', nombre: 'Hospitalización Infantil', descripcion: '>28 días y <5 años por especialidad' },
@@ -29,4 +30,8 @@ export class ReportesComponent {
     { ruta: '/reportes/reporte-procedimientos', icono: '🔧', nombre: 'Reporte Procedimientos', descripcion: 'Procedimientos agrupados' },
     { ruta: '/reportes/resumen-procedimientos', icono: '📈', nombre: 'Resumen Procedimientos', descripcion: 'Resumen anual/mensual de procedimientos' },
   ];
+
+  regresar(): void {
+    this.router.navigate(['/dash']);
+  }
 }

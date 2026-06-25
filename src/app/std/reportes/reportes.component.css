@@ -73,6 +73,21 @@
   overflow-x: auto;
 }
 
+.btn-regresar {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 4px 12px;
+  margin: 8px 20px 0 auto;
+  display: block;
+  transition: color 0.15s;
+}
+.btn-regresar:hover {
+  color: #60a5fa;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .reportes-shell {

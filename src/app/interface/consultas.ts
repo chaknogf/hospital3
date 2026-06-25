@@ -187,8 +187,8 @@ export interface ConsultaOut {
   ciclo?: CicloClinico[];
   orden?: number;
   ultimo_estado?: string;
+  activo?: boolean;
   egreso?: Egreso;
-
 
 }
 // Para respuestas de listas con paginación

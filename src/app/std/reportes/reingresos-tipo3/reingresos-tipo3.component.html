@@ -9,17 +9,60 @@
     <div class="total-badge">Total: {{ total }} registros</div>
     <div class="table-wrap">
       <table class="reporte-table">
-        <thead><tr><th>Paciente</th><th>Especialidad</th><th>Fecha</th><th>Documento</th></tr></thead>
+        <thead>
+          <tr>
+            <th>IdPaciente</th>
+            <th>Paciente</th>
+            <th>Sexo</th>
+            <th>Especialidad</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Documento Expediente</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
         <tbody>
           <tr *ngFor="let d of datos">
-            <td>{{ d.paciente?.nombre?.primer || d.paciente_nombre || '—' }}</td>
-            <td>{{ d.especialidad }}</td>
-            <td>{{ d.fecha_consulta }}</td>
-            <td>{{ d.documento || '-' }}</td>
+            <td>{{ d.paciente_id }}</td>
+            <td class="text-left">{{ d.paciente?.nombre_completo }}</td>
+            <td>{{ d.paciente?.sexo || "—" }}</td>
+            <td>{{ d.especialidad || "—" }}</td>
+            <td>{{ d.fecha_consulta || "—" }}</td>
+            <td>{{ d.hora_consulta?.slice(0, 5) || "—" }}</td>
+            <td>
+              {{ d.documento || "-" }} <br />
+              {{ d.expediente || d.paciente?.expediente || "—" }}
+            </td>
+            <td>
+              <span class="estado-badge" [class.activo]="d.activo">{{
+                d.ultimo_estado || (d.activo ? "Activo" : "Inactivo")
+              }}</span>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
+    <div class="paginacion">
+      <button
+        class="btn-page"
+        (click)="paginaAnterior()"
+        [disabled]="skip === 0"
+      >
+        ← Anterior
+      </button>
+      <span class="page-info"
+        >Página {{ paginaActual }} de {{ totalPaginas }}</span
+      >
+      <button
+        class="btn-page"
+        (click)="paginaSiguiente()"
+        [disabled]="skip + limit >= total"
+      >
+        Siguiente →
+      </button>
+    </div>
   </div>
-  <div *ngIf="!cargando && !error && datos.length === 0" class="state-box">Sin datos disponibles.</div>
+  <div *ngIf="!cargando && !error && datos.length === 0" class="state-box">
+    Sin datos disponibles.
+  </div>
 </div>

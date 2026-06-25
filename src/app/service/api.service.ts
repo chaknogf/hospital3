@@ -559,10 +559,10 @@ export class ApiService {
     );
   }
 
-  getReingresosTipo3(skip = 0, limit = 50): Observable<any> {
+  getReingresosTipo3(skip = 0, limit = 50): Observable<ConsultaListResponse> {
     this.isLoading.set(true);
     const params = new HttpParams().set('skip', String(skip)).set('limit', String(limit));
-    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/reingresos-tipo3`, { params }).pipe(
+    return this.http.get<ConsultaListResponse>(`${this.baseUrl}/estadisticas/consultas/reingresos-tipo3`, { params }).pipe(
       finalize(() => this.isLoading.set(false)),
       catchError(error => this.manejarError(error, 'obtener reingresos tipo 3'))
     );
