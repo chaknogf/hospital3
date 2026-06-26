@@ -69,11 +69,19 @@
             </div>
             <div class="detail-row">
               <span class="detail-label">Expediente</span>
-              <span class="detail-value">{{ c.expediente || "—" }}</span>
+              <span class="detail-value">{{
+                c.expediente || c.paciente.expediente
+              }}</span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Paciente</span>
-              <!-- <span class="detail-value">{{ c.paciente?.nombre_completo || '—' }}</span> -->
+              <span class="detail-value"
+                >{{ c.paciente.nombre.primer_nombre }}
+                {{ c.paciente.nombre.segundo_nombre }}
+                {{ c.paciente.nombre.otro_nombre }}
+                {{ c.paciente.nombre.primer_apellido }}
+                {{ c.paciente.nombre.segundo_apellido }}</span
+              >
             </div>
             <div class="detail-row">
               <span class="detail-label">Especialidad</span>

@@ -31,7 +31,7 @@
             <td>{{ d.hora_consulta?.slice(0, 5) || "—" }}</td>
             <td>
               {{ d.documento || "-" }} <br />
-              {{ d.expediente || d.paciente.expediente || "—" }}
+              {{ d.expediente || d.paciente.expediente }}
             </td>
             <td>
               <span class="estado-badge" [class.activo]="d.activo">{{

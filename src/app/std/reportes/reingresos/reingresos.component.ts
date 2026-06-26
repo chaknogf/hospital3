@@ -15,6 +15,7 @@ export class ReingresosComponent implements OnInit {
   data: any = null;
   datos: any[] = [];
   resumen: any = {};
+  porEspecialidad: any[] = [];
   cargando = false;
   error: string | null = null;
   desde = '';
@@ -28,10 +29,14 @@ export class ReingresosComponent implements OnInit {
     this.cargar();
   }
 
+  sum(key: string): number {
+    return this.porEspecialidad.reduce((acc: number, e: any) => acc + (e[key] || 0), 0);
+  }
+
   cargar(): void {
     this.cargando = true; this.error = null;
     this.api.getReingresos(this.desde, this.hasta).subscribe({
-      next: (res) => { this.data = res; this.datos = res.datos || []; this.resumen = res.resumen || {}; this.cargando = false; },
+      next: (res) => { this.data = res; this.datos = res.datos || []; this.resumen = res.resumen || {}; this.porEspecialidad = res.por_especialidad || []; this.cargando = false; },
       error: () => { this.error = 'Error al cargar datos'; this.cargando = false; }
     });
   }

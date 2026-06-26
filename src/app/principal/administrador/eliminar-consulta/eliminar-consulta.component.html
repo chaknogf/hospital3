@@ -5,9 +5,14 @@
 <div class="action-dock">
   <span class="dock-hint">Eliminar consulta permanentemente</span>
 
-  <button class="btn btn-danger" (click)="eliminar()"
-    [disabled]="isLoading() || !consultaDetail() || confirmText() !== 'confirmar'">
-    {{ isLoading() ? 'Eliminando...' : 'Eliminar' }}
+  <button
+    class="btn btn-danger"
+    (click)="eliminar()"
+    [disabled]="
+      isLoading() || !consultaDetail() || confirmText() !== 'confirmar'
+    "
+  >
+    {{ isLoading() ? "Eliminando..." : "Eliminar" }}
   </button>
 
   <button class="btn" (click)="volver()">Cancelar</button>
@@ -41,8 +46,12 @@
             />
           </div>
 
-          <button class="btn-add" (click)="cargar()" [disabled]="!consultaId() || loadingDetail()">
-            {{ loadingDetail() ? 'Cargando...' : 'Cargar datos' }}
+          <button
+            class="btn-add"
+            (click)="cargar()"
+            [disabled]="!consultaId() || loadingDetail()"
+          >
+            {{ loadingDetail() ? "Cargando..." : "Cargar datos" }}
           </button>
         </div>
       </div>
@@ -60,27 +69,35 @@
             </div>
             <div class="detail-row">
               <span class="detail-label">Expediente</span>
-              <span class="detail-value">{{ c.expediente || '—' }}</span>
+              <span class="detail-value">{{
+                c.expediente || c.paciente.expediente
+              }}</span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Paciente</span>
-              <span class="detail-value">{{ c.paciente?.nombre_completo || '—' }}</span>
+              <span class="detail-value"
+                >{{ c.paciente?.nombre.primer_nombre }}
+                {{ c.paciente?.nombre.segundo_nombre }}
+                {{ c.paciente?.nombre.otro_nombre }}
+                {{ c.paciente?.nombre.primer_apellido }}
+                {{ c.paciente?.nombre.segundo_apellido }}</span
+              >
             </div>
             <div class="detail-row">
               <span class="detail-label">Especialidad</span>
-              <span class="detail-value">{{ c.especialidad || '—' }}</span>
+              <span class="detail-value">{{ c.especialidad || "—" }}</span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Servicio</span>
-              <span class="detail-value">{{ c.servicio || '—' }}</span>
+              <span class="detail-value">{{ c.servicio || "—" }}</span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Fecha</span>
-              <span class="detail-value">{{ c.fecha_consulta || '—' }}</span>
+              <span class="detail-value">{{ c.fecha_consulta || "—" }}</span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Estado</span>
-              <span class="detail-value">{{ c.ultimo_estado || '—' }}</span>
+              <span class="detail-value">{{ c.ultimo_estado || "—" }}</span>
             </div>
           </div>
         </div>
@@ -92,7 +109,10 @@
 
           <div class="sec-body">
             <div class="field">
-              <label class="field-label">Escribe <strong>confirmar</strong> para habilitar el botón</label>
+              <label class="field-label"
+                >Escribe <strong>confirmar</strong> para habilitar el
+                botón</label
+              >
               <input
                 class="field-input"
                 type="text"
