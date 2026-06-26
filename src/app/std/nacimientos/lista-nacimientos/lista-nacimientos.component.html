@@ -161,13 +161,16 @@
               {{ n.trabajo_parto }} <br />
               <p class="text-small">{{ n.neonatales?.edad_gestacional }}</p>
             </td>
-            @if (!sinEditar) {
-              <td>
-                <button (click)="editar(n.id); $event.stopPropagation()">
-                  Editar
-                </button>
-              </td>
-            }
+              @if (!sinEditar) {
+                <td>
+                  <button (click)="editar(n.id); $event.stopPropagation()">
+                    Editar
+                  </button>
+                  <button class="btn-danger" (click)="eliminar(n.id, n.nombre_completo || n.paciente?.nombre_completo); $event.stopPropagation()">
+                    Eliminar
+                  </button>
+                </td>
+              }
           </tr>
         }
         @if (!cargando && nacimientos.length === 0) {
@@ -263,55 +266,13 @@
         <div class="form-grid">
           @if (!editando()) {
             <div class="field">
-              <label class="field-label"
-                >Nombre del neonato <span class="req">*</span></label
-              >
-              <input
-                class="field-input"
-                type="text"
-                [(ngModel)]="modelo.nombre_completo"
-                name="nombre_completo"
-                placeholder="Nombre completo"
-              />
-            </div>
-            <div class="field">
-              <label class="field-label">Sexo</label>
-              <select class="field-input" [(ngModel)]="modelo.sexo" name="sexo">
-                <option value="">Seleccionar</option>
-                <option value="M">Masculino</option>
-                <option value="F">Femenino</option>
-              </select>
-            </div>
-            <div class="field">
-              <label class="field-label">Expediente</label>
-              <input
-                class="field-input"
-                type="text"
-                [(ngModel)]="modelo.expediente"
-                name="expediente"
-                placeholder="Expediente"
-              />
-            </div>
-            <div class="field">
-              <label class="field-label">Fecha de nacimiento</label>
-              <input
-                class="field-input"
-                type="date"
-                [(ngModel)]="modelo.fecha_nacimiento"
-                name="fecha_nacimiento"
-              />
-            </div>
-          }
-
-          @if (editando()) {
-            <div class="field">
-              <label class="field-label">ID Paciente</label>
+              <label class="field-label">ID Paciente <span class="req">*</span></label>
               <input
                 class="field-input"
                 type="number"
                 [(ngModel)]="modelo.paciente_id"
                 name="paciente_id"
-                [disabled]="!esAdmin"
+                placeholder="ID del neonato"
               />
             </div>
             <div class="field">
@@ -321,88 +282,92 @@
                 type="number"
                 [(ngModel)]="modelo.madre_id"
                 name="madre_id"
-                [disabled]="!esAdmin"
+                placeholder="ID de la madre"
               />
             </div>
           }
 
-          <div class="field">
-            <label class="field-label">Hora de nacimiento</label>
-            <input
-              class="field-input"
-              type="time"
-              [(ngModel)]="modelo.hora_nacimiento"
-              name="hora_nacimiento"
-            />
-          </div>
-          <div class="field">
-            <label class="field-label">Peso (g)</label>
-            <input
-              class="field-input"
-              type="text"
-              [(ngModel)]="modelo.peso_nacimiento"
-              name="peso_nacimiento"
-              placeholder="Ej: 3200"
-            />
-          </div>
-          <div class="field">
-            <label class="field-label">Edad gestacional</label>
-            <input
-              class="field-input"
-              type="text"
-              [(ngModel)]="modelo.edad_gestacional"
-              name="edad_gestacional"
-              placeholder="Ej: 38 semanas"
-            />
-          </div>
-          <div class="field">
-            <label class="field-label">Tipo de parto</label>
-            <select
-              class="field-input"
-              [(ngModel)]="modelo.tipo_parto"
-              name="tipo_parto"
-            >
-              <option value="">Seleccionar</option>
-              <option value="Simple">Simple</option>
-              <option value="Multiple">Múltiple</option>
-            </select>
-          </div>
-          <div class="field">
-            <label class="field-label">Clase de parto</label>
-            <select
-              class="field-input"
-              [(ngModel)]="modelo.clase_parto"
-              name="clase_parto"
-            >
-              <option value="">Seleccionar</option>
-              <option value="Pes">Vaginal</option>
-              <option value="Cstp">Cesárea</option>
-            </select>
-          </div>
-          <div class="field">
-            <label class="field-label">Gemelo</label>
-            <select
-              class="field-input"
-              [(ngModel)]="modelo.gemelo"
-              name="gemelo"
-            >
-              <option value="">Seleccionar</option>
-              <option value="Unico">Único</option>
-              <option value="Gemelo 1">Gemelo 1</option>
-              <option value="Gemelo 2">Gemelo 2</option>
-              <option value="Gemelo 3">Gemelo 3</option>
-            </select>
-          </div>
-          <div class="field checkbox-field">
-            <label class="field-label-check">
+          @if (editando()) {
+            <div class="field">
+              <label class="field-label">ID Madre</label>
               <input
-                type="checkbox"
-                [(ngModel)]="modelo.extrahospitalario"
-                name="extrahospitalario"
+                class="field-input"
+                type="number"
+                [(ngModel)]="modelo.madre_id"
+                name="madre_id_edit"
+                placeholder="ID de la madre"
               />
-              <span>Extrahospitalario</span>
-            </label>
-          </div>
+            </div>
+            <div class="field">
+              <label class="field-label">Hora de nacimiento</label>
+              <input
+                class="field-input"
+                type="time"
+                [(ngModel)]="modelo.hora_nacimiento"
+                name="hora_nacimiento"
+              />
+            </div>
+            <div class="field">
+              <label class="field-label">Peso (g)</label>
+              <input
+                class="field-input"
+                type="text"
+                [(ngModel)]="modelo.peso_nacimiento"
+                name="peso_nacimiento"
+                placeholder="Ej: 3200"
+              />
+            </div>
+            <div class="field">
+              <label class="field-label">Edad gestacional</label>
+              <input
+                class="field-input"
+                type="text"
+                [(ngModel)]="modelo.edad_gestacional"
+                name="edad_gestacional"
+                placeholder="Ej: 38 semanas"
+              />
+            </div>
+            <div class="field">
+              <label class="field-label">Tipo de parto</label>
+              <select
+                class="field-input"
+                [(ngModel)]="modelo.tipo_parto"
+                name="tipo_parto"
+              >
+                <option value="">Seleccionar</option>
+                <option value="Simple">Simple</option>
+                <option value="Multiple">Múltiple</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Clase de parto</label>
+              <select
+                class="field-input"
+                [(ngModel)]="modelo.clase_parto"
+                name="clase_parto"
+              >
+                <option value="">Seleccionar</option>
+                <option value="Pes">Vaginal</option>
+                <option value="Cstp">Cesárea</option>
+              </select>
+            </div>
+            @if (modelo.tipo_parto === 'Multiple') {
+              <div class="field">
+                <label class="field-label">Gemelo</label>
+                <select
+                  class="field-input"
+                  [(ngModel)]="modelo.gemelo"
+                  name="gemelo"
+                >
+                  <option value="">Seleccionar</option>
+                  <option value="Unico">Único</option>
+                  <option value="Gemelo 1">Gemelo 1</option>
+                  <option value="Gemelo 2">Gemelo 2</option>
+                  <option value="Gemelo 3">Gemelo 3</option>
+                </select>
+              </div>
+            }
+          }
         </div>
 
         <div class="form-actions">
