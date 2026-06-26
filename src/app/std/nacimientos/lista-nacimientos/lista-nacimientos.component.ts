@@ -8,15 +8,18 @@ import { NacimientosService } from '../nacimientos.service';
 import { ApiService } from '../../../service/api.service';
 import { PacienteService } from '../../../registros/patient/paciente.service';
 import { Paciente } from '../../../interface/interfaces';
+import { ConstanciasService } from '../../../registros/nacimientos/constancias.service';
+import { ConstanciaNacimiento } from '../../../registros/nacimientos/constancias.inteface';
 import { DatosExtraPipe } from 'app/pipes/datos-extra.pipe';
 import { LibrasOnzasPipe } from 'app/pipes/librasOnza.pipe';
+import { CapitalizePipe } from 'app/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-lista-nacimientos',
   templateUrl: './lista-nacimientos.component.html',
   styleUrls: ['./lista-nacimientos.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, DatosExtraPipe, LibrasOnzasPipe]
+  imports: [CommonModule, FormsModule, DatosExtraPipe, LibrasOnzasPipe, CapitalizePipe]
 })
 export class ListaNacimientosComponent implements OnInit {
   @Input() sinEditar = false;
@@ -27,6 +30,7 @@ export class ListaNacimientosComponent implements OnInit {
   private router = inject(Router);
   private authApi = inject(ApiService);
   private pacienteApi = inject(PacienteService);
+  private constanciaApi = inject(ConstanciasService);
 
   get esAdmin(): boolean {
     return this.authApi.role() === 'admin';
@@ -67,6 +71,11 @@ export class ListaNacimientosComponent implements OnInit {
   mostrarPacienteModal = signal(false);
   pacienteDetalle = signal<Paciente | null>(null);
   cargandoPaciente = signal(false);
+
+  // Constancia data inside paciente modal
+  constanciaData = signal<ConstanciaNacimiento | null>(null);
+  constanciaCargando = signal(false);
+  constanciaError = signal(false);
 
   modelo: NacimientoCreate = {
     paciente_id: null,
@@ -312,6 +321,8 @@ export class ListaNacimientosComponent implements OnInit {
     this.cargandoPaciente.set(true);
     this.mostrarPacienteModal.set(true);
     this.pacienteDetalle.set(null);
+    this.constanciaData.set(null);
+    this.constanciaError.set(false);
     this.pacienteApi.getPaciente(id).subscribe({
       next: p => {
         this.pacienteDetalle.set(p);
@@ -321,11 +332,39 @@ export class ListaNacimientosComponent implements OnInit {
         this.cargandoPaciente.set(false);
       }
     });
+    this.cargarConstancia(id);
+  }
+
+  private cargarConstancia(pacienteId: number): void {
+    this.constanciaCargando.set(true);
+    this.constanciaError.set(false);
+    this.constanciaData.set(null);
+    this.constanciaApi.getConstanciaByPacienteId(pacienteId).subscribe({
+      next: c => {
+        this.constanciaData.set(c);
+        this.constanciaCargando.set(false);
+      },
+      error: () => {
+        this.constanciaCargando.set(false);
+        this.constanciaError.set(true);
+      }
+    });
+  }
+
+  madreNombre(madre: Paciente | null | undefined): string {
+    if (!madre?.nombre) return '—';
+    const n = madre.nombre;
+    const parts = [n.primer_nombre, n.segundo_nombre, n.otro_nombre, n.primer_apellido, n.segundo_apellido];
+    const nombre = parts.filter(Boolean).join(' ');
+    if (n.apellido_casada) return `${nombre} de ${n.apellido_casada}`;
+    return nombre || '—';
   }
 
   cerrarPacienteModal(): void {
     this.mostrarPacienteModal.set(false);
     this.pacienteDetalle.set(null);
+    this.constanciaData.set(null);
+    this.constanciaError.set(false);
   }
 
   filtrarDatosExtra(obj: Record<string, any> | null | undefined): { key: string; valor: any }[] {

@@ -39,6 +39,14 @@ export class ConstanciasService extends BaseApiService {
     )
   }
 
+  getConstanciaByPacienteId(pacienteId: number): Observable<ConstanciaNacimiento> {
+    return this.http.get<ConstanciaNacimiento>(
+      `${this.baseUrl}/constancias-nacimiento/paciente/${pacienteId}`
+    ).pipe(
+      catchError(error => this.manejarError(error, 'obtener constancia por paciente'))
+    );
+  }
+
   getConstancia(id: number): Observable<ConstanciaNacimiento> {
     return this.http.get<ConstanciaNacimiento>(
       `${this.baseUrl}/constancias-nacimiento/${id}`

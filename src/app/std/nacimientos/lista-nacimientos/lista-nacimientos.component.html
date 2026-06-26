@@ -583,6 +583,99 @@
             </div>
           }
 
+          <!-- Constancia de Nacimiento -->
+          @let cn = constanciaData();
+          <div class="ps-section">
+            <h4 class="ps-section-title">Constancia de Nacimiento</h4>
+            @if (constanciaCargando()) {
+              <div class="loading-state"><span class="spinner"></span> Cargando constancia...</div>
+            } @else if (constanciaError()) {
+              <p class="text-muted">No hay constancia de nacimiento registrada.</p>
+            } @else if (cn) {
+              <div class="ps-grid">
+                <div class="ps-field">
+                  <span class="ps-lbl">Documento</span>
+                  <span class="ps-val">{{ cn.documento || '—' }}</span>
+                </div>
+                <div class="ps-field">
+                  <span class="ps-lbl">Fecha registro</span>
+                  <span class="ps-val">{{ cn.fecha_registro | date:'dd-MM-yyyy' }}</span>
+                </div>
+              </div>
+              @if (cn.madre) {
+                <h5 style="margin:8px 0 4px;font-size:13px;color:#60a5fa;">Madre</h5>
+                <div class="ps-grid">
+                  <div class="ps-field ps-field-full">
+                    <span class="ps-lbl">Nombre</span>
+                    <span class="ps-val">{{ madreNombre(cn.madre) | capitalize }}</span>
+                  </div>
+                  <div class="ps-field">
+                    <span class="ps-lbl">Edad</span>
+                    <span class="ps-val">{{ cn.madre.fecha_nacimiento | date:'dd-MM-yyyy' }}</span>
+                  </div>
+                  <div class="ps-field">
+                    <span class="ps-lbl">CUI</span>
+                    <span class="ps-val">{{ cn.madre.cui | datosExtra:'cui' }}</span>
+                  </div>
+                  @if (cn.madre.datos_extra?.demograficos?.vecindad) {
+                    <div class="ps-field">
+                      <span class="ps-lbl">Vecindad</span>
+                      <span class="ps-val">{{ cn.madre.datos_extra?.demograficos?.vecindad | datosExtra:'municipio' }}</span>
+                    </div>
+                  }
+                </div>
+              }
+              @if (cn.medico) {
+                <h5 style="margin:8px 0 4px;font-size:13px;color:#60a5fa;">Médico</h5>
+                <div class="ps-grid">
+                  <div class="ps-field">
+                    <span class="ps-lbl">Nombre</span>
+                    <span class="ps-val">{{ cn.medico.nombre }}</span>
+                  </div>
+                  <div class="ps-field">
+                    <span class="ps-lbl">Colegiado</span>
+                    <span class="ps-val">{{ cn.medico.colegiado || '—' }}</span>
+                  </div>
+                  @if (cn.medico.especialidad) {
+                    <div class="ps-field">
+                      <span class="ps-lbl">Especialidad</span>
+                      <span class="ps-val">{{ cn.medico.especialidad }}</span>
+                    </div>
+                  }
+                </div>
+              }
+              @if (cn.hijos != null || cn.vivos != null || cn.muertos != null) {
+                <h5 style="margin:8px 0 4px;font-size:13px;color:#60a5fa;">Historial Obstétrico</h5>
+                <div class="ps-grid">
+                  @if (cn.hijos != null) {
+                    <div class="ps-field">
+                      <span class="ps-lbl">Total hijos</span>
+                      <span class="ps-val">{{ cn.hijos }}</span>
+                    </div>
+                  }
+                  @if (cn.vivos != null) {
+                    <div class="ps-field">
+                      <span class="ps-lbl">Vivos</span>
+                      <span class="ps-val">{{ cn.vivos }}</span>
+                    </div>
+                  }
+                  @if (cn.muertos != null) {
+                    <div class="ps-field">
+                      <span class="ps-lbl">Muertos</span>
+                      <span class="ps-val">{{ cn.muertos }}</span>
+                    </div>
+                  }
+                </div>
+              }
+              @if (cn.observaciones) {
+                <div class="ps-field ps-field-full" style="margin-top:8px">
+                  <span class="ps-lbl">Observaciones</span>
+                  <span class="ps-val">{{ cn.observaciones }}</span>
+                </div>
+              }
+            }
+          </div>
+
           <div class="form-actions">
             <button class="btn btn-secondary" type="button" (click)="cerrarPacienteModal()">Cerrar</button>
           </div>
