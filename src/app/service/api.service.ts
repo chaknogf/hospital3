@@ -568,12 +568,12 @@ export class ApiService {
     );
   }
 
-  getActivosMayores30Dias(skip = 0, limit = 50): Observable<any> {
+  getActivosMayores7Dias(skip = 0, limit = 50): Observable<ConsultaListResponse> {
     this.isLoading.set(true);
     const params = new HttpParams().set('skip', String(skip)).set('limit', String(limit));
-    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/activos-mayores-a-30-dias`, { params }).pipe(
+    return this.http.get<ConsultaListResponse>(`${this.baseUrl}/estadisticas/consultas/mayores-a-7-dias`, { params }).pipe(
       finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener activos >30 días'))
+      catchError(error => this.manejarError(error, 'obtener activos >7 días'))
     );
   }
 

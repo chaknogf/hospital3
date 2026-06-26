@@ -436,8 +436,8 @@ export const routes: Routes = [
             loadComponent: () => import('./std/reportes/reingresos-tipo3/reingresos-tipo3.component').then(c => c.ReingresosTipo3Component)
           },
           {
-            path: 'activos-mayores-30-dias',
-            loadComponent: () => import('./std/reportes/activos-mayores-30-dias/activos-mayores-30-dias.component').then(c => c.ActivosMayores30DiasComponent)
+            path: 'activos-mayores-7-dias',
+            loadComponent: () => import('./std/reportes/activos-mayores-7-dias/activos-mayores-7-dias.component').then(c => c.ActivosMayores7DiasComponent)
           },
           {
             path: 'estadisticas-nacimientos',

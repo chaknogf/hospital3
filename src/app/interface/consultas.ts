@@ -189,6 +189,7 @@ export interface ConsultaOut {
   ultimo_estado?: string;
   activo?: boolean;
   egreso?: Egreso;
+  dias_acumulados?: number;
 
 }
 // Para respuestas de listas con paginación

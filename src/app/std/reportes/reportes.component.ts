@@ -25,7 +25,7 @@ export class ReportesComponent {
     { ruta: '/reportes/estudiante-publico', icono: '🎓', nombre: 'Estudiantes Públicos', descripcion: 'Consultas de estudiantes públicos' },
     { ruta: '/reportes/reingresos', icono: '🔄', nombre: 'Reingresos', descripcion: 'Reingresos hospitalarios con clasificación' },
     { ruta: '/reportes/reingresos-tipo3', icono: '📋', nombre: 'Reingresos Tipo 3', descripcion: 'Listado de reingresos tipo 3' },
-    { ruta: '/reportes/activos-mayores-30-dias', icono: '⏳', nombre: 'Activos >30 Días', descripcion: 'Consultas activas mayores a 30 días' },
+    { ruta: '/reportes/activos-mayores-7-dias', icono: '⏳', nombre: 'Activos >7 Días', descripcion: 'Consultas activas mayores a 7 días' },
     { ruta: '/reportes/estadisticas-nacimientos', icono: '🍼', nombre: 'Nacimientos', descripcion: 'Estadísticas de nacimientos' },
     { ruta: '/reportes/reporte-procedimientos', icono: '🔧', nombre: 'Reporte Procedimientos', descripcion: 'Procedimientos agrupados' },
     { ruta: '/reportes/resumen-procedimientos', icono: '📈', nombre: 'Resumen Procedimientos', descripcion: 'Resumen anual/mensual de procedimientos' },

@@ -12,5 +12,12 @@
 .reporte-table { width: 100%; border-collapse: collapse; background: rgba(15,23,42,0.8); border-radius: 10px; overflow: hidden; }
 .reporte-table th { background: #1e293b; color: #94a3b8; padding: 10px 14px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
 .reporte-table td { padding: 10px 14px; color: #e2e8f0; border-bottom: 1px solid rgba(148,163,184,0.1); font-size: 0.85rem; text-align: center; }
+.reporte-table td.td-left { text-align: left; }
 .reporte-table tbody tr:hover { background: rgba(59,130,246,0.05); }
+.dias-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; background: rgba(234,179,8,0.15); color: #eab308; }
+.dias-badge.dias-alta { background: rgba(239,68,68,0.15); color: #ef4444; }
+.load-more-wrap { text-align: center; padding: 20px 0; }
+.btn-load-more { background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3); border-radius: 8px; color: #60a5fa; padding: 8px 24px; font-size: 0.85rem; cursor: pointer; }
+.btn-load-more:hover:not(:disabled) { background: rgba(59,130,246,0.2); }
+.btn-load-more:disabled { opacity: 0.5; cursor: not-allowed; }
 @media (max-width: 600px) { .page-container { padding: 12px; } }

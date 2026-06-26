@@ -61,7 +61,7 @@ export class ReportesInicioComponent implements OnInit {
       { nombre: 'Estudiantes Públicos', descripcion: 'Consultas de estudiantes públicos', ruta: '/reportes/estudiante-publico', icon: 'paciente' },
       { nombre: 'Reingresos', descripcion: 'Reingresos hospitalarios con clasificación', ruta: '/reportes/reingresos', icon: 'ingreso' },
       { nombre: 'Reingresos Tipo 3', descripcion: 'Listado de reingresos tipo 3', ruta: '/reportes/reingresos-tipo3', icon: 'archivo' },
-      { nombre: 'Activos >30 Días', descripcion: 'Consultas activas mayores a 30 días', ruta: '/reportes/activos-mayores-30-dias', icon: 'enfermo' },
+      { nombre: 'Activos >7 Días', descripcion: 'Consultas activas mayores a 7 días', ruta: '/reportes/activos-mayores-7-dias', icon: 'enfermo' },
       { nombre: 'Nacimientos', descripcion: 'Estadísticas de nacimientos', ruta: '/reportes/estadisticas-nacimientos', icon: 'compartir' },
       { nombre: 'Reporte Procedimientos', descripcion: 'Procedimientos agrupados', ruta: '/reportes/reporte-procedimientos', icon: 'datos' },
       { nombre: 'Resumen Procedimientos', descripcion: 'Resumen anual/mensual', ruta: '/reportes/resumen-procedimientos', icon: 'medical' },
