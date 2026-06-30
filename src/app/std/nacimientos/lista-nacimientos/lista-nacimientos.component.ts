@@ -205,8 +205,8 @@ export class ListaNacimientosComponent implements OnInit {
     this.modalError.set(null);
     this.modalSuccess.set(null);
 
-    if (!this.modelo.nombre_completo?.trim()) {
-      this.modalError.set('El nombre del neonato es requerido');
+    if (!this.editando() && !this.modelo.paciente_id) {
+      this.modalError.set('El ID del paciente es requerido');
       return;
     }
 
@@ -248,6 +248,20 @@ export class ListaNacimientosComponent implements OnInit {
         }
       });
     }
+  }
+
+  eliminar(id: number, nombre: string | null | undefined): void {
+    const respuesta = prompt(`Escriba "confirmar" para eliminar el nacimiento de "${nombre || 'desconocido'}" (ID: ${id}):`);
+    if (respuesta !== 'confirmar') return;
+
+    this.api.deleteNacimiento(id).subscribe({
+      next: () => {
+        this.cargarNacimientos();
+      },
+      error: () => {
+        alert('Error al eliminar el nacimiento');
+      }
+    });
   }
 
   private resetFormulario(): void {
