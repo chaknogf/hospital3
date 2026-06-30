@@ -26,25 +26,30 @@ export class EstadisticasNacimientosComponent implements OnInit {
     this.cargar();
   }
 
-  sexoEstadoRows: { estado: string; M: number; F: number; total: number }[] = [];
-  sexoEstadoTotalM = 0;
-  sexoEstadoTotalF = 0;
-  sexoEstadoTotalGeneral = 0;
+  mortinatoRows: { estado: string; M: number; F: number; total: number }[] = [];
+  mortinatoTotalM = 0;
+  mortinatoTotalF = 0;
+  mortinatoTotalGeneral = 0;
+
+  fallecidosPosterioresRows: { estado: string; M: number; F: number; total: number }[] = [];
+  fallecidosPosterioresTotalM = 0;
+  fallecidosPosterioresTotalF = 0;
+  fallecidosPosterioresTotalGeneral = 0;
 
   estadosCol: string[] = ['V', 'F'];
-  clasePartoRows: { clase: string; V: { M: number; F: number; total: number }; F: { M: number; F: number; total: number }; total: number }[] = [];
-  cpColV = { M: 0, F: 0, total: 0 };
-  cpColF = { M: 0, F: 0, total: 0 };
+  clasePartoRows: { clase: string; Vivo: { M: number; F: number; total: number }; Mortinato: { M: number; F: number; total: number }; total: number }[] = [];
+  cpColVivo = { M: 0, F: 0, total: 0 };
+  cpColMortinato = { M: 0, F: 0, total: 0 };
   cpTotalGeneral = 0;
 
-  clasifRows: { clasif: string; V: { M: number; F: number; total: number }; F: { M: number; F: number; total: number }; total: number }[] = [];
-  clasifColV = { M: 0, F: 0, total: 0 };
-  clasifColF = { M: 0, F: 0, total: 0 };
+  clasifRows: { clasif: string; Vivo: { M: number; F: number; total: number }; Mortinato: { M: number; F: number; total: number }; total: number }[] = [];
+  clasifColVivo = { M: 0, F: 0, total: 0 };
+  clasifColMortinato = { M: 0, F: 0, total: 0 };
   clasifTotalGeneral = 0;
 
-  trabajoRows: { trabajo: string; V: { M: number; F: number; total: number }; F: { M: number; F: number; total: number }; total: number }[] = [];
-  trabajoColV = { M: 0, F: 0, total: 0 };
-  trabajoColF = { M: 0, F: 0, total: 0 };
+  trabajoRows: { trabajo: string; Vivo: { M: number; F: number; total: number }; Mortinato: { M: number; F: number; total: number }; total: number }[] = [];
+  trabajoColVivo = { M: 0, F: 0, total: 0 };
+  trabajoColMortinato = { M: 0, F: 0, total: 0 };
   trabajoTotalGeneral = 0;
 
   cargar(): void {
@@ -52,7 +57,8 @@ export class EstadisticasNacimientosComponent implements OnInit {
     this.api.getEstadisticasNacimientos(this.desde, this.hasta).subscribe({
       next: (res) => {
         this.data = res;
-        this.agruparSexoEstado(res.por_sexo_estado || []);
+        this.agruparMortinato(res.por_mortinato || []);
+        this.agruparFallecidosPosteriores(res.por_fallecidos_posteriores || []);
         this.agruparClaseParto(res.por_clase_parto || []);
         this.agruparClasifParto(res.por_clasificacion_parto || []);
         this.agruparTrabajoParto(res.por_trabajo_parto || []);
@@ -62,14 +68,15 @@ export class EstadisticasNacimientosComponent implements OnInit {
     });
   }
 
-  private agruparSexoEstado(datos: any[]): void {
+  private agruparMortinato(datos: any[]): void {
     const estadoMap = new Map<string, { M: number; F: number; total: number }>();
 
     for (const d of datos) {
-      let row = estadoMap.get(d.estado);
+      const estado = d.estado || 'Vivo';
+      let row = estadoMap.get(estado);
       if (!row) {
         row = { M: 0, F: 0, total: 0 };
-        estadoMap.set(d.estado, row);
+        estadoMap.set(estado, row);
       }
       const val = d.total ?? 0;
       if (d.sexo === 'M') row.M += val;
@@ -77,18 +84,42 @@ export class EstadisticasNacimientosComponent implements OnInit {
       row.total += val;
     }
 
-    const labelMap: Record<string, string> = { V: 'Vivo', F: 'Fallecido' };
-    this.sexoEstadoRows = [...estadoMap.entries()]
-      .map(([k, v]) => ({ estado: labelMap[k] || k, ...v }))
-      .sort((a, b) => (a.estado === 'Vivo' ? -1 : 1));
+    this.mortinatoRows = [...estadoMap.entries()]
+      .map(([k, v]) => ({ estado: k, ...v }));
 
-    this.sexoEstadoTotalM = this.sexoEstadoRows.reduce((s, r) => s + r.M, 0);
-    this.sexoEstadoTotalF = this.sexoEstadoRows.reduce((s, r) => s + r.F, 0);
-    this.sexoEstadoTotalGeneral = this.sexoEstadoRows.reduce((s, r) => s + r.total, 0);
+    this.mortinatoTotalM = this.mortinatoRows.reduce((s, r) => s + r.M, 0);
+    this.mortinatoTotalF = this.mortinatoRows.reduce((s, r) => s + r.F, 0);
+    this.mortinatoTotalGeneral = this.mortinatoRows.reduce((s, r) => s + r.total, 0);
+  }
+
+  private agruparFallecidosPosteriores(datos: any[]): void {
+    const estadoMap = new Map<string, { M: number; F: number; total: number }>();
+
+    const labelMap: Record<string, string> = { V: 'Vivo', F: 'Fallecido' };
+    for (const d of datos) {
+      const estado = d.estado || 'V';
+      let row = estadoMap.get(estado);
+      if (!row) {
+        row = { M: 0, F: 0, total: 0 };
+        estadoMap.set(estado, row);
+      }
+      const val = d.total ?? 0;
+      if (d.sexo === 'M') row.M += val;
+      if (d.sexo === 'F') row.F += val;
+      row.total += val;
+    }
+
+    this.fallecidosPosterioresRows = [...estadoMap.entries()]
+      .map(([k, v]) => ({ estado: labelMap[k] || k, ...v }))
+      .sort((a, b) => (a.estado === 'Fallecido' ? -1 : 1));
+
+    this.fallecidosPosterioresTotalM = this.fallecidosPosterioresRows.reduce((s, r) => s + r.M, 0);
+    this.fallecidosPosterioresTotalF = this.fallecidosPosterioresRows.reduce((s, r) => s + r.F, 0);
+    this.fallecidosPosterioresTotalGeneral = this.fallecidosPosterioresRows.reduce((s, r) => s + r.total, 0);
   }
 
   private agruparClaseParto(datos: any[]): void {
-    const claseMap = new Map<string, { V: { M: number; F: number; total: number }; F: { M: number; F: number; total: number }; total: number }>();
+    const claseMap = new Map<string, { Vivo: { M: number; F: number; total: number }; Mortinato: { M: number; F: number; total: number }; total: number }>();
 
     const zero = () => ({ M: 0, F: 0, total: 0 });
 
@@ -96,14 +127,14 @@ export class EstadisticasNacimientosComponent implements OnInit {
       const key = d.clase_parto || '—';
       let row = claseMap.get(key);
       if (!row) {
-        row = { V: zero(), F: zero(), total: 0 };
+        row = { Vivo: zero(), Mortinato: zero(), total: 0 };
         claseMap.set(key, row);
       }
       const val = d.total ?? 0;
-      const estado = d.estado as 'V' | 'F';
-      if (d.sexo === 'M') row[estado].M += val;
-      if (d.sexo === 'F') row[estado].F += val;
-      row[estado].total += val;
+      const mortinato = (d.estado === 'Mortinato') ? 'Mortinato' : 'Vivo';
+      if (d.sexo === 'M') row[mortinato].M += val;
+      if (d.sexo === 'F') row[mortinato].F += val;
+      row[mortinato].total += val;
       row.total += val;
     }
 
@@ -111,18 +142,18 @@ export class EstadisticasNacimientosComponent implements OnInit {
       .map(([k, v]) => ({ clase: k, ...v }))
       .sort((a, b) => b.total - a.total);
 
-    this.cpColV = { M: 0, F: 0, total: 0 };
-    this.cpColF = { M: 0, F: 0, total: 0 };
+    this.cpColVivo = { M: 0, F: 0, total: 0 };
+    this.cpColMortinato = { M: 0, F: 0, total: 0 };
     this.cpTotalGeneral = 0;
     for (const r of this.clasePartoRows) {
-      this.cpColV.M += r.V.M; this.cpColV.F += r.V.F; this.cpColV.total += r.V.total;
-      this.cpColF.M += r.F.M; this.cpColF.F += r.F.F; this.cpColF.total += r.F.total;
+      this.cpColVivo.M += r.Vivo.M; this.cpColVivo.F += r.Vivo.F; this.cpColVivo.total += r.Vivo.total;
+      this.cpColMortinato.M += r.Mortinato.M; this.cpColMortinato.F += r.Mortinato.F; this.cpColMortinato.total += r.Mortinato.total;
       this.cpTotalGeneral += r.total;
     }
   }
 
   private agruparClasifParto(datos: any[]): void {
-    const map = new Map<string, { V: { M: number; F: number; total: number }; F: { M: number; F: number; total: number }; total: number }>();
+    const map = new Map<string, { Vivo: { M: number; F: number; total: number }; Mortinato: { M: number; F: number; total: number }; total: number }>();
 
     const zero = () => ({ M: 0, F: 0, total: 0 });
 
@@ -130,14 +161,14 @@ export class EstadisticasNacimientosComponent implements OnInit {
       const key = d.clasificacion_parto || '—';
       let row = map.get(key);
       if (!row) {
-        row = { V: zero(), F: zero(), total: 0 };
+        row = { Vivo: zero(), Mortinato: zero(), total: 0 };
         map.set(key, row);
       }
       const val = d.total ?? 0;
-      const estado = d.estado as 'V' | 'F';
-      if (d.sexo === 'M') row[estado].M += val;
-      if (d.sexo === 'F') row[estado].F += val;
-      row[estado].total += val;
+      const mortinato = (d.estado === 'Mortinato') ? 'Mortinato' : 'Vivo';
+      if (d.sexo === 'M') row[mortinato].M += val;
+      if (d.sexo === 'F') row[mortinato].F += val;
+      row[mortinato].total += val;
       row.total += val;
     }
 
@@ -145,18 +176,18 @@ export class EstadisticasNacimientosComponent implements OnInit {
       .map(([k, v]) => ({ clasif: k, ...v }))
       .sort((a, b) => b.total - a.total);
 
-    this.clasifColV = { M: 0, F: 0, total: 0 };
-    this.clasifColF = { M: 0, F: 0, total: 0 };
+    this.clasifColVivo = { M: 0, F: 0, total: 0 };
+    this.clasifColMortinato = { M: 0, F: 0, total: 0 };
     this.clasifTotalGeneral = 0;
     for (const r of this.clasifRows) {
-      this.clasifColV.M += r.V.M; this.clasifColV.F += r.V.F; this.clasifColV.total += r.V.total;
-      this.clasifColF.M += r.F.M; this.clasifColF.F += r.F.F; this.clasifColF.total += r.F.total;
+      this.clasifColVivo.M += r.Vivo.M; this.clasifColVivo.F += r.Vivo.F; this.clasifColVivo.total += r.Vivo.total;
+      this.clasifColMortinato.M += r.Mortinato.M; this.clasifColMortinato.F += r.Mortinato.F; this.clasifColMortinato.total += r.Mortinato.total;
       this.clasifTotalGeneral += r.total;
     }
   }
 
   private agruparTrabajoParto(datos: any[]): void {
-    const map = new Map<string, { V: { M: number; F: number; total: number }; F: { M: number; F: number; total: number }; total: number }>();
+    const map = new Map<string, { Vivo: { M: number; F: number; total: number }; Mortinato: { M: number; F: number; total: number }; total: number }>();
 
     const zero = () => ({ M: 0, F: 0, total: 0 });
 
@@ -164,14 +195,14 @@ export class EstadisticasNacimientosComponent implements OnInit {
       const key = d.trabajo_parto || '—';
       let row = map.get(key);
       if (!row) {
-        row = { V: zero(), F: zero(), total: 0 };
+        row = { Vivo: zero(), Mortinato: zero(), total: 0 };
         map.set(key, row);
       }
       const val = d.total ?? 0;
-      const estado = d.estado as 'V' | 'F';
-      if (d.sexo === 'M') row[estado].M += val;
-      if (d.sexo === 'F') row[estado].F += val;
-      row[estado].total += val;
+      const mortinato = (d.estado === 'Mortinato') ? 'Mortinato' : 'Vivo';
+      if (d.sexo === 'M') row[mortinato].M += val;
+      if (d.sexo === 'F') row[mortinato].F += val;
+      row[mortinato].total += val;
       row.total += val;
     }
 
@@ -179,12 +210,12 @@ export class EstadisticasNacimientosComponent implements OnInit {
       .map(([k, v]) => ({ trabajo: k, ...v }))
       .sort((a, b) => b.total - a.total);
 
-    this.trabajoColV = { M: 0, F: 0, total: 0 };
-    this.trabajoColF = { M: 0, F: 0, total: 0 };
+    this.trabajoColVivo = { M: 0, F: 0, total: 0 };
+    this.trabajoColMortinato = { M: 0, F: 0, total: 0 };
     this.trabajoTotalGeneral = 0;
     for (const r of this.trabajoRows) {
-      this.trabajoColV.M += r.V.M; this.trabajoColV.F += r.V.F; this.trabajoColV.total += r.V.total;
-      this.trabajoColF.M += r.F.M; this.trabajoColF.F += r.F.F; this.trabajoColF.total += r.F.total;
+      this.trabajoColVivo.M += r.Vivo.M; this.trabajoColVivo.F += r.Vivo.F; this.trabajoColVivo.total += r.Vivo.total;
+      this.trabajoColMortinato.M += r.Mortinato.M; this.trabajoColMortinato.F += r.Mortinato.F; this.trabajoColMortinato.total += r.Mortinato.total;
       this.trabajoTotalGeneral += r.total;
     }
   }

@@ -2,7 +2,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NacimientoOut, NacimientoCreate, NeonatalesPayload, PacienteResumen } from '../../../interface/nacimientos';
+import { NacimientoOut, NacimientoCreate, NacimientoUpdate, NeonatalesPayload, PacienteResumen, NacimientoFormModel } from '../../../interface/nacimientos';
 import { NacimientosService } from '../nacimientos.service';
 
 @Component({
@@ -26,7 +26,7 @@ export class NacimientoFormComponent implements OnInit {
   error: string | null = null;
   success: string | null = null;
 
-  modelo: NacimientoCreate = {
+  modelo: NacimientoFormModel = {
     paciente_id: null,
     madre_id: null,
     expediente: null,
@@ -40,6 +40,7 @@ export class NacimientoFormComponent implements OnInit {
     gemelo: null,
     hora_nacimiento: null,
     extrahospitalario: false,
+    mortinato: false,
     registrador_id: null,
     datos_extra: undefined
   };
@@ -72,6 +73,7 @@ export class NacimientoFormComponent implements OnInit {
         this.modelo.gemelo = n.neonatales?.gemelo;
         this.modelo.hora_nacimiento = n.neonatales?.hora_nacimiento;
         this.modelo.extrahospitalario = n.neonatales?.extrahospitalario ?? false;
+        this.modelo.mortinato = n.mortinato ?? false;
       },
       error: () => {
         this.error = 'Error al cargar el nacimiento';
@@ -90,7 +92,7 @@ export class NacimientoFormComponent implements OnInit {
 
     this.guardando = true;
 
-    if (this.editando && this.pacienteId) {
+    if (this.editando && this.pacienteId && this.nacimientoId) {
       const neonatales: NeonatalesPayload = {
         peso_nacimiento: this.modelo.peso_nacimiento,
         edad_gestacional: this.modelo.edad_gestacional,
@@ -102,8 +104,20 @@ export class NacimientoFormComponent implements OnInit {
       };
       this.api.updatePacienteNeonatales(this.pacienteId, neonatales).subscribe({
         next: () => {
-          this.success = 'Nacimiento actualizado exitosamente';
-          this.guardando = false;
+          const nacUpdate: NacimientoUpdate = {
+            madre_id: this.modelo.madre_id,
+            mortinato: this.modelo.mortinato
+          };
+          this.api.updateNacimiento(this.nacimientoId!, nacUpdate).subscribe({
+            next: () => {
+              this.success = 'Nacimiento actualizado exitosamente';
+              this.guardando = false;
+            },
+            error: () => {
+              this.success = 'Neonatales actualizados, error al actualizar registro';
+              this.guardando = false;
+            }
+          });
         },
         error: () => {
           this.error = 'Error al actualizar nacimiento';
@@ -111,7 +125,12 @@ export class NacimientoFormComponent implements OnInit {
         }
       });
     } else {
-      this.api.createNacimiento(this.modelo).subscribe({
+      const payload: NacimientoCreate = {
+        paciente_id: this.modelo.paciente_id,
+        madre_id: this.modelo.madre_id,
+        mortinato: this.modelo.mortinato || null
+      };
+      this.api.createNacimiento(payload).subscribe({
         next: () => {
           this.success = 'Nacimiento registrado exitosamente';
           this.guardando = false;

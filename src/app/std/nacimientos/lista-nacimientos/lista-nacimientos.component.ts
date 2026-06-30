@@ -1,9 +1,9 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, Input, OnInit, inject, signal } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
-import { NacimientoOut, NacimientoCreate, NeonatalesPayload, PacienteResumen } from '../../../interface/nacimientos';
+import { NacimientoOut, NacimientoCreate, NacimientoUpdate, NeonatalesPayload, PacienteResumen, NacimientoFormModel } from '../../../interface/nacimientos';
 import { NacimientosService } from '../nacimientos.service';
 import { ApiService } from '../../../service/api.service';
 import { PacienteService } from '../../../registros/patient/paciente.service';
@@ -27,6 +27,10 @@ export class ListaNacimientosComponent implements OnInit {
 
   private location = inject(Location);
   private api = inject(NacimientosService);
+
+  @ViewChild('modalCard') set modalCardRef(el: ElementRef | undefined) {
+    if (el) setTimeout(() => el.nativeElement.focus());
+  }
   private router = inject(Router);
   private authApi = inject(ApiService);
   private pacienteApi = inject(PacienteService);
@@ -77,7 +81,7 @@ export class ListaNacimientosComponent implements OnInit {
   constanciaCargando = signal(false);
   constanciaError = signal(false);
 
-  modelo: NacimientoCreate = {
+  modelo: NacimientoFormModel = {
     paciente_id: null,
     madre_id: null,
     expediente: null,
@@ -91,6 +95,7 @@ export class ListaNacimientosComponent implements OnInit {
     gemelo: null,
     hora_nacimiento: null,
     extrahospitalario: false,
+    mortinato: false,
     registrador_id: null,
     datos_extra: undefined
   };
@@ -175,18 +180,19 @@ export class ListaNacimientosComponent implements OnInit {
         this.pacienteInfo = n.paciente ?? null;
         this.nombreMadre = n.nombre_madre ?? null;
         this.modelo.paciente_id = n.paciente_id ?? null;
-        this.modelo.madre_id = n.madre_id;
-        this.modelo.expediente = n.paciente?.expediente ?? n.expediente;
-        this.modelo.nombre_completo = n.paciente?.nombre_completo ?? n.nombre_completo;
-        this.modelo.sexo = n.paciente?.sexo ?? n.sexo;
-        this.modelo.fecha_nacimiento = n.paciente?.fecha_nacimiento ?? n.fecha_nacimiento;
-        this.modelo.peso_nacimiento = n.neonatales?.peso_nacimiento;
-        this.modelo.edad_gestacional = n.neonatales?.edad_gestacional;
-        this.modelo.tipo_parto = n.neonatales?.tipo_parto;
-        this.modelo.clase_parto = n.neonatales?.clase_parto;
-        this.modelo.gemelo = n.neonatales?.gemelo;
-        this.modelo.hora_nacimiento = n.neonatales?.hora_nacimiento;
+        this.modelo.madre_id = n.madre_id ?? null;
+        this.modelo.expediente = n.paciente?.expediente ?? null;
+        this.modelo.nombre_completo = n.paciente?.nombre_completo ?? null;
+        this.modelo.sexo = n.paciente?.sexo ?? null;
+        this.modelo.fecha_nacimiento = n.paciente?.fecha_nacimiento ?? null;
+        this.modelo.peso_nacimiento = n.neonatales?.peso_nacimiento ?? null;
+        this.modelo.edad_gestacional = n.neonatales?.edad_gestacional ?? null;
+        this.modelo.tipo_parto = n.neonatales?.tipo_parto ?? null;
+        this.modelo.clase_parto = n.neonatales?.clase_parto ?? null;
+        this.modelo.gemelo = n.neonatales?.gemelo ?? null;
+        this.modelo.hora_nacimiento = n.neonatales?.hora_nacimiento ?? null;
         this.modelo.extrahospitalario = n.neonatales?.extrahospitalario ?? false;
+        this.modelo.mortinato = n.mortinato ?? false;
       },
       error: () => {
         this.modalError.set('Error al cargar el nacimiento');
@@ -212,7 +218,7 @@ export class ListaNacimientosComponent implements OnInit {
 
     this.guardando.set(true);
 
-    if (this.editando() && this.pacienteId) {
+    if (this.editando() && this.pacienteId && this.nacimientoId) {
       const neonatales: NeonatalesPayload = {
         peso_nacimiento: this.modelo.peso_nacimiento,
         edad_gestacional: this.modelo.edad_gestacional,
@@ -224,10 +230,24 @@ export class ListaNacimientosComponent implements OnInit {
       };
       this.api.updatePacienteNeonatales(this.pacienteId, neonatales).subscribe({
         next: () => {
-          this.modalSuccess.set('Nacimiento actualizado exitosamente');
-          this.guardando.set(false);
-          this.cargarNacimientos();
-          setTimeout(() => this.cerrarModal(), 1500);
+          const nacUpdate: NacimientoUpdate = {
+            madre_id: this.modelo.madre_id,
+            mortinato: this.modelo.mortinato
+          };
+          this.api.updateNacimiento(this.nacimientoId!, nacUpdate).subscribe({
+            next: () => {
+              this.modalSuccess.set('Nacimiento actualizado exitosamente');
+              this.guardando.set(false);
+              this.cargarNacimientos();
+              setTimeout(() => this.cerrarModal(), 1500);
+            },
+            error: () => {
+              this.modalSuccess.set('Neonatales actualizados, error al actualizar registro');
+              this.guardando.set(false);
+              this.cargarNacimientos();
+              setTimeout(() => this.cerrarModal(), 1500);
+            }
+          });
         },
         error: () => {
           this.modalError.set('Error al actualizar nacimiento');
@@ -235,7 +255,12 @@ export class ListaNacimientosComponent implements OnInit {
         }
       });
     } else {
-      this.api.createNacimiento(this.modelo).subscribe({
+      const payload: NacimientoCreate = {
+        paciente_id: this.modelo.paciente_id,
+        madre_id: this.modelo.madre_id,
+        mortinato: null
+      };
+      this.api.createNacimiento(payload).subscribe({
         next: () => {
           this.modalSuccess.set('Nacimiento registrado exitosamente');
           this.guardando.set(false);
@@ -279,6 +304,7 @@ export class ListaNacimientosComponent implements OnInit {
       gemelo: null,
       hora_nacimiento: null,
       extrahospitalario: false,
+      mortinato: false,
       registrador_id: null,
       datos_extra: undefined
     };
@@ -439,11 +465,11 @@ export class ListaNacimientosComponent implements OnInit {
         }
         const rows = data.map(n => ({
           ID: n.id,
-          Expediente: n.paciente?.expediente || n.expediente || '',
-          Neonato: n.paciente?.nombre_completo || n.nombre_completo || '',
-          Sexo: this.sexoLabel(n.paciente?.sexo || n.sexo),
-          Estado: n.paciente?.estado || n.estado || '',
-          'Fecha Nacimiento': n.paciente?.fecha_nacimiento || n.fecha_nacimiento || '',
+          Expediente: n.paciente?.expediente || '',
+          Neonato: n.paciente?.nombre_completo || '',
+          Sexo: this.sexoLabel(n.paciente?.sexo),
+          Estado: n.paciente?.estado || '',
+          'Fecha Nacimiento': n.paciente?.fecha_nacimiento || '',
           'Hora Nacimiento': n.neonatales?.hora_nacimiento || '',
           'Peso (g)': n.neonatales?.peso_nacimiento || n.peso_gramos || '',
           'Edad Gestacional': n.neonatales?.edad_gestacional || '',

@@ -123,6 +123,7 @@
           <th>Clase Parto</th>
           <th>Clasificación</th>
           <th>Trabajo Parto</th>
+          <th>Mortinato</th>
           @if (!sinEditar) {
             <th>Acciones</th>
           }
@@ -137,15 +138,15 @@
             <td>
               <small>{{ n.id }}</small>
             </td>
-            <td class="exp-clickable" (click)="verPaciente(n.paciente?.id); $event.stopPropagation()">{{ n.paciente?.expediente || n.expediente || "—" }}</td>
+            <td class="exp-clickable" (click)="verPaciente(n.paciente?.id); $event.stopPropagation()">{{ n.paciente?.expediente || "—" }}</td>
             <td>
-              {{ n.paciente?.nombre_completo || n.nombre_completo || "—" }}
+              {{ n.paciente?.nombre_completo || "—" }}
             </td>
             <td>{{ n.paciente?.sexo | datosExtra: "sexo" }}</td>
-            <td>{{ n.paciente?.estado || n.estado | datosExtra: "vivo" }}</td>
+            <td>{{ n.paciente?.estado | datosExtra: "vivo" }}</td>
             <td>
               {{
-                n.paciente?.fecha_nacimiento || n.fecha_nacimiento
+                n.paciente?.fecha_nacimiento
                   | date: "dd-MM-yyyy"
               }}
             </td>
@@ -161,12 +162,19 @@
               {{ n.trabajo_parto }} <br />
               <p class="text-small">{{ n.neonatales?.edad_gestacional }}</p>
             </td>
+            <td>
+              @if (n.mortinato) {
+                <span class="badge-mortinato">Mortinato</span>
+              } @else {
+                <span class="badge-vivo">Vivo</span>
+              }
+            </td>
               @if (!sinEditar) {
                 <td>
                   <button (click)="editar(n.id); $event.stopPropagation()">
                     Editar
                   </button>
-                  <button class="btn-danger" (click)="eliminar(n.id, n.nombre_completo || n.paciente?.nombre_completo); $event.stopPropagation()">
+                  <button class="btn-danger" (click)="eliminar(n.id, n.paciente?.nombre_completo); $event.stopPropagation()">
                     Eliminar
                   </button>
                 </td>
@@ -175,7 +183,7 @@
         }
         @if (!cargando && nacimientos.length === 0) {
           <tr>
-            <td colspan="10" class="text-center">No hay registros.</td>
+            <td colspan="11" class="text-center">No hay registros.</td>
           </tr>
         }
         @if (cargando) {
@@ -238,7 +246,13 @@
 
 @if (mostrarModal()) {
   <div class="modal-overlay" (click)="cerrarModal()">
-    <div class="modal-card" (click)="$event.stopPropagation()">
+    <div
+      class="modal-card"
+      tabindex="-1"
+      #modalCard
+      (keydown.escape)="cerrarModal()"
+      (click)="$event.stopPropagation()"
+    >
       <div class="modal-header">
         <span class="modal-title"
           >{{ editando() ? "Editar" : "Nuevo" }} Nacimiento</span
@@ -367,6 +381,18 @@
                 </select>
               </div>
             }
+            <div class="checkbox-field">
+              <label class="field-label-check">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="modelo.mortinato"
+                  name="mortinato"
+                />
+                <span [class.text-danger]="modelo.mortinato">
+                  {{ modelo.mortinato ? 'Mortinato' : 'Vivo' }}
+                </span>
+              </label>
+            </div>
           }
         </div>
 
