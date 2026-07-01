@@ -1,7 +1,7 @@
 import { PacienteService } from '../paciente.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subject, of } from 'rxjs';
@@ -81,6 +81,41 @@ export class HijosComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  private pesoValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (!value) return null;
+
+      if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+        return { peso: 'Formato inválido. Ej: 6.08 (libras.onzas)' };
+      }
+
+      const [librasStr, onzasStr] = String(value).split('.');
+      const libras = parseInt(librasStr, 10);
+      if (libras < 0 || libras > 20) {
+        return { peso: 'Las libras deben estar entre 0 y 20' };
+      }
+
+      if (onzasStr) {
+        const onzas = parseInt(onzasStr, 10);
+        if (onzas < 0 || onzas > 15) {
+          return { peso: 'Las onzas deben estar entre 0 y 15' };
+        }
+      }
+
+      return null;
+    };
+  }
+
+  private limpiarPeso(value: string): string {
+    let limpio = value.replace(/[^\d.]/g, '');
+    const partes = limpio.split('.');
+    if (partes.length > 2) limpio = partes[0] + '.' + partes.slice(1).join('');
+    if (partes[0]?.length > 2) limpio = partes[0].slice(0, 2) + (partes[1] !== undefined ? '.' + partes[1] : '');
+    if (partes[1]?.length > 2) limpio = partes[0] + '.' + partes[1].slice(0, 2);
+    return limpio;
+  }
+
   // ======= CICLO DE VIDA =======
   ngOnInit(): void {
     this.route.params
@@ -109,7 +144,7 @@ export class HijosComponent implements OnInit, OnDestroy {
       estado: ['V'],
 
       datos_extra: this.fb.group({
-        peso_nacimiento: [''],
+        peso_nacimiento: ['', this.pesoValidator()],
         edad_gestacional: [''],
         tipo_parto: [''],          // Simple, Gemelar, Múltiple
         clase_parto: [''],         // Eutocico, Distocico
@@ -177,6 +212,14 @@ export class HijosComponent implements OnInit, OnDestroy {
   }
 
   // ======= HELPERS CHIPS =======
+  onPesoInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const limpio = this.limpiarPeso(input.value);
+    if (limpio !== input.value) {
+      this.form.get('datos_extra.peso_nacimiento')?.setValue(limpio, { emitEvent: false });
+    }
+  }
+
   setSexo(valor: string): void {
     this.form.get('sexo')?.setValue(valor);
   }

@@ -283,6 +283,15 @@
 
 .field-full { grid-column: 1 / -1; }
 
+.text-danger {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--red);
+  background-color: #0f172a;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
 .field {
   display: flex;
   flex-direction: column;

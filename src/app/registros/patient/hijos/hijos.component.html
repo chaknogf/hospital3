@@ -264,7 +264,11 @@
             formControlName="peso_nacimiento"
             placeholder="Ej: 3.08"
             autocomplete="off"
+            (input)="onPesoInput($event)"
           />
+          @if (form.get('datos_extra.peso_nacimiento')?.errors?.['peso']; as msg) {
+            <small class="text-danger">{{ msg }}</small>
+          }
         </div>
 
         <!-- Edad gestacional -->

@@ -92,6 +92,30 @@
             <option value="Prolongado">Prolongado</option>
           </select>
         </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Mortinato</label>
+          <select
+            class="input-filtros"
+            [(ngModel)]="filtros.mortinato"
+            name="mortinato"
+          >
+            <option value="">Todos</option>
+            <option [ngValue]="true">Sí</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Estado</label>
+          <select
+            class="input-filtros"
+            [(ngModel)]="filtros.estado"
+            name="estado"
+          >
+            <option value="">Todos</option>
+            <option value="V">Vivo</option>
+            <option value="F">Fallecido</option>
+          </select>
+        </fieldset>
       </div>
       <div class="d-flex gap-1">
         <button class="button-filtros" type="submit">Buscar</button>
