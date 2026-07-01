@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { PacienteService } from '../paciente.service';
-import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
+import { HighlightPipe } from '../../../pipes/highlight.pipe';
 
 
 @Component({
@@ -19,7 +19,7 @@ import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe, CapitalizePipe]
+  imports: [CommonModule, FormsModule, EdadPipe, CuiPipe, HighlightPipe]
 })
 export class PacientesComponent implements OnInit {
 
@@ -192,6 +192,24 @@ export class PacientesComponent implements OnInit {
   }
 
   toggleFiltrar(): void { this.filtrar = !this.filtrar; }
+
+  nombreCompleto(p: any): string {
+    if (!p?.nombre) return '';
+    const n = p.nombre;
+    const cap = (s: string) => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    const nombres = [n.primer_nombre, n.segundo_nombre, n.otro_nombre]
+      .filter(Boolean)
+      .map(cap)
+      .join(' ');
+    let apellidos = [n.primer_apellido, n.segundo_apellido]
+      .filter(Boolean)
+      .map(cap)
+      .join(' ');
+    if (n.apellido_casada) {
+      apellidos += ' de ' + cap(n.apellido_casada);
+    }
+    return nombres + ' ' + apellidos;
+  }
 
   // ══════════════════════════════════════════════════════════
   // ACCIONES DE PACIENTE

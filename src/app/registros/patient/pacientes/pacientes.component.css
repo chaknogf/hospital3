@@ -264,6 +264,14 @@
   font-size: large;
 }
 
+mark {
+  background: #fbbf24;
+  color: #0f172a;
+  border-radius: 3px;
+  padding: 0 2px;
+  font-weight: 600;
+}
+
 .busqueda-rapida input {
     background: white;
     border-radius: 8px;

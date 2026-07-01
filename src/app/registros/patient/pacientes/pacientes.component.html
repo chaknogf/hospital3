@@ -186,41 +186,27 @@
             (click)="activarFila(paciente.id)"
           >
           <td data-label="Nombre:">
-            <div class="nombre-table">
-              <p class="">
-                {{ paciente.nombre.primer_nombre | capitalize }}
-                {{ paciente.nombre.segundo_nombre | capitalize }}
-                {{ paciente.nombre.otro_nombre | capitalize }}
-              </p>
-              <p
-                class="p-0 m-0"
-                [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-              >
-                {{ paciente.nombre.primer_apellido | capitalize }}
-                {{ paciente.nombre.segundo_apellido | capitalize }}
-                @if (paciente.nombre.apellido_casada) {
-                  de {{ paciente.nombre.apellido_casada | capitalize }}
-                }
-              </p>
+            <div class="nombre-table" [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'">
+              <p [innerHTML]="nombreCompleto(paciente) | highlight: filtros.q"></p>
             </div>
           </td>
           <td data-label="Identificador:" class="gap-2">
             @if (paciente?.cui) {
               <div class="ms-4">
-                <strong>CUI:</strong> <small> {{ paciente.cui | cui }}</small>
+                <strong>CUI:</strong> <small [innerHTML]="(paciente.cui | cui) | highlight: filtros.q"></small>
               </div>
             }
             @if (paciente?.expediente) {
               <div class="text-alert">
-                <strong>Exp:</strong> {{ paciente.expediente }}
+                <strong>Exp:</strong> <span [innerHTML]="paciente.expediente | highlight: filtros.q"></span>
               </div>
             }
             @if (paciente?.pasaporte) {
-              <div><strong>Pasaporte:</strong> {{ paciente.pasaporte }}</div>
+              <div><strong>Pasaporte:</strong> <span [innerHTML]="paciente.pasaporte | highlight: filtros.q"></span></div>
             }
             @if (paciente?.datos_extra?.personaid) {
               <div>
-                <strong>Otro Id:</strong> {{ paciente.datos_extra?.personaid }}
+                <strong>Otro Id:</strong> <span [innerHTML]="paciente.datos_extra?.personaid | highlight: filtros.q"></span>
               </div>
             }
             <p style="font-size: xx-small">id: {{ paciente.id }}</p>
