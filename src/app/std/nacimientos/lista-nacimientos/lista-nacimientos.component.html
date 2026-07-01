@@ -5,10 +5,6 @@
   >
     <button type="button" (click)="volver()">Menu</button>
     <h1 class="text-white">Nacimientos</h1>
-    <button type="button" (click)="toggleFiltrar()">Buscar</button>
-    @if (!sinEditar) {
-      <button type="button" (click)="agregar()">Agregar</button>
-    }
   </div>
 
   <!-- Rango de fechas para Excel (siempre visible) -->
@@ -29,9 +25,22 @@
       name="fecha_hasta_excel"
       placeholder="Hasta"
     />
+    <button class="button-filtros" type="button" (click)="buscar()">
+      Aplicar
+    </button>
     <button class="button-filtros" type="button" (click)="descargarExcel()">
       Descargar Excel
     </button>
+  </div>
+
+  <div
+    class="d-flex justify-content-end gap-2 action-row"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
+    <button type="button" (click)="toggleFiltrar()">Filtros</button>
+    @if (!sinEditar) {
+      <button type="button" (click)="agregar()">Agregar</button>
+    }
   </div>
 
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar }">
@@ -162,17 +171,19 @@
             <td>
               <small>{{ n.id }}</small>
             </td>
-            <td class="exp-clickable" (click)="verPaciente(n.paciente?.id); $event.stopPropagation()">{{ n.paciente?.expediente || "—" }}</td>
+            <td
+              class="exp-clickable"
+              (click)="verPaciente(n.paciente?.id); $event.stopPropagation()"
+            >
+              {{ n.paciente?.expediente || "—" }}
+            </td>
             <td>
               {{ n.paciente?.nombre_completo || "—" }}
             </td>
             <td>{{ n.paciente?.sexo | datosExtra: "sexo" }}</td>
             <td>{{ n.paciente?.estado | datosExtra: "vivo" }}</td>
             <td>
-              {{
-                n.paciente?.fecha_nacimiento
-                  | date: "dd-MM-yyyy"
-              }}
+              {{ n.paciente?.fecha_nacimiento | date: "dd-MM-yyyy" }}
             </td>
             <td>{{ n.neonatales?.clase_parto || "—" }}</td>
             <td>
@@ -193,16 +204,22 @@
                 <span class="badge-vivo">Vivo</span>
               }
             </td>
-              @if (!sinEditar) {
-                <td>
-                  <button (click)="editar(n.id); $event.stopPropagation()">
-                    Editar
-                  </button>
-                  <button class="btn-danger" (click)="eliminar(n.id, n.paciente?.nombre_completo); $event.stopPropagation()">
-                    Eliminar
-                  </button>
-                </td>
-              }
+            @if (!sinEditar) {
+              <td>
+                <button (click)="editar(n.id); $event.stopPropagation()">
+                  Editar
+                </button>
+                <button
+                  class="btn-danger"
+                  (click)="
+                    eliminar(n.id, n.paciente?.nombre_completo);
+                    $event.stopPropagation()
+                  "
+                >
+                  Eliminar
+                </button>
+              </td>
+            }
           </tr>
         }
         @if (!cargando && nacimientos.length === 0) {
@@ -304,7 +321,9 @@
         <div class="form-grid">
           @if (!editando()) {
             <div class="field">
-              <label class="field-label">ID Paciente <span class="req">*</span></label>
+              <label class="field-label"
+                >ID Paciente <span class="req">*</span></label
+              >
               <input
                 class="field-input"
                 type="number"
@@ -389,7 +408,7 @@
                 <option value="Cstp">Cesárea</option>
               </select>
             </div>
-            @if (modelo.tipo_parto === 'Multiple') {
+            @if (modelo.tipo_parto === "Multiple") {
               <div class="field">
                 <label class="field-label">Gemelo</label>
                 <select
@@ -413,7 +432,7 @@
                   name="mortinato"
                 />
                 <span [class.text-danger]="modelo.mortinato">
-                  {{ modelo.mortinato ? 'Mortinato' : 'Vivo' }}
+                  {{ modelo.mortinato ? "Mortinato" : "Vivo" }}
                 </span>
               </label>
             </div>
@@ -452,7 +471,9 @@
     <div class="modal-card modal-card-lg" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <span class="modal-title">Resumen del Paciente</span>
-        <button class="modal-close" (click)="cerrarPacienteModal()">&times;</button>
+        <button class="modal-close" (click)="cerrarPacienteModal()">
+          &times;
+        </button>
       </div>
       <div class="modal-body">
         @if (cargandoPaciente()) {
@@ -465,11 +486,31 @@
           <div class="patient-summary-hero">
             <div class="ps-name">{{ p.nombre_completo || "—" }}</div>
             <div class="ps-badges">
-              <span class="ps-badge ps-badge-sexo" [class.ps-m]="p.sexo === 'M'" [class.ps-f]="p.sexo === 'F'">
-                {{ p.sexo === "M" ? "Masculino" : p.sexo === "F" ? "Femenino" : "—" }}
+              <span
+                class="ps-badge ps-badge-sexo"
+                [class.ps-m]="p.sexo === 'M'"
+                [class.ps-f]="p.sexo === 'F'"
+              >
+                {{
+                  p.sexo === "M"
+                    ? "Masculino"
+                    : p.sexo === "F"
+                      ? "Femenino"
+                      : "—"
+                }}
               </span>
-              <span class="ps-badge ps-badge-estado" [class.ps-vivo]="p.estado === 'V'" [class.ps-fallecido]="p.estado === 'F'">
-                {{ p.estado === "V" ? "Vivo" : p.estado === "F" ? "Fallecido" : "Inactivo" }}
+              <span
+                class="ps-badge ps-badge-estado"
+                [class.ps-vivo]="p.estado === 'V'"
+                [class.ps-fallecido]="p.estado === 'F'"
+              >
+                {{
+                  p.estado === "V"
+                    ? "Vivo"
+                    : p.estado === "F"
+                      ? "Fallecido"
+                      : "Inactivo"
+                }}
               </span>
             </div>
           </div>
@@ -485,7 +526,9 @@
             </div>
             <div class="ps-field">
               <span class="ps-lbl">Fecha nacimiento</span>
-              <span class="ps-val">{{ p.fecha_nacimiento | date: "dd-MM-yyyy" }}</span>
+              <span class="ps-val">{{
+                p.fecha_nacimiento | date: "dd-MM-yyyy"
+              }}</span>
             </div>
             <div class="ps-field">
               <span class="ps-lbl">ID</span>
@@ -512,7 +555,9 @@
                 @for (d of demograficos; track d.key) {
                   <div class="ps-field">
                     <span class="ps-lbl">{{ convertirClave(d.key) }}</span>
-                    <span class="ps-val">{{ d.valor | datosExtra: d.key }}</span>
+                    <span class="ps-val">{{
+                      d.valor | datosExtra: d.key
+                    }}</span>
                   </div>
                 }
               </div>
@@ -520,7 +565,8 @@
           }
 
           <!-- Socioeconómicos -->
-          @let socioeconomicos = filtrarDatosExtra(p.datos_extra?.socioeconomicos);
+          @let socioeconomicos =
+            filtrarDatosExtra(p.datos_extra?.socioeconomicos);
           @if (socioeconomicos.length > 0) {
             <div class="ps-section">
               <h4 class="ps-section-title">Socioeconómicos</h4>
@@ -528,7 +574,9 @@
                 @for (d of socioeconomicos; track d.key) {
                   <div class="ps-field">
                     <span class="ps-lbl">{{ convertirClave(d.key) }}</span>
-                    <span class="ps-val">{{ d.valor | datosExtra: d.key }}</span>
+                    <span class="ps-val">{{
+                      d.valor | datosExtra: d.key
+                    }}</span>
                   </div>
                 }
               </div>
@@ -544,7 +592,9 @@
                 @for (d of neonatales; track d.key) {
                   <div class="ps-field">
                     <span class="ps-lbl">{{ convertirClave(d.key) }}</span>
-                    <span class="ps-val">{{ d.valor | datosExtra: d.key }}</span>
+                    <span class="ps-val">{{
+                      d.valor | datosExtra: d.key
+                    }}</span>
                   </div>
                 }
               </div>
@@ -565,7 +615,9 @@
                 @if (p.contacto.municipio) {
                   <div class="ps-field">
                     <span class="ps-lbl">Municipio</span>
-                    <span class="ps-val">{{ p.contacto.municipio | datosExtra: "municipio" }}</span>
+                    <span class="ps-val">{{
+                      p.contacto.municipio | datosExtra: "municipio"
+                    }}</span>
                   </div>
                 }
                 @if (p.contacto.telefonos) {
@@ -581,7 +633,9 @@
           <!-- Referencias -->
           @if (p.referencias && p.referencias.length > 0) {
             <div class="ps-section">
-              <h4 class="ps-section-title">Referencias ({{ p.referencias.length }})</h4>
+              <h4 class="ps-section-title">
+                Referencias ({{ p.referencias.length }})
+              </h4>
               <div class="ps-ref-list">
                 @for (ref of p.referencias; track ref.nombre) {
                   <div class="ps-ref-item">
@@ -603,45 +657,64 @@
           <div class="ps-section">
             <h4 class="ps-section-title">Constancia de Nacimiento</h4>
             @if (constanciaCargando()) {
-              <div class="loading-state"><span class="spinner"></span> Cargando constancia...</div>
+              <div class="loading-state">
+                <span class="spinner"></span> Cargando constancia...
+              </div>
             } @else if (constanciaError()) {
-              <p class="text-muted">No hay constancia de nacimiento registrada.</p>
+              <p class="text-muted">
+                No hay constancia de nacimiento registrada.
+              </p>
             } @else if (cn) {
               <div class="ps-grid">
                 <div class="ps-field">
                   <span class="ps-lbl">Documento</span>
-                  <span class="ps-val">{{ cn.documento || '—' }}</span>
+                  <span class="ps-val">{{ cn.documento || "—" }}</span>
                 </div>
                 <div class="ps-field">
                   <span class="ps-lbl">Fecha registro</span>
-                  <span class="ps-val">{{ cn.fecha_registro | date:'dd-MM-yyyy' }}</span>
+                  <span class="ps-val">{{
+                    cn.fecha_registro | date: "dd-MM-yyyy"
+                  }}</span>
                 </div>
               </div>
               @if (cn.madre) {
-                <h5 style="margin:8px 0 4px;font-size:13px;color:#60a5fa;">Madre</h5>
+                <h5 style="margin: 8px 0 4px; font-size: 13px; color: #60a5fa">
+                  Madre
+                </h5>
                 <div class="ps-grid">
                   <div class="ps-field ps-field-full">
                     <span class="ps-lbl">Nombre</span>
-                    <span class="ps-val">{{ madreNombre(cn.madre) | capitalize }}</span>
+                    <span class="ps-val">{{
+                      madreNombre(cn.madre) | capitalize
+                    }}</span>
                   </div>
                   <div class="ps-field">
                     <span class="ps-lbl">Edad</span>
-                    <span class="ps-val">{{ cn.madre.fecha_nacimiento | date:'dd-MM-yyyy' }}</span>
+                    <span class="ps-val">{{
+                      cn.madre.fecha_nacimiento | date: "dd-MM-yyyy"
+                    }}</span>
                   </div>
                   <div class="ps-field">
                     <span class="ps-lbl">CUI</span>
-                    <span class="ps-val">{{ cn.madre.cui | datosExtra:'cui' }}</span>
+                    <span class="ps-val">{{
+                      cn.madre.cui | datosExtra: "cui"
+                    }}</span>
                   </div>
                   @if (cn.madre.datos_extra?.demograficos?.vecindad) {
                     <div class="ps-field">
                       <span class="ps-lbl">Vecindad</span>
-                      <span class="ps-val">{{ cn.madre.datos_extra?.demograficos?.vecindad | datosExtra:'municipio' }}</span>
+                      <span class="ps-val">{{
+                        cn.madre.datos_extra?.demograficos?.vecindad
+                          | datosExtra: "municipio"
+                      }}</span>
                     </div>
                   }
                 </div>
               }
               @if (cn.medico) {
-                <h5 style="margin:8px 0 4px;font-size:13px;color:#60a5fa;">Médico</h5>
+                <h5 style="margin: 8px 0 4px; font-size: 13px; color: #60a5fa">
+                  Médico
+                </h5>
                 <div class="ps-grid">
                   <div class="ps-field">
                     <span class="ps-lbl">Nombre</span>
@@ -649,7 +722,7 @@
                   </div>
                   <div class="ps-field">
                     <span class="ps-lbl">Colegiado</span>
-                    <span class="ps-val">{{ cn.medico.colegiado || '—' }}</span>
+                    <span class="ps-val">{{ cn.medico.colegiado || "—" }}</span>
                   </div>
                   @if (cn.medico.especialidad) {
                     <div class="ps-field">
@@ -660,7 +733,9 @@
                 </div>
               }
               @if (cn.hijos != null || cn.vivos != null || cn.muertos != null) {
-                <h5 style="margin:8px 0 4px;font-size:13px;color:#60a5fa;">Historial Obstétrico</h5>
+                <h5 style="margin: 8px 0 4px; font-size: 13px; color: #60a5fa">
+                  Historial Obstétrico
+                </h5>
                 <div class="ps-grid">
                   @if (cn.hijos != null) {
                     <div class="ps-field">
@@ -683,7 +758,7 @@
                 </div>
               }
               @if (cn.observaciones) {
-                <div class="ps-field ps-field-full" style="margin-top:8px">
+                <div class="ps-field ps-field-full" style="margin-top: 8px">
                   <span class="ps-lbl">Observaciones</span>
                   <span class="ps-val">{{ cn.observaciones }}</span>
                 </div>
@@ -692,7 +767,13 @@
           </div>
 
           <div class="form-actions">
-            <button class="btn btn-secondary" type="button" (click)="cerrarPacienteModal()">Cerrar</button>
+            <button
+              class="btn btn-secondary"
+              type="button"
+              (click)="cerrarPacienteModal()"
+            >
+              Cerrar
+            </button>
           </div>
         }
       </div>

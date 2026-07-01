@@ -457,3 +457,23 @@ select.field-input option {
 .text-danger {
   color: #f87171;
 }
+
+.action-row button {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 14px;
+  background: rgba(76, 202, 240, 0.15);
+  color: white;
+  font-weight: bold;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(6px);
+}
+
+.action-row button:hover {
+  background: rgba(0, 255, 255, 0.75);
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.4);
+}

@@ -44,7 +44,7 @@ export class ListaNacimientosComponent implements OnInit {
   cargando = false;
   filtrar = false;
   rowActiva: number | null = null;
-  pageSize = 20;
+  pageSize = 10;
   paginaActual = 1;
   totalDeRegistros = 0;
 
