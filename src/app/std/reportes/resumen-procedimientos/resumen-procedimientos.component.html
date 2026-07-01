@@ -21,6 +21,11 @@
     <div class="resumen-cards">
       <div class="resumen-card"><span class="resumen-val">{{ data.total_registros }}</span><span class="resumen-lbl">Registros</span></div>
       <div class="resumen-card"><span class="resumen-val">{{ data.total_cantidad_procedimientos }}</span><span class="resumen-lbl">Cantidad</span></div>
+      <div class="resumen-card usg-card" *ngIf="data.usg_gine">
+        <span class="resumen-val usg-val">{{ data.usg_gine.total_registros }}</span>
+        <span class="resumen-lbl">Ultrasonidos</span>
+        <span class="usg-sub">{{ data.usg_gine.total_cantidad }} estudios</span>
+      </div>
     </div>
 
     <div class="section-card" *ngIf="data.top_procedimientos?.length">

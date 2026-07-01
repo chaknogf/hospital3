@@ -23,4 +23,7 @@
 .ranking-pos { font-size: 1.1rem; font-weight: 800; color: #60a5fa; min-width: 32px; }
 .ranking-nombre { flex: 1; font-size: 0.85rem; color: #e2e8f0; }
 .ranking-total { font-size: 1rem; font-weight: 700; color: #60a5fa; }
+.usg-card { border-color: rgba(168,85,247,0.25); background: rgba(88,28,135,0.15); }
+.usg-val { color: #c084fc; }
+.usg-sub { font-size: 0.7rem; color: #a78bfa; font-weight: 600; }
 @media (max-width: 600px) { .page-container { padding: 12px; } .resumen-cards { grid-template-columns: 1fr; } }
