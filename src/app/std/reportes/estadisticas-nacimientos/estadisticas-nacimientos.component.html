@@ -87,9 +87,13 @@
               <th rowspan="2">Clase</th>
               <th [attr.colspan]="3" class="tc-header">Vivo</th>
               <th [attr.colspan]="3" class="tc-header">Mortinato</th>
+              <th [attr.colspan]="3" class="tc-header">Fallecido</th>
               <th rowspan="2">Total</th>
             </tr>
             <tr>
+              <th class="sub-header">M</th>
+              <th class="sub-header">F</th>
+              <th class="sub-header">Sub</th>
               <th class="sub-header">M</th>
               <th class="sub-header">F</th>
               <th class="sub-header">Sub</th>
@@ -107,6 +111,9 @@
               <td class="num">{{ r.Mortinato.M }}</td>
               <td class="num">{{ r.Mortinato.F }}</td>
               <td class="num total-sub">{{ r.Mortinato.total }}</td>
+              <td class="num">{{ r.Fallecido.M }}</td>
+              <td class="num">{{ r.Fallecido.F }}</td>
+              <td class="num total-sub">{{ r.Fallecido.total }}</td>
               <td class="num total-row">{{ r.total }}</td>
             </tr>
           </tbody>
@@ -119,6 +126,9 @@
               <th class="num">{{ cpColMortinato.M }}</th>
               <th class="num">{{ cpColMortinato.F }}</th>
               <th class="num total-sub">{{ cpColMortinato.total }}</th>
+              <th class="num">{{ cpColFallecido.M }}</th>
+              <th class="num">{{ cpColFallecido.F }}</th>
+              <th class="num total-sub">{{ cpColFallecido.total }}</th>
               <th class="num total-row">{{ cpTotalGeneral }}</th>
             </tr>
           </tfoot>
@@ -135,9 +145,13 @@
               <th rowspan="2">Clasificación</th>
               <th [attr.colspan]="3" class="tc-header">Vivo</th>
               <th [attr.colspan]="3" class="tc-header">Mortinato</th>
+              <th [attr.colspan]="3" class="tc-header">Fallecido</th>
               <th rowspan="2">Total</th>
             </tr>
             <tr>
+              <th class="sub-header">M</th>
+              <th class="sub-header">F</th>
+              <th class="sub-header">Sub</th>
               <th class="sub-header">M</th>
               <th class="sub-header">F</th>
               <th class="sub-header">Sub</th>
@@ -155,6 +169,9 @@
               <td class="num">{{ r.Mortinato.M }}</td>
               <td class="num">{{ r.Mortinato.F }}</td>
               <td class="num total-sub">{{ r.Mortinato.total }}</td>
+              <td class="num">{{ r.Fallecido.M }}</td>
+              <td class="num">{{ r.Fallecido.F }}</td>
+              <td class="num total-sub">{{ r.Fallecido.total }}</td>
               <td class="num total-row">{{ r.total }}</td>
             </tr>
           </tbody>
@@ -167,6 +184,9 @@
               <th class="num">{{ clasifColMortinato.M }}</th>
               <th class="num">{{ clasifColMortinato.F }}</th>
               <th class="num total-sub">{{ clasifColMortinato.total }}</th>
+              <th class="num">{{ clasifColFallecido.M }}</th>
+              <th class="num">{{ clasifColFallecido.F }}</th>
+              <th class="num total-sub">{{ clasifColFallecido.total }}</th>
               <th class="num total-row">{{ clasifTotalGeneral }}</th>
             </tr>
           </tfoot>
@@ -183,9 +203,13 @@
               <th rowspan="2">Trabajo</th>
               <th [attr.colspan]="3" class="tc-header">Vivo</th>
               <th [attr.colspan]="3" class="tc-header">Mortinato</th>
+              <th [attr.colspan]="3" class="tc-header">Fallecido</th>
               <th rowspan="2">Total</th>
             </tr>
             <tr>
+              <th class="sub-header">M</th>
+              <th class="sub-header">F</th>
+              <th class="sub-header">Sub</th>
               <th class="sub-header">M</th>
               <th class="sub-header">F</th>
               <th class="sub-header">Sub</th>
@@ -203,6 +227,9 @@
               <td class="num">{{ r.Mortinato.M }}</td>
               <td class="num">{{ r.Mortinato.F }}</td>
               <td class="num total-sub">{{ r.Mortinato.total }}</td>
+              <td class="num">{{ r.Fallecido.M }}</td>
+              <td class="num">{{ r.Fallecido.F }}</td>
+              <td class="num total-sub">{{ r.Fallecido.total }}</td>
               <td class="num total-row">{{ r.total }}</td>
             </tr>
           </tbody>
@@ -215,6 +242,9 @@
               <th class="num">{{ trabajoColMortinato.M }}</th>
               <th class="num">{{ trabajoColMortinato.F }}</th>
               <th class="num total-sub">{{ trabajoColMortinato.total }}</th>
+              <th class="num">{{ trabajoColFallecido.M }}</th>
+              <th class="num">{{ trabajoColFallecido.F }}</th>
+              <th class="num total-sub">{{ trabajoColFallecido.total }}</th>
               <th class="num total-row">{{ trabajoTotalGeneral }}</th>
             </tr>
           </tfoot>

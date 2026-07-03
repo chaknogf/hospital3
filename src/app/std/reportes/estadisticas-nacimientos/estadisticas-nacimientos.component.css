@@ -25,7 +25,8 @@
 .sub-header { text-align: center; font-size: 0.7rem; color: #64748b; padding: 6px 8px; }
 .esp-label { font-weight: 600; color: #e2e8f0; min-width: 100px; }
 .num { text-align: right; font-variant-numeric: tabular-nums; padding: 8px 10px; }
-.total-row { font-weight: 700; color: #38bdf8; background: rgba(59,130,246,0.08); }
+.total-row { font-weight: 700; color: #000304 !important; background-color: rgba(253, 253, 253, 0.832); }
 .pivot-table tfoot th { background: #0f172a; color: #94a3b8; border-top: 2px solid rgba(148,163,184,0.2); padding: 10px 14px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
 .text-right { text-align: right; font-weight: 600; }
+.total-sub { background-color: rgba(0, 174, 255, 0.321);}
 @media (max-width: 600px) { .page-container { padding: 12px; } }
