@@ -14,19 +14,20 @@
 .btn-primary:hover { background: rgba(59,130,246,0.3); }
 .total-badge { display: inline-block; padding: 6px 16px; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); border-radius: 20px; color: #60a5fa; font-size: 0.85rem; font-weight: 600; margin-bottom: 14px; }
 .section-card { margin-bottom: 20px; background: rgba(15,23,42,0.6); border: 1px solid rgba(148,163,184,0.1); border-radius: 12px; padding: 16px; }
-.section-title { font-size: 0.9rem; font-weight: 700; color: #94a3b8; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+.section-title { font-size: 0.9rem; font-weight: 700; color: #ffffff; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.5px; }
 .table-wrap { overflow-x: auto; }
 .reporte-table { width: 100%; border-collapse: collapse; background: rgba(15,23,42,0.8); border-radius: 10px; overflow: hidden; }
-.reporte-table th { background: #1e293b; color: #94a3b8; padding: 10px 14px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+.reporte-table th { color: #ffff !important; background-color: #60a5fa !important; padding: 10px 14px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
 .reporte-table td { padding: 10px 14px; color: #e2e8f0; border-bottom: 1px solid rgba(148,163,184,0.1); font-size: 0.85rem; text-align: center; }
 .reporte-table tbody tr:hover { background: rgba(59,130,246,0.05); }
 .pivot-table th, .pivot-table td { white-space: nowrap; }
 .tc-header { text-align: center; border-left: 1px solid rgba(148,163,184,0.12); }
-.sub-header { text-align: center; font-size: 0.7rem; color: #64748b; padding: 6px 8px; }
+.sub-header { text-align: center; font-size: 0.7rem; color: #ffff !important; background-color: #60a5fa !important; padding: 6px 8px;  }
 .esp-label { font-weight: 600; color: #e2e8f0; min-width: 100px; }
-.num { text-align: right; font-variant-numeric: tabular-nums; padding: 8px 10px; }
+.num { text-align: right; font-variant-numeric: tabular-nums; padding: 8px 10px; color: #100f0f !important; background-color: #fcfdfe !important;}
 .total-row { font-weight: 700; color: #000304 !important; background-color: rgba(253, 253, 253, 0.832); }
-.pivot-table tfoot th { background: #0f172a; color: #94a3b8; border-top: 2px solid rgba(148,163,184,0.2); padding: 10px 14px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.pivot-table tfoot th { background: #0f172a; color: #94a3b8; border-top: 2px solid rgba(148,163,184,0.2); padding: 10px 14px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;  font-weight: 800;}
 .text-right { text-align: right; font-weight: 600; }
-.total-sub { background-color: rgba(0, 174, 255, 0.321);}
+.total-sub { background-color: #618ef8f7 !important; color: #ffff !important; }
+
 @media (max-width: 600px) { .page-container { padding: 12px; } }
