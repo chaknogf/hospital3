@@ -397,6 +397,28 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin', 'std'])]
       },
 
+      // SIGSA-3
+      {
+        path: 'sigsa3',
+        loadComponent: () => import('./std/sigsa3/sigsa3-list/sigsa3-list.component').then(c => c.Sigsa3ListComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
+        path: 'sigsa3/nuevo',
+        loadComponent: () => import('./std/sigsa3/sigsa3-form/sigsa3-form.component').then(c => c.Sigsa3FormComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
+        path: 'sigsa3/editar/:id',
+        loadComponent: () => import('./std/sigsa3/sigsa3-form/sigsa3-form.component').then(c => c.Sigsa3FormComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
+        path: 'sigsa3/importar',
+        loadComponent: () => import('./std/sigsa3/sigsa3-import/sigsa3-import.component').then(c => c.Sigsa3ImportComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+
       // Reportes y Estadísticas — submenú lateral con rutas hijas
       {
         path: 'reportes',
@@ -450,6 +472,14 @@ export const routes: Routes = [
           {
             path: 'resumen-procedimientos',
             loadComponent: () => import('./std/reportes/resumen-procedimientos/resumen-procedimientos.component').then(c => c.ResumenProcedimientosComponent)
+          },
+          {
+            path: 'sigsa3-estadistica',
+            loadComponent: () => import('./std/reportes/sigsa3-estadistica/sigsa3-estadistica.component').then(c => c.Sigsa3EstadisticaComponent)
+          },
+          {
+            path: 'sigsa3-dx-frecuentes',
+            loadComponent: () => import('./std/reportes/sigsa3-dx-frecuentes/sigsa3-dx-frecuentes.component').then(c => c.Sigsa3DxFrecuentesComponent)
           },
         ]
       },

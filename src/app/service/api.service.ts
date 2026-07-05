@@ -608,6 +608,25 @@ export class ApiService {
     );
   }
 
+  //======== SIGSA-3 ESTADÍSTICAS =============
+  getSigsa3PorEspecialidad(desde: string, hasta: string): Observable<any> {
+    this.isLoading.set(true);
+    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/sigsa3/por-especialidad`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener estadísticas SIGSA-3'))
+    );
+  }
+
+  getSigsa3DxFrecuentes(desde: string, hasta: string, top = 10): Observable<any> {
+    this.isLoading.set(true);
+    const params = new HttpParams().set('desde', desde).set('hasta', hasta).set('top', String(top));
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/sigsa3/dx-frecuentes`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener dx frecuentes SIGSA-3'))
+    );
+  }
+
   //======== MEDICOS =============
   getMedicos(filtros: any): Observable<Medico[]> {
     this.isLoading.set(true);

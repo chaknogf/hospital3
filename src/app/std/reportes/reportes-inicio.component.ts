@@ -65,6 +65,8 @@ export class ReportesInicioComponent implements OnInit {
       { nombre: 'Nacimientos', descripcion: 'Estadísticas de nacimientos', ruta: '/reportes/estadisticas-nacimientos', icon: 'compartir' },
       { nombre: 'Reporte Procedimientos', descripcion: 'Procedimientos agrupados', ruta: '/reportes/reporte-procedimientos', icon: 'datos' },
       { nombre: 'Resumen Procedimientos', descripcion: 'Resumen anual/mensual', ruta: '/reportes/resumen-procedimientos', icon: 'medical' },
+      { nombre: 'SIGSA-3 por Especialidad', descripcion: 'Consultas por especialidad, tipo y sexo', ruta: '/reportes/sigsa3-estadistica', icon: 'consultas' },
+      { nombre: 'SIGSA-3 Dx Frecuentes', descripcion: 'Top 10 diagnósticos más frecuentes', ruta: '/reportes/sigsa3-dx-frecuentes', icon: 'datos' },
     ];
   }
 

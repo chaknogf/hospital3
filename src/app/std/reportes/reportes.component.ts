@@ -29,6 +29,8 @@ export class ReportesComponent {
     { ruta: '/reportes/estadisticas-nacimientos', icono: '🍼', nombre: 'Nacimientos', descripcion: 'Estadísticas de nacimientos' },
     { ruta: '/reportes/reporte-procedimientos', icono: '🔧', nombre: 'Reporte Procedimientos', descripcion: 'Procedimientos agrupados' },
     { ruta: '/reportes/resumen-procedimientos', icono: '📈', nombre: 'Resumen Procedimientos', descripcion: 'Resumen anual/mensual de procedimientos' },
+    { ruta: '/reportes/sigsa3-estadistica', icono: '📊', nombre: 'SIGSA-3 por Especialidad', descripcion: 'Consultas SIGSA-3 por especialidad, tipo y sexo' },
+    { ruta: '/reportes/sigsa3-dx-frecuentes', icono: '🔬', nombre: 'SIGSA-3 Dx Frecuentes', descripcion: 'Top 10 diagnósticos más frecuentes por especialidad' },
   ];
 
   regresar(): void {

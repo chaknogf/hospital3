@@ -337,6 +337,16 @@ All API calls go through `ApiService` (`service/api.service.ts`) to `http://loca
 | `ProcedimientosmenoresComponent` | `/procedimientosmenores` | `ApiService` | `GET /procedimientos/` |
 | `ProcemedicoComponent` | `/procemedic*` | `ApiService` | `GET/POST/PUT /procedimientos/` |
 
+### SIGSA-3 Components
+
+| Component | Route | Service | Backend Endpoint |
+|-----------|-------|---------|------------------|
+| `Sigsa3ListComponent` | `/sigsa3` | `Sigsa3Service` | `GET /sigsa3/` |
+| `Sigsa3FormComponent` | `/sigsa3/nuevo`, `/sigsa3/editar/:id` | `Sigsa3Service` | `GET/POST/PUT /sigsa3/` |
+| `Sigsa3ImportComponent` | `/sigsa3/importar` | `Sigsa3Service` | `POST /sigsa3/importar-excel` |
+| `Sigsa3EstadisticaComponent` | `/reportes/sigsa3-estadistica` | `Sigsa3Service` | `GET /estadisticas/sigsa3/por-especialidad` |
+| `Sigsa3DxFrecuentesComponent` | `/reportes/sigsa3-dx-frecuentes` | `Sigsa3Service` | `GET /estadisticas/sigsa3/dx-frecuentes` |
+
 ### Loan Components
 
 | Component | Route | Service Method | Backend Endpoint |

@@ -58,6 +58,7 @@ export class EstadisticaComponent implements OnInit {
       { nombre: 'Personal Hospital', descripcion: 'Personal del hospital registrado', ruta: '/personal-hospital', icon: 'doctor' },
       { nombre: 'Nacimientos', descripcion: 'Registro de Nacimientos', ruta: '/nacimientos-std', icon: 'baby' },
       { nombre: 'Medicos', descripcion: 'Medicos Registrados', ruta: '/doctores', icon: 'doctor' },
+      { nombre: 'SIGSA-3', descripcion: 'Registros SIGSA-3 e importación CSV', ruta: '/sigsa3', icon: 'consultas' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];

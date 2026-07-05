@@ -1,0 +1,155 @@
+<!-- sigsa3-form.component.html -->
+
+<!-- HUD -->
+<div class="hud-header">
+  <span class="hud-id">{{ enEdicion ? 'SIGSA3-EDIT' : 'SIGSA3-NUEVO' }}</span>
+  <span class="hud-title">{{ enEdicion ? 'ACTUALIZAR REGISTRO SIGSA-3' : 'NUEVO REGISTRO SIGSA-3' }}</span>
+  <span class="hud-status">{{ nombre_paciente_display }}</span>
+</div>
+
+<!-- ACTION DOCK -->
+<div class="action-dock">
+  <span class="dock-hint">{{ enEdicion ? 'Modo edición' : 'Nuevo registro' }}</span>
+  <button type="button" class="btn-dock btn-dock-cancel" (click)="volver()">
+    <span [innerHTML]="cancelIcon"></span> Cancelar
+  </button>
+  <button type="button" class="btn-dock btn-dock-save" [disabled]="guardando" (click)="guardar()">
+    <span [innerHTML]="saveIcon"></span>
+    {{ guardando ? 'Guardando...' : enEdicion ? 'Actualizar' : 'Registrar' }}
+  </button>
+</div>
+
+<!-- FORM -->
+<form [formGroup]="form" class="adm-body">
+  <div class="adm-grid">
+    <div class="adm-col">
+
+      <!-- DATOS DEL PACIENTE -->
+      <div class="section-card">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M8 2a3 3 0 100 6 3 3 0 000-6z"/>
+                <path d="M2 14a6 6 0 0112 0"/>
+              </svg>
+            </div>
+            <span class="sec-title">Datos del Paciente</span>
+          </div>
+        </div>
+        <div class="sec-body">
+          <div class="field-row">
+            <div class="field">
+              <span class="field-label">Nombre del Paciente</span>
+              <input class="field-input" type="text" formControlName="nombre_paciente" placeholder="Nombre completo" />
+            </div>
+            <div class="field">
+              <span class="field-label">No. Historia Clínica</span>
+              <input class="field-input" type="text" formControlName="no_historia_clinica" placeholder="HC-00000" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <span class="field-label">Sexo</span>
+              <div class="chips-row">
+                <span class="chip" [class.on]="form.get('sexo')?.value === 'M'" (click)="form.get('sexo')?.setValue('M')">♂ M</span>
+                <span class="chip" [class.on]="form.get('sexo')?.value === 'F'" (click)="form.get('sexo')?.setValue('F')">♀ F</span>
+              </div>
+            </div>
+            <div class="field">
+              <span class="field-label">Edad (años)</span>
+              <input class="field-input" type="number" formControlName="edad_anios" placeholder="0" />
+            </div>
+            <div class="field">
+              <span class="field-label">Edad (meses)</span>
+              <input class="field-input" type="number" formControlName="edad_meses" placeholder="0" />
+            </div>
+            <div class="field">
+              <span class="field-label">Edad (días)</span>
+              <input class="field-input" type="number" formControlName="edad_dias" placeholder="0" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATOS DE LA CONSULTA -->
+      <div class="section-card">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="2" y="2" width="12" height="12" rx="2"/>
+                <path d="M5 5h6M5 8h4"/>
+              </svg>
+            </div>
+            <span class="sec-title">Datos de la Consulta</span>
+          </div>
+        </div>
+        <div class="sec-body">
+          <div class="field-row">
+            <div class="field">
+              <span class="field-label">Fecha de Consulta</span>
+              <input class="field-input" type="date" formControlName="fecha_consulta" />
+            </div>
+            <div class="field">
+              <span class="field-label">Tipo de Consulta</span>
+              <select class="field-input" formControlName="tipo_consulta">
+                <option value="">Seleccionar</option>
+                <option value="1 Primera">1 Primera</option>
+                <option value="2 Reconsulta">2 Reconsulta</option>
+                <option value="3 Emergencia">3 Emergencia</option>
+                <option value="4 Interconsulta">4 Interconsulta</option>
+              </select>
+            </div>
+            <div class="field">
+              <span class="field-label">Control</span>
+              <input class="field-input" type="text" formControlName="control" placeholder="Control" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <span class="field-label">Personal de Salud</span>
+              <input class="field-input" type="text" formControlName="personal_salud" placeholder="Dr. ..." />
+            </div>
+            <div class="field">
+              <span class="field-label">Especialidad</span>
+              <input class="field-input" type="text" formControlName="especialidad" placeholder="Medicina General" />
+            </div>
+            <div class="field">
+              <span class="field-label">Semana Gestacional</span>
+              <input class="field-input" type="number" formControlName="semana_gestacional" placeholder="0" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIAGNÓSTICO -->
+      <div class="section-card">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M3 3h10v10H3z"/>
+                <path d="M6 6h4M6 8h3"/>
+              </svg>
+            </div>
+            <span class="sec-title">Diagnóstico</span>
+          </div>
+        </div>
+        <div class="sec-body">
+          <div class="field-row">
+            <div class="field">
+              <span class="field-label">Código CIE-10</span>
+              <input class="field-input" type="text" formControlName="codigo_cie_10" placeholder="A00.0" />
+            </div>
+          </div>
+          <div class="field">
+            <span class="field-label">Diagnóstico (Dx)</span>
+            <textarea class="field-input field-textarea" formControlName="dx" rows="3" placeholder="Descripción del diagnóstico..."></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</form>

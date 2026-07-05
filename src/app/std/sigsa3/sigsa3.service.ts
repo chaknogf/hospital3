@@ -1,0 +1,181 @@
+// sigsa3.service.ts
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap, catchError, finalize } from 'rxjs/operators';
+import { BaseApiService, PaginationState } from '../../service/base-api.service';
+import {
+  Sigsa3Out,
+  Sigsa3Create,
+  Sigsa3Update,
+  FiltroSigsa3,
+  Sigsa3EspecialidadResponse,
+  Sigsa3DxFrecuentesResponse
+} from '../../interface/sigsa3.interface';
+
+@Injectable({ providedIn: 'root' })
+export class Sigsa3Service extends BaseApiService {
+
+  private registrosSubject = new BehaviorSubject<Sigsa3Out[]>([]);
+  registros$ = this.registrosSubject.asObservable();
+
+  private ultimoFiltro: PaginationState = { filtro: { limit: 100 } };
+
+  constructor(http: HttpClient, router: Router) {
+    super(http, router);
+  }
+
+  private refrescar(): void {
+    this.listarRegistros(this.ultimoFiltro.filtro).subscribe();
+  }
+
+  // ── GET ──
+
+  listarRegistros(filtros?: FiltroSigsa3): Observable<Sigsa3Out[]> {
+    this.ultimoFiltro.filtro = filtros ?? {};
+    const params = this.limpiarParametros(filtros ?? {});
+    const key = this.cacheKey(`${this.baseUrl}/sigsa3`, params);
+
+    return this.cacheGet(key,
+      this.http.get<Sigsa3Out[]>(`${this.baseUrl}/sigsa3`, { params }).pipe(
+        tap(data => this.registrosSubject.next(data)),
+        catchError(error => this.manejarError(error, 'listar registros SIGSA3'))
+      )
+    );
+  }
+
+  obtenerRegistro(id: number): Observable<Sigsa3Out> {
+    return this.http.get<Sigsa3Out>(`${this.baseUrl}/sigsa3/${id}`).pipe(
+      catchError(error => this.manejarError(error, 'obtener registro SIGSA3'))
+    );
+  }
+
+  listarNoAsociados(limit = 100): Observable<Sigsa3Out[]> {
+    const params = new (this as any).http.constructor !== undefined
+      ? this.limpiarParametros({ limit })
+      : this.limpiarParametros({ limit });
+    return this.http.get<Sigsa3Out[]>(`${this.baseUrl}/sigsa3/no-asociados/`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'listar no asociados'))
+    );
+  }
+
+  // ── POST ──
+
+  crearRegistro(data: Sigsa3Create): Observable<Sigsa3Out> {
+    this.isLoading.set(true);
+    return this.offMutation('POST', `${this.baseUrl}/sigsa3`, data).pipe(
+      tap(() => this.refrescar()),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  importarExcel(file: File): Observable<{ insertados: number; errores: number }> {
+    this.isLoading.set(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ insertados: number; errores: number }>(
+      `${this.baseUrl}/sigsa3/importar-excel`, formData
+    ).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'importar Excel SIGSA3'))
+    );
+  }
+
+  asociarPaciente(expediente: string, noHistoriaClinica: string): Observable<any> {
+    this.isLoading.set(true);
+    return this.offMutation('POST', `${this.baseUrl}/sigsa3/asociar-paciente`, {
+      expediente, no_historia_clinica: noHistoriaClinica
+    }).pipe(
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  actualizarEspecialidad(personalSalud: string): Observable<any> {
+    this.isLoading.set(true);
+    return this.offMutation('POST', `${this.baseUrl}/sigsa3/actualizar-especialidad`, {
+      personal_salud: personalSalud
+    }).pipe(
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  eliminarPorIds(ids: number[]): Observable<{ eliminados: number }> {
+    this.isLoading.set(true);
+    return this.offMutation('POST', `${this.baseUrl}/sigsa3/eliminar-por-ids`, { ids }).pipe(
+      tap(() => this.refrescar()),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  eliminarPorPeriodo(desde: string, hasta: string): Observable<any> {
+    this.isLoading.set(true);
+    return this.offMutation('POST', `${this.baseUrl}/sigsa3/eliminar-por-periodo`, { desde, hasta }).pipe(
+      tap(() => this.refrescar()),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  asociarMedico(): Observable<any> {
+    this.isLoading.set(true);
+    return this.offMutation('POST', `${this.baseUrl}/sigsa3/asociar-medico`).pipe(
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  asociarTodo(): Observable<any> {
+    this.isLoading.set(true);
+    return this.offMutation('POST', `${this.baseUrl}/sigsa3/asociar-todo`).pipe(
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  // ── PUT / DELETE ──
+
+  actualizarRegistro(id: number, data: Sigsa3Update): Observable<Sigsa3Out> {
+    this.isLoading.set(true);
+    return this.offMutation('PUT', `${this.baseUrl}/sigsa3/${id}`, data).pipe(
+      tap(() => this.refrescar()),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  eliminarRegistro(id: number): Observable<void> {
+    this.isLoading.set(true);
+    return this.offMutation('DELETE', `${this.baseUrl}/sigsa3/${id}`).pipe(
+      tap(() => this.refrescar()),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  // ── Estadísticas ──
+
+  sigsa3PorEspecialidad(desde: string, hasta: string): Observable<Sigsa3EspecialidadResponse> {
+    this.isLoading.set(true);
+    const params = this.limpiarParametros({ desde, hasta });
+    return this.http.get<Sigsa3EspecialidadResponse>(
+      `${this.baseUrl}/estadisticas/sigsa3/por-especialidad`, { params }
+    ).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener estadísticas SIGSA3 por especialidad'))
+    );
+  }
+
+  sigsa3DxFrecuentes(
+    desde: string,
+    hasta: string,
+    top = 10,
+    tipo_consulta?: number,
+    especialidad?: string
+  ): Observable<Sigsa3DxFrecuentesResponse> {
+    this.isLoading.set(true);
+    const params = this.limpiarParametros({ desde, hasta, top, tipo_consulta, especialidad });
+    return this.http.get<Sigsa3DxFrecuentesResponse>(
+      `${this.baseUrl}/estadisticas/sigsa3/dx-frecuentes`, { params }
+    ).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener dx frecuentes SIGSA3'))
+    );
+  }
+}
