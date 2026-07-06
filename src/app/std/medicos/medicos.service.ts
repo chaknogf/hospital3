@@ -65,6 +65,19 @@ export class MedicosService extends BaseApiService {
   }
 
   /**
+   * Obtiene todos los médicos (sin límite) para exportación
+   */
+  getAllMedicos(): Observable<MedicoOut[]> {
+    const params = this.limpiarParametros({ skip: 0, limit: 500 });
+    return this.http.get<MedicoOut[]>(
+      `${this.baseUrl}/medicos`,
+      { params }
+    ).pipe(
+      catchError(error => this.manejarError(error, 'obtener todos los médicos'))
+    );
+  }
+
+  /**
    * Obtiene un médico por ID
    * GET /medicos/{id}
    */

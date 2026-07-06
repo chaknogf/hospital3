@@ -483,6 +483,7 @@ export class ListaNacimientosComponent implements OnInit {
           Clasificación: n.clasificacion_nacimiento || '',
           'Trabajo Parto': n.trabajo_parto || '',
           Extrahospitalario: n.neonatales?.extrahospitalario ? 'Sí' : 'No',
+          Mortinato: n.mortinato ? 'Sí' : 'No',
           'Nombre Madre': n.nombre_madre || '',
           'ID Paciente': n.paciente_id ?? '',
           'ID Madre': n.madre_id ?? ''

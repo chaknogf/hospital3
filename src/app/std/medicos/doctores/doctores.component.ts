@@ -4,6 +4,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import * as XLSX from 'xlsx';
 import { MedicoOut } from '../../../interface/medicos.interface';
 import { MedicosService } from '../medicos.service';
 import { IconService } from '../../../service/icon.service';
@@ -204,6 +205,40 @@ export class DoctoresComponent implements OnInit {
         }
 
       });
+  }
+
+  // ======= EXCEL =======
+
+  descargarExcel(): void {
+    this.api.getAllMedicos().subscribe({
+      next: data => {
+        if (!data.length) {
+          alert('No hay registros para exportar.');
+          return;
+        }
+
+        const rows = data.map(m => ({
+          ID: m.id,
+          Nombre: m.nombre,
+          Colegiado: m.colegiado || '',
+          Especialidad: m.especialidad || '',
+          Estado: m.activo ? 'Activo' : 'Inactivo',
+          DPI: m.dpi || '',
+          Sexo: m.sexo || ''
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(rows);
+        const colWidths = Object.keys(rows[0]).map(k => ({ wch: Math.max(k.length, 18) }));
+        ws['!cols'] = colWidths;
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Médicos');
+        XLSX.writeFile(wb, `medicos_${new Date().toISOString().slice(0, 10)}.xlsx`);
+      },
+      error: err => {
+        console.error('Error al descargar Excel:', err);
+        alert('Error al descargar el Excel. Intente de nuevo.');
+      }
+    });
   }
 
   // ======= PAGINADOR =======
