@@ -1,4 +1,6 @@
-.page-container { padding: 20px; max-width: 1000px; margin: 0 auto; }
+/* dx-z-cie10.component.css */
+
+.page-container { padding: 20px; max-width: 1200px; margin: 0 auto; }
 .page-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
 .page-header h1 { font-size: 1.4rem; font-weight: 700; color: #e2e8f0; margin: 0; }
 .btn-back { background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3); border-radius: 8px; color: #60a5fa; padding: 6px 14px; font-size: 0.8rem; cursor: pointer; }
@@ -12,16 +14,23 @@
 .filtros-bar input { padding: 6px 10px; background: #1e293b; border: 1px solid rgba(148,163,184,0.25); border-radius: 6px; color: #e2e8f0; font-size: 0.85rem; }
 .btn-primary { background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.4); border-radius: 8px; color: #60a5fa; padding: 7px 18px; font-size: 0.8rem; cursor: pointer; font-weight: 600; }
 .btn-primary:hover { background: rgba(59,130,246,0.3); }
-.total-badge { display: inline-block; padding: 6px 16px; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); border-radius: 20px; color: #60a5fa; font-size: 0.85rem; font-weight: 600; margin-bottom: 14px; }
+.section-title { display: flex; align-items: center; gap: 12px; margin: 24px 0 12px; }
+.section-title h2 { font-size: 1.1rem; font-weight: 700; color: #e2e8f0; margin: 0; }
+.total-badge { display: inline-block; padding: 4px 12px; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); border-radius: 20px; color: #60a5fa; font-size: 0.8rem; font-weight: 600; }
+.section-gap { margin-top: 32px; }
 .table-wrap { overflow-x: auto; }
 .reporte-table { width: 100%; border-collapse: collapse; background: rgba(15,23,42,0.8); border-radius: 10px; overflow: hidden; }
 .reporte-table th { background: #1e293b; color: #94a3b8; padding: 10px 14px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
 .reporte-table td { padding: 10px 14px; color: #e2e8f0; border-bottom: 1px solid rgba(148,163,184,0.1); font-size: 0.85rem; text-align: center; }
 .reporte-table tbody tr:hover { background: rgba(59,130,246,0.05); }
-.text-right { text-align: right; font-weight: 600; }
-.paginador { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 18px; padding: 12px; }
-.btn-page { background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.25); border-radius: 6px; color: #60a5fa; padding: 6px 12px; font-size: 0.85rem; cursor: pointer; min-width: 36px; }
-.btn-page:hover:not(:disabled) { background: rgba(59,130,246,0.25); }
-.btn-page:disabled { opacity: 0.35; cursor: not-allowed; }
-.page-info { color: #94a3b8; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px; }
+.code-cell { font-family: 'Fira Code', monospace; font-weight: 600; color: #38bdf8; }
+.num { text-align: right; font-variant-numeric: tabular-nums; padding: 8px 10px; }
+.pivot-table th, .pivot-table td { white-space: nowrap; }
+.tc-header { text-align: center; border-left: 1px solid rgba(148,163,184,0.12); }
+.sub-header { text-align: center; font-size: 0.7rem; color: #64748b; padding: 6px 8px; }
+.esp-label { font-weight: 600; color: #e2e8f0; min-width: 140px; }
+.total-sub { font-weight: 600; color: #60a5fa; }
+.total-col { background: rgba(59,130,246,0.06); }
+.pivot-table tfoot th { background: #0f172a; color: #94a3b8; border-top: 2px solid rgba(148,163,184,0.2); padding: 10px 14px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.pivot-table tfoot .total-sub { color: #38bdf8; }
 @media (max-width: 600px) { .page-container { padding: 12px; } }

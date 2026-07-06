@@ -481,6 +481,10 @@ export const routes: Routes = [
             path: 'sigsa3-dx-frecuentes',
             loadComponent: () => import('./std/reportes/sigsa3-dx-frecuentes/sigsa3-dx-frecuentes.component').then(c => c.Sigsa3DxFrecuentesComponent)
           },
+          {
+            path: 'dx-z-cie10',
+            loadComponent: () => import('./std/reportes/dx-z-cie10/dx-z-cie10.component').then(c => c.DxZCie10Component)
+          },
         ]
       },
     ]

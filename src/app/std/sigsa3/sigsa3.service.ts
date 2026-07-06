@@ -12,7 +12,8 @@ import {
   Sigsa3Update,
   FiltroSigsa3,
   Sigsa3EspecialidadResponse,
-  Sigsa3DxFrecuentesResponse
+  Sigsa3DxFrecuentesResponse,
+  Sigsa3DxZResponse
 } from '../../interface/sigsa3.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -159,6 +160,28 @@ export class Sigsa3Service extends BaseApiService {
     ).pipe(
       finalize(() => this.isLoading.set(false)),
       catchError(error => this.manejarError(error, 'obtener estadísticas SIGSA3 por especialidad'))
+    );
+  }
+
+  sigsa3DxZ34(desde: string, hasta: string): Observable<Sigsa3DxZResponse> {
+    this.isLoading.set(true);
+    const params = this.limpiarParametros({ desde, hasta });
+    return this.http.get<Sigsa3DxZResponse>(
+      `${this.baseUrl}/sigsa3/dx/z34`, { params }
+    ).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener diagnósticos Z:34'))
+    );
+  }
+
+  sigsa3DxZ10(desde: string, hasta: string): Observable<Sigsa3DxZResponse> {
+    this.isLoading.set(true);
+    const params = this.limpiarParametros({ desde, hasta });
+    return this.http.get<Sigsa3DxZResponse>(
+      `${this.baseUrl}/sigsa3/dx/z10`, { params }
+    ).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener diagnósticos Z:10'))
     );
   }
 

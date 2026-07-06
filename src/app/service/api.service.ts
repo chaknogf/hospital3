@@ -510,9 +510,13 @@ export class ApiService {
     );
   }
 
-  getPersonalHospital(desde: string, hasta: string): Observable<any> {
+  getPersonalHospital(desde: string, hasta: string, skip = 0, limit = 100): Observable<any> {
     this.isLoading.set(true);
-    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
+    const params = new HttpParams()
+      .set('desde', desde)
+      .set('hasta', hasta)
+      .set('skip', skip.toString())
+      .set('limit', limit.toString());
     return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/personal-hospital`, { params }).pipe(
       finalize(() => this.isLoading.set(false)),
       catchError(error => this.manejarError(error, 'obtener personal hospital'))

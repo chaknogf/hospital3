@@ -15,7 +15,7 @@
   <div *ngIf="cargando" class="state-box spinner"></div>
   <div *ngIf="error" class="state-box error">{{ error }}</div>
   <div *ngIf="!cargando && datos.length > 0">
-    <div class="total-badge">Total: {{ data?.total_general }} registros</div>
+    <div class="total-badge">Total: {{ totalRegistros }} registros · Página {{ pagina }} de {{ totalPaginas }}</div>
     <div class="table-wrap">
       <table class="reporte-table">
         <thead>
@@ -45,6 +45,15 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Paginador -->
+    <div class="paginador">
+      <button class="btn-page" [disabled]="pagina === 1" (click)="irPagina(1)">«</button>
+      <button class="btn-page" [disabled]="pagina === 1" (click)="irPagina(pagina - 1)">‹</button>
+      <span class="page-info">Página {{ pagina }} de {{ totalPaginas }}</span>
+      <button class="btn-page" [disabled]="pagina === totalPaginas" (click)="irPagina(pagina + 1)">›</button>
+      <button class="btn-page" [disabled]="pagina === totalPaginas" (click)="irPagina(totalPaginas)">»</button>
     </div>
   </div>
   <div *ngIf="!cargando && !error && datos.length === 0" class="state-box">

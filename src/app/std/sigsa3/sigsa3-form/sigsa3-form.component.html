@@ -24,6 +24,43 @@
   <div class="adm-grid">
     <div class="adm-col">
 
+      <!-- ASOCIACIONES -->
+      <div class="section-card">
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M4 7h8M8 4v6M3 3h10v10H3z"/>
+              </svg>
+            </div>
+            <span class="sec-title">Asociaciones</span>
+          </div>
+        </div>
+        <div class="sec-body">
+          <div class="field-row">
+            <div class="field">
+              <span class="field-label">Paciente ID</span>
+              <input class="field-input" type="number" formControlName="paciente_id" placeholder="ID del paciente" />
+            </div>
+            <div class="field">
+              <span class="field-label">Consulta ID</span>
+              <input class="field-input" type="number" formControlName="consulta_id" placeholder="ID de la consulta" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <span class="field-label">Médico</span>
+              <select class="field-input" formControlName="medico_id">
+                <option [ngValue]="null">Sin médico</option>
+                <option *ngFor="let m of medicos" [ngValue]="m.id">
+                  {{ m.nombre }}{{ m.especialidad ? ' — ' + m.especialidad : '' }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- DATOS DEL PACIENTE -->
       <div class="section-card">
         <div class="sec-head">

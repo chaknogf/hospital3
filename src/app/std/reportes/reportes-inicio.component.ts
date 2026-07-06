@@ -67,6 +67,7 @@ export class ReportesInicioComponent implements OnInit {
       { nombre: 'Resumen Procedimientos', descripcion: 'Resumen anual/mensual', ruta: '/reportes/resumen-procedimientos', icon: 'medical' },
       { nombre: 'SIGSA-3 por Especialidad', descripcion: 'Consultas por especialidad, tipo y sexo', ruta: '/reportes/sigsa3-estadistica', icon: 'consultas' },
       { nombre: 'SIGSA-3 Dx Frecuentes', descripcion: 'Top 10 diagnósticos más frecuentes', ruta: '/reportes/sigsa3-dx-frecuentes', icon: 'datos' },
+      { nombre: 'Diagnósticos CIE-10 Z', descripcion: 'Filtrar por códigos Z:34 y Z:10', ruta: '/reportes/dx-z-cie10', icon: 'archivo' },
     ];
   }
 

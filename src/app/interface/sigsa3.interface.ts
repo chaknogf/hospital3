@@ -116,3 +116,23 @@ export interface Sigsa3DxFrecuentesResponse {
   total_general: number;
   generado_en: string;
 }
+
+// ── Diagnósticos CIE-10 Z ──
+
+export interface Sigsa3DxZItem {
+  tipo_consulta: string;
+  codigo_cie_10: string;
+  total: number;
+  pacientes: number;
+}
+
+export interface Sigsa3DxZResponse {
+  titulo: string;
+  desde: string;
+  hasta: string;
+  codigos_filtrados: string[];
+  datos: Sigsa3DxZItem[];
+  total_general: number;
+  total_pacientes: number;
+  generado_en: string;
+}

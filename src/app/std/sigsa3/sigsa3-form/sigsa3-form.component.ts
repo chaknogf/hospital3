@@ -7,6 +7,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Sigsa3Create, Sigsa3Out, Sigsa3Update } from '../../../interface/sigsa3.interface';
 import { Sigsa3Service } from '../sigsa3.service';
 import { IconService } from '../../../service/icon.service';
+import { ApiService } from '../../../service/api.service';
+import { Medico } from '../../../interface/medicos.interface';
 
 @Component({
   selector: 'app-sigsa3-form',
@@ -28,7 +30,12 @@ export class Sigsa3FormComponent implements OnInit {
   guardando = false;
   enEdicion = false;
 
+  medicos: Medico[] = [];
+
   form: FormGroup = this.fb.group({
+    paciente_id: [null],
+    consulta_id: [null],
+    medico_id: [null],
     personal_salud: [''],
     fecha_consulta: [''],
     no_historia_clinica: [''],
@@ -54,6 +61,7 @@ export class Sigsa3FormComponent implements OnInit {
 
   constructor(
     private api: Sigsa3Service,
+    private apiService: ApiService,
     private iconService: IconService
   ) {
     this.saveIcon = this.iconService.getIcon('saveIcon');
@@ -61,11 +69,19 @@ export class Sigsa3FormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargarMedicos();
     this.registroId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.registroId) {
       this.enEdicion = true;
       this.cargarRegistro(this.registroId);
     }
+  }
+
+  cargarMedicos(): void {
+    this.apiService.getMedicos({}).subscribe({
+      next: (data) => this.medicos = data.filter(m => m.activo),
+      error: () => {}
+    });
   }
 
   cargarRegistro(id: number): void {
@@ -74,6 +90,9 @@ export class Sigsa3FormComponent implements OnInit {
       next: (data) => {
         this.registroActual = data;
         this.form.patchValue({
+          paciente_id: data.paciente_id,
+          consulta_id: data.consulta_id,
+          medico_id: data.medico_id,
           personal_salud: data.personal_salud,
           fecha_consulta: data.fecha_consulta,
           no_historia_clinica: data.no_historia_clinica,

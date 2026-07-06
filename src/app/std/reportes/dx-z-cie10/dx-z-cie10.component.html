@@ -1,0 +1,88 @@
+<!-- dx-z-cie10.component.html -->
+
+<div class="page-container">
+  <div class="page-header">
+    <button class="btn-back" routerLink="/reportes">← Volver</button>
+    <h1>Diagnósticos CIE-10 Z</h1>
+  </div>
+
+  <div class="filtros-bar">
+    <label>Desde: <input type="date" [(ngModel)]="desde" /></label>
+    <label>Hasta: <input type="date" [(ngModel)]="hasta" /></label>
+    <button class="btn-primary" (click)="cargar()">Buscar</button>
+  </div>
+
+  <div *ngIf="cargando" class="state-box spinner"></div>
+  <div *ngIf="error" class="state-box error">{{ error }}</div>
+
+  <!-- Z:34 -->
+  <div *ngIf="!cargando && !error && dataZ34">
+    <div class="section-title">
+      <h2>{{ dataZ34.titulo }}</h2>
+      <span class="total-badge">Total: {{ dataZ34.total_general }} · Pacientes: {{ dataZ34.total_pacientes }}</span>
+    </div>
+
+    <div *ngIf="dataZ34.datos.length === 0" class="state-box">Sin datos para el rango seleccionado.</div>
+
+    <div *ngIf="dataZ34.datos.length > 0" class="table-wrap">
+      <table class="reporte-table">
+        <thead>
+          <tr>
+            <th>Tipo Consulta</th>
+            <th>Código CIE-10</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of dataZ34.datos">
+            <td>{{ row.tipo_consulta }}</td>
+            <td class="code-cell">{{ row.codigo_cie_10 }}</td>
+            <td class="num">{{ row.total }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Z:10 — Pivot por código -->
+  <div *ngIf="!cargando && !error && dataZ10" class="section-gap">
+    <div class="section-title">
+      <h2>{{ dataZ10.titulo }}</h2>
+      <span class="total-badge">Total: {{ dataZ10.total_general }} · Pacientes: {{ dataZ10.total_pacientes }}</span>
+    </div>
+
+    <div *ngIf="z10PivotRows.length === 0" class="state-box">Sin datos para el rango seleccionado.</div>
+
+    <div *ngIf="z10PivotRows.length > 0" class="table-wrap">
+      <table class="reporte-table pivot-table">
+        <thead>
+          <tr>
+            <th>Tipo Consulta</th>
+            <th class="tc-header">Z:10:4</th>
+            <th class="tc-header">Z:10:5</th>
+            <th class="tc-header">Z:10:6</th>
+            <th class="tc-header total-col">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of z10PivotRows">
+            <td class="esp-label">{{ row.tipo_consulta }}</td>
+            <td class="num">{{ row.z10_4?.total ?? 0 }}</td>
+            <td class="num">{{ row.z10_5?.total ?? 0 }}</td>
+            <td class="num">{{ row.z10_6?.total ?? 0 }}</td>
+            <td class="num total-sub">{{ row.total }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>Total</th>
+            <th class="num">{{ z10TotalesPorCodigo[0] }}</th>
+            <th class="num">{{ z10TotalesPorCodigo[1] }}</th>
+            <th class="num">{{ z10TotalesPorCodigo[2] }}</th>
+            <th class="num total-sub">{{ dataZ10.total_general }}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

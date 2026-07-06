@@ -31,6 +31,7 @@ export class ReportesComponent {
     { ruta: '/reportes/resumen-procedimientos', icono: '📈', nombre: 'Resumen Procedimientos', descripcion: 'Resumen anual/mensual de procedimientos' },
     { ruta: '/reportes/sigsa3-estadistica', icono: '📊', nombre: 'SIGSA-3 por Especialidad', descripcion: 'Consultas SIGSA-3 por especialidad, tipo y sexo' },
     { ruta: '/reportes/sigsa3-dx-frecuentes', icono: '🔬', nombre: 'SIGSA-3 Dx Frecuentes', descripcion: 'Top 10 diagnósticos más frecuentes por especialidad' },
+    { ruta: '/reportes/dx-z-cie10', icono: '📋', nombre: 'Diagnósticos CIE-10 Z', descripcion: 'Filtrar por códigos Z:34 y Z:10 entre fechas' },
   ];
 
   regresar(): void {
