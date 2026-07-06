@@ -419,6 +419,23 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin', 'std'])]
       },
 
+      // Censo de Camas
+      {
+        path: 'censo-camas',
+        loadComponent: () => import('./std/censo-camas/censo-camas-list.component').then(c => c.CensoCamasListComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
+        path: 'censo-camas/nuevo',
+        loadComponent: () => import('./std/censo-camas/censo-camas-form.component').then(c => c.CensoCamasFormComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
+        path: 'censo-camas/editar/:id',
+        loadComponent: () => import('./std/censo-camas/censo-camas-form.component').then(c => c.CensoCamasFormComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+
       // Reportes y Estadísticas — submenú lateral con rutas hijas
       {
         path: 'reportes',

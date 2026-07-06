@@ -71,8 +71,11 @@ export class BaseApiService {
   protected manejarError(error: any, operacion: string) {
     console.error(`❌ Error al ${operacion}:`, error);
     if (error instanceof HttpErrorResponse && error.status === 401) {
+      this.sync.clearOnLogout();
       localStorage.clear();
       this.token.set(null);
+      this.username.set(null);
+      this.role.set(null);
       this.router.navigate(['/inicio']);
     }
     return throwError(() => error);

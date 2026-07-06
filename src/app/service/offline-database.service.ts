@@ -145,4 +145,8 @@ export class OfflineDatabaseService extends Dexie {
     await this.mutations.clear();
     await this.syncMeta.clear();
   }
+
+  async clearOnLogout(): Promise<void> {
+    await this.clearAllData();
+  }
 }

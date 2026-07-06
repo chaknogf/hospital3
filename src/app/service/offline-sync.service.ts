@@ -58,6 +58,10 @@ export class OfflineSyncService {
     await this.db.clearCache();
   }
 
+  async clearOnLogout(): Promise<void> {
+    await this.db.clearOnLogout();
+  }
+
   preCache<T>(key: string, request$: Observable<T>, ttl: number = 60 * 60 * 1000): void {
     if (!this.online) return;
     request$.pipe(

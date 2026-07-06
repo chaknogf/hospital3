@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -23,12 +23,15 @@ import localeEs from '@angular/common/locales/es';
   styleUrls: ['./app.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'medicalApp';
-  estaAutenticado = false;
-  username = '';
-  role = '';
   modalActivo = false;
+
+  estaAutenticado = computed(() => !!this.api.token());
+  username = computed(() => this.api.username() || '');
+  role = computed(() => 'Rol: ' + (this.api.role() || ''));
+
+  private syncTriggered = false;
 
   constructor(
     private router: Router,
@@ -36,24 +39,32 @@ export class AppComponent implements OnInit {
     private sync: OfflineSyncService,
     public fullSync: FullSyncService,
     private http: HttpClient
-  ) { registerLocaleData(localeEs); }
-
-  ngOnInit() {
+  ) {
+    registerLocaleData(localeEs);
     this.detectarRuta();
-
-    this.username = localStorage.getItem('username') || '';
-    this.role = 'Rol: ' + localStorage.getItem('role') || '';
-    if (this.username) {
-      this.estaAutenticado = true;
-      this.preCacheReferenceData();
-      this.triggerFullSync();
-    }
   }
 
   private triggerFullSync(): void {
+    if (this.syncTriggered) return;
+    this.syncTriggered = true;
     this.fullSync.syncAll(false).catch(err => {
       console.warn('Sincronización inicial falló, se reintentará:', err);
     });
+  }
+
+  detectarRuta() {
+    this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe((evento) => {
+        const url = evento.urlAfterRedirects;
+
+        if (url === '/' || url.includes('/inicio')) {
+          this.syncTriggered = false;
+        } else if (this.api.token()) {
+          this.preCacheReferenceData();
+          this.triggerFullSync();
+        }
+      });
   }
 
   private preCacheReferenceData(): void {
@@ -70,30 +81,13 @@ export class AppComponent implements OnInit {
     );
   }
 
-  detectarRuta() {
-    this.router.events
-      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe((evento) => {
-        const url = evento.urlAfterRedirects;
-
-        if (url === '/' || url.includes('/inicio')) {
-          this.estaAutenticado = false;
-        } else {
-          this.estaAutenticado = true;
-        }
-      });
-  }
-
   desconectarUsuario() {
-    console.log('Cerrando sesión...');
-
     this.api.logOut();
-
   }
 
   reSync(): void {
     this.fullSync.syncAll(true).catch(err => {
-      console.warn('Re-sincronización falló:', err);
+      console.warn('Re-sincronización falló, se reintentará:', err);
     });
   }
 
@@ -110,5 +104,4 @@ export class AppComponent implements OnInit {
     event.stopPropagation();
     this.fullSync.cancel();
   }
-
 }

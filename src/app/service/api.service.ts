@@ -248,12 +248,15 @@ export class ApiService {
   }
 
   logOut(): void {
+    this.sync.clearOnLogout();
     localStorage.removeItem('access_token');
     localStorage.removeItem('username');
     localStorage.removeItem('role');
+    localStorage.removeItem('nombreUsuario');
     this.token.set(null);
     this.username.set(null);
     this.role.set(null);
+    this.nombreUsuario.set(null);
     this.router.navigate(['/inicio']);
   }
 

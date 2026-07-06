@@ -54,6 +54,7 @@ export class EstadisticaComponent implements OnInit {
 
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
       { nombre: 'Procedimientos', descripcion: 'Registro de procedimientos menores y mayores', ruta: '/procedimientosmenores', icon: '' },
+      { nombre: 'Censo de Camas', descripcion: 'Gestión y registro del censo diario de camas', ruta: '/censo-camas', icon: 'consultas' },
       { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: '/reportes', icon: 'archivo' },
       { nombre: 'Personal Hospital', descripcion: 'Personal del hospital registrado', ruta: '/personal-hospital', icon: 'doctor' },
       { nombre: 'Nacimientos', descripcion: 'Registro de Nacimientos', ruta: '/nacimientos-std', icon: 'baby' },
