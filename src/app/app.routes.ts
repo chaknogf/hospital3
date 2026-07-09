@@ -435,6 +435,21 @@ export const routes: Routes = [
         loadComponent: () => import('./std/censo-camas/censo-camas-form.component').then(c => c.CensoCamasFormComponent),
         canActivate: [roleGuard(['admin', 'std'])]
       },
+      {
+        path: 'censo-camas/importar',
+        loadComponent: () => import('./std/censo-camas/censo-camas-import.component').then(c => c.CensoCamasImportComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
+        path: 'censo-camas/bulk',
+        loadComponent: () => import('./std/censo-camas/censo-camas-import.component').then(c => c.CensoCamasImportComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
+        path: 'censo-camas/upsert',
+        loadComponent: () => import('./std/censo-camas/censo-camas-import.component').then(c => c.CensoCamasImportComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
 
       // Reportes y Estadísticas — submenú lateral con rutas hijas
       {

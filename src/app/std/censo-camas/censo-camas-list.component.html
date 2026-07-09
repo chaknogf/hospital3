@@ -2,7 +2,10 @@
   <div class="page-header">
     <button class="btn-back" routerLink="/estadistica">← Volver</button>
     <h1>Censo de Camas</h1>
-    <button class="btn-new" (click)="nuevo()">+ Nuevo Registro</button>
+    <div class="header-actions">
+      <button class="btn-import" routerLink="/censo-camas/importar">📥 Importar CSV</button>
+      <button class="btn-new" (click)="nuevo()">+ Nuevo Registro</button>
+    </div>
   </div>
 
   <!-- TABS -->

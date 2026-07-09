@@ -1,0 +1,48 @@
+<div class="import-container">
+  <div class="page-header">
+    <button class="btn-back" (click)="volver()">← Volver</button>
+    <h1>Importar Censo de Camas desde CSV</h1>
+  </div>
+
+  <div class="upload-zone"
+       [class.drag-over]="arrastrando"
+       (dragover)="onDragOver($event)"
+       (dragleave)="onDragLeave($event)"
+       (drop)="onDrop($event)">
+    <div class="upload-icon">📄</div>
+    <p class="upload-text">Arrastra un archivo CSV aquí</p>
+    <p class="upload-sub">o</p>
+    <label class="btn-upload">
+      Seleccionar archivo
+      <input type="file" accept=".csv" (change)="onFileSelected($event)" hidden />
+    </label>
+    <p class="upload-hint" *ngIf="archivoSeleccionado">
+      Archivo: <strong>{{ archivoSeleccionado.name }}</strong>
+      ({{ (archivoSeleccionado.size / 1024).toFixed(1) }} KB)
+    </p>
+  </div>
+
+  <div class="actions">
+    <button class="btn-primary" (click)="importar()" [disabled]="!archivoSeleccionado || procesando">
+      {{ procesando ? 'Importando...' : 'Importar' }}
+    </button>
+  </div>
+
+  <div *ngIf="procesando" class="state-box spinner"></div>
+
+  <div *ngIf="error" class="state-box error">{{ error }}</div>
+
+  <div *ngIf="resultado" class="resultado-card">
+    <h3>Resultado de la importación</h3>
+    <div class="resultado-stats">
+      <div class="stat stat-ok">
+        <span class="stat-num">{{ resultado.insertados }}</span>
+        <span class="stat-label">Insertados</span>
+      </div>
+      <div class="stat stat-err">
+        <span class="stat-num">{{ resultado.errores }}</span>
+        <span class="stat-label">Errores</span>
+      </div>
+    </div>
+  </div>
+</div>

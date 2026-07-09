@@ -12884,15 +12884,21 @@ background-color: var(--rich-black-3);
   height: 1rem;
 }
 
-/* Contenedor de búsqueda */
+/* Contenedor de búsqueda Glassmorphism */
 .search-container {
   width: 95dvw;
   margin: 0 auto;
-  padding: 0.5rem;
-  background-color: #673ab761;
-  border-radius: 15px;
+  padding: 0.6rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
   display: flex;
   justify-content: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
 .search-form {
@@ -12911,29 +12917,43 @@ input::placeholder {
   font-size: 0.6rem;
 }
 
-/* Campos de entrada */
+/* Campos de entrada Glassmorphism */
 .search-input {
-
   font-size: 0.75rem;
   padding: 0.5rem 0.5rem;
   border-radius: 10px;
   font-weight: 500;
   text-transform: uppercase;
   text-align: center;
-background-color: rgba(235, 228, 228, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.637);
-  color: #fff;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #ffffff;
   min-width: 110px;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
+.search-input::placeholder {
+  color: rgba(255,255,255,0.4);
+}
 
+.search-input:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.35);
+}
 
 .search-input:focus {
-  border-color: #09f7c0;
-  box-shadow: 0 0 4px rgba(9, 247, 192, 0.25);
+  border-color: rgba(9,247,192,0.6);
+  background: rgba(255,255,255,0.14);
+  box-shadow:
+    0 0 0 3px rgba(9,247,192,0.15),
+    0 4px 12px rgba(9,247,192,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.15);
   outline: none;
-background-color: rgba(5, 0, 0, 0.573);
   font-size: 0.85rem;
 }
 
