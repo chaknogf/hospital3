@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CitaListResponse, CitaResponse, Citas } from '../../../interface/citas';
 import { CitaService } from '../cita.service';
@@ -13,15 +13,18 @@ import {
 } from '../../../shared/icons/svg-icon';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { Especialidades, KeyValue } from '../../../enum/especialidades';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-citados',
   templateUrl: './citados.component.html',
   styleUrls: ['./citados.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe]
 })
-export class CitadosComponent implements OnInit {
+export class CitadosComponent implements OnInit, OnDestroy {
   // ======= INYECCIONES =======
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -29,6 +32,9 @@ export class CitadosComponent implements OnInit {
   private fb = inject(FormBuilder);
   private location = inject(Location);
   private sanitizer = inject(DomSanitizer);
+
+  private destroy$ = new Subject<void>();
+
   private hoy(): string {
     const hoy = new Date();
     return hoy.toISOString().split('T')[0];
@@ -88,13 +94,18 @@ export class CitadosComponent implements OnInit {
 
   // ======= CICLO DE VIDA =======
   ngOnInit(): void {
-    this.api.citas$.subscribe(data => {
+    this.api.citas$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.citas = data;
       this.citasFiltradas = data;
       this.cargando = false;
     });
 
     this.cargarCitas();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private inicializarIconos(): void {
@@ -117,7 +128,7 @@ export class CitadosComponent implements OnInit {
   cargarCitas(): void {
     this.cargando = false;
     // console.log(this.filtros)
-    this.api.getCitas(this.filtros).subscribe({
+    this.api.getCitas(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => {
         this.totalDeRegistros = resultado.total;
         this.citas = resultado.citas;

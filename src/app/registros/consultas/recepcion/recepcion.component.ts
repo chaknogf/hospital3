@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { ConsultaOut, CicloClinico, EstadoCiclo, ConsultaUpdate, Egreso, Dx } from '../../../interface/consultas';
@@ -11,7 +11,8 @@ import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { TimePipe } from '../../../pipes/time.pipe';
 import { catchError, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 
@@ -22,13 +23,16 @@ const ESTADOS_INACTIVOS = new Set(['archivo', 'descartado']);
   templateUrl: './recepcion.component.html',
   styleUrls: ['./recepcion.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe]
 })
-export class RecepcionComponent implements OnInit {
+export class RecepcionComponent implements OnInit, OnDestroy {
 
   private api = inject(ConsultaService);
   private router = inject(Router);
   private iconService = inject(IconService);
+
+  private destroy$ = new Subject<void>();
 
   // ── Datos ──────────────────────────────────────────────────
   consultas: ConsultaOut[] = [];
@@ -97,6 +101,7 @@ export class RecepcionComponent implements OnInit {
 
     this.api.updateConsulta(this.consultaRecibiendo.id, { ciclo })
       .pipe(
+        takeUntil(this.destroy$),
         tap(() => {
           this.cerrarModalRecibido();
           this.cargarConsultas();
@@ -179,6 +184,7 @@ export class RecepcionComponent implements OnInit {
 
     this.api.updateConsulta(this.consultaArchivando.id, { ciclo, egreso })
       .pipe(
+        takeUntil(this.destroy$),
         tap(() => {
           this.cerrarModalArchivar();
           this.cargarConsultas();
@@ -198,17 +204,21 @@ export class RecepcionComponent implements OnInit {
   // CARGA
   // ══════════════════════════════════════════════════════════
   ngOnInit(): void {
-    // 1️⃣ Suscribirse al observable de consultas
-    this.api.consultas$.subscribe(data => { this.consultas = data; });
+    this.api.consultas$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.consultas = data; });
     this.cargarConsultas();
     this.buscar();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 
   cargarConsultas(): void {
     this.cargando = true;
     const params = this.limpiarFiltrosVacios(this.filtros);
-    this.api.getConsultas(params).subscribe({
+    this.api.getConsultas(params).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => {
         this.totalDeRegistros = resultado.total;
         this.consultas = resultado.consultas;
@@ -312,6 +322,10 @@ export class RecepcionComponent implements OnInit {
   agregar(): void { this.router.navigate(['/pacientes']); }
   verDetalle(id: number): void { this.router.navigate(['/detalleAdmision', id]); }
   volver(): void { this.router.navigate(['/registros']); }
+
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
+  }
 
   icons: { [key: string]: any } = (() => {
     const s = this.iconService;

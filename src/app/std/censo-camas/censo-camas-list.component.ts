@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -11,19 +11,24 @@ import {
 } from './censo-camas.interface';
 import { Encamamiento } from '../../interface/interfaces';
 import { ApiService } from '../../service/api.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-censo-camas-list',
   templateUrl: './censo-camas-list.component.html',
   styleUrls: ['./censo-camas-list.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, RouterLink]
 })
-export class CensoCamasListComponent implements OnInit {
+export class CensoCamasListComponent implements OnInit, OnDestroy {
 
   private censoService = inject(CensoCamasService);
   private api = inject(ApiService);
   private router = inject(Router);
+
+  private destroy$ = new Subject<void>();
 
   registros: CensoCamasOut[] = [];
   servicios: Encamamiento[] = [];
@@ -71,8 +76,13 @@ export class CensoCamasListComponent implements OnInit {
     this.cargar();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   cargarServicios(): void {
-    this.api.getServiciosEncamamiento(true).subscribe({
+    this.api.getServiciosEncamamiento(true).pipe(takeUntil(this.destroy$)).subscribe({
       next: (data: Encamamiento[]) => this.servicios = data,
       error: () => this.servicios = []
     });
@@ -84,7 +94,7 @@ export class CensoCamasListComponent implements OnInit {
     this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
     this.filtros.limit = this.pageSize;
 
-    this.censoService.getRegistros(this.filtros).subscribe({
+    this.censoService.getRegistros(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.registros = res.registros;
         this.totalDeRegistros = res.total;
@@ -95,6 +105,10 @@ export class CensoCamasListComponent implements OnInit {
         this.cargando = false;
       }
     });
+  }
+
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
   }
 
   buscar(): void {
@@ -136,7 +150,7 @@ export class CensoCamasListComponent implements OnInit {
     const confirmar = confirm('¿Desea eliminar este registro de censo?');
     if (!confirmar) return;
 
-    this.censoService.eliminar(id).subscribe({
+    this.censoService.eliminar(id).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => this.cargar(),
       error: (err) => console.error(err)
     });
@@ -166,7 +180,7 @@ export class CensoCamasListComponent implements OnInit {
     const hoy = this.fechaActual();
     const primeroMes = this.primeroDelMes();
 
-    this.censoService.getEstadisticas(primeroMes, hoy).subscribe({
+    this.censoService.getEstadisticas(primeroMes, hoy).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.estadisticaMes = res;
         this.cargandoEstadisticas = false;
@@ -176,7 +190,7 @@ export class CensoCamasListComponent implements OnInit {
       }
     });
 
-    this.censoService.getEstadisticas(hoy, hoy).subscribe({
+    this.censoService.getEstadisticas(hoy, hoy).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.estadisticaHoy = res;
       },

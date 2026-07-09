@@ -110,7 +110,7 @@
             class="input-filtros"
           >
             <option value="">Todos</option>
-            <option *ngFor="let t of tipos" [value]="t.value">
+            <option             *ngFor="let t of tipos; trackBy: trackById" [value]="t.value">
               {{ t.label }}
             </option>
           </select>
@@ -123,7 +123,7 @@
             class="input-filtros"
           >
             <option value="">Todos</option>
-            <option *ngFor="let c of ciclos" [value]="c.value">
+            <option             *ngFor="let c of ciclos; trackBy: trackById" [value]="c.value">
               {{ c.label }}
             </option>
           </select>
@@ -204,7 +204,7 @@
       </thead>
       <tbody>
         <tr
-          *ngFor="let data of consultas"
+          *ngFor="let data of consultas; trackBy: trackById"
           class="aurora-table-row"
           [class.touch-active]="rowActiva === data.id"
           (click)="activarFila(data.id)"
@@ -333,7 +333,7 @@
 
     <!-- Páginas del rango visible -->
     <button
-      *ngFor="let p of paginas"
+      *ngFor="let p of paginas; trackBy: trackById"
       class="pag-num"
       [class.pag-num-active]="p === paginaActual"
       (click)="irAPagina(p)"
@@ -457,7 +457,7 @@
           <button
             type="button"
             class="rc-condicion-btn"
-            *ngFor="let c of condicionesEgreso"
+            *ngFor="let c of condicionesEgreso; trackBy: trackById"
             [class.rc-condicion-active]="formArchivar.condicion === c.value"
             (click)="formArchivar.condicion = c.value"
           >

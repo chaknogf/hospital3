@@ -1,19 +1,24 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ConsultaService } from '../../../registros/consultas/consultas.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-eliminar-consulta',
   templateUrl: './eliminar-consulta.component.html',
   styleUrls: ['../admin.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule]
 })
-export class EliminarConsultaComponent {
+export class EliminarConsultaComponent implements OnDestroy {
   private router = inject(Router);
   private consultaService = inject(ConsultaService);
+
+  private destroy$ = new Subject<void>();
 
   consultaId = signal<number | null>(null);
   consultaDetail = signal<any | null>(null);
@@ -35,7 +40,7 @@ export class EliminarConsultaComponent {
     this.consultaDetail.set(null);
     this.loadingDetail.set(true);
 
-    this.consultaService.getConsultaId(id).subscribe({
+    this.consultaService.getConsultaId(id).pipe(takeUntil(this.destroy$)).subscribe({
       next: consulta => {
         this.consultaDetail.set(consulta);
         this.loadingDetail.set(false);
@@ -56,7 +61,7 @@ export class EliminarConsultaComponent {
     this.success.set(null);
     this.isLoading.set(true);
 
-    this.consultaService.deleteConsulta(id).subscribe({
+    this.consultaService.deleteConsulta(id).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.success.set('Consulta eliminada exitosamente');
         this.consultaId.set(null);
@@ -74,5 +79,10 @@ export class EliminarConsultaComponent {
 
   volver(): void {
     this.router.navigate(['/adminsys']);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -154,7 +154,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let p of resultados">
+              <tr *ngFor="let p of resultados; trackBy: trackById">
                 <td>{{ p.id }}</td>
                 <td [ngClass]="p.expediente ? 'text-normal' : 'text-muted'">
                   {{ p.expediente || "—" }}

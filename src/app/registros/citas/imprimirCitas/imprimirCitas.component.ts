@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -7,20 +7,25 @@ import { CitaService } from '../cita.service';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { Especialidades, KeyValue } from '../../../enum/especialidades';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-imprimir-citas',
   templateUrl: './imprimirCitas.component.html',
   styleUrls: ['./imprimirCitas.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe],
 })
-export class ImprimirCitasComponent implements OnInit {
+export class ImprimirCitasComponent implements OnInit, OnDestroy {
   // ======= INYECCIONES =======
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private api = inject(CitaService);
   private location = inject(Location);
+
+  private destroy$ = new Subject<void>();
 
   // ======= ESTADO =======
   citas: CitaResponse[] = [];
@@ -58,18 +63,22 @@ export class ImprimirCitasComponent implements OnInit {
 
   // ======= CICLO DE VIDA =======
   ngOnInit(): void {
-    // Leer parámetros de la URL si vienen preconfigurados
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       if (params['especialidad']) this.filtros.especialidad = params['especialidad'];
       if (params['fecha_cita']) this.filtros.fecha_cita = params['fecha_cita'];
       this.cargarCitas();
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   // ======= CARGA =======
   cargarCitas(): void {
     this.cargando = true;
-    this.api.getCitas(this.filtros).subscribe({
+    this.api.getCitas(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => {
 
         this.citas = resultado.citas;

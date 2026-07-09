@@ -1,21 +1,26 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { Encamamiento } from '../../../interface/interfaces';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-gestion-encamamiento',
   templateUrl: './gestion-encamamiento.component.html',
   styleUrls: ['../admin.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule]
 })
-export class GestionEncamamientoComponent {
+export class GestionEncamamientoComponent implements OnDestroy {
   private router = inject(Router);
   private api = inject(ApiService);
+
+  private destroy$ = new Subject<void>();
 
   servicios = signal<Encamamiento[]>([]);
   totalCamas = computed(() => this.servicios().reduce((sum, s) => sum + (s.camas_censables || 0), 0));
@@ -41,13 +46,18 @@ export class GestionEncamamientoComponent {
     this.cargar();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   cargar(): void {
     this.loading.set(true);
     this.error.set(null);
 
     const activo = this.filtroActivo() === 'todos' ? null : this.filtroActivo() === 'activos';
 
-    this.api.getServiciosEncamamiento(activo).subscribe({
+    this.api.getServiciosEncamamiento(activo).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res: Encamamiento[]) => {
         this.servicios.set(res || []);
         this.loading.set(false);
@@ -108,7 +118,7 @@ export class GestionEncamamientoComponent {
       ? this.api.updateServicioEncamamiento(this.formId()!, payload)
       : this.api.createServicioEncamamiento(payload);
 
-    obs.pipe(finalize(() => this.guardando.set(false))).subscribe({
+    obs.pipe(finalize(() => this.guardando.set(false)), takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.success.set(this.editando() ? 'Servicio actualizado' : 'Servicio creado');
         this.mostrarFormulario.set(false);
@@ -133,7 +143,7 @@ export class GestionEncamamientoComponent {
     this.error.set(null);
     this.success.set(null);
 
-    this.api.deleteServicioEncamamiento(id).pipe(finalize(() => this.loading.set(false))).subscribe({
+    this.api.deleteServicioEncamamiento(id).pipe(finalize(() => this.loading.set(false)), takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.success.set('Servicio eliminado');
         this.confirmarEliminar.set(null);

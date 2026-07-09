@@ -281,7 +281,7 @@
             </thead>
 
             <tbody>
-              <tr *ngFor="let c of consultasPorPaciente">
+              <tr *ngFor="let c of consultasPorPaciente; trackBy: trackById">
                 <td>
                   {{ c.fecha_consulta | date: "dd-MM-yyyy" }}
                   <br />
@@ -328,7 +328,7 @@
             </thead>
 
             <tbody>
-              <tr *ngFor="let c of citasPorPaciente">
+              <tr *ngFor="let c of citasPorPaciente; trackBy: trackById">
                 <td>
                   {{ c.fecha_cita | date: "dd-MM-yyyy" }}
                 </td>

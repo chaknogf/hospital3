@@ -140,7 +140,7 @@
       </thead>
       <tbody>
         <tr
-          *ngFor="let data of consultas"
+          *ngFor="let data of consultas; trackBy: trackById"
           class="aurora-table-row"
           [class.touch-active]="rowActiva === data.id"
           (click)="activarFila(data.id)"
@@ -291,7 +291,7 @@
 
     <!-- Páginas del rango visible -->
     <button
-      *ngFor="let p of paginas"
+      *ngFor="let p of paginas; trackBy: trackById"
       class="pag-num"
       [class.pag-num-active]="p === paginaActual"
       (click)="irAPagina(p)"

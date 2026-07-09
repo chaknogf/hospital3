@@ -1,10 +1,11 @@
 // coexLista.component.ts
 
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../../pipes/cui.pipe';
@@ -20,9 +21,10 @@ import { Location } from '@angular/common';
   templateUrl: './coexLista.component.html',
   styleUrls: ['./coexLista.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe]
 })
-export class CoexListaComponent implements OnInit {
+export class CoexListaComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);
 
@@ -75,6 +77,8 @@ export class CoexListaComponent implements OnInit {
   // iconos (ahora inyectados por servicio)
   icons: { [key: string]: any } = {};
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private api: ConsultaService,
     private router: Router,
@@ -110,13 +114,18 @@ export class CoexListaComponent implements OnInit {
     };
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {
     this.fechaActual = this.ahora.toLocaleDateString('en-CA');
     this.filtros.fecha = this.fechaActual;
     this.filtros.limit = this.pageSize;
 
     // 2️⃣ Obtener totales
-    this.api.getTotales(this.fechaActual).subscribe({
+    this.api.getTotales(this.fechaActual).pipe(takeUntil(this.destroy$)).subscribe({
       next: (response: TotalesResponse) => {
         this.totales = response.totales;
         const consultasCoex = this.totales.find(t =>
@@ -143,7 +152,7 @@ export class CoexListaComponent implements OnInit {
     // ✅ FIX: Limpiar filtros vacíos antes de enviar
     const filtrosLimpios = this.limpiarFiltrosVacios(filtrosAUsar);
 
-    this.api.getConsultas(filtrosLimpios).subscribe({
+    this.api.getConsultas(filtrosLimpios).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => {
         this.consultas = resultado.consultas;
 
@@ -235,7 +244,7 @@ export class CoexListaComponent implements OnInit {
     this.filtros.especialidad = '';
 
     // Actualizar totales con la nueva fecha
-    this.api.getTotales(this.filtros.fecha).subscribe({
+    this.api.getTotales(this.filtros.fecha).pipe(takeUntil(this.destroy$)).subscribe({
       next: (response: TotalesResponse) => {
         this.totales = response.totales;
         const consultasCoex = this.totales.find(t =>
@@ -355,6 +364,10 @@ export class CoexListaComponent implements OnInit {
     return rango;
   }
 
+
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
+  }
 
   getCicloStatus(ciclo: Record<string, any>): 'activo' | 'inactivo' {
     if (!ciclo) return 'activo';

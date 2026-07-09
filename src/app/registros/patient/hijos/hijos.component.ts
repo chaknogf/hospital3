@@ -1,6 +1,6 @@
 import { PacienteService } from '../paciente.service';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -14,6 +14,7 @@ import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
   templateUrl: './hijos.component.html',
   styleUrls: ['./hijos.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     ReactiveFormsModule,

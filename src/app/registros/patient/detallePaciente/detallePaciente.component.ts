@@ -1,6 +1,6 @@
 import { Keys } from '../../../interface/comunidadChimaltenango';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, OnDestroy, SimpleChanges, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../service/api.service';
@@ -16,17 +16,22 @@ import { TimePipe } from '../../../pipes/time.pipe';
 import { PacienteService } from '../paciente.service';
 import { ConsultaService } from '../../consultas/consultas.service';
 import { Citas } from '../../../interface/citas';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'detallePaciente',
   templateUrl: './detallePaciente.component.html',
   styleUrls: ['./detallePaciente.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe, TimePipe]
 })
-export class DetallePacienteComponent implements OnInit, OnChanges {
+export class DetallePacienteComponent implements OnInit, OnChanges, OnDestroy {
   @Input() pacienteId: number | null = null;
   paciente!: Paciente;
+
+  private destroy$ = new Subject<void>();
 
   private ruta = inject(ActivatedRoute);
   private api = inject(PacienteService);
@@ -68,6 +73,11 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     this.regresarIcon = this.sanitizer.bypassSecurityTrustHtml(regresarIcon);
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {
     if (this.pacienteId) {
       this.cargarPaciente();
@@ -101,7 +111,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     this.cargando = true;
 
     try {
-      this.api.getPaciente(this.pacienteId).subscribe({
+      this.api.getPaciente(this.pacienteId).pipe(takeUntil(this.destroy$)).subscribe({
         next: (data) => {
           this.paciente = data;
           this.procesarPaciente();
@@ -123,7 +133,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
     this.cargando = true;
 
     try {
-      this.api.getPaciente(id).subscribe({
+      this.api.getPaciente(id).pipe(takeUntil(this.destroy$)).subscribe({
         next: (data) => {
           this.paciente = data;
           this.procesarPaciente();
@@ -144,7 +154,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   private cargarConsultas(): void {
     if (!this.pacienteId) return;
 
-    this.apic.getConsultasPorPaciente(this.pacienteId, {}).subscribe({
+    this.apic.getConsultasPorPaciente(this.pacienteId, {}).pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => {
         this.consultasPorPaciente = data;
         //console.log('Consultas del paciente:', this.consultasPorPaciente);
@@ -170,7 +180,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   private cargarCitas(): void {
     if (!this.pacienteId) return;
 
-    this.api.getCitasPaciente(this.pacienteId).subscribe({
+    this.api.getCitasPaciente(this.pacienteId).pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => {
         this.citasPorPaciente = data;
         console.log('Citas del paciente:', this.citasPorPaciente);
@@ -378,6 +388,10 @@ export class DetallePacienteComponent implements OnInit, OnChanges {
   /** Verificar si tiene fecha de defunción */
   get fechaDefuncion(): string | null {
     return this.paciente?.datos_extra?.defuncion || null;
+  }
+
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
   }
 
   regresar(): void {

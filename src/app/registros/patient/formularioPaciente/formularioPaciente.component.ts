@@ -1,7 +1,7 @@
 // ======= IMPORTACIONES =======
 import { municipios } from '../../../enum/departamentos';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import {
   FormBuilder, FormGroup, ReactiveFormsModule, FormsModule,
   AbstractControl, ValidatorFn, ValidationErrors,
@@ -44,6 +44,7 @@ interface Reference {
   templateUrl: './formularioPaciente.component.html',
   styleUrls: ['./formularioPaciente.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     ReactiveFormsModule,

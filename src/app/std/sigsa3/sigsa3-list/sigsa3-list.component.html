@@ -146,7 +146,7 @@
   <!-- PAGINADOR -->
   <div class="paginador" *ngIf="totalPaginas > 1">
     <button [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">◀</button>
-    <button *ngFor="let p of paginas" [class.pag-activa]="p === paginaActual" (click)="paginaActual = p">{{ p }}</button>
+    <button       *ngFor="let p of paginas; trackBy: trackById" [class.pag-activa]="p === paginaActual" (click)="paginaActual = p">{{ p }}</button>
     <button [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">▶</button>
   </div>
 

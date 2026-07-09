@@ -1,6 +1,6 @@
 
 // pacientes.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Paciente, Renap } from '../../../interface/interfaces';
@@ -12,6 +12,8 @@ import { EdadPipe } from '../../../pipes/edad.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { PacienteService } from '../paciente.service';
 import { HighlightPipe } from '../../../pipes/highlight.pipe';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -19,9 +21,10 @@ import { HighlightPipe } from '../../../pipes/highlight.pipe';
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, EdadPipe, CuiPipe, HighlightPipe]
 })
-export class PacientesComponent implements OnInit {
+export class PacientesComponent implements OnInit, OnDestroy {
 
   // ── Datos ──────────────────────────────────────────────────
   pacientes: Paciente[] = [];
@@ -78,6 +81,8 @@ export class PacientesComponent implements OnInit {
 
   ];
 
+  private destroy$ = new Subject<void>();
+
   // ── Icons ──────────────────────────────────────────────────
   icons: { [key: string]: any } = {};
 
@@ -111,9 +116,13 @@ export class PacientesComponent implements OnInit {
 
   // ══════════════════════════════════════════════════════════
   ngOnInit(): void {
-    // El BehaviorSubject actualiza la tabla cuando el servicio refresca
-    this.api.pacientes$.subscribe(data => { this.pacientes = data; });
+    this.api.pacientes$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.pacientes = data; });
     this.cargarPacientes();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // ══════════════════════════════════════════════════════════
@@ -122,7 +131,7 @@ export class PacientesComponent implements OnInit {
   cargarPacientes(): void {
     this.cargando = true;
 
-    this.api.getPacientes(this.filtros).subscribe({
+    this.api.getPacientes(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
 
       next: resultado => {
         // console.log('Cargando pacientes con filtros:', this.filtros);
@@ -325,5 +334,9 @@ export class PacientesComponent implements OnInit {
 
   prestar(id: number) {
     this.router.navigate(['/prestamo', id]);
+  }
+
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
   }
 }

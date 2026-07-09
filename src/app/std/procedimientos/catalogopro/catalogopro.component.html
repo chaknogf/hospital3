@@ -67,7 +67,7 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let data of procedimientos" (click)="activarFila(data.id)">
+        <tr *ngFor="let data of procedimientos; trackBy: trackById" (click)="activarFila(data.id)">
           <td data-label="Procedimiento">
             <div class="nombre-table">
               <strong>{{ data.nombre }}</strong>
@@ -139,7 +139,7 @@
   }
 
   <button
-    *ngFor="let p of paginas"
+    *ngFor="let p of paginas; trackBy: trackById"
     class="pag-num"
     [class.pag-num-active]="p === paginaActual"
     (click)="irAPagina(p)"

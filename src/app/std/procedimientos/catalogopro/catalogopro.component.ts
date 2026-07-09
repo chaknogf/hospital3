@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -10,25 +10,30 @@ import {
 
 import { StdService } from '../../std.service';
 import { IconService } from '../../../service/icon.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-catalogopro',
   templateUrl: './catalogopro.component.html',
   styleUrls: ['./catalogopro.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule
   ]
 })
-export class CatalogoproComponent implements OnInit {
+export class CatalogoproComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);
   private api = inject(StdService);
   private router = inject(Router);
   private iconService = inject(IconService);
   private fb = inject(FormBuilder);
+
+  private destroy$ = new Subject<void>();
 
   procedimientos: Procedimiento[] = [];
   catalogoCompleto: Procedimiento[] = [];
@@ -81,12 +86,17 @@ export class CatalogoproComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.api.catalogo$.subscribe(data => {
+    this.api.catalogo$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.catalogoCompleto = data;
       this.actualizarPagina();
     });
 
     this.cargarCatalogo();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private actualizarPagina(): void {
@@ -98,7 +108,7 @@ export class CatalogoproComponent implements OnInit {
 
   cargarCatalogo(): void {
     this.cargando = true;
-    this.api.getCatalogo().subscribe({
+    this.api.getCatalogo().pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => {
         this.totalDeRegistros = data.length;
         const inicio =
@@ -166,7 +176,7 @@ export class CatalogoproComponent implements OnInit {
       this.form.patchValue(existente);
       this.cargando = false;
     } else {
-      this.api.getProcedimientoCatalogo(id).subscribe({
+      this.api.getProcedimientoCatalogo(id).pipe(takeUntil(this.destroy$)).subscribe({
         next: data => this.form.patchValue(data),
         error: err => console.error(err),
         complete: () => { this.cargando = false; }
@@ -192,7 +202,7 @@ export class CatalogoproComponent implements OnInit {
     const payload = { ...this.form.value };
 
     if (this.modoEdicion && this.procedimientoId) {
-      this.api.updateProcedimiento(this.procedimientoId, payload).subscribe({
+      this.api.updateProcedimiento(this.procedimientoId, payload).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           this.cerrarModal();
         },
@@ -204,7 +214,7 @@ export class CatalogoproComponent implements OnInit {
       });
     } else {
       this.paginaActual = 1;
-      this.api.createProcedimiento(payload as ProcedimientoCreate).subscribe({
+      this.api.createProcedimiento(payload as ProcedimientoCreate).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           this.cerrarModal();
         },
@@ -226,7 +236,7 @@ export class CatalogoproComponent implements OnInit {
       return;
     }
 
-    this.api.deleteProcedimiento(id).subscribe({
+    this.api.deleteProcedimiento(id).pipe(takeUntil(this.destroy$)).subscribe({
 
       next: () => {
         // catálogo se actualiza via catalogo$
@@ -237,6 +247,10 @@ export class CatalogoproComponent implements OnInit {
       }
 
     });
+  }
+
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
   }
 
   get f() { return this.form.controls; }

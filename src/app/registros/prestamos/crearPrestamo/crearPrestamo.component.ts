@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -8,21 +8,26 @@ import { ConsultaService } from '../../consultas/consultas.service';
 import { PrestamoCreate, PrestamoUpdate, Prestamo } from '../../../interface/prestamos';
 import { ConsultaOut } from '../../../interface/consultas';
 import { Nombre } from '../../../interface/interfaces';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-crearPrestamo',
   templateUrl: './crearPrestamo.component.html',
   styleUrls: ['./crearPrestamo.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule]
 })
-export class CrearPrestamoComponent implements OnInit {
+export class CrearPrestamoComponent implements OnInit, OnDestroy {
 
   private prestamosService = inject(PrestamosService);
   private consultaService = inject(ConsultaService);
   private route = inject(ActivatedRoute);
   readonly router = inject(Router);
   private location = inject(Location);
+
+  private destroy$ = new Subject<void>();
 
   isLoading = this.prestamosService.isLoading;
   consulta = signal<ConsultaOut | null>(null);
@@ -76,6 +81,11 @@ export class CrearPrestamoComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   // =========================================================
   // MODO CREAR — carga consulta y auto-completa
   // =========================================================
@@ -84,7 +94,7 @@ export class CrearPrestamoComponent implements OnInit {
     this.cargandoConsulta.set(true);
     this.errorCarga.set(null);
 
-    this.consultaService.getConsultaId(idConsulta).subscribe({
+    this.consultaService.getConsultaId(idConsulta).pipe(takeUntil(this.destroy$)).subscribe({
       next: (consulta) => {
         this.consulta.set(consulta);
         this.autoCompletar(consulta);
@@ -112,7 +122,7 @@ export class CrearPrestamoComponent implements OnInit {
     this.cargandoConsulta.set(true);
     this.errorCarga.set(null);
 
-    this.prestamosService.getPrestamo(idPrestamo).subscribe({
+    this.prestamosService.getPrestamo(idPrestamo).pipe(takeUntil(this.destroy$)).subscribe({
       next: (prestamo) => {
         this.rellenarFormDesde(prestamo);
         this.cargandoConsulta.set(false);
@@ -174,7 +184,7 @@ export class CrearPrestamoComponent implements OnInit {
       fecha_limite: this.form.fecha_limite || null,
     };
 
-    this.prestamosService.crearPrestamo(payload).subscribe({
+    this.prestamosService.crearPrestamo(payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (prestamo: Prestamo) => {
         this.prestamoCreado.set(prestamo);
         // Mostrar usuario_entrega que asignó el backend
@@ -204,7 +214,7 @@ export class CrearPrestamoComponent implements OnInit {
       // usuario_recibe lo asigna el backend cuando llega fecha_devolucion
     };
 
-    this.prestamosService.actualizarPrestamo(this.idPrestamo, payload).subscribe({
+    this.prestamosService.actualizarPrestamo(this.idPrestamo, payload).pipe(takeUntil(this.destroy$)).subscribe({
       next: (prestamo: Prestamo) => {
         // Refrescar usuarios desde la respuesta (backend puede haber asignado usuario_recibe)
         this.usuarioEntrega = prestamo.usuario_entrega ?? null;

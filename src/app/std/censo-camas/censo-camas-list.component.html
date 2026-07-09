@@ -88,7 +88,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let r of registros; let i = index"
+            <tr *ngFor="let r of registros; trackBy: trackById; let i = index"
               (click)="activarFila(r.id)"
               [class.row-active]="rowActiva === r.id">
               <td>{{ i + 1 + (paginaActual - 1) * pageSize }}</td>
@@ -130,7 +130,7 @@
         <button class="pag-num" *ngIf="paginas[0] > 1" (click)="irAPagina(1)">1</button>
         <span class="pag-ellipsis" *ngIf="paginas[0] > 2">…</span>
 
-        <button *ngFor="let p of paginas" class="pag-num"
+        <button       *ngFor="let p of paginas; trackBy: trackById" class="pag-num"
           [class.pag-num-active]="p === paginaActual" (click)="irAPagina(p)">
           {{ p }}
         </button>

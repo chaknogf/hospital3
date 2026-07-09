@@ -1,8 +1,8 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, Input, OnInit, ViewChild, ElementRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import * as XLSX from 'xlsx';
+import { Subject, takeUntil } from 'rxjs';
 import { NacimientoOut, NacimientoCreate, NacimientoUpdate, NeonatalesPayload, PacienteResumen, NacimientoFormModel } from '../../../interface/nacimientos';
 import { NacimientosService } from '../nacimientos.service';
 import { ApiService } from '../../../service/api.service';
@@ -19,9 +19,10 @@ import { CapitalizePipe } from 'app/pipes/capitalize.pipe';
   templateUrl: './lista-nacimientos.component.html',
   styleUrls: ['./lista-nacimientos.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe, LibrasOnzasPipe, CapitalizePipe]
 })
-export class ListaNacimientosComponent implements OnInit {
+export class ListaNacimientosComponent implements OnInit, OnDestroy {
   @Input() sinEditar = false;
   @Input() rutaVolver = '/estadistica';
 
@@ -83,6 +84,8 @@ export class ListaNacimientosComponent implements OnInit {
   constanciaCargando = signal(false);
   constanciaError = signal(false);
 
+  private destroy$ = new Subject<void>();
+
   modelo: NacimientoFormModel = {
     paciente_id: null,
     madre_id: null,
@@ -104,8 +107,13 @@ export class ListaNacimientosComponent implements OnInit {
 
   constructor() { }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {
-    this.api.nacimientos$.subscribe(data => {
+    this.api.nacimientos$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.nacimientos = data;
     });
     this.cargarNacimientos();
@@ -113,7 +121,7 @@ export class ListaNacimientosComponent implements OnInit {
 
   cargarNacimientos(): void {
     this.cargando = true;
-    this.api.getNacimientos(this.filtros).subscribe({
+    this.api.getNacimientos(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => {
         this.nacimientos = resultado.nacimientos;
         this.totalDeRegistros = resultado.total;
@@ -178,7 +186,7 @@ export class ListaNacimientosComponent implements OnInit {
     this.editando.set(true);
     this.nacimientoId = id;
     this.mostrarModal.set(true);
-    this.api.getNacimiento(id).subscribe({
+    this.api.getNacimiento(id).pipe(takeUntil(this.destroy$)).subscribe({
       next: n => {
         this.pacienteId = n.paciente_id ?? null;
         this.pacienteInfo = n.paciente ?? null;
@@ -232,13 +240,13 @@ export class ListaNacimientosComponent implements OnInit {
         hora_nacimiento: this.modelo.hora_nacimiento,
         extrahospitalario: this.modelo.extrahospitalario
       };
-      this.api.updatePacienteNeonatales(this.pacienteId, neonatales).subscribe({
+      this.api.updatePacienteNeonatales(this.pacienteId, neonatales).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           const nacUpdate: NacimientoUpdate = {
             madre_id: this.modelo.madre_id,
             mortinato: this.modelo.mortinato
           };
-          this.api.updateNacimiento(this.nacimientoId!, nacUpdate).subscribe({
+          this.api.updateNacimiento(this.nacimientoId!, nacUpdate).pipe(takeUntil(this.destroy$)).subscribe({
             next: () => {
               this.modalSuccess.set('Nacimiento actualizado exitosamente');
               this.guardando.set(false);
@@ -264,7 +272,7 @@ export class ListaNacimientosComponent implements OnInit {
         madre_id: this.modelo.madre_id,
         mortinato: null
       };
-      this.api.createNacimiento(payload).subscribe({
+      this.api.createNacimiento(payload).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           this.modalSuccess.set('Nacimiento registrado exitosamente');
           this.guardando.set(false);
@@ -283,7 +291,7 @@ export class ListaNacimientosComponent implements OnInit {
     const respuesta = prompt(`Escriba "confirmar" para eliminar el nacimiento de "${nombre || 'desconocido'}" (ID: ${id}):`);
     if (respuesta !== 'confirmar') return;
 
-    this.api.deleteNacimiento(id).subscribe({
+    this.api.deleteNacimiento(id).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.cargarNacimientos();
       },
@@ -367,7 +375,7 @@ export class ListaNacimientosComponent implements OnInit {
     this.pacienteDetalle.set(null);
     this.constanciaData.set(null);
     this.constanciaError.set(false);
-    this.pacienteApi.getPaciente(id).subscribe({
+    this.pacienteApi.getPaciente(id).pipe(takeUntil(this.destroy$)).subscribe({
       next: p => {
         this.pacienteDetalle.set(p);
         this.cargandoPaciente.set(false);
@@ -383,7 +391,7 @@ export class ListaNacimientosComponent implements OnInit {
     this.constanciaCargando.set(true);
     this.constanciaError.set(false);
     this.constanciaData.set(null);
-    this.constanciaApi.getConstanciaByPacienteId(pacienteId).subscribe({
+    this.constanciaApi.getConstanciaByPacienteId(pacienteId).pipe(takeUntil(this.destroy$)).subscribe({
       next: c => {
         this.constanciaData.set(c);
         this.constanciaCargando.set(false);
@@ -452,7 +460,7 @@ export class ListaNacimientosComponent implements OnInit {
     return '—';
   }
 
-  descargarExcel(): void {
+  async descargarExcel(): Promise<void> {
     if (!this.filtros.fecha_desde || !this.filtros.fecha_hasta) {
       alert('Debe seleccionar un rango de fechas para descargar el Excel.');
       return;
@@ -461,8 +469,8 @@ export class ListaNacimientosComponent implements OnInit {
       alert('La fecha "desde" no puede ser mayor que la fecha "hasta".');
       return;
     }
-    this.api.getAllNacimientos(this.filtros).subscribe({
-      next: data => {
+    this.api.getAllNacimientos(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
+      next: async data => {
         if (!data.length) {
           alert('No hay registros para exportar en el rango seleccionado.');
           return;
@@ -489,6 +497,7 @@ export class ListaNacimientosComponent implements OnInit {
           'ID Madre': n.madre_id ?? ''
         }));
 
+        const XLSX = await import('xlsx');
         const ws = XLSX.utils.json_to_sheet(rows);
         const colWidths = Object.keys(rows[0] || {}).map(k => ({ wch: Math.max(k.length, 18) }));
         ws['!cols'] = colWidths;

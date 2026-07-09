@@ -106,7 +106,7 @@
 
       <tbody>
         <tr
-          *ngFor="let data of medicos"
+          *ngFor="let data of medicos; trackBy: trackById"
           class="aurora-table-row"
           [class.touch-active]="rowActiva === data.id"
           (click)="activarFila(data.id)"

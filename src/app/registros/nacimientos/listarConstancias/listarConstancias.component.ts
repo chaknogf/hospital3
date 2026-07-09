@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ConstanciaNacimientoOut } from '../../../interface/consNac';
 import { ConstanciaNacimiento } from '../constancias.inteface';
 import { ApiService } from '../../../service/api.service';
@@ -9,15 +9,18 @@ import { Router } from '@angular/router';
 import { IconService } from '../../../service/icon.service';
 import { FormsModule } from '@angular/forms';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-listarConstancias',
   templateUrl: './listarConstancias.component.html',
   styleUrls: ['./listarConstancias.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, CapitalizePipe]
 })
-export class ListarConstanciasComponent implements OnInit {
+export class ListarConstanciasComponent implements OnInit, OnDestroy {
 
   datos: ConstanciaNacimiento[] = [];
   cargando = false;
@@ -66,8 +69,10 @@ export class ListarConstanciasComponent implements OnInit {
     };
   }
 
+  private destroy$ = new Subject<void>();
+
   ngOnInit() {
-    this.api.constancias$.subscribe((data) => {
+    this.api.constancias$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.datos = data;
     });
     console.log(this.datos);
@@ -75,10 +80,15 @@ export class ListarConstanciasComponent implements OnInit {
 
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   cargarDatos() {
     this.cargando = true;
 
-    this.api.getConstancias(this.filtros).subscribe({
+    this.api.getConstancias(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => {
         this.totalDeRegistros = resultado.total;
         this.datos = resultado.constancias;
@@ -167,6 +177,10 @@ export class ListarConstanciasComponent implements OnInit {
     this.filtros.offset = (pagina - 1) * this.pageSize;
     this.filtros.limit = this.pageSize;
     this.cargarDatos();
+  }
+
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
   }
 
   get paginas(): number[] {

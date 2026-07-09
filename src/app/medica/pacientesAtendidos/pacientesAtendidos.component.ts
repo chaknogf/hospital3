@@ -1,6 +1,6 @@
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../pipes/edad.pipe';
 import { Paciente, Totales } from '../../interface/interfaces';
@@ -14,7 +14,8 @@ import { DatosExtraPipe } from './../../pipes/datos-extra.pipe';
 import { CuiPipe } from './../../pipes/cui.pipe';
 import { TimePipe } from '../../pipes/time.pipe';
 import { Dict, especialidades } from './../../enum/diccionarios';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ConsultaService } from '../../registros/consultas/consultas.service';
 
 const ESTADOS_INACTIVOS = new Set(['archivo', 'descartado', 'recepcion', 'egreso']);
@@ -23,13 +24,16 @@ const ESTADOS_INACTIVOS = new Set(['archivo', 'descartado', 'recepcion', 'egreso
   templateUrl: './pacientesAtendidos.component.html',
   styleUrls: ['./pacientesAtendidos.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule]
 })
-export class PacientesAtendidosComponent implements OnInit {
+export class PacientesAtendidosComponent implements OnInit, OnDestroy {
 
   private api = inject(ConsultaService);
   private router = inject(Router);
   private iconService = inject(IconService);
+
+  private destroy$ = new Subject<void>();
 
   // ── Datos ──────────────────────────────────────────────────
   consultas: ConsultaOut[] = [];
@@ -108,6 +112,7 @@ export class PacientesAtendidosComponent implements OnInit {
 
     this.api.updateConsulta(this.consultaRecibiendo.id, { ciclo })
       .pipe(
+        takeUntil(this.destroy$),
         tap(() => {
           this.cerrarModalRecibido();
           this.cargarConsultas();
@@ -191,6 +196,7 @@ export class PacientesAtendidosComponent implements OnInit {
 
     this.api.updateConsulta(this.consultaArchivando.id, { ciclo, egreso })
       .pipe(
+        takeUntil(this.destroy$),
         tap(() => {
           this.cerrarModalArchivar();
           this.cargarConsultas();
@@ -237,9 +243,14 @@ export class PacientesAtendidosComponent implements OnInit {
     this.cargarConsultas();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   cargarConsultas(): void {
     this.cargando = true;
-    this.api.getConsultas(this.filtros).subscribe({
+    this.api.getConsultas(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => {
         this.totalDeRegistros = resultado.total;
         this.consultas = resultado.consultas;

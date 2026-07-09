@@ -1,20 +1,25 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ConsultaService } from '../../../registros/consultas/consultas.service';
 import { ConsultaOut } from '../../../interface/consultas';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-desactivar-consulta',
   templateUrl: './desactivar-consulta.component.html',
   styleUrls: ['../admin.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule]
 })
-export class DesactivarConsultaComponent {
+export class DesactivarConsultaComponent implements OnDestroy {
   private router = inject(Router);
   private consultaService = inject(ConsultaService);
+
+  private destroy$ = new Subject<void>();
 
   consultaId = signal<number | null>(null);
   consultaDetail = signal<ConsultaOut | null>(null);
@@ -36,7 +41,7 @@ export class DesactivarConsultaComponent {
     this.consultaDetail.set(null);
     this.loadingDetail.set(true);
 
-    this.consultaService.getConsultaId(id).subscribe({
+    this.consultaService.getConsultaId(id).pipe(takeUntil(this.destroy$)).subscribe({
       next: consulta => {
         this.consultaDetail.set(consulta);
         this.loadingDetail.set(false);
@@ -58,6 +63,7 @@ export class DesactivarConsultaComponent {
     this.isLoading.set(true);
 
     this.consultaService.updateConsulta(id, { ciclo: { estado: 'descartado' } })
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.success.set('Consulta desactivada exitosamente');
@@ -76,5 +82,10 @@ export class DesactivarConsultaComponent {
 
   volver(): void {
     this.router.navigate(['/adminsys']);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

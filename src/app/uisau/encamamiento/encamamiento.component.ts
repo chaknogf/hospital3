@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -11,20 +11,25 @@ import { TimePipe } from '../../pipes/time.pipe';
 import { IconService } from '../../service/icon.service';
 import { ConsultaService } from '../../registros/consultas/consultas.service';
 import { DatosExtraPipe } from '../../pipes/datos-extra.pipe';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-encamamiento',
   templateUrl: './encamamiento.component.html',
   styleUrls: ['./encamamiento.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, CuiPipe, TimePipe, DatosExtraPipe]
 })
-export class EncamamientoComponent implements OnInit {
+export class EncamamientoComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);
   private api = inject(ConsultaService);
   private router = inject(Router);
   private iconService = inject(IconService);
+
+  private destroy$ = new Subject<void>();
 
   esEmergencia = true;
   consultas: ConsultaResponse[] = [];
@@ -120,10 +125,15 @@ export class EncamamientoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.api.consultas$.subscribe(data => { this.consultas = data; });
+    this.api.consultas$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.consultas = data; });
     this.cargarConsultas();
     // this.cargarTodosPorServicio();
     this.cargarTodosPorEspecialidad();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // ══════════════════════════════════════════════════════════
@@ -132,7 +142,7 @@ export class EncamamientoComponent implements OnInit {
 
   cargarConsultas(): void {
     this.cargando = true;
-    this.api.getConsultas(this.filtros).subscribe({
+    this.api.getConsultas(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => {
         this.totalDeRegistros = resultado.total;
         this.consultas = resultado.consultas;
@@ -166,7 +176,7 @@ export class EncamamientoComponent implements OnInit {
         limit: 200
       };
 
-      this.api.getConsultas(filtro).subscribe({
+      this.api.getConsultas(filtro).pipe(takeUntil(this.destroy$)).subscribe({
         next: resultado => {
           this.consultasPorServicio[servicio.value] = resultado.consultas;
           this.conteosPorServicio[servicio.value] = resultado.total;
@@ -200,7 +210,7 @@ export class EncamamientoComponent implements OnInit {
         limit: 10
       };
 
-      this.api.getConsultas(filtro).subscribe({
+      this.api.getConsultas(filtro).pipe(takeUntil(this.destroy$)).subscribe({
         next: resultado => {
           this.consultasPorEspecialidad[esp.value] = resultado.consultas;
           this.conteosPorEspecialidad[esp.value] = resultado.total;
@@ -347,6 +357,10 @@ export class EncamamientoComponent implements OnInit {
   // ══════════════════════════════════════════════════════════
   // HELPERS
   // ══════════════════════════════════════════════════════════
+
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
+  }
 
   getCicloStatus(ciclo: Record<string, any>): 'activo' | 'inactivo' {
     if (!ciclo) return 'activo';

@@ -1,7 +1,7 @@
 import { TimePipe } from '../../../pipes/time.pipe';
 import { ConstanciasService } from '../constancias.service';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PacienteService } from '../../patient/paciente.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,6 +19,7 @@ import { Medico } from '../../../interface/medicos.interface';
   templateUrl: './constanciasNacimiento.component.html',
   styleUrls: ['./constanciasNacimiento.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, VecindadPipe, TimePipe]
 })
 export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {

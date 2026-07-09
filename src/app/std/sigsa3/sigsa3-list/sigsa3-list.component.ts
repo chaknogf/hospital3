@@ -1,23 +1,28 @@
 // sigsa3-list.component.ts
 
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Sigsa3Out } from '../../../interface/sigsa3.interface';
 import { Sigsa3Service } from '../sigsa3.service';
 import { IconService } from '../../../service/icon.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sigsa3-list',
   templateUrl: './sigsa3-list.component.html',
   styleUrls: ['./sigsa3-list.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule]
 })
-export class Sigsa3ListComponent implements OnInit {
+export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);
+
+  private destroy$ = new Subject<void>();
 
   // ── Data ──
   registros: Sigsa3Out[] = [];
@@ -72,10 +77,15 @@ export class Sigsa3ListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.api.registros$.subscribe(data => {
+    this.api.registros$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.registros = data;
     });
     this.cargar();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // ── API ──
@@ -83,7 +93,7 @@ export class Sigsa3ListComponent implements OnInit {
   cargar(): void {
     this.cargando = true;
     this.seleccionados.clear();
-    this.api.listarRegistros(this.filtros).subscribe({
+    this.api.listarRegistros(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: (resultado) => {
         this.registros = resultado;
         this.totalDeRegistros = resultado.length;
@@ -139,13 +149,13 @@ export class Sigsa3ListComponent implements OnInit {
 
   eliminar(id: number): void {
     if (!confirm('¿Eliminar este registro?')) return;
-    this.api.eliminarRegistro(id).subscribe({ next: () => this.cargar() });
+    this.api.eliminarRegistro(id).pipe(takeUntil(this.destroy$)).subscribe({ next: () => this.cargar() });
   }
 
   eliminarSeleccionados(): void {
     if (this.seleccionados.size === 0) return;
     if (!confirm(`¿Eliminar ${this.seleccionados.size} registros seleccionados?`)) return;
-    this.api.eliminarPorIds([...this.seleccionados]).subscribe({
+    this.api.eliminarPorIds([...this.seleccionados]).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => { this.seleccionados.clear(); this.cargar(); }
     });
   }
@@ -166,7 +176,7 @@ export class Sigsa3ListComponent implements OnInit {
   eliminarPorPeriodo(): void {
     if (!this.DesdePeriodo || !this.HastaPeriodo) return;
     this.procesando = true;
-    this.api.eliminarPorPeriodo(this.DesdePeriodo, this.HastaPeriodo).subscribe({
+    this.api.eliminarPorPeriodo(this.DesdePeriodo, this.HastaPeriodo).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cargar(); },
       error: () => { this.procesando = false; }
     });
@@ -186,7 +196,7 @@ export class Sigsa3ListComponent implements OnInit {
   asociarPaciente(): void {
     if (!this.asociarExpediente || !this.asociarHistoria) return;
     this.procesando = true;
-    this.api.asociarPaciente(this.asociarExpediente, this.asociarHistoria).subscribe({
+    this.api.asociarPaciente(this.asociarExpediente, this.asociarHistoria).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cargar(); },
       error: () => { this.procesando = false; }
     });
@@ -194,7 +204,7 @@ export class Sigsa3ListComponent implements OnInit {
 
   asociarMedico(): void {
     this.procesando = true;
-    this.api.asociarMedico().subscribe({
+    this.api.asociarMedico().pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => { this.resultadoOperacion = res; this.procesando = false; },
       error: () => { this.procesando = false; }
     });
@@ -202,13 +212,17 @@ export class Sigsa3ListComponent implements OnInit {
 
   asociarTodo(): void {
     this.procesando = true;
-    this.api.asociarTodo().subscribe({
+    this.api.asociarTodo().pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cargar(); },
       error: () => { this.procesando = false; }
     });
   }
 
   // ── Paginador ──
+
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
+  }
 
   get totalPaginas(): number { return Math.ceil(this.totalDeRegistros / this.pageSize) || 1; }
   get hayPaginaAnterior(): boolean { return this.paginaActual > 1; }

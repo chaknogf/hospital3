@@ -1,21 +1,26 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { Municipio, DepartamentoOut } from '../../../interface/interfaces';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { catchError, finalize } from 'rxjs';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-gestion-municipios',
   templateUrl: './gestion-municipios.component.html',
   styleUrls: ['../admin.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule]
 })
-export class GestionMunicipiosComponent {
+export class GestionMunicipiosComponent implements OnDestroy {
   private router = inject(Router);
   private api = inject(ApiService);
+
+  private destroy$ = new Subject<void>();
 
   municipios = signal<Municipio[]>([]);
   loading = signal(false);
@@ -44,6 +49,11 @@ export class GestionMunicipiosComponent {
     this.cargar();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   cargar(): void {
     this.loading.set(true);
     this.error.set(null);
@@ -53,7 +63,7 @@ export class GestionMunicipiosComponent {
     if (q) filtros.q = q;
     if (dep) filtros.departamento = dep;
 
-    this.api.getMunicipios(filtros).subscribe({
+    this.api.getMunicipios(filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res: any) => {
         this.municipios.set(res.municipios || []);
         this.loading.set(false);
@@ -127,7 +137,7 @@ export class GestionMunicipiosComponent {
       ? this.api.updateMunicipio(this.codigoOriginal()!, payload)
       : this.api.createMunicipio(payload);
 
-    obs.pipe(finalize(() => this.guardando.set(false))).subscribe({
+    obs.pipe(finalize(() => this.guardando.set(false)), takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.success.set(this.editando() ? 'Municipio actualizado' : 'Municipio creado');
         this.mostrarFormulario.set(false);
@@ -152,7 +162,7 @@ export class GestionMunicipiosComponent {
     this.error.set(null);
     this.success.set(null);
 
-    this.api.deleteMunicipio(codigo).pipe(finalize(() => this.loading.set(false))).subscribe({
+    this.api.deleteMunicipio(codigo).pipe(finalize(() => this.loading.set(false)), takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.success.set('Municipio eliminado');
         this.confirmarEliminar.set(null);

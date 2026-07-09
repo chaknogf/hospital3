@@ -139,6 +139,10 @@ export class ProcedimientosmenoresComponent implements OnInit {
     this.router.navigate(['/catalogoProcedimientos']);
   }
 
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
+  }
+
   get totalPaginas(): number {
     return Math.ceil(this.totalDeRegistros / this.pageSize) || 1;
   }

@@ -1,20 +1,25 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../service/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
   loginForm: FormGroup;
   errorMessage: string = '';
   loading = false;
+
+  private destroy$ = new Subject<void>();
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -41,7 +46,7 @@ export class LoginComponent {
 
     const { username, password } = this.loginForm.value;
 
-    this.apiService.login(username, password).subscribe({
+    this.apiService.login(username, password).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         // ✅ Solo apagar el loader — la navegación ya la hace ApiService.login()
         this.loading = false;
@@ -78,5 +83,10 @@ export class LoginComponent {
   reset(): void {
     console.log('CLICK RESET');
     this.router.navigate(['/resetpass']);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

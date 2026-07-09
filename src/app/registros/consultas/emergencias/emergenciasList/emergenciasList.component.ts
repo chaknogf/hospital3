@@ -1,6 +1,6 @@
 import { tipoConsulta, ciclos, Dict } from '../../../../enum/diccionarios';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { Paciente, Totales } from '../../../../interface/interfaces';
@@ -14,6 +14,8 @@ import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
 import { TimePipe } from '../../../../pipes/time.pipe';
 import { Location } from '@angular/common';
 import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 
@@ -22,15 +24,18 @@ import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
   templateUrl: './emergenciasList.component.html',
   styleUrls: ['./emergenciasList.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, EdadPipe, CuiPipe, DatosExtraPipe, TimePipe, CapitalizePipe]
 })
-export class EmergenciasListComponent implements OnInit {
+export class EmergenciasListComponent implements OnInit, OnDestroy {
 
   esEmergencia = true;
   consultas: ConsultaOut[] = [];
   totales: Totales[] = [];
 
   private location = inject(Location);
+
+  private destroy$ = new Subject<void>();
 
   public status: 'activo' | 'inactivo' | 'none' = 'none';
   cargando = false;
@@ -98,16 +103,20 @@ export class EmergenciasListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // 1️⃣ Suscribirse al observable de consultas
-    this.api.consultas$.subscribe(data => { this.consultas = data; });
+    this.api.consultas$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.consultas = data; });
     this.cargarConsultas();
     this.buscar();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 
   cargarConsultas(): void {
     this.cargando = true;
-    this.api.getConsultas(this.filtros).subscribe({
+    this.api.getConsultas(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => {
         this.totalDeRegistros = resultado.total;
         this.consultas = resultado.consultas;
@@ -227,6 +236,10 @@ export class EmergenciasListComponent implements OnInit {
   }
 
 
+
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
+  }
 
   getCicloStatus(ciclo: Record<string, any>): 'activo' | 'inactivo' {
     if (!ciclo) return 'activo'; // si no hay ciclos, asumimos activo

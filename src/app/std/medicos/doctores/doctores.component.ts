@@ -1,13 +1,14 @@
 // doctores.component.ts
 
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import * as XLSX from 'xlsx';
 import { MedicoOut } from '../../../interface/medicos.interface';
 import { MedicosService } from '../medicos.service';
 import { IconService } from '../../../service/icon.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -15,14 +16,17 @@ import { IconService } from '../../../service/icon.service';
   templateUrl: './doctores.component.html',
   styleUrls: ['./doctores.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     FormsModule
   ]
 })
-export class DoctoresComponent implements OnInit {
+export class DoctoresComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);
+
+  private destroy$ = new Subject<void>();
 
   // ======= DATA =======
 
@@ -82,12 +86,16 @@ export class DoctoresComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // observable reactivo
-    this.api.medicos$.subscribe(data => {
+    this.api.medicos$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.medicos = data;
     });
 
     this.cargarMedicos();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // ======= API =======
@@ -96,7 +104,7 @@ export class DoctoresComponent implements OnInit {
 
     this.cargando = true;
 
-    this.api.getMedicos(this.filtros).subscribe({
+    this.api.getMedicos(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
 
       next: (resultado) => {
 
@@ -177,7 +185,7 @@ export class DoctoresComponent implements OnInit {
 
     if (!confirmar) return;
 
-    this.api.eliminarMedico(id).subscribe({
+    this.api.eliminarMedico(id).pipe(takeUntil(this.destroy$)).subscribe({
 
       next: () => {
         this.cargarMedicos();
@@ -194,6 +202,7 @@ export class DoctoresComponent implements OnInit {
 
     this.api
       .cambiarEstado(data.id, !data.activo)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
 
         next: () => {
@@ -207,11 +216,15 @@ export class DoctoresComponent implements OnInit {
       });
   }
 
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
+  }
+
   // ======= EXCEL =======
 
-  descargarExcel(): void {
-    this.api.getAllMedicos().subscribe({
-      next: data => {
+  async descargarExcel(): Promise<void> {
+    this.api.getAllMedicos().pipe(takeUntil(this.destroy$)).subscribe({
+      next: async data => {
         if (!data.length) {
           alert('No hay registros para exportar.');
           return;
@@ -227,6 +240,7 @@ export class DoctoresComponent implements OnInit {
           Sexo: m.sexo || ''
         }));
 
+        const XLSX = await import('xlsx');
         const ws = XLSX.utils.json_to_sheet(rows);
         const colWidths = Object.keys(rows[0]).map(k => ({ wch: Math.max(k.length, 18) }));
         ws['!cols'] = colWidths;

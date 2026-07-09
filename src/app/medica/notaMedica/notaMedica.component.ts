@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal, computed, inject } from '@angular/core';
 import {
   CicloConsulta,
   DatoMedico,
@@ -26,6 +26,7 @@ import { CicloService } from '../ciclo.service';
   templateUrl: './notaMedica.component.html',
   styleUrls: ['./notaMedica.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe]
 })
 export class NotaMedicaComponent implements OnInit {

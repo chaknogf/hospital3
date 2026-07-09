@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConsultaService } from '../../registros/consultas/consultas.service';
 import { Router } from '@angular/router';
@@ -12,20 +12,25 @@ import { CuiPipe } from '../../pipes/cui.pipe';
 import { EdadPipe } from '../../pipes/edad.pipe';
 import { Location } from '@angular/common';
 import { Citas } from '../../interface/citas';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-consultor',
   templateUrl: './consultor.component.html',
   styleUrls: ['./consultor.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe, TimePipe, CuiPipe, EdadPipe]
 })
-export class ConsultorComponent implements OnInit {
+export class ConsultorComponent implements OnInit, OnDestroy {
 
   private api = inject(ConsultaService);
   private apip = inject(PacienteService);
   private router = inject(Router);
   private location = inject(Location);
+
+  private destroy$ = new Subject<void>();
 
   // ── Estado del sidebar (bottom sheet en mobile) ──────────
   sidebarAbierto: boolean = false;
@@ -74,6 +79,11 @@ export class ConsultorComponent implements OnInit {
 
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   // ── Control del sidebar / bottom sheet ─────────────────
   toggleSidebar(): void {
     this.sidebarAbierto = !this.sidebarAbierto;
@@ -107,7 +117,7 @@ export class ConsultorComponent implements OnInit {
     const tieneDocumento = !!this.filtros.documento && this.filtros.documento.trim() !== '';
 
     if (tieneDocumento) {
-      this.api.getPacientesBuscados(params).subscribe({
+      this.api.getPacientesBuscados(params).pipe(takeUntil(this.destroy$)).subscribe({
         next: (data) => {
           this.resultados = data;
           this.mostrarTabla = true;
@@ -119,7 +129,7 @@ export class ConsultorComponent implements OnInit {
         }
       });
     } else {
-      this.apip.getPacientes(params).subscribe({
+      this.apip.getPacientes(params).pipe(takeUntil(this.destroy$)).subscribe({
         next: (data) => {
           this.resultados = data.pacientes.map(p => ({
             id: p.id,
@@ -176,7 +186,7 @@ export class ConsultorComponent implements OnInit {
     this.referenciasFiltradas = [];
     this.metadatosArray = [];
 
-    this.apip.getPaciente(this.pacienteId).subscribe({
+    this.apip.getPaciente(this.pacienteId).pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => {
         this.paciente = data;
         this.procesarPaciente();
@@ -193,7 +203,7 @@ export class ConsultorComponent implements OnInit {
   private cargarConsultas(): void {
     this.cargandoConsultas = true;
 
-    this.api.getConsultasPorPaciente(this.pacienteId, {}).subscribe({
+    this.api.getConsultasPorPaciente(this.pacienteId, {}).pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => {
         this.consultasPorPaciente = data;
         this.cargandoConsultas = false;
@@ -207,7 +217,7 @@ export class ConsultorComponent implements OnInit {
   private cargarCitas(): void {
     if (!this.pacienteId) return;
 
-    this.apip.getCitasPaciente(this.pacienteId).subscribe({
+    this.apip.getCitasPaciente(this.pacienteId).pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => {
         this.citasPorPaciente = data;
         console.log('Citas del paciente:', this.citasPorPaciente);
@@ -338,6 +348,10 @@ export class ConsultorComponent implements OnInit {
   verDetalle(id: number): void { this.router.navigate(['/detalleAdmision', id]); }
   editar(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
   regresar(): void { this.location.back(); }
+
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
+  }
 
   copiarTexto(texto: string): void {
     navigator.clipboard.writeText(texto)

@@ -1,7 +1,7 @@
 // listarPrestamos.component.ts
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PrestamosService } from '../prestamos.service';
 import { FiltroPrestamos, Prestamo } from '../../../interface/prestamos';
@@ -13,20 +13,25 @@ import {
 } from '../../../shared/icons/svg-icon';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-listarPrestamos',
   templateUrl: './listarPrestamos.component.html',
   styleUrls: ['./listarPrestamos.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule]
 })
-export class ListarPrestamosComponent implements OnInit {
+export class ListarPrestamosComponent implements OnInit, OnDestroy {
 
   private api = inject(PrestamosService);
   private location = inject(Location);
   private sanitizer = inject(DomSanitizer);
   private router = inject(Router);
+
+  private destroy$ = new Subject<void>();
 
   prestamos: Prestamo[] = [];
   cargando = false;
@@ -67,13 +72,18 @@ export class ListarPrestamosComponent implements OnInit {
 
   ngOnInit(): void {
     this.inicializarIconos();
-    this.api.prestamos$.subscribe(data => {
+    this.api.prestamos$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.prestamos = data;
       this.cargando = false;
       // Desactiva botón siguiente si hay menos registros que el límite
       this.finPagina = data.length < this.limit;
     });
     this.cargarPrestamos();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private inicializarIconos(): void {
@@ -95,7 +105,7 @@ export class ListarPrestamosComponent implements OnInit {
 
   cargarPrestamos(): void {
     this.cargando = true;
-    this.api.getPrestamos(this.filtros).subscribe({
+    this.api.getPrestamos(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
       error: () => this.mostrarMensaje('Error al cargar los préstamos', 'error')
     });
   }
@@ -137,7 +147,7 @@ export class ListarPrestamosComponent implements OnInit {
   // ======= ACCIONES =======
   desactivar(id: number): void {
     if (!confirm('¿Desea desactivar este préstamo?')) return;
-    this.api.eliminarPrestamo(id).subscribe({
+    this.api.eliminarPrestamo(id).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => this.mostrarMensaje('Préstamo desactivado', 'success'),
       error: () => this.mostrarMensaje('Error al desactivar el préstamo', 'error')
     });

@@ -178,7 +178,7 @@
       </thead>
       <tbody>
           <tr
-            *ngFor="let paciente of pacientes"
+            *ngFor="let paciente of pacientes; trackBy: trackById"
             class="aurora-table-row"
             [class.touch-active]="rowActiva === paciente.id"
             [class.paciente-fallecido]="paciente.estado === 'F'"
@@ -308,7 +308,7 @@
 
     <!-- Páginas del rango visible -->
     <button
-      *ngFor="let p of paginas"
+      *ngFor="let p of paginas; trackBy: trackById"
       class="pag-num"
       [class.pag-num-active]="p === paginaActual"
       (click)="irAPagina(p)"

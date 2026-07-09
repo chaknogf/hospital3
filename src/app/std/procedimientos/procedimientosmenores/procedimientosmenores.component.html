@@ -106,7 +106,7 @@
 
       <tbody>
         <tr
-          *ngFor="let data of procedimientos"
+          *ngFor="let data of procedimientos; trackBy: trackById"
           [class.touch-active]="rowActiva === data.id"
           (click)="activarFila(data.id)"
         >
@@ -173,7 +173,7 @@
   }
 
   <button
-    *ngFor="let p of paginas"
+    *ngFor="let p of paginas; trackBy: trackById"
     class="pag-num"
     [class.pag-num-active]="p === paginaActual"
     (click)="irAPagina(p)"

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
@@ -7,6 +7,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Usuario, UsuarioOut } from '../../../interface/usuarios.interface';
 import { skip } from 'rxjs';
 import { addIcon, removeIcon, menuIcon, cancelIcon, findIcon, searchIcon, arrowDown, tablaShanonIcon, editIcon, skipLeft } from '../../../shared/icons/svg-icon';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -14,15 +16,18 @@ import { addIcon, removeIcon, menuIcon, cancelIcon, findIcon, searchIcon, arrowD
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule]
 })
-export class UsuariosComponent implements OnInit {
+export class UsuariosComponent implements OnInit, OnDestroy {
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private api = inject(ApiService);
   private fb = inject(FormBuilder);
   private sanitizer = inject(DomSanitizer);
+
+  private destroy$ = new Subject<void>();
 
   //========Estados ========
   usuarios: UsuarioOut[] = [];
@@ -73,7 +78,7 @@ export class UsuariosComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.api.usuarios$.subscribe(data => {
+    this.api.usuarios$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.usuarios = data;
 
       this.cargando = false;
@@ -81,6 +86,11 @@ export class UsuariosComponent implements OnInit {
 
 
     this.cargarUsuarios(); // 🔥 importante
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private inicializarIconos(): void {
@@ -100,7 +110,7 @@ export class UsuariosComponent implements OnInit {
 
   cargarUsuarios(): void {
     this.cargando = true;
-    this.api.getUsers(this.filtros).subscribe();
+    this.api.getUsers(this.filtros).pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   limpiarFiltros(): void {

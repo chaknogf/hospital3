@@ -1,6 +1,6 @@
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { Paciente, Totales } from '../../../interface/interfaces';
@@ -13,6 +13,8 @@ import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { TimePipe } from '../../../pipes/time.pipe';
 import { Location } from '@angular/common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -20,11 +22,14 @@ import { Location } from '@angular/common';
   templateUrl: './consultas.component.html',
   styleUrls: ['./consultas.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe, EdadPipe]
 })
-export class ConsultasComponent implements OnInit {
+export class ConsultasComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);
+
+  private destroy$ = new Subject<void>();
 
   consultas: ConsultaResponse[] = [];
   totales: Totales[] = [];
@@ -92,17 +97,21 @@ export class ConsultasComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // 1️⃣ Suscribirse al observable de consultas
-    this.api.consultas$.subscribe(data => { this.consultas = data; });
+    this.api.consultas$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.consultas = data; });
     this.cargarConsultas();
     this.buscar();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 
   cargarConsultas(): void {
     this.cargando = true;
     //console.log(this.filtros);
-    this.api.getConsultas(this.filtros).subscribe({
+    this.api.getConsultas(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => {
         this.totalDeRegistros = resultado.total;
         this.consultas = resultado.consultas;
@@ -238,4 +247,7 @@ export class ConsultasComponent implements OnInit {
     this.router.navigate(['/prestamo', id]);
   }
 
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
+  }
 }

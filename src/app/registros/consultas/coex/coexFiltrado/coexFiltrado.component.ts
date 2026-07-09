@@ -1,7 +1,7 @@
 // coexFiltrado.component.ts
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, input, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, input, effect, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
@@ -12,20 +12,25 @@ import { ciclos, Dict } from '../../../../enum/diccionarios';
 import { ConsultaService } from '../../consultas.service';
 import { IconService } from '../../../../service/icon.service';
 import { Location } from '@angular/common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-coexFiltrado',
   templateUrl: './coexFiltrado.component.html',
   styleUrls: ['./coexFiltrado.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe]
 })
-export class CoexFiltradoComponent implements OnInit {
+export class CoexFiltradoComponent implements OnInit, OnDestroy {
 
   private api = inject(ConsultaService);
   private router = inject(Router);
   private iconService = inject(IconService);
   private location = inject(Location);
+
+  private destroy$ = new Subject<void>();
 
   // ======= SIGNAL INPUTS =======
   // Requerido: siempre debe recibir una especialidad
@@ -111,9 +116,14 @@ export class CoexFiltradoComponent implements OnInit {
     this.yaInicializado = true;
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   // ======= CARGA DE DATOS =======
   private cargarTotales(fecha: string): void {
-    this.api.getTotales(fecha).subscribe({
+    this.api.getTotales(fecha).pipe(takeUntil(this.destroy$)).subscribe({
       next: (response: TotalesResponse) => {
         this.totales = response.totales;
         this.totalDeRegistros = this.totales
@@ -131,7 +141,7 @@ export class CoexFiltradoComponent implements OnInit {
     this.cargando = true;
     const filtrosLimpios = this.filtrosValidos();
 
-    this.api.getConsultas(filtrosLimpios).subscribe({
+    this.api.getConsultas(filtrosLimpios).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => { this.consultas = resultado.consultas; },
       error: () => { this.consultas = []; },
       complete: () => { this.cargando = false; }
@@ -252,6 +262,10 @@ export class CoexFiltradoComponent implements OnInit {
   }
 
   // ======= UTILIDADES =======
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
+  }
+
   activarFila(id: number): void {
     this.rowActiva = this.rowActiva === id ? null : id;
   }

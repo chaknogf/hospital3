@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
-import { catchError, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { catchError, takeUntil, tap } from 'rxjs/operators';
+import { of, Subject } from 'rxjs';
 
 import { ApiService } from '../../../service/api.service';
 import { ConsultaService } from '../../consultas/consultas.service';
@@ -27,9 +27,10 @@ import { PacienteService } from '../../patient/paciente.service';
   templateUrl: './admision.component.html',
   styleUrls: ['./admision.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe]
 })
-export class AdmisionComponent implements OnInit {
+export class AdmisionComponent implements OnInit, OnDestroy {
 
   form: FormGroup = new FormGroup({});
   paciente: Paciente | null = null;
@@ -57,6 +58,8 @@ export class AdmisionComponent implements OnInit {
   womanIcon!: SafeHtml;
   manIcon!: SafeHtml;
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -74,6 +77,11 @@ export class AdmisionComponent implements OnInit {
   ngOnInit(): void {
     this.usuarioActual = this.apis.getUsuarioActual().username;
     this.inicializarFlagsYCarga(this.route.snapshot.paramMap);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // ══════════════════════════════════════════════════════════
@@ -152,7 +160,7 @@ export class AdmisionComponent implements OnInit {
 
   cargarPaciente(idP: number): void {
     this.apip.getPaciente(idP)
-      .pipe(catchError(err => { this.mostrarError('cargar paciente', err); return of(null); }))
+      .pipe(catchError(err => { this.mostrarError('cargar paciente', err); return of(null); }), takeUntil(this.destroy$))
       .subscribe(data => {
         if (!data) return;
         this.paciente = data;
@@ -165,7 +173,7 @@ export class AdmisionComponent implements OnInit {
 
   cargarConsulta(id: number): void {
     this.api.getConsultaId(id)
-      .pipe(catchError(err => { this.mostrarError('cargar consulta', err); return of(null); }))
+      .pipe(catchError(err => { this.mostrarError('cargar consulta', err); return of(null); }), takeUntil(this.destroy$))
       .subscribe(data => {
         if (!data) return;
 
@@ -230,7 +238,8 @@ export class AdmisionComponent implements OnInit {
     this.api.registrarAdmision(datos)
       .pipe(
         tap(),
-        catchError(err => { this.mostrarError('registrar admisión', err); return of(null); })
+        catchError(err => { this.mostrarError('registrar admisión', err); return of(null); }),
+        takeUntil(this.destroy$)
       )
       .subscribe(r => { if (r) this.navegarSegunTipo(tipo, especialidad, r.id); });
   }
