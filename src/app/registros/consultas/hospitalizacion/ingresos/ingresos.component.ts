@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { Paciente, Totales } from '../../../../interface/interfaces';
@@ -28,6 +28,7 @@ import { takeUntil } from 'rxjs/operators';
 export class IngresosComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -98,7 +99,7 @@ export class IngresosComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.api.consultas$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.consultas = data; });
+    this.api.consultas$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.consultas = data; this.cdr.markForCheck(); });
     this.cargarConsultas();
     this.buscar();
   }
@@ -120,11 +121,13 @@ export class IngresosComponent implements OnInit, OnDestroy {
         if (this.paginaActual > this.totalPaginas) {
           this.paginaActual = this.totalPaginas;
         }
+        this.cdr.markForCheck();
       },
       error: err => {
         console.error('Error cargando consultas:', err);
         this.consultas = [];
         this.totalDeRegistros = 0;
+        this.cdr.markForCheck();
       },
       complete: () => { this.cargando = false; }
     });

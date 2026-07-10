@@ -2334,15 +2334,31 @@ thead th {
 }
 
 .hombre {
-  color: #8fbffa;
-  text-shadow: 0 0 2px rgba(103, 10, 10, 0.278);
+  /* color: #8fbffa; */
   font-weight: 600;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  box-shadow: none;
+  padding: 2px 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.hombre:hover {
+  border-color: rgba(59,130,246,0.6);
+  box-shadow: 0 0 6px rgba(59,130,246,0.5), 0 0 14px rgba(59,130,246,0.2);
 }
 
 .mujer {
-  color: #ea357e;
-  text-shadow: 0 0 2px rgba(103, 10, 10, 0.278);
+  /* color: #ea357e; */
   font-weight: 600;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  box-shadow: none;
+  padding: 2px 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.mujer:hover {
+  border-color: rgba(236,72,153,0.6);
+  box-shadow: 0 0 6px rgba(236,72,153,0.5), 0 0 14px rgba(236,72,153,0.2);
 }
 
 .vivo {
@@ -2497,7 +2513,7 @@ thead th {
 .aurora-container p {
   font-size: 0.85rem;
   line-height: 1.4;
-  opacity: 0.75;
+  /* opacity: 0.75; */
 }
 
 /* ── EFECTO PULSE MEDICO ── */
@@ -2673,8 +2689,8 @@ div .orden {
 .nombre-table p {
 padding: 0;
   margin: 0;
-  letter-spacing: 2px;
-  color: var(--text);
+  /* letter-spacing: 2px; */
+
 }
 
 .paciente-fallecido {
@@ -2914,7 +2930,7 @@ padding: 0;
     font-size: 16px;
     letter-spacing: 1px;
     font-weight: 700;
-    color: var(--text);
+    /* color: var(--text) !important; */
   }
 
   /* Celda de nombre: etiqueta arriba */

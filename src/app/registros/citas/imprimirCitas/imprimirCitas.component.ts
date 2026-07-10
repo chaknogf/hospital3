@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -24,6 +24,7 @@ export class ImprimirCitasComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private api = inject(CitaService);
   private location = inject(Location);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -67,6 +68,7 @@ export class ImprimirCitasComponent implements OnInit, OnDestroy {
       if (params['especialidad']) this.filtros.especialidad = params['especialidad'];
       if (params['fecha_cita']) this.filtros.fecha_cita = params['fecha_cita'];
       this.cargarCitas();
+      this.cdr.markForCheck();
     });
   }
 
@@ -86,10 +88,12 @@ export class ImprimirCitasComponent implements OnInit, OnDestroy {
         this.cargando = false;
         // Ajustar página si el backend devolvió menos de lo esperado
 
+        this.cdr.markForCheck();
       },
       error: error => {
         console.error('Error al cargar citas:', error);
         this.cargando = false;
+        this.cdr.markForCheck();
       },
       complete: () => {
         this.cargando = false;

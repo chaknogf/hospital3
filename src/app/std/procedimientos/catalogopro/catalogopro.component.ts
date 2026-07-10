@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -32,6 +32,7 @@ export class CatalogoproComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private iconService = inject(IconService);
   private fb = inject(FormBuilder);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -89,6 +90,7 @@ export class CatalogoproComponent implements OnInit, OnDestroy {
     this.api.catalogo$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.catalogoCompleto = data;
       this.actualizarPagina();
+      this.cdr.markForCheck();
     });
 
     this.cargarCatalogo();
@@ -117,11 +119,13 @@ export class CatalogoproComponent implements OnInit, OnDestroy {
           inicio + this.pageSize;
         this.procedimientos =
           data.slice(inicio, fin);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error(err);
         this.procedimientos = [];
         this.totalDeRegistros = 0;
+        this.cdr.markForCheck();
       },
       complete: () => {
         this.cargando = false;
@@ -177,8 +181,8 @@ export class CatalogoproComponent implements OnInit, OnDestroy {
       this.cargando = false;
     } else {
       this.api.getProcedimientoCatalogo(id).pipe(takeUntil(this.destroy$)).subscribe({
-        next: data => this.form.patchValue(data),
-        error: err => console.error(err),
+        next: data => { this.form.patchValue(data); this.cdr.markForCheck(); },
+        error: err => { console.error(err); this.cdr.markForCheck(); },
         complete: () => { this.cargando = false; }
       });
     }
@@ -205,10 +209,12 @@ export class CatalogoproComponent implements OnInit, OnDestroy {
       this.api.updateProcedimiento(this.procedimientoId, payload).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           this.cerrarModal();
+          this.cdr.markForCheck();
         },
         error: err => {
           console.error(err);
           this.guardando = false;
+          this.cdr.markForCheck();
         },
         complete: () => { this.guardando = false; }
       });
@@ -217,10 +223,12 @@ export class CatalogoproComponent implements OnInit, OnDestroy {
       this.api.createProcedimiento(payload as ProcedimientoCreate).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           this.cerrarModal();
+          this.cdr.markForCheck();
         },
         error: err => {
           console.error(err);
           this.guardando = false;
+          this.cdr.markForCheck();
         },
         complete: () => { this.guardando = false; }
       });
@@ -240,10 +248,12 @@ export class CatalogoproComponent implements OnInit, OnDestroy {
 
       next: () => {
         // catálogo se actualiza via catalogo$
+        this.cdr.markForCheck();
       },
 
       error: (err) => {
         console.error(err);
+        this.cdr.markForCheck();
       }
 
     });

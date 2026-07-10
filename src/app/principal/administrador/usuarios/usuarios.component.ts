@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
@@ -26,6 +26,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   private api = inject(ApiService);
   private fb = inject(FormBuilder);
   private sanitizer = inject(DomSanitizer);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -82,6 +83,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       this.usuarios = data;
 
       this.cargando = false;
+      this.cdr.markForCheck();
     });
 
 
@@ -110,7 +112,9 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   cargarUsuarios(): void {
     this.cargando = true;
-    this.api.getUsers(this.filtros).pipe(takeUntil(this.destroy$)).subscribe();
+    this.api.getUsers(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => this.cdr.markForCheck(),
+    });
   }
 
   limpiarFiltros(): void {

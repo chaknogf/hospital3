@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -28,6 +28,7 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
   private api = inject(ConsultaService);
   private router = inject(Router);
   private iconService = inject(IconService);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -125,7 +126,7 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.api.consultas$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.consultas = data; });
+    this.api.consultas$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.consultas = data; this.cdr.markForCheck(); });
     this.cargarConsultas();
     // this.cargarTodosPorServicio();
     this.cargarTodosPorEspecialidad();
@@ -149,11 +150,13 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
         if (this.paginaActual > this.totalPaginas) {
           this.paginaActual = this.totalPaginas;
         }
+        this.cdr.markForCheck();
       },
       error: err => {
         console.error('Error cargando consultas:', err);
         this.consultas = [];
         this.totalDeRegistros = 0;
+        this.cdr.markForCheck();
       },
       complete: () => { this.cargando = false; }
     });
@@ -180,10 +183,12 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
         next: resultado => {
           this.consultasPorServicio[servicio.value] = resultado.consultas;
           this.conteosPorServicio[servicio.value] = resultado.total;
+          this.cdr.markForCheck();
         },
         error: () => {
           this.consultasPorServicio[servicio.value] = [];
           this.conteosPorServicio[servicio.value] = 0;
+          this.cdr.markForCheck();
         },
         complete: () => {
           pendientes--;
@@ -214,10 +219,12 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
         next: resultado => {
           this.consultasPorEspecialidad[esp.value] = resultado.consultas;
           this.conteosPorEspecialidad[esp.value] = resultado.total;
+          this.cdr.markForCheck();
         },
         error: () => {
           this.consultasPorEspecialidad[esp.value] = [];
           this.conteosPorEspecialidad[esp.value] = 0;
+          this.cdr.markForCheck();
         },
         complete: () => {
           pendientes--;

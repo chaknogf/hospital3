@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -27,6 +27,7 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   private censoService = inject(CensoCamasService);
   private api = inject(ApiService);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -83,8 +84,8 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
 
   cargarServicios(): void {
     this.api.getServiciosEncamamiento(true).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (data: Encamamiento[]) => this.servicios = data,
-      error: () => this.servicios = []
+      next: (data: Encamamiento[]) => { this.servicios = data; this.cdr.markForCheck(); },
+      error: () => { this.servicios = []; this.cdr.markForCheck(); }
     });
   }
 
@@ -99,10 +100,12 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
         this.registros = res.registros;
         this.totalDeRegistros = res.total;
         this.cargando = false;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.error = 'Error al cargar registros de censo';
         this.cargando = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -151,8 +154,8 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
     if (!confirmar) return;
 
     this.censoService.eliminar(id).pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => this.cargar(),
-      error: (err) => console.error(err)
+      next: () => { this.cargar(); this.cdr.markForCheck(); },
+      error: (err) => { console.error(err); this.cdr.markForCheck(); }
     });
   }
 
@@ -184,17 +187,20 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.estadisticaMes = res;
         this.cargandoEstadisticas = false;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.cargandoEstadisticas = false;
+        this.cdr.markForCheck();
       }
     });
 
     this.censoService.getEstadisticas(hoy, hoy).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.estadisticaHoy = res;
+        this.cdr.markForCheck();
       },
-      error: () => {}
+      error: () => { this.cdr.markForCheck(); }
     });
   }
 

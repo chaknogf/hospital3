@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -59,6 +59,7 @@ export class AdmisionComponent implements OnInit, OnDestroy {
   manIcon!: SafeHtml;
 
   private destroy$ = new Subject<void>();
+  private cdr = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder,
@@ -168,6 +169,7 @@ export class AdmisionComponent implements OnInit, OnDestroy {
           paciente_id: idP,
           expediente: data.expediente || 'Se generará automáticamente'
         });
+        this.cdr.markForCheck();
       });
   }
 
@@ -204,6 +206,7 @@ export class AdmisionComponent implements OnInit, OnDestroy {
         });
 
         this.filtrarPorTipo(Number(data.tipo_consulta));
+        this.cdr.markForCheck();
       });
   }
 
@@ -222,7 +225,7 @@ export class AdmisionComponent implements OnInit, OnDestroy {
 
     if (this.enEdicion) {
       // ✅ FIX: se agrega .subscribe() para que el observable se ejecute
-      this.actualizarConsulta().subscribe();
+      this.actualizarConsulta().subscribe({ next: () => this.cdr.markForCheck() });
       return;
     }
 
@@ -241,7 +244,7 @@ export class AdmisionComponent implements OnInit, OnDestroy {
         catchError(err => { this.mostrarError('registrar admisión', err); return of(null); }),
         takeUntil(this.destroy$)
       )
-      .subscribe(r => { if (r) this.navegarSegunTipo(tipo, especialidad, r.id); });
+      .subscribe(r => { if (r) this.navegarSegunTipo(tipo, especialidad, r.id); this.cdr.markForCheck(); });
   }
 
   // ══════════════════════════════════════════════════════════
@@ -341,7 +344,7 @@ export class AdmisionComponent implements OnInit, OnDestroy {
         tap(),
         catchError(err => { this.mostrarError('actualizar indicadores', err); return of(null); })
       )
-      .subscribe();
+      .subscribe({ next: () => this.cdr.markForCheck() });
   }
 
   editarPaciente(id: number): void { this.router.navigate(['/pacienteEdit', id]); }

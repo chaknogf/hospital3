@@ -177,36 +177,56 @@
         </tr>
       </thead>
       <tbody>
-          <tr
-            *ngFor="let paciente of pacientes; trackBy: trackById"
-            class="aurora-table-row"
-            [class.touch-active]="rowActiva === paciente.id"
-            [class.paciente-fallecido]="paciente.estado === 'F'"
-            [class.paciente-personal-hospital]="paciente.personal_hospital === 'S'"
-            (click)="activarFila(paciente.id)"
-          >
+        <tr
+          *ngFor="let paciente of pacientes; trackBy: trackById"
+          class="aurora-table-row"
+          [class.touch-active]="rowActiva === paciente.id"
+          [class.paciente-fallecido]="paciente.estado === 'F'"
+          [class.paciente-personal-hospital]="
+            paciente.personal_hospital === 'S'
+          "
+          (click)="activarFila(paciente.id)"
+        >
           <td data-label="Nombre:">
-            <div class="nombre-table" [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'">
-              <p [innerHTML]="nombreCompleto(paciente) | highlight: filtros.q"></p>
+            <div class="nombre-table">
+              <p [innerHTML]="nombres(paciente) | highlight: filtros.q"></p>
+              <p class="mt-1" [innerHTML]="apellidos(paciente) | highlight: filtros.q"
+                 [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'"></p>
             </div>
           </td>
           <td data-label="Identificador:" class="gap-2">
             @if (paciente?.cui) {
               <div class="ms-4">
-                <strong>CUI:</strong> <small [innerHTML]="(paciente.cui | cui) | highlight: filtros.q"></small>
+                <strong>CUI:</strong>
+                <small
+                  [innerHTML]="paciente.cui | cui | highlight: filtros.q"
+                ></small>
               </div>
             }
             @if (paciente?.expediente) {
               <div class="text-alert">
-                <strong>Exp:</strong> <span [innerHTML]="paciente.expediente | highlight: filtros.q"></span>
+                <strong>Exp:</strong>
+                <span
+                  [innerHTML]="paciente.expediente | highlight: filtros.q"
+                ></span>
               </div>
             }
             @if (paciente?.pasaporte) {
-              <div><strong>Pasaporte:</strong> <span [innerHTML]="paciente.pasaporte | highlight: filtros.q"></span></div>
+              <div>
+                <strong>Pasaporte:</strong>
+                <span
+                  [innerHTML]="paciente.pasaporte | highlight: filtros.q"
+                ></span>
+              </div>
             }
             @if (paciente?.datos_extra?.personaid) {
               <div>
-                <strong>Otro Id:</strong> <span [innerHTML]="paciente.datos_extra?.personaid | highlight: filtros.q"></span>
+                <strong>Otro Id:</strong>
+                <span
+                  [innerHTML]="
+                    paciente.datos_extra?.personaid | highlight: filtros.q
+                  "
+                ></span>
               </div>
             }
             <p style="font-size: xx-small">id: {{ paciente.id }}</p>

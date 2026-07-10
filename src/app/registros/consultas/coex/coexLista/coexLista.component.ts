@@ -2,7 +2,7 @@
 
 import { filter, takeUntil } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -27,6 +27,7 @@ import { Location } from '@angular/common';
 export class CoexListaComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);
+  private cdr = inject(ChangeDetectorRef);
 
   esEmergencia = true;
   consultas: ConsultaResponse[] = [];
@@ -132,11 +133,13 @@ export class CoexListaComponent implements OnInit, OnDestroy {
           t.entidad.toLowerCase().includes('coex')
         );
         this.totalDeRegistros = consultasCoex?.total || 0;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('❌ Error al cargar totales:', err);
         this.totales = [];
         this.totalDeRegistros = 0;
+        this.cdr.markForCheck();
       }
     });
 
@@ -155,7 +158,7 @@ export class CoexListaComponent implements OnInit, OnDestroy {
     this.api.getConsultas(filtrosLimpios).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => {
         this.consultas = resultado.consultas;
-
+        this.cdr.markForCheck();
 
       },
       error: (err) => {
@@ -169,6 +172,7 @@ export class CoexListaComponent implements OnInit, OnDestroy {
         this.psico = [];
         this.nutri = [];
         this.odonto = [];
+        this.cdr.markForCheck();
       },
       complete: () => {
         this.cargando = false;
@@ -251,9 +255,11 @@ export class CoexListaComponent implements OnInit, OnDestroy {
           t.entidad.toLowerCase().includes('coex')
         );
         this.totalDeRegistros = consultasCoex?.total || 0;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('❌ Error al cargar totales:', err);
+        this.cdr.markForCheck();
       }
     });
 

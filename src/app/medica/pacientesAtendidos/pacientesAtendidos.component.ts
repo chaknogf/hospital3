@@ -1,6 +1,6 @@
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../pipes/edad.pipe';
 import { Paciente, Totales } from '../../interface/interfaces';
@@ -32,6 +32,7 @@ export class PacientesAtendidosComponent implements OnInit, OnDestroy {
   private api = inject(ConsultaService);
   private router = inject(Router);
   private iconService = inject(IconService);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -123,7 +124,7 @@ export class PacientesAtendidosComponent implements OnInit, OnDestroy {
           return of(null);
         })
       )
-      .subscribe();
+      .subscribe({ next: () => this.cdr.markForCheck() });
   }
 
   // ══════════════════════════════════════════════════════════
@@ -207,7 +208,7 @@ export class PacientesAtendidosComponent implements OnInit, OnDestroy {
           return of(null);
         })
       )
-      .subscribe();
+      .subscribe({ next: () => this.cdr.markForCheck() });
   }
 
   // ══════════════════════════════════════════════════════════
@@ -259,11 +260,13 @@ export class PacientesAtendidosComponent implements OnInit, OnDestroy {
         if (this.paginaActual > this.totalPaginas) {
           this.paginaActual = this.totalPaginas;
         }
+        this.cdr.markForCheck();
       },
       error: err => {
         console.error('Error cargando consultas:', err);
         this.consultas = [];
         this.totalDeRegistros = 0;
+        this.cdr.markForCheck();
       },
       complete: () => { this.cargando = false; }
     });

@@ -1,7 +1,7 @@
 import { TimePipe } from '../../../pipes/time.pipe';
 import { ConstanciasService } from '../constancias.service';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PacienteService } from '../../patient/paciente.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -31,6 +31,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
   private api = inject(ConstanciasService);
   private pservice = inject(PacienteService);
   private fb = inject(FormBuilder);
+  private cdr = inject(ChangeDetectorRef);
 
   // ======= PROPIEDADES =======
   form: FormGroup;
@@ -69,6 +70,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(total => {
       this.form.get('hijos')!.setValue(total, { emitEvent: false });
+      this.cdr.markForCheck();
     });
   }
 
@@ -122,6 +124,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
         if (!data) return;
         this.constancia = data;
         this.poblarFormulario(data);
+        this.cdr.markForCheck();
       });
   }
 
@@ -180,7 +183,8 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
         this.constancia = res;
         this.guardadoOk.set(true);
         setTimeout(() => this.guardadoOk.set(false), 3000);
-        this.router.navigate(['/nacimientos'])
+        this.router.navigate(['/nacimientos']);
+        this.cdr.markForCheck();
       });
   }
 
@@ -206,9 +210,11 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.medicos = data;
+          this.cdr.markForCheck();
         },
         error: (err) => {
           console.error('Error al cargar médicos:', err);
+          this.cdr.markForCheck();
         }
       });
   }

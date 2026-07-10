@@ -1,7 +1,7 @@
 // coexFiltrado.component.ts
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, input, effect, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, input, effect, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
@@ -29,6 +29,7 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private iconService = inject(IconService);
   private location = inject(Location);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -129,10 +130,12 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
         this.totalDeRegistros = this.totales
           .find(t => t.entidad.toLowerCase().includes('coex'))
           ?.total ?? 0;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.totales = [];
         this.totalDeRegistros = 0;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -142,8 +145,8 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
     const filtrosLimpios = this.filtrosValidos();
 
     this.api.getConsultas(filtrosLimpios).pipe(takeUntil(this.destroy$)).subscribe({
-      next: resultado => { this.consultas = resultado.consultas; },
-      error: () => { this.consultas = []; },
+      next: resultado => { this.consultas = resultado.consultas; this.cdr.markForCheck(); },
+      error: () => { this.consultas = []; this.cdr.markForCheck(); },
       complete: () => { this.cargando = false; }
     });
   }

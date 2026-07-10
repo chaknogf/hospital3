@@ -1,6 +1,6 @@
 import { PacienteService } from '../paciente.service';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -31,6 +31,7 @@ export class HijosComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private sanitizer = inject(DomSanitizer);
+  private cdr = inject(ChangeDetectorRef);
 
   isLoading = signal(false);
   error = signal<string | null>(null);
@@ -124,6 +125,7 @@ export class HijosComponent implements OnInit, OnDestroy {
       .subscribe(params => {
         this.pacienteId = params['id'];
         console.log('Paciente ID recibido:', this.pacienteId);
+        this.cdr.markForCheck();
       });
 
     this.form = this.crearFormulario();
@@ -336,6 +338,7 @@ export class HijosComponent implements OnInit, OnDestroy {
               document.getElementById('sec-0')?.scrollIntoView({ behavior: 'smooth' });
             }, 1500);
           }
+          this.cdr.markForCheck();
         }
       });
   }

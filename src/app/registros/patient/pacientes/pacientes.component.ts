@@ -1,6 +1,6 @@
 
 // pacientes.component.ts
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Paciente, Renap } from '../../../interface/interfaces';
@@ -82,6 +82,7 @@ export class PacientesComponent implements OnInit, OnDestroy {
   ];
 
   private destroy$ = new Subject<void>();
+  private cdr = inject(ChangeDetectorRef);
 
   // ── Icons ──────────────────────────────────────────────────
   icons: { [key: string]: any } = {};
@@ -116,7 +117,7 @@ export class PacientesComponent implements OnInit, OnDestroy {
 
   // ══════════════════════════════════════════════════════════
   ngOnInit(): void {
-    this.api.pacientes$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.pacientes = data; });
+    this.api.pacientes$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.pacientes = data; this.cdr.markForCheck(); });
     this.cargarPacientes();
   }
 
@@ -146,13 +147,15 @@ export class PacientesComponent implements OnInit, OnDestroy {
         if (this.paginaActual > this.totalPaginas) {
           this.paginaActual = this.totalPaginas;
         }
+        this.cdr.markForCheck();
       },
       error: err => {
         console.error('Error cargando pacientes:', err);
         this.pacientes = [];
         this.totalDeRegistros = 0;
+        this.cdr.markForCheck();
       },
-      complete: () => { this.cargando = false; }
+      complete: () => { this.cargando = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -218,6 +221,30 @@ export class PacientesComponent implements OnInit, OnDestroy {
       apellidos += ' de ' + cap(n.apellido_casada);
     }
     return nombres + ' ' + apellidos;
+  }
+
+  nombres(p: any): string {
+    if (!p?.nombre) return '';
+    const n = p.nombre;
+    const cap = (s: string) => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    return [n.primer_nombre, n.segundo_nombre, n.otro_nombre]
+      .filter(Boolean)
+      .map(cap)
+      .join(' ');
+  }
+
+  apellidos(p: any): string {
+    if (!p?.nombre) return '';
+    const n = p.nombre;
+    const cap = (s: string) => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    let ap = [n.primer_apellido, n.segundo_apellido]
+      .filter(Boolean)
+      .map(cap)
+      .join(' ');
+    if (n.apellido_casada) {
+      ap += ' de ' + cap(n.apellido_casada);
+    }
+    return ap;
   }
 
   // ══════════════════════════════════════════════════════════

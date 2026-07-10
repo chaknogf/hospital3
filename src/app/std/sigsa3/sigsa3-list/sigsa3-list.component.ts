@@ -1,7 +1,7 @@
 // sigsa3-list.component.ts
 
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Sigsa3Out } from '../../../interface/sigsa3.interface';
@@ -21,6 +21,7 @@ import { takeUntil } from 'rxjs/operators';
 export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -79,6 +80,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.api.registros$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.registros = data;
+      this.cdr.markForCheck();
     });
     this.cargar();
   }
@@ -97,10 +99,12 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
       next: (resultado) => {
         this.registros = resultado;
         this.totalDeRegistros = resultado.length;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.registros = [];
         this.totalDeRegistros = 0;
+        this.cdr.markForCheck();
       },
       complete: () => { this.cargando = false; }
     });
@@ -149,14 +153,14 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   eliminar(id: number): void {
     if (!confirm('¿Eliminar este registro?')) return;
-    this.api.eliminarRegistro(id).pipe(takeUntil(this.destroy$)).subscribe({ next: () => this.cargar() });
+    this.api.eliminarRegistro(id).pipe(takeUntil(this.destroy$)).subscribe({ next: () => { this.cargar(); this.cdr.markForCheck(); } });
   }
 
   eliminarSeleccionados(): void {
     if (this.seleccionados.size === 0) return;
     if (!confirm(`¿Eliminar ${this.seleccionados.size} registros seleccionados?`)) return;
     this.api.eliminarPorIds([...this.seleccionados]).pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => { this.seleccionados.clear(); this.cargar(); }
+      next: () => { this.seleccionados.clear(); this.cargar(); this.cdr.markForCheck(); }
     });
   }
 
@@ -177,8 +181,8 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
     if (!this.DesdePeriodo || !this.HastaPeriodo) return;
     this.procesando = true;
     this.api.eliminarPorPeriodo(this.DesdePeriodo, this.HastaPeriodo).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cargar(); },
-      error: () => { this.procesando = false; }
+      next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cargar(); this.cdr.markForCheck(); },
+      error: () => { this.procesando = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -197,24 +201,24 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
     if (!this.asociarExpediente || !this.asociarHistoria) return;
     this.procesando = true;
     this.api.asociarPaciente(this.asociarExpediente, this.asociarHistoria).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cargar(); },
-      error: () => { this.procesando = false; }
+      next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cargar(); this.cdr.markForCheck(); },
+      error: () => { this.procesando = false; this.cdr.markForCheck(); }
     });
   }
 
   asociarMedico(): void {
     this.procesando = true;
     this.api.asociarMedico().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res) => { this.resultadoOperacion = res; this.procesando = false; },
-      error: () => { this.procesando = false; }
+      next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cdr.markForCheck(); },
+      error: () => { this.procesando = false; this.cdr.markForCheck(); }
     });
   }
 
   asociarTodo(): void {
     this.procesando = true;
     this.api.asociarTodo().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cargar(); },
-      error: () => { this.procesando = false; }
+      next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cargar(); this.cdr.markForCheck(); },
+      error: () => { this.procesando = false; this.cdr.markForCheck(); }
     });
   }
 

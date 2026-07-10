@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { ConsultaOut, CicloClinico, EstadoCiclo, ConsultaUpdate, Egreso, Dx } from '../../../interface/consultas';
@@ -31,6 +31,7 @@ export class RecepcionComponent implements OnInit, OnDestroy {
   private api = inject(ConsultaService);
   private router = inject(Router);
   private iconService = inject(IconService);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -112,7 +113,7 @@ export class RecepcionComponent implements OnInit, OnDestroy {
           return of(null);
         })
       )
-      .subscribe();
+      .subscribe({ next: () => this.cdr.markForCheck() });
   }
 
   // ══════════════════════════════════════════════════════════
@@ -195,7 +196,7 @@ export class RecepcionComponent implements OnInit, OnDestroy {
           return of(null);
         })
       )
-      .subscribe();
+      .subscribe({ next: () => this.cdr.markForCheck() });
   }
 
 
@@ -204,7 +205,7 @@ export class RecepcionComponent implements OnInit, OnDestroy {
   // CARGA
   // ══════════════════════════════════════════════════════════
   ngOnInit(): void {
-    this.api.consultas$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.consultas = data; });
+    this.api.consultas$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.consultas = data; this.cdr.markForCheck(); });
     this.cargarConsultas();
     this.buscar();
   }
@@ -227,11 +228,13 @@ export class RecepcionComponent implements OnInit, OnDestroy {
         if (this.paginaActual > this.totalPaginas) {
           this.paginaActual = this.totalPaginas;
         }
+        this.cdr.markForCheck();
       },
       error: err => {
         console.error('Error cargando consultas:', err);
         this.consultas = [];
         this.totalDeRegistros = 0;
+        this.cdr.markForCheck();
       },
       complete: () => { this.cargando = false; }
     });

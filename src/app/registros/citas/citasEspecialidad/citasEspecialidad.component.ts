@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, input, effect, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, input, effect, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CitaResponse, Citas } from '../../../interface/citas';
 import { CitaService } from '../cita.service';
@@ -32,6 +32,7 @@ export class CitasEspecialidadComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private location = inject(Location);
   private sanitizer = inject(DomSanitizer);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -110,6 +111,7 @@ export class CitasEspecialidadComponent implements OnInit, OnDestroy {
       this.citas = data;
       this.citasFiltradas = data;
       this.cargando = false;
+      this.cdr.markForCheck();
     });
   }
 
@@ -147,10 +149,12 @@ export class CitasEspecialidadComponent implements OnInit, OnDestroy {
         if (this.paginaActual > this.totalPaginas) {
           this.paginaActual = this.totalPaginas;
         }
+        this.cdr.markForCheck();
       },
       error: error => {
         console.error('Error al cargar citas:', error);
         this.cargando = false;
+        this.cdr.markForCheck();
       },
       complete: () => {
         this.cargando = false;

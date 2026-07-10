@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConsultaService } from '../../registros/consultas/consultas.service';
 import { Router } from '@angular/router';
@@ -29,6 +29,7 @@ export class ConsultorComponent implements OnInit, OnDestroy {
   private apip = inject(PacienteService);
   private router = inject(Router);
   private location = inject(Location);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -123,9 +124,11 @@ export class ConsultorComponent implements OnInit, OnDestroy {
           this.mostrarTabla = true;
           this.buscando = false;
           this.cerrarSidebarEnMobile();
+          this.cdr.markForCheck();
         },
         error: () => {
           this.buscando = false;
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -142,9 +145,11 @@ export class ConsultorComponent implements OnInit, OnDestroy {
           this.mostrarTabla = true;
           this.buscando = false;
           this.cerrarSidebarEnMobile();
+          this.cdr.markForCheck();
         },
         error: () => {
           this.buscando = false;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -192,10 +197,12 @@ export class ConsultorComponent implements OnInit, OnDestroy {
         this.procesarPaciente();
         this.error = null;
         this.cargandoPaciente = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.error = err?.message || 'Error al cargar paciente.';
         this.cargandoPaciente = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -207,9 +214,11 @@ export class ConsultorComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.consultasPorPaciente = data;
         this.cargandoConsultas = false;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.cargandoConsultas = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -233,9 +242,11 @@ export class ConsultorComponent implements OnInit, OnDestroy {
               valor
             }))
         }));
+        this.cdr.markForCheck();
       },
       error: (err: any) => {
         console.error('Error al cargar las citas del paciente:', err);
+        this.cdr.markForCheck();
       }
     });
   }

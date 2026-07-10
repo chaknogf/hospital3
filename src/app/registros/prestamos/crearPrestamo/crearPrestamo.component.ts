@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -26,6 +26,7 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   readonly router = inject(Router);
   private location = inject(Location);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -99,10 +100,12 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
         this.consulta.set(consulta);
         this.autoCompletar(consulta);
         this.cargandoConsulta.set(false);
+        this.cdr.markForCheck();
       },
       error: () => {
         this.errorCarga.set('No se pudo cargar la consulta.');
         this.cargandoConsulta.set(false);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -126,10 +129,12 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
       next: (prestamo) => {
         this.rellenarFormDesde(prestamo);
         this.cargandoConsulta.set(false);
+        this.cdr.markForCheck();
       },
       error: () => {
         this.errorCarga.set('No se pudo cargar el préstamo.');
         this.cargandoConsulta.set(false);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -191,8 +196,9 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
         this.usuarioEntrega = prestamo.usuario_entrega ?? null;
         this.mostrarMensaje('Préstamo registrado correctamente.', 'success');
         setTimeout(() => this.router.navigate(['/prestamos']), 1800);
+        this.cdr.markForCheck();
       },
-      error: () => this.mostrarMensaje('Error al crear el préstamo.', 'error')
+      error: () => { this.mostrarMensaje('Error al crear el préstamo.', 'error'); this.cdr.markForCheck(); }
     });
   }
 
@@ -221,8 +227,9 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
         this.usuarioRecibe = prestamo.usuario_recibe ?? null;
         this.mostrarMensaje('Préstamo actualizado correctamente.', 'success');
         setTimeout(() => this.router.navigate(['/prestamos']), 1800);
+        this.cdr.markForCheck();
       },
-      error: () => this.mostrarMensaje('Error al actualizar el préstamo.', 'error')
+      error: () => { this.mostrarMensaje('Error al actualizar el préstamo.', 'error'); this.cdr.markForCheck(); }
     });
   }
 

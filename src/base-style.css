@@ -13262,10 +13262,28 @@ tr:hover .svg-icon {
 
 .hombre {
   color: var(--aero);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  box-shadow: none;
+  padding: 2px 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.hombre:hover {
+  border-color: rgba(59,130,246,0.6);
+  box-shadow: 0 0 6px rgba(59,130,246,0.5), 0 0 14px rgba(59,130,246,0.2);
 }
 
 .mujer {
   color: var(--carnation-pink);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  box-shadow: none;
+  padding: 2px 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.mujer:hover {
+  border-color: rgba(236,72,153,0.6);
+  box-shadow: 0 0 6px rgba(236,72,153,0.5), 0 0 14px rgba(236,72,153,0.2);
 }
 
 

@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -28,6 +28,7 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);
   private api = inject(NacimientosService);
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild('modalCard') set modalCardRef(el: ElementRef | undefined) {
     if (el) setTimeout(() => el.nativeElement.focus());
@@ -115,6 +116,7 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.api.nacimientos$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.nacimientos = data;
+      this.cdr.markForCheck();
     });
     this.cargarNacimientos();
   }
@@ -128,10 +130,12 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
         if (this.paginaActual > this.totalPaginas) {
           this.paginaActual = this.totalPaginas;
         }
+        this.cdr.markForCheck();
       },
       error: () => {
         this.nacimientos = [];
         this.totalDeRegistros = 0;
+        this.cdr.markForCheck();
       },
       complete: () => {
         this.cargando = false;
@@ -205,9 +209,11 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
         this.modelo.hora_nacimiento = n.neonatales?.hora_nacimiento ?? null;
         this.modelo.extrahospitalario = n.neonatales?.extrahospitalario ?? false;
         this.modelo.mortinato = n.mortinato ?? false;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.modalError.set('Error al cargar el nacimiento');
+        this.cdr.markForCheck();
       }
     });
   }
@@ -252,18 +258,22 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
               this.guardando.set(false);
               this.cargarNacimientos();
               setTimeout(() => this.cerrarModal(), 1500);
+              this.cdr.markForCheck();
             },
             error: () => {
               this.modalSuccess.set('Neonatales actualizados, error al actualizar registro');
               this.guardando.set(false);
               this.cargarNacimientos();
               setTimeout(() => this.cerrarModal(), 1500);
+              this.cdr.markForCheck();
             }
           });
+          this.cdr.markForCheck();
         },
         error: () => {
           this.modalError.set('Error al actualizar nacimiento');
           this.guardando.set(false);
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -278,10 +288,12 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
           this.guardando.set(false);
           this.cargarNacimientos();
           setTimeout(() => this.cerrarModal(), 1500);
+          this.cdr.markForCheck();
         },
         error: () => {
           this.modalError.set('Error al registrar nacimiento');
           this.guardando.set(false);
+          this.cdr.markForCheck();
         }
       });
     }
@@ -294,9 +306,11 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
     this.api.deleteNacimiento(id).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.cargarNacimientos();
+        this.cdr.markForCheck();
       },
       error: () => {
         alert('Error al eliminar el nacimiento');
+        this.cdr.markForCheck();
       }
     });
   }
@@ -379,9 +393,11 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
       next: p => {
         this.pacienteDetalle.set(p);
         this.cargandoPaciente.set(false);
+        this.cdr.markForCheck();
       },
       error: () => {
         this.cargandoPaciente.set(false);
+        this.cdr.markForCheck();
       }
     });
     this.cargarConstancia(id);
@@ -395,10 +411,12 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
       next: c => {
         this.constanciaData.set(c);
         this.constanciaCargando.set(false);
+        this.cdr.markForCheck();
       },
       error: () => {
         this.constanciaCargando.set(false);
         this.constanciaError.set(true);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -504,10 +522,12 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Nacimientos');
         XLSX.writeFile(wb, `nacimientos_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        this.cdr.markForCheck();
       },
       error: err => {
         console.error('Error al descargar Excel:', err);
         alert('Error al descargar el Excel. Verifique los filtros e intente de nuevo.');
+        this.cdr.markForCheck();
       }
     });
   }

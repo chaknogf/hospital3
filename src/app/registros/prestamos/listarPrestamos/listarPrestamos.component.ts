@@ -1,7 +1,7 @@
 // listarPrestamos.component.ts
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PrestamosService } from '../prestamos.service';
 import { FiltroPrestamos, Prestamo } from '../../../interface/prestamos';
@@ -30,6 +30,7 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
   private location = inject(Location);
   private sanitizer = inject(DomSanitizer);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -77,6 +78,7 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
       this.cargando = false;
       // Desactiva botón siguiente si hay menos registros que el límite
       this.finPagina = data.length < this.limit;
+      this.cdr.markForCheck();
     });
     this.cargarPrestamos();
   }
@@ -106,7 +108,7 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
   cargarPrestamos(): void {
     this.cargando = true;
     this.api.getPrestamos(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
-      error: () => this.mostrarMensaje('Error al cargar los préstamos', 'error')
+      error: () => { this.mostrarMensaje('Error al cargar los préstamos', 'error'); this.cdr.markForCheck(); }
     });
   }
 
@@ -148,8 +150,8 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
   desactivar(id: number): void {
     if (!confirm('¿Desea desactivar este préstamo?')) return;
     this.api.eliminarPrestamo(id).pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => this.mostrarMensaje('Préstamo desactivado', 'success'),
-      error: () => this.mostrarMensaje('Error al desactivar el préstamo', 'error')
+      next: () => { this.mostrarMensaje('Préstamo desactivado', 'success'); this.cdr.markForCheck(); },
+      error: () => { this.mostrarMensaje('Error al desactivar el préstamo', 'error'); this.cdr.markForCheck(); }
     });
   }
 

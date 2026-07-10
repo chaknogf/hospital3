@@ -52,12 +52,12 @@
     <!-- PERFIL -->
     <div class="dc-card">
       <div class="patient-hero">
-        <div class="patient-avatar">
-          <span class="avatar-letter">
-            {{ paciente.nombre.primer_nombre[0] }}
-            {{ paciente.nombre.primer_apellido[0] }}
-          </span>
-        </div>
+        <div class="patient-avatar" [class.avatar-m]="paciente.sexo === 'M'" [class.avatar-f]="paciente.sexo !== 'M'">
+            <span class="avatar-letter">
+              {{ paciente.nombre.primer_nombre[0] }}
+              {{ paciente.nombre.primer_apellido[0] }}
+            </span>
+          </div>
 
         <div class="patient-name-block">
           <p class="patient-firstname m-0">

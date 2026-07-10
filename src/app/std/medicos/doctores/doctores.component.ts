@@ -1,7 +1,7 @@
 // doctores.component.ts
 
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MedicoOut } from '../../../interface/medicos.interface';
@@ -25,6 +25,7 @@ import { takeUntil } from 'rxjs/operators';
 export class DoctoresComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -88,6 +89,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
 
     this.api.medicos$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.medicos = data;
+      this.cdr.markForCheck();
     });
 
     this.cargarMedicos();
@@ -110,6 +112,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
 
         this.medicos = resultado;
         this.totalDeRegistros = resultado.length;
+        this.cdr.markForCheck();
       },
 
       error: (err) => {
@@ -118,6 +121,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
 
         this.medicos = [];
         this.totalDeRegistros = 0;
+        this.cdr.markForCheck();
       },
 
       complete: () => {
@@ -189,10 +193,12 @@ export class DoctoresComponent implements OnInit, OnDestroy {
 
       next: () => {
         this.cargarMedicos();
+        this.cdr.markForCheck();
       },
 
       error: (err) => {
         console.error(err);
+        this.cdr.markForCheck();
       }
 
     });
@@ -207,10 +213,12 @@ export class DoctoresComponent implements OnInit, OnDestroy {
 
         next: () => {
           this.cargarMedicos();
+          this.cdr.markForCheck();
         },
 
         error: (err) => {
           console.error(err);
+          this.cdr.markForCheck();
         }
 
       });
@@ -247,10 +255,12 @@ export class DoctoresComponent implements OnInit, OnDestroy {
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Médicos');
         XLSX.writeFile(wb, `medicos_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        this.cdr.markForCheck();
       },
       error: err => {
         console.error('Error al descargar Excel:', err);
         alert('Error al descargar el Excel. Intente de nuevo.');
+        this.cdr.markForCheck();
       }
     });
   }

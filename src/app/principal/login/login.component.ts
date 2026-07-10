@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../service/api.service';
@@ -23,6 +23,7 @@ export class LoginComponent implements OnDestroy {
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder,
@@ -50,10 +51,12 @@ export class LoginComponent implements OnDestroy {
       next: () => {
         // ✅ Solo apagar el loader — la navegación ya la hace ApiService.login()
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (error) => {
         this.loading = false;
         this.errorMessage = this.getErrorMessage(error);
+        this.cdr.markForCheck();
       }
     });
   }

@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { ConstanciaNacimientoOut } from '../../../interface/consNac';
 import { ConstanciaNacimiento } from '../constancias.inteface';
 import { ApiService } from '../../../service/api.service';
@@ -70,10 +70,12 @@ export class ListarConstanciasComponent implements OnInit, OnDestroy {
   }
 
   private destroy$ = new Subject<void>();
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit() {
     this.api.constancias$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.datos = data;
+      this.cdr.markForCheck();
     });
     console.log(this.datos);
     this.cargarDatos();
@@ -97,13 +99,16 @@ export class ListarConstanciasComponent implements OnInit, OnDestroy {
         if (this.paginaActual > this.totalPaginas) {
           this.paginaActual = this.totalPaginas;
         }
+        this.cdr.markForCheck();
       },
       error: error => {
         console.error('Error al cargar citas:', error);
         this.cargando = false;
+        this.cdr.markForCheck();
       },
       complete: () => {
         this.cargando = false;
+        this.cdr.markForCheck();
       }
     });
   }
