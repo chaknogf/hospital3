@@ -11,7 +11,7 @@
   padding: 0;
   font-size: 16px;
   color: var(--text);
-  font-family: var(--font-ui);
+  /* font-family: var(--font-ui); */
 }
 
 /* ──────────── HEADER COMPACTO ──────────── */
@@ -28,14 +28,14 @@
 }
 
 .hud-id {
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
   font-size: 10px;
   color: var(--pulse);
   letter-spacing: 1px;
 }
 
 .hud-title {
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
   font-size: 13px;
   color: #fff;
   letter-spacing: 1px;
@@ -44,7 +44,7 @@
 .hud-status {
   font-size: 10px;
   color: var(--lime);
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
 }
 
 /* ──────────── WIZARD STEPS (horizontal scroll) ──────────── */
@@ -79,7 +79,7 @@
   align-items: center;
   justify-content: center;
   font-size: 10px;
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
   color: var(--muted);
   transition: 0.15s;
 }
@@ -150,7 +150,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
   font-size: 12px;
   font-weight: 600;
 }
@@ -192,7 +192,7 @@
   border-radius: 6px;
   padding: 0.7rem 0.85rem;
   color: #0e0e0e;
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
   font-size: 18px;
   transition: border-color 0.15s;
 }
@@ -252,7 +252,7 @@ select.field-input {
   border: 1px solid var(--rim);
   border-radius: 8px;
   background: rgba(255,255,255,0.03);
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
   font-size: 15px;
   cursor: pointer;
   transition: all 0.12s;
@@ -332,7 +332,7 @@ select.field-input {
 .btn-nav {
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
   font-size: 12px;
   cursor: pointer;
   border: 1px solid var(--rim);
@@ -354,7 +354,7 @@ select.field-input {
 .btn-save {
   padding: 0.5rem 1.5rem;
   border-radius: 6px;
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -376,7 +376,7 @@ select.field-input {
 .btn-cancel {
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
   font-size: 12px;
   cursor: pointer;
   border: 1px solid #ef4444;
@@ -432,7 +432,7 @@ select.field-input {
   border-radius: 6px;
   padding: 0.7rem;
   color: #fff;
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
   width: 70px;
   text-align: center;
 }
@@ -533,7 +533,7 @@ select.field-input {
 }
 
 .referencia-titulo {
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
   font-size: 12px;
   color: var(--text);
 }
