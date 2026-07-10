@@ -2,16 +2,16 @@
 
 .mlogin {
   width: 100%;
-  max-width: 360px;
+  max-width: 380px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 .mlogin__group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
 }
 
 .mlogin__label {
@@ -19,8 +19,9 @@
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: #7b9cc4;
+  letter-spacing: 1px;
+  color: #8badd0;
+  padding-left: 2px;
 }
 
 .mlogin__input {
@@ -28,72 +29,85 @@
   font-size: 14px;
   font-weight: 500;
   color: #e2eeff;
-  background: linear-gradient(180deg, #080f20 0%, #0a1428 100%);
-  border: 1px solid rgba(96,165,250,0.2);
+  width: 100%;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #060d1f 0%, #0b1629 100%);
+  border: 1.5px solid rgba(96,165,250,0.18);
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 13px 16px;
   outline: none;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   box-shadow:
-    inset 0 2px 4px rgba(0,0,0,0.4),
-    inset 0 1px 2px rgba(0,0,0,0.2),
-    0 1px 0 rgba(255,255,255,0.03);
+    inset 0 3px 6px rgba(0,0,0,0.5),
+    inset 0 1px 2px rgba(0,0,0,0.3),
+    0 1px 0 rgba(255,255,255,0.04);
 }
 
 .mlogin__input::placeholder {
-  color: #4a6fa5;
+  color: #3d5a80;
+  font-weight: 400;
 }
 
 .mlogin__input:focus {
-  border-color: rgba(59,130,246,0.5);
+  border-color: rgba(59,130,246,0.55);
+  background: linear-gradient(180deg, #080f20 0%, #0d1a33 100%);
   box-shadow:
-    inset 0 2px 4px rgba(0,0,0,0.4),
-    0 0 0 3px rgba(59,130,246,0.15),
-    0 0 12px rgba(59,130,246,0.1);
+    inset 0 3px 6px rgba(0,0,0,0.5),
+    0 0 0 3px rgba(59,130,246,0.12),
+    0 0 16px rgba(59,130,246,0.08);
+}
+
+.mlogin__input:hover:not(:focus) {
+  border-color: rgba(96,165,250,0.28);
 }
 
 .mlogin__btn {
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 600;
-  padding: 12px;
+  width: 100%;
+  padding: 13px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
   color: #ffffff;
-  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
-  border-top: 1px solid rgba(255,255,255,0.1);
-  border-bottom: 1px solid rgba(0,0,0,0.3);
+  letter-spacing: 0.4px;
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 50%, #1a3a8a 100%);
+  border-top: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(0,0,0,0.4);
   box-shadow:
-    0 4px 12px rgba(37,99,235,0.4),
+    0 4px 14px rgba(37,99,235,0.45),
     0 2px 4px rgba(0,0,0,0.3),
     inset 0 1px 0 rgba(255,255,255,0.1);
   transition: all 0.2s ease;
-  letter-spacing: 0.3px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 .mlogin__btn:hover {
   background: linear-gradient(180deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
   box-shadow:
-    0 6px 20px rgba(37,99,235,0.5),
+    0 6px 22px rgba(37,99,235,0.55),
     0 2px 6px rgba(0,0,0,0.3),
     inset 0 1px 0 rgba(255,255,255,0.12);
   transform: translateY(-1px);
 }
 
 .mlogin__btn:active {
-  background: linear-gradient(180deg, #1e40af 0%, #1d4ed8 50%, #2563eb 100%);
+  background: linear-gradient(180deg, #1a3a8a 0%, #1d4ed8 50%, #2563eb 100%);
   transform: translateY(0);
   box-shadow:
     0 2px 6px rgba(37,99,235,0.3),
-    inset 0 2px 4px rgba(0,0,0,0.2);
+    inset 0 2px 5px rgba(0,0,0,0.25);
 }
 
 .mlogin__btn:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  background: linear-gradient(180deg, #1e3a5f 0%, #1a2d4a 100%);
+  border-top-color: rgba(255,255,255,0.05);
+  border-bottom-color: rgba(0,0,0,0.2);
 }
 
 .mlogin__forgot {
@@ -101,18 +115,20 @@
   font-size: 12px;
   font-weight: 500;
   color: #4a6fa5;
-  background: transparent;
-  border: 1px solid rgba(96,165,250,0.15);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(96,165,250,0.12);
   border-radius: 8px;
-  padding: 8px;
+  padding: 9px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
+  letter-spacing: 0.2px;
 }
 .mlogin__forgot:hover {
   color: #7b9cc4;
-  border-color: rgba(96,165,250,0.3);
-  background: rgba(255,255,255,0.02);
+  border-color: rgba(96,165,250,0.25);
+  background: rgba(255,255,255,0.04);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
 .mlogin__error {
@@ -120,9 +136,10 @@
   font-size: 12px;
   font-weight: 500;
   color: #fca5a5;
-  background: linear-gradient(180deg, rgba(220,38,38,0.12) 0%, rgba(220,38,38,0.06) 100%);
-  border: 1px solid rgba(220,38,38,0.25);
+  background: linear-gradient(180deg, rgba(220,38,38,0.14) 0%, rgba(220,38,38,0.06) 100%);
+  border: 1px solid rgba(220,38,38,0.3);
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 10px 14px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+  line-height: 1.4;
 }
