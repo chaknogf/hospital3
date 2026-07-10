@@ -6,16 +6,18 @@
       class="mlogin__input"
       formControlName="username"
       placeholder="Ingrese su usuario"
+      autocomplete="username"
     />
   </div>
 
   <div class="mlogin__group">
-    <label class="mlogin__label">Contraseña</label>
+    <label class="mlogin__label">Contrasena</label>
     <input
       type="password"
       class="mlogin__input"
       formControlName="password"
-      placeholder="Ingrese su contraseña"
+      placeholder="Ingrese su contrasena"
+      autocomplete="current-password"
     />
   </div>
 
@@ -27,16 +29,17 @@
 
   <button type="submit" class="mlogin__btn" [disabled]="loading">
     @if (!loading) {
-      Iniciar sesión
+      Iniciar sesion
     } @else {
       Procesando...
     }
   </button>
+
   <button
     type="button"
-    class="btn btn-dark justify-content-center"
+    class="mlogin__forgot"
     (click)="reset()"
   >
-    ¿Olvidaste tu contraseña?
+    Olvidaste tu contrasena?
   </button>
 </form>

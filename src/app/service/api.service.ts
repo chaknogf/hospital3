@@ -172,8 +172,8 @@ export class ApiService {
       this.http.get(`${this.baseUrl}/paises/`),
       ttl
     );
-    this.preCacheAllPatients();
-    this.preCacheAllConsultations();
+    setTimeout(() => this.preCacheAllPatients(), 2000);
+    setTimeout(() => this.preCacheAllConsultations(), 5000);
   }
 
   // ======= AUTENTICACIÓN =======

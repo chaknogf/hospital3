@@ -1,61 +1,33 @@
-<div class="container-fluid p-0 bg-landing">
-  <!-- Header / Navbar -->
-  <header
-    class="navbar navbar-expand-lg bg-info shadow-sm aurora-navbar sticky-top"
-  >
-    <div class="navbar-brand d-flex align-items-center">
+<div class="landing">
+  <!-- Header -->
+  <header class="landing-header">
+    <div class="landing-header__brand">
       <span [innerHTML]="logoicon"></span>
-      <span class="medicalapp">MedicalApp</span>
+      <span class="landing-header__title">MedicalApp</span>
     </div>
-
-    <button
-      class="navbar-toggler border-0 shadow-none text-white"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navMenu"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse justify-content-end" id="navMenu">
-      <ul class="navbar-nav gap-3">
-        <li class="nav-item">
-          <a class="nav-link text-white fw-semibold" href="#">Inicio</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white-50 fw-semibold" href="#">Servicios</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white-50 fw-semibold" href="#">Créditos</a>
-        </li>
-      </ul>
-    </div>
+    <nav class="landing-header__nav">
+      <a class="landing-header__link landing-header__link--active" href="#">Inicio</a>
+      <a class="landing-header__link" href="#">Servicios</a>
+      <a class="landing-header__link" href="#">Creditos</a>
+    </nav>
   </header>
 
-  <!-- Hero Section -->
-  <section class="row g-0 align-items-center py-4 px-3 px-md-5">
-    <!-- Texto -->
-    <div class="col-12 col-md-6 mb-4 mb-md-0">
-      <div class="container p-4 rounded-4 shadow-lg backdrop-blur bg-dark">
-        <h1 class="display-4 fw-bold mb-3 text-white">
-          Bienvenido a <span class="text-warning">MedicalApp</span>
-        </h1>
-        <p class="lead text-white-50 mb-4">
-          Gestión de pacientes y expedientes electrónicos modernos.
-        </p>
-        <div class="login-section">
-          <app-login></app-login>
-        </div>
+  <!-- Hero -->
+  <section class="landing-hero">
+    <div class="landing-hero__card">
+      <h1 class="landing-hero__heading">
+        Bienvenido a <span class="landing-hero__accent">MedicalApp</span>
+      </h1>
+      <p class="landing-hero__sub">
+        Gestion de pacientes y expedientes electronicos modernos.
+      </p>
+      <div class="landing-hero__login">
+        <app-login></app-login>
       </div>
     </div>
 
-    <!-- SVG -->
-    <div
-      class="col-12 col-md-6 d-flex justify-content-center align-items-center"
-    >
-      <div style="max-width: 280px; width: 100%;">
-        <div class="img-fluid" [innerHTML]="svgHome"></div>
-      </div>
+    <div class="landing-hero__illustration">
+      <div [innerHTML]="svgHome"></div>
     </div>
   </section>
 </div>
