@@ -18,10 +18,10 @@
     "@angular/router": "^20.1.4",
     "@angular/service-worker": "^20.3.23",
     "dexie": "^4.4.3",
+    "exceljs": "^4.4.0",
     "ngx-mask": "^20.0.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "xlsx": "^0.18.5",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
@@ -31,6 +31,7 @@
     "@angular/compiler": "^20.1.4",
     "@angular/compiler-cli": "^20.1.4",
     "@fullhuman/postcss-purgecss": "^7.0.2",
+    "@types/exceljs": "^1.3.2",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.19.0",
     "autoprefixer": "^10.4.21",

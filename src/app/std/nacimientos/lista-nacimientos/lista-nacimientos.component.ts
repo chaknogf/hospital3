@@ -515,13 +515,12 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
           'ID Madre': n.madre_id ?? ''
         }));
 
-        const XLSX = await import('xlsx');
-        const ws = XLSX.utils.json_to_sheet(rows);
-        const colWidths = Object.keys(rows[0] || {}).map(k => ({ wch: Math.max(k.length, 18) }));
-        ws['!cols'] = colWidths;
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Nacimientos');
-        XLSX.writeFile(wb, `nacimientos_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        const { default: ExcelJS } = await import('exceljs');
+        const wb = new ExcelJS.Workbook();
+        const ws = wb.addWorksheet('Nacimientos');
+        ws.columns = Object.keys(rows[0] || {}).map(k => ({ header: k, key: k, width: Math.max(k.length, 18) }));
+        ws.addRows(rows);
+        await wb.xlsx.writeFile(`nacimientos_${new Date().toISOString().slice(0, 10)}.xlsx`);
         this.cdr.markForCheck();
       },
       error: err => {

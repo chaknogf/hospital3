@@ -1,6 +1,6 @@
 
 
-/* ── HUD HEADER (Más estilizado) ── */
+/* ── HUD HEADER ── */
 .hud-header {
   position: relative;
   z-index: 100;
@@ -22,31 +22,32 @@
   color: #fff;
 }
 
-/* ── ACTION DOCK (Flotante y moderno) ── */
+/* ── ACTION DOCK ── */
 .action-dock {
   position: sticky;
   top: 15px;
   z-index: 50;
   margin: 10px 1.5rem;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(8,12,35,0.55);
   backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-top-color: rgba(255,255,255,0.15);
   border-radius: 14px;
   padding: 0.75rem 1.25rem;
   display: flex;
   gap: 0.75rem;
   align-items: center;
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
 .dock-hint {
   font-family: var(--font-mono);
   font-size: 14px;
-  color: #64748b;
+  color: #7f8fd6;
   margin-right: auto;
 }
 
-/* ── BODY ESTRUCTURA (Flexbox Dinámico) ── */
+/* ── BODY ── */
 .adm-body {
   max-width: 1200px;
   margin: 0 auto;
@@ -58,86 +59,88 @@
 
 .adm-grid {
   display: flex;
-  flex-flow: row wrap; /* Flexbox principal */
+  flex-flow: row wrap;
   gap: 1.5rem;
 }
 
 .adm-col {
-  flex: 1 1 450px; /* Base elástica */
+  flex: 1 1 450px;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-/* ── PACIENTE BANNER (Diseño Card Elegante) ── */
+/* ── PACIENTE BANNER ── */
 .paciente-banner {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
+  background: rgba(8,12,35,0.55);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-top-color: rgba(255,255,255,0.15);
   border-radius: 20px;
   padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
   transition: transform 0.3s ease;
 }
 
 .paciente-avatar {
   width: 60px;
   height: 60px;
-   background: rgba(59,130,246,0.1);
-  border: 2px solid #fff;
+  background: rgba(34,229,255,0.1);
+  border: 2px solid rgba(255,255,255,0.15);
   border-radius: 18px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--pulse);
+  color: #22e5ff;
   font-size: 48px;
 }
 
 .paciente-nombre {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #e6f7ff;
   margin-bottom: 4px;
 }
 
-/* ── SECTION CARDS (Refinamiento visual) ── */
+/* ── SECTION CARDS ── */
 .section-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
+  background: rgba(8,12,35,0.55);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-top-color: rgba(255,255,255,0.15);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .section-card:hover {
-    border-color: var(--pulse);
+    border-color: rgba(34,229,255,0.3);
     transform: translateY(-2px);
 }
 
 .sec-head {
   padding: 1rem 1.5rem;
-  background: rgba(255,255,255,0.4);
-  border-bottom: 1px solid rgba(0,0,0,0.03);
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .sec-badge {
-color: #061429;
+  color: #22e5ff;
 }
 
 .sec-title {
   font-family: var(--font-mono);
   font-weight: 700;
   font-size: 14px;
-  color: #475569;
+  color: #8ea3e0;
   letter-spacing: 1.5px;
 }
 
@@ -149,9 +152,9 @@ color: #061429;
   gap: 0.25rem;
 }
 
-/* ── CAMPOS ELÁSTICOS ── */
+/* ── CAMPOS ── */
 .field {
-  flex: 1 1 calc(50% - 1.25rem); /* Dos columnas que fluyen */
+  flex: 1 1 calc(50% - 1.25rem);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -163,26 +166,28 @@ color: #061429;
 .field-label {
   font-size: 12px;
   font-weight: 700;
-  color: #061429;
+  color: #7f8fd6;
   padding-left: 4px;
 }
 
 .field-input {
-  background: #f6f6f6;
-  border: 1.5px solid #f1f5f9;
-  color: #1e293b;
+  background: rgba(0,0,0,0.25);
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-top-color: rgba(0,0,0,0.15);
+  color: #e6f7ff;
   border-radius: 12px;
   padding: 0.75rem 1rem;
   font-size: 14px;
   transition: all 0.2s;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .field-input:focus {
-  border-color: var(--pulse);
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  border-color: rgba(34,229,255,0.5);
+  box-shadow: 0 0 0 4px rgba(34,229,255,0.1), inset 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* ── INDICADORES (Chips Flexbox) ── */
+/* ── INDICADORES ── */
 .indicadores-grid {
   display: flex;
   flex-wrap: wrap;
@@ -191,9 +196,9 @@ color: #061429;
 
 .ind-chip {
   flex: 1 1 calc(50% - 10px);
-  background: #fff;
-  border: 3px solid #f1f5f9;
-  color: #414d5fa9;
+  background: rgba(255,255,255,0.04);
+  border: 2px solid rgba(255,255,255,0.08);
+  color: #8ea3e0;
   border-radius: 10px;
   padding: 0.2rem;
   display: flex;
@@ -204,68 +209,49 @@ color: #061429;
 }
 
 .ind-chip:hover {
-    background: #f8fafc;
-    border-color: var(--pulse);
-}
-
-/* ── RESPONSIVE ADAPTATIVO ── */
-@media (max-width: 900px) {
-    .adm-col {
-        flex: 1 1 100%; /* Una sola columna principal en tablets */
-    }
-}
-
-@media (max-width: 600px) {
-    .paciente-banner {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .field {
-        flex: 1 1 100%; /* Todo a una columna en móviles */
-    }
-
-    .sec-body {
-        padding: 1rem;
-    }
-
-    .ind-chip {
-        flex: 1 1 100%;
-    }
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(34,229,255,0.3);
 }
 
 .ind-chip.active {
-  background: var(--surface);
-  border-color: var(--surface);
-  color: #f1f5f9;
+  background: rgba(34,229,255,0.15);
+  border-color: rgba(34,229,255,0.4);
+  color: #22e5ff;
   font-weight: 500;
   font-size: 18px;
 }
 
 .ind-chip.active .ind-check {
-  background: var(--surface);
-  border-color: var(--surface);
+  background: rgba(34,229,255,0.2);
+  border-color: rgba(34,229,255,0.4);
 }
 
 .ind-chip.active .ind-check svg {
-  color: #fff;
+  color: #22e5ff;
 }
 
 .btn {
-  background: #1e293b;
+  background: linear-gradient(180deg, #22e5ff, #2563eb);
   padding: 4px;
   width: 90px;
   font-size: 13px;
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(37,99,235,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  transition: all 0.2s;
 }
 
 .p-chip {
-  /* font-family: var(--font-mono); */
   font-size: 16px;
   letter-spacing: 1px;
   text-transform: uppercase;
   font-weight: 500;
-  color: #020b1d;
-  border: 2.2px solid rgba(59,130,246,0.18);
+  color: #e6f7ff;
+  border: 2px solid rgba(34,229,255,0.2);
+  background: rgba(34,229,255,0.08);
   padding: 3px 9px;
   border-radius: 10px;
   white-space: nowrap;
@@ -279,4 +265,30 @@ color: #061429;
 
 .paciente-datos {
   justify-content: center;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .adm-col {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .paciente-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .field {
+    flex: 1 1 100%;
+  }
+
+  .sec-body {
+    padding: 1rem;
+  }
+
+  .ind-chip {
+    flex: 1 1 100%;
+  }
 }
