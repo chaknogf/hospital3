@@ -1,6 +1,6 @@
 import { Keys } from '../../../interface/comunidadChimaltenango';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, OnDestroy, SimpleChanges, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, OnDestroy, SimpleChanges, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../service/api.service';
@@ -38,6 +38,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges, OnDestroy {
   private apic = inject(ConsultaService);
   private router = inject(Router);
   private sanitizer = inject(DomSanitizer);
+  private cdr = inject(ChangeDetectorRef);
 
 
 
@@ -117,10 +118,12 @@ export class DetallePacienteComponent implements OnInit, OnChanges, OnDestroy {
           this.procesarPaciente();
           this.error = null;
           this.cargando = false;
+          this.cdr.markForCheck();
         },
         error: (err: any) => {
           this.error = err?.message || 'Error al cargar el expediente del paciente.';
           this.cargando = false;
+          this.cdr.markForCheck();
         }
       });
     } catch (err: any) {
@@ -139,10 +142,12 @@ export class DetallePacienteComponent implements OnInit, OnChanges, OnDestroy {
           this.procesarPaciente();
           this.error = null;
           this.cargando = false;
+          this.cdr.markForCheck();
         },
         error: (err: any) => {
           this.error = err?.message || 'Error al cargar el expediente del paciente.';
           this.cargando = false;
+          this.cdr.markForCheck();
         }
       });
     } catch (err: any) {
@@ -170,9 +175,11 @@ export class DetallePacienteComponent implements OnInit, OnChanges, OnDestroy {
               valor
             }))
         }));
+        this.cdr.markForCheck();
       },
       error: (err: any) => {
         console.error('Error al cargar las consultas del paciente:', err);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -196,9 +203,11 @@ export class DetallePacienteComponent implements OnInit, OnChanges, OnDestroy {
               valor
             }))
         }));
+        this.cdr.markForCheck();
       },
       error: (err: any) => {
         console.error('Error al cargar las citas del paciente:', err);
+        this.cdr.markForCheck();
       }
     });
   }

@@ -244,11 +244,12 @@ export class PacienteService extends BaseApiService {
   citas$ = this.citasSubject.asObservable();
 
   getCitasPaciente(id: number): Observable<CitaResponse[]> {
-    const url = `${this.baseUrl}/citas/paciente/${id}`;
+    const url = `${this.baseUrl}/citas/?paciente_id=${id}`;
     const key = this.cacheKey(url);
     return this.cacheGet(key,
-      this.http.get<CitaResponse[]>(url).pipe(
-        tap(response => this.citasSubject.next(response)),
+      this.http.get<any>(url).pipe(
+        map(response => response?.citas ?? response ?? []),
+        tap(citas => this.citasSubject.next(citas)),
         catchError(error => this.manejarError(error, 'obtener citas'))
       )
     );

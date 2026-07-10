@@ -4,8 +4,8 @@
   --ink:       #1f2937;
   --ink-dim:   #374151;
   --ink-muted: #6b7280;
-  --accent:    #1a3a6a;
-  --accent-lt: rgba(26,58,106,0.07);
+  --doc-accent: #1a3a6a;
+  --doc-accent-lt: rgba(26,58,106,0.07);
   --border:    #d1d5db;
   --border-lt: #e5e7eb;
   --bg:        #ffffff;
@@ -97,7 +97,7 @@ body,
   font-family: var(--mono);
   font-size: 13pt;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--doc-accent);
   margin-left: 4px;
 
 }
@@ -243,7 +243,7 @@ body,
     font-family: var(--mono);
     font-size: 13pt;
     font-weight: 700;
-    color: var(--accent);
+    color: var(--doc-accent);
     margin-left: 4px;
 }
 
@@ -261,7 +261,7 @@ body,
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.9px;
-  color: var(--accent);
+  color: var(--doc-accent);
   border-bottom: 0.5px solid var(--border-lt);
   /* padding-bottom: 3px; */
   /* margin-bottom: 5px; */
