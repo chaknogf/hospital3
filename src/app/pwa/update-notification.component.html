@@ -1,5 +1,7 @@
-<div class="update-banner" *ngIf="showUpdate">
-  <span>Nueva version disponible</span>
-  <button class="btn-update" (click)="actualizar()">Actualizar</button>
-  <button class="btn-dismiss" (click)="showUpdate = false">&times;</button>
-</div>
+@if (showUpdate) {
+  <div class="update-banner">
+    <span>Nueva version disponible</span>
+    <button class="btn-update" (click)="actualizar()">Actualizar</button>
+    <button class="btn-dismiss" (click)="showUpdate = false">&times;</button>
+  </div>
+}

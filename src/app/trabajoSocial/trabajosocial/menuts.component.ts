@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { menuIcon, patientIcon, ambulanceIcon, enfermoIcon, hospitalconsvg, consultasIcon, archivoIcon, compartirIcon, calendarIcon } from '../../shared/icons/svg-icon';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
@@ -11,7 +11,8 @@ import { IconService } from '../../service/icon.service';
   templateUrl: './menuts.component.html',
   styleUrls: ['./menuts.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterModule]
 })
 
 export class MenutsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ConsultaService } from '../../consultas/consultas.service';
 import { IconService } from '../../../service/icon.service';
 import { Paciente } from '../../../interface/interfaces';
@@ -27,6 +27,7 @@ function getVecindad(codigo: string | null | undefined): string {
   templateUrl: './detalleConsulta.component.html',
   styleUrls: ['./detalleConsulta.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, CommonModule, TimePipe],
 })
 export class DetalleConsultaComponent implements OnInit, OnDestroy {

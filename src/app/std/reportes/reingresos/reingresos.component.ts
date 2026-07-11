@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -8,6 +8,7 @@ import { ApiService } from '@services/api.service';
   selector: 'app-reingresos',
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './reingresos.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./reingresos.component.css']
 })
 export class ReingresosComponent implements OnInit {

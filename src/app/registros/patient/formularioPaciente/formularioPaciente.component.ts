@@ -1,6 +1,6 @@
 // ======= IMPORTACIONES =======
 import { municipios } from '../../../enum/departamentos';
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import {
   FormBuilder, FormGroup, ReactiveFormsModule, FormsModule,
@@ -46,13 +46,12 @@ interface Reference {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     UnaPalabraDirective,
     SoloNumeroDirective,
-    NgxMaskDirective,
-  ],
+    NgxMaskDirective
+],
   providers: [provideNgxMask()]
 })
 

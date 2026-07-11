@@ -1,13 +1,14 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '@services/api.service';
 
 @Component({
   selector: 'app-promedio-diario',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './promedio-diario.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./promedio-diario.component.css']
 })
 export class PromedioDiarioComponent implements OnInit {

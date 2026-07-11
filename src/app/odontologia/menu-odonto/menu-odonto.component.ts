@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { menuIcon, patientIcon, ambulanceIcon, enfermoIcon, hospitalconsvg, consultasIcon, archivoIcon, compartirIcon, calendarIcon } from '../../shared/icons/svg-icon';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
@@ -11,7 +11,8 @@ import { IconService } from '../../service/icon.service';
   templateUrl: './menu-odonto.component.html',
   styleUrls: ['./menu-odonto.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterModule]
 })
 
 export class MenuOdontoComponent implements OnInit {

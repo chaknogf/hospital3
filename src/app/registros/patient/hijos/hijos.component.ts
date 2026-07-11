@@ -1,5 +1,5 @@
 import { PacienteService } from '../paciente.service';
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -16,11 +16,10 @@ import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    SoloNumeroDirective,
-  ]
+    SoloNumeroDirective
+]
 })
 export class HijosComponent implements OnInit, OnDestroy {
 

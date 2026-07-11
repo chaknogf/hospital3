@@ -3,7 +3,7 @@
   <div
     class="botones justify-content-between"
     [ngClass]="{ 'd-none': filtrar }"
-  >
+    >
     <button type="button" (click)="volver()">
       <span [innerHTML]="menuIcon"></span>
       Menu
@@ -22,7 +22,7 @@
     <form
       class="form-filtros"
       (submit)="cargarUsuarios(); $event.preventDefault()"
-    >
+      >
       <fieldset class="fieldset-filtros">
         <label class="label-filtros">Username</label>
         <input
@@ -31,7 +31,7 @@
           [(ngModel)]="filtros.username"
           name="username"
           placeholder="username"
-        />
+          />
       </fieldset>
 
       <fieldset class="fieldset-filtros">
@@ -42,7 +42,7 @@
           [(ngModel)]="filtros.email"
           name="email"
           placeholder="tu@email.com"
-        />
+          />
       </fieldset>
 
       <fieldset class="fieldset-filtros">
@@ -53,7 +53,7 @@
           [(ngModel)]="filtros.rol"
           name="email"
           placeholder="rol"
-        />
+          />
       </fieldset>
 
       <fieldset class="fieldset-filtros">
@@ -63,7 +63,7 @@
           class="input-filtros"
           [(ngModel)]="filtros.id"
           name="id"
-        />
+          />
       </fieldset>
 
       <!-- Botones -->
@@ -99,53 +99,57 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="let u of usuarios; let i = index; trackBy: trackById"
-          class="aurora-table-row"
-          [class.touch-active]="rowActiva === u.id"
-        >
-          <td data-label="ID">
-            {{ u.id }}
-          </td>
-          <td data-label="Nombre">
-            {{ u.nombre }}
-          </td>
-          <td class="oculto" data-label="Username">
-            {{ u.username }}
-          </td>
-          <td class="oculto" data-label="Rol">
-            {{ u.role }}
-          </td>
-          <td class="oculto" data-label="Email">
-            {{ u.email }}
-          </td>
-          <td class="oculto" data-label="Estado">
-            {{ u.estado }}
-          </td>
-
-          <!-- Acciones -->
-          <td class="secundario" data-label="Acciones">
-            <div class="botones-opt">
-              <button (click)="editar(u.id); $event.stopPropagation()">
-                <span [innerHTML]="editIcon"></span>
-              </button>
-            </div>
-          </td>
-        </tr>
+        @for (u of usuarios; track trackById(i, u); let i = $index) {
+          <tr
+            class="aurora-table-row"
+            [class.touch-active]="rowActiva === u.id"
+            >
+            <td data-label="ID">
+              {{ u.id }}
+            </td>
+            <td data-label="Nombre">
+              {{ u.nombre }}
+            </td>
+            <td class="oculto" data-label="Username">
+              {{ u.username }}
+            </td>
+            <td class="oculto" data-label="Rol">
+              {{ u.role }}
+            </td>
+            <td class="oculto" data-label="Email">
+              {{ u.email }}
+            </td>
+            <td class="oculto" data-label="Estado">
+              {{ u.estado }}
+            </td>
+            <!-- Acciones -->
+            <td class="secundario" data-label="Acciones">
+              <div class="botones-opt">
+                <button (click)="editar(u.id); $event.stopPropagation()">
+                  <span [innerHTML]="editIcon"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
 
         <!-- Sin resultados -->
-        <tr *ngIf="!cargando && usuarios.length === 0">
-          <td colspan="5" class="text-center py-3">
-            <em>No se encontraron coincidencias.</em>
-          </td>
-        </tr>
+        @if (!cargando && usuarios.length === 0) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>No se encontraron coincidencias.</em>
+            </td>
+          </tr>
+        }
 
         <!-- Cargando -->
-        <tr *ngIf="cargando">
-          <td colspan="5" class="text-center py-3">
-            <em>Cargando...</em>
-          </td>
-        </tr>
+        @if (cargando) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>Cargando...</em>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>

@@ -5,7 +5,7 @@
   <div
     class="botones justify-content-between"
     [ngClass]="{ 'd-none': filtrar }"
-  >
+    >
     <button type="button" (click)="volver()">
       <span [innerHTML]="icons['menu']"></span>
       Menu
@@ -32,7 +32,7 @@
             [(ngModel)]="filtros.nombre"
             name="nombre"
             placeholder="Ej: Juan Pérez"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -44,7 +44,7 @@
             [(ngModel)]="filtros.colegiado"
             name="colegiado"
             placeholder="12345"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -56,7 +56,7 @@
             [(ngModel)]="filtros.especialidad"
             name="especialidad"
             placeholder="Cardiología"
-          />
+            />
         </fieldset>
       </div>
 
@@ -105,44 +105,40 @@
       </thead>
 
       <tbody>
-        <tr
-          *ngFor="let data of medicos; trackBy: trackById"
-          class="aurora-table-row"
-          [class.touch-active]="rowActiva === data.id"
-          (click)="activarFila(data.id)"
-        >
-          <td data-label="Nombre">
-            <div class="nombre-table">
-              <strong class="text-uppercase">
-                {{ data.nombre }}
-              </strong>
-
-              <small> ID: {{ data.id }} </small>
-            </div>
-          </td>
-
-          <td data-label="Colegiado">
-            {{ data.colegiado || "—" }}
-          </td>
-
-          <td data-label="Especialidad">
-            {{ data.especialidad || "—" }}
-          </td>
-
-          <td data-label="Estado">
-            <span [ngClass]="data.activo ? 'text-success' : 'text-danger'">
-              {{ data.activo ? "Activo" : "Inactivo" }}
-            </span>
-          </td>
-
-          <td class="secundario">
-            <div class="d-flex gap-1">
-              <button (click)="editar(data.id); $event.stopPropagation()">
-                <span [innerHTML]="icons['edit']"></span>
-              </button>
-            </div>
-          </td>
-        </tr>
+        @for (data of medicos; track trackById($index, data)) {
+          <tr
+            class="aurora-table-row"
+            [class.touch-active]="rowActiva === data.id"
+            (click)="activarFila(data.id)"
+            >
+            <td data-label="Nombre">
+              <div class="nombre-table">
+                <strong class="text-uppercase">
+                  {{ data.nombre }}
+                </strong>
+                <small> ID: {{ data.id }} </small>
+              </div>
+            </td>
+            <td data-label="Colegiado">
+              {{ data.colegiado || "—" }}
+            </td>
+            <td data-label="Especialidad">
+              {{ data.especialidad || "—" }}
+            </td>
+            <td data-label="Estado">
+              <span [ngClass]="data.activo ? 'text-success' : 'text-danger'">
+                {{ data.activo ? "Activo" : "Inactivo" }}
+              </span>
+            </td>
+            <td class="secundario">
+              <div class="d-flex gap-1">
+                <button (click)="editar(data.id); $event.stopPropagation()">
+                  <span [innerHTML]="icons['edit']"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
 
         <!-- VACÍO -->
         @if (!cargando && medicos.length === 0) {

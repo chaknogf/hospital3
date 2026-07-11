@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '@services/api.service';
@@ -18,8 +18,9 @@ interface EspecialidadRow {
 
 @Component({
   selector: 'app-pacientes-atendidos',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './pacientes-atendidos.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./pacientes-atendidos.component.css']
 })
 export class PacientesAtendidosComponent implements OnInit {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
@@ -19,6 +19,7 @@ export type FilaTabla =
   templateUrl: './imprimirCoex.component.html',
   styleUrls: ['./imprimirCoex.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, FormsModule, DatosExtraPipe, CapitalizePipe, CapitalizePipe],
 })
 export class ImprimirCoexComponent implements OnInit {

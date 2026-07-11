@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 
 interface ReporteOption {
   ruta: string;
@@ -11,8 +11,9 @@ interface ReporteOption {
 
 @Component({
   selector: 'app-reportes',
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet],
   templateUrl: './reportes.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./reportes.component.css']
 })
 export class ReportesComponent {

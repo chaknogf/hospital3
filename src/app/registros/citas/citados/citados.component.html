@@ -3,7 +3,7 @@
   <div
     class="botones justify-content-between"
     [ngClass]="{ 'd-none': filtrar }"
-  >
+    >
     <button type="button" (click)="volver()">
       <span [innerHTML]="menuIcon"></span>
       Menu
@@ -22,7 +22,7 @@
     <form
       class="form-filtros"
       (submit)="cargarCitas(); $event.preventDefault()"
-    >
+      >
       <fieldset class="fieldset-filtros">
         <label class="label-filtros">Expediente</label>
         <input
@@ -31,7 +31,7 @@
           [(ngModel)]="filtros.expediente"
           name="expediente"
           placeholder="Buscar por expediente"
-        />
+          />
       </fieldset>
 
       <fieldset class="fieldset-filtros">
@@ -40,11 +40,13 @@
           class="input-filtros"
           [(ngModel)]="filtros.especialidad"
           name="especialidad"
-        >
+          >
           <option value="">Todas las especialidades</option>
-          <option *ngFor="let esp of especialidadesList" [value]="esp.value">
-            {{ esp.label }}
-          </option>
+          @for (esp of especialidadesList; track esp) {
+            <option [value]="esp.value">
+              {{ esp.label }}
+            </option>
+          }
         </select>
       </fieldset>
       <fieldset class="fieldset-filtros">
@@ -55,7 +57,7 @@
           [(ngModel)]="filtros.fecha_cita"
           (change)="cargarCitas()"
           name="fecha"
-        />
+          />
       </fieldset>
 
       <!-- Botones -->
@@ -93,76 +95,79 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="let cita of citas; let i = index; trackBy: trackById"
-          class="aurora-table-row"
-          [class.touch-active]="rowActiva === cita.id"
-        >
-          <!-- Paciente -->
-          <td data-label="Paciente:">
-            <div class="nombre-table">
-              <p class="p-0 m-0 text-uppercase">
-                {{ cita.paciente.nombre.primer_nombre }}
-                {{ cita.paciente.nombre.segundo_nombre }}
-                {{ cita.paciente.nombre.otro_nombre }}
-              </p>
-              <p
-                class="p-0 m-0 text-uppercase"
-                [ngClass]="cita.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+        @for (cita of citas; track trackById(i, cita); let i = $index) {
+          <tr
+            class="aurora-table-row"
+            [class.touch-active]="rowActiva === cita.id"
+            >
+            <!-- Paciente -->
+            <td data-label="Paciente:">
+              <div class="nombre-table">
+                <p class="p-0 m-0 text-uppercase">
+                  {{ cita.paciente.nombre.primer_nombre }}
+                  {{ cita.paciente.nombre.segundo_nombre }}
+                  {{ cita.paciente.nombre.otro_nombre }}
+                </p>
+                <p
+                  class="p-0 m-0 text-uppercase"
+                  [ngClass]="cita.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+                  >
+                  {{ cita.paciente.nombre.primer_apellido }}
+                  {{ cita.paciente.nombre.segundo_apellido }}
+                  {{ cita.paciente.nombre.apellido_casada }}
+                </p>
+              </div>
+            </td>
+            <!-- Expediente -->
+            <td class="text-justify" data-label="Expediente:">
+              @if (cita) {
+                <div>
+                  <strong>Expediente:</strong> {{ cita.paciente.expediente }}
+                </div>
+              }
+            </td>
+            <!-- Especialidad -->
+            <td data-label="Especialidad:">
+              {{ cita.especialidad | datosExtra: "especialidad" }}
+            </td>
+            <!-- Fecha y Agenda -->
+            <td data-label="Fecha:">
+              {{ cita.fecha_cita | date: "dd/MM/yyyy" }}
+              <br />
+              <small>{{ cita.datos_extra.razon_consulta }}</small>
+            </td>
+            <!-- Acciones -->
+            <td
+              class="secundario d-flex gap-2 align-items-center"
+              data-label="No.:"
               >
-                {{ cita.paciente.nombre.primer_apellido }}
-                {{ cita.paciente.nombre.segundo_apellido }}
-                {{ cita.paciente.nombre.apellido_casada }}
-              </p>
-            </div>
-          </td>
-
-          <!-- Expediente -->
-          <td class="text-justify" data-label="Expediente:">
-            <div *ngIf="cita">
-              <strong>Expediente:</strong> {{ cita.paciente.expediente }}
-            </div>
-          </td>
-
-          <!-- Especialidad -->
-          <td data-label="Especialidad:">
-            {{ cita.especialidad | datosExtra: "especialidad" }}
-          </td>
-
-          <!-- Fecha y Agenda -->
-          <td data-label="Fecha:">
-            {{ cita.fecha_cita | date: "dd/MM/yyyy" }}
-            <br />
-            <small>{{ cita.datos_extra.razon_consulta }}</small>
-          </td>
-
-          <!-- Acciones -->
-          <td
-            class="secundario d-flex gap-2 align-items-center"
-            data-label="No.:"
-          >
-            <strong class="cell-index">{{ i + 1 }}</strong>
-            <div class="botones-opt">
-              <button (click)="editarCita(cita.id); $event.stopPropagation()">
-                <span [innerHTML]="editIcon"></span>
-              </button>
-            </div>
-          </td>
-        </tr>
+              <strong class="cell-index">{{ i + 1 }}</strong>
+              <div class="botones-opt">
+                <button (click)="editarCita(cita.id); $event.stopPropagation()">
+                  <span [innerHTML]="editIcon"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
 
         <!-- Sin resultados -->
-        <tr *ngIf="!cargando && citas.length === 0">
-          <td colspan="5" class="text-center py-3">
-            <em>No se encontraron citas para esta fecha.</em>
-          </td>
-        </tr>
+        @if (!cargando && citas.length === 0) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>No se encontraron citas para esta fecha.</em>
+            </td>
+          </tr>
+        }
 
         <!-- Cargando -->
-        <tr *ngIf="cargando">
-          <td colspan="5" class="text-center py-3">
-            <em>Cargando...</em>
-          </td>
-        </tr>
+        @if (cargando) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>Cargando...</em>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>
@@ -174,7 +179,7 @@
       class="pag-btn"
       [disabled]="!hayPaginaAnterior"
       (click)="cambiarPagina(-1)"
-    >
+      >
       <span [innerHTML]="skipLeft"></span>
     </button>
 
@@ -187,14 +192,15 @@
     }
 
     <!-- Páginas del rango visible -->
-    <button
-      *ngFor="let p of paginas"
-      class="pag-num"
-      [class.pag-num-active]="p === paginaActual"
-      (click)="irAPagina(p)"
-    >
-      {{ p }}
-    </button>
+    @for (p of paginas; track p) {
+      <button
+        class="pag-num"
+        [class.pag-num-active]="p === paginaActual"
+        (click)="irAPagina(p)"
+        >
+        {{ p }}
+      </button>
+    }
 
     <!-- Ellipsis + última página si el rango no llega al final -->
     @if (paginas[paginas.length - 1] < totalPaginas - 1) {
@@ -211,7 +217,7 @@
       class="pag-btn"
       [disabled]="!hayPaginaSiguiente"
       (click)="cambiarPagina(1)"
-    >
+      >
       <span [innerHTML]="skipRight"></span>
     </button>
 

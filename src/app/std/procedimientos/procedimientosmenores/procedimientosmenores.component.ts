@@ -1,7 +1,7 @@
 import { Dict, especialidadesProcedimientos, lugarServicios } from './../../../enum/diccionarios';
 import { IconService } from './../../../service/icon.service';
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';;
 import { ProceMedico } from '../../../interface/procedimientos';
@@ -13,6 +13,7 @@ import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
   templateUrl: './procedimientosmenores.component.html',
   styleUrls: ['./procedimientosmenores.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     FormsModule,

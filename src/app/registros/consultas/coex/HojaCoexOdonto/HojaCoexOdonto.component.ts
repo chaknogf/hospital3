@@ -1,5 +1,5 @@
 
-import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ApiService } from '../../../../service/api.service';
 import { ConsultaService } from '../../consultas.service';
 import { PacienteService } from '../../../patient/paciente.service';
@@ -24,6 +24,7 @@ import { Location } from '@angular/common';
   templateUrl: './HojaCoexOdonto.component.html',
   styleUrls: ['./HojaCoexOdonto.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, TimePipe, CommonModule, VecindadPipe],
 })
 export class HojaCoexOdontoComponent implements OnInit, OnDestroy {

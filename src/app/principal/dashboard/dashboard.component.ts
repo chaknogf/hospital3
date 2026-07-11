@@ -1,7 +1,7 @@
 import { logoicon, rocketIcon } from './../../shared/icons/svg-icon';
 
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { tarjetaPaciente, datosIcon } from '../../shared/icons/svg-icon';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
@@ -14,7 +14,8 @@ import { IconService } from '../../service/icon.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterModule]
 })
 export class DashboardComponent implements OnInit {
 

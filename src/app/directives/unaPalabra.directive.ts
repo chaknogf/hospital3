@@ -16,21 +16,25 @@ export class UnaPalabraDirective {
     this.componiendo = true;
   }
 
-  @HostListener('compositionend', ['$event.target.value'])
-  onCompositionEnd(value: string) {
+  @HostListener('compositionend', ['$event'])
+  onCompositionEnd(event: Event) {
     this.componiendo = false;
+    const value = (event.target as HTMLInputElement).value;
     this.limpiar(value, false);
   }
 
-  @HostListener('input', ['$event.target.value'])
-  onInput(value: string) {
+  @HostListener('input', ['$event'])
+  onInput(event: Event) {
     if (this.componiendo) return;
-    this.limpiar(value, false); // durante escritura: no recortar aún
+    const value = (event.target as HTMLInputElement).value;
+    this.limpiar(value, false);
   }
 
-  @HostListener('blur', ['$event.target.value'])
-  onBlur(value: string) {
-    this.limpiar(value, true); // al salir: normalizar espacios completo
+  @HostListener('blur', ['$event'])
+  onBlur(event: Event) {
+    const el = event.target as HTMLInputElement;
+    if (!el) return;
+    this.limpiar(el.value, true);
   }
 
   private limpiar(value: string, normalizar: boolean): void {

@@ -1,5 +1,5 @@
-import { CommonModule, Location } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Location } from '@angular/common';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CensoCamasService } from './censo-camas.service';
 
@@ -8,7 +8,8 @@ import { CensoCamasService } from './censo-camas.service';
   templateUrl: './censo-camas-import.component.html',
   styleUrls: ['./censo-camas-import.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule]
 })
 export class CensoCamasImportComponent {
 

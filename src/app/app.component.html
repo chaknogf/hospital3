@@ -7,33 +7,41 @@
   <span class="star"></span>
 </section>
 
-<div class="sync-indicator"
-     *ngIf="fullSync.isSyncing() || fullSync.syncState() === 'paused'"
-     (click)="toggleSyncPause()"
-     [class.paused]="fullSync.syncState() === 'paused'"
-     [title]="fullSync.syncState() === 'paused' ? 'Reanudar sincronización' : 'Pausar sincronización'">
+@if (fullSync.isSyncing() || fullSync.syncState() === 'paused') {
+  <div class="sync-indicator"
+    (click)="toggleSyncPause()"
+    [class.paused]="fullSync.syncState() === 'paused'"
+    [title]="fullSync.syncState() === 'paused' ? 'Reanudar sincronización' : 'Pausar sincronización'">
+    @switch (fullSync.syncState()) {
+      @case ('syncing') {
+        <div class="sync-spinner"></div>
+      }
+      @case ('paused') {
+        <i class="bi bi-play-fill sync-play-icon"></i>
+      }
+      @default {
+        <div class="sync-spinner"></div>
+      }
+    }
+    <span class="sync-label">{{ fullSync.syncProgress() }}</span>
+    <button class="sync-stop btn btn-sm p-0 ms-1" (click)="cancelSync($event)" title="Detener sincronización">&times;</button>
+  </div>
+}
 
-  <ng-container [ngSwitch]="fullSync.syncState()">
-    <div class="sync-spinner" *ngSwitchCase="'syncing'"></div>
-    <i class="bi bi-play-fill sync-play-icon" *ngSwitchCase="'paused'"></i>
-    <div class="sync-spinner" *ngSwitchDefault></div>
-  </ng-container>
+@if (!fullSync.isSyncing() && fullSync.syncState() === 'idle' && estaAutenticado()) {
+  <button class="sync-button btn btn-sm"
+    (click)="reSync()" title="Sincronizar datos offline">
+    <i class="bi bi-arrow-repeat"></i>
+  </button>
+}
 
-  <span class="sync-label">{{ fullSync.syncProgress() }}</span>
-
-  <button class="sync-stop btn btn-sm p-0 ms-1" (click)="cancelSync($event)" title="Detener sincronización">&times;</button>
-</div>
-
-<button class="sync-button btn btn-sm" *ngIf="!fullSync.isSyncing() && fullSync.syncState() === 'idle' && estaAutenticado()"
-        (click)="reSync()" title="Sincronizar datos offline">
-  <i class="bi bi-arrow-repeat"></i>
-</button>
-
-<app-navbar
-  [usuario]="username()"
-  [rol]="role()"
-  (cerrarSesion)="desconectarUsuario()"
-  *ngIf="estaAutenticado()" [class.hidden]="modalActivo"
-></app-navbar>
+@if (estaAutenticado()) {
+  <app-navbar
+    [usuario]="username()"
+    [rol]="role()"
+    (cerrarSesion)="desconectarUsuario()"
+    [class.hidden]="modalActivo"
+  ></app-navbar>
+}
 
 <router-outlet></router-outlet>

@@ -8,37 +8,51 @@
     <label>Año: <input type="number" [(ngModel)]="anio" (change)="cargar()" min="2000" max="2100"></label>
     <label>Mes:
       <select [(ngModel)]="mes" (change)="cargar()">
-        <option *ngFor="let m of meses" [ngValue]="m.value">{{ m.label }}</option>
+        @for (m of meses; track m) {
+          <option [ngValue]="m.value">{{ m.label }}</option>
+        }
       </select>
     </label>
     <button class="btn-primary" (click)="cargar()">Actualizar</button>
   </div>
 
-  <div *ngIf="cargando" class="state-box spinner"></div>
-  <div *ngIf="error" class="state-box error">{{ error }}</div>
+  @if (cargando) {
+    <div class="state-box spinner"></div>
+  }
+  @if (error) {
+    <div class="state-box error">{{ error }}</div>
+  }
 
-  <div *ngIf="!cargando && data">
-    <div class="resumen-cards">
-      <div class="resumen-card"><span class="resumen-val">{{ data.total_registros }}</span><span class="resumen-lbl">Registros</span></div>
-      <div class="resumen-card"><span class="resumen-val">{{ data.total_cantidad_procedimientos }}</span><span class="resumen-lbl">Cantidad</span></div>
-      <div class="resumen-card usg-card" *ngIf="data.usg_gine">
-        <span class="resumen-val usg-val">{{ data.usg_gine.total_registros }}</span>
-        <span class="resumen-lbl">Ultrasonidos</span>
-        <span class="usg-sub">{{ data.usg_gine.total_cantidad }} estudios</span>
+  @if (!cargando && data) {
+    <div>
+      <div class="resumen-cards">
+        <div class="resumen-card"><span class="resumen-val">{{ data.total_registros }}</span><span class="resumen-lbl">Registros</span></div>
+        <div class="resumen-card"><span class="resumen-val">{{ data.total_cantidad_procedimientos }}</span><span class="resumen-lbl">Cantidad</span></div>
+        @if (data.usg_gine) {
+          <div class="resumen-card usg-card">
+            <span class="resumen-val usg-val">{{ data.usg_gine.total_registros }}</span>
+            <span class="resumen-lbl">Ultrasonidos</span>
+            <span class="usg-sub">{{ data.usg_gine.total_cantidad }} estudios</span>
+          </div>
+        }
       </div>
-    </div>
-
-    <div class="section-card" *ngIf="data.top_procedimientos?.length">
-      <h3 class="section-title">Top Procedimientos</h3>
-      <div class="ranking">
-        <div *ngFor="let p of data.top_procedimientos; let i = index" class="ranking-item">
-          <span class="ranking-pos">#{{ i + 1 }}</span>
-          <span class="ranking-nombre">{{ p.nombre }}</span>
-          <span class="ranking-total">{{ p.total }}</span>
+      @if (data.top_procedimientos?.length) {
+        <div class="section-card">
+          <h3 class="section-title">Top Procedimientos</h3>
+          <div class="ranking">
+            @for (p of data.top_procedimientos; track p; let i = $index) {
+              <div class="ranking-item">
+                <span class="ranking-pos">#{{ i + 1 }}</span>
+                <span class="ranking-nombre">{{ p.nombre }}</span>
+                <span class="ranking-total">{{ p.total }}</span>
+              </div>
+            }
+          </div>
         </div>
-      </div>
+      }
+      @if (data.top_procedimientos?.length === 0) {
+        <div class="state-box">Sin procedimientos para el período.</div>
+      }
     </div>
-
-    <div *ngIf="data.top_procedimientos?.length === 0" class="state-box">Sin procedimientos para el período.</div>
-  </div>
+  }
 </div>

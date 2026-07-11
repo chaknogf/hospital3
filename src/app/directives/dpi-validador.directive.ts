@@ -16,8 +16,9 @@ export class DpiValidadorDirective implements Validator {
   constructor(private control: NgControl) { }
 
   // 🔹 Limpieza en tiempo real
-  @HostListener('input', ['$event.target.value'])
-  onInput(value: string) {
+  @HostListener('input', ['$event'])
+  onInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
     const soloNumeros = value.replace(/\D/g, '').slice(0, 13);
     if (soloNumeros !== value) {
       this.control.control?.setValue(soloNumeros, { emitEvent: false });

@@ -1,6 +1,6 @@
 import { FechasPipe } from '../../../pipes/fecha.pipe';
-import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, inject } from '@angular/core';
+
+import { Component, Input, OnInit, OnChanges, SimpleChanges, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CitaService } from '../cita.service';
 import { ConteoCitas } from '../../../interface/citas';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
@@ -11,7 +11,8 @@ import { Location } from '@angular/common';
   templateUrl: './citaConteo.component.html',
   styleUrls: ['./citaConteo.component.css'],
   standalone: true,
-  imports: [CommonModule, DatosExtraPipe, FechasPipe]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [DatosExtraPipe, FechasPipe]
 })
 
 export class CitaConteoComponent implements OnInit, OnChanges {

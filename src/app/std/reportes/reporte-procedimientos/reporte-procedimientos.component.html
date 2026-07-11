@@ -17,56 +17,70 @@
     <button class="btn-primary" (click)="cargar()">Actualizar</button>
   </div>
 
-  <div *ngIf="cargando" class="state-box spinner"></div>
-  <div *ngIf="error" class="state-box error">{{ error }}</div>
+  @if (cargando) {
+    <div class="state-box spinner"></div>
+  }
+  @if (error) {
+    <div class="state-box error">{{ error }}</div>
+  }
 
-  <div *ngIf="!cargando && rows.length > 0">
-    <div class="resumen-cards" *ngIf="totales">
-      <div class="resumen-card"><span class="resumen-val">{{ totales.total_cantidad }}</span><span class="resumen-lbl">Cantidad Total</span></div>
-      <div class="resumen-card"><span class="resumen-val">{{ totales.total_anestesia }}</span><span class="resumen-lbl">Anestesia Total</span></div>
-      <div class="resumen-card"><span class="resumen-val">{{ totales.total_registros }}</span><span class="resumen-lbl">Registros</span></div>
+  @if (!cargando && rows.length > 0) {
+    <div>
+      @if (totales) {
+        <div class="resumen-cards">
+          <div class="resumen-card"><span class="resumen-val">{{ totales.total_cantidad }}</span><span class="resumen-lbl">Cantidad Total</span></div>
+          <div class="resumen-card"><span class="resumen-val">{{ totales.total_anestesia }}</span><span class="resumen-lbl">Anestesia Total</span></div>
+          <div class="resumen-card"><span class="resumen-val">{{ totales.total_registros }}</span><span class="resumen-lbl">Registros</span></div>
+        </div>
+      }
+      <div class="table-wrap">
+        <table class="reporte-table pivot-table">
+          <thead>
+            <tr>
+              <th rowspan="2">Especialidad</th>
+              @for (lug of lugares; track lug) {
+                <th [attr.colspan]="3" class="tc-header">{{ lug }}</th>
+              }
+              <th rowspan="2">Total</th>
+            </tr>
+            <tr>
+              @for (lug of lugares; track lug) {
+                <th class="sub-header">M</th>
+                <th class="sub-header">F</th>
+                <th class="sub-header">Sub</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of rows; track r) {
+              <tr>
+                <td class="esp-label">{{ r.especialidad }}</td>
+                @for (t of r.lugares; track t) {
+                  <td class="num">{{ t.M }}</td>
+                  <td class="num">{{ t.F }}</td>
+                  <td class="num total-sub">{{ t.total }}</td>
+                }
+                <td class="num total-row">{{ r.total }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>Total</th>
+              @for (t of colTotales; track t) {
+                <th class="num">{{ t.M }}</th>
+                <th class="num">{{ t.F }}</th>
+                <th class="num total-sub">{{ t.total }}</th>
+              }
+              <th class="num total-row">{{ totalGeneral }}</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
-    <div class="table-wrap">
-      <table class="reporte-table pivot-table">
-        <thead>
-          <tr>
-            <th rowspan="2">Especialidad</th>
-            <th *ngFor="let lug of lugares" [attr.colspan]="3" class="tc-header">{{ lug }}</th>
-            <th rowspan="2">Total</th>
-          </tr>
-          <tr>
-            <ng-container *ngFor="let lug of lugares">
-              <th class="sub-header">M</th>
-              <th class="sub-header">F</th>
-              <th class="sub-header">Sub</th>
-            </ng-container>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let r of rows">
-            <td class="esp-label">{{ r.especialidad }}</td>
-            <ng-container *ngFor="let t of r.lugares">
-              <td class="num">{{ t.M }}</td>
-              <td class="num">{{ t.F }}</td>
-              <td class="num total-sub">{{ t.total }}</td>
-            </ng-container>
-            <td class="num total-row">{{ r.total }}</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <th>Total</th>
-            <ng-container *ngFor="let t of colTotales">
-              <th class="num">{{ t.M }}</th>
-              <th class="num">{{ t.F }}</th>
-              <th class="num total-sub">{{ t.total }}</th>
-            </ng-container>
-            <th class="num total-row">{{ totalGeneral }}</th>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </div>
+  }
 
-  <div *ngIf="!cargando && !error && rows.length === 0" class="state-box">Sin datos disponibles.</div>
+  @if (!cargando && !error && rows.length === 0) {
+    <div class="state-box">Sin datos disponibles.</div>
+  }
 </div>

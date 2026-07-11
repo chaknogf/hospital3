@@ -1,8 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { comunidadChimaltenango } from '../../app/interface/comunidadChimaltenango';
+import { comunidadChimaltenango } from '../interface/comunidadChimaltenango';
 
 @Pipe({
-  name: 'comunidad'
+  name: 'comunidad',
+  standalone: true
 })
 export class ComunidadPipe implements PipeTransform {
   transform(value: string): string {

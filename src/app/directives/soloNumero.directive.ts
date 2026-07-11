@@ -8,8 +8,9 @@ import { NgControl } from '@angular/forms';
 export class SoloNumeroDirective {
   constructor(private control: NgControl) { }
 
-  @HostListener('input', ['$event.target.value'])
-  onInput(value: string) {
+  @HostListener('input', ['$event'])
+  onInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
     // Elimina todo lo que no sea número o punto
     const soloNumerosYPunto = value.replace(/[^0-9.]/g, '');
 

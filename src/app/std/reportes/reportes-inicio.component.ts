@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { IconService } from '../../service/icon.service';
@@ -7,23 +7,25 @@ import { IconService } from '../../service/icon.service';
 @Component({
   selector: 'app-reportes-inicio',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule],
   template: `
     <h2>Reportes y Estadísticas</h2>
     <div class="aurora-container">
-      <div
-        class="aurora-cards"
-        *ngFor="let opt of options"
-        (click)="navegar(opt.ruta)"
-      >
-        <div class="aurora-items">
-          <span [innerHTML]="icons[opt.icon]"></span>
-          <h2>{{ opt.nombre }}</h2>
-          <p>{{ opt.descripcion }}</p>
+      @for (opt of options; track opt) {
+        <div
+          class="aurora-cards"
+          (click)="navegar(opt.ruta)"
+          >
+          <div class="aurora-items">
+            <span [innerHTML]="icons[opt.icon]"></span>
+            <h2>{{ opt.nombre }}</h2>
+            <p>{{ opt.descripcion }}</p>
+          </div>
         </div>
-      </div>
+      }
     </div>
-  `,
+    `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     h2 { justify-content: center; color: aliceblue; text-align: center; margin: 24px 0 12px; }
   `]

@@ -1,10 +1,10 @@
 // renap.componente.ts
 import { agregarPersonaIcon, regresarIcon } from '../../../shared/icons/svg-icon';
 import { Renap } from '../../../interface/interfaces';
-import { CommonModule, formatDate } from '@angular/common';
+import { formatDate } from '@angular/common';
 import { PacienteFiltros } from '../../../interface/filtros.model';
 import { FormsModule } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ApiService } from '../../../service/api.service';
 import { Router } from '@angular/router';
 import { IconService } from '../../../service/icon.service';
@@ -15,7 +15,8 @@ import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-brows
   standalone: true,
   templateUrl: './renap.component.html',
   styleUrls: ['./renap.component.css'],
-  imports: [CommonModule, FormsModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule]
 })
 export class RenapComponent implements OnInit {
 

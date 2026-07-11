@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '@services/api.service';
@@ -13,8 +13,9 @@ interface EspRow {
 
 @Component({
   selector: 'app-hospitalizacion-infantil',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './hospitalizacion-infantil.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hospitalizacion-infantil.component.css']
 })
 export class HospitalizacionInfantilComponent implements OnInit {

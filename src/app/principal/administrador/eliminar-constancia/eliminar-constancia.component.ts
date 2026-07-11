@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { catchError, finalize, takeUntil } from 'rxjs';
 import { Subject } from 'rxjs';
@@ -12,7 +12,8 @@ import { ConstanciasService } from '../../../registros/nacimientos/constancias.s
   templateUrl: './eliminar-constancia.component.html',
   styleUrls: ['../admin.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ReactiveFormsModule, FormsModule]
 })
 export class EliminarConstanciaComponent implements OnInit {
   private route = inject(ActivatedRoute);

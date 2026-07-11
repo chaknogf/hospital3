@@ -1,7 +1,7 @@
 import { TimePipe } from '../../../pipes/time.pipe';
 import { ConstanciasService } from '../constancias.service';
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { PacienteService } from '../../patient/paciente.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
@@ -15,7 +15,8 @@ import { Medico } from '../../../interface/medicos.interface';
   selector: 'app-nuevaConstanciaNacimiento',
   templateUrl: './nuevaConstanciaNacimiento.component.html',
   styleUrls: ['./nuevaConstanciaNacimiento.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [ReactiveFormsModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class NuevaConstanciaNacimientoComponent implements OnInit, OnDestroy {

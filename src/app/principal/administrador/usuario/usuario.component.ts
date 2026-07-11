@@ -1,10 +1,10 @@
 import { roles } from './../../../enum/roles.enum';
 import { of } from 'rxjs';
-import { Component, OnInit, OnDestroy, inject, signal, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Usuario, UsuarioOut } from '../../../interface/usuarios.interface';
 import { catchError, finalize, takeUntil } from 'rxjs';
@@ -17,7 +17,8 @@ import { Values } from './../../../enum/roles.enum';
   templateUrl: './usuario.component.html',
   styleUrls: ['./usuario.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule,]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ReactiveFormsModule, FormsModule]
 })
 
 export class UsuarioComponent implements OnInit {

@@ -1,7 +1,7 @@
 // sigsa3-form.component.ts
 
-import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Location } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Sigsa3Create, Sigsa3Out, Sigsa3Update } from '../../../interface/sigsa3.interface';
@@ -15,7 +15,8 @@ import { Medico } from '../../../interface/medicos.interface';
   templateUrl: './sigsa3-form.component.html',
   styleUrls: ['./sigsa3-form.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [ReactiveFormsModule]
 })
 export class Sigsa3FormComponent implements OnInit {
 

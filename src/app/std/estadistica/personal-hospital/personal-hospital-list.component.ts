@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -9,6 +9,7 @@ import { PacienteResumen } from '@models/interfaces';
   selector: 'app-personal-hospital-list',
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './personal-hospital-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./personal-hospital-list.component.css']
 })
 export class PersonalHospitalListComponent implements OnInit {

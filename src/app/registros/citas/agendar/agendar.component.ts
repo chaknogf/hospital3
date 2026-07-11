@@ -1,6 +1,6 @@
 import { ConteoCitas } from '../../../interface/citas';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, signal, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CitaService } from '../cita.service';
 import { PacienteService } from '../../patient/paciente.service';
@@ -26,6 +26,7 @@ import { Location } from '@angular/common';
   templateUrl: './agendar.component.html',
   styleUrls: ['./agendar.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, EdadPipe, DatosExtraPipe, CitaConteoComponent, GrupoEdadPipe]
 })
 

@@ -1,6 +1,6 @@
 <!-- ══════════════════════════════════════════════════════════════
-     CONTROLES  (solo en pantalla)
-     ══════════════════════════════════════════════════════════════ -->
+CONTROLES  (solo en pantalla)
+══════════════════════════════════════════════════════════════ -->
 <div class="print-controls no-print">
   <div class="controls-header">
     <button class="btn-control btn-back" type="button" (click)="volver()">
@@ -20,7 +20,7 @@
         [(ngModel)]="filtros.fecha"
         name="fecha"
         (change)="cambiarFecha()"
-      />
+        />
     </div>
 
     <div class="filter-group">
@@ -29,23 +29,25 @@
         [(ngModel)]="filtros.especialidad"
         name="especialidad"
         (change)="seleccionarEspecialidad(filtros.especialidad)"
-      >
+        >
         <option value="">Todas</option>
-        <option *ngFor="let esp of especialidadesList" [value]="esp.value">
-          {{ esp.label }}
-        </option>
+        @for (esp of especialidadesList; track esp) {
+          <option [value]="esp.value">
+            {{ esp.label }}
+          </option>
+        }
       </select>
     </div>
 
     <div class="filter-group">
-        <label>Expediente</label>
-        <input
-          type="text"
-          [ngModel]="filtros.expediente"
-          (ngModelChange)="filtros.expediente = $event.toUpperCase()"
-          name="expediente"
-          placeholder="No. Expediente"
-          style="text-transform: uppercase"
+      <label>Expediente</label>
+      <input
+        type="text"
+        [ngModel]="filtros.expediente"
+        (ngModelChange)="filtros.expediente = $event.toUpperCase()"
+        name="expediente"
+        placeholder="No. Expediente"
+        style="text-transform: uppercase"
         />
     </div>
 
@@ -56,7 +58,7 @@
         [(ngModel)]="filtros.primer_nombre"
         name="primer_nombre"
         placeholder="Primer nombre"
-      />
+        />
     </div>
 
     <div class="filter-group">
@@ -66,7 +68,7 @@
         [(ngModel)]="filtros.primer_apellido"
         name="primer_apellido"
         placeholder="Primer apellido"
-      />
+        />
     </div>
 
     <div class="filter-actions">
@@ -75,7 +77,7 @@
         type="button"
         class="btn-control btn-clear"
         (click)="limpiarFiltros()"
-      >
+        >
         Limpiar
       </button>
     </div>
@@ -83,8 +85,8 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════
-     DOCUMENTO IMPRIMIBLE
-     ══════════════════════════════════════════════════════════════ -->
+DOCUMENTO IMPRIMIBLE
+══════════════════════════════════════════════════════════════ -->
 <div class="documento print-page print-multipage" id="documento-imprimible">
   <!-- ENCABEZADO ──────────────────────────────────────── -->
   <header class="doc-header">
@@ -103,75 +105,74 @@
   <hr class="doc-divider" />
 
   <!-- CARGANDO ─────────────────────────────────────────── -->
-  <div *ngIf="cargando" class="doc-loading no-print">Cargando consultas…</div>
+  @if (cargando) {
+    <div class="doc-loading no-print">Cargando consultas…</div>
+  }
 
   <!-- TABLA ──────────────────────────────────────────────── -->
-  <table
-    class="doc-table"
-    *ngIf="!cargando && consultasConSubtotales.length > 0"
-  >
-    <thead>
-      <tr>
-        <th class="col-num">#</th>
-        <th class="col-paciente">Paciente</th>
-        <th class="col-expediente">Expediente</th>
-        <th class="col-especialidad">Especialidad</th>
-        <th class="col-servicio">Servicio</th>
-        <th class="col-estado">Estado</th>
-      </tr>
-    </thead>
-    <tbody>
-      <ng-container
-        *ngFor="let fila of consultasConSubtotales; trackBy: trackByFila"
+  @if (!cargando && consultasConSubtotales.length > 0) {
+    <table
+      class="doc-table"
       >
-        <!-- Fila normal de consulta -->
-        <tr
-          *ngIf="fila.tipo === 'consulta'"
-          [class.fila-par]="fila.tipo === 'consulta' && fila.indice % 2 === 0"
-        >
-          <td class="col-num">{{ fila.indice }}</td>
-
-          <td class="col-paciente">
-            <span class="paciente-nombre">
-              {{ nombreCompleto(fila.datos) | capitalize }}
-            </span>
-          </td>
-
-          <td class="col-expediente">{{ fila.datos.expediente }}</td>
-
-          <td class="col-especialidad">
-            {{ fila.datos.especialidad | datosExtra: "especialidad" }}
-          </td>
-
-          <td class="col-servicio">{{ fila.datos.servicio || "—" }}</td>
-
-          <td class="col-estado">
-            <span class="badge">
-              {{ fila.datos.ultimo_estado }}
-            </span>
-          </td>
+      <thead>
+        <tr>
+          <th class="col-num">#</th>
+          <th class="col-paciente">Paciente</th>
+          <th class="col-expediente">Expediente</th>
+          <th class="col-especialidad">Especialidad</th>
+          <th class="col-servicio">Servicio</th>
+          <th class="col-estado">Estado</th>
         </tr>
-
-        <!-- Fila de subtotal al final de cada especialidad -->
-        <tr *ngIf="fila.tipo === 'subtotal'" class="fila-subtotal">
-          <td colspan="3" class="subtotal-label">
-            Subtotal — {{ fila.tipo === "subtotal" ? fila.label : "" }}
-          </td>
-          <td colspan="3" class="subtotal-count">
-            {{ fila.tipo === "subtotal" ? fila.count : "" }} paciente(s)
-          </td>
-        </tr>
-      </ng-container>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        @for (fila of consultasConSubtotales; track trackByFila($index, fila)) {
+          <!-- Fila normal de consulta -->
+          @if (fila.tipo === 'consulta') {
+            <tr
+              [class.fila-par]="fila.tipo === 'consulta' && fila.indice % 2 === 0"
+              >
+              <td class="col-num">{{ fila.indice }}</td>
+              <td class="col-paciente">
+                <span class="paciente-nombre">
+                  {{ nombreCompleto(fila.datos) | capitalize }}
+                </span>
+              </td>
+              <td class="col-expediente">{{ fila.datos.expediente }}</td>
+              <td class="col-especialidad">
+                {{ fila.datos.especialidad | datosExtra: "especialidad" }}
+              </td>
+              <td class="col-servicio">{{ fila.datos.servicio || "—" }}</td>
+              <td class="col-estado">
+                <span class="badge">
+                  {{ fila.datos.ultimo_estado }}
+                </span>
+              </td>
+            </tr>
+          }
+          <!-- Fila de subtotal al final de cada especialidad -->
+          @if (fila.tipo === 'subtotal') {
+            <tr class="fila-subtotal">
+              <td colspan="3" class="subtotal-label">
+                Subtotal — {{ fila.tipo === "subtotal" ? fila.label : "" }}
+              </td>
+              <td colspan="3" class="subtotal-count">
+                {{ fila.tipo === "subtotal" ? fila.count : "" }} paciente(s)
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  }
 
   <!-- SIN RESULTADOS ─────────────────────────────────────── -->
-  <div
-    *ngIf="!cargando && consultasConSubtotales.length === 0"
-    class="doc-empty"
-  >
-    No se encontraron consultas para los criterios seleccionados.
-  </div>
+  @if (!cargando && consultasConSubtotales.length === 0) {
+    <div
+      class="doc-empty"
+      >
+      No se encontraron consultas para los criterios seleccionados.
+    </div>
+  }
 
   <!-- PIE DE PÁGINA ──────────────────────────────────────── -->
   <footer class="doc-footer">

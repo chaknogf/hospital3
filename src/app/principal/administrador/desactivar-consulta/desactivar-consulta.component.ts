@@ -1,7 +1,7 @@
 import { Component, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { ConsultaService } from '../../../registros/consultas/consultas.service';
 import { ConsultaOut } from '../../../interface/consultas';
 import { Subject } from 'rxjs';
@@ -13,7 +13,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['../admin.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule]
+  imports: [FormsModule]
 })
 export class DesactivarConsultaComponent implements OnDestroy {
   private router = inject(Router);

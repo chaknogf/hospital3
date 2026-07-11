@@ -12,6 +12,7 @@
       "@models/*": ["app/interface/*"],
       "@environments/*": ["environments/*"]
     },
+    "ignoreDeprecations": "6.0",
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,

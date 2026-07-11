@@ -13,13 +13,17 @@
 </div>
 
 <div class="adm-body">
-  <div *ngIf="error()" class="alert-error">
-    {{ error() }}
-  </div>
+  @if (error()) {
+    <div class="alert-error">
+      {{ error() }}
+    </div>
+  }
 
-  <div *ngIf="success()" class="alert-success">
-    {{ success() }}
-  </div>
+  @if (success()) {
+    <div class="alert-success">
+      {{ success() }}
+    </div>
+  }
 
   <form [formGroup]="form" class="adm-grid">
     <div class="adm-col">
@@ -36,7 +40,7 @@
               formControlName="constancia_id"
               type="number"
               placeholder="ID de la constancia de nacimiento a eliminar"
-            />
+              />
           </div>
         </div>
       </div>

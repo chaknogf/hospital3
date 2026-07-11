@@ -8,250 +8,263 @@
     <label>Hasta: <input type="date" [(ngModel)]="hasta" (change)="cargar()"></label>
     <button class="btn-primary" (click)="cargar()">Actualizar</button>
   </div>
-  <div *ngIf="cargando" class="state-box spinner"></div>
-  <div *ngIf="error" class="state-box error">{{ error }}</div>
+  @if (cargando) {
+    <div class="state-box spinner"></div>
+  }
+  @if (error) {
+    <div class="state-box error">{{ error }}</div>
+  }
 
-  <div *ngIf="!cargando && data">
-    <div class="total-badge">Total de Nacimientos: {{ data.total }}</div>
-
-    <div class="section-card">
-      <h3 class="section-title">Por Mortinato</h3>
-      <div class="table-wrap">
-        <table class="reporte-table pivot-table">
-          <thead>
-            <tr>
-              <th>Estado</th>
-              <th class="sub-header">M</th>
-              <th class="sub-header">F</th>
-              <th class="sub-header">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let r of mortinatoRows">
-              <td class="esp-label">{{ r.estado }}</td>
-              <td class="num">{{ r.M }}</td>
-              <td class="num">{{ r.F }}</td>
-              <td class="num total-row">{{ r.total }}</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>Total</th>
-              <th class="num">{{ mortinatoTotalM }}</th>
-              <th class="num">{{ mortinatoTotalF }}</th>
-              <th class="num total-row">{{ mortinatoTotalGeneral }}</th>
-            </tr>
-          </tfoot>
-        </table>
+  @if (!cargando && data) {
+    <div>
+      <div class="total-badge">Total de Nacimientos: {{ data.total }}</div>
+      <div class="section-card">
+        <h3 class="section-title">Por Mortinato</h3>
+        <div class="table-wrap">
+          <table class="reporte-table pivot-table">
+            <thead>
+              <tr>
+                <th>Estado</th>
+                <th class="sub-header">M</th>
+                <th class="sub-header">F</th>
+                <th class="sub-header">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of mortinatoRows; track r) {
+                <tr>
+                  <td class="esp-label">{{ r.estado }}</td>
+                  <td class="num">{{ r.M }}</td>
+                  <td class="num">{{ r.F }}</td>
+                  <td class="num total-row">{{ r.total }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>Total</th>
+                <th class="num">{{ mortinatoTotalM }}</th>
+                <th class="num">{{ mortinatoTotalF }}</th>
+                <th class="num total-row">{{ mortinatoTotalGeneral }}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="section-card">
+        <h3 class="section-title">Por Fallecidos Posteriores</h3>
+        <div class="table-wrap">
+          <table class="reporte-table pivot-table">
+            <thead>
+              <tr>
+                <th>Estado</th>
+                <th class="sub-header">M</th>
+                <th class="sub-header">F</th>
+                <th class="sub-header">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of fallecidosPosterioresRows; track r) {
+                <tr>
+                  <td class="esp-label">{{ r.estado }}</td>
+                  <td class="num">{{ r.M }}</td>
+                  <td class="num">{{ r.F }}</td>
+                  <td class="num total-row">{{ r.total }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>Total</th>
+                <th class="num">{{ fallecidosPosterioresTotalM }}</th>
+                <th class="num">{{ fallecidosPosterioresTotalF }}</th>
+                <th class="num total-row">{{ fallecidosPosterioresTotalGeneral }}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="section-card">
+        <h3 class="section-title">Por Clase de Parto</h3>
+        <div class="table-wrap">
+          <table class="reporte-table pivot-table">
+            <thead>
+              <tr>
+                <th rowspan="2">Clase</th>
+                <th [attr.colspan]="3" class="tc-header">Vivo</th>
+                <th [attr.colspan]="3" class="tc-header">Mortinato</th>
+                <th [attr.colspan]="3" class="tc-header">Fallecido</th>
+                <th rowspan="2">Total</th>
+              </tr>
+              <tr>
+                <th class="sub-header">M</th>
+                <th class="sub-header">F</th>
+                <th class="sub-header">Sub</th>
+                <th class="sub-header">M</th>
+                <th class="sub-header">F</th>
+                <th class="sub-header">Sub</th>
+                <th class="sub-header">M</th>
+                <th class="sub-header">F</th>
+                <th class="sub-header">Sub</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of clasePartoRows; track r) {
+                <tr>
+                  <td class="esp-label">{{ r.clase }}</td>
+                  <td class="num">{{ r.Vivo.M }}</td>
+                  <td class="num">{{ r.Vivo.F }}</td>
+                  <td class="num total-sub">{{ r.Vivo.total }}</td>
+                  <td class="num">{{ r.Mortinato.M }}</td>
+                  <td class="num">{{ r.Mortinato.F }}</td>
+                  <td class="num total-sub">{{ r.Mortinato.total }}</td>
+                  <td class="num">{{ r.Fallecido.M }}</td>
+                  <td class="num">{{ r.Fallecido.F }}</td>
+                  <td class="num total-sub">{{ r.Fallecido.total }}</td>
+                  <td class="num total-row">{{ r.total }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>Total</th>
+                <th class="num">{{ cpColVivo.M }}</th>
+                <th class="num">{{ cpColVivo.F }}</th>
+                <th class="num total-sub">{{ cpColVivo.total }}</th>
+                <th class="num">{{ cpColMortinato.M }}</th>
+                <th class="num">{{ cpColMortinato.F }}</th>
+                <th class="num total-sub">{{ cpColMortinato.total }}</th>
+                <th class="num">{{ cpColFallecido.M }}</th>
+                <th class="num">{{ cpColFallecido.F }}</th>
+                <th class="num total-sub">{{ cpColFallecido.total }}</th>
+                <th class="num total-row">{{ cpTotalGeneral }}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="section-card">
+        <h3 class="section-title">Por Clasificación de Parto</h3>
+        <div class="table-wrap">
+          <table class="reporte-table pivot-table">
+            <thead>
+              <tr>
+                <th rowspan="2">Clasificación</th>
+                <th [attr.colspan]="3" class="tc-header">Vivo</th>
+                <th [attr.colspan]="3" class="tc-header">Mortinato</th>
+                <th [attr.colspan]="3" class="tc-header">Fallecido</th>
+                <th rowspan="2">Total</th>
+              </tr>
+              <tr>
+                <th class="sub-header">M</th>
+                <th class="sub-header">F</th>
+                <th class="sub-header">Sub</th>
+                <th class="sub-header">M</th>
+                <th class="sub-header">F</th>
+                <th class="sub-header">Sub</th>
+                <th class="sub-header">M</th>
+                <th class="sub-header">F</th>
+                <th class="sub-header">Sub</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of clasifRows; track r) {
+                <tr>
+                  <td class="esp-label">{{ r.clasif }}</td>
+                  <td class="num">{{ r.Vivo.M }}</td>
+                  <td class="num">{{ r.Vivo.F }}</td>
+                  <td class="num total-sub">{{ r.Vivo.total }}</td>
+                  <td class="num">{{ r.Mortinato.M }}</td>
+                  <td class="num">{{ r.Mortinato.F }}</td>
+                  <td class="num total-sub">{{ r.Mortinato.total }}</td>
+                  <td class="num">{{ r.Fallecido.M }}</td>
+                  <td class="num">{{ r.Fallecido.F }}</td>
+                  <td class="num total-sub">{{ r.Fallecido.total }}</td>
+                  <td class="num total-row">{{ r.total }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>Total</th>
+                <th class="num">{{ clasifColVivo.M }}</th>
+                <th class="num">{{ clasifColVivo.F }}</th>
+                <th class="num total-sub">{{ clasifColVivo.total }}</th>
+                <th class="num">{{ clasifColMortinato.M }}</th>
+                <th class="num">{{ clasifColMortinato.F }}</th>
+                <th class="num total-sub">{{ clasifColMortinato.total }}</th>
+                <th class="num">{{ clasifColFallecido.M }}</th>
+                <th class="num">{{ clasifColFallecido.F }}</th>
+                <th class="num total-sub">{{ clasifColFallecido.total }}</th>
+                <th class="num total-row">{{ clasifTotalGeneral }}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="section-card">
+        <h3 class="section-title">Por Trabajo de Parto</h3>
+        <div class="table-wrap">
+          <table class="reporte-table pivot-table">
+            <thead>
+              <tr>
+                <th rowspan="2">Trabajo</th>
+                <th [attr.colspan]="3" class="tc-header">Vivo</th>
+                <th [attr.colspan]="3" class="tc-header">Mortinato</th>
+                <th [attr.colspan]="3" class="tc-header">Fallecido</th>
+                <th rowspan="2">Total</th>
+              </tr>
+              <tr>
+                <th class="sub-header">M</th>
+                <th class="sub-header">F</th>
+                <th class="sub-header">Sub</th>
+                <th class="sub-header">M</th>
+                <th class="sub-header">F</th>
+                <th class="sub-header">Sub</th>
+                <th class="sub-header">M</th>
+                <th class="sub-header">F</th>
+                <th class="sub-header">Sub</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of trabajoRows; track r) {
+                <tr>
+                  <td class="esp-label">{{ r.trabajo }}</td>
+                  <td class="num">{{ r.Vivo.M }}</td>
+                  <td class="num">{{ r.Vivo.F }}</td>
+                  <td class="num total-sub">{{ r.Vivo.total }}</td>
+                  <td class="num">{{ r.Mortinato.M }}</td>
+                  <td class="num">{{ r.Mortinato.F }}</td>
+                  <td class="num total-sub">{{ r.Mortinato.total }}</td>
+                  <td class="num">{{ r.Fallecido.M }}</td>
+                  <td class="num">{{ r.Fallecido.F }}</td>
+                  <td class="num total-sub">{{ r.Fallecido.total }}</td>
+                  <td class="num total-row">{{ r.total }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>Total</th>
+                <th class="num">{{ trabajoColVivo.M }}</th>
+                <th class="num">{{ trabajoColVivo.F }}</th>
+                <th class="num total-sub">{{ trabajoColVivo.total }}</th>
+                <th class="num">{{ trabajoColMortinato.M }}</th>
+                <th class="num">{{ trabajoColMortinato.F }}</th>
+                <th class="num total-sub">{{ trabajoColMortinato.total }}</th>
+                <th class="num">{{ trabajoColFallecido.M }}</th>
+                <th class="num">{{ trabajoColFallecido.F }}</th>
+                <th class="num total-sub">{{ trabajoColFallecido.total }}</th>
+                <th class="num total-row">{{ trabajoTotalGeneral }}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
     </div>
+  }
 
-    <div class="section-card">
-      <h3 class="section-title">Por Fallecidos Posteriores</h3>
-      <div class="table-wrap">
-        <table class="reporte-table pivot-table">
-          <thead>
-            <tr>
-              <th>Estado</th>
-              <th class="sub-header">M</th>
-              <th class="sub-header">F</th>
-              <th class="sub-header">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let r of fallecidosPosterioresRows">
-              <td class="esp-label">{{ r.estado }}</td>
-              <td class="num">{{ r.M }}</td>
-              <td class="num">{{ r.F }}</td>
-              <td class="num total-row">{{ r.total }}</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>Total</th>
-              <th class="num">{{ fallecidosPosterioresTotalM }}</th>
-              <th class="num">{{ fallecidosPosterioresTotalF }}</th>
-              <th class="num total-row">{{ fallecidosPosterioresTotalGeneral }}</th>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-
-    <div class="section-card">
-      <h3 class="section-title">Por Clase de Parto</h3>
-      <div class="table-wrap">
-        <table class="reporte-table pivot-table">
-          <thead>
-            <tr>
-              <th rowspan="2">Clase</th>
-              <th [attr.colspan]="3" class="tc-header">Vivo</th>
-              <th [attr.colspan]="3" class="tc-header">Mortinato</th>
-              <th [attr.colspan]="3" class="tc-header">Fallecido</th>
-              <th rowspan="2">Total</th>
-            </tr>
-            <tr>
-              <th class="sub-header">M</th>
-              <th class="sub-header">F</th>
-              <th class="sub-header">Sub</th>
-              <th class="sub-header">M</th>
-              <th class="sub-header">F</th>
-              <th class="sub-header">Sub</th>
-              <th class="sub-header">M</th>
-              <th class="sub-header">F</th>
-              <th class="sub-header">Sub</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let r of clasePartoRows">
-              <td class="esp-label">{{ r.clase }}</td>
-              <td class="num">{{ r.Vivo.M }}</td>
-              <td class="num">{{ r.Vivo.F }}</td>
-              <td class="num total-sub">{{ r.Vivo.total }}</td>
-              <td class="num">{{ r.Mortinato.M }}</td>
-              <td class="num">{{ r.Mortinato.F }}</td>
-              <td class="num total-sub">{{ r.Mortinato.total }}</td>
-              <td class="num">{{ r.Fallecido.M }}</td>
-              <td class="num">{{ r.Fallecido.F }}</td>
-              <td class="num total-sub">{{ r.Fallecido.total }}</td>
-              <td class="num total-row">{{ r.total }}</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>Total</th>
-              <th class="num">{{ cpColVivo.M }}</th>
-              <th class="num">{{ cpColVivo.F }}</th>
-              <th class="num total-sub">{{ cpColVivo.total }}</th>
-              <th class="num">{{ cpColMortinato.M }}</th>
-              <th class="num">{{ cpColMortinato.F }}</th>
-              <th class="num total-sub">{{ cpColMortinato.total }}</th>
-              <th class="num">{{ cpColFallecido.M }}</th>
-              <th class="num">{{ cpColFallecido.F }}</th>
-              <th class="num total-sub">{{ cpColFallecido.total }}</th>
-              <th class="num total-row">{{ cpTotalGeneral }}</th>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-
-    <div class="section-card">
-      <h3 class="section-title">Por Clasificación de Parto</h3>
-      <div class="table-wrap">
-        <table class="reporte-table pivot-table">
-          <thead>
-            <tr>
-              <th rowspan="2">Clasificación</th>
-              <th [attr.colspan]="3" class="tc-header">Vivo</th>
-              <th [attr.colspan]="3" class="tc-header">Mortinato</th>
-              <th [attr.colspan]="3" class="tc-header">Fallecido</th>
-              <th rowspan="2">Total</th>
-            </tr>
-            <tr>
-              <th class="sub-header">M</th>
-              <th class="sub-header">F</th>
-              <th class="sub-header">Sub</th>
-              <th class="sub-header">M</th>
-              <th class="sub-header">F</th>
-              <th class="sub-header">Sub</th>
-              <th class="sub-header">M</th>
-              <th class="sub-header">F</th>
-              <th class="sub-header">Sub</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let r of clasifRows">
-              <td class="esp-label">{{ r.clasif }}</td>
-              <td class="num">{{ r.Vivo.M }}</td>
-              <td class="num">{{ r.Vivo.F }}</td>
-              <td class="num total-sub">{{ r.Vivo.total }}</td>
-              <td class="num">{{ r.Mortinato.M }}</td>
-              <td class="num">{{ r.Mortinato.F }}</td>
-              <td class="num total-sub">{{ r.Mortinato.total }}</td>
-              <td class="num">{{ r.Fallecido.M }}</td>
-              <td class="num">{{ r.Fallecido.F }}</td>
-              <td class="num total-sub">{{ r.Fallecido.total }}</td>
-              <td class="num total-row">{{ r.total }}</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>Total</th>
-              <th class="num">{{ clasifColVivo.M }}</th>
-              <th class="num">{{ clasifColVivo.F }}</th>
-              <th class="num total-sub">{{ clasifColVivo.total }}</th>
-              <th class="num">{{ clasifColMortinato.M }}</th>
-              <th class="num">{{ clasifColMortinato.F }}</th>
-              <th class="num total-sub">{{ clasifColMortinato.total }}</th>
-              <th class="num">{{ clasifColFallecido.M }}</th>
-              <th class="num">{{ clasifColFallecido.F }}</th>
-              <th class="num total-sub">{{ clasifColFallecido.total }}</th>
-              <th class="num total-row">{{ clasifTotalGeneral }}</th>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-
-    <div class="section-card">
-      <h3 class="section-title">Por Trabajo de Parto</h3>
-      <div class="table-wrap">
-        <table class="reporte-table pivot-table">
-          <thead>
-            <tr>
-              <th rowspan="2">Trabajo</th>
-              <th [attr.colspan]="3" class="tc-header">Vivo</th>
-              <th [attr.colspan]="3" class="tc-header">Mortinato</th>
-              <th [attr.colspan]="3" class="tc-header">Fallecido</th>
-              <th rowspan="2">Total</th>
-            </tr>
-            <tr>
-              <th class="sub-header">M</th>
-              <th class="sub-header">F</th>
-              <th class="sub-header">Sub</th>
-              <th class="sub-header">M</th>
-              <th class="sub-header">F</th>
-              <th class="sub-header">Sub</th>
-              <th class="sub-header">M</th>
-              <th class="sub-header">F</th>
-              <th class="sub-header">Sub</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let r of trabajoRows">
-              <td class="esp-label">{{ r.trabajo }}</td>
-              <td class="num">{{ r.Vivo.M }}</td>
-              <td class="num">{{ r.Vivo.F }}</td>
-              <td class="num total-sub">{{ r.Vivo.total }}</td>
-              <td class="num">{{ r.Mortinato.M }}</td>
-              <td class="num">{{ r.Mortinato.F }}</td>
-              <td class="num total-sub">{{ r.Mortinato.total }}</td>
-              <td class="num">{{ r.Fallecido.M }}</td>
-              <td class="num">{{ r.Fallecido.F }}</td>
-              <td class="num total-sub">{{ r.Fallecido.total }}</td>
-              <td class="num total-row">{{ r.total }}</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>Total</th>
-              <th class="num">{{ trabajoColVivo.M }}</th>
-              <th class="num">{{ trabajoColVivo.F }}</th>
-              <th class="num total-sub">{{ trabajoColVivo.total }}</th>
-              <th class="num">{{ trabajoColMortinato.M }}</th>
-              <th class="num">{{ trabajoColMortinato.F }}</th>
-              <th class="num total-sub">{{ trabajoColMortinato.total }}</th>
-              <th class="num">{{ trabajoColFallecido.M }}</th>
-              <th class="num">{{ trabajoColFallecido.F }}</th>
-              <th class="num total-sub">{{ trabajoColFallecido.total }}</th>
-              <th class="num total-row">{{ trabajoTotalGeneral }}</th>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <div *ngIf="!cargando && !error && !data" class="state-box">Sin datos disponibles.</div>
+  @if (!cargando && !error && !data) {
+    <div class="state-box">Sin datos disponibles.</div>
+  }
 </div>

@@ -9,176 +9,180 @@
       letter-spacing: 2px;
     "
     >v2.4.1</span
-  >
-</div>
+    >
+  </div>
 
-<!-- ── ACTION DOCK ── -->
-<div class="action-dock">
-  <span class="dock-hint">/ usuario.edit</span>
-  <button type="button" class="btn" (click)="volver()">← Volver</button>
-  <button
-    type="button"
-    class="btn"
-    [disabled]="isLoading()"
-    (click)="guardar()"
-  >
-    {{ isLoading() ? "Guardando…" : "💾 Guardar" }}
-  </button>
-</div>
-<div *ngIf="error()" class="alert-error">
-  {{ error() }}
-</div>
+  <!-- ── ACTION DOCK ── -->
+  <div class="action-dock">
+    <span class="dock-hint">/ usuario.edit</span>
+    <button type="button" class="btn" (click)="volver()">← Volver</button>
+    <button
+      type="button"
+      class="btn"
+      [disabled]="isLoading()"
+      (click)="guardar()"
+      >
+      {{ isLoading() ? "Guardando…" : "💾 Guardar" }}
+    </button>
+  </div>
+  @if (error()) {
+    <div class="alert-error">
+      {{ error() }}
+    </div>
+  }
 
-<!-- ── BODY ── -->
-<div class="adm-body" [formGroup]="form">
-  <!-- BANNER -->
-  <div class="paciente-banner">
-    <div class="paciente-avatar">👤</div>
-    <div class="paciente-datos">
-      <div class="paciente-nombre">
-        {{ form.get("username")?.value || "Nuevo usuario" }}
-      </div>
-      <div class="paciente-chips">
-        <span class="p-chip">{{ form.get("role")?.value || "Sin rol" }}</span>
-        <span class="p-chip">Unidad {{ form.get("unidad")?.value }}</span>
-        <span
-          class="p-chip"
+  <!-- ── BODY ── -->
+  <div class="adm-body" [formGroup]="form">
+    <!-- BANNER -->
+    <div class="paciente-banner">
+      <div class="paciente-avatar">👤</div>
+      <div class="paciente-datos">
+        <div class="paciente-nombre">
+          {{ form.get("username")?.value || "Nuevo usuario" }}
+        </div>
+        <div class="paciente-chips">
+          <span class="p-chip">{{ form.get("role")?.value || "Sin rol" }}</span>
+          <span class="p-chip">Unidad {{ form.get("unidad")?.value }}</span>
+          <span
+            class="p-chip"
           [style.color]="
             form.get('estado')?.value === 'A' ? '#166534' : '#991b1b'
           "
-        >
-          {{ form.get("estado")?.value === "A" ? "● Activo" : "○ Inactivo" }}
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <!-- GRID PRINCIPAL -->
-  <div class="adm-grid">
-    <!-- COLUMNA IZQUIERDA -->
-    <div class="adm-col">
-      <!-- CREDENCIALES -->
-      <div class="section-card">
-        <div class="sec-head">
-          <span class="sec-title">CREDENCIALES</span>
-          <span class="sec-badge">🔑</span>
-        </div>
-        <div class="sec-body">
-          <div class="field">
-            <label class="field-label">USERNAME</label>
-            <input
-              class="field-input"
-              formControlName="username"
-              type="text"
-              placeholder="usuario@sistema"
-            />
-          </div>
-          <div class="field">
-            <label class="field-label">EMAIL</label>
-            <input
-              class="field-input"
-              formControlName="email"
-              type="email"
-              placeholder="correo@ejemplo.com"
-            />
-          </div>
-          <div class="field">
-            <label class="field-label">ROL</label>
-            <select class="field-input" formControlName="role">
-              <option *ngFor="let item of rol" [value]="item.value">
-                {{ item.label }}
-              </option>
-            </select>
-          </div>
-          <div class="field">
-            <label class="field-label">UNIDAD</label>
-            <input
-              class="field-input"
-              formControlName="unidad"
-              type="number"
-              placeholder="ID Unidad"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- ESTADO -->
-      <div class="section-card">
-        <div class="sec-head">
-          <span class="sec-title">ESTADO</span>
-          <span class="sec-badge">🔆</span>
-        </div>
-        <div class="indicadores-grid">
-          <div
-            class="ind-chip"
-            [class.active]="form.get('estado')?.value === 'A'"
-            (click)="form.get('estado')?.setValue('A')"
-          >
-            ✓ Activo
-          </div>
-          <div
-            class="ind-chip"
-            [class.active]="form.get('estado')?.value === 'I'"
-            (click)="form.get('estado')?.setValue('I')"
-          >
-            ✗ Inactivo
-          </div>
+            >
+            {{ form.get("estado")?.value === "A" ? "● Activo" : "○ Inactivo" }}
+          </span>
         </div>
       </div>
     </div>
 
-    <!-- COLUMNA DERECHA -->
-    <div class="adm-col" formGroupName="datos_extra">
-      <!-- DATOS EXTRA -->
-      <div class="section-card">
-        <div class="sec-head">
-          <span class="sec-title">DATOS EXTRA</span>
-          <span class="sec-badge">🪪</span>
+    <!-- GRID PRINCIPAL -->
+    <div class="adm-grid">
+      <!-- COLUMNA IZQUIERDA -->
+      <div class="adm-col">
+        <!-- CREDENCIALES -->
+        <div class="section-card">
+          <div class="sec-head">
+            <span class="sec-title">CREDENCIALES</span>
+            <span class="sec-badge">🔑</span>
+          </div>
+          <div class="sec-body">
+            <div class="field">
+              <label class="field-label">USERNAME</label>
+              <input
+                class="field-input"
+                formControlName="username"
+                type="text"
+                placeholder="usuario@sistema"
+                />
+            </div>
+            <div class="field">
+              <label class="field-label">EMAIL</label>
+              <input
+                class="field-input"
+                formControlName="email"
+                type="email"
+                placeholder="correo@ejemplo.com"
+                />
+            </div>
+            <div class="field">
+              <label class="field-label">ROL</label>
+              <select class="field-input" formControlName="role">
+                @for (item of rol; track item) {
+                  <option [value]="item.value">
+                    {{ item.label }}
+                  </option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">UNIDAD</label>
+              <input
+                class="field-input"
+                formControlName="unidad"
+                type="number"
+                placeholder="ID Unidad"
+                />
+            </div>
+          </div>
         </div>
-        <div class="sec-body triple">
-          <div class="field">
-            <label class="field-label">CUI / DPI</label>
-            <input
-              class="field-input"
-              formControlName="cui"
-              type="text"
-              placeholder="0000 00000 0000"
-            />
+
+        <!-- ESTADO -->
+        <div class="section-card">
+          <div class="sec-head">
+            <span class="sec-title">ESTADO</span>
+            <span class="sec-badge">🔆</span>
           </div>
-          <div class="field">
-            <label class="field-label">SEXO</label>
-            <select class="field-input" formControlName="sexo">
-              <option value="">— Seleccionar —</option>
-              <option value="M">Masculino</option>
-              <option value="F">Femenino</option>
-            </select>
+          <div class="indicadores-grid">
+            <div
+              class="ind-chip"
+              [class.active]="form.get('estado')?.value === 'A'"
+              (click)="form.get('estado')?.setValue('A')"
+              >
+              ✓ Activo
+            </div>
+            <div
+              class="ind-chip"
+              [class.active]="form.get('estado')?.value === 'I'"
+              (click)="form.get('estado')?.setValue('I')"
+              >
+              ✗ Inactivo
+            </div>
           </div>
-          <div class="field">
-            <label class="field-label">PUESTO</label>
-            <input
-              class="field-input"
-              formControlName="puesto"
-              type="text"
-              placeholder="Especialidad / Cargo"
-            />
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA -->
+      <div class="adm-col" formGroupName="datos_extra">
+        <!-- DATOS EXTRA -->
+        <div class="section-card">
+          <div class="sec-head">
+            <span class="sec-title">DATOS EXTRA</span>
+            <span class="sec-badge">🪪</span>
           </div>
-          <div class="field" style="flex: 1 1 100%">
-            <label class="field-label">SERVICIO / ÁREA</label>
-            <input
-              class="field-input"
-              formControlName="servicio"
-              type="text"
-              placeholder="Consulta externa, Emergencias…"
-            />
+          <div class="sec-body triple">
+            <div class="field">
+              <label class="field-label">CUI / DPI</label>
+              <input
+                class="field-input"
+                formControlName="cui"
+                type="text"
+                placeholder="0000 00000 0000"
+                />
+            </div>
+            <div class="field">
+              <label class="field-label">SEXO</label>
+              <select class="field-input" formControlName="sexo">
+                <option value="">— Seleccionar —</option>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">PUESTO</label>
+              <input
+                class="field-input"
+                formControlName="puesto"
+                type="text"
+                placeholder="Especialidad / Cargo"
+                />
+            </div>
+            <div class="field" style="flex: 1 1 100%">
+              <label class="field-label">SERVICIO / ÁREA</label>
+              <input
+                class="field-input"
+                formControlName="servicio"
+                type="text"
+                placeholder="Consulta externa, Emergencias…"
+                />
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ERROR -->
-  @if (error()) {
-    <div
+    <!-- ERROR -->
+    @if (error()) {
+      <div
       style="
         background: #fee2e2;
         border: 1px solid #fca5a5;
@@ -187,8 +191,8 @@
         color: #991b1b;
         font-size: 14px;
       "
-    >
-      ⚠ {{ error() }}
-    </div>
-  }
-</div>
+        >
+        ⚠ {{ error() }}
+      </div>
+    }
+  </div>

@@ -1,5 +1,5 @@
-import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Location } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -22,10 +22,10 @@ import { IconService } from '../../../service/icon.service';
   templateUrl: './nuevoprocedimiento.component.html',
   styleUrls: ['./nuevoprocedimiento.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
-    CommonModule,
     ReactiveFormsModule
-  ]
+]
 })
 export class NuevoprocedimientoComponent implements OnInit {
 

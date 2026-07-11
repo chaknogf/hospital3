@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ConsultaService } from '../../consultas.service';
 import { Paciente } from '../../../../interface/interfaces';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -22,6 +22,7 @@ import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
   templateUrl: './hojaIngreso.component.html',
   styleUrls: ['./hojaIngreso.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, TimePipe, CommonModule, TitleCasePipe, CapitalizePipe],
 })
 export class HojaIngresoComponent implements OnInit, OnDestroy {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Input, OnDestroy, inject, signal, input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, inject, signal, input, ChangeDetectionStrategy } from '@angular/core';
 import { ConstanciasService } from '../constancias.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConstanciaNacimiento } from '../constancias.inteface';
@@ -19,6 +19,7 @@ import { LibrasOnzasPipe } from '../../../pipes/librasOnza.pipe';
   standalone: true,
   templateUrl: './hoja-cnacimiento.component.html',
   styleUrls: ['./hoja-cnacimiento.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, DatosExtraPipe, TimePipe, APipe, CuiPipe, CapitalizePipe, LibrasOnzasPipe]
 })
 export class HojaCnacimientoComponent implements OnInit, OnDestroy {

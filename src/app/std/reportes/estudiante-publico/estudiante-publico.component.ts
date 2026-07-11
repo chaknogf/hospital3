@@ -1,13 +1,14 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '@services/api.service';
 
 @Component({
   selector: 'app-estudiante-publico',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './estudiante-publico.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./estudiante-publico.component.css']
 })
 export class EstudiantePublicoComponent implements OnInit {

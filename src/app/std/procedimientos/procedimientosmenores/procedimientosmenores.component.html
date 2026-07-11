@@ -2,7 +2,7 @@
   <div
     class="botones justify-content-between"
     [ngClass]="{ 'd-none': filtrar }"
-  >
+    >
     <button type="button" (click)="volver()">
       <span [innerHTML]="icons['menu']"></span>
       Menu
@@ -32,11 +32,13 @@
             name="lugarServicio"
             [(ngModel)]="filtros.lugar_servicio"
             class="input-filtros"
-          >
+            >
             <option value="">Todos</option>
-            <option *ngFor="let ls of lugarServicios" [value]="ls.value">
-              {{ ls.label }}
-            </option>
+            @for (ls of lugarServicios; track ls) {
+              <option [value]="ls.value">
+                {{ ls.label }}
+              </option>
+            }
           </select>
         </fieldset>
 
@@ -46,14 +48,15 @@
             name="lugarServicio"
             [(ngModel)]="filtros.especialidad"
             class="input-filtros"
-          >
-            <option value="">Todos</option>
-            <option
-              *ngFor="let ep of especialidadesfiltradas"
-              [value]="ep.value"
             >
-              {{ ep.label }}
-            </option>
+            <option value="">Todos</option>
+            @for (ep of especialidadesfiltradas; track ep) {
+              <option
+                [value]="ep.value"
+                >
+                {{ ep.label }}
+              </option>
+            }
           </select>
         </fieldset>
 
@@ -64,7 +67,7 @@
             class="input-filtros"
             [(ngModel)]="filtros.fecha"
             name="fechaConsulta"
-          />
+            />
         </fieldset>
       </div>
 
@@ -105,39 +108,37 @@
       </thead>
 
       <tbody>
-        <tr
-          *ngFor="let data of procedimientos; trackBy: trackById"
-          [class.touch-active]="rowActiva === data.id"
-          (click)="activarFila(data.id)"
-        >
-          <td>
-            {{ data.procedimiento?.nombre }}
-            <br />
-            <span style="font-size: xx-small">{{ data.id }}</span>
-          </td>
-
-          <td>
-            {{ data.fecha | date: "dd-MM-yyyy" }}
-          </td>
-
-          <td>
-            {{ data.especialidad | datosExtra: "espeProce" }}
-            <br />
-            {{ data.lugar_servicio | datosExtra: "lugarServicio" }}
-          </td>
-          <td>
-            Realizadas: {{ data.cantidad }}
-            <br />
-            Anestesias: {{ data.anestesia }}
-          </td>
-          <td>{{ data.created_by }}</td>
-
-          <td>
-            <button (click)="editar(data.id); $event.stopPropagation()">
-              <span [innerHTML]="icons['edit']"></span>
-            </button>
-          </td>
-        </tr>
+        @for (data of procedimientos; track trackById($index, data)) {
+          <tr
+            [class.touch-active]="rowActiva === data.id"
+            (click)="activarFila(data.id)"
+            >
+            <td>
+              {{ data.procedimiento?.nombre }}
+              <br />
+              <span style="font-size: xx-small">{{ data.id }}</span>
+            </td>
+            <td>
+              {{ data.fecha | date: "dd-MM-yyyy" }}
+            </td>
+            <td>
+              {{ data.especialidad | datosExtra: "espeProce" }}
+              <br />
+              {{ data.lugar_servicio | datosExtra: "lugarServicio" }}
+            </td>
+            <td>
+              Realizadas: {{ data.cantidad }}
+              <br />
+              Anestesias: {{ data.anestesia }}
+            </td>
+            <td>{{ data.created_by }}</td>
+            <td>
+              <button (click)="editar(data.id); $event.stopPropagation()">
+                <span [innerHTML]="icons['edit']"></span>
+              </button>
+            </td>
+          </tr>
+        }
 
         @if (!cargando && procedimientos.length === 0) {
           <tr>
@@ -160,7 +161,7 @@
     class="pag-btn"
     [disabled]="!hayPaginaAnterior"
     (click)="cambiarPagina(-1)"
-  >
+    >
     <span [innerHTML]="icons['skipLeft']"></span>
   </button>
 
@@ -172,14 +173,15 @@
     <span class="pag-ellipsis">…</span>
   }
 
-  <button
-    *ngFor="let p of paginas; trackBy: trackById"
-    class="pag-num"
-    [class.pag-num-active]="p === paginaActual"
-    (click)="irAPagina(p)"
-  >
-    {{ p }}
-  </button>
+  @for (p of paginas; track trackById($index, p)) {
+    <button
+      class="pag-num"
+      [class.pag-num-active]="p === paginaActual"
+      (click)="irAPagina(p)"
+      >
+      {{ p }}
+    </button>
+  }
 
   @if (paginas[paginas.length - 1] < totalPaginas - 1) {
     <span class="pag-ellipsis">…</span>
@@ -195,7 +197,7 @@
     class="pag-btn"
     [disabled]="!hayPaginaSiguiente"
     (click)="cambiarPagina(1)"
-  >
+    >
     <span [innerHTML]="icons['skipRight']"></span>
   </button>
 

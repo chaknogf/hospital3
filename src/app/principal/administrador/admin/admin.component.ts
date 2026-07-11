@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { IconService } from '../../../service/icon.service';
@@ -9,7 +9,8 @@ import { IconService } from '../../../service/icon.service';
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [RouterModule]
 })
 export class AdminComponent implements OnInit {
 

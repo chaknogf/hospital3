@@ -29,65 +29,79 @@
     <label>Especialidad:
       <select [(ngModel)]="especialidadFilter" (change)="cargar()">
         <option value="">Todas</option>
-        <option *ngFor="let esp of especialidades" [value]="esp">{{ esp }}</option>
+        @for (esp of especialidades; track esp) {
+          <option [value]="esp">{{ esp }}</option>
+        }
       </select>
     </label>
     <button class="btn-primary" (click)="cargar()">Actualizar</button>
   </div>
 
-  <div *ngIf="cargando" class="state-box spinner"></div>
-  <div *ngIf="error" class="state-box error">{{ error }}</div>
+  @if (cargando) {
+    <div class="state-box spinner"></div>
+  }
+  @if (error) {
+    <div class="state-box error">{{ error }}</div>
+  }
 
-  <div *ngIf="!cargando && !error && grupos.length === 0" class="state-box">
-    Sin datos para el rango seleccionado.
-  </div>
-
-  <div *ngIf="!cargando && grupos.length > 0">
-    <div class="total-badge">Total general: {{ totalGeneral }} diagnósticos</div>
-
-    <!-- Por cada especialidad -->
-    <div *ngFor="let grupo of grupos" class="esp-card">
-      <div class="esp-header">
-        <span class="esp-name">{{ grupo.especialidad }}</span>
-        <span class="esp-total">{{ grupo.totalEspecialidad }} dx</span>
-      </div>
-
-      <!-- Por cada tipo de consulta dentro de la especialidad -->
-      <div *ngFor="let tabla of grupo.tablas" class="tc-block">
-        <div class="tc-label">{{ tabla.tipoConsulta }}</div>
-        <div class="table-wrap">
-          <table class="dx-table">
-            <thead>
-              <tr>
-                <th class="th-rank">#</th>
-                <th class="th-dx">Diagnóstico</th>
-                <th class="th-num">M</th>
-                <th class="th-num">F</th>
-                <th class="th-num th-total">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let row of tabla.rows; let i = index"
-                  [class.resto-row]="row.dx === 'Resto de causas'">
-                <td class="rank">{{ i + 1 }}</td>
-                <td class="dx-cell">{{ row.dx }}</td>
-                <td class="num cell-m">{{ row.m }}</td>
-                <td class="num cell-f">{{ row.f }}</td>
-                <td class="num total-cell">{{ row.total }}</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <th></th>
-                <th class="tf-label">Total</th>
-                <th class="num">{{ tabla.totalM }}</th>
-                <th class="num">{{ tabla.totalF }}</th>
-                <th class="num total-cell">{{ tabla.totalTabla }}</th>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
+  @if (!cargando && !error && grupos.length === 0) {
+    <div class="state-box">
+      Sin datos para el rango seleccionado.
     </div>
-  </div>
+  }
+
+  @if (!cargando && grupos.length > 0) {
+    <div>
+      <div class="total-badge">Total general: {{ totalGeneral }} diagnósticos</div>
+      <!-- Por cada especialidad -->
+      @for (grupo of grupos; track grupo) {
+        <div class="esp-card">
+          <div class="esp-header">
+            <span class="esp-name">{{ grupo.especialidad }}</span>
+            <span class="esp-total">{{ grupo.totalEspecialidad }} dx</span>
+          </div>
+          <!-- Por cada tipo de consulta dentro de la especialidad -->
+          @for (tabla of grupo.tablas; track tabla) {
+            <div class="tc-block">
+              <div class="tc-label">{{ tabla.tipoConsulta }}</div>
+              <div class="table-wrap">
+                <table class="dx-table">
+                  <thead>
+                    <tr>
+                      <th class="th-rank">#</th>
+                      <th class="th-dx">Diagnóstico</th>
+                      <th class="th-num">M</th>
+                      <th class="th-num">F</th>
+                      <th class="th-num th-total">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of tabla.rows; track row; let i = $index) {
+                      <tr
+                        [class.resto-row]="row.dx === 'Resto de causas'">
+                        <td class="rank">{{ i + 1 }}</td>
+                        <td class="dx-cell">{{ row.dx }}</td>
+                        <td class="num cell-m">{{ row.m }}</td>
+                        <td class="num cell-f">{{ row.f }}</td>
+                        <td class="num total-cell">{{ row.total }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th></th>
+                      <th class="tf-label">Total</th>
+                      <th class="num">{{ tabla.totalM }}</th>
+                      <th class="num">{{ tabla.totalF }}</th>
+                      <th class="num total-cell">{{ tabla.totalTabla }}</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
 </div>

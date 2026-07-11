@@ -4,151 +4,155 @@
     <h1>{{ enEdicion ? 'Editar Registro de Censo' : 'Nuevo Registro de Censo' }}</h1>
   </div>
 
-  <div *ngIf="mostrarAlerta" class="alerta-exito">{{ mensajeAlerta }}</div>
+  @if (mostrarAlerta) {
+    <div class="alerta-exito">{{ mensajeAlerta }}</div>
+  }
 
-  <div *ngIf="cargando" class="state-box spinner">Cargando...</div>
+  @if (cargando) {
+    <div class="state-box spinner">Cargando...</div>
+  }
 
-  <form *ngIf="!cargando" [formGroup]="form" (ngSubmit)="guardar()" class="censo-form">
-
-    <!-- Información Base -->
-    <div class="section-card">
-      <div class="sec-head">
-        <span class="sec-title">Información Base</span>
-      </div>
-      <div class="sec-body">
-        <div class="form-grid">
-          <div class="field">
-            <label class="field-label">Fecha *</label>
-            <input class="field-input" type="date" formControlName="fecha" />
-          </div>
-          <div class="field">
-            <label class="field-label">Servicio *</label>
-            <select class="field-input" formControlName="servicio_id">
-              <option [ngValue]="null">Seleccione servicio</option>
-              <option *ngFor="let s of servicios" [ngValue]="s.id">
-                {{ s.nombre_servicio }} ({{ s.camas_censables }} camas)
-              </option>
-            </select>
-          </div>
-          <div class="field">
-            <label class="field-label">Sexo *</label>
-            <div class="chips-row">
-              <span class="chip" [class.on]="form.get('sexo')?.value === 0"
+  @if (!cargando) {
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="censo-form">
+      <!-- Información Base -->
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Información Base</span>
+        </div>
+        <div class="sec-body">
+          <div class="form-grid">
+            <div class="field">
+              <label class="field-label">Fecha *</label>
+              <input class="field-input" type="date" formControlName="fecha" />
+            </div>
+            <div class="field">
+              <label class="field-label">Servicio *</label>
+              <select class="field-input" formControlName="servicio_id">
+                <option [ngValue]="null">Seleccione servicio</option>
+                @for (s of servicios; track s) {
+                  <option [ngValue]="s.id">
+                    {{ s.nombre_servicio }} ({{ s.camas_censables }} camas)
+                  </option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Sexo *</label>
+              <div class="chips-row">
+                <span class="chip" [class.on]="form.get('sexo')?.value === 0"
                 (click)="form.get('sexo')?.setValue(0)">♂ Masculino</span>
-              <span class="chip" [class.on]="form.get('sexo')?.value === 1"
+                <span class="chip" [class.on]="form.get('sexo')?.value === 1"
                 (click)="form.get('sexo')?.setValue(1)">♀ Femenino</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Ocupados -->
-    <div class="section-card">
-      <div class="sec-head">
-        <span class="sec-title">Ocupación</span>
-      </div>
-      <div class="sec-body">
-        <div class="form-grid">
-          <div class="field">
-            <label class="field-label">Ocupados *</label>
-            <input class="field-input" type="number" min="0" formControlName="ocupados" />
+      <!-- Ocupados -->
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Ocupación</span>
+        </div>
+        <div class="sec-body">
+          <div class="form-grid">
+            <div class="field">
+              <label class="field-label">Ocupados *</label>
+              <input class="field-input" type="number" min="0" formControlName="ocupados" />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Egresos -->
-    <div class="section-card">
-      <div class="sec-head">
-        <span class="sec-title">Egresos</span>
-      </div>
-      <div class="sec-body">
-        <div class="form-grid">
-          <div class="field">
-            <label class="field-label">Egresos *</label>
-            <input class="field-input" type="number" min="0" formControlName="egresos" />
-          </div>
-          <div class="field">
-            <label class="field-label">Fallecidos *</label>
-            <input class="field-input" type="number" min="0" formControlName="fallecidos" />
-          </div>
-          <div class="field">
-            <label class="field-label">Referidos *</label>
-            <input class="field-input" type="number" min="0" formControlName="referido" />
-          </div>
-          <div class="field">
-            <label class="field-label">Traslados *</label>
-            <input class="field-input" type="number" min="0" formControlName="traslado" />
-          </div>
-          <div class="field">
-            <label class="field-label">Contraindicados *</label>
-            <input class="field-input" type="number" min="0" formControlName="contraindicados" />
+      <!-- Egresos -->
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Egresos</span>
+        </div>
+        <div class="sec-body">
+          <div class="form-grid">
+            <div class="field">
+              <label class="field-label">Egresos *</label>
+              <input class="field-input" type="number" min="0" formControlName="egresos" />
+            </div>
+            <div class="field">
+              <label class="field-label">Fallecidos *</label>
+              <input class="field-input" type="number" min="0" formControlName="fallecidos" />
+            </div>
+            <div class="field">
+              <label class="field-label">Referidos *</label>
+              <input class="field-input" type="number" min="0" formControlName="referido" />
+            </div>
+            <div class="field">
+              <label class="field-label">Traslados *</label>
+              <input class="field-input" type="number" min="0" formControlName="traslado" />
+            </div>
+            <div class="field">
+              <label class="field-label">Contraindicados *</label>
+              <input class="field-input" type="number" min="0" formControlName="contraindicados" />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Ingresos -->
-    <div class="section-card">
-      <div class="sec-head">
-        <span class="sec-title">Ingresos</span>
-      </div>
-      <div class="sec-body">
-        <div class="form-grid">
-          <div class="field">
-            <label class="field-label">Otros Ingresos *</label>
-            <input class="field-input" type="number" min="0" formControlName="otro_ingresos" />
-          </div>
-          <div class="field">
-            <label class="field-label">Ingresos *</label>
-            <input class="field-input" type="number" min="0" formControlName="ingresos" />
-          </div>
-          <div class="field">
-            <label class="field-label">Huéspedes *</label>
-            <input class="field-input" type="number" min="0" formControlName="huespedes" />
-          </div>
-          <div class="field">
-            <label class="field-label">Emergencia *</label>
-            <input class="field-input" type="number" min="0" formControlName="emergencia" />
+      <!-- Ingresos -->
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Ingresos</span>
+        </div>
+        <div class="sec-body">
+          <div class="form-grid">
+            <div class="field">
+              <label class="field-label">Otros Ingresos *</label>
+              <input class="field-input" type="number" min="0" formControlName="otro_ingresos" />
+            </div>
+            <div class="field">
+              <label class="field-label">Ingresos *</label>
+              <input class="field-input" type="number" min="0" formControlName="ingresos" />
+            </div>
+            <div class="field">
+              <label class="field-label">Huéspedes *</label>
+              <input class="field-input" type="number" min="0" formControlName="huespedes" />
+            </div>
+            <div class="field">
+              <label class="field-label">Emergencia *</label>
+              <input class="field-input" type="number" min="0" formControlName="emergencia" />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Info de auditoría + cálculos (solo edición) -->
-    <div *ngIf="enEdicion && registroActual" class="section-card">
-      <div class="sec-head">
-        <span class="sec-title">Cálculos del Sistema</span>
-        <span class="sec-badge">Calculado automáticamente</span>
-      </div>
-      <div class="sec-body">
-        <div class="form-grid">
-          <div class="field">
-            <span class="field-label">Egresos Totales</span>
-            <div class="field-static">{{ registroActual.egresos_totales }}</div>
+      <!-- Info de auditoría + cálculos (solo edición) -->
+      @if (enEdicion && registroActual) {
+        <div class="section-card">
+          <div class="sec-head">
+            <span class="sec-title">Cálculos del Sistema</span>
+            <span class="sec-badge">Calculado automáticamente</span>
           </div>
-          <div class="field">
-            <span class="field-label">Camas Ocupadas</span>
-            <div class="field-static">{{ registroActual.camas_ocupadas }}</div>
-          </div>
-          <div class="field">
-            <span class="field-label">Creado</span>
-            <div class="field-static">{{ registroActual.created_at | date:'dd/MM/yyyy HH:mm' }}</div>
-          </div>
-          <div class="field">
-            <span class="field-label">Actualizado</span>
-            <div class="field-static">{{ registroActual.updated_at | date:'dd/MM/yyyy HH:mm' }}</div>
+          <div class="sec-body">
+            <div class="form-grid">
+              <div class="field">
+                <span class="field-label">Egresos Totales</span>
+                <div class="field-static">{{ registroActual.egresos_totales }}</div>
+              </div>
+              <div class="field">
+                <span class="field-label">Camas Ocupadas</span>
+                <div class="field-static">{{ registroActual.camas_ocupadas }}</div>
+              </div>
+              <div class="field">
+                <span class="field-label">Creado</span>
+                <div class="field-static">{{ registroActual.created_at | date:'dd/MM/yyyy HH:mm' }}</div>
+              </div>
+              <div class="field">
+                <span class="field-label">Actualizado</span>
+                <div class="field-static">{{ registroActual.updated_at | date:'dd/MM/yyyy HH:mm' }}</div>
+              </div>
+            </div>
           </div>
         </div>
+      }
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="volver()">Cancelar</button>
+        <button type="submit" class="btn-save" [disabled]="guardando">
+          {{ guardando ? 'Guardando...' : enEdicion ? 'Actualizar' : 'Registrar' }}
+        </button>
       </div>
-    </div>
-
-    <div class="form-actions">
-      <button type="button" class="btn-cancel" (click)="volver()">Cancelar</button>
-      <button type="submit" class="btn-save" [disabled]="guardando">
-        {{ guardando ? 'Guardando...' : enEdicion ? 'Actualizar' : 'Registrar' }}
-      </button>
-    </div>
-  </form>
+    </form>
+  }
 </div>

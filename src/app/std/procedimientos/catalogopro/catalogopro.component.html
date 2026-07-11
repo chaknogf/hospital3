@@ -12,7 +12,7 @@
             [(ngModel)]="filtros.nombre"
             name="nombre"
             placeholder="Nombre del procedimiento"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -24,7 +24,7 @@
             [(ngModel)]="filtros.abreviatura"
             name="abreviatura"
             placeholder="Ej. APEND"
-          />
+            />
         </fieldset>
       </div>
 
@@ -67,40 +67,36 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let data of procedimientos; trackBy: trackById" (click)="activarFila(data.id)">
-          <td data-label="Procedimiento">
-            <div class="nombre-table">
-              <strong>{{ data.nombre }}</strong>
-
-              <br />
-
-              <small>ID: {{ data.id }}</small>
-            </div>
-          </td>
-
-          <td data-label="Abreviatura">
-            {{ data.abreviatura || "—" }}
-          </td>
-
-          <td data-label="Descripción">
-            {{ data.descripcion || "—" }}
-          </td>
-
-          <td data-label="Anestesia">
-            {{ data.anestesia ?? 0 }}
-          </td>
-
-          <td class="secundario">
-            <div class="d-flex gap-1">
-              <button (click)="editar(data.id); $event.stopPropagation()">
-                <span [innerHTML]="icons['edit']"></span>
-              </button>
-              <button (click)="eliminar(data.id); $event.stopPropagation()">
-                <span [innerHTML]="icons['trash']"></span>
-              </button>
-            </div>
-          </td>
-        </tr>
+        @for (data of procedimientos; track trackById($index, data)) {
+          <tr (click)="activarFila(data.id)">
+            <td data-label="Procedimiento">
+              <div class="nombre-table">
+                <strong>{{ data.nombre }}</strong>
+                <br />
+                <small>ID: {{ data.id }}</small>
+              </div>
+            </td>
+            <td data-label="Abreviatura">
+              {{ data.abreviatura || "—" }}
+            </td>
+            <td data-label="Descripción">
+              {{ data.descripcion || "—" }}
+            </td>
+            <td data-label="Anestesia">
+              {{ data.anestesia ?? 0 }}
+            </td>
+            <td class="secundario">
+              <div class="d-flex gap-1">
+                <button (click)="editar(data.id); $event.stopPropagation()">
+                  <span [innerHTML]="icons['edit']"></span>
+                </button>
+                <button (click)="eliminar(data.id); $event.stopPropagation()">
+                  <span [innerHTML]="icons['trash']"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
 
         @if (!cargando && procedimientos.length === 0) {
           <tr>
@@ -126,7 +122,7 @@
     class="pag-btn"
     [disabled]="!hayPaginaAnterior"
     (click)="cambiarPagina(-1)"
-  >
+    >
     <span [innerHTML]="icons['skipLeft']"></span>
   </button>
 
@@ -138,14 +134,15 @@
     <span class="pag-ellipsis">…</span>
   }
 
-  <button
-    *ngFor="let p of paginas; trackBy: trackById"
-    class="pag-num"
-    [class.pag-num-active]="p === paginaActual"
-    (click)="irAPagina(p)"
-  >
-    {{ p }}
-  </button>
+  @for (p of paginas; track trackById($index, p)) {
+    <button
+      class="pag-num"
+      [class.pag-num-active]="p === paginaActual"
+      (click)="irAPagina(p)"
+      >
+      {{ p }}
+    </button>
+  }
 
   @if (paginas[paginas.length - 1] < totalPaginas - 1) {
     <span class="pag-ellipsis">…</span>
@@ -161,7 +158,7 @@
     class="pag-btn"
     [disabled]="!hayPaginaSiguiente"
     (click)="cambiarPagina(1)"
-  >
+    >
     <span [innerHTML]="icons['skipRight']"></span>
   </button>
 
@@ -224,9 +221,11 @@
                 <div class="field">
                   <span class="field-label"> Nombre del Procedimiento * </span>
                   <input class="field-input" type="text" formControlName="nombre" placeholder="Ej. Apendicectomía" />
-                  <small class="text-danger" *ngIf="f['nombre'].invalid && f['nombre'].touched">
-                    El nombre es obligatorio
-                  </small>
+                  @if (f['nombre'].invalid && f['nombre'].touched) {
+                    <small class="text-danger">
+                      El nombre es obligatorio
+                    </small>
+                  }
                 </div>
                 <div class="field">
                   <span class="field-label"> Abreviatura </span>

@@ -1,15 +1,16 @@
 <div class="aurora-container">
-  <div
-    class="aurora-cards"
-    *ngFor="let app of modulos"
-    (click)="navegar(app.ruta)"
-  >
-    <div class="aurora-items">
-      <div class="">
-        <span [innerHTML]="icons[app.icon]"></span>
-        <h2 class="">{{ app.nombre }}</h2>
-        <p class="">{{ app.descripcion }}</p>
+  @for (app of modulos; track app) {
+    <div
+      class="aurora-cards"
+      (click)="navegar(app.ruta)"
+      >
+      <div class="aurora-items">
+        <div class="">
+          <span [innerHTML]="icons[app.icon]"></span>
+          <h2 class="">{{ app.nombre }}</h2>
+          <p class="">{{ app.descripcion }}</p>
+        </div>
       </div>
     </div>
-  </div>
+  }
 </div>

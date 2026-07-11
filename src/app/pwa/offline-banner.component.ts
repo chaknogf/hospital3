@@ -1,12 +1,13 @@
-import { Component, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, HostListener, ChangeDetectionStrategy } from '@angular/core';
+
 import { OfflineSyncService } from '../service/offline-sync.service';
 
 @Component({
   selector: 'app-offline-banner',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './offline-banner.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./offline-banner.component.css']
 })
 export class OfflineBannerComponent {

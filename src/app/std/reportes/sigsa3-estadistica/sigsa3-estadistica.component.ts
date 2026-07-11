@@ -1,7 +1,7 @@
 // sigsa3-estadistica.component.ts
 
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Sigsa3Service } from '../../sigsa3/sigsa3.service';
@@ -12,8 +12,9 @@ interface EspecialidadRow { especialidad: string; tipos: TipoData[]; totalEspeci
 
 @Component({
   selector: 'app-sigsa3-estadistica',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './sigsa3-estadistica.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./sigsa3-estadistica.component.css']
 })
 export class Sigsa3EstadisticaComponent implements OnInit {

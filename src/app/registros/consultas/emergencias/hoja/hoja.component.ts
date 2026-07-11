@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ApiService } from '../../../../service/api.service';
 import { ConsultaService } from '../../consultas.service';
 import { Paciente } from '../../../../interface/interfaces';
@@ -27,6 +27,7 @@ import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
   templateUrl: './hoja.component.html',
   styleUrls: ['./hoja.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     DatosExtraPipe,
     EdadPipe,

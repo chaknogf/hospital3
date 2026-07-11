@@ -52,9 +52,11 @@
               <span class="field-label">Médico</span>
               <select class="field-input" formControlName="medico_id">
                 <option [ngValue]="null">Sin médico</option>
-                <option *ngFor="let m of medicos" [ngValue]="m.id">
-                  {{ m.nombre }}{{ m.especialidad ? ' — ' + m.especialidad : '' }}
-                </option>
+                @for (m of medicos; track m) {
+                  <option [ngValue]="m.id">
+                    {{ m.nombre }}{{ m.especialidad ? ' — ' + m.especialidad : '' }}
+                  </option>
+                }
               </select>
             </div>
           </div>

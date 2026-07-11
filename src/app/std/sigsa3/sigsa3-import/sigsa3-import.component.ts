@@ -1,7 +1,7 @@
 // sigsa3-import.component.ts
 
-import { CommonModule, Location } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Location } from '@angular/common';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Sigsa3Service } from '../sigsa3.service';
 import { IconService } from '../../../service/icon.service';
@@ -11,7 +11,8 @@ import { IconService } from '../../../service/icon.service';
   templateUrl: './sigsa3-import.component.html',
   styleUrls: ['./sigsa3-import.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule]
 })
 export class Sigsa3ImportComponent {
 

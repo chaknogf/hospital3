@@ -1,13 +1,14 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '@services/api.service';
 
 @Component({
   selector: 'app-reporte-procedimientos',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './reporte-procedimientos.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./reporte-procedimientos.component.css']
 })
 export class ReporteProcedimientosComponent implements OnInit {

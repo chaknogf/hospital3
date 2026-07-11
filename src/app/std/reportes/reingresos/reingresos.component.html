@@ -12,84 +12,100 @@
     /></label>
     <button class="btn-primary" (click)="cargar()">Actualizar</button>
   </div>
-  <div *ngIf="cargando" class="state-box spinner"></div>
-  <div *ngIf="error" class="state-box error">{{ error }}</div>
-  <div *ngIf="!cargando && datos.length > 0">
-    <div class="resumen-cards">
-      <div class="resumen-card" *ngFor="let item of resumen | keyvalue">
-        <span class="resumen-val">{{ item.value }}</span>
-        <span class="resumen-lbl">{{ item.key }}</span>
+  @if (cargando) {
+    <div class="state-box spinner"></div>
+  }
+  @if (error) {
+    <div class="state-box error">{{ error }}</div>
+  }
+  @if (!cargando && datos.length > 0) {
+    <div>
+      <div class="resumen-cards">
+        @for (item of resumen | keyvalue; track item) {
+          <div class="resumen-card">
+            <span class="resumen-val">{{ item.value }}</span>
+            <span class="resumen-lbl">{{ item.key }}</span>
+          </div>
+        }
+        <div class="resumen-card">
+          <span class="resumen-val">{{ data?.total_general }}</span>
+          <span class="resumen-lbl">Total Reingresos</span>
+        </div>
       </div>
-      <div class="resumen-card">
-        <span class="resumen-val">{{ data?.total_general }}</span>
-        <span class="resumen-lbl">Total Reingresos</span>
-      </div>
-    </div>
-    <div class="table-wrap" *ngIf="porEspecialidad.length">
-      <table class="reporte-table table-compact">
-        <thead>
-          <tr><th colspan="4" class="th-section">Por Especialidad</th></tr>
-          <tr><th>Especialidad</th><th>&lt;8 días</th><th>Complicaciones</th><th>Total</th></tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let e of porEspecialidad">
-            <td>{{ e.especialidad }}</td>
-            <td>{{ e.menores_a_8_dias }}</td>
-            <td>{{ e.por_complicaciones }}</td>
-            <td class="text-right">{{ e.total }}</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr class="tr-total">
-            <td>Total</td>
-            <td>{{ sum('menores_a_8_dias') }}</td>
-            <td>{{ sum('por_complicaciones') }}</td>
-            <td class="text-right">{{ sum('total') }}</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-    <div class="table-wrap">
-      <table class="reporte-table">
-        <thead>
-          <tr>
-            <th>Paciente</th>
-            <th>Especialidad</th>
-            <th>Fecha Reingreso</th>
-            <th>Clasificación</th>
-            <th>Días</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let d of datos">
-            <td>
-              {{ d.nombre?.primer_nombre }} {{ d.nombre?.segundo_nombre }}
-              {{ d.nombre?.otro_nombre }} {{ d.nombre?.primer_apellido }}
-              {{ d.nombre?.segundo_apellido }}
-            </td>
-            <td>{{ d.especialidad }}</td>
-            <td>
-              {{ d.fecha_consulta | date: "dd-MM-yy" }} <br />
-              previa: {{ d.prev_fecha_consulta | date: "dd-MM-yy" }}
-            </td>
-            <td>
-              <span
-                class="clasif-badge"
+      @if (porEspecialidad.length) {
+        <div class="table-wrap">
+          <table class="reporte-table table-compact">
+            <thead>
+              <tr><th colspan="4" class="th-section">Por Especialidad</th></tr>
+              <tr><th>Especialidad</th><th>&lt;8 días</th><th>Complicaciones</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+              @for (e of porEspecialidad; track e) {
+                <tr>
+                  <td>{{ e.especialidad }}</td>
+                  <td>{{ e.menores_a_8_dias }}</td>
+                  <td>{{ e.por_complicaciones }}</td>
+                  <td class="text-right">{{ e.total }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr class="tr-total">
+                <td>Total</td>
+                <td>{{ sum('menores_a_8_dias') }}</td>
+                <td>{{ sum('por_complicaciones') }}</td>
+                <td class="text-right">{{ sum('total') }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      }
+      <div class="table-wrap">
+        <table class="reporte-table">
+          <thead>
+            <tr>
+              <th>Paciente</th>
+              <th>Especialidad</th>
+              <th>Fecha Reingreso</th>
+              <th>Clasificación</th>
+              <th>Días</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (d of datos; track d) {
+              <tr>
+                <td>
+                  {{ d.nombre?.primer_nombre }} {{ d.nombre?.segundo_nombre }}
+                  {{ d.nombre?.otro_nombre }} {{ d.nombre?.primer_apellido }}
+                  {{ d.nombre?.segundo_apellido }}
+                </td>
+                <td>{{ d.especialidad }}</td>
+                <td>
+                  {{ d.fecha_consulta | date: "dd-MM-yy" }} <br />
+                  previa: {{ d.prev_fecha_consulta | date: "dd-MM-yy" }}
+                </td>
+                <td>
+                  <span
+                    class="clasif-badge"
                 [ngClass]="
                   d.clasificacion === 'menores a 8 dias'
                     ? 'clasif-roja'
                     : 'clasif-ambar'
                 "
-                >{{ d.clasificacion }}</span
-              >
-            </td>
-            <td class="text-right">{{ d.dias_entre_consultas }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+                    >{{ d.clasificacion }}</span
+                    >
+                  </td>
+                  <td class="text-right">{{ d.dias_entre_consultas }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+    @if (!cargando && !error && datos.length === 0) {
+      <div class="state-box">
+        Sin datos para el rango seleccionado.
+      </div>
+    }
   </div>
-  <div *ngIf="!cargando && !error && datos.length === 0" class="state-box">
-    Sin datos para el rango seleccionado.
-  </div>
-</div>

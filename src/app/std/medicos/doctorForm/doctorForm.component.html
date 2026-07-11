@@ -35,7 +35,7 @@
     class="btn-dock btn-dock-save"
     [disabled]="guardando"
     (click)="guardar()"
-  >
+    >
     <span [innerHTML]="saveIcon"></span>
 
     {{ guardando ? "Guardando..." : enEdicion ? "Actualizar" : "Registrar" }}
@@ -58,7 +58,7 @@
                 fill="none"
                 stroke="currentColor"
                 stroke-width="1.5"
-              >
+                >
                 <path d="M8 2a3 3 0 100 6 3 3 0 000-6z" />
                 <path d="M2 14a6 6 0 0112 0" />
               </svg>
@@ -78,14 +78,15 @@
               type="text"
               formControlName="nombre"
               placeholder="Dr. Juan Pérez"
-            />
+              />
 
-            <small
-              class="text-danger"
-              *ngIf="f['nombre'].invalid && f['nombre'].touched"
-            >
-              El nombre es obligatorio
-            </small>
+            @if (f['nombre'].invalid && f['nombre'].touched) {
+              <small
+                class="text-danger"
+                >
+                El nombre es obligatorio
+              </small>
+            }
           </div>
 
           <!-- COLEGIADO -->
@@ -97,7 +98,7 @@
               type="text"
               formControlName="colegiado"
               placeholder="12345"
-            />
+              />
           </div>
 
           <!-- ESPECIALIDAD -->
@@ -109,7 +110,7 @@
               type="text"
               formControlName="especialidad"
               placeholder="Cardiología"
-            />
+              />
           </div>
 
           <!-- DPI -->
@@ -121,7 +122,7 @@
               type="text"
               formControlName="dpi"
               placeholder="13 digitos sin guiones"
-            />
+              />
           </div>
 
           <!-- SEXO -->
@@ -133,7 +134,7 @@
                 class="chip chip-lg"
                 [class.on]="form.get('sexo')?.value === 'M'"
                 (click)="form.get('sexo')?.setValue('M')"
-              >
+                >
                 ♂ Masculino
               </span>
 
@@ -141,7 +142,7 @@
                 class="chip chip-lg"
                 [class.on]="form.get('sexo')?.value === 'F'"
                 (click)="form.get('sexo')?.setValue('F')"
-              >
+                >
                 ♀ Femenino
               </span>
             </div>
@@ -157,7 +158,7 @@
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
-              >
+                >
                 <path d="M2 6l3 3 5-5" />
               </svg>
             </span>

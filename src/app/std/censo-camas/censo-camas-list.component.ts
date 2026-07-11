@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CensoCamasService } from './censo-camas.service';
@@ -20,7 +20,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./censo-camas-list.component.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, RouterLink]
+  imports: [FormsModule, RouterLink]
 })
 export class CensoCamasListComponent implements OnInit, OnDestroy {
 

@@ -3,36 +3,41 @@
     <span>{{ especialidad | datosExtra: "especialidad" }}</span>
   </div>
 
-  <div *ngIf="loading" class="estado">Cargando...</div>
-  <div *ngIf="error" class="estado error">{{ error }}</div>
+  @if (loading) {
+    <div class="estado">Cargando...</div>
+  }
+  @if (error) {
+    <div class="estado error">{{ error }}</div>
+  }
 
-  <table *ngIf="!loading && datos.length > 0">
-    <thead>
-      <tr>
-        <th>Fecha</th>
-        <th>Día</th>
-        <th>Controles Disponibles</th>
-        <th>Preoperatorios Disponibles</th>
-        <th>Ingresos Disponibles</th>
-        <th>Procedimientos Disponibles</th>
-      </tr>
-    </thead>
+  @if (!loading && datos.length > 0) {
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Día</th>
+          <th>Controles Disponibles</th>
+          <th>Preoperatorios Disponibles</th>
+          <th>Ingresos Disponibles</th>
+          <th>Procedimientos Disponibles</th>
+        </tr>
+      </thead>
+      <tbody class="body-table">
+        @for (item of datos; track item) {
+          <tr>
+            <td>{{ item.fecha_cita | fecha }}</td>
+            <td>{{ item.dia_semana }}</td>
+            <td>{{ item.control }}</td>
+            <td>{{ item.preoperatorio }}</td>
+            <td>{{ item.ingreso }}</td>
+            <td>{{ item.procedimiento }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 
-    <tbody class="body-table">
-      <tr *ngFor="let item of datos">
-        <td>{{ item.fecha_cita | fecha }}</td>
-        <td>{{ item.dia_semana }}</td>
-
-        <td>{{ item.control }}</td>
-
-        <td>{{ item.preoperatorio }}</td>
-
-        <td>{{ item.ingreso }}</td>
-
-        <td>{{ item.procedimiento }}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div *ngIf="!loading && datos.length === 0" class="estado">Sin registros</div>
+  @if (!loading && datos.length === 0) {
+    <div class="estado">Sin registros</div>
+  }
 </div>

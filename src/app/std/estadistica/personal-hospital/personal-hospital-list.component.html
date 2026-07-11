@@ -42,73 +42,87 @@
     </div>
   </div>
 
-  <div *ngIf="cargando" class="state-box spinner"></div>
-  <div *ngIf="error" class="state-box error">{{ error }}</div>
+  @if (cargando) {
+    <div class="state-box spinner"></div>
+  }
+  @if (error) {
+    <div class="state-box error">{{ error }}</div>
+  }
 
-  <div *ngIf="!cargando && !error">
-    <div class="total-badge">Total: {{ totalDeRegistros }} registros</div>
-
-    <div class="table-wrap" *ngIf="pacientes.length > 0">
-      <table class="reporte-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Expediente</th>
-            <th>Nombre</th>
-            <th>Sexo</th>
-            <th>Fecha Nacimiento</th>
-            <th>Estado</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let p of pacientes; let i = index">
-            <td>{{ i + 1 + (paginaActual - 1) * pageSize }}</td>
-            <td>{{ p.expediente || '-' }}</td>
-            <td class="text-left">{{ p.nombre_completo || '—' }}</td>
-            <td>{{ p.sexo || '-' }}</td>
-            <td>{{ p.fecha_nacimiento ? (p.fecha_nacimiento | date:'dd/MM/yyyy') : '-' }}</td>
-            <td>
-              <span class="badge-estado" [class.activo]="p.estado === 'V'" [class.inactivo]="p.estado !== 'V'">
-                {{ p.estado === 'V' ? 'Vivo' : p.estado === 'F' ? 'Fallecido' : 'Inactivo' }}
-              </span>
-            </td>
-            <td data-label="Detalle">
-              <a class="btn-detail" [routerLink]="['/detallePaciente', p.id]" title="Ver detalle del paciente">
-                <i class="bi bi-person-lines-fill"></i>
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  @if (!cargando && !error) {
+    <div>
+      <div class="total-badge">Total: {{ totalDeRegistros }} registros</div>
+      @if (pacientes.length > 0) {
+        <div class="table-wrap">
+          <table class="reporte-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Expediente</th>
+                <th>Nombre</th>
+                <th>Sexo</th>
+                <th>Fecha Nacimiento</th>
+                <th>Estado</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of pacientes; track p; let i = $index) {
+                <tr>
+                  <td>{{ i + 1 + (paginaActual - 1) * pageSize }}</td>
+                  <td>{{ p.expediente || '-' }}</td>
+                  <td class="text-left">{{ p.nombre_completo || '—' }}</td>
+                  <td>{{ p.sexo || '-' }}</td>
+                  <td>{{ p.fecha_nacimiento ? (p.fecha_nacimiento | date:'dd/MM/yyyy') : '-' }}</td>
+                  <td>
+                    <span class="badge-estado" [class.activo]="p.estado === 'V'" [class.inactivo]="p.estado !== 'V'">
+                      {{ p.estado === 'V' ? 'Vivo' : p.estado === 'F' ? 'Fallecido' : 'Inactivo' }}
+                    </span>
+                  </td>
+                  <td data-label="Detalle">
+                    <a class="btn-detail" [routerLink]="['/detallePaciente', p.id]" title="Ver detalle del paciente">
+                      <i class="bi bi-person-lines-fill"></i>
+                    </a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+      @if (pacientes.length === 0) {
+        <div class="state-box">
+          No se encontró personal del hospital registrado.
+        </div>
+      }
+      <!-- ── PAGINADOR ── -->
+      <div class="paginador">
+        <button class="pag-btn" [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">‹</button>
+        @if (paginas[0] > 1) {
+          <button class="pag-num" (click)="irAPagina(1)">1</button>
+        }
+        @if (paginas[0] > 2) {
+          <span class="pag-ellipsis">…</span>
+        }
+        @for (p of paginas; track p) {
+          <button class="pag-num"
+            [class.pag-num-active]="p === paginaActual" (click)="irAPagina(p)">
+            {{ p }}
+          </button>
+        }
+        @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+          <span class="pag-ellipsis">…</span>
+        }
+        @if (paginas[paginas.length - 1] < totalPaginas) {
+          <button class="pag-num"
+          (click)="irAPagina(totalPaginas)">{{ totalPaginas }}</button>
+        }
+        <button class="pag-btn" [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">›</button>
+        <span class="pag-info">
+          Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+          {{ totalDeRegistros }} registros
+        </span>
+      </div>
     </div>
-
-    <div *ngIf="pacientes.length === 0" class="state-box">
-      No se encontró personal del hospital registrado.
-    </div>
-
-    <!-- ── PAGINADOR ── -->
-    <div class="paginador">
-      <button class="pag-btn" [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">‹</button>
-
-      <button class="pag-num" *ngIf="paginas[0] > 1" (click)="irAPagina(1)">1</button>
-      <span class="pag-ellipsis" *ngIf="paginas[0] > 2">…</span>
-
-      <button *ngFor="let p of paginas" class="pag-num"
-        [class.pag-num-active]="p === paginaActual" (click)="irAPagina(p)">
-        {{ p }}
-      </button>
-
-      <span class="pag-ellipsis" *ngIf="paginas[paginas.length - 1] < totalPaginas - 1">…</span>
-      <button class="pag-num" *ngIf="paginas[paginas.length - 1] < totalPaginas"
-        (click)="irAPagina(totalPaginas)">{{ totalPaginas }}</button>
-
-      <button class="pag-btn" [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">›</button>
-
-      <span class="pag-info">
-        Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
-        {{ totalDeRegistros }} registros
-      </span>
-    </div>
-  </div>
+  }
 </div>

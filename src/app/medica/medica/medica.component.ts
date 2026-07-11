@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { IconService } from '../../service/icon.service';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-medica',
   templateUrl: './medica.component.html',
   styleUrls: ['./medica.component.css'],
   standalone: true,
-  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [],
 })
 export class MedicaComponent implements OnInit {
 

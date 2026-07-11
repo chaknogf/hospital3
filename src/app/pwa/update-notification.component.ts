@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-update-notification',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './update-notification.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./update-notification.component.css']
 })
 export class UpdateNotificationComponent implements OnInit {

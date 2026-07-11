@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '@services/api.service';
@@ -8,8 +8,9 @@ import { DatosExtraPipe } from 'app/pipes/datos-extra.pipe';
 
 @Component({
   selector: 'app-activos-mayores-7-dias',
-  imports: [CommonModule, FormsModule, RouterLink, DatosExtraPipe],
+  imports: [FormsModule, RouterLink, DatosExtraPipe],
   templateUrl: './activos-mayores-7-dias.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./activos-mayores-7-dias.component.css']
 })
 export class ActivosMayores7DiasComponent implements OnInit {

@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
-import { isDevMode } from '@angular/core';
+import { isDevMode, provideZoneChangeDetection } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
@@ -10,7 +10,7 @@ import { retryInterceptor } from './app/service/retry.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideHttpClient(
+    provideZoneChangeDetection(),provideHttpClient(
       withFetch(),
       withInterceptors([retryInterceptor, authInterceptor])
     ),

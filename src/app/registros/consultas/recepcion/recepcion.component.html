@@ -3,7 +3,7 @@
   <div
     class="botones justify-content-between"
     [ngClass]="{ 'd-none': filtrar }"
-  >
+    >
     <button type="button" (click)="volver()">
       <span [innerHTML]="icons['menu']"></span> Menú
     </button>
@@ -28,7 +28,7 @@
             name="expediente"
             placeholder="E26-003"
             style="text-transform: uppercase"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -41,7 +41,7 @@
             name="documento"
             placeholder="E26-003"
             style="text-transform: uppercase"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -51,7 +51,7 @@
             class="input-filtros"
             [(ngModel)]="filtros.fecha"
             name="fechaConsulta"
-          />
+            />
         </fieldset>
       </div>
 
@@ -64,7 +64,7 @@
             [(ngModel)]="filtros.primer_nombre"
             name="primerNombre"
             placeholder="Ej: Juan"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -75,7 +75,7 @@
             [(ngModel)]="filtros.segundo_nombre"
             name="segundoNombre"
             placeholder="Ej: María"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -86,7 +86,7 @@
             [(ngModel)]="filtros.primer_apellido"
             name="primerApellido"
             placeholder="Ej: García"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -97,7 +97,7 @@
             [(ngModel)]="filtros.segundo_apellido"
             name="segundoApellido"
             placeholder="Ej: Pérez"
-          />
+            />
         </fieldset>
       </div>
 
@@ -108,11 +108,13 @@
             name="tipo_consulta"
             [(ngModel)]="filtros.tipo_consulta"
             class="input-filtros"
-          >
+            >
             <option value="">Todos</option>
-            <option             *ngFor="let t of tipos; trackBy: trackById" [value]="t.value">
-              {{ t.label }}
-            </option>
+            @for (t of tipos; track trackById($index, t)) {
+              <option             [value]="t.value">
+                {{ t.label }}
+              </option>
+            }
           </select>
         </fieldset>
         <fieldset class="fieldset-filtros">
@@ -121,11 +123,13 @@
             name="ciclo"
             [(ngModel)]="filtros.ciclo"
             class="input-filtros"
-          >
+            >
             <option value="">Todos</option>
-            <option             *ngFor="let c of ciclos; trackBy: trackById" [value]="c.value">
-              {{ c.label }}
-            </option>
+            @for (c of ciclos; track trackById($index, c)) {
+              <option             [value]="c.value">
+                {{ c.label }}
+              </option>
+            }
           </select>
         </fieldset>
       </div>
@@ -162,7 +166,7 @@
           placeholder="Busqueda HE..."
           autocomplete="off"
           style="text-transform: uppercase"
-        />
+          />
         <input
           type="text"
           class=""
@@ -172,7 +176,7 @@
           placeholder="Busqueda exp..."
           autocomplete="off"
           style="text-transform: uppercase"
-        />
+          />
 
         <button type="submit" class="" aria-label="Buscar">
           <span>⌕</span>
@@ -183,13 +187,14 @@
 
   <!-- ── TABLA ── -->
   <div class="aurora-container">
-    <div
-      *ngIf="cargando"
-      class="text-center p-2"
-      style="color: #60a5fa; font-size: 12px"
-    >
-      Cargando...
-    </div>
+    @if (cargando) {
+      <div
+        class="text-center p-2"
+        style="color: #60a5fa; font-size: 12px"
+        >
+        Cargando...
+      </div>
+    }
     <table class="aurora-tb">
       <thead>
         <tr>
@@ -203,95 +208,96 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="let data of consultas; trackBy: trackById"
-          class="aurora-table-row"
-          [class.touch-active]="rowActiva === data.id"
-          (click)="activarFila(data.id)"
-        >
-          <td data-label="Nombre:">
-            <div class="nombre-table">
-              <p class="p-0 m-0 text-uppercase">
-                {{ data.paciente.nombre.primer_nombre }}
-                {{ data.paciente.nombre.segundo_nombre }}
-              </p>
-              <p
-                class="p-0 m-0 text-uppercase"
-                [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-              >
-                {{ data.paciente.nombre.primer_apellido }}
-                {{ data.paciente.nombre.segundo_apellido }}
-              </p>
-            </div>
-          </td>
-          <td data-label="Identificador:" class="text-justify">
-            <div class="ms-4" *ngIf="data?.paciente?.cui">
-              <strong>CUI:</strong> <small>{{ data.paciente.cui | cui }}</small>
-            </div>
-            <div *ngIf="data?.paciente?.expediente" class="text-alert">
-              <strong>Exp:</strong> {{ data.paciente.expediente }}
-            </div>
-            <div *ngIf="data?.documento">
-              <strong>Doc:</strong> {{ data.documento }}
-            </div>
-          </td>
-
-          <td class="oculto">
-            {{ data.especialidad | datosExtra: "especialidad" }}<br />
-            <small>{{ data.servicio | datosExtra: "servicio" }}</small>
-          </td>
-
-          <td class="oculto">
-            {{ data.fecha_consulta | date: "dd/MM/yy" }}<br />
-            {{ data.hora_consulta | time }}
-          </td>
-
-          <td class="oculto">
-            {{ data.tipo_consulta | datosExtra: "tipo_consulta" }}
-          </td>
-
-          <td class="oculto">
-            <span
-              class="ciclo-chip"
-              [class.ciclo-recepcion]="data.ultimo_estado === 'recepcion'"
-              [class.ciclo-regular]="data.ultimo_estado !== 'recepcion'"
+        @for (data of consultas; track trackById($index, data)) {
+          <tr
+            class="aurora-table-row"
+            [class.touch-active]="rowActiva === data.id"
+            (click)="activarFila(data.id)"
             >
-              {{ data.ultimo_estado }}
-            </span>
-          </td>
-
-          <td class="secundario">
-            <div class="d-flex gap-1">
-              <!-- RECIBIR: si no está en recepcion todavía -->
-              @if (data.ultimo_estado !== "recepcion") {
-                <button
-                  data-label="Recibir"
-                  (click)="abrirModalRecibido(data); $event.stopPropagation()"
-                >
-                  <span [innerHTML]="icons['recibido']"></span>
-                </button>
+            <td data-label="Nombre:">
+              <div class="nombre-table">
+                <p class="p-0 m-0 text-uppercase">
+                  {{ data.paciente.nombre.primer_nombre }}
+                  {{ data.paciente.nombre.segundo_nombre }}
+                </p>
+                <p
+                  class="p-0 m-0 text-uppercase"
+                  [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+                  >
+                  {{ data.paciente.nombre.primer_apellido }}
+                  {{ data.paciente.nombre.segundo_apellido }}
+                </p>
+              </div>
+            </td>
+            <td data-label="Identificador:" class="text-justify">
+              @if (data?.paciente?.cui) {
+                <div class="ms-4">
+                  <strong>CUI:</strong> <small>{{ data.paciente.cui | cui }}</small>
+                </div>
               }
-
-              <!-- ARCHIVAR: solo si ya está en recepcion -->
-              @if (data.ultimo_estado === "recepcion") {
-                <button
-                  data-label="Archivar"
-                  class="btn-archivar"
-                  (click)="abrirModalArchivar(data); $event.stopPropagation()"
-                >
-                  <span [innerHTML]="icons['archivo']"></span>
-                </button>
+              @if (data?.paciente?.expediente) {
+                <div class="text-alert">
+                  <strong>Exp:</strong> {{ data.paciente.expediente }}
+                </div>
               }
-              <!-- DETALLE -->
-              <button
-                data-label="Detalle"
-                (click)="verDetalle(data.id); $event.stopPropagation()"
-              >
-                <span [innerHTML]="icons['tabla']"></span>
-              </button>
-            </div>
-          </td>
-        </tr>
+              @if (data?.documento) {
+                <div>
+                  <strong>Doc:</strong> {{ data.documento }}
+                </div>
+              }
+            </td>
+            <td class="oculto">
+              {{ data.especialidad | datosExtra: "especialidad" }}<br />
+              <small>{{ data.servicio | datosExtra: "servicio" }}</small>
+            </td>
+            <td class="oculto">
+              {{ data.fecha_consulta | date: "dd/MM/yy" }}<br />
+              {{ data.hora_consulta | time }}
+            </td>
+            <td class="oculto">
+              {{ data.tipo_consulta | datosExtra: "tipo_consulta" }}
+            </td>
+            <td class="oculto">
+              <span
+                class="ciclo-chip"
+                [class.ciclo-recepcion]="data.ultimo_estado === 'recepcion'"
+                [class.ciclo-regular]="data.ultimo_estado !== 'recepcion'"
+                >
+                {{ data.ultimo_estado }}
+              </span>
+            </td>
+            <td class="secundario">
+              <div class="d-flex gap-1">
+                <!-- RECIBIR: si no está en recepcion todavía -->
+                @if (data.ultimo_estado !== "recepcion") {
+                  <button
+                    data-label="Recibir"
+                    (click)="abrirModalRecibido(data); $event.stopPropagation()"
+                    >
+                    <span [innerHTML]="icons['recibido']"></span>
+                  </button>
+                }
+                <!-- ARCHIVAR: solo si ya está en recepcion -->
+                @if (data.ultimo_estado === "recepcion") {
+                  <button
+                    data-label="Archivar"
+                    class="btn-archivar"
+                    (click)="abrirModalArchivar(data); $event.stopPropagation()"
+                    >
+                    <span [innerHTML]="icons['archivo']"></span>
+                  </button>
+                }
+                <!-- DETALLE -->
+                <button
+                  data-label="Detalle"
+                  (click)="verDetalle(data.id); $event.stopPropagation()"
+                  >
+                  <span [innerHTML]="icons['tabla']"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
 
         <!-- Sin resultados -->
         @if (!cargando && consultas.length === 0) {
@@ -303,11 +309,13 @@
         }
 
         <!-- Cargando -->
-        <tr *ngIf="cargando">
-          <td colspan="5" class="text-center py-3">
-            <em>Cargando...</em>
-          </td>
-        </tr>
+        @if (cargando) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>Cargando...</em>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>
@@ -319,7 +327,7 @@
       class="pag-btn"
       [disabled]="!hayPaginaAnterior"
       (click)="cambiarPagina(-1)"
-    >
+      >
       <span [innerHTML]="icons['skipLeft']"></span>
     </button>
 
@@ -332,14 +340,15 @@
     }
 
     <!-- Páginas del rango visible -->
-    <button
-      *ngFor="let p of paginas; trackBy: trackById"
-      class="pag-num"
-      [class.pag-num-active]="p === paginaActual"
-      (click)="irAPagina(p)"
-    >
-      {{ p }}
-    </button>
+    @for (p of paginas; track trackById($index, p)) {
+      <button
+        class="pag-num"
+        [class.pag-num-active]="p === paginaActual"
+        (click)="irAPagina(p)"
+        >
+        {{ p }}
+      </button>
+    }
 
     <!-- Ellipsis + última página si el rango no llega al final -->
     @if (paginas[paginas.length - 1] < totalPaginas - 1) {
@@ -356,7 +365,7 @@
       class="pag-btn"
       [disabled]="!hayPaginaSiguiente"
       (click)="cambiarPagina(1)"
-    >
+      >
       <span [innerHTML]="icons['skipRight']"></span>
     </button>
 
@@ -370,206 +379,212 @@
 <!-- /aurora-paciente-container -->
 
 <!-- ══════════════════════════════════════════════════════════
-     MODAL — RECIBIDO EN RECEPCIÓN
-     ══════════════════════════════════════════════════════════ -->
-<div class="rc-overlay" *ngIf="modalRecibido" (click)="cerrarModalRecibido()">
-  <div class="rc-modal" (click)="$event.stopPropagation()">
-    <div class="rc-modal-header rc-header-recibir">
-      <div class="rc-header-icon">📥</div>
-      <div>
-        <span class="rc-modal-title">Recibir en Recepción</span>
-        <span class="rc-modal-sub" *ngIf="consultaRecibiendo">
-          Exp: {{ consultaRecibiendo.expediente }} ·
-          {{ consultaRecibiendo.paciente.nombre.primer_nombre }}
-          {{ consultaRecibiendo.paciente.nombre.primer_apellido }}
-        </span>
+MODAL — RECIBIDO EN RECEPCIÓN
+══════════════════════════════════════════════════════════ -->
+@if (modalRecibido) {
+  <div class="rc-overlay" (click)="cerrarModalRecibido()">
+    <div class="rc-modal" (click)="$event.stopPropagation()">
+      <div class="rc-modal-header rc-header-recibir">
+        <div class="rc-header-icon">📥</div>
+        <div>
+          <span class="rc-modal-title">Recibir en Recepción</span>
+          @if (consultaRecibiendo) {
+            <span class="rc-modal-sub">
+              Exp: {{ consultaRecibiendo.expediente }} ·
+              {{ consultaRecibiendo.paciente.nombre.primer_nombre }}
+              {{ consultaRecibiendo.paciente.nombre.primer_apellido }}
+            </span>
+          }
+        </div>
+        <button class="rc-close" (click)="cerrarModalRecibido()">✕</button>
       </div>
-      <button class="rc-close" (click)="cerrarModalRecibido()">✕</button>
-    </div>
-
-    <div class="rc-modal-body">
-      <div class="rc-field">
-        <label class="rc-lbl">Servicio de destino</label>
-        <input
-          class="rc-input"
-          type="text"
-          [(ngModel)]="formRecibido.servicio"
-          placeholder="Ej: MEDI, PEDI, GINE..."
-        />
+      <div class="rc-modal-body">
+        <div class="rc-field">
+          <label class="rc-lbl">Servicio de destino</label>
+          <input
+            class="rc-input"
+            type="text"
+            [(ngModel)]="formRecibido.servicio"
+            placeholder="Ej: MEDI, PEDI, GINE..."
+            />
+        </div>
+        <div class="rc-field">
+          <label class="rc-lbl">Comentario (opcional)</label>
+          <textarea
+            class="rc-input rc-textarea"
+            rows="3"
+            [(ngModel)]="formRecibido.comentario"
+            placeholder="Observaciones al recibir el expediente..."
+          ></textarea>
+        </div>
+        @if (formRecibido.error) {
+          <div class="rc-error">
+            {{ formRecibido.error }}
+          </div>
+        }
       </div>
-      <div class="rc-field">
-        <label class="rc-lbl">Comentario (opcional)</label>
-        <textarea
-          class="rc-input rc-textarea"
-          rows="3"
-          [(ngModel)]="formRecibido.comentario"
-          placeholder="Observaciones al recibir el expediente..."
-        ></textarea>
+      <div class="rc-modal-footer">
+        <button
+          class="rc-btn rc-btn-cancel"
+          (click)="cerrarModalRecibido()"
+          [disabled]="formRecibido.guardando"
+          >
+          Cancelar
+        </button>
+        <button
+          class="rc-btn rc-btn-confirm rc-btn-recibir"
+          (click)="confirmarRecibido()"
+          [disabled]="formRecibido.guardando"
+          >
+          {{ formRecibido.guardando ? "Guardando..." : "✔ Confirmar Recepción" }}
+        </button>
       </div>
-      <div class="rc-error" *ngIf="formRecibido.error">
-        {{ formRecibido.error }}
-      </div>
-    </div>
-
-    <div class="rc-modal-footer">
-      <button
-        class="rc-btn rc-btn-cancel"
-        (click)="cerrarModalRecibido()"
-        [disabled]="formRecibido.guardando"
-      >
-        Cancelar
-      </button>
-      <button
-        class="rc-btn rc-btn-confirm rc-btn-recibir"
-        (click)="confirmarRecibido()"
-        [disabled]="formRecibido.guardando"
-      >
-        {{ formRecibido.guardando ? "Guardando..." : "✔ Confirmar Recepción" }}
-      </button>
     </div>
   </div>
-</div>
+}
 
 <!-- ══════════════════════════════════════════════════════════
-     MODAL — ARCHIVAR
-     ══════════════════════════════════════════════════════════ -->
-<div class="rc-overlay" *ngIf="modalArchivar" (click)="cerrarModalArchivar()">
-  <div class="rc-modal" (click)="$event.stopPropagation()">
-    <div class="rc-modal-header rc-header-archivar">
-      <div class="rc-header-icon">🗂️</div>
-      <div>
-        <span class="rc-modal-title">Archivar Consulta</span>
-        <span class="rc-modal-sub" *ngIf="consultaArchivando">
-          Exp: {{ consultaArchivando.expediente }} ·
-          {{ consultaArchivando.paciente.nombre.primer_nombre }}
-          {{ consultaArchivando.paciente.nombre.primer_apellido }}
-        </span>
+MODAL — ARCHIVAR
+══════════════════════════════════════════════════════════ -->
+@if (modalArchivar) {
+  <div class="rc-overlay" (click)="cerrarModalArchivar()">
+    <div class="rc-modal" (click)="$event.stopPropagation()">
+      <div class="rc-modal-header rc-header-archivar">
+        <div class="rc-header-icon">🗂️</div>
+        <div>
+          <span class="rc-modal-title">Archivar Consulta</span>
+          @if (consultaArchivando) {
+            <span class="rc-modal-sub">
+              Exp: {{ consultaArchivando.expediente }} ·
+              {{ consultaArchivando.paciente.nombre.primer_nombre }}
+              {{ consultaArchivando.paciente.nombre.primer_apellido }}
+            </span>
+          }
+        </div>
+        <button class="rc-close" (click)="cerrarModalArchivar()">✕</button>
       </div>
-      <button class="rc-close" (click)="cerrarModalArchivar()">✕</button>
-    </div>
-
-    <div class="rc-modal-body">
-      <!-- Condición de egreso — campo principal del Egreso -->
-      <div class="rc-field">
-        <label class="rc-lbl">Condición de egreso *</label>
-
-        <div class="rc-condiciones-grid">
-          <button
-            type="button"
-            class="rc-condicion-btn"
-            *ngFor="let c of condicionesEgreso; trackBy: trackById"
-            [class.rc-condicion-active]="formArchivar.condicion === c.value"
-            (click)="formArchivar.condicion = c.value"
-          >
-            <span class="rc-condicion-icon">
-              {{
-                c.value === "alta"
+      <div class="rc-modal-body">
+        <!-- Condición de egreso — campo principal del Egreso -->
+        <div class="rc-field">
+          <label class="rc-lbl">Condición de egreso *</label>
+          <div class="rc-condiciones-grid">
+            @for (c of condicionesEgreso; track trackById($index, c)) {
+              <button
+                type="button"
+                class="rc-condicion-btn"
+                [class.rc-condicion-active]="formArchivar.condicion === c.value"
+                (click)="formArchivar.condicion = c.value"
+                >
+                <span class="rc-condicion-icon">
+                  {{
+                  c.value === "alta"
                   ? "✅"
                   : c.value === "referido"
-                    ? "🚑"
-                    : c.value === "fuga"
-                      ? "🏃"
-                      : c.value === "fallecido"
-                        ? "🕊️"
-                        : c.value === "traslado"
-                          ? "📦"
-                          : "📄"
-              }}
-            </span>
-
-            <span class="rc-condicion-label">
-              {{ c.label }}
-            </span>
-          </button>
+                  ? "🚑"
+                  : c.value === "fuga"
+                  ? "🏃"
+                  : c.value === "fallecido"
+                  ? "🕊️"
+                  : c.value === "traslado"
+                  ? "📦"
+                  : "📄"
+                  }}
+                </span>
+                <span class="rc-condicion-label">
+                  {{ c.label }}
+                </span>
+              </button>
+            }
+          </div>
         </div>
-      </div>
-
-      <!-- Referencia — campo referencia del Egreso -->
-      <div class="rc-field">
-        <label class="rc-lbl">Referencia / Destino</label>
-        <input
-          class="rc-input"
-          type="text"
-          [(ngModel)]="formArchivar.referencia"
-          placeholder="Hospital, servicio o institución destino (si aplica)"
-        />
-      </div>
-
-      <div class="rc-field">
-        <label class="rc-lbl">Fecha y Hora de egreso</label>
-        <input
-          class="rc-input"
-          type="datetime-local"
-          [(ngModel)]="formArchivar.registro"
-          placeholder="Ej: Requiere valoración especializada, No hay camas disponibles..."
-        />
-      </div>
-
-      <!-- Diagnóstico de egreso — se guarda como Dx en egreso.diagnostico -->
-      <div class="rc-field">
-        <label class="rc-lbl">Diagnóstico de egreso</label>
-        <input
-          class="rc-input"
-          type="text"
-          [(ngModel)]="formArchivar.diagnosticos"
-          name="diagnostico"
-          placeholder="Ej: I:10 Hipertensión"
-        />
-      </div>
-
-      <!-- Comentario libre — va en ciclo.comentario -->
-      <div class="rc-field">
-        <label class="rc-lbl">Observaciones adicionales</label>
-        <textarea
-          class="rc-input rc-textarea"
-          rows="2"
-          [(ngModel)]="formArchivar.comentario"
-          placeholder="Notas de cierre del expediente..."
-        ></textarea>
-      </div>
-
-      <!-- Vista previa del egreso que se generará -->
-      <div class="rc-preview" *ngIf="formArchivar.condicion">
-        <span class="rc-preview-label">Egreso que se registrará:</span>
-        <div class="rc-preview-row">
-          <span class="rc-preview-key">condicion_egreso</span>
-          <span class="rc-preview-val">{{ formArchivar.condicion }}</span>
+        <!-- Referencia — campo referencia del Egreso -->
+        <div class="rc-field">
+          <label class="rc-lbl">Referencia / Destino</label>
+          <input
+            class="rc-input"
+            type="text"
+            [(ngModel)]="formArchivar.referencia"
+            placeholder="Hospital, servicio o institución destino (si aplica)"
+            />
         </div>
-        <div class="rc-preview-row" *ngIf="formArchivar.referencia">
-          <span class="rc-preview-key">referencia</span>
-          <span class="rc-preview-val">{{ formArchivar.referencia }}</span>
+        <div class="rc-field">
+          <label class="rc-lbl">Fecha y Hora de egreso</label>
+          <input
+            class="rc-input"
+            type="datetime-local"
+            [(ngModel)]="formArchivar.registro"
+            placeholder="Ej: Requiere valoración especializada, No hay camas disponibles..."
+            />
         </div>
-        <div class="rc-preview-row" *ngIf="formArchivar.diagnosticos">
-          <span class="rc-preview-key">diagnostico</span>
-          < class="rc-preview-val" >{{ formArchivar.diagnosticos }} - >
+        <!-- Diagnóstico de egreso — se guarda como Dx en egreso.diagnostico -->
+        <div class="rc-field">
+          <label class="rc-lbl">Diagnóstico de egreso</label>
+          <input
+            class="rc-input"
+            type="text"
+            [(ngModel)]="formArchivar.diagnosticos"
+            name="diagnostico"
+            placeholder="Ej: I:10 Hipertensión"
+            />
         </div>
+        <!-- Comentario libre — va en ciclo.comentario -->
+        <div class="rc-field">
+          <label class="rc-lbl">Observaciones adicionales</label>
+          <textarea
+            class="rc-input rc-textarea"
+            rows="2"
+            [(ngModel)]="formArchivar.comentario"
+            placeholder="Notas de cierre del expediente..."
+          ></textarea>
+        </div>
+        <!-- Vista previa del egreso que se generará -->
+        @if (formArchivar.condicion) {
+          <div class="rc-preview">
+            <span class="rc-preview-label">Egreso que se registrará:</span>
+            <div class="rc-preview-row">
+              <span class="rc-preview-key">condicion_egreso</span>
+              <span class="rc-preview-val">{{ formArchivar.condicion }}</span>
+            </div>
+            @if (formArchivar.referencia) {
+              <div class="rc-preview-row">
+                <span class="rc-preview-key">referencia</span>
+                <span class="rc-preview-val">{{ formArchivar.referencia }}</span>
+              </div>
+            }
+            @if (formArchivar.diagnosticos) {
+              <div class="rc-preview-row">
+                <span class="rc-preview-key">diagnostico</span>
+                < class="rc-preview-val" >{{ formArchivar.diagnosticos }} - >
+              </div>
+            }
+          </div>
+        }
+        <div class="rc-warning">
+          ⚠️ Esta acción marcará la consulta como <strong>inactiva</strong>. El
+          expediente pasará al historial.
+        </div>
+        @if (formArchivar.error) {
+          <div class="rc-error">
+            {{ formArchivar.error }}
+          </div>
+        }
       </div>
-
-      <div class="rc-warning">
-        ⚠️ Esta acción marcará la consulta como <strong>inactiva</strong>. El
-        expediente pasará al historial.
+      <div class="rc-modal-footer">
+        <button
+          class="rc-btn rc-btn-cancel"
+          (click)="cerrarModalArchivar()"
+          [disabled]="formArchivar.guardando"
+          >
+          Cancelar
+        </button>
+        <button
+          class="rc-btn rc-btn-confirm rc-btn-archivar"
+          (click)="confirmarArchivar()"
+          [disabled]="formArchivar.guardando || !formArchivar.condicion"
+          >
+          {{ formArchivar.guardando ? "Archivando..." : "🗂️ Confirmar Archivo" }}
+        </button>
       </div>
-
-      <div class="rc-error" *ngIf="formArchivar.error">
-        {{ formArchivar.error }}
-      </div>
-    </div>
-
-    <div class="rc-modal-footer">
-      <button
-        class="rc-btn rc-btn-cancel"
-        (click)="cerrarModalArchivar()"
-        [disabled]="formArchivar.guardando"
-      >
-        Cancelar
-      </button>
-      <button
-        class="rc-btn rc-btn-confirm rc-btn-archivar"
-        (click)="confirmarArchivar()"
-        [disabled]="formArchivar.guardando || !formArchivar.condicion"
-      >
-        {{ formArchivar.guardando ? "Archivando..." : "🗂️ Confirmar Archivo" }}
-      </button>
     </div>
   </div>
-</div>
+}

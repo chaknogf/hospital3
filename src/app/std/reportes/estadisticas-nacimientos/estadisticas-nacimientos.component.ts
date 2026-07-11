@@ -1,13 +1,14 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '@services/api.service';
 
 @Component({
   selector: 'app-estadisticas-nacimientos',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './estadisticas-nacimientos.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./estadisticas-nacimientos.component.css']
 })
 export class EstadisticasNacimientosComponent implements OnInit {

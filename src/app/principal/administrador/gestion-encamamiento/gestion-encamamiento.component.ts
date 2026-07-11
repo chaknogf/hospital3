@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { Encamamiento } from '../../../interface/interfaces';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { finalize } from 'rxjs';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['../admin.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule]
+  imports: [FormsModule]
 })
 export class GestionEncamamientoComponent implements OnDestroy {
   private router = inject(Router);

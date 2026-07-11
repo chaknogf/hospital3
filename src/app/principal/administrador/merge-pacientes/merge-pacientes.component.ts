@@ -1,10 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { PacienteService } from '../../../registros/patient/paciente.service';
 import { Paciente } from '../../../interface/interfaces';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { catchError, finalize, EMPTY } from 'rxjs';
 
 @Component({
@@ -12,7 +12,8 @@ import { catchError, finalize, EMPTY } from 'rxjs';
   templateUrl: './merge-pacientes.component.html',
   styleUrls: ['../admin.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule]
 })
 export class MergePacientesComponent {
   private router = inject(Router);

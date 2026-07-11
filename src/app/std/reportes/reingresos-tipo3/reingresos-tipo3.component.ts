@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '@services/api.service';
@@ -7,8 +7,9 @@ import { ConsultaListResponse } from '@models/consultas';
 
 @Component({
   selector: 'app-reingresos-tipo3',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './reingresos-tipo3.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./reingresos-tipo3.component.css']
 })
 export class ReingresosTipo3Component implements OnInit {

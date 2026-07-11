@@ -36,31 +36,31 @@
       <div class="sec-badge">lookup</div>
     </div>
     <!-- @if (!enEdicion()) {
-      <div class="sec-body single">
-        <div class="field">
-          <label class="field-label">Buscar por expediente</label>
-          <div style="display: flex; gap: 8px">
-            <input
-              class="field-input"
-              [(ngModel)]="busquedaExpediente"
-              [ngModelOptions]="{ standalone: true }"
-              placeholder="Ej: 202400123"
+    <div class="sec-body single">
+      <div class="field">
+        <label class="field-label">Buscar por expediente</label>
+        <div style="display: flex; gap: 8px">
+          <input
+            class="field-input"
+            [(ngModel)]="busquedaExpediente"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="Ej: 202400123"
               (keydown.enter)="
                 buscarPacientePorExpediente(); $event.preventDefault()
               "
-              (change)="buscarPacientePorExpediente()"
+            (change)="buscarPacientePorExpediente()"
             />
-            <button
-              type="button"
-              class="btn-dock btn"
-              (click)="buscarPacientePorExpediente()"
+          <button
+            type="button"
+            class="btn-dock btn"
+            (click)="buscarPacientePorExpediente()"
             >
-              🔎
-              {{ buscandoPaciente ? "..." : "Buscar" }}
-            </button>
-          </div>
+            🔎
+            {{ buscandoPaciente ? "..." : "Buscar" }}
+          </button>
         </div>
       </div>
+    </div>
     } -->
   </div>
 
@@ -73,37 +73,37 @@
         @if (
           pacienteEncontrado.sexo == "F" &&
           (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Anciano"
-        ) {
+          ) {
           👵🏻
         }
         @if (
           pacienteEncontrado.sexo == "M" &&
           (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Anciano"
-        ) {
+          ) {
           👴🏼
         }
         @if (
           pacienteEncontrado.sexo == "F" &&
           (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Adulto"
-        ) {
+          ) {
           👩🏻‍🦱
         }
         @if (
           pacienteEncontrado.sexo == "M" &&
           (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Adulto"
-        ) {
+          ) {
           🧔🏻‍♂️
         }
         @if (
           pacienteEncontrado.sexo == "F" &&
           (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Niño"
-        ) {
+          ) {
           👧🏽
         }
         @if (
           pacienteEncontrado.sexo == "M" &&
           (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Niño"
-        ) {
+          ) {
           👦🏽
         }
         @if ((pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Neonato") {
@@ -119,10 +119,10 @@
           @if (pacienteEncontrado.sexo) {
             <div class="p-chip p-chip-exp">
               🚻 {{ pacienteEncontrado.sexo | datosExtra: "sexo" }}
-              
+
             </div>,
             <div class="p-chip p-chip-exp">
-             
+
               {{ pacienteEncontrado.fecha_nacimiento | edad }}
             </div>
           }
@@ -159,15 +159,17 @@
               type="date"
               class="field-input"
               formControlName="fecha_cita"
-            />
+              />
           </div>
 
           <div class="field">
             <span class="field-label">Especialidad</span>
             <select class="field-input" formControlName="especialidad">
-              <option *ngFor="let e of especialidades" [value]="e.value">
-                {{ e.label | titlecase }}
-              </option>
+              @for (e of especialidades; track e) {
+                <option [value]="e.value">
+                  {{ e.label | titlecase }}
+                </option>
+              }
             </select>
           </div>
 
@@ -200,7 +202,7 @@
                   class="ind-chip"
                   [class.active]="tipoConsultaValue === t.ref"
                   (click)="seleccionarRazonConsulta(t.ref)"
-                >
+                  >
                   <div class="ind-check">
                     <svg viewBox="0 0 16 16">
                       <path
@@ -208,7 +210,7 @@
                         stroke="currentColor"
                         fill="none"
                         stroke-width="2"
-                      />
+                        />
                     </svg>
                   </div>
 

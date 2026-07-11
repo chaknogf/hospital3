@@ -8,38 +8,48 @@
     <label>Hasta: <input type="date" [(ngModel)]="hasta" (change)="cargar()"></label>
     <button class="btn-primary" (click)="cargar()">Actualizar</button>
   </div>
-  <div *ngIf="cargando" class="state-box spinner"></div>
-  <div *ngIf="error" class="state-box error">{{ error }}</div>
-  <div *ngIf="!cargando && !error && rows.length === 0" class="state-box">Sin datos para el rango seleccionado.</div>
-  <div *ngIf="!cargando && rows.length > 0">
-    <div class="total-badge">Total: {{ totalGeneral }} consultas</div>
-    <div class="table-wrap">
-      <table class="reporte-table pivot-table">
-        <thead>
-          <tr>
-            <th>Especialidad</th>
-            <th class="sub-header">M</th>
-            <th class="sub-header">F</th>
-            <th class="sub-header">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let r of rows">
-            <td class="esp-label">{{ r.especialidad }}</td>
-            <td class="num">{{ r.M }}</td>
-            <td class="num">{{ r.F }}</td>
-            <td class="num total-row">{{ r.total }}</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <th>Total</th>
-            <th class="num">{{ totalM }}</th>
-            <th class="num">{{ totalF }}</th>
-            <th class="num total-row">{{ totalGeneral }}</th>
-          </tr>
-        </tfoot>
-      </table>
+  @if (cargando) {
+    <div class="state-box spinner"></div>
+  }
+  @if (error) {
+    <div class="state-box error">{{ error }}</div>
+  }
+  @if (!cargando && !error && rows.length === 0) {
+    <div class="state-box">Sin datos para el rango seleccionado.</div>
+  }
+  @if (!cargando && rows.length > 0) {
+    <div>
+      <div class="total-badge">Total: {{ totalGeneral }} consultas</div>
+      <div class="table-wrap">
+        <table class="reporte-table pivot-table">
+          <thead>
+            <tr>
+              <th>Especialidad</th>
+              <th class="sub-header">M</th>
+              <th class="sub-header">F</th>
+              <th class="sub-header">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of rows; track r) {
+              <tr>
+                <td class="esp-label">{{ r.especialidad }}</td>
+                <td class="num">{{ r.M }}</td>
+                <td class="num">{{ r.F }}</td>
+                <td class="num total-row">{{ r.total }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>Total</th>
+              <th class="num">{{ totalM }}</th>
+              <th class="num">{{ totalF }}</th>
+              <th class="num total-row">{{ totalGeneral }}</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
-  </div>
+  }
 </div>

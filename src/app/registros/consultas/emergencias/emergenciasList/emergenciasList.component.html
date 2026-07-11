@@ -3,7 +3,7 @@
   <div
     class="botones justify-content-between"
     [ngClass]="{ 'd-none': filtrar }"
-  >
+    >
     <button type="button" (click)="volver()">
       <span [innerHTML]="icons['menu']"></span>
       Menu
@@ -33,7 +33,7 @@
             name="expediente"
             placeholder="E26-003"
             style="text-transform: uppercase"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -46,7 +46,7 @@
             name="documento"
             placeholder="E26-003"
             style="text-transform: uppercase"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -56,7 +56,7 @@
             class="input-filtros"
             [(ngModel)]="filtros.fecha"
             name="fechaConsulta"
-          />
+            />
         </fieldset>
       </div>
 
@@ -69,7 +69,7 @@
             [(ngModel)]="filtros.primer_nombre"
             name="primerNombre"
             placeholder="Ej: Juan"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -80,7 +80,7 @@
             [(ngModel)]="filtros.segundo_nombre"
             name="segundoNombre"
             placeholder="Ej: María"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -91,7 +91,7 @@
             [(ngModel)]="filtros.primer_apellido"
             name="primerApellido"
             placeholder="Ej: García"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -102,7 +102,7 @@
             [(ngModel)]="filtros.segundo_apellido"
             name="segundoApellido"
             placeholder="Ej: Pérez"
-          />
+            />
         </fieldset>
       </div>
 
@@ -139,177 +139,181 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="let data of consultas; trackBy: trackById"
-          class="aurora-table-row"
-          [class.touch-active]="rowActiva === data.id"
-          (click)="activarFila(data.id)"
-        >
-          <td data-label="Nombre:">
-            <div class="nombre-table">
-              <p class="p-0 m-0 text-uppercase">
-                {{ data.paciente.nombre.primer_nombre }}
-                {{ data.paciente.nombre.segundo_nombre }}
-                {{ data.paciente.nombre.otro_nombre }}
-              </p>
-              <p
-                class="p-0 mt-1 text-uppercase"
-                [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-              >
-                {{ data.paciente.nombre.primer_apellido }}
-                {{ data.paciente.nombre.segundo_apellido }}
-                @if (data.paciente.nombre.apellido_casada) {
-                  de {{ data.paciente.nombre.apellido_casada | capitalize }}
-                }
-              </p>
-            </div>
-          </td>
-          <td class="text-justify" data-label="Identificadores:">
-            @if (data?.paciente?.cui) {
-              <div class="ms-4">
-                <strong>CUI:</strong>
-                <small> {{ data.paciente.cui | cui }}</small>
+        @for (data of consultas; track trackById($index, data)) {
+          <tr
+            class="aurora-table-row"
+            [class.touch-active]="rowActiva === data.id"
+            (click)="activarFila(data.id)"
+            >
+            <td data-label="Nombre:">
+              <div class="nombre-table">
+                <p class="p-0 m-0 text-uppercase">
+                  {{ data.paciente.nombre.primer_nombre }}
+                  {{ data.paciente.nombre.segundo_nombre }}
+                  {{ data.paciente.nombre.otro_nombre }}
+                </p>
+                <p
+                  class="p-0 mt-1 text-uppercase"
+                  [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+                  >
+                  {{ data.paciente.nombre.primer_apellido }}
+                  {{ data.paciente.nombre.segundo_apellido }}
+                  @if (data.paciente.nombre.apellido_casada) {
+                    de {{ data.paciente.nombre.apellido_casada | capitalize }}
+                  }
+                </p>
               </div>
-            }
-            @if (data?.paciente?.pasaporte) {
-              <div>
-                <strong>Pasaporte:</strong> {{ data.paciente.pasaporte }}
-              </div>
-            }
-            @if (data?.paciente?.expediente) {
-              <div>
-                <strong>Expediente:</strong> {{ data.paciente.expediente }}
-              </div>
-            }
-            @if (data?.documento) {
-              <div>
-                <strong>Hoja de Emergencia:</strong> {{ data.documento }}
-              </div>
-            }
-            <p style="font-size: xx-small">id: {{ data.id }}</p>
-          </td>
-
-          <td class="oculto">
-            {{ data.paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
-            <br />
-            @if (data.paciente.estado == "F") {
-              <small>{{ data.paciente.defuncion | edad }}</small>
-            }
-            @if (data.paciente.estado == "V") {
-              <small>{{ data.paciente.fecha_nacimiento | edad }}</small>
-            }
-          </td>
-
-          <td class="oculto">
-            <ng-container>
-              {{ data.fecha_consulta | date: "dd/MM/yy" }}
-            </ng-container>
-            <br />
-            <ng-container>
-              {{ data.hora_consulta | time }}
-            </ng-container>
-          </td>
-          <td class="oculto">
-            <small>{{ data.ultimo_estado }}</small
-            ><br />
-            {{ data.tipo_consulta | datosExtra: "tipo_consulta" }}
-          </td>
-          <td class="secundario">
-            <div class="d-flex gap-1">
-              @if (data.ultimo_estado !== "archivo") {
-                <button
-                  (click)="editar(data.id); $event.stopPropagation()"
-                  data-label="Editar"
-                >
-                  <span [innerHTML]="icons['edit']"></span>
-                </button>
-              } @else {
-                <span>🔒</span>
+            </td>
+            <td class="text-justify" data-label="Identificadores:">
+              @if (data?.paciente?.cui) {
+                <div class="ms-4">
+                  <strong>CUI:</strong>
+                  <small> {{ data.paciente.cui | cui }}</small>
+                </div>
               }
-              <button
-                (click)="verDetalle(data.id); $event.stopPropagation()"
-                data-label="Detalle"
-              >
-                <span [innerHTML]="icons['tabla']"></span>
-              </button>
-              <button
-                (click)="imprimir(data.id); $event.stopPropagation()"
-                data-label="Imprimir"
-              >
-                <span [innerHTML]="icons['print']"></span>
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Sin resultados -->
-        <tr *ngIf="!cargando && consultas.length === 0">
-          <td colspan="5" class="text-center py-3">
-            <em>No se encontraron coincidencias.</em>
-          </td>
-        </tr>
+              @if (data?.paciente?.pasaporte) {
+                <div>
+                  <strong>Pasaporte:</strong> {{ data.paciente.pasaporte }}
+                </div>
+              }
+              @if (data?.paciente?.expediente) {
+                <div>
+                  <strong>Expediente:</strong> {{ data.paciente.expediente }}
+                </div>
+              }
+              @if (data?.documento) {
+                <div>
+                  <strong>Hoja de Emergencia:</strong> {{ data.documento }}
+                </div>
+              }
+              <p style="font-size: xx-small">id: {{ data.id }}</p>
+            </td>
+            <td class="oculto">
+              {{ data.paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
+              <br />
+              @if (data.paciente.estado == "F") {
+                <small>{{ data.paciente.defuncion | edad }}</small>
+              }
+              @if (data.paciente.estado == "V") {
+                <small>{{ data.paciente.fecha_nacimiento | edad }}</small>
+              }
+            </td>
+            <td class="oculto">
+              <ng-container>
+                {{ data.fecha_consulta | date: "dd/MM/yy" }}
+              </ng-container>
+              <br />
+              <ng-container>
+                {{ data.hora_consulta | time }}
+              </ng-container>
+            </td>
+            <td class="oculto">
+              <small>{{ data.ultimo_estado }}</small
+                ><br />
+                {{ data.tipo_consulta | datosExtra: "tipo_consulta" }}
+              </td>
+              <td class="secundario">
+                <div class="d-flex gap-1">
+                  @if (data.ultimo_estado !== "archivo") {
+                    <button
+                      (click)="editar(data.id); $event.stopPropagation()"
+                      data-label="Editar"
+                      >
+                      <span [innerHTML]="icons['edit']"></span>
+                    </button>
+                  } @else {
+                    <span>🔒</span>
+                  }
+                  <button
+                    (click)="verDetalle(data.id); $event.stopPropagation()"
+                    data-label="Detalle"
+                    >
+                    <span [innerHTML]="icons['tabla']"></span>
+                  </button>
+                  <button
+                    (click)="imprimir(data.id); $event.stopPropagation()"
+                    data-label="Imprimir"
+                    >
+                    <span [innerHTML]="icons['print']"></span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+          <!-- Sin resultados -->
+          @if (!cargando && consultas.length === 0) {
+            <tr>
+              <td colspan="5" class="text-center py-3">
+                <em>No se encontraron coincidencias.</em>
+              </td>
+            </tr>
+          }
 
-        <!-- Cargando -->
-        <tr *ngIf="cargando">
-          <td colspan="5" class="text-center py-3">
-            <em>Cargando...</em>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+          <!-- Cargando -->
+          @if (cargando) {
+            <tr>
+              <td colspan="5" class="text-center py-3">
+                <em>Cargando...</em>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
 
-  <!-- ── PAGINADOR ── reemplaza el div de paginación actual ── -->
-  <div class="paginador">
-    <!-- Botón anterior -->
-    <button
-      class="pag-btn"
-      [disabled]="!hayPaginaAnterior"
-      (click)="cambiarPagina(-1)"
-    >
-      <span [innerHTML]="icons['skipLeft']"></span>
-    </button>
-
-    <!-- Primera página + ellipsis si el rango no empieza en 1 -->
-    @if (paginas[0] > 1) {
-      <button class="pag-num" (click)="irAPagina(1)">1</button>
-    }
-    @if (paginas[0] > 2) {
-      <span class="pag-ellipsis">…</span>
-    }
-
-    <!-- Páginas del rango visible -->
-    <button
-      *ngFor="let p of paginas; trackBy: trackById"
-      class="pag-num"
-      [class.pag-num-active]="p === paginaActual"
-      (click)="irAPagina(p)"
-    >
-      {{ p }}
-    </button>
-
-    <!-- Ellipsis + última página si el rango no llega al final -->
-    @if (paginas[paginas.length - 1] < totalPaginas - 1) {
-      <span class="pag-ellipsis">…</span>
-    }
-    @if (paginas[paginas.length - 1] < totalPaginas) {
-      <button class="pag-num" (click)="irAPagina(totalPaginas)">
-        {{ totalPaginas }}
+    <!-- ── PAGINADOR ── reemplaza el div de paginación actual ── -->
+    <div class="paginador">
+      <!-- Botón anterior -->
+      <button
+        class="pag-btn"
+        [disabled]="!hayPaginaAnterior"
+        (click)="cambiarPagina(-1)"
+        >
+        <span [innerHTML]="icons['skipLeft']"></span>
       </button>
-    }
 
-    <!-- Botón siguiente -->
-    <button
-      class="pag-btn"
-      [disabled]="!hayPaginaSiguiente"
-      (click)="cambiarPagina(1)"
-    >
-      <span [innerHTML]="icons['skipRight']"></span>
-    </button>
+      <!-- Primera página + ellipsis si el rango no empieza en 1 -->
+      @if (paginas[0] > 1) {
+        <button class="pag-num" (click)="irAPagina(1)">1</button>
+      }
+      @if (paginas[0] > 2) {
+        <span class="pag-ellipsis">…</span>
+      }
 
-    <!-- Total de registros -->
-    <span class="pag-info">
-      Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
-      {{ totalDeRegistros }} registros
-    </span>
+      <!-- Páginas del rango visible -->
+      @for (p of paginas; track trackById($index, p)) {
+        <button
+          class="pag-num"
+          [class.pag-num-active]="p === paginaActual"
+          (click)="irAPagina(p)"
+          >
+          {{ p }}
+        </button>
+      }
+
+      <!-- Ellipsis + última página si el rango no llega al final -->
+      @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+        <span class="pag-ellipsis">…</span>
+      }
+      @if (paginas[paginas.length - 1] < totalPaginas) {
+        <button class="pag-num" (click)="irAPagina(totalPaginas)">
+          {{ totalPaginas }}
+        </button>
+      }
+
+      <!-- Botón siguiente -->
+      <button
+        class="pag-btn"
+        [disabled]="!hayPaginaSiguiente"
+        (click)="cambiarPagina(1)"
+        >
+        <span [innerHTML]="icons['skipRight']"></span>
+      </button>
+
+      <!-- Total de registros -->
+      <span class="pag-info">
+        Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+        {{ totalDeRegistros }} registros
+      </span>
+    </div>
   </div>
-</div>

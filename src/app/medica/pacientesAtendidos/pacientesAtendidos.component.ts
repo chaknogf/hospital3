@@ -1,5 +1,5 @@
 
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../pipes/edad.pipe';
@@ -25,7 +25,7 @@ const ESTADOS_INACTIVOS = new Set(['archivo', 'descartado', 'recepcion', 'egreso
   styleUrls: ['./pacientesAtendidos.component.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule]
+  imports: [FormsModule]
 })
 export class PacientesAtendidosComponent implements OnInit, OnDestroy {
 

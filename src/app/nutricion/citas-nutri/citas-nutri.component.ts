@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CitasEspecialidadComponent } from '../../registros/citas/citasEspecialidad/citasEspecialidad.component';
 
 @Component({
@@ -6,6 +6,7 @@ import { CitasEspecialidadComponent } from '../../registros/citas/citasEspeciali
   templateUrl: './citas-nutri.component.html',
   styleUrls: ['./citas-nutri.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CitasEspecialidadComponent]
 })
 export class CitasNutriComponent implements OnInit {

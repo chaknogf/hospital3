@@ -8,9 +8,11 @@
     </div>
 
     <!-- ERROR -->
-    <div *ngIf="error()" class="alert-error">
-      {{ error() }}
-    </div>
+    @if (error()) {
+      <div class="alert-error">
+        {{ error() }}
+      </div>
+    }
 
     <!-- FORM -->
     <form [formGroup]="form" (ngSubmit)="guardar()" class="auth-form">
@@ -22,7 +24,7 @@
           type="email"
           formControlName="email"
           placeholder="correo@ejemplo.com"
-        />
+          />
       </div>
 
       <!-- PASSWORD -->
@@ -33,7 +35,7 @@
           type="password"
           formControlName="password"
           placeholder="••••••••"
-        />
+          />
       </div>
 
       <!-- ACTIONS -->

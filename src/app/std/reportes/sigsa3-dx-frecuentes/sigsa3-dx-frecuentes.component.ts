@@ -1,7 +1,7 @@
 // sigsa3-dx-frecuentes.component.ts
 
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Sigsa3Service } from '../../sigsa3/sigsa3.service';
@@ -30,8 +30,9 @@ interface EspecialidadGrupo {
 
 @Component({
   selector: 'app-sigsa3-dx-frecuentes',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './sigsa3-dx-frecuentes.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./sigsa3-dx-frecuentes.component.css']
 })
 export class Sigsa3DxFrecuentesComponent implements OnInit {

@@ -14,7 +14,7 @@
   <form
     class="controls-filters"
     (submit)="cargarCitas(); $event.preventDefault()"
-  >
+    >
     <div class="filter-group">
       <label>Fecha</label>
       <input
@@ -22,7 +22,7 @@
         [(ngModel)]="filtros.fecha_cita"
         name="fecha_cita"
         (change)="cargarCitas()"
-      />
+        />
     </div>
 
     <div class="filter-group">
@@ -31,11 +31,13 @@
         [(ngModel)]="filtros.especialidad"
         name="especialidad"
         (change)="cargarCitas()"
-      >
+        >
         <option value="">Todas</option>
-        <option *ngFor="let esp of especialidadesList" [value]="esp.value">
-          {{ esp.label }}
-        </option>
+        @for (esp of especialidadesList; track esp) {
+          <option [value]="esp.value">
+            {{ esp.label }}
+          </option>
+        }
       </select>
     </div>
 
@@ -46,7 +48,7 @@
         [(ngModel)]="filtros.expediente"
         name="expediente"
         placeholder="No. Expediente"
-      />
+        />
     </div>
 
     <div class="filter-actions">
@@ -55,7 +57,7 @@
         type="button"
         class="btn-control btn-clear"
         (click)="limpiarFiltros()"
-      >
+        >
         Limpiar
       </button>
     </div>
@@ -87,53 +89,55 @@
   <hr class="doc-divider" />
 
   <!-- CARGANDO -->
-  <div *ngIf="cargando" class="doc-loading no-print">Cargando citas...</div>
+  @if (cargando) {
+    <div class="doc-loading no-print">Cargando citas...</div>
+  }
 
   <!-- TABLA -->
-  <table class="doc-table" *ngIf="!cargando && citas.length > 0">
-    <thead>
-      <tr>
-        <th class="col-num">#</th>
-        <th class="col-paciente">Paciente</th>
-        <th class="col-expediente">Expediente</th>
-        <th class="col-especialidad">Especialidad</th>
-        <th class="col-fecha">Fecha / Hora</th>
-        <th class="col-motivo">Motivo de Consulta</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        *ngFor="let cita of citas; let i = index; trackBy: trackById"
-        [class.fila-par]="i % 2 === 0"
-      >
-        <td class="col-num">{{ i + 1 }}</td>
-
-        <td class="col-paciente">
-          {{ nombreCompleto(cita) }}
-        </td>
-
-        <td class="col-expediente">{{ cita.paciente.expediente }}</td>
-
-        <td class="col-especialidad">
-          {{ cita.especialidad | datosExtra: "especialidad" }}
-        </td>
-
-        <td class="col-fecha">
-          {{ cita.fecha_cita | date: "dd/MM/yyyy" }}<br />
-          <span class="hora">{{ cita.fecha_cita | date: "HH:mm" }}</span>
-        </td>
-
-        <td class="col-motivo">
-          {{ cita.datos_extra.razon_consulta || "No especificado" }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  @if (!cargando && citas.length > 0) {
+    <table class="doc-table">
+      <thead>
+        <tr>
+          <th class="col-num">#</th>
+          <th class="col-paciente">Paciente</th>
+          <th class="col-expediente">Expediente</th>
+          <th class="col-especialidad">Especialidad</th>
+          <th class="col-fecha">Fecha / Hora</th>
+          <th class="col-motivo">Motivo de Consulta</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cita of citas; track trackById(i, cita); let i = $index) {
+          <tr
+            [class.fila-par]="i % 2 === 0"
+            >
+            <td class="col-num">{{ i + 1 }}</td>
+            <td class="col-paciente">
+              {{ nombreCompleto(cita) }}
+            </td>
+            <td class="col-expediente">{{ cita.paciente.expediente }}</td>
+            <td class="col-especialidad">
+              {{ cita.especialidad | datosExtra: "especialidad" }}
+            </td>
+            <td class="col-fecha">
+              {{ cita.fecha_cita | date: "dd/MM/yyyy" }}<br />
+              <span class="hora">{{ cita.fecha_cita | date: "HH:mm" }}</span>
+            </td>
+            <td class="col-motivo">
+              {{ cita.datos_extra.razon_consulta || "No especificado" }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 
   <!-- SIN RESULTADOS -->
-  <div *ngIf="!cargando && citas.length === 0" class="doc-empty">
-    No se encontraron citas para los criterios seleccionados.
-  </div>
+  @if (!cargando && citas.length === 0) {
+    <div class="doc-empty">
+      No se encontraron citas para los criterios seleccionados.
+    </div>
+  }
 
   <!-- PIE DE PÁGINA -->
   <footer class="doc-footer">

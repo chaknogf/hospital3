@@ -19,232 +19,267 @@
   </div>
 
   <!-- ═══ TAB REGISTROS ═══ -->
-  <ng-container *ngIf="tabActiva === 'registros'">
+  @if (tabActiva === 'registros') {
     <!-- FILTROS -->
     <div class="filter-toggle">
       <button class="btn-toggle" (click)="toggleFiltrar()">
         {{ filtrar ? 'Ocultar filtros' : 'Mostrar filtros' }}
       </button>
     </div>
-
-    <div class="filter-row" *ngIf="filtrar">
-      <form (submit)="buscar(); $event.preventDefault()">
-        <div class="filter-grid">
-          <div class="field">
-            <label class="field-label">Fecha</label>
-            <input class="field-input" type="date" [(ngModel)]="filtros.fecha" name="fecha" />
+    @if (filtrar) {
+      <div class="filter-row">
+        <form (submit)="buscar(); $event.preventDefault()">
+          <div class="filter-grid">
+            <div class="field">
+              <label class="field-label">Fecha</label>
+              <input class="field-input" type="date" [(ngModel)]="filtros.fecha" name="fecha" />
+            </div>
+            <div class="field">
+              <label class="field-label">Desde</label>
+              <input class="field-input" type="date" [(ngModel)]="filtros.fecha_desde" name="fecha_desde" />
+            </div>
+            <div class="field">
+              <label class="field-label">Hasta</label>
+              <input class="field-input" type="date" [(ngModel)]="filtros.fecha_hasta" name="fecha_hasta" />
+            </div>
+            <div class="field">
+              <label class="field-label">Servicio</label>
+              <select class="field-input" [(ngModel)]="filtros.servicio_id" name="servicio_id">
+                <option [ngValue]="null">Todos</option>
+                @for (s of servicios; track s) {
+                  <option [ngValue]="s.id">{{ s.nombre_servicio }}</option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Sexo</label>
+              <select class="field-input" [(ngModel)]="filtros.sexo" name="sexo">
+                <option [ngValue]="null">Todos</option>
+                <option [ngValue]="0">Masculino</option>
+                <option [ngValue]="1">Femenino</option>
+              </select>
+            </div>
+            <div class="field-actions">
+              <button class="btn-search" type="submit">Buscar</button>
+              <button class="btn-clear" type="button" (click)="limpiarFiltros()">Limpiar</button>
+            </div>
           </div>
-          <div class="field">
-            <label class="field-label">Desde</label>
-            <input class="field-input" type="date" [(ngModel)]="filtros.fecha_desde" name="fecha_desde" />
+        </form>
+      </div>
+    }
+    @if (cargando) {
+      <div class="state-box spinner"></div>
+    }
+    @if (error) {
+      <div class="state-box error">{{ error }}</div>
+    }
+    @if (!cargando && !error) {
+      <div>
+        <div class="total-badge">Total: {{ totalDeRegistros }} registros</div>
+        @if (registros.length > 0) {
+          <div class="table-wrap">
+            <table class="reporte-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Fecha</th>
+                  <th>Servicio</th>
+                  <th>Sexo</th>
+                  <th>Ocupados</th>
+                  <th>Ingresos</th>
+                  <th>Egresos</th>
+                  <th>Egr. Totales</th>
+                  <th>Camas Ocup.</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (r of registros; track trackById(i, r); let i = $index) {
+                  <tr
+                    (click)="activarFila(r.id)"
+                    [class.row-active]="rowActiva === r.id">
+                    <td>{{ i + 1 + (paginaActual - 1) * pageSize }}</td>
+                    <td>{{ r.fecha }}</td>
+                    <td class="text-left">{{ servicioNombre(r.servicio_id) }}</td>
+                    <td>
+                      <span class="badge-sexo" [class.masc]="r.sexo === 0" [class.fem]="r.sexo === 1">
+                        {{ sexoLabel(r.sexo) }}
+                      </span>
+                    </td>
+                    <td>{{ r.ocupados }}</td>
+                    <td>{{ r.ingresos }}</td>
+                    <td>{{ r.egresos }}</td>
+                    <td>{{ r.egresos_totales }}</td>
+                    <td>
+                      <span class="badge-cama" [class.positivo]="r.camas_ocupadas > 0" [class.negativo]="r.camas_ocupadas < 0">
+                        {{ r.camas_ocupadas }}
+                      </span>
+                    </td>
+                    <td class="secundario">
+                      <div class="d-flex gap-1">
+                        <button class="btn-icon" (click)="editar(r.id); $event.stopPropagation()" title="Editar">✏️</button>
+                        <button class="btn-icon" (click)="eliminar(r.id); $event.stopPropagation()" title="Eliminar">🗑️</button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
           </div>
-          <div class="field">
-            <label class="field-label">Hasta</label>
-            <input class="field-input" type="date" [(ngModel)]="filtros.fecha_hasta" name="fecha_hasta" />
+        }
+        @if (registros.length === 0) {
+          <div class="state-box">
+            No hay registros de censo de camas.
           </div>
-          <div class="field">
-            <label class="field-label">Servicio</label>
-            <select class="field-input" [(ngModel)]="filtros.servicio_id" name="servicio_id">
-              <option [ngValue]="null">Todos</option>
-              <option *ngFor="let s of servicios" [ngValue]="s.id">{{ s.nombre_servicio }}</option>
-            </select>
-          </div>
-          <div class="field">
-            <label class="field-label">Sexo</label>
-            <select class="field-input" [(ngModel)]="filtros.sexo" name="sexo">
-              <option [ngValue]="null">Todos</option>
-              <option [ngValue]="0">Masculino</option>
-              <option [ngValue]="1">Femenino</option>
-            </select>
-          </div>
-          <div class="field-actions">
-            <button class="btn-search" type="submit">Buscar</button>
-            <button class="btn-clear" type="button" (click)="limpiarFiltros()">Limpiar</button>
-          </div>
+        }
+        <!-- PAGINADOR -->
+        <div class="paginador">
+          <button class="pag-btn" [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">‹</button>
+          @if (paginas[0] > 1) {
+            <button class="pag-num" (click)="irAPagina(1)">1</button>
+          }
+          @if (paginas[0] > 2) {
+            <span class="pag-ellipsis">…</span>
+          }
+          @for (p of paginas; track trackById($index, p)) {
+            <button       class="pag-num"
+              [class.pag-num-active]="p === paginaActual" (click)="irAPagina(p)">
+              {{ p }}
+            </button>
+          }
+          @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+            <span class="pag-ellipsis">…</span>
+          }
+          @if (paginas[paginas.length - 1] < totalPaginas) {
+            <button class="pag-num"
+            (click)="irAPagina(totalPaginas)">{{ totalPaginas }}</button>
+          }
+          <button class="pag-btn" [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">›</button>
+          <span class="pag-info">
+            Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+            {{ totalDeRegistros }} registros
+          </span>
         </div>
-      </form>
-    </div>
-
-    <div *ngIf="cargando" class="state-box spinner"></div>
-    <div *ngIf="error" class="state-box error">{{ error }}</div>
-
-    <div *ngIf="!cargando && !error">
-      <div class="total-badge">Total: {{ totalDeRegistros }} registros</div>
-
-      <div class="table-wrap" *ngIf="registros.length > 0">
-        <table class="reporte-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Fecha</th>
-              <th>Servicio</th>
-              <th>Sexo</th>
-              <th>Ocupados</th>
-              <th>Ingresos</th>
-              <th>Egresos</th>
-              <th>Egr. Totales</th>
-              <th>Camas Ocup.</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let r of registros; trackBy: trackById; let i = index"
-              (click)="activarFila(r.id)"
-              [class.row-active]="rowActiva === r.id">
-              <td>{{ i + 1 + (paginaActual - 1) * pageSize }}</td>
-              <td>{{ r.fecha }}</td>
-              <td class="text-left">{{ servicioNombre(r.servicio_id) }}</td>
-              <td>
-                <span class="badge-sexo" [class.masc]="r.sexo === 0" [class.fem]="r.sexo === 1">
-                  {{ sexoLabel(r.sexo) }}
-                </span>
-              </td>
-              <td>{{ r.ocupados }}</td>
-              <td>{{ r.ingresos }}</td>
-              <td>{{ r.egresos }}</td>
-              <td>{{ r.egresos_totales }}</td>
-              <td>
-                <span class="badge-cama" [class.positivo]="r.camas_ocupadas > 0" [class.negativo]="r.camas_ocupadas < 0">
-                  {{ r.camas_ocupadas }}
-                </span>
-              </td>
-              <td class="secundario">
-                <div class="d-flex gap-1">
-                  <button class="btn-icon" (click)="editar(r.id); $event.stopPropagation()" title="Editar">✏️</button>
-                  <button class="btn-icon" (click)="eliminar(r.id); $event.stopPropagation()" title="Eliminar">🗑️</button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
-
-      <div *ngIf="registros.length === 0" class="state-box">
-        No hay registros de censo de camas.
-      </div>
-
-      <!-- PAGINADOR -->
-      <div class="paginador">
-        <button class="pag-btn" [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">‹</button>
-
-        <button class="pag-num" *ngIf="paginas[0] > 1" (click)="irAPagina(1)">1</button>
-        <span class="pag-ellipsis" *ngIf="paginas[0] > 2">…</span>
-
-        <button       *ngFor="let p of paginas; trackBy: trackById" class="pag-num"
-          [class.pag-num-active]="p === paginaActual" (click)="irAPagina(p)">
-          {{ p }}
-        </button>
-
-        <span class="pag-ellipsis" *ngIf="paginas[paginas.length - 1] < totalPaginas - 1">…</span>
-        <button class="pag-num" *ngIf="paginas[paginas.length - 1] < totalPaginas"
-          (click)="irAPagina(totalPaginas)">{{ totalPaginas }}</button>
-
-        <button class="pag-btn" [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">›</button>
-
-        <span class="pag-info">
-          Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
-          {{ totalDeRegistros }} registros
-        </span>
-      </div>
-    </div>
-  </ng-container>
+    }
+  }
 
   <!-- ═══ TAB ESTADÍSTICAS ═══ -->
-  <ng-container *ngIf="tabActiva === 'estadisticas'">
-    <div *ngIf="cargandoEstadisticas" class="state-box spinner"></div>
-
-    <ng-container *ngIf="!cargandoEstadisticas">
+  @if (tabActiva === 'estadisticas') {
+    @if (cargandoEstadisticas) {
+      <div class="state-box spinner"></div>
+    }
+    @if (!cargandoEstadisticas) {
       <!-- HOY -->
       <div class="stats-section">
         <h2 class="stats-title">📅 Día Actual <span class="stats-date">{{ estadisticaHoy?.desde }}</span></h2>
-
-        <div *ngIf="estadisticaHoy?.servicios?.length === 0" class="state-box">
-          Sin datos para el día de hoy.
-        </div>
-
-        <div class="table-wrap" *ngIf="estadisticaHoy && estadisticaHoy.servicios.length > 0">
-          <table class="stats-table stats-transposed">
-            <thead>
-              <tr>
-                <th class="th-metrica">Métrica</th>
-                <th *ngFor="let s of estadisticaHoy.servicios">{{ s.servicio_nombre }}</th>
-                <th class="th-global">GLOBAL</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let m of metricas">
-                <td class="td-label">{{ m.label }}</td>
-                <td *ngFor="let s of estadisticaHoy.servicios">
-                  <ng-container *ngIf="m.isPct; else plainCell">
-                    <span class="badge-pct" [class.alto]="val(s, m.key) >= 80"
-                      [class.medio]="val(s, m.key) >= 50 && val(s, m.key) < 80"
-                      [class.bajo]="val(s, m.key) < 50">
-                      {{ val(s, m.key) }}%
-                    </span>
-                  </ng-container>
-                  <ng-template #plainCell>{{ val(s, m.key) }}</ng-template>
-                </td>
-                <td class="td-global">
-                  <ng-container *ngIf="m.isPct; else plainGlobal">
-                    <span class="badge-pct" [class.alto]="val(estadisticaHoy.global, m.key) >= 80"
-                      [class.medio]="val(estadisticaHoy.global, m.key) >= 50 && val(estadisticaHoy.global, m.key) < 80"
-                      [class.bajo]="val(estadisticaHoy.global, m.key) < 50">
-                      {{ val(estadisticaHoy.global, m.key) }}%
-                    </span>
-                  </ng-container>
-                  <ng-template #plainGlobal>{{ val(estadisticaHoy.global, m.key) }}</ng-template>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        @if (estadisticaHoy?.servicios?.length === 0) {
+          <div class="state-box">
+            Sin datos para el día de hoy.
+          </div>
+        }
+        @if (estadisticaHoy && estadisticaHoy.servicios.length > 0) {
+          <div class="table-wrap">
+            <table class="stats-table stats-transposed">
+              <thead>
+                <tr>
+                  <th class="th-metrica">Métrica</th>
+                  @for (s of estadisticaHoy.servicios; track s) {
+                    <th>{{ s.servicio_nombre }}</th>
+                  }
+                  <th class="th-global">GLOBAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (m of metricas; track m) {
+                  <tr>
+                    <td class="td-label">{{ m.label }}</td>
+                    @for (s of estadisticaHoy.servicios; track s) {
+                      <td>
+                        @if (m.isPct) {
+                          <span class="badge-pct" [class.alto]="val(s, m.key) >= 80"
+                            [class.medio]="val(s, m.key) >= 50 && val(s, m.key) < 80"
+                            [class.bajo]="val(s, m.key) < 50">
+                            {{ val(s, m.key) }}%
+                          </span>
+                        } @else {
+                          {{ val(s, m.key) }}
+                        }
+                      </td>
+                    }
+                    <td class="td-global">
+                      @if (m.isPct) {
+                        <span class="badge-pct" [class.alto]="val(estadisticaHoy.global, m.key) >= 80"
+                          [class.medio]="val(estadisticaHoy.global, m.key) >= 50 && val(estadisticaHoy.global, m.key) < 80"
+                          [class.bajo]="val(estadisticaHoy.global, m.key) < 50">
+                          {{ val(estadisticaHoy.global, m.key) }}%
+                        </span>
+                      } @else {
+                        {{ val(estadisticaHoy.global, m.key) }}
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
       </div>
-
       <!-- MES ACUMULADO -->
       <div class="stats-section">
         <h2 class="stats-title">📊 Acumulado del Mes <span class="stats-date">{{ estadisticaMes?.desde }} — {{ estadisticaMes?.hasta }}</span></h2>
-
-        <div *ngIf="estadisticaMes?.servicios?.length === 0" class="state-box">
-          Sin datos para el mes actual.
-        </div>
-
-        <div class="table-wrap" *ngIf="estadisticaMes && estadisticaMes.servicios.length > 0">
-          <table class="stats-table stats-transposed">
-            <thead>
-              <tr>
-                <th class="th-metrica">Métrica</th>
-                <th *ngFor="let s of estadisticaMes.servicios">{{ s.servicio_nombre }}</th>
-                <th class="th-global">GLOBAL</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let m of metricas">
-                <td class="td-label">{{ m.label }}</td>
-                <td *ngFor="let s of estadisticaMes.servicios">
-                  <ng-container *ngIf="m.isPct; else plainCellMes">
-                    <span class="badge-pct" [class.alto]="val(s, m.key) >= 80"
-                      [class.medio]="val(s, m.key) >= 50 && val(s, m.key) < 80"
-                      [class.bajo]="val(s, m.key) < 50">
-                      {{ val(s, m.key) }}%
-                    </span>
-                  </ng-container>
-                  <ng-template #plainCellMes>{{ val(s, m.key) }}</ng-template>
-                </td>
-                <td class="td-global">
-                  <ng-container *ngIf="m.isPct; else plainGlobalMes">
-                    <span class="badge-pct" [class.alto]="val(estadisticaMes.global, m.key) >= 80"
-                      [class.medio]="val(estadisticaMes.global, m.key) >= 50 && val(estadisticaMes.global, m.key) < 80"
-                      [class.bajo]="val(estadisticaMes.global, m.key) < 50">
-                      {{ val(estadisticaMes.global, m.key) }}%
-                    </span>
-                  </ng-container>
-                  <ng-template #plainGlobalMes>{{ val(estadisticaMes.global, m.key) }}</ng-template>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        @if (estadisticaMes?.servicios?.length === 0) {
+          <div class="state-box">
+            Sin datos para el mes actual.
+          </div>
+        }
+        @if (estadisticaMes && estadisticaMes.servicios.length > 0) {
+          <div class="table-wrap">
+            <table class="stats-table stats-transposed">
+              <thead>
+                <tr>
+                  <th class="th-metrica">Métrica</th>
+                  @for (s of estadisticaMes.servicios; track s) {
+                    <th>{{ s.servicio_nombre }}</th>
+                  }
+                  <th class="th-global">GLOBAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (m of metricas; track m) {
+                  <tr>
+                    <td class="td-label">{{ m.label }}</td>
+                    @for (s of estadisticaMes.servicios; track s) {
+                      <td>
+                        @if (m.isPct) {
+                          <span class="badge-pct" [class.alto]="val(s, m.key) >= 80"
+                            [class.medio]="val(s, m.key) >= 50 && val(s, m.key) < 80"
+                            [class.bajo]="val(s, m.key) < 50">
+                            {{ val(s, m.key) }}%
+                          </span>
+                        } @else {
+                          {{ val(s, m.key) }}
+                        }
+                      </td>
+                    }
+                    <td class="td-global">
+                      @if (m.isPct) {
+                        <span class="badge-pct" [class.alto]="val(estadisticaMes.global, m.key) >= 80"
+                          [class.medio]="val(estadisticaMes.global, m.key) >= 50 && val(estadisticaMes.global, m.key) < 80"
+                          [class.bajo]="val(estadisticaMes.global, m.key) < 50">
+                          {{ val(estadisticaMes.global, m.key) }}%
+                        </span>
+                      } @else {
+                        {{ val(estadisticaMes.global, m.key) }}
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
       </div>
-    </ng-container>
-  </ng-container>
+    }
+  }
 </div>

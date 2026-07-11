@@ -76,118 +76,144 @@
     <button class="btn-accion" (click)="abrirModalAsociar()">🔗 Asociar Paciente</button>
     <button class="btn-accion" (click)="asociarMedico()" [disabled]="procesando">🩺 Asociar Médico</button>
     <button class="btn-accion" (click)="asociarTodo()" [disabled]="procesando">⚡ Asociar Todo</button>
-    <button class="btn-accion danger" *ngIf="seleccionados.size > 0" (click)="eliminarSeleccionados()">
-      🗑️ Eliminar ({{ seleccionados.size }})
-    </button>
+    @if (seleccionados.size > 0) {
+      <button class="btn-accion danger" (click)="eliminarSeleccionados()">
+        🗑️ Eliminar ({{ seleccionados.size }})
+      </button>
+    }
     <button class="btn-accion danger" (click)="abrirModalPeriodo()">📅 Eliminar por período</button>
   </div>
 
   <!-- CONTADOR -->
-  <div class="total-badge" *ngIf="!cargando">
-    {{ totalDeRegistros }} registros encontrados
-  </div>
+  @if (!cargando) {
+    <div class="total-badge">
+      {{ totalDeRegistros }} registros encontrados
+    </div>
+  }
 
   <!-- CARGANDO -->
-  <div *ngIf="cargando" class="state-box spinner"></div>
+  @if (cargando) {
+    <div class="state-box spinner"></div>
+  }
 
   <!-- TABLA -->
-  <div *ngIf="!cargando" class="table-wrap">
-    <table class="sigsa3-table">
-      <thead>
-        <tr>
-          <th class="th-check">
-            <input type="checkbox" (change)="toggleTodos()" [checked]="seleccionados.size === registros.length && registros.length > 0" />
-          </th>
-          <th>Fecha</th>
-          <th>Paciente</th>
-          <th>Historia</th>
-          <th>Personal Salud</th>
-          <th>Tipo</th>
-          <th>Especialidad</th>
-          <th>CIE-10</th>
-          <th>Dx</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let r of registrosPaginados"
-            [class.row-seleccionado]="seleccionados.has(r.id)"
-            (click)="activarFila(r.id, $event)">
-          <td class="td-check">
-            <input type="checkbox" [checked]="seleccionados.has(r.id)" (click)="activarFila(r.id, $event)" />
-          </td>
-          <td>{{ r.fecha_consulta || '—' }}</td>
-          <td>
-            <div class="cell-paciente">
-              <strong>{{ r.nombre_paciente || '—' }}</strong>
-              <small *ngIf="r.paciente_id">ID: {{ r.paciente_id }}</small>
-            </div>
-          </td>
-          <td>{{ r.no_historia_clinica || '—' }}</td>
-          <td>{{ r.personal_salud || '—' }}</td>
-          <td>{{ r.tipo_consulta || '—' }}</td>
-          <td>{{ r.especialidad || '—' }}</td>
-          <td><span class="cie-badge">{{ r.codigo_cie_10 || '—' }}</span></td>
-          <td class="cell-dx">{{ r.dx || '—' }}</td>
-          <td>
-            <div class="d-flex gap-1">
-              <button class="btn-sm" (click)="editar(r.id); $event.stopPropagation()">✏️</button>
-              <button class="btn-sm danger" (click)="eliminar(r.id); $event.stopPropagation()">🗑️</button>
-            </div>
-          </td>
-        </tr>
-        <tr *ngIf="!cargando && registros.length === 0">
-          <td colspan="10" class="text-center py-3"><em>No se encontraron registros SIGSA-3.</em></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  @if (!cargando) {
+    <div class="table-wrap">
+      <table class="sigsa3-table">
+        <thead>
+          <tr>
+            <th class="th-check">
+              <input type="checkbox" (change)="toggleTodos()" [checked]="seleccionados.size === registros.length && registros.length > 0" />
+            </th>
+            <th>Fecha</th>
+            <th>Paciente</th>
+            <th>Historia</th>
+            <th>Personal Salud</th>
+            <th>Tipo</th>
+            <th>Especialidad</th>
+            <th>CIE-10</th>
+            <th>Dx</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of registrosPaginados; track r) {
+            <tr
+              [class.row-seleccionado]="seleccionados.has(r.id)"
+              (click)="activarFila(r.id, $event)">
+              <td class="td-check">
+                <input type="checkbox" [checked]="seleccionados.has(r.id)" (click)="activarFila(r.id, $event)" />
+              </td>
+              <td>{{ r.fecha_consulta || '—' }}</td>
+              <td>
+                <div class="cell-paciente">
+                  <strong>{{ r.nombre_paciente || '—' }}</strong>
+                  @if (r.paciente_id) {
+                    <small>ID: {{ r.paciente_id }}</small>
+                  }
+                </div>
+              </td>
+              <td>{{ r.no_historia_clinica || '—' }}</td>
+              <td>{{ r.personal_salud || '—' }}</td>
+              <td>{{ r.tipo_consulta || '—' }}</td>
+              <td>{{ r.especialidad || '—' }}</td>
+              <td><span class="cie-badge">{{ r.codigo_cie_10 || '—' }}</span></td>
+              <td class="cell-dx">{{ r.dx || '—' }}</td>
+              <td>
+                <div class="d-flex gap-1">
+                  <button class="btn-sm" (click)="editar(r.id); $event.stopPropagation()">✏️</button>
+                  <button class="btn-sm danger" (click)="eliminar(r.id); $event.stopPropagation()">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          }
+          @if (!cargando && registros.length === 0) {
+            <tr>
+              <td colspan="10" class="text-center py-3"><em>No se encontraron registros SIGSA-3.</em></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
   <!-- PAGINADOR -->
-  <div class="paginador" *ngIf="totalPaginas > 1">
-    <button [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">◀</button>
-    <button       *ngFor="let p of paginas; trackBy: trackById" [class.pag-activa]="p === paginaActual" (click)="paginaActual = p">{{ p }}</button>
-    <button [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">▶</button>
-  </div>
+  @if (totalPaginas > 1) {
+    <div class="paginador">
+      <button [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">◀</button>
+      @for (p of paginas; track trackById($index, p)) {
+        <button       [class.pag-activa]="p === paginaActual" (click)="paginaActual = p">{{ p }}</button>
+      }
+      <button [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">▶</button>
+    </div>
+  }
 
   <!-- MODAL PERÍODO -->
-  <div class="modal-overlay" *ngIf="modalPeriodo" (click)="cerrarModalPeriodo()">
-    <div class="modal-box" (click)="$event.stopPropagation()">
-      <h3>Eliminar por período</h3>
-      <div class="modal-fields">
-        <label>Desde: <input type="date" [(ngModel)]="DesdePeriodo" /></label>
-        <label>Hasta: <input type="date" [(ngModel)]="HastaPeriodo" /></label>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-accion" (click)="cerrarModalPeriodo()">Cancelar</button>
-        <button class="btn-accion danger" (click)="eliminarPorPeriodo()" [disabled]="procesando">
-          {{ procesando ? 'Eliminando...' : 'Eliminar' }}
-        </button>
-      </div>
-      <div *ngIf="resultadoOperacion" class="resultado-box">
-        Eliminados: {{ resultadoOperacion.eliminados || 0 }}
+  @if (modalPeriodo) {
+    <div class="modal-overlay" (click)="cerrarModalPeriodo()">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <h3>Eliminar por período</h3>
+        <div class="modal-fields">
+          <label>Desde: <input type="date" [(ngModel)]="DesdePeriodo" /></label>
+          <label>Hasta: <input type="date" [(ngModel)]="HastaPeriodo" /></label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-accion" (click)="cerrarModalPeriodo()">Cancelar</button>
+          <button class="btn-accion danger" (click)="eliminarPorPeriodo()" [disabled]="procesando">
+            {{ procesando ? 'Eliminando...' : 'Eliminar' }}
+          </button>
+        </div>
+        @if (resultadoOperacion) {
+          <div class="resultado-box">
+            Eliminados: {{ resultadoOperacion.eliminados || 0 }}
+          </div>
+        }
       </div>
     </div>
-  </div>
+  }
 
   <!-- MODAL ASOCIAR -->
-  <div class="modal-overlay" *ngIf="modalAsociar" (click)="cerrarModalAsociar()">
-    <div class="modal-box" (click)="$event.stopPropagation()">
-      <h3>Asociar registro a paciente</h3>
-      <div class="modal-fields">
-        <label>Expediente: <input type="text" [(ngModel)]="asociarExpediente" placeholder="EXP-YYYY-######" /></label>
-        <label>No. Historia Clínica: <input type="text" [(ngModel)]="asociarHistoria" placeholder="Historia clínica" /></label>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-accion" (click)="cerrarModalAsociar()">Cancelar</button>
-        <button class="btn-accion accent" (click)="asociarPaciente()" [disabled]="procesando">
-          {{ procesando ? 'Asociando...' : 'Asociar' }}
-        </button>
-      </div>
-      <div *ngIf="resultadoOperacion" class="resultado-box">
-        Registros encontrados: {{ resultadoOperacion.registros_encontrados || 0 }} |
-        Asociados: {{ resultadoOperacion.registros_asociados || 0 }}
+  @if (modalAsociar) {
+    <div class="modal-overlay" (click)="cerrarModalAsociar()">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <h3>Asociar registro a paciente</h3>
+        <div class="modal-fields">
+          <label>Expediente: <input type="text" [(ngModel)]="asociarExpediente" placeholder="EXP-YYYY-######" /></label>
+          <label>No. Historia Clínica: <input type="text" [(ngModel)]="asociarHistoria" placeholder="Historia clínica" /></label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-accion" (click)="cerrarModalAsociar()">Cancelar</button>
+          <button class="btn-accion accent" (click)="asociarPaciente()" [disabled]="procesando">
+            {{ procesando ? 'Asociando...' : 'Asociar' }}
+          </button>
+        </div>
+        @if (resultadoOperacion) {
+          <div class="resultado-box">
+            Registros encontrados: {{ resultadoOperacion.registros_encontrados || 0 }} |
+            Asociados: {{ resultadoOperacion.registros_asociados || 0 }}
+          </div>
+        }
       </div>
     </div>
-  </div>
+  }
 </div>

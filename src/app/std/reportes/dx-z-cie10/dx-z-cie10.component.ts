@@ -1,7 +1,7 @@
 // dx-z-cie10.component.ts
 
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Sigsa3Service } from '../../sigsa3/sigsa3.service';
@@ -18,8 +18,9 @@ interface Z10PivotRow {
 
 @Component({
   selector: 'app-dx-z-cie10',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './dx-z-cie10.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./dx-z-cie10.component.css']
 })
 export class DxZCie10Component implements OnInit {

@@ -1,7 +1,7 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, ChangeDetectionStrategy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { NavbarComponent } from './principal/navbar/navbar.component';
 import { ApiService } from './service/api.service';
 import { OfflineSyncService } from './service/offline-sync.service';
@@ -18,9 +18,10 @@ import localeEs from '@angular/common/locales/es';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, CommonModule, OfflineBannerComponent, UpdateNotificationComponent],
+  imports: [RouterOutlet, NavbarComponent, OfflineBannerComponent, UpdateNotificationComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {

@@ -1,7 +1,7 @@
 // doctorForm.component.ts
 
-import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Location } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -20,10 +20,10 @@ import { IconService } from '../../../service/icon.service';
   templateUrl: './doctorForm.component.html',
   styleUrls: ['./doctorForm.component.css'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
-    CommonModule,
     ReactiveFormsModule
-  ]
+]
 })
 export class DoctorFormComponent implements OnInit {
 

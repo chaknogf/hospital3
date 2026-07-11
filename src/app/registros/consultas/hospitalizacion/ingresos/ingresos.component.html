@@ -3,7 +3,7 @@
   <div
     class="botones justify-content-between"
     [ngClass]="{ 'd-none': filtrar }"
-  >
+    >
     <button type="button" (click)="volver()">
       <span [innerHTML]="icons['menu']"></span>
       Menu
@@ -31,7 +31,7 @@
           name="expediente"
           placeholder="E26-003"
           style="text-transform: uppercase"
-        />
+          />
       </fieldset>
 
       <div class="d-flex gap-1">
@@ -43,7 +43,7 @@
             [(ngModel)]="filtros.primer_nombre"
             name="primerNombre"
             placeholder="Ej: Juan"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -54,7 +54,7 @@
             [(ngModel)]="filtros.segundo_nombre"
             name="segundoNombre"
             placeholder="Ej: María"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -65,7 +65,7 @@
             [(ngModel)]="filtros.primer_apellido"
             name="primerApellido"
             placeholder="Ej: García"
-          />
+            />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -76,7 +76,7 @@
             [(ngModel)]="filtros.segundo_apellido"
             name="segundoApellido"
             placeholder="Ej: Pérez"
-          />
+            />
         </fieldset>
       </div>
 
@@ -87,61 +87,61 @@
           class="input-filtros"
           [(ngModel)]="filtros.fecha"
           name="fechaConsulta"
-        />
+          />
       </fieldset>
 
       <!-- <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Ciclo</label>
-        <select
-          name="ciclo"
-          [(ngModel)]="filtros.ciclo"
-          id="cilo"
-          class="input-filtros"
+      <label class="label-filtros">Ciclo</label>
+      <select
+        name="ciclo"
+        [(ngModel)]="filtros.ciclo"
+        id="cilo"
+        class="input-filtros"
         >
-          <option *ngFor="let ciclo of ciclos" [value]="ciclo.value">
-            {{ ciclo.label }}
-          </option>
-        </select>
-      </fieldset> -->
+        <option *ngFor="let ciclo of ciclos" [value]="ciclo.value">
+          {{ ciclo.label }}
+        </option>
+      </select>
+    </fieldset> -->
 
-      <!-- Botones -->
-      <div class="botones-filtros">
-        <button class="button-filtros" type="submit">
-          <span [innerHTML]="icons['search']"></span> Buscar
-        </button>
-        <button class="button-filtros" type="button" (click)="limpiarFiltros()">
-          <span [innerHTML]="icons['delete']"></span> Limpiar
-        </button>
-        <button class="button-filtros" type="button" (click)="agregar()">
-          <span [innerHTML]="icons['create']"></span> Agregar
-        </button>
-      </div>
-    </form>
-    <div class="d-flex justify-content-center m-0 p-0">
-      <button class="btn m-0 p-0" (click)="toggleFiltrar()">
-        <span [innerHTML]="icons['arrowDown']"></span>
+    <!-- Botones -->
+    <div class="botones-filtros">
+      <button class="button-filtros" type="submit">
+        <span [innerHTML]="icons['search']"></span> Buscar
+      </button>
+      <button class="button-filtros" type="button" (click)="limpiarFiltros()">
+        <span [innerHTML]="icons['delete']"></span> Limpiar
+      </button>
+      <button class="button-filtros" type="button" (click)="agregar()">
+        <span [innerHTML]="icons['create']"></span> Agregar
       </button>
     </div>
+  </form>
+  <div class="d-flex justify-content-center m-0 p-0">
+    <button class="btn m-0 p-0" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['arrowDown']"></span>
+    </button>
   </div>
-  <!-- Tabla principal (desktop) -->
-  <div class="aurora-container">
-    <table class="aurora-tb">
-      <thead>
-        <tr>
-          <th>Nombre Completo</th>
-          <th>Identificador</th>
-          <th>Fecha</th>
-          <th>Ultimo Ciclo</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
+</div>
+<!-- Tabla principal (desktop) -->
+<div class="aurora-container">
+  <table class="aurora-tb">
+    <thead>
+      <tr>
+        <th>Nombre Completo</th>
+        <th>Identificador</th>
+        <th>Fecha</th>
+        <th>Ultimo Ciclo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of consultas; track trackById($index, data)) {
         <tr
-          *ngFor="let data of consultas; trackBy: trackById"
           class="aurora-table-row"
           [class.touch-active]="rowActiva === data.id"
           (click)="activarFila(data.id)"
-        >
+          >
           <td data-label="Nombre:">
             <div class="nombre-table">
               <p class="p-0 m-0 text-uppercase">
@@ -152,7 +152,7 @@
               <p
                 class="p-0 mt-1 text-uppercase"
                 [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-              >
+                >
                 {{ data.paciente.nombre.primer_apellido }}
                 {{ data.paciente.nombre.segundo_apellido }}
                 @if (data.paciente.nombre.apellido_casada) {
@@ -183,7 +183,6 @@
             }
             <p style="font-size: xx-small">id: {{ data.id }}</p>
           </td>
-
           <td class="oculto">
             <ng-container>
               {{ data.fecha_consulta | date: "dd/MM/yy" }}
@@ -196,14 +195,13 @@
           <td class="oculto">
             <small>{{ data.ultimo_estado }}</small>
           </td>
-
           <td class="secundario">
             <div class="d-flex gap-1">
               @if (data.ultimo_estado !== "archivo") {
                 <button
                   (click)="editar(data.id); $event.stopPropagation()"
                   data-label="Editar"
-                >
+                  >
                   <span [innerHTML]="icons['edit']"></span>
                 </button>
               } @else {
@@ -218,75 +216,81 @@
             </div>
           </td>
         </tr>
-        <!-- Sin resultados -->
-        <tr *ngIf="!cargando && consultas.length === 0">
+      }
+      <!-- Sin resultados -->
+      @if (!cargando && consultas.length === 0) {
+        <tr>
           <td colspan="5" class="text-center py-3">
             <em>No se encontraron coincidencias.</em>
           </td>
         </tr>
+      }
 
-        <!-- Cargando -->
-        <tr *ngIf="cargando">
+      <!-- Cargando -->
+      @if (cargando) {
+        <tr>
           <td colspan="5" class="text-center py-3">
             <em>Cargando...</em>
           </td>
         </tr>
-      </tbody>
-    </table>
-  </div>
+      }
+    </tbody>
+  </table>
+</div>
 
-  <!-- ── PAGINADOR ── reemplaza el div de paginación actual ── -->
-  <div class="paginador">
-    <!-- Botón anterior -->
-    <button
-      class="pag-btn"
-      [disabled]="!hayPaginaAnterior"
-      (click)="cambiarPagina(-1)"
+<!-- ── PAGINADOR ── reemplaza el div de paginación actual ── -->
+<div class="paginador">
+  <!-- Botón anterior -->
+  <button
+    class="pag-btn"
+    [disabled]="!hayPaginaAnterior"
+    (click)="cambiarPagina(-1)"
     >
-      <span [innerHTML]="icons['skipLeft']"></span>
-    </button>
+    <span [innerHTML]="icons['skipLeft']"></span>
+  </button>
 
-    <!-- Primera página + ellipsis si el rango no empieza en 1 -->
-    @if (paginas[0] > 1) {
-      <button class="pag-num" (click)="irAPagina(1)">1</button>
-    }
-    @if (paginas[0] > 2) {
-      <span class="pag-ellipsis">…</span>
-    }
+  <!-- Primera página + ellipsis si el rango no empieza en 1 -->
+  @if (paginas[0] > 1) {
+    <button class="pag-num" (click)="irAPagina(1)">1</button>
+  }
+  @if (paginas[0] > 2) {
+    <span class="pag-ellipsis">…</span>
+  }
 
-    <!-- Páginas del rango visible -->
+  <!-- Páginas del rango visible -->
+  @for (p of paginas; track trackById($index, p)) {
     <button
-      *ngFor="let p of paginas; trackBy: trackById"
       class="pag-num"
       [class.pag-num-active]="p === paginaActual"
       (click)="irAPagina(p)"
-    >
+      >
       {{ p }}
     </button>
+  }
 
-    <!-- Ellipsis + última página si el rango no llega al final -->
-    @if (paginas[paginas.length - 1] < totalPaginas - 1) {
-      <span class="pag-ellipsis">…</span>
-    }
-    @if (paginas[paginas.length - 1] < totalPaginas) {
-      <button class="pag-num" (click)="irAPagina(totalPaginas)">
-        {{ totalPaginas }}
-      </button>
-    }
-
-    <!-- Botón siguiente -->
-    <button
-      class="pag-btn"
-      [disabled]="!hayPaginaSiguiente"
-      (click)="cambiarPagina(1)"
-    >
-      <span [innerHTML]="icons['skipRight']"></span>
+  <!-- Ellipsis + última página si el rango no llega al final -->
+  @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+    <span class="pag-ellipsis">…</span>
+  }
+  @if (paginas[paginas.length - 1] < totalPaginas) {
+    <button class="pag-num" (click)="irAPagina(totalPaginas)">
+      {{ totalPaginas }}
     </button>
+  }
 
-    <!-- Total de registros -->
-    <span class="pag-info">
-      Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
-      {{ totalDeRegistros }} registros
-    </span>
-  </div>
+  <!-- Botón siguiente -->
+  <button
+    class="pag-btn"
+    [disabled]="!hayPaginaSiguiente"
+    (click)="cambiarPagina(1)"
+    >
+    <span [innerHTML]="icons['skipRight']"></span>
+  </button>
+
+  <!-- Total de registros -->
+  <span class="pag-info">
+    Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+    {{ totalDeRegistros }} registros
+  </span>
+</div>
 </div>

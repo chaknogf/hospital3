@@ -16,8 +16,9 @@ export class PesoDirective implements Validator {
 
   constructor(private control: NgControl) { }
 
-  @HostListener('input', ['$event.target.value'])
-  onInput(value: string) {
+  @HostListener('input', ['$event'])
+  onInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
     // Solo permitir dígitos y un punto
     let limpio = value.replace(/[^\d.]/g, '');
 

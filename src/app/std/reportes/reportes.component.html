@@ -3,14 +3,16 @@
   <nav class="submenu-nav">
     <a class="submenu-brand" routerLink="/reportes">📊 Reportes</a>
     <div class="submenu-links">
-      <a *ngFor="let r of reportes"
-         class="submenu-link"
-         routerLink="{{ r.ruta }}"
-         routerLinkActive="submenu-active"
-         [routerLinkActiveOptions]="{ exact: true }">
-        <span class="submenu-icono">{{ r.icono }}</span>
-        <span class="submenu-texto">{{ r.nombre }}</span>
-      </a>
+      @for (r of reportes; track r) {
+        <a
+          class="submenu-link"
+          routerLink="{{ r.ruta }}"
+          routerLinkActive="submenu-active"
+          [routerLinkActiveOptions]="{ exact: true }">
+          <span class="submenu-icono">{{ r.icono }}</span>
+          <span class="submenu-texto">{{ r.nombre }}</span>
+        </a>
+      }
     </div>
   </nav>
 
