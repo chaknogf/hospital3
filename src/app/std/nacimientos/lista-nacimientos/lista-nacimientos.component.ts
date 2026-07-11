@@ -520,7 +520,14 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
         const ws = wb.addWorksheet('Nacimientos');
         ws.columns = Object.keys(rows[0] || {}).map(k => ({ header: k, key: k, width: Math.max(k.length, 18) }));
         ws.addRows(rows);
-        await wb.xlsx.writeFile(`nacimientos_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        const buffer = await wb.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `nacimientos_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        a.click();
+        URL.revokeObjectURL(url);
         this.cdr.markForCheck();
       },
       error: err => {
