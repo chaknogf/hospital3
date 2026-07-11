@@ -7,47 +7,47 @@
 
 /* ── Tokens ─────────────────────────────────────────────── */
 :root {
-  --color-bg:          #F0F4F8;
-  --color-surface:     #FFFFFF;
-  --color-border:      #D8E2ED;
-  --color-border-soft: #EBF0F6;
+  --color-bg: #0a1428;
+  --color-surface: #0f1e3a;
+  --color-border: var(--rim);
+  --color-border-soft: rgba(96,165,250,0.08);
 
-  --color-ink:         #1E2D40;
-  --color-ink-muted:   #5A7184;
-  --color-ink-faint:   #94A8BC;
+  --color-ink: #e2eeff;
+  --color-ink-muted: #4a6fa5;
+  --color-ink-faint: rgba(74,111,165,0.5);
 
-  --color-accent:      #3B6EA5;
-  --color-accent-light:#EBF2FB;
-  --color-accent-dark: #2A4F7C;
+  --color-accent: #3b82f6;
+  --color-accent-light: rgba(59,130,246,0.12);
+  --color-accent-dark: #60a5fa;
 
-  --color-danger:      #B83232;
-  --color-danger-bg:   #FDF1F1;
-  --color-danger-border:#F0C4C4;
+  --color-danger: #ef4444;
+  --color-danger-bg: rgba(248,113,113,0.12);
+  --color-danger-border: rgba(248,113,113,0.25);
 
-  --color-success:     #1A6B42;
-  --color-success-bg:  #EDF7F2;
-  --color-success-border:#A8D9BE;
+  --color-success: #10b981;
+  --color-success-bg: rgba(16,185,129,0.12);
+  --color-success-border: rgba(16,185,129,0.25);
 
-  --color-keep:        #7B5EA7;
-  --color-keep-bg:     #F3EFFE;
+  --color-keep: #a78bfa;
+  --color-keep-bg: rgba(167,139,250,0.12);
 
   --radius-sm:  4px;
   --radius-md:  8px;
   --radius-lg:  12px;
 
-  --shadow-card: 0 1px 3px rgba(30,45,64,0.07), 0 4px 12px rgba(30,45,64,0.05);
-  --shadow-dock: 0 2px 8px rgba(30,45,64,0.10);
-  --shadow-soft: 0 4px 20px rgba(0,0,0,0.05);
+  --shadow-card: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-dock: 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-soft: 0 4px 16px rgba(0,0,0,0.4);
 
   --font: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'Inter', system-ui, -apple-system, sans-serif;
 
   --transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
-  --glass-bg: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(148, 168, 188, 0.2);
-  --rim: rgba(148, 168, 188, 0.15);
-  --pulse: #3B6EA5;
+  --glass-bg: rgba(8,12,35,0.55);
+  --glass-border: rgba(96,165,250,0.15);
+  --rim: rgba(96,165,250,0.12);
+  --pulse: #3b82f6;
 }
 
 /* ── Reset scoped ───────────────────────────────────────── */
@@ -90,7 +90,7 @@
   top: 15px;
   z-index: 50;
   margin: 10px 1.5rem;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(8,12,35,0.55);
   backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: 14px;
@@ -104,12 +104,13 @@
 .dock-hint {
   font-family: var(--font-mono);
   font-size: 14px;
-  color: #64748b;
+  color: var(--muted);
   margin-right: auto;
 }
 
 /* ── BODY ESTRUCTURA (Flexbox Dinámico) ── */
 .adm-body {
+  background: transparent;
   max-width: 1200px;
   margin: 0 auto;
   padding: 1.5rem;
@@ -164,7 +165,7 @@
 .paciente-nombre {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text);
   margin-bottom: 4px;
 }
 
@@ -196,22 +197,22 @@
 
 .sec-head {
   padding: 1rem 1.5rem;
-  background: rgba(255,255,255,0.4);
-  border-bottom: 1px solid rgba(0,0,0,0.03);
+  background: rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .sec-badge {
-  color: #061429;
+  color: var(--star);
 }
 
 .sec-title {
   font-family: var(--font-mono);
   font-weight: 700;
   font-size: 14px;
-  color: #475569;
+  color: var(--muted);
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
@@ -238,7 +239,7 @@
 .field-label {
   font-size: 12px;
   font-weight: 700;
-  color: #061429;
+  color: var(--muted);
   padding-left: 4px;
   display: flex;
   align-items: center;
@@ -253,9 +254,9 @@
 }
 
 .field-input {
-  background: #f6f6f6;
-  border: 1.5px solid #f1f5f9;
-  color: #1e293b;
+  background: var(--surface);
+  border: 1.5px solid var(--rim);
+  color: var(--text);
   border-radius: 12px;
   padding: 0.75rem 1rem;
   font-size: 14px;
@@ -292,9 +293,9 @@
 
 .ind-chip {
   flex: 1 1 calc(50% - 10px);
-  background: #fff;
-  border: 3px solid #f1f5f9;
-  color: #414d5fa9;
+  background: var(--surface);
+  border: 2px solid var(--rim);
+  color: var(--muted);
   border-radius: 10px;
   padding: 0.2rem;
   display: flex;
@@ -305,7 +306,7 @@
 }
 
 .ind-chip:hover {
-  background: #f8fafc;
+  background: rgba(255,255,255,0.06);
   border-color: var(--pulse);
 }
 
@@ -331,7 +332,7 @@
   letter-spacing: 1px;
   text-transform: uppercase;
   font-weight: 500;
-  color: #020b1d;
+  color: var(--text);
   border: 2.2px solid rgba(59,130,246,0.18);
   padding: 3px 9px;
   border-radius: 10px;
@@ -644,6 +645,7 @@
   .hud-header,
   .action-dock,
   .adm-body {
+  background: transparent;
     padding-left: 16px;
     padding-right: 16px;
   }

@@ -36,7 +36,7 @@
   top: 15px;
   z-index: 50;
   margin: 10px 1.5rem;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(8,12,35,0.55);
   backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: 14px;
@@ -50,7 +50,7 @@
 .dock-hint {
   font-family: var(--font-mono);
   font-size: 14px;
-  color: #64748b;
+  color: var(--muted);
   margin-right: auto;
 }
 
@@ -108,7 +108,7 @@
 .paciente-nombre {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text);
   margin-bottom: 4px;
 }
 
@@ -130,22 +130,22 @@
 
 .sec-head {
   padding: 1rem 1.5rem;
-  background: rgba(255,255,255,0.4);
-  border-bottom: 1px solid rgba(0,0,0,0.03);
+  background: rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .sec-badge {
-color: #061429;
+color: var(--muted);
 }
 
 .sec-title {
   font-family: var(--font-mono);
   font-weight: 700;
   font-size: 14px;
-  color: #475569;
+  color: var(--muted);
   letter-spacing: 1.5px;
 }
 
@@ -171,14 +171,14 @@ color: #061429;
 .field-label {
   font-size: 12px;
   font-weight: 700;
-  color: #061429;
+  color: var(--muted);
   padding-left: 4px;
 }
 
 .field-input {
-  background: #f6f6f6;
-  border: 1.5px solid #f1f5f9;
-  color: #1e293b;
+  background: var(--surface);
+  border: 1.5px solid var(--rim);
+  color: var(--text);
   border-radius: 12px;
   padding: 0.75rem 1rem;
   font-size: 14px;
@@ -199,9 +199,9 @@ color: #061429;
 
 .ind-chip {
   flex: 1 1 calc(50% - 10px);
-  background: #fff;
-  border: 3px solid #f1f5f9;
-  color: #414d5fa9;
+  background: var(--surface);
+  border: 2px solid var(--rim);
+  color: var(--muted);
   border-radius: 10px;
   padding: 0.2rem;
   display: flex;
@@ -212,7 +212,7 @@ color: #061429;
 }
 
 .ind-chip:hover {
-    background: #f8fafc;
+    background: rgba(255,255,255,0.06);
     border-color: var(--pulse);
 }
 
@@ -272,7 +272,7 @@ color: #061429;
   letter-spacing: 1px;
   text-transform: uppercase;
   font-weight: 500;
-  color: #020b1d;
+  color: var(--text);
   border: 2.2px solid rgba(59,130,246,0.18);
   padding: 3px 9px;
   border-radius: 10px;
