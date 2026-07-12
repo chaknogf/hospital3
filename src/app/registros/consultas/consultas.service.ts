@@ -236,6 +236,14 @@ export class ConsultaService extends BaseApiService {
     );
   }
 
+  reasignarPaciente(consultaId: number, nuevoPacienteId: number): Observable<ConsultaOut> {
+    this.isLoading.set(true);
+    const url = `${this.baseUrl}/consultas/${consultaId}/reasignar-paciente?nuevo_paciente_id=${nuevoPacienteId}`;
+    return this.offMutation('PATCH', url).pipe(
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
   getPacientesBuscados(filtros: any): Observable<PacienteBuscado[]> {
     this.ultimoFiltroConsulta.filtro = filtros;
     const params = this.limpiarParametros(filtros);

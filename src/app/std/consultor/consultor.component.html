@@ -115,8 +115,22 @@
       <button class="btn-buscar btn" type="submit" [disabled]="buscando">
         {{ buscando ? "Buscando..." : "Buscar" }}
       </button>
+
+      <button class="btn btn-cie10-sidebar" type="button" (click)="abrirCie10()">
+        🏥 CIE-10
+      </button>
     </form>
   </aside>
+
+  <!-- ══ CIE-10 MODAL ════════════════════════════════════════════ -->
+  @if (cie10Abierto()) {
+    <div class="cie10-modal-overlay" (click)="cerrarCie10()">
+      <div class="cie10-modal-card" (click)="$event.stopPropagation()">
+        <button class="cie10-modal-close" (click)="cerrarCie10()">✕</button>
+        <app-cie10 [embedded]="true"></app-cie10>
+      </div>
+    </div>
+  }
 
   <!-- ══ FAB — solo visible en mobile cuando sidebar está cerrado ══ -->
   <button
@@ -127,6 +141,8 @@
     >
     🔍
   </button>
+
+
 
   <!-- ══ MAIN ══════════════════════════════════════════════════ -->
   <main class="main-panel">

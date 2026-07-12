@@ -56,6 +56,7 @@ export class AdminComponent implements OnInit {
       { nombre: 'Desactivar Consulta', descripcion: 'Cambiar estado a descartado', ruta: '/desactivar-consulta', icon: '' },
       { nombre: 'Eliminar Consulta', descripcion: 'Eliminar consulta permanentemente', ruta: '/eliminar-consulta', icon: '' },
       { nombre: 'Eliminar Constancia', descripcion: 'Eliminar constancia de nacimiento', ruta: '/eliminar-constancia', icon: '' },
+      { nombre: 'Reasignar Paciente', descripcion: 'Reasignar paciente en consulta (XX/desconocido)', ruta: '/consultas/0/reasignar-paciente', icon: '' },
       { nombre: 'Municipios', descripcion: 'Gestionar catálogo de municipios', ruta: '/gestion-municipios', icon: '' },
       { nombre: 'Encamamiento', descripcion: 'Gestionar servicios y camas', ruta: '/gestion-encamamiento', icon: '' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConsultaService } from '../../registros/consultas/consultas.service';
 import { Router } from '@angular/router';
@@ -14,6 +14,7 @@ import { Location } from '@angular/common';
 import { Citas } from '../../interface/citas';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Cie10Component } from '../../medica/cie10/cie10.component';
 
 @Component({
   selector: 'app-consultor',
@@ -21,7 +22,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./consultor.component.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, DatosExtraPipe, TimePipe, CuiPipe, EdadPipe]
+  imports: [CommonModule, FormsModule, DatosExtraPipe, TimePipe, CuiPipe, EdadPipe, Cie10Component]
 })
 export class ConsultorComponent implements OnInit, OnDestroy {
 
@@ -35,6 +36,10 @@ export class ConsultorComponent implements OnInit, OnDestroy {
 
   // ── Estado del sidebar (bottom sheet en mobile) ──────────
   sidebarAbierto: boolean = false;
+
+  // ── CIE-10 modal ─────────────────────────────────────────────
+  cie10Abierto = signal(false);
+  cie10Mensaje = signal('');
 
   // ── Estado de búsqueda ──────────────────────────────────
   filtros = {
@@ -83,6 +88,15 @@ export class ConsultorComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // ── CIE-10 ──────────────────────────────────────────────────
+  abrirCie10(): void {
+    this.cie10Abierto.set(true);
+  }
+
+  cerrarCie10(): void {
+    this.cie10Abierto.set(false);
   }
 
   // ── Control del sidebar / bottom sheet ─────────────────

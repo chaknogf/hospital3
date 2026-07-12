@@ -1,0 +1,83 @@
+<div class="cie10-header">
+  <span class="cie10-title">CIE-10</span>
+  <div class="cie10-tabs">
+    <button class="tab-btn" [class.active]="tab() === 'chat'" (click)="tab.set('chat')">Chat</button>
+    <button class="tab-btn" [class.active]="tab() === 'usados'" (click)="tab.set('usados')">Usados</button>
+  </div>
+  @if (!embedded) {
+    <button class="btn-back" (click)="volver()">Salir</button>
+  }
+</div>
+
+<div class="cie10-body">
+  @if (tab() === 'chat') {
+    <div class="chat-messages">
+      @for (msg of messages(); track $index) {
+        <div class="msg" [class.msg-user]="msg.role === 'user'" [class.msg-assistant]="msg.role === 'assistant'" [class.msg-system]="msg.role === 'system'">
+          <div>{{ msg.content }}</div>
+          @if (msg.codigos?.length) {
+            <div class="codigos-list">
+              @for (c of msg.codigos; track c.codigo) {
+                <button class="codigo-chip" (click)="seleccionarCodigo(c.codigo)">
+                  <strong>{{ c.codigo }}</strong>  {{ c.descripcion }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      @if (searchResults().length > 0) {
+        <div class="search-divider">
+          <span>catálogo · {{ searchTotal() }} resultados</span>
+        </div>
+        @for (c of searchResults(); track c.codigo) {
+          <button class="codigo-chip search-chip" (click)="seleccionarCodigo(c.codigo)">
+            <strong>{{ c.codigo }}</strong>  {{ c.descripcion }}
+          </button>
+        }
+      }
+
+      @if (searching()) {
+        <div class="msg msg-assistant search-hint">buscando...</div>
+      }
+
+      @if (loading()) {
+        <div class="msg msg-assistant">
+          <div class="typing">—</div>
+        </div>
+      }
+    </div>
+
+    <div class="chat-input">
+      <input
+        class="input-field"
+        type="text"
+        [ngModel]="inputText()"
+        (ngModelChange)="onInput($event)"
+        (keydown.enter)="enviar()"
+        placeholder="síntoma, enfermedad o código..."
+        [disabled]="loading()"
+      />
+      <button class="btn-send" (click)="enviar()" [disabled]="!inputText().trim() || loading()">Enviar</button>
+    </div>
+  }
+
+  @if (tab() === 'usados') {
+    <div class="usados-body">
+      <h3>Más usados</h3>
+      @if (loadingUsados()) {
+        <span class="muted">cargando...</span>
+      } @else if (usados().length === 0) {
+        <span class="muted">sin datos</span>
+      } @else {
+        @for (c of usados(); track c.codigo) {
+          <button class="codigo-card" (click)="seleccionarCodigo(c.codigo)">
+            <span class="codigo-card-code">{{ c.codigo }}</span>
+            <span class="codigo-card-desc">{{ c.descripcion }}</span>
+          </button>
+        }
+      }
+    </div>
+  }
+</div>

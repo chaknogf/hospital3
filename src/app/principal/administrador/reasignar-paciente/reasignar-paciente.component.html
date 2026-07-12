@@ -1,0 +1,157 @@
+<div class="hud-header">
+  <div class="hud-title">Reasignar Paciente</div>
+</div>
+
+<div class="action-dock">
+  <span class="dock-hint">Reasignar paciente de consulta XX / desconocido</span>
+
+  <button
+    class="btn"
+    (click)="reasignar()"
+    [disabled]="saving() || !consulta() || !nuevoPaciente() || confirmText() !== 'confirmar'"
+  >
+    {{ saving() ? "Reasignando..." : "Reasignar" }}
+  </button>
+
+  <button class="btn" (click)="volver()">Cancelar</button>
+</div>
+
+<div class="adm-body">
+  @if (error(); as msg) {
+    <div class="alert-error">{{ msg }}</div>
+  }
+
+  @if (success(); as msg) {
+    <div class="alert-success">{{ msg }}</div>
+  }
+
+  <div class="adm-grid">
+    <div class="adm-col">
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Consulta</span>
+        </div>
+
+        <div class="sec-body">
+          <div class="field" style="flex:1 1 100%">
+            <label class="field-label">ID de consulta</label>
+            <div class="merge-input-row">
+              <input
+                class="field-input"
+                type="number"
+                [ngModel]="consultaId()"
+                (ngModelChange)="consultaId.set($event); consulta.set(null)"
+                placeholder="ID de la consulta"
+              />
+              <button class="btn-add" (click)="cargarConsulta()" [disabled]="!consultaId() || loadingConsulta()">
+                {{ loadingConsulta() ? "..." : "Verificar" }}
+              </button>
+            </div>
+          </div>
+
+          @if (consulta(); as c) {
+            <div class="detail-grid">
+              <div class="detail-row">
+                <span class="detail-label">Paciente actual</span>
+                <span class="detail-value">{{ nombreActual }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Expediente</span>
+                <span class="detail-value">{{ c.expediente || c.paciente?.expediente || '—' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Especialidad</span>
+                <span class="detail-value">{{ c.especialidad || '—' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Servicio</span>
+                <span class="detail-value">{{ c.servicio || '—' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Fecha</span>
+                <span class="detail-value">{{ c.fecha_consulta || '—' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Estado</span>
+                <span class="detail-value">{{ c.ultimo_estado || '—' }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Nuevo paciente</span>
+        </div>
+
+        <div class="sec-body">
+          <div class="field" style="flex:1 1 100%">
+            <label class="field-label">ID del paciente correcto</label>
+            <div class="merge-input-row">
+              <input
+                class="field-input"
+                type="number"
+                [ngModel]="nuevoPacienteId()"
+                (ngModelChange)="nuevoPacienteId.set($event); nuevoPaciente.set(null)"
+                placeholder="ID del nuevo paciente"
+              />
+              <button class="btn-add" (click)="cargarPaciente()" [disabled]="!nuevoPacienteId() || loadingPaciente()">
+                {{ loadingPaciente() ? "..." : "Verificar" }}
+              </button>
+            </div>
+          </div>
+
+          @if (nuevoPaciente(); as p) {
+            <div class="detail-grid">
+              <div class="detail-row">
+                <span class="detail-label">Nombre</span>
+                <span class="detail-value">{{ nombreNuevo }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Expediente</span>
+                <span class="detail-value">{{ p.expediente || '—' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">CUI</span>
+                <span class="detail-value">{{ p.cui || '—' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Sexo</span>
+                <span class="detail-value">{{ p.sexo || '—' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Fecha nac.</span>
+                <span class="detail-value">{{ p.fecha_nacimiento || '—' }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (consulta() && nuevoPaciente()) {
+        <div class="section-card">
+          <div class="sec-head">
+            <span class="sec-title">Confirmar acción</span>
+          </div>
+
+          <div class="sec-body">
+            <div class="field" style="flex:1 1 100%">
+              <label class="field-label">
+                Escribe <strong>confirmar</strong> para habilitar el botón
+              </label>
+              <input
+                class="field-input"
+                type="text"
+                [ngModel]="confirmText()"
+                (ngModelChange)="confirmText.set($event)"
+                placeholder="Escribe 'confirmar'"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

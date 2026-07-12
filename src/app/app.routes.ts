@@ -71,6 +71,11 @@ export const routes: Routes = [
         loadComponent: () => import('./principal/administrador/eliminar-constancia/eliminar-constancia.component').then(c => c.EliminarConstanciaComponent),
         canActivate: [roleGuard(['admin'])]
       },
+      {
+        path: 'consultas/:consultaId/reasignar-paciente',
+        loadComponent: () => import('./principal/administrador/reasignar-paciente/reasignar-paciente.component').then(c => c.ReasignarPacienteComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
 
       // Registros Médicos
       {
@@ -227,6 +232,11 @@ export const routes: Routes = [
       {
         path: 'notaMedicas',
         loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+      },
+      {
+        path: 'cie10',
+        loadComponent: () => import('./medica/cie10/cie10.component').then(c => c.Cie10Component),
+        canActivate: [roleGuard(['admin', 'medico', 'std'])]
       },
       {
         path: 'historiaClinica/:consultaId',
