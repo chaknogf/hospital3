@@ -222,12 +222,42 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
           extrahositalario: [false],
           hora_nacimiento: [''],
           id_medico: [null]
+        }),
+
+        partos: this.fb.group({
+          nacidos_vivos: [null],
+          nacidos_muertos: [null]
         })
       }),
 
       estado: ['V']
 
     });
+  }
+
+  get esMenorDe1Anio(): boolean {
+    if (!this.form.get('fecha_nacimiento')?.value) return false;
+    return (this.form.get('edad.anios')?.value || 0) === 0;
+  }
+
+  get esMujerMayorDe12(): boolean {
+    const sexo = this.form.get('sexo')?.value;
+    const edad = this.form.get('edad.anios')?.value || 0;
+    return sexo === 'F' && edad >= 12;
+  }
+
+  isStepApplicable(index: number): boolean {
+    if (index < 7) return true;
+    if (index === 7) return this.esMenorDe1Anio || !!this.form.get('datos_extra.neonatales')?.value;
+    if (index === 8) return this.esMujerMayorDe12;
+    return true;
+  }
+
+  hasNextVisibleStep(i: number): boolean {
+    for (let j = i + 1; j < this.steps.length; j++) {
+      if (this.isStepApplicable(j)) return true;
+    }
+    return false;
   }
 
   // ======= UTILIDADES =======
@@ -845,8 +875,8 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     { id: 'referencias', label: 'Ref.', done: false },
     { id: 'demografia', label: 'Demog.', done: false },
     { id: 'socioeco', label: 'Socioec.', done: false },
-    { id: 'neonatales', label: 'Neonatales', done: false }
-
+    { id: 'neonatales', label: 'Neonatales', done: false },
+    { id: 'partos', label: 'Partos', done: false }
   ];
 
   goToStep(index: number) { this.currentStep.set(index); }
@@ -855,11 +885,11 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   isLastStep(): boolean { return this.currentStep() >= this.totalSteps() - 1; }
   totalSteps(): number {
     let total = 7;
-    if (this.esRecienNacido()) total++;
+    if (this.esMenorDe1Anio || !!this.form.get('datos_extra.neonatales')?.value) total++;
+    if (this.esMujerMayorDe12) total++;
     return total;
   }
 
-  // En el componente, agrega este método:
   private checkStepsDone(): void {
     this.steps[0].done = this.isStep0Done();
     this.steps[1].done = this.isStep1Done();
@@ -868,8 +898,11 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     this.steps[4].done = this.isStep4Done();
     this.steps[5].done = this.isStep5Done();
     this.steps[6].done = this.isStep6Done();
-    if (this.esRecienNacido()) {
+    if (this.esMenorDe1Anio || !!this.form.get('datos_extra.neonatales')?.value) {
       this.steps[7].done = this.isStep7Done();
+    }
+    if (this.esMujerMayorDe12) {
+      this.steps[8].done = this.isStep8Done();
     }
   }
 
@@ -924,6 +957,12 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     return !!(neo?.get('peso_nacimiento')?.value ||
       neo?.get('tipo_parto')?.value ||
       neo?.get('hora_nacimiento')?.value);
+  }
+
+  private isStep8Done(): boolean {
+    const partos = this.form.get('datos_extra.partos');
+    return !!(partos?.get('nacidos_vivos')?.value ||
+      partos?.get('nacidos_muertos')?.value);
   }
 
 

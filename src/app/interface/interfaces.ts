@@ -77,12 +77,18 @@ export interface Neonatales {
   id_medico?: number | null;
 }
 
+export interface Partos {
+  nacidos_vivos?: number | null;
+  nacidos_muertos?: number | null;
+}
+
 export interface DatosExtra {
   defuncion?: string | null;
   personaid?: string | null;
   demograficos?: Demograficos;
   socioeconomicos?: Socioeconomicos;
   neonatales?: Neonatales;
+  partos?: Partos | null;
   [key: string]: any; // Para campos adicionales dinámicos
 }
 

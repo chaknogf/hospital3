@@ -120,7 +120,9 @@ export class AdmisionComponent implements OnInit, OnDestroy {
       lactancia_materna: [''],
       medico: [''],
       diagnosticos: [''],
-      registro: ['']
+      registro: [''],
+      partos_vivos: [null],
+      partos_muertos: [null]
     });
   }
 
@@ -214,17 +216,15 @@ export class AdmisionComponent implements OnInit, OnDestroy {
   // GUARDAR
   // ══════════════════════════════════════════════════════════
 
-  // ══════════════════════════════════════════════════════════
-  // GUARDAR
-  // ══════════════════════════════════════════════════════════
-
   guardar(): void {
     const v = this.form.getRawValue();
     const tipo = Number(v.tipo_consulta);
     const especialidad = v.especialidad;
 
+    // Guardar partos si aplica (sexo F + GINE)
+    this.guardarPartosPaciente();
+
     if (this.enEdicion) {
-      // ✅ FIX: se agrega .subscribe() para que el observable se ejecute
       this.actualizarConsulta().subscribe({ next: () => this.cdr.markForCheck() });
       return;
     }
@@ -245,6 +245,27 @@ export class AdmisionComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(r => { if (r) this.navegarSegunTipo(tipo, especialidad, r.id); this.cdr.markForCheck(); });
+  }
+
+  private guardarPartosPaciente(): void {
+    const v = this.form.getRawValue();
+    const partosVivos = v.partos_vivos;
+    const partosMuertos = v.partos_muertos;
+    const pacienteId = v.paciente_id;
+    if (!pacienteId || !this.paciente) return;
+    if (partosVivos == null && partosMuertos == null) return;
+
+    const datosExtra = {
+      ...this.paciente.datos_extra,
+      partos: {
+        nacidos_vivos: partosVivos != null ? Number(partosVivos) : null,
+        nacidos_muertos: partosMuertos != null ? Number(partosMuertos) : null
+      }
+    };
+
+    this.apip.updatePaciente(pacienteId, { datos_extra: datosExtra }, 'mantener')
+      .pipe(takeUntil(this.destroy$), catchError(err => { console.error('Error guardando partos:', err); return of(null); }))
+      .subscribe();
   }
 
   // ══════════════════════════════════════════════════════════

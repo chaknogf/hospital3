@@ -17,24 +17,26 @@
 
   <!-- PROGRESS BAR -->
   <div class="progress-track">
-    @for (step of steps; track step.id; let i = $index; let last = $last) {
-      <div
-        class="prog-step"
-        [class.active]="currentStep() === i"
-        [class.done]="step.done"
-        (click)="goToStep(i)"
-        >
-        <div class="prog-dot">
-          @if (step.done) {
-            ✓
-          } @else {
-            {{ (i + 1).toString().padStart(2, "0") }}
-          }
+    @for (step of steps; track step.id; let i = $index) {
+      @if (isStepApplicable(i)) {
+        <div
+          class="prog-step"
+          [class.active]="currentStep() === i"
+          [class.done]="step.done"
+          (click)="goToStep(i)"
+          >
+          <div class="prog-dot">
+            @if (step.done) {
+              ✓
+            } @else {
+              {{ (i + 1).toString().padStart(2, "0") }}
+            }
+          </div>
+          <span class="prog-label">{{ step.label }}</span>
         </div>
-        <span class="prog-label">{{ step.label }}</span>
-      </div>
-      @if (!last) {
-        <div class="prog-line"></div>
+        @if (hasNextVisibleStep(i)) {
+          <div class="prog-line"></div>
+        }
       }
     }
   </div>
@@ -770,7 +772,7 @@
                                       <!-- ======================================== -->
                                       <!-- STEP 7: NEONATALES (condicional)         -->
                                       <!-- ======================================== -->
-                                      @if (esRecienNacido() || form.get("datos_extra.neonatales")?.value) {
+                                      @if (esMenorDe1Anio || form.get("datos_extra.neonatales")?.value) {
                                         @if (currentStep() === 7) {
                                           <div class="step-card" formGroupName="datos_extra">
                                             <div class="step-head">
@@ -890,10 +892,62 @@
                                                          </div>
                                                        </div>
                                                      </div>
-                                                   }
-                                                 }
-                                               </div>
-                                               <!-- /main-body -->
+                                                    }
+                                                  }
+
+                                                  <!-- ======================================== -->
+                                                  <!-- STEP 7b: PARTOS (sexo F, sin neonatales) -->
+                                                  <!-- ======================================== -->
+                                                  @if (!esMenorDe1Anio && !form.get("datos_extra.neonatales")?.value && esMujerMayorDe12) {
+                                                    @if (currentStep() === 7) {
+                                                      <div class="step-card" formGroupName="datos_extra">
+                                                        <div class="step-head">
+                                                          <div class="step-number" style="background: #8b5cf6">08</div>
+                                                          <span class="step-title">Partos</span>
+                                                        </div>
+                                                        <div class="step-body" formGroupName="partos">
+                                                          <div class="row-2">
+                                                            <div class="field">
+                                                              <span class="field-label">Nacidos Vivos</span>
+                                                              <input class="field-input" type="number" formControlName="nacidos_vivos" min="0" placeholder="0" />
+                                                            </div>
+                                                            <div class="field">
+                                                              <span class="field-label">Nacidos Muertos</span>
+                                                              <input class="field-input" type="number" formControlName="nacidos_muertos" min="0" placeholder="0" />
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    }
+                                                  }
+
+                                                  <!-- ======================================== -->
+                                                  <!-- STEP 8: PARTOS (sexo F, con neonatales)  -->
+                                                  <!-- ======================================== -->
+                                                  @if ((esMenorDe1Anio || form.get("datos_extra.neonatales")?.value) && esMujerMayorDe12) {
+                                                    @if (currentStep() === 8) {
+                                                      <div class="step-card" formGroupName="datos_extra">
+                                                        <div class="step-head">
+                                                          <div class="step-number" style="background: #8b5cf6">09</div>
+                                                          <span class="step-title">Partos</span>
+                                                        </div>
+                                                        <div class="step-body" formGroupName="partos">
+                                                          <div class="row-2">
+                                                            <div class="field">
+                                                              <span class="field-label">Nacidos Vivos</span>
+                                                              <input class="field-input" type="number" formControlName="nacidos_vivos" min="0" placeholder="0" />
+                                                            </div>
+                                                            <div class="field">
+                                                              <span class="field-label">Nacidos Muertos</span>
+                                                              <input class="field-input" type="number" formControlName="nacidos_muertos" min="0" placeholder="0" />
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    }
+                                                  }
+                                                </div>
+                                                <!-- /main-body -->
 
                                               <!-- ======================================== -->
                                               <!-- ACTION DOCK (sticky bottom)              -->

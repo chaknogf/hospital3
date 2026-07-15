@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Paciente, DatosExtra, Demograficos, Socioeconomicos, Neonatales, Contacto } from '../interface/interfaces';
+import { Paciente, DatosExtra, Demograficos, Socioeconomicos, Neonatales, Partos, Contacto } from '../interface/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class PacienteUtilService {
@@ -156,6 +156,7 @@ export class PacienteUtilService {
     const demo: any = datosExtra.demograficos || {};
     const socio: any = datosExtra.socioeconomicos || {};
     const neo: any = datosExtra.neonatales || {};
+    const partos: any = datosExtra.partos || {};
 
     return {
       defuncion: datosExtra.defuncion || null,
@@ -184,6 +185,10 @@ export class PacienteUtilService {
         gemelo: neo.gemelo || null,
         expediente_madre: neo.expediente_madre || null,
         id_medico: neo.id_medico || null
+      },
+      partos: {
+        nacidos_vivos: partos.nacidos_vivos != null ? Number(partos.nacidos_vivos) : null,
+        nacidos_muertos: partos.nacidos_muertos != null ? Number(partos.nacidos_muertos) : null
       }
     };
   }
@@ -195,6 +200,7 @@ export class PacienteUtilService {
     const demo: Demograficos = datosExtra.demograficos || {};
     const socio: Socioeconomicos = datosExtra.socioeconomicos || {};
     const neo: Neonatales = datosExtra.neonatales || {};
+    const partos: Partos = datosExtra.partos || {};
 
 
     return {
@@ -225,6 +231,10 @@ export class PacienteUtilService {
         gemelo: neo.gemelo || '',
         expediente_madre: neo.expediente_madre || '',
         id_medico: neo.id_medico ?? null
+      },
+      partos: {
+        nacidos_vivos: partos.nacidos_vivos ?? null,
+        nacidos_muertos: partos.nacidos_muertos ?? null
       }
     };
   }
@@ -261,6 +271,10 @@ export class PacienteUtilService {
         gemelo: '',
         expediente_madre: '',
         id_medico: null
+      },
+      partos: {
+        nacidos_vivos: null,
+        nacidos_muertos: null
       }
     };
   }
@@ -296,6 +310,10 @@ export class PacienteUtilService {
         gemelo: null,
         expediente_madre: null,
         id_medico: null
+      },
+      partos: {
+        nacidos_vivos: null,
+        nacidos_muertos: null
       }
     };
   }

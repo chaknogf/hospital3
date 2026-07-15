@@ -236,6 +236,19 @@
             </select>
           </div>
 
+          <!-- Partos (sexo F + GINE) -->
+          <ng-container *ngIf="paciente?.sexo === 'F' && form.get('especialidad')?.value === 'GINE'">
+            <div class="adm-divider"></div>
+            <div class="field">
+              <span class="field-label">Nacidos Vivos</span>
+              <input class="field-input" type="number" formControlName="partos_vivos" min="0" placeholder="0" />
+            </div>
+            <div class="field">
+              <span class="field-label">Nacidos Muertos</span>
+              <input class="field-input" type="number" formControlName="partos_muertos" min="0" placeholder="0" />
+            </div>
+          </ng-container>
+
           <!-- Solo edición: nuevo ciclo -->
           <ng-container *ngIf="enEdicion">
             <div class="adm-divider"></div>

@@ -48,6 +48,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges, OnDestroy {
   referenciasFiltradas: Referencia[] = [];
   metadatosArray: { key: string; valor: any }[] = [];
   neonatalesFiltrados: { key: string; valor: any }[] = [];
+  partosFiltrados: { key: string; valor: any }[] = [];
   consultasProcesadas: { titulo: string; campos: { key: string; valor: any }[] }[] = [];
   citasProcesadas: { titulo: string; campos: { key: string; valor: any }[] }[] = [];
   consultasPorPaciente: ConsultasIdPaciente[] = [];
@@ -253,6 +254,18 @@ export class DetallePacienteComponent implements OnInit, OnChanges, OnDestroy {
     // Procesar datos neonatales
     if (this.paciente.datos_extra?.neonatales) {
       this.neonatalesFiltrados = Object.entries(this.paciente.datos_extra.neonatales)
+        .filter(([key, valor]) =>
+          valor !== null &&
+          valor !== undefined &&
+          valor !== '' &&
+          valor !== 0
+        )
+        .map(([key, valor]) => ({ key, valor }));
+    }
+
+    // Procesar partos
+    if (this.paciente.datos_extra?.partos) {
+      this.partosFiltrados = Object.entries(this.paciente.datos_extra.partos)
         .filter(([key, valor]) =>
           valor !== null &&
           valor !== undefined &&
