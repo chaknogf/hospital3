@@ -2,6 +2,7 @@ import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IconService } from '../../../service/icon.service';
 import { SafeHtml } from '@angular/platform-browser';
+import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 
 export interface NombrePersona {
   primer_nombre?: string | null;
@@ -76,7 +77,7 @@ const capitalize = (s: string | null | undefined): string =>
 @Component({
   selector: 'app-cnacimiento-informe',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DatosExtraPipe],
   templateUrl: './cnacimiento-informe.component.html',
   styleUrls: ['./cnacimiento-informe.component.scss'],
 })
@@ -177,6 +178,33 @@ export class CnAcimientoInformeComponent {
 
   get nacionalidadMadre(): string {
     return this.constancia?.madre?.datos_extra?.demograficos?.nacionalidad ?? '—';
+  }
+
+  get nacionalidadMadreTexto(): string {
+    const nacionalidadesFem: Record<string, string> = {
+      GTM: 'Guatemalteca',
+      USA: 'Estadounidense',
+      MEX: 'Mexicana',
+      SLV: 'Salvadoreña',
+      HND: 'Hondureña',
+      NIC: 'Nicaragüense',
+      CRI: 'Costarricense',
+      CAN: 'Canadiense',
+      COL: 'Colombiana',
+      PAN: 'Panameña',
+      CUB: 'Cubana',
+      DOM: 'Dominicana',
+      ARG: 'Argentina',
+      CHL: 'Chilena',
+      PER: 'Peruana',
+      VEN: 'Venezolana',
+      ECU: 'Ecuatoriana',
+      BOL: 'Boliviana',
+      PRY: 'Paraguaya',
+      URY: 'Uruguaya',
+    };
+    const n = this.nacionalidadMadre;
+    return nacionalidadesFem[n] || n;
   }
 
   get lugarNacimientoMadre(): string {

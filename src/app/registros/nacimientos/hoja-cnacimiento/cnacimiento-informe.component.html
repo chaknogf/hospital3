@@ -35,15 +35,15 @@
   <div class="cn-prologo">
     <p class="cn-parrafo">
       Para los efectos legales de la inscripción correspondiente ante el
-      Registro Nacional de las Personas —RENAP—, el/la infrascrito/a Auxiliar
-      de Registros Médicos del Hospital General Tipo I de Tecpán Guatemala
-      hace constar que en las instalaciones del Hospital General Tipo I de
-      Tecpán Guatemala, ubicado en el Barrio San Antonio, Sector Pachulalí de
-      Tecpán Guatemala, Chimaltenango, se atendió el parto de la paciente que
-      a continuación se identifica, habiéndose producido el nacimiento de un
-      producto vivo en la fecha y hora que se indican en el presente
-      documento. Se extiende la presente constancia a solicitud de la parte
-      interesada, para los usos legales que estime convenientes.
+      Registro Nacional de las Personas —RENAP—, el/la infrascrito/a Auxiliar de
+      Registros Médicos del Hospital General Tipo I de Tecpán Guatemala hace
+      constar que en las instalaciones del Hospital General Tipo I de Tecpán
+      Guatemala, ubicado en el Barrio San Antonio, Sector Pachulalí de Tecpán
+      Guatemala, Chimaltenango, se atendió el parto de la paciente que a
+      continuación se identifica, habiéndose producido el nacimiento de un
+      producto vivo en la fecha y hora que se indican en el presente documento.
+      Se extiende la presente constancia a solicitud de la parte interesada,
+      para los usos legales que estime convenientes.
     </p>
   </div>
 
@@ -72,19 +72,19 @@
       <span class="form-lbl">Número de Identificación</span>
       <span class="form-val fw-bold">{{ numeroIdentificacionMadre }}</span>
     </div>
-    <div class="form-field" style="flex: 3">
+    <div class="form-field" style="flex: 3" *ngIf="c.madre?.cui">
       <span class="form-lbl">Vecindad</span>
-      <span class="form-val">{{ vecindadMadre }}</span>
+      <span class="form-val">{{ vecindadMadre | datosExtra:'municipio' }}</span>
     </div>
   </div>
 
   <div class="form-row">
     <div class="form-field" style="flex: 1">
       <span class="form-lbl">
-        Lugar de {{ esGuatemalteca ? 'Nacimiento' : 'Origen' }}
+        Lugar de {{ nacionalidadMadre === 'GTM' ? 'Nacimiento' : 'Origen' }}
       </span>
       <span class="form-val">
-        {{ esGuatemalteca ? lugarNacimientoMadre : nacionalidadMadre }}
+        {{ nacionalidadMadre === 'GTM' ? lugarNacimientoMadre : nacionalidadMadreTexto }}
       </span>
     </div>
   </div>
@@ -121,18 +121,6 @@
     <div class="form-field" style="flex: 1">
       <span class="form-lbl">Clase de Parto</span>
       <span class="form-val">{{ clasePartoTexto }}</span>
-    </div>
-    <div class="form-field" style="flex: 2">
-      <span class="form-lbl text-center">Médico que atendió el parto</span>
-      <span class="form-val text-center">
-        <ng-container *ngIf="medico; else sinMedico">
-          {{ nombreMedico }} — Colegiado
-          <strong>{{ medico?.colegiado }}</strong>
-          <br />
-          CUI: {{ medico?.dpi }}
-        </ng-container>
-        <ng-template #sinMedico>Atendido en esta institución</ng-template>
-      </span>
     </div>
   </div>
 

@@ -379,30 +379,8 @@ label {
   text-align: justify;
 }
 
-/* ══ @PAGE + @MEDIA PRINT ═══════════════════════════════════ */
+/* ══ @PAGE ════════════════════════════════════════════════════ */
 @page {
   size: letter portrait;
   margin: 12.7mm;
-}
-
-@media print {
-  @page {
-    size: letter portrait;
-    margin: 12mm;
-  }
-
-  body * {
-    visibility: hidden;
-  }
-
-  .hoja-carta,
-  .hoja-carta * {
-    visibility: visible;
-  }
-
-  .hoja-carta {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
 }

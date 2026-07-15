@@ -474,4 +474,10 @@ label { letter-spacing: 0.4px; }
   margin: 12.7mm 12.7mm 12.7mm 12.7mm;
 }
 
+@media print {
+  .no-imprimir {
+    display: none !important;
+  }
+}
+
 
