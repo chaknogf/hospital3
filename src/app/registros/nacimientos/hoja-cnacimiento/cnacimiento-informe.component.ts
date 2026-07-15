@@ -1,5 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IconService } from '../../../service/icon.service';
+import { SafeHtml } from '@angular/platform-browser';
 
 export interface NombrePersona {
   primer_nombre?: string | null;
@@ -81,6 +83,13 @@ const capitalize = (s: string | null | undefined): string =>
 export class CnAcimientoInformeComponent {
   @Input({ required: true }) constancia!: CnacimientoOut;
   @Input() medico?: MedicoInfo | null;
+
+  private iconService = inject(IconService);
+  logo: SafeHtml;
+
+  constructor() {
+    this.logo = this.iconService.getIcon("logoicon2");
+  }
 
   nombreCompleto(n: NombrePersona | null | undefined): string {
     if (!n) return '—';
