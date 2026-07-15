@@ -15,14 +15,23 @@ cd "$PROYECTO_DIR" || { echo "❌ No se pudo acceder al proyecto"; exit 1; }
 echo "📥 Actualizando código desde git..."
 git pull origin main || { echo "❌ Error en git pull"; exit 1; }
 
-# 3. Cargar nvm e instalar Node.js 24 (si no está presente)
-echo "🔧 Configurando Node.js..."
-\. "$HOME/.nvm/nvm.sh"
-nvm install 24 || { echo "❌ Error instalando Node.js"; exit 1; }
+# 3. Validar Node.js (instalar solo si es necesario)
+if ! command -v node &>/dev/null || ! node -e "process.exit(Number(!process.version.startsWith('v24')))" &>/dev/null; then
+  echo "🔧 Configurando Node.js 24..."
+  \. "$HOME/.nvm/nvm.sh"
+  nvm install 24 || { echo "❌ Error instalando Node.js"; exit 1; }
+else
+  echo "✅ Node.js $(node -v) ya está disponible"
+fi
 
-# 4. Configurar pnpm vía corepack
-echo "📦 Configurando pnpm..."
-corepack enable pnpm
+# 4. Validar pnpm (habilitar corepack solo si es necesario)
+if ! command -v pnpm &>/dev/null; then
+  echo "📦 Configurando pnpm..."
+  corepack enable pnpm
+else
+  echo "✅ pnpm $(pnpm -v) ya está disponible"
+fi
+
 pnpm install --frozen-lockfile || pnpm install || { echo "❌ Error instalando dependencias"; exit 1; }
 
 # 5. Ejecutar build con base-href personalizado
