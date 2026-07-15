@@ -243,7 +243,8 @@ export class NuevaConstanciaNacimientoComponent implements OnInit, OnDestroy {
 
   // ======= MÉDICOS =======
   cargarMedicos(): void {
-    this.apis.getMedicos({})
+    const filtros = { activo: true, especialidad: 'GINECOLOGÍA', limit: 200 };
+    this.apis.getMedicos(filtros)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: data => this.medicos = data,

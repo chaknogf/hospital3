@@ -11,8 +11,7 @@ import { takeUntil, catchError, finalize, map, distinctUntilChanged } from 'rxjs
 import { of } from 'rxjs';
 import { ConstanciaNacimiento } from '../constancias.inteface';
 import { VecindadPipe } from '../../../pipes/lugar.pipe';
-import { ApiService } from '../../../service/api.service';
-import { Medico } from '../../../interface/medicos.interface';
+
 
 @Component({
   selector: 'app-constanciasNacimiento',
@@ -27,7 +26,6 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
   // ======= INYECCIONES =======
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private apis = inject(ApiService);
   private api = inject(ConstanciasService);
   private pservice = inject(PacienteService);
   private fb = inject(FormBuilder);
@@ -37,7 +35,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
   form: FormGroup;
   private destroy$ = new Subject<void>();
   constancia: ConstanciaNacimiento | null = null;
-  medicos: Medico[] = [];
+
 
   // ======= SEÑALES =======
   enEdicion = signal(false);
@@ -46,14 +44,13 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
   guardadoOk = signal(false);
 
   // ======= TABS =======
-  tabActivo = signal<'datos' | 'madre' | 'medico' | 'historial'>('datos');
+  tabActivo = signal<'datos' | 'madre'>('datos');
 
   constructor() {
     this.form = this.crearFormulario();
   }
 
   ngOnInit(): void {
-    this.cargarMedicos();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.enEdicion.set(true);
@@ -134,7 +131,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
       documento: c.documento ?? '',
       paciente_id: c.paciente_id,
       madre_id: c.madre_id ?? null,
-      medico_id: c.medico_id ?? null,
+      medico_id: c.paciente?.datos_extra?.neonatales?.id_medico ?? c.medico_id ?? null,
       registrador_id: c.registrador_id ?? null,
       nombre_madre: c.nombre_madre ?? '',
       vecindad_madre: c.vecindad_madre ?? '',
@@ -195,28 +192,13 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
       nombre_madre: v.nombre_madre || undefined,
       vecindad_madre: v.vecindad_madre || undefined,
       fecha_registro: v.fecha_registro || undefined,
-      medico_id: v.medico_id || undefined,
+      medico_id: (this.constancia?.paciente?.datos_extra?.neonatales?.id_medico ?? v.medico_id) || undefined,
       menor_edad: this.limpiarObj(v.menor_edad),
       hijos: v.hijos ?? undefined,
       vivos: v.vivos ?? undefined,
       muertos: v.muertos ?? undefined,
 
     };
-  }
-
-  cargarMedicos(): void {
-    this.apis.getMedicos({})
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (data) => {
-          this.medicos = data;
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          console.error('Error al cargar médicos:', err);
-          this.cdr.markForCheck();
-        }
-      });
   }
 
   /** Elimina claves con valores vacíos para no mandar nulls innecesarios */
@@ -228,7 +210,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
   }
 
   // ======= NAVEGACIÓN TABS =======
-  setTab(tab: 'datos' | 'madre' | 'medico' | 'historial'): void {
+  setTab(tab: 'datos' | 'madre'): void {
     this.tabActivo.set(tab);
   }
 
@@ -238,7 +220,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
   }
 
   editarHijo(id: any): void {
-    this.router.navigate(['/pacienteEdit', id])
+    this.router.navigate(['/pacienteEdit', id], { queryParams: { step: 7 } })
   }
 
   editarMadre(id: number): void {

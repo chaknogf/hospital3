@@ -1,0 +1,209 @@
+:host {
+  display: block;
+  font-family: 'Source Serif 4', Georgia, serif;
+  color: #000;
+}
+
+.hoja {
+  width: 216mm;
+  min-height: 279mm;
+  margin: 0 auto;
+  padding: 10mm 13mm 8mm;
+  box-sizing: border-box;
+  background: #fff;
+  font-size: 8.5pt;
+  line-height: 1.35;
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px solid #000;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+
+  .logo-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #0b3d91;
+    color: #fff;
+    font-weight: bold;
+    font-size: 7pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .titulo {
+    flex: 1;
+    text-align: center;
+
+    .h-ministerio { font-size: 9.5pt; margin: 0; font-weight: 700; }
+    .h-hospital { font-size: 9pt; margin: 1px 0; color: #444; }
+    h2 { font-size: 11pt; margin: 3px 0 0; font-weight: 800; letter-spacing: .5px; color: #1a3a6a; }
+  }
+
+  .doc-num {
+    border: 1.5px solid #1a3a6a;
+    border-radius: 5px;
+    padding: 4px 8px;
+    text-align: center;
+    min-width: 110px;
+
+    .doc-lbl { font-size: 5.5pt; font-weight: 500; text-transform: uppercase; letter-spacing: .5px; color: #041536; display: block; }
+    .doc-val { font-size: 12pt; font-weight: 700; color: #1a3a6a; }
+  }
+}
+
+.lugar-fecha {
+  text-align: right;
+  font-size: 8pt;
+  color: #444;
+  padding: 4px 0 2px;
+  border-bottom: 0.5px solid #ccc;
+  margin-bottom: 4px;
+}
+
+.destinatario {
+  font-weight: 700;
+  font-size: 9pt;
+  padding: 2px 0 4px;
+}
+
+.prologo {
+  padding: 6px 8px;
+  margin: 4px 0;
+  border-left: 3px solid #1a3a6a;
+  background: rgba(26,58,106,0.05);
+  border-radius: 0 4px 4px 0;
+
+  p {
+    font-size: 8pt;
+    line-height: 1.6;
+    color: #444;
+    font-style: italic;
+    text-align: justify;
+    margin: 0;
+  }
+}
+
+.section-bar {
+  font-size: 6.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #fff;
+  background: #1a3a6a;
+  padding: 3px 6px;
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+
+table.formulario {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #999;
+
+  td {
+    border: 1px solid #999;
+    padding: 4px 6px;
+    vertical-align: middle;
+  }
+
+  .lbl {
+    font-size: 6pt;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #041536;
+    white-space: nowrap;
+    width: 1%;
+  }
+
+  .val {
+    font-size: 9.5pt;
+    font-weight: 500;
+    color: #000;
+  }
+
+  .val.nombre {
+    font-size: 11pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #1a3a6a;
+  }
+
+  .val.fw-bold { font-weight: 700; }
+
+  .val.num {
+    font-family: 'DM Mono', 'Courier New', monospace;
+    font-size: 13pt;
+    font-weight: 700;
+    color: #1a3a6a;
+    text-align: center;
+  }
+}
+
+.observaciones {
+  font-size: 9pt;
+  line-height: 1.6;
+  padding: 5px 8px;
+  border: 1px solid #999;
+  border-top: none;
+  min-height: 22px;
+  background: #fafafa;
+}
+
+.pie {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  break-inside: avoid;
+
+  .firma-bloque {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+
+    .firma-linea {
+      border-top: 0.8px solid #000;
+      width: 100%;
+      margin-bottom: 4px;
+    }
+
+    .firma-nombre { font-size: 10pt; font-weight: 700; text-align: center; }
+    .firma-cargo,
+    .firma-hospital { font-size: 8.5pt; color: #444; text-align: center; }
+  }
+}
+
+@media print {
+  @page {
+    size: letter portrait;
+    margin: 12mm;
+  }
+
+  :host, .hoja {
+    width: 100%;
+    min-height: 0;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .hoja, .hoja * {
+    visibility: visible;
+  }
+
+  .hoja {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}

@@ -129,14 +129,7 @@
     Madre
   </button>
 
-  <button
-    type="button"
-    class="cn-tabs__btn"
-    [class.cn-tabs__btn--active]="tabActivo() === 'medico'"
-    (click)="setTab('medico')"
-  >
-    Médico
-  </button>
+
 </nav>
 
 <!-- ═══════════════════════════════════════════ -->
@@ -289,6 +282,14 @@
                   constancia?.paciente?.datos_extra?.neonatales?.hora_nacimiento
                     | time
                 }}
+              </strong>
+            </div>
+
+            <div class="cn-info__row">
+              <span>Médico</span>
+
+              <strong>
+                {{ constancia?.medico?.nombre ?? '—' }}
               </strong>
             </div>
           </div>
@@ -457,36 +458,7 @@
       </section>
     }
 
-    <!-- ═══════════════════════════════════════ -->
-    <!-- TAB MÉDICO                             -->
-    <!-- ═══════════════════════════════════════ -->
-    @if (tabActivo() === "medico") {
-      <section class="cn-card">
-        <header class="cn-card__head">
-          <div class="cn-card__title-group">
-            <div class="cn-card__icon">🩺</div>
 
-            <div>
-              <h3 class="cn-card__title">Médico responsable</h3>
-
-              <p class="cn-card__subtitle">Profesional encargado</p>
-            </div>
-          </div>
-        </header>
-
-        <div class="cn-card__body">
-          <div class="cn-field">
-            <label class="cn-field__label"> Médico </label>
-
-            <select class="cn-input" formControlName="medico_id">
-              <option [value]="item.id" *ngFor="let item of medicos">
-                {{ item.nombre }} ({{ item.colegiado }})
-              </option>
-            </select>
-          </div>
-        </div>
-      </section>
-    }
 
     <!-- ERROR -->
     @if (error()) {

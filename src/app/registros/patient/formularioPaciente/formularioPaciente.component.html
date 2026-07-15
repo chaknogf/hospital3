@@ -873,15 +873,27 @@
                       "
                                                               >Cesárea</span
                                                               >
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                  }
-                                                }
-                                              </div>
-                                              <!-- /main-body -->
+                                                             </div>
+                                                           </div>
+                                                         </div>
+
+                                                         <div class="row-2" style="margin-top: 0.5rem">
+                                                           <div class="field">
+                                                             <span class="field-label">Médico que atendió el parto</span>
+                                                              <select class="field-input" formControlName="id_medico">
+                                                                <option [ngValue]="null">Seleccione un médico</option>
+                                                                @for (m of medicos; track m.id) {
+                                                                  <option [ngValue]="m.id">{{ m.nombre }}{{ m.especialidad ? ' — ' + m.especialidad : '' }}</option>
+                                                                }
+                                                              </select>
+                                                           </div>
+                                                         </div>
+                                                       </div>
+                                                     </div>
+                                                   }
+                                                 }
+                                               </div>
+                                               <!-- /main-body -->
 
                                               <!-- ======================================== -->
                                               <!-- ACTION DOCK (sticky bottom)              -->

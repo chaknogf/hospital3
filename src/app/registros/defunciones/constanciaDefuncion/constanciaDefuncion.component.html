@@ -1,0 +1,278 @@
+<div class="hud-header">
+  <div class="hud-id">EDIT · DEFUNCIÓN #{{ form.value.id }}</div>
+  <div class="hud-title">INFORME DE DEFUNCIÓN</div>
+  <div class="hud-status" [class.hud-status--loading]="isLoading()">
+    {{ isLoading() ? "PROCESANDO…" : guardadoOk() ? "✓ GUARDADO" : "EDITANDO" }}
+  </div>
+</div>
+
+<div class="action-dock">
+  <div class="dock-hint">editando defunción</div>
+  <button class="btn-dock btn" type="button" (click)="volver()">❌ Cancelar</button>
+  <button class="btn-dock btn--primary" type="button" [disabled]="isLoading()" (click)="guardar()">
+    {{ isLoading() ? "⏳ Guardando…" : "💾 Guardar" }}
+  </button>
+</div>
+
+<form [formGroup]="form" class="adm-body" (submit)="$event.preventDefault()">
+
+  @if (defuncion) {
+    <div class="paciente-banner">
+      <div class="paciente-banner-accent"></div>
+      <div class="paciente-avatar">⚰️</div>
+      <div class="paciente-datos">
+        <div class="paciente-nombre">{{ defuncion.paciente?.nombre_completo }}</div>
+        <div class="paciente-chips">
+          @if (defuncion.paciente?.expediente) {
+            <div class="p-chip">📋 {{ defuncion.paciente?.expediente }}</div>
+          }
+          @if (defuncion.fallecido_edad_anios != null) {
+            <div class="p-chip">🎂 {{ defuncion.fallecido_edad_anios }} años</div>
+          }
+          @if (defuncion.es_fetal) {
+            <div class="p-chip">👶 Muerte fetal</div>
+          }
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="skeleton-block" style="height:70px;border-radius:var(--radius)"></div>
+  }
+
+  <div class="tab-bar">
+    <button type="button" class="tab-btn" [class.tab-btn--active]="tabActivo() === 'causas'" (click)="setTab('causas')">🩺 Causas</button>
+    @if (form.get('es_fetal')?.value) {
+      <button type="button" class="tab-btn" [class.tab-btn--active]="tabActivo() === 'fetal'" (click)="setTab('fetal')">👶 Fetal</button>
+    }
+    <button type="button" class="tab-btn" [class.tab-btn--active]="tabActivo() === 'madre'" (click)="setTab('madre')">👩 Madre</button>
+  </div>
+
+  @if (tabActivo() === 'causas') {
+    <div class="adm-grid">
+      <div class="adm-col">
+        <div class="section-card">
+          <div class="sec-head">
+            <div class="sec-head-left">
+              <div class="sec-icon">📅</div>
+              <div class="sec-title">Datos de la Defunción</div>
+            </div>
+          </div>
+          <div class="sec-body">
+            <div class="field">
+              <label class="field-label">Paciente ID</label>
+              <input class="field-input field-input--readonly" formControlName="paciente_id" readonly />
+            </div>
+            <div class="field">
+              <label class="field-label">Fecha y hora de defunción</label>
+              <input type="datetime-local" class="field-input" formControlName="fecha_defuncion" />
+            </div>
+            <div class="field">
+              <label class="field-label">Médico que certifica</label>
+              <select class="field-input" formControlName="medico_id">
+                <option [ngValue]="null">Seleccione un médico</option>
+                @for (m of medicos; track m.id) {
+                  <option [ngValue]="m.id">{{ m.nombre }}{{ m.especialidad ? ' — ' + m.especialidad : '' }}</option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Muerte Gestacional (semanas)</label>
+              <input type="text" class="field-input" formControlName="muerte_gestacion" placeholder="Ej. 38" />
+            </div>
+            <div class="field" style="flex-direction:row;align-items:center;gap:10px">
+              <label class="field-label" style="margin:0">¿Es muerte fetal?</label>
+              <input type="checkbox" formControlName="es_fetal" style="width:20px;height:20px" />
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="sec-head">
+            <div class="sec-head-left">
+              <div class="sec-icon">🩺</div>
+              <div class="sec-title">Causas de Defunción</div>
+            </div>
+            <div class="sec-badge">causa A requerida</div>
+          </div>
+          <div class="sec-body">
+            <div class="field">
+              <label class="field-label">Causa A (directa) <span style="color:var(--danger)">*</span></label>
+              <textarea class="field-input" formControlName="causa_a" placeholder="Causa inmediata de la muerte" style="height:60px;padding:10px 14px;resize:vertical"></textarea>
+            </div>
+            <div class="field">
+              <label class="field-label">Causa B (intermedia)</label>
+              <textarea class="field-input" formControlName="causa_b" style="height:60px;padding:10px 14px;resize:vertical"></textarea>
+            </div>
+            <div class="field">
+              <label class="field-label">Causa C (básica)</label>
+              <textarea class="field-input" formControlName="causa_c" style="height:60px;padding:10px 14px;resize:vertical"></textarea>
+            </div>
+            <div class="field">
+              <label class="field-label">Causa D</label>
+              <textarea class="field-input" formControlName="causa_d" style="height:60px;padding:10px 14px;resize:vertical"></textarea>
+            </div>
+            <div class="field">
+              <label class="field-label">Intervalo aproximado</label>
+              <input type="text" class="field-input" formControlName="causa_intervalo" placeholder="Ej. Minutos, horas, días" />
+            </div>
+            <div class="field">
+              <label class="field-label">Otras causas</label>
+              <textarea class="field-input" formControlName="causa_otros" style="height:60px;padding:10px 14px;resize:vertical"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="sec-head">
+            <div class="sec-head-left">
+              <div class="sec-icon">⚠️</div>
+              <div class="sec-title">Circunstancias</div>
+            </div>
+          </div>
+          <div class="sec-body">
+            <div class="field">
+              <label class="field-label">Lugar de la lesión</label>
+              <input type="text" class="field-input" formControlName="lugar_lesion" />
+            </div>
+            <div class="field" style="flex-direction:row;align-items:center;gap:10px">
+              <label class="field-label" style="margin:0">Ocurrió en trabajo</label>
+              <input type="checkbox" formControlName="ocurrio_trabajo" style="width:20px;height:20px" />
+            </div>
+            <div class="field" style="flex-direction:row;align-items:center;gap:10px">
+              <label class="field-label" style="margin:0">Accidente de tránsito</label>
+              <input type="checkbox" formControlName="accidente_transito" style="width:20px;height:20px" />
+            </div>
+            <div class="field">
+              <label class="field-label">Arma utilizada</label>
+              <input type="text" class="field-input" formControlName="arma" />
+            </div>
+            <div class="field">
+              <label class="field-label">Fue presunto</label>
+              <select class="field-input" formControlName="fue_presunto">
+                <option [ngValue]="null">Seleccione</option>
+                <option value="SI">Sí</option>
+                <option value="NO">No</option>
+                <option value="SE_IGNORA">Se ignora</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="sec-head">
+            <div class="sec-head-left">
+              <div class="sec-icon">📝</div>
+              <div class="sec-title">Observaciones</div>
+            </div>
+          </div>
+          <div class="sec-body">
+            <textarea class="field-input" formControlName="observaciones" style="height:80px;padding:10px 14px;resize:vertical" placeholder="Notas adicionales..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (tabActivo() === 'fetal') {
+    <div class="adm-grid">
+      <div class="adm-col">
+        <div class="section-card">
+          <div class="sec-head">
+            <div class="sec-head-left">
+              <div class="sec-icon">👶</div>
+              <div class="sec-title">Datos de Muerte Fetal</div>
+            </div>
+          </div>
+          <div class="sec-body">
+            <div class="field">
+              <label class="field-label">Sexo del feto</label>
+              <select class="field-input" formControlName="fetal_sexo">
+                <option [ngValue]="null">Seleccione</option>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+              </select>
+            </div>
+            <div class="field" style="flex-direction:row;align-items:center;gap:10px">
+              <label class="field-label" style="margin:0">Murió antes del parto</label>
+              <input type="checkbox" formControlName="fetal_murio_antes_parto" style="width:20px;height:20px" />
+            </div>
+            <div class="field">
+              <label class="field-label">Semanas de gestación</label>
+              <input type="number" class="field-input" formControlName="fetal_semanas_gestacion" />
+            </div>
+            <div class="field">
+              <label class="field-label">Tipo de parto</label>
+              <select class="field-input" formControlName="fetal_parto_tipo">
+                <option [ngValue]="null">Seleccione</option>
+                <option value="Simple">Simple</option>
+                <option value="Multiple">Múltiple</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Clase de parto</label>
+              <select class="field-input" formControlName="fetal_clase_parto">
+                <option [ngValue]="null">Seleccione</option>
+                <option value="Pes">Eutócico (PES)</option>
+                <option value="Cstp">Distócico (CSTP)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Vía del parto</label>
+              <input type="text" class="field-input" formControlName="fetal_via_parto" />
+            </div>
+            <div class="field">
+              <label class="field-label">Embarazos previos (vivos)</label>
+              <input type="number" class="field-input" formControlName="embarazos_previvos_vivos" />
+            </div>
+            <div class="field">
+              <label class="field-label">Embarazos previos (muertos)</label>
+              <input type="number" class="field-input" formControlName="embarazos_previvos_muertos" />
+            </div>
+            <div class="field">
+              <label class="field-label">Causas fetales</label>
+              <textarea class="field-input" formControlName="fetal_causas_fetales" style="height:60px;padding:10px 14px;resize:vertical"></textarea>
+            </div>
+            <div class="field">
+              <label class="field-label">Causas maternas</label>
+              <textarea class="field-input" formControlName="fetal_causas_maternas" style="height:60px;padding:10px 14px;resize:vertical"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (tabActivo() === 'madre') {
+    <div class="adm-grid">
+      <div class="adm-col">
+        <div class="section-card">
+          <div class="sec-head">
+            <div class="sec-head-left">
+              <div class="sec-icon">👩</div>
+              <div class="sec-title">Datos de la Madre</div>
+            </div>
+          </div>
+          <div class="sec-body">
+            <div class="field">
+              <label class="field-label">ID Madre</label>
+              <input class="field-input" formControlName="madre_id" placeholder="ID de la madre en sistema" />
+            </div>
+            @if (defuncion?.madre) {
+              <div style="padding:8px 12px;background:rgba(59,130,246,0.08);border-radius:var(--radius-sm);border:1px solid rgba(59,130,246,0.15)">
+                <strong style="color:#93c5fd">{{ defuncion.madre.nombre_completo }}</strong>
+                <span style="color:#94a3b8;font-size:12px;margin-left:8px">{{ defuncion.madre.expediente }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="section-card"><div class="sec-body single"><div class="alert-error">⚠️ {{ error() }}</div></div></div>
+  }
+  @if (guardadoOk()) {
+    <div class="section-card"><div class="sec-body single"><div class="alert-ok">✅ Defunción guardada correctamente.</div></div></div>
+  }
+</form>

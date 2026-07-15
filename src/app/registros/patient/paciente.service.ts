@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable, from } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 
 import { BaseApiService, PaginationState } from '../../service/base-api.service';
-import { Paciente, PacienteListResponse, Hijode, PacienteJoin } from '../../interface/interfaces';
+import { Paciente, PacienteListResponse, Hijode, PacienteJoin, MadreHijoResponse } from '../../interface/interfaces';
 import { CitaResponse } from '../../interface/citas';
 import { OfflineDatabaseService } from '../../service/offline-database.service';
 import { FullSyncService } from '../../service/full-sync.service';
@@ -192,14 +192,8 @@ export class PacienteService extends BaseApiService {
 
   // ======= RELACIONES =======
 
-  hijoDe(paciente: Hijode, idMadre: number): Observable<any> {
+  hijoDe(payload: Hijode, idMadre: number): Observable<MadreHijoResponse> {
     this.isLoading.set(true);
-    const payload = {
-      sexo: paciente.sexo,
-      fecha_nacimiento: paciente.fecha_nacimiento,
-      estado: paciente.estado,
-      datos_extra: paciente.datos_extra || {}
-    };
     return this.offMutation('POST', `${this.baseUrl}/pacientes/madre-hijo/${idMadre}?auto_expediente=true`, payload).pipe(
       tap(() => this.refrescarPacientes()),
       finalize(() => this.isLoading.set(false))

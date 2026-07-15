@@ -1,56 +1,34 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Input, OnDestroy, inject, signal, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { ConstanciasService } from '../constancias.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ConstanciaNacimiento } from '../constancias.inteface';
-import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
-import { TimePipe } from '../../../pipes/time.pipe';
-import { APipe, EdadPipe } from '../../../pipes/edad.pipe';
 import { Subject, of } from 'rxjs';
 import { takeUntil, finalize, catchError } from 'rxjs/operators';
-import { CuiPipe } from '../../../pipes/cui.pipe';
 import { ApiService } from '../../../service/api.service';
-import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
-import { IconService } from '../../../service/icon.service';
-import { LibrasOnzasPipe } from '../../../pipes/librasOnza.pipe';
+import { CnAcimientoInformeComponent, CnacimientoOut, MedicoInfo } from './cnacimiento-informe.component';
 
 @Component({
   selector: 'app-hoja-cnacimiento',
   standalone: true,
   templateUrl: './hoja-cnacimiento.component.html',
   styleUrls: ['./hoja-cnacimiento.component.css'],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, DatosExtraPipe, TimePipe, APipe, CuiPipe, CapitalizePipe, LibrasOnzasPipe]
+  imports: [CommonModule, CnAcimientoInformeComponent]
 })
 export class HojaCnacimientoComponent implements OnInit, OnDestroy {
 
-  // ======= INYECCIONES =======
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private api = inject(ConstanciasService);
   private apis = inject(ApiService);
-  private iconS = inject(IconService);
 
-  // ======= SIGNALS =======
-  constancia = signal<ConstanciaNacimiento | undefined>(undefined);
+  constancia = signal<CnacimientoOut | undefined>(undefined);
+  medico = signal<MedicoInfo | undefined>(undefined);
   isLoading = signal(false);
   error = signal<string | null>(null);
   detalleVisible = signal(false);
-  // Nombre del usuario actual
-  responsable = this.apis.nombreUsuario;
-  icons: { [key: string]: any } = {};
 
-  // ======= CONTROL DE VIDA =======
   private destroy$ = new Subject<void>();
 
-  constructor() {
-    this.icons = {
-
-      logo: this.iconS.getIcon("logoicon2"),
-
-    };
-  }
-  // ======= INIT =======
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
@@ -66,7 +44,6 @@ export class HojaCnacimientoComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // ======= CARGA DE DATOS =======
   private cargarDatos(id: number): void {
     this.isLoading.set(true);
     this.error.set(null);
@@ -89,12 +66,41 @@ export class HojaCnacimientoComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.constancia.set(data);
-        this.detalleVisible.set(true); // 🔥 CLAVE
+        const out: CnacimientoOut = {
+          id: data.id,
+          documento: data.documento,
+          fecha_registro: data.fecha_registro,
+          hijos: data.hijos,
+          vivos: data.vivos,
+          muertos: data.muertos,
+          observaciones: data.observaciones,
+          paciente: data.paciente as any,
+          madre: data.madre as any,
+        };
+        this.constancia.set(out);
+
+        const medicoId = data.paciente?.datos_extra?.neonatales?.id_medico;
+        if (medicoId) {
+          this.apis.getMedicos({ id: medicoId })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: res => {
+                if (res?.length) {
+                  const m = res[0];
+                  this.medico.set({
+                    nombre: m.nombre,
+                    sexo: m.sexo,
+                    colegiado: m.colegiado,
+                    dpi: m.dpi,
+                  });
+                }
+              }
+            });
+        }
+        this.detalleVisible.set(true);
       });
   }
 
-  // ======= ACCIONES =======
   imprimir(): void {
     setTimeout(() => window.print(), 100);
   }
@@ -102,23 +108,4 @@ export class HojaCnacimientoComponent implements OnInit, OnDestroy {
   regresar(): void {
     this.router.navigate(['/nacimientos']);
   }
-
-  private claseParto(): string {
-    return this.constancia()
-      ?.paciente
-      ?.datos_extra
-      ?.neonatales
-      ?.clase_parto ?? '';
-  }
-
-  get pes(): boolean {
-    return this.claseParto().includes('Pes');
-  }
-
-  get cstp(): boolean {
-    return this.claseParto().includes('Cstp');
-  }
-
-
-
 }

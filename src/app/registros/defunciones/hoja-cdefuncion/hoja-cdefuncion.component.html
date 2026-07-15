@@ -1,0 +1,251 @@
+<div class="botones no-imprimir">
+  <button (click)="regresar()" [disabled]="isLoading()">Cancelar ❌</button>
+  <button (click)="imprimir()" [disabled]="isLoading()">Imprimir 🖨️</button>
+</div>
+
+@if (error()) {
+  <div class="alert alert-danger no-imprimir">{{ error() }}</div>
+}
+@if (isLoading()) {
+  <div class="alert alert-info no-imprimir">Cargando información...</div>
+}
+
+@if (detalleVisible() && defuncion(); as d) {
+  <div class="print-wrapper">
+    <div class="hoja-carta print-page">
+      <!-- CABECERA -->
+      <div class="hoja-header">
+        <div class="hoja-header-centro">
+          <p class="h-ministerio">Ministerio de Salud Pública y Asistencia Social</p>
+          <p class="h-hospital">Hospital General Tipo I de Tecpán Guatemala</p>
+          <p class="h-titulo">Informe de Defunción</p>
+        </div>
+        <div class="hoja-exp">
+          <span class="exp-lbl">Registro No.</span>
+          <span class="exp-num">{{ d.id }}</span>
+        </div>
+      </div>
+
+      <div class="form-section-row" style="margin-top:6px">
+        <div class="form-field" style="flex:2">
+          <span class="form-lbl">Lugar y Fecha de Emisión</span>
+          <span class="form-val">Tecpán Guatemala, Chimaltenango — {{ d.created_at | date:"EEEE d 'de' MMMM 'de' yyyy":'':'es' }}</span>
+        </div>
+      </div>
+
+      <!-- DATOS DEL FALLECIDO -->
+      <div class="form-section-bar"><span>I. Datos del Fallecido</span></div>
+
+      <div class="form-row">
+        <div class="form-field" style="flex:3">
+          <span class="form-lbl">Nombre Completo</span>
+          <span class="form-val form-val--name">{{ nombreFallecido | capitalize }}</span>
+        </div>
+        <div class="form-field" style="flex:1">
+          <span class="form-lbl">Sexo</span>
+          <span class="form-val">{{ d.paciente?.sexo === 'M' ? 'Masculino' : d.paciente?.sexo === 'F' ? 'Femenino' : '—' }}</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field" style="flex:1">
+          <span class="form-lbl">Fecha de Nacimiento</span>
+          <span class="form-val">{{ d.paciente?.fecha_nacimiento | date:"EEEE d 'de' MMMM 'de' yyyy":'':'es' }}</span>
+        </div>
+        <div class="form-field" style="flex:1">
+          <span class="form-lbl">Edad al Fallecer</span>
+          <span class="form-val fw-bold">
+            @if (d.fallecido_edad_anios != null) {
+              {{ d.fallecido_edad_anios }} años
+              @if (d.fallecido_edad_meses) { {{ d.fallecido_edad_meses }} meses }
+              @if (d.fallecido_edad_dias) { {{ d.fallecido_edad_dias }} días }
+            } @else {
+              —
+            }
+          </span>
+        </div>
+        <div class="form-field" style="flex:1">
+          <span class="form-lbl">Fecha de Defunción</span>
+          <span class="form-val fw-bold">{{ d.fecha_defuncion | date:"EEEE d 'de' MMMM 'de' yyyy":'':'es' }}</span>
+        </div>
+      </div>
+
+      @if (d.paciente?.expediente) {
+        <div class="form-row">
+          <div class="form-field" style="flex:1">
+            <span class="form-lbl">Expediente</span>
+            <span class="form-val">{{ d.paciente?.expediente }}</span>
+          </div>
+          @if (d.paciente?.cui) {
+            <div class="form-field" style="flex:1">
+              <span class="form-lbl">CUI</span>
+              <span class="form-val">{{ d.paciente?.cui }}</span>
+            </div>
+          }
+        </div>
+      }
+
+      @if (d.muerte_gestacion || d.es_fetal) {
+        <div class="form-row">
+          @if (d.muerte_gestacion) {
+            <div class="form-field" style="flex:1">
+              <span class="form-lbl">Muerte Gestacional</span>
+              <span class="form-val">{{ d.muerte_gestacion }} semanas</span>
+            </div>
+          }
+          @if (d.es_fetal) {
+            <div class="form-field" style="flex:1">
+              <span class="form-lbl">Tipo</span>
+              <span class="form-val">Muerte Fetal</span>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- CAUSAS DE DEFUNCIÓN -->
+      <div class="form-section-bar"><span>II. Causas de Defunción</span></div>
+
+      <div class="form-row">
+        <div class="form-field" style="flex:1">
+          <span class="form-lbl">Causa A (directa)</span>
+          <span class="form-val">{{ d.causa_a || '—' }}</span>
+        </div>
+      </div>
+      @if (d.causa_b) {
+        <div class="form-row">
+          <div class="form-field" style="flex:1"><span class="form-lbl">Causa B</span><span class="form-val">{{ d.causa_b }}</span></div>
+        </div>
+      }
+      @if (d.causa_c) {
+        <div class="form-row">
+          <div class="form-field" style="flex:1"><span class="form-lbl">Causa C</span><span class="form-val">{{ d.causa_c }}</span></div>
+        </div>
+      }
+      @if (d.causa_d) {
+        <div class="form-row">
+          <div class="form-field" style="flex:1"><span class="form-lbl">Causa D</span><span class="form-val">{{ d.causa_d }}</span></div>
+        </div>
+      }
+      @if (d.causa_intervalo) {
+        <div class="form-row">
+          <div class="form-field" style="flex:1"><span class="form-lbl">Intervalo</span><span class="form-val">{{ d.causa_intervalo }}</span></div>
+        </div>
+      }
+
+      <!-- CIRCUNSTANCIAS -->
+      @if (d.lugar_lesion || d.ocurrio_trabajo || d.accidente_transito || d.arma) {
+        <div class="form-section-bar"><span>III. Circunstancias</span></div>
+        <div class="form-row">
+          @if (d.lugar_lesion) {
+            <div class="form-field" style="flex:1"><span class="form-lbl">Lugar de Lesión</span><span class="form-val">{{ d.lugar_lesion }}</span></div>
+          }
+          @if (d.ocurrio_trabajo) {
+            <div class="form-field" style="flex:1"><span class="form-lbl">Ocurrió en trabajo</span><span class="form-val">Sí</span></div>
+          }
+        </div>
+        @if (d.accidente_transito || d.arma) {
+          <div class="form-row">
+            @if (d.accidente_transito) {
+              <div class="form-field" style="flex:1"><span class="form-lbl">Acc. Tránsito</span><span class="form-val">Sí</span></div>
+            }
+            @if (d.arma) {
+              <div class="form-field" style="flex:1"><span class="form-lbl">Arma</span><span class="form-val">{{ d.arma }}</span></div>
+            }
+          </div>
+        }
+      }
+
+      <!-- DATOS FETALES -->
+      @if (d.es_fetal) {
+        <div class="form-section-bar"><span>IV. Datos de Muerte Fetal</span></div>
+        <div class="form-row">
+          <div class="form-field" style="flex:1">
+            <span class="form-lbl">Sexo del Feto</span>
+            <span class="form-val">{{ d.fetal_sexo === 'M' ? 'Masculino' : d.fetal_sexo === 'F' ? 'Femenino' : '—' }}</span>
+          </div>
+          <div class="form-field" style="flex:1">
+            <span class="form-lbl">Semanas Gestación</span>
+            <span class="form-val">{{ d.fetal_semanas_gestacion ?? '—' }}</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field" style="flex:1">
+            <span class="form-lbl">Tipo de Parto</span>
+            <span class="form-val">{{ d.fetal_parto_tipo || '—' }}</span>
+          </div>
+          <div class="form-field" style="flex:1">
+            <span class="form-lbl">Clase de Parto</span>
+            <span class="form-val">
+              @if (d.fetal_clase_parto === 'Pes') { Eutócico }
+              @else if (d.fetal_clase_parto === 'Cstp') { Distócico }
+              @else { {{ d.fetal_clase_parto || '—' }} }
+            </span>
+          </div>
+          <div class="form-field" style="flex:1">
+            <span class="form-lbl">Vía del Parto</span>
+            <span class="form-val">{{ d.fetal_via_parto || '—' }}</span>
+          </div>
+        </div>
+        @if (d.fetal_causas_fetales || d.fetal_causas_maternas) {
+          <div class="form-row">
+            @if (d.fetal_causas_fetales) {
+              <div class="form-field" style="flex:1">
+                <span class="form-lbl">Causas Fetales</span>
+                <span class="form-val">{{ d.fetal_causas_fetales }}</span>
+              </div>
+            }
+            @if (d.fetal_causas_maternas) {
+              <div class="form-field" style="flex:1">
+                <span class="form-lbl">Causas Maternas</span>
+                <span class="form-val">{{ d.fetal_causas_maternas }}</span>
+              </div>
+            }
+          </div>
+        }
+      }
+
+      <!-- DATOS DE LA MADRE (opcional) -->
+      @if (d.madre_id) {
+        <div class="form-section-bar"><span>V. Datos de la Madre</span></div>
+        <div class="form-row">
+          <div class="form-field" style="flex:3">
+            <span class="form-lbl">Nombre Completo</span>
+            <span class="form-val form-val--name">{{ nombreMadre | capitalize }}</span>
+          </div>
+        </div>
+      }
+
+      <!-- OBSERVACIONES -->
+      @if (d.observaciones) {
+        <div class="form-section-bar"><span>Observaciones</span></div>
+        <div class="form-observaciones">{{ d.observaciones }}</div>
+      }
+
+      <div class="bloque-espacio"></div>
+
+      <!-- PIE — MÉDICO -->
+      <div class="cn-pie">
+        <div class="cn-firma-bloque">
+          <div class="firma-linea"></div>
+          <span class="cn-firma">{{ d.medico?.nombre || '—' }}</span>
+          <span class="cn-firma-cargo">
+            @if (d.medico?.especialidad) {
+              {{ d.medico?.especialidad }}
+            } @else {
+              Médico
+            }
+          </span>
+          <span class="cn-firma-hospital">
+            @if (d.medico?.colegiado) {
+              Colegiado {{ d.medico?.colegiado }}
+            } @else {
+              Hospital General Tipo I de Tecpán Guatemala
+            }
+          </span>
+        </div>
+      </div>
+
+      <div class="hoja-pie-label"></div>
+    </div>
+  </div>
+}

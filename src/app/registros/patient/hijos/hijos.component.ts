@@ -1,4 +1,5 @@
 import { PacienteService } from '../paciente.service';
+import { ApiService } from '../../../service/api.service';
 
 import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -8,6 +9,8 @@ import { Subject, of } from 'rxjs';
 import { takeUntil, catchError, finalize } from 'rxjs/operators';
 import { saveIcon, cancelIcon } from '../../../shared/icons/svg-icon';
 import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
+import { Hijode, HijodeItem, HijodeDatosExtra, MadreHijoResponse } from '../../../interface/interfaces';
+import { Medico } from '../../../interface/medicos.interface';
 
 @Component({
   selector: 'app-hijos',
@@ -19,7 +22,7 @@ import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
     ReactiveFormsModule,
     FormsModule,
     SoloNumeroDirective
-]
+  ]
 })
 export class HijosComponent implements OnInit, OnDestroy {
 
@@ -27,6 +30,7 @@ export class HijosComponent implements OnInit, OnDestroy {
 
   private fb = inject(FormBuilder);
   private api = inject(PacienteService);
+  private apis = inject(ApiService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private sanitizer = inject(DomSanitizer);
@@ -62,7 +66,7 @@ export class HijosComponent implements OnInit, OnDestroy {
     { label: '● Fallecido', valor: 'F' },
   ];
 
-  // ✅ TIPO DE PARTO: Simple, Gemelar, Múltiple
+  // ✅ TIPO DE PARTO: Simple, Múltiple
   opcionesTipoParto = [
     { label: 'Simple', valor: 'Simple' },
     { label: 'Múltiple', valor: 'Multiple' },
@@ -78,7 +82,10 @@ export class HijosComponent implements OnInit, OnDestroy {
   totalNacimientos = signal(1);
   nacimientoActual = signal(1);
   mostrarSelectorNacimientos = signal(false);
-  nacimientosRegistrados: any[] = [];
+  children: HijodeItem[] = [];
+
+  // ======= MÉDICOS =======
+  medicos: Medico[] = [];
 
   private destroy$ = new Subject<void>();
 
@@ -131,6 +138,26 @@ export class HijosComponent implements OnInit, OnDestroy {
 
     this.saveIcon = this.sanitizer.bypassSecurityTrustHtml(saveIcon);
     this.cancelIcon = this.sanitizer.bypassSecurityTrustHtml(cancelIcon);
+
+    this.cargarMedicos();
+  }
+
+  private cargarMedicos(): void {
+    const filtros = { activo: true, especialidad: 'GINECOLOGÍA', limit: 200 };
+    this.apis.getMedicos(filtros)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.medicos = data;
+          if (this.medicos.length === 1) {
+            this.form.get('datos_extra.id_medico')?.setValue(this.medicos[0].id ?? null);
+          }
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error('Error al cargar médicos:', err);
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -148,11 +175,11 @@ export class HijosComponent implements OnInit, OnDestroy {
       datos_extra: this.fb.group({
         peso_nacimiento: ['', this.pesoValidator()],
         edad_gestacional: [''],
-        tipo_parto: [''],          // Simple, Gemelar, Múltiple
+        tipo_parto: [''],          // Simple, Múltiple
         clase_parto: [''],         // Eutocico, Distocico
-        gemelo: [''],
         extrahositalario: ['no'],
         hora_nacimiento: [''],
+        id_medico: [null],
       }),
     });
   }
@@ -166,13 +193,14 @@ export class HijosComponent implements OnInit, OnDestroy {
   manejarTipoPartoMultiple(): void {
     const tipoParto = this.form.get('datos_extra.tipo_parto')?.value;
 
-    if (tipoParto === 'Múltiple') {
+    if (tipoParto === 'Multiple') {
       this.mostrarSelectorNacimientos.set(true);
       this.nacimientoActual.set(1);
-      this.nacimientosRegistrados = [];
+      this.children = [];
     } else {
       this.mostrarSelectorNacimientos.set(false);
       this.totalNacimientos.set(1);
+      this.nacimientoActual.set(1);
     }
   }
 
@@ -187,9 +215,6 @@ export class HijosComponent implements OnInit, OnDestroy {
 
     this.mostrarSelectorNacimientos.set(false);
     this.nacimientoActual.set(1);
-
-    // Auto-llenar el campo gemelo con el número de nacimiento
-    this.form.get('datos_extra.gemelo')?.setValue(this.nacimientoActual().toString());
 
     this.error.set(null);
     console.log(`Total de nacimientos: ${this.totalNacimientos()}, iniciando registro del primero...`);
@@ -243,6 +268,29 @@ export class HijosComponent implements OnInit, OnDestroy {
     this.form.get('datos_extra.extrahositalario')?.setValue(valor);
   }
 
+  // ======= CONSTRUIR ITEM POR HIJO =======
+  private buildChildItem(): HijodeItem {
+    const raw = this.form.getRawValue();
+
+    let hora = raw.datos_extra.hora_nacimiento;
+    if (hora && hora.length === 5) {
+      hora = hora + ':00.000Z';
+    }
+
+    return {
+      sexo: raw.sexo,
+      datos_extra: {
+        peso_nacimiento: raw.datos_extra.peso_nacimiento || undefined,
+        edad_gestacional: raw.datos_extra.edad_gestacional || undefined,
+        tipo_parto: raw.datos_extra.tipo_parto || undefined,
+        clase_parto: raw.datos_extra.clase_parto || undefined,
+        extrahositalario: raw.datos_extra.extrahositalario || 'no',
+        hora_nacimiento: hora || undefined,
+        id_medico: raw.datos_extra.id_medico ?? undefined,
+      }
+    };
+  }
+
   // ======= GUARDAR =======
   guardar(): void {
     if (!this.pacienteId) {
@@ -257,7 +305,7 @@ export class HijosComponent implements OnInit, OnDestroy {
     }
 
     // ✅ Si es múltiple, validar que tiene tipo_parto y clase_parto
-    if (this.form.get('datos_extra.tipo_parto')?.value === 'Múltiple') {
+    if (this.form.get('datos_extra.tipo_parto')?.value === 'Multiple') {
       if (!this.form.get('datos_extra.clase_parto')?.value) {
         this.error.set('❌ Debes seleccionar la clase de parto (Eutócico/Distócico)');
         return;
@@ -266,80 +314,60 @@ export class HijosComponent implements OnInit, OnDestroy {
 
     console.log('Formulario raw value:', this.form.getRawValue());
 
-    const raw = this.form.getRawValue();
+    // Agregar hijo actual a la colección
+    const childItem = this.buildChildItem();
+    this.children.push(childItem);
 
-    // Convertir hora: "18:46" → "18:46:00.000Z"
-    let hora = raw.datos_extra.hora_nacimiento;
-    if (hora && hora.length === 5) {
-      hora = hora + ':00.000Z';
-    }
+    const esUltimo = this.nacimientoActual() === this.totalNacimientos();
 
-    const payload = {
-      sexo: raw.sexo,
-      fecha_nacimiento: raw.fecha_nacimiento,
-      estado: raw.estado,
-      datos_extra: {
-        peso_nacimiento: raw.datos_extra.peso_nacimiento || undefined,
-        edad_gestacional: raw.datos_extra.edad_gestacional || undefined,
-        tipo_parto: raw.datos_extra.tipo_parto || undefined,
-        clase_parto: raw.datos_extra.clase_parto || undefined,
-        gemelo: raw.datos_extra.gemelo || undefined,
-        extrahositalario: raw.datos_extra.extrahositalario || 'no',
-        hora_nacimiento: hora || undefined,
-      }
-    };
+    if (esUltimo) {
+      // Último nacimiento — enviar batch al backend
+      const raw = this.form.getRawValue();
+      const payload: Hijode = {
+        fecha_nacimiento: raw.fecha_nacimiento,
+        estado: raw.estado,
+        hijos: this.children,
+      };
 
-    console.log(`Guardando nacimiento ${this.nacimientoActual()}/${this.totalNacimientos()}:`, payload);
-    this.isLoading.set(true);
-    this.error.set(null);
+      console.log(`Enviando lote de ${this.children.length} hijos:`, payload);
+      this.isLoading.set(true);
+      this.error.set(null);
 
-    this.api.hijoDe(payload, this.pacienteId)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => this.isLoading.set(false)),
-        catchError(err => {
-          this.error.set(`❌ Error: ${err?.error?.detail || err?.message || 'Error desconocido'}`);
-          console.error('Error guardando hijo:', err);
-          return of(null);
-        })
-      )
-      .subscribe(response => {
-        if (response) {
-          // Guardar en el registro temporal
-          this.nacimientosRegistrados.push({
-            numero: this.nacimientoActual(),
-            datos: payload
-          });
-
-          const esUltimo = this.nacimientoActual() === this.totalNacimientos();
-
-          if (esUltimo) {
-            // Último nacimiento - volver a pacientes
-            this.success.set(`✅ Se han registrado exitosamente ${this.totalNacimientos()} nacimientos`);
-            console.log('Todos los nacimientos registrados:', this.nacimientosRegistrados);
+      this.api.hijoDe(payload, this.pacienteId)
+        .pipe(
+          takeUntil(this.destroy$),
+          finalize(() => this.isLoading.set(false)),
+          catchError(err => {
+            this.error.set(`❌ Error: ${err?.error?.detail || err?.message || 'Error desconocido'}`);
+            console.error('Error guardando hijos:', err);
+            return of(null);
+          })
+        )
+        .subscribe(response => {
+          if (response) {
+            this.success.set(`✅ Se han registrado exitosamente ${response.total} nacimiento(s)`);
+            console.log('Respuesta del servidor:', response);
 
             setTimeout(() => {
               this.router.navigate(['/pacientes']);
             }, 2000);
-          } else {
-            // Hay más nacimientos - limpiar form y pasar al siguiente
-            this.success.set(`✅ Nacimiento ${this.nacimientoActual()} registrado correctamente`);
-
-            // Incrementar contador
-            this.nacimientoActual.set(this.nacimientoActual() + 1);
-
-            // Limpiar formulario pero mantener algunos datos
-            this.limpiarFormularioParaSiguiente();
-
-            setTimeout(() => {
-              this.success.set(null);
-              // Scroll al inicio del form
-              document.getElementById('sec-0')?.scrollIntoView({ behavior: 'smooth' });
-            }, 1500);
           }
           this.cdr.markForCheck();
-        }
-      });
+        });
+    } else {
+      // Hay más nacimientos — solo avanzar al siguiente
+      this.success.set(`✅ Nacimiento ${this.nacimientoActual()} registrado correctamente`);
+
+      this.nacimientoActual.set(this.nacimientoActual() + 1);
+      this.limpiarFormularioParaSiguiente();
+
+      setTimeout(() => {
+        this.success.set(null);
+        document.getElementById('sec-0')?.scrollIntoView({ behavior: 'smooth' });
+      }, 1500);
+
+      this.cdr.markForCheck();
+    }
   }
 
   /**
@@ -348,28 +376,25 @@ export class HijosComponent implements OnInit, OnDestroy {
   private limpiarFormularioParaSiguiente(): void {
     const raw = this.form.getRawValue();
 
-    // Resetear solo los campos específicos del niño
     this.form.patchValue({
-      sexo: '', // El siguiente puede tener sexo diferente
-      fecha_nacimiento: raw.fecha_nacimiento, // Mantener la fecha (probablemente la misma)
-      estado: 'V',
+      sexo: '',
       datos_extra: {
         peso_nacimiento: '',
-        edad_gestacional: raw.datos_extra.edad_gestacional, // Mantener
-        tipo_parto: raw.datos_extra.tipo_parto, // Mantener
-        clase_parto: raw.datos_extra.clase_parto, // Mantener
-        gemelo: this.nacimientoActual().toString(), // Auto-llenar con el siguiente número
-        extrahositalario: raw.datos_extra.extrahositalario, // Mantener
-        hora_nacimiento: '', // Puede variar
+        edad_gestacional: raw.datos_extra.edad_gestacional,
+        tipo_parto: raw.datos_extra.tipo_parto,
+        clase_parto: raw.datos_extra.clase_parto,
+        extrahositalario: raw.datos_extra.extrahositalario,
+        hora_nacimiento: '',
+        id_medico: null,
       }
     });
   }
 
   // ======= NAVEGACIÓN =======
   volver(): void {
-    if (this.nacimientosRegistrados.length > 0) {
+    if (this.children.length > 0) {
       const confirm = window.confirm(
-        `Ya has registrado ${this.nacimientosRegistrados.length} nacimiento(s). ¿Deseas descartar y volver?`
+        `Ya has registrado ${this.children.length} nacimiento(s). ¿Deseas descartar y volver?`
       );
       if (!confirm) return;
     }

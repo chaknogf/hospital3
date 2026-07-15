@@ -1,7 +1,7 @@
 // ======= IMPORTACIONES =======
 import { municipios } from '../../../enum/departamentos';
 
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, signal, inject, ChangeDetectorRef } from '@angular/core';
 import {
   FormBuilder, FormGroup, ReactiveFormsModule, FormsModule,
   AbstractControl, ValidatorFn, ValidationErrors,
@@ -23,6 +23,7 @@ import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
 import { provideNgxMask, NgxMaskDirective } from 'ngx-mask';
 import { ApiService } from '../../../service/api.service';
 import { PacienteUtilService } from '../../../service/paciente-util.service';
+import { Medico } from '../../../interface/medicos.interface';
 import {
   addIcon, removeIcon, saveIcon, cancelIcon, findIcon,
   touchicon,
@@ -66,6 +67,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   private sanitizer = inject(DomSanitizer);
   private pacienteUtil = inject(PacienteUtilService);
   private location = inject(Location);
+  private cdr = inject(ChangeDetectorRef);
 
 
   // ======= SEÑALES =======
@@ -82,6 +84,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   municipios_nacimiento = signal<Municipio[]>([]);
   vecindades = signal<Municipio[]>([]);
   paisesIso = signal<PaisesIso[]>([]);
+  medicos: Medico[] = [];
 
   // Variables temporales para filtrar municipios
   depto_direccion_temp = signal<string>('');
@@ -136,6 +139,11 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     setTimeout(() => this.checkStepsDone(), 300);
     if (!this.enEdicion()) {
       this.agregarReferencia();
+    }
+
+    const stepParam = this.route.snapshot.queryParamMap.get('step');
+    if (stepParam) {
+      this.currentStep.set(Number(stepParam));
     }
   }
 
@@ -212,7 +220,8 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
           gemelo: [''],
           expediente_madre: [''],
           extrahositalario: [false],
-          hora_nacimiento: ['']
+          hora_nacimiento: [''],
+          id_medico: [null]
         })
       }),
 
@@ -256,6 +265,30 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
   private obtenerDatosIniciales(): void {
     this.obtenerPaisesIso();
+    this.cargarMedicos();
+  }
+
+  private cargarMedicos(): void {
+    const filtros = { activo: true, especialidad: 'GINECOLOGÍA', limit: 200 };
+    this.apis.getMedicos(filtros)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.medicos = data;
+          const idMedicoControl = this.form.get('datos_extra.neonatales.id_medico');
+          const currentMedicoId = idMedicoControl?.value;
+          if (currentMedicoId != null && this.medicos.some(m => m.id === currentMedicoId)) {
+            idMedicoControl!.setValue(currentMedicoId, { emitEvent: false });
+          } else if (this.medicos.length === 1) {
+            idMedicoControl?.setValue(this.medicos[0].id ?? null, { emitEvent: false });
+          }
+          this.cdr.markForCheck();
+        },
+        error: err => {
+          console.error('Error al cargar médicos:', err);
+          this.cdr.markForCheck();
+        }
+      });
   }
 
   private manejarDatosRenap(): void {

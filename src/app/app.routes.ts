@@ -290,6 +290,28 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin', 'registro', 'std'])]
       },
 
+      //Defunciones
+      {
+        path: 'defunciones',
+        loadComponent: () => import('./registros/defunciones/listarDefunciones/listarDefunciones.component').then(c => c.ListarDefuncionesComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'cons-def/:id',
+        loadComponent: () => import('./registros/defunciones/constanciaDefuncion/constanciaDefuncion.component').then(c => c.ConstanciaDefuncionComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'nueva-cons-def',
+        loadComponent: () => import('./registros/defunciones/nuevaConstanciaDefuncion/nuevaConstanciaDefuncion.component').then(c => c.NuevaConstanciaDefuncionComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+      {
+        path: 'cdprint/:id',
+        loadComponent: () => import('./registros/defunciones/hoja-cdefuncion/hoja-cdefuncion.component').then(c => c.HojaCdefuncionComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+      },
+
       //Estadistica
       {
         path: 'estadistica',

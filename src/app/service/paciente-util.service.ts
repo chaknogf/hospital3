@@ -182,7 +182,8 @@ export class PacienteUtilService {
         tipo_parto: neo.tipo_parto || null,
         clase_parto: neo.clase_parto || null,
         gemelo: neo.gemelo || null,
-        expediente_madre: neo.expediente_madre || null
+        expediente_madre: neo.expediente_madre || null,
+        id_medico: neo.id_medico || null
       }
     };
   }
@@ -222,7 +223,8 @@ export class PacienteUtilService {
         tipo_parto: neo.tipo_parto || '',
         clase_parto: neo.clase_parto || '',
         gemelo: neo.gemelo || '',
-        expediente_madre: neo.expediente_madre || ''
+        expediente_madre: neo.expediente_madre || '',
+        id_medico: neo.id_medico ?? null
       }
     };
   }
@@ -257,7 +259,8 @@ export class PacienteUtilService {
         tipo_parto: '',
         clase_parto: '',
         gemelo: '',
-        expediente_madre: ''
+        expediente_madre: '',
+        id_medico: null
       }
     };
   }
@@ -291,7 +294,8 @@ export class PacienteUtilService {
         tipo_parto: null,
         clase_parto: null,
         gemelo: null,
-        expediente_madre: null
+        expediente_madre: null,
+        id_medico: null
       }
     };
   }

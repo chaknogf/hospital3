@@ -1,0 +1,118 @@
+<div class="hoja" *ngIf="constancia as c">
+
+  <!-- CABECERA -->
+  <header class="encabezado">
+    <div class="logo-placeholder">MSPAS</div>
+    <div class="titulo">
+      <p class="h-ministerio">Ministerio de Salud Pública y Asistencia Social</p>
+      <p class="h-hospital">Hospital General Tipo I de Tecpán Guatemala</p>
+      <h2>Informe de Nacimiento</h2>
+    </div>
+    <div class="doc-num">
+      <span class="doc-lbl">Documento No.</span>
+      <span class="doc-val">{{ c.documento }}</span>
+    </div>
+  </header>
+
+  <!-- LUGAR Y FECHA + DESTINATARIO -->
+  <div class="lugar-fecha">
+    Tecpán Guatemala, Chimaltenango — {{ fechaEmision }}
+  </div>
+  <div class="destinatario">Señores del RENAP</div>
+
+  <!-- PRÓLOGO -->
+  <div class="prologo">
+    <p>
+      Para los efectos legales de la inscripción correspondiente ante el
+      Registro Nacional de las Personas —RENAP—, el/la infrascrito/a Auxiliar
+      de Registros Médicos del Hospital General Tipo I de Tecpán Guatemala
+      hace constar que en las instalaciones del Hospital General Tipo I de
+      Tecpán Guatemala, ubicado en el Barrio San Antonio, Sector Pachulalí de
+      Tecpán Guatemala, Chimaltenango, se atendió el parto de la paciente que
+      a continuación se identifica, habiéndose producido el nacimiento de un
+      producto vivo en la fecha y hora que se indican en el presente
+      documento. Se extiende la presente constancia a solicitud de la parte
+      interesada, para los usos legales que estime convenientes.
+    </p>
+  </div>
+
+  <!-- I. DATOS DE LA MADRE -->
+  <div class="section-bar">I. Datos de la Madre</div>
+
+  <table class="formulario">
+    <tr>
+      <td class="lbl">Nombre Completo</td>
+      <td class="val nombre" colspan="3">{{ nombreMadre }}</td>
+      <td class="lbl" style="width:60px">Edad</td>
+      <td class="val" style="width:70px">{{ edadMadre }} años</td>
+    </tr>
+    <tr>
+      <td class="lbl">Tipo de Identificación</td>
+      <td class="val" colspan="2">{{ documentoIdentificacionMadre }}</td>
+      <td class="lbl">No. Identificación</td>
+      <td class="val" colspan="2">{{ numeroIdentificacionMadre }}</td>
+    </tr>
+    <tr>
+      <td class="lbl">Vecindad</td>
+      <td class="val" colspan="5">{{ vecindadMadre }}</td>
+    </tr>
+    <tr>
+      <td class="lbl">Lugar de {{ esGuatemalteca ? 'Nacimiento' : 'Origen' }}</td>
+      <td class="val" colspan="5">
+        {{ esGuatemalteca ? lugarNacimientoMadre : nacionalidadMadre }}
+      </td>
+    </tr>
+  </table>
+
+  <!-- II. DATOS DEL NACIMIENTO -->
+  <div class="section-bar">II. Datos del Nacimiento</div>
+
+  <table class="formulario">
+    <tr>
+      <td class="lbl">Fecha de Nacimiento</td>
+      <td class="val fw-bold">{{ fechaNacimiento }}</td>
+      <td class="lbl" style="width:70px">Hora</td>
+      <td class="val" style="width:90px">{{ horaNacimiento }} hrs.</td>
+      <td class="lbl" style="width:60px">Sexo</td>
+      <td class="val" style="width:90px">{{ sexoNeonato }}</td>
+      <td class="lbl" style="width:60px">Peso</td>
+      <td class="val" style="width:90px">{{ pesoNacer }}</td>
+    </tr>
+    <tr>
+      <td class="lbl">Tipo de Parto</td>
+      <td class="val" colspan="3">{{ tipoParto }}</td>
+      <td class="lbl">Clase</td>
+      <td class="val" colspan="3">{{ clasePartoTexto }}</td>
+    </tr>
+  </table>
+
+  <!-- III. HISTORIAL OBSTÉTRICO -->
+  <div class="section-bar">III. Historial Obstétrico</div>
+
+  <table class="formulario">
+    <tr>
+      <td class="lbl">Total de Hijos (incluyendo este)</td>
+      <td class="val num">{{ c.hijos ?? 0 }}</td>
+      <td class="lbl">Nacidos Muertos</td>
+      <td class="val num">{{ c.muertos ?? 0 }}</td>
+      <td class="lbl">Viven Actualmente</td>
+      <td class="val num">{{ c.vivos ?? 0 }}</td>
+    </tr>
+  </table>
+
+  <!-- OBSERVACIONES -->
+  <ng-container *ngIf="c.observaciones">
+    <div class="section-bar">Observaciones</div>
+    <div class="observaciones">{{ c.observaciones }}</div>
+  </ng-container>
+
+  <!-- PIE / FIRMA -->
+  <div class="pie">
+    <div class="firma-bloque">
+      <div class="firma-linea"></div>
+      <span class="firma-nombre">{{ nombreMedico }}</span>
+      <span class="firma-cargo">{{ cargoMedico }}</span>
+      <span class="firma-hospital">{{ colegiadoMedico }}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,127 @@
+<div class="aurora-paciente-container">
+  <div class="botones justify-content-between" [ngClass]="{ 'd-none': filtrar }">
+    <button type="button" (click)="volver()">
+      <span>&#9664;</span> Menu
+    </button>
+    <h1 class="text-white">Defunciones</h1>
+    <button type="button" (click)="toggleFiltrar()">
+      <span>&#128269;</span> Filtrar
+    </button>
+  </div>
+
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar }">
+    <form class="form-filtros" (submit)="cargarDatos(); $event.preventDefault()">
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Buscar (nombre, CUI)</label>
+        <input type="text" class="input-filtros" [(ngModel)]="filtros.q" name="q" placeholder="Nombre del fallecido, madre o médico" />
+      </fieldset>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Expediente</label>
+        <input type="text" class="input-filtros" [(ngModel)]="filtros.expediente" name="expediente" placeholder="Ej. 26A-99" />
+      </fieldset>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">ID Paciente</label>
+        <input type="number" class="input-filtros" [(ngModel)]="filtros.paciente_id" name="paciente_id" placeholder="Ej. 12345" />
+      </fieldset>
+      <div class="d-flex gap-1">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Fecha desde</label>
+          <input type="date" class="input-filtros" [(ngModel)]="filtros.fecha_desde" name="fecha_desde" />
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Fecha hasta</label>
+          <input type="date" class="input-filtros" [(ngModel)]="filtros.fecha_hasta" name="fecha_hasta" />
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Tipo</label>
+          <select class="input-filtros" [(ngModel)]="filtros.es_fetal" name="es_fetal">
+            <option value="">Todas</option>
+            <option value="true">Fetales</option>
+            <option value="false">No fetales</option>
+          </select>
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Estado</label>
+          <select class="input-filtros" [(ngModel)]="filtros.estado" name="estado">
+            <option value="A">Activas</option>
+            <option value="I">Inactivas</option>
+            <option value="">Todas</option>
+          </select>
+        </fieldset>
+      </div>
+      <div class="botones-filtros">
+        <button class="button-filtros" type="submit">&#128269; Buscar</button>
+        <button class="button-filtros" type="button" (click)="limpiarFiltros()">&#128465; Limpiar</button>
+        <button class="button-filtros" type="button" (click)="agregar()">&#65291; Agregar</button>
+      </div>
+    </form>
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="btn m-0 p-0" (click)="toggleFiltrar()"><span>&#9660;</span></button>
+    </div>
+  </div>
+
+  <div class="aurora-container">
+    <table class="aurora-tb">
+      <thead>
+        <tr>
+          <th class="text-justify">Id</th>
+          <th>Fallecido</th>
+          <th>Expediente</th>
+          <th>Fecha Defunción</th>
+          <th>Causa</th>
+          <th>Médico</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of datos; track data.id) {
+          <tr class="aurora-table-row">
+            <td class="text-justify tb-id">{{ data.id }}</td>
+            <td>{{ data.paciente?.nombre_completo | capitalize }}</td>
+            <td>{{ data.paciente?.expediente }}</td>
+            <td>{{ data.fecha_defuncion | date: 'dd-MM-yyyy' }}</td>
+            <td>{{ data.causa_a }}</td>
+            <td>{{ data.medico?.nombre }}</td>
+            <td>
+              @if (data.estado === 'A') {
+                <span class="badge badge-success">Activa</span>
+              } @else {
+                <span class="badge badge-secondary">Inactiva</span>
+              }
+            </td>
+            <td class="secundario">
+              <div class="botones-opt">
+                <button (click)="editar(data.id); $event.stopPropagation()">&#9998;</button>
+                <button (click)="imprimir(data.id); $event.stopPropagation()">&#128424;</button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="7" class="text-center p-4" style="color:#94a3b8;">No se encontraron defunciones</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="paginador">
+    <button class="pag-btn" [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">&#9664;</button>
+    @if (paginas[0] > 1) {
+      <button class="pag-num" (click)="irAPagina(1)">1</button>
+    }
+    @if (paginas[0] > 2) {
+      <span class="pag-ellipsis">…</span>
+    }
+    @for (p of paginas; track p) {
+      <button class="pag-num" [class.pag-num-active]="p === paginaActual" (click)="irAPagina(p)">{{ p }}</button>
+    }
+    @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+      <span class="pag-ellipsis">…</span>
+    }
+    @if (paginas[paginas.length - 1] < totalPaginas) {
+      <button class="pag-num" (click)="irAPagina(totalPaginas)">{{ totalPaginas }}</button>
+    }
+    <button class="pag-btn" [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">&#9654;</button>
+    <span class="pag-info">Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp; {{ totalDeRegistros }} registros</span>
+  </div>
+</div>

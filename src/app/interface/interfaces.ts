@@ -74,6 +74,7 @@ export interface Neonatales {
   expediente_madre?: string | null;
   extrahositalario?: boolean | false;
   hora_nacimiento?: string | null;
+  id_medico?: number | null;
 }
 
 export interface DatosExtra {
@@ -180,11 +181,15 @@ export interface Totales {
 
 
 
-export interface Hijode {
+export interface HijodeItem {
   sexo: 'M' | 'F';
-  fecha_nacimiento: string;  // Formato: YYYY-MM-DD
-  estado: 'V' | 'F';         // Vivo o Fallecido
-  datos_extra?: HijodeDatosExtra;
+  datos_extra: HijodeDatosExtra;
+}
+
+export interface Hijode {
+  fecha_nacimiento: string;       // Formato: YYYY-MM-DD
+  estado: 'V' | 'F';              // Vivo o Fallecido
+  hijos: HijodeItem[];            // Uno por recién nacido
 }
 
 export interface HijodeDatosExtra {
@@ -192,9 +197,14 @@ export interface HijodeDatosExtra {
   edad_gestacional?: string;     // en semanas
   tipo_parto?: string;           // ej: "pes", "cesarea"
   clase_parto?: string;          // ej: "simple", "gemelar"
-  gemelo?: string | null;        // ej: "gemelo_a", "gemelo_b", null
   extrahositalario?: boolean;    // nacimiento extra-hospitalario
   hora_nacimiento?: string;      // Formato: HH:MM:SS.000Z
+  id_medico?: number | null;     // Médico que atendió el parto
+}
+
+export interface MadreHijoResponse {
+  pacientes: Paciente[];
+  total: number;
 }
 
 export interface PacienteJoin {
