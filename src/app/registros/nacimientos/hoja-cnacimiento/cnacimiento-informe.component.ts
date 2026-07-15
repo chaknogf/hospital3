@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IconService } from '../../../service/icon.service';
 import { SafeHtml } from '@angular/platform-browser';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
+import { LibrasOnzasPipe } from '../../../pipes/librasOnza.pipe';
 
 export interface NombrePersona {
   primer_nombre?: string | null;
@@ -77,7 +78,7 @@ const capitalize = (s: string | null | undefined): string =>
 @Component({
   selector: 'app-cnacimiento-informe',
   standalone: true,
-  imports: [CommonModule, DatosExtraPipe],
+  imports: [CommonModule, DatosExtraPipe, LibrasOnzasPipe],
   templateUrl: './cnacimiento-informe.component.html',
   styleUrls: ['./cnacimiento-informe.component.scss'],
 })
@@ -131,9 +132,11 @@ export class CnAcimientoInformeComponent {
   get pesoNacer(): string {
     const p = this.constancia?.paciente?.datos_extra?.neonatales?.peso_nacimiento;
     if (!p) return '—';
-    const lbs = Math.floor(Number(p) / 16);
-    const oz = Number(p) % 16;
-    return lbs ? `${lbs} lb ${oz} oz` : `${oz} oz`;
+    const s = String(p).trim();
+    if (s.includes('.')) return s;
+    const oz = Number(s);
+    const lbs = Math.floor(oz / 16);
+    return `${lbs}.${oz % 16}`;
   }
 
   get tipoParto(): string {

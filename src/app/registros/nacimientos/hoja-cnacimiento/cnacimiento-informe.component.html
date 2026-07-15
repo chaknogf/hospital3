@@ -84,7 +84,7 @@
         Lugar de {{ nacionalidadMadre === 'GTM' ? 'Nacimiento' : 'Origen' }}
       </span>
       <span class="form-val">
-        {{ nacionalidadMadre === 'GTM' ? lugarNacimientoMadre : nacionalidadMadreTexto }}
+        {{ nacionalidadMadre === 'GTM' ? (lugarNacimientoMadre | datosExtra:'municipio') : nacionalidadMadreTexto }}
       </span>
     </div>
   </div>
@@ -109,7 +109,7 @@
     </div>
     <div class="form-field" style="flex: 1; text-align: center">
       <span class="form-lbl">Peso al Nacer</span>
-      <span class="form-val">{{ pesoNacer }}</span>
+      <span class="form-val">{{ pesoNacer | librasOnzas }}</span>
     </div>
   </div>
 
