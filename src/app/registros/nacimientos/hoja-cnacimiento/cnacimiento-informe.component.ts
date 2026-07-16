@@ -75,6 +75,16 @@ const MESES = [
 const capitalize = (s: string | null | undefined): string =>
   !s ? '' : s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 
+function parseDateLocal(iso: string): Date | null {
+  if (!iso) return null;
+  const parts = iso.split('T')[0].split('-').map(Number);
+  if (parts.length === 3 && parts.every(n => !isNaN(n))) {
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+  }
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? null : d;
+}
+
 @Component({
   selector: 'app-cnacimiento-informe',
   standalone: true,
@@ -102,22 +112,20 @@ export class CnAcimientoInformeComponent {
     ].filter(Boolean).join(' ');
   }
 
-  get fechaEmision() {
-    const iso = this.constancia?.fecha_registro;
+  private formatearFecha(iso: string | null | undefined): string {
     if (!iso) return '';
-    const d = new Date(iso);
-    if (isNaN(d.getTime())) return '';
+    const d = parseDateLocal(iso);
+    if (!d) return '';
     const dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
     return `${dias[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
   }
 
+  get fechaEmision() {
+    return this.formatearFecha(this.constancia?.fecha_registro);
+  }
+
   get fechaNacimiento() {
-    const iso = this.constancia?.paciente?.fecha_nacimiento;
-    if (!iso) return '';
-    const d = new Date(iso);
-    if (isNaN(d.getTime())) return '';
-    const dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-    return `${dias[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+    return this.formatearFecha(this.constancia?.paciente?.fecha_nacimiento);
   }
 
   get horaNacimiento(): string {
@@ -153,8 +161,8 @@ export class CnAcimientoInformeComponent {
   get edadMadre(): number | string {
     const fn = this.constancia?.madre?.fecha_nacimiento;
     if (!fn) return '—';
-    const nac = new Date(fn);
-    if (isNaN(nac.getTime())) return '—';
+    const nac = parseDateLocal(fn);
+    if (!nac) return '—';
     return Math.floor((Date.now() - nac.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
   }
 

@@ -1,0 +1,350 @@
+.estado {
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.1rem;
+}
+.estado.error {
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+/* ── page ── */
+.page {
+  position: relative;
+  width: 210mm;
+  min-height: 297mm;
+  margin: 20px auto;
+  padding: 12mm 8mm 8mm;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(0,0,0,.15);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 9pt;
+  color: #222;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ── watermark ── */
+.watermark-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%) rotate(-30deg);
+  font-size: 120pt;
+  font-weight: bold;
+  color: rgba(0,0,0,.04);
+  pointer-events: none;
+  z-index: 0;
+  white-space: nowrap;
+}
+
+/* ── header ── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+}
+.header-logos {
+  flex: 0 0 55px;
+}
+.header-logos .logo-placeholder {
+  width: 55px;
+  height: 55px;
+  border: 1px dashed #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7pt;
+  color: #999;
+}
+.header-title {
+  flex: 1;
+  text-align: center;
+}
+.header-title h1 {
+  font-size: 12pt;
+  font-weight: bold;
+  margin: 0;
+  text-transform: uppercase;
+}
+.header-title h2 {
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 2px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.header-title p {
+  font-size: 8.5pt;
+  margin: 0;
+  font-style: italic;
+}
+.revision-tag {
+  flex: 0 0 auto;
+  font-size: 7.5pt;
+  font-weight: bold;
+  border: 1px solid #222;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+/* ── form container ── */
+.form-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── form row (section) ── */
+.form-row {
+  display: flex;
+  margin-bottom: 4px;
+  border: 1px solid #555;
+  min-height: 28px;
+}
+
+.lateral-indicator {
+  flex: 0 0 32px;
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  background: #e8e8e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 7pt;
+  padding: 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-right: 1px solid #555;
+}
+.lateral-indicator span {
+  transform: rotate(180deg);
+}
+
+.section-content {
+  flex: 1;
+  padding: 4px 6px;
+}
+
+.sub-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 3px;
+  align-items: flex-start;
+}
+.sub-row:last-child {
+  margin-bottom: 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.field.w-25 { width: 25%; }
+.field.w-30 { width: 30%; }
+.field.w-33 { width: 33%; }
+.field.w-40 { width: 40%; }
+.field.w-50 { width: 50%; }
+.field.w-70 { width: 70%; }
+.field.w-75 { width: 75%; }
+.field.w-100 { width: 100%; }
+
+.label {
+  font-weight: bold;
+  font-size: 7.5pt;
+  line-height: 1.2;
+}
+.label-sub {
+  font-size: 6.5pt;
+  text-align: center;
+  color: #555;
+  font-style: italic;
+}
+
+/* ── input line ── */
+.input-line {
+  border-bottom: 1px dotted #333;
+  min-height: 1.4em;
+  padding: 0 4px;
+  font-size: 9pt;
+  line-height: 1.4;
+  color: #000;
+}
+.input-line.short { width: 50px; }
+.input-line.vshort { width: 35px; display: inline-block; }
+.input-line.medium { width: 100px; display: inline-block; }
+.input-line.long { }
+
+/* ── inline fields ── */
+.inline-fields {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  flex-wrap: wrap;
+  font-size: 8pt;
+}
+.inline-fields .input-line {
+  display: inline-block;
+}
+.grow-1 { flex: 1; }
+.grow-2 { flex: 2; }
+.w-80 { width: 80px; }
+.w-150 { width: 150px; }
+
+/* ── age fields ── */
+.age-fields {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 8pt;
+}
+
+/* ── checkbox box ── */
+.checkbox-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #222;
+  font-size: 8pt;
+  font-weight: bold;
+  line-height: 1;
+  margin-right: 2px;
+}
+
+/* ── code box ── */
+.code-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 18px;
+  border: 1px solid #222;
+  font-size: 8pt;
+  font-weight: bold;
+}
+
+/* ── options row ── */
+.options-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 6px;
+  align-items: center;
+}
+.options-row.inline {
+  flex-wrap: nowrap;
+}
+.option-item {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 7.5pt;
+  gap: 1px;
+}
+
+.options-with-code {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── causes table ── */
+.causes-field {
+  border-right: 1px solid #555;
+  padding-right: 6px;
+}
+.causes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.5pt;
+}
+.causes-table td {
+  border: 1px solid #555;
+  padding: 2px 4px;
+}
+.causes-table .letra {
+  width: 30px;
+  font-weight: bold;
+  text-align: center;
+}
+.causes-table .intervalo {
+  width: 80px;
+  font-size: 7pt;
+}
+
+.causes-interval .input-line {
+  margin-bottom: 2px;
+}
+
+/* ── banner alert ── */
+.banner-alert {
+  background: #fef3cd;
+  border: 1px solid #856404;
+  color: #856404;
+  padding: 4px 8px;
+  font-size: 8pt;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+/* ── signatures ── */
+.signatures-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  position: relative;
+  z-index: 1;
+}
+.signature-box {
+  flex: 1;
+  text-align: center;
+  font-size: 7.5pt;
+}
+.signature-box.wide {
+  flex: 2;
+}
+.signature-line {
+  border-top: 1px solid #333;
+  height: 28px;
+  margin-bottom: 4px;
+}
+.signature-box p {
+  text-align: justify;
+  margin: 0 0 6px;
+  font-size: 7.5pt;
+}
+.signature-box .inline-fields {
+  justify-content: center;
+  margin-bottom: 6px;
+}
+.signature-box .label {
+  font-size: 7pt;
+}
+
+.escolaridad {
+  gap: 1px 4px;
+}
+
+/* ── print ── */
+@media print {
+  .no-imprimir { display: none !important; }
+  .page {
+    margin: 0;
+    box-shadow: none;
+    width: 100%;
+    min-height: 100vh;
+    padding: 10mm 6mm;
+    page-break-after: always;
+  }
+  @page {
+    margin: 0;
+    size: letter;
+  }
+}

@@ -1,0 +1,467 @@
+<div class="estado no-imprimir" *ngIf="cargando">
+  Cargando informe de defunción…
+</div>
+<div class="estado error no-imprimir" *ngIf="error">{{ error }}</div>
+
+<div class="page" *ngIf="defuncion as f">
+  <div class="watermark-bg">Gratuito</div>
+
+  <div class="header">
+    <div class="header-logos">
+      <div class="logo-placeholder">Logo</div>
+    </div>
+    <div class="header-title">
+      <h1>República de Guatemala</h1>
+      <h2>INFORME DE DEFUNCIÓN</h2>
+      <p>(INCLUYE DEFUNCIONES FETALES)</p>
+    </div>
+    <div class="revision-tag">Revisión 2016</div>
+  </div>
+
+  <div class="form-container">
+
+    <!-- I. INFORMACIÓN GENERAL -->
+    <div class="form-row">
+      <div class="lateral-indicator"><span>I. INFORMACIÓN GENERAL</span></div>
+      <div class="section-content">
+        <div class="sub-row">
+          <div class="field w-70">
+            <span class="label">1. El que informa (nombres y apellidos):</span>
+            <div class="input-line">{{ nombreCompleto(f.medico) }}</div>
+          </div>
+          <div class="field w-30">
+            <span class="label">3. Quién informa es:</span>
+            <div class="options-row">
+              <div class="option-item"><div class="checkbox-box">{{ marcado(f.informante_tipo, "1") }}</div>1. Médico</div>
+              <div class="option-item"><div class="checkbox-box">{{ marcado(f.informante_tipo, "2") }}</div>2. Paramédico</div>
+              <div class="option-item"><div class="checkbox-box">{{ marcado(f.informante_tipo, "3") }}</div>3. Autoridad</div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-row">
+          <div class="field w-50">
+            <span class="label">2. Documento de Identificación (CUI / Cédula de vecindad / Otro):</span>
+            <div class="input-line">{{ f.medico?.dpi }}</div>
+          </div>
+          <div class="field w-50">
+            <span class="label">3.1 No. de colegiado:</span>
+            <div class="input-line">{{ f.medico?.colegiado }}</div>
+          </div>
+        </div>
+        <div class="sub-row">
+          <div class="field w-100">
+            <span class="label">4. Fecha y hora de la defunción:</span>
+            <div class="inline-fields">
+              Día: <div class="input-line short">{{ fecha.dia }}</div>
+              mes: <div class="input-line medium">{{ fecha.mes }}</div>
+              del año: <div class="input-line short">{{ fecha.anio }}</div>
+              a las: <div class="input-line short">{{ fecha.hora }}</div> horas
+            </div>
+          </div>
+        </div>
+        <div class="sub-row">
+          <div class="field w-100">
+            <span class="label">5. Lugar y dirección donde ocurrió la defunción:</span>
+            <div class="inline-fields">
+              <div class="grow-2"><div class="input-line">{{ f.lugar_defuncion_direccion }}</div><div class="label-sub">Dirección exacta</div></div>
+              <div class="w-150"><div class="input-line">{{ f.lugar_defuncion_municipio }}</div><div class="label-sub">Municipio</div></div>
+              <div class="w-150"><div class="input-line">{{ f.lugar_defuncion_departamento }}</div><div class="label-sub">Departamento</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="banner-alert" *ngIf="f.es_fetal">
+      SI LA MUERTE ES FETAL, INICIE EN EL APARTADO VI. DATOS DE LA DEFUNCIÓN FETAL (MORTINATO)
+    </div>
+
+    <!-- II. DATOS DEL FALLECIDO -->
+    <ng-container *ngIf="!f.es_fetal">
+      <div class="form-row">
+        <div class="lateral-indicator"><span>II. DATOS DEL FALLECIDO</span></div>
+        <div class="section-content">
+          <div class="sub-row">
+            <div class="field w-100">
+              <span class="label">6. NOMBRE:</span>
+              <div class="input-line long">{{ nombreCompleto(f.paciente) }}</div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-30">
+              <span class="label">7. SEXO:</span>
+              <div class="options-row">
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.sexo, "1") }}</div>1. Hombre</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.sexo, "2") }}</div>2. Mujer</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.sexo, "9") }}</div>9. Ignorado</div>
+              </div>
+            </div>
+            <div class="field w-70">
+              <span class="label">8. EDAD CUMPLIDA:</span>
+              <div class="age-fields">
+                <div>Horas: <div class="input-line vshort">{{ edadCumplida.horas }}</div></div>
+                <div>Días: <div class="input-line vshort">{{ edadCumplida.dias }}</div></div>
+                <div>Meses: <div class="input-line vshort">{{ edadCumplida.meses }}</div></div>
+                <div>Años: <div class="input-line vshort">{{ edadCumplida.anios }}</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-100">
+              <span class="label">9. DOCUMENTO DE IDENTIFICACIÓN:</span>
+              <div class="inline-fields">
+                <div class="grow-1"><div class="input-line">{{ f.paciente?.cui }}</div><div class="label-sub">Número / CUI</div></div>
+                <div class="w-80"><div class="input-line">{{ f.paciente?.numero_libro }}</div><div class="label-sub">Libro</div></div>
+                <div class="w-80"><div class="input-line">{{ f.paciente?.numero_folio }}</div><div class="label-sub">Folio</div></div>
+                <div class="w-80"><div class="input-line">{{ f.paciente?.numero_partida }}</div><div class="label-sub">Partida</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-100">
+              <span class="label">10. LUGAR DE NACIMIENTO:</span>
+              <div class="inline-fields">
+                <div class="grow-1"><div class="input-line">{{ f.paciente?.lugar_nacimiento_pais }}</div><div class="label-sub">País</div></div>
+                <div class="grow-1"><div class="input-line">{{ f.paciente?.lugar_nacimiento_departamento }}</div><div class="label-sub">Departamento</div></div>
+                <div class="grow-1"><div class="input-line">{{ f.paciente?.lugar_nacimiento_municipio }}</div><div class="label-sub">Municipio</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-50">
+              <span class="label">11. NACIONALIDAD:</span>
+              <div class="input-line">{{ f.paciente?.nacionalidad }}</div>
+            </div>
+            <div class="field w-50">
+              <span class="label">12. OCUPACIÓN:</span>
+              <div class="input-line">{{ f.paciente?.ocupacion }}</div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-50">
+              <span class="label">13. ESTADO CIVIL:</span>
+              <div class="options-with-code">
+                <div class="options-row inline">
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.estado_civil, "1") }}</div>1. Soltero(a)</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.estado_civil, "2") }}</div>2. Casado(a)</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.estado_civil, "3") }}</div>3. Unido(a)</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.estado_civil, "9") }}</div>9. Ignorado</div>
+                </div>
+                <div class="code-box">{{ f.paciente?.estado_civil }}</div>
+              </div>
+            </div>
+            <div class="field w-50">
+              <span class="label">14. PUEBLO DE PERTENENCIA:</span>
+              <div class="options-with-code">
+                <div class="options-row inline">
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.pueblo_pertenencia, "1") }}</div>1. Maya</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.pueblo_pertenencia, "2") }}</div>2. Garífuna</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.pueblo_pertenencia, "3") }}</div>3. Xinka</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.pueblo_pertenencia, "4") }}</div>4. Mestizo/Ladino</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.pueblo_pertenencia, "5") }}</div>5. Ninguno</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.pueblo_pertenencia, "9") }}</div>9. Ignorado</div>
+                </div>
+                <div class="code-box">{{ f.paciente?.pueblo_pertenencia }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-100">
+              <span class="label">15. RESIDENCIA HABITUAL:</span>
+              <div class="inline-fields">
+                <div class="grow-2"><div class="input-line">{{ f.paciente?.residencia_direccion }}</div><div class="label-sub">Dirección exacta</div></div>
+                <div class="w-150"><div class="input-line">{{ f.paciente?.residencia_municipio }}</div><div class="label-sub">Municipio</div></div>
+                <div class="w-150"><div class="input-line">{{ f.paciente?.residencia_departamento }}</div><div class="label-sub">Departamento</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-100">
+              <span class="label">16. ESCOLARIDAD:</span>
+              <div class="options-with-code">
+                <div class="options-row escolaridad">
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.escolaridad, "0") }}</div>0. Ninguna</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.escolaridad, "1") }}</div>1. Primaria incompleta</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.escolaridad, "2") }}</div>2. Primaria completa</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.escolaridad, "3") }}</div>3. Básico incompleto</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.escolaridad, "4") }}</div>4. Básico completo</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.escolaridad, "5") }}</div>5. Diversificado incompleto</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.escolaridad, "6") }}</div>6. Diversificado completo</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.escolaridad, "7") }}</div>7. Universitario incompleto</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.escolaridad, "8") }}</div>8. Universitario completo</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.paciente?.escolaridad, "9") }}</div>9. Ignorado</div>
+                </div>
+                <div class="code-box">{{ f.paciente?.escolaridad }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- III. MUJERES EN EDAD FÉRTIL -->
+      <div class="form-row" *ngIf="f.mujer_edad_fertil">
+        <div class="lateral-indicator"><span>III. MUJERES EDAD FÉRTIL</span></div>
+        <div class="section-content">
+          <div class="sub-row">
+            <div class="field w-100">
+              <span class="label">17. SI LA DEFUNCIÓN CORRESPONDE A UNA MUJER ENTRE 10 Y 54 AÑOS, LA MUERTE OCURRIÓ DURANTE:</span>
+              <div class="options-row inline">
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.muerte_gestacion, "embarazo") }}</div>1. El embarazo</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.muerte_gestacion, "parto") }}</div>2. El parto</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.muerte_gestacion, "puerperio") }}</div>3. El puerperio</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.muerte_gestacion, "43dias_11meses") }}</div>4. De 43 días a 11 meses</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.muerte_gestacion, "no_embarazada") }}</div>5. No estuvo embarazada</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.muerte_gestacion, "ignorado") }}</div>9. Ignorado</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IV. CAUSA DE DEFUNCIÓN -->
+      <div class="form-row">
+        <div class="lateral-indicator"><span>IV. CAUSA DE DEFUNCIÓN</span></div>
+        <div class="section-content">
+          <div class="sub-row">
+            <div class="field w-100 causes-field">
+              <span class="label">18. CAUSAS DE DEFUNCIÓN</span>
+              <table class="causes-table">
+                <tr>
+                  <td class="letra">I. (a)</td>
+                  <td>{{ f.causa_a }}</td>
+                  <td class="intervalo" rowspan="4">Intervalo aprox.:<br />{{ f.causa_intervalo }}</td>
+                </tr>
+                <tr><td class="letra">(b)</td><td>{{ f.causa_b }}</td></tr>
+                <tr><td class="letra">(c)</td><td>{{ f.causa_c }}</td></tr>
+                <tr><td class="letra">(d)</td><td>{{ f.causa_d }}</td></tr>
+                <tr><td class="letra">II.</td><td colspan="2">{{ f.causa_otros }}</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- V. DEFUNCIONES ACCIDENTALES Y VIOLENTAS -->
+      <div class="form-row">
+        <div class="lateral-indicator"><span>V. VIOLENTAS O ACCIDENTALES</span></div>
+        <div class="section-content">
+          <div class="sub-row">
+            <div class="field w-50">
+              <span class="label">19. ¿FUE UN PRESUNTO?:</span>
+              <div class="options-with-code">
+                <div class="options-row inline">
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.fue_presunto, "suicidio") }}</div>1. Suicidio</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.fue_presunto, "homicidio") }}</div>2. Homicidio</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.fue_presunto, "accidente") }}</div>3. Accidente</div>
+                  <div class="option-item"><div class="checkbox-box">{{ marcado(f.fue_presunto, "ignorado") }}</div>9. Ignorado</div>
+                </div>
+                <div class="code-box">{{ f.fue_presunto }}</div>
+              </div>
+            </div>
+            <div class="field w-50">
+              <span class="label">19.1 LUGAR DONDE OCURRIÓ LA LESIÓN:</span>
+              <div class="input-line">{{ f.lugar_lesion }}</div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-50">
+              <span class="label">19.2 ¿EN SU TRABAJO?</span>
+              <div class="options-row">
+                <div class="option-item"><div class="checkbox-box">{{ marcadoBool(f.ocurrio_trabajo, true) }}</div>Sí</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcadoBool(f.ocurrio_trabajo, false) }}</div>No</div>
+              </div>
+            </div>
+            <div class="field w-50">
+              <span class="label">19.3 ¿ACCIDENTE DE TRÁNSITO?</span>
+              <div class="options-row">
+                <div class="option-item"><div class="checkbox-box">{{ marcadoBool(f.accidente_transito, true) }}</div>Sí</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcadoBool(f.accidente_transito, false) }}</div>No</div>
+              </div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-100">
+              <span class="label">19.4 ARMA O INSTRUMENTO:</span>
+              <div class="input-line">{{ f.arma }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- VI. DEFUNCIÓN FETAL (MORTINATO) -->
+    <ng-container *ngIf="f.es_fetal">
+      <div class="form-row">
+        <div class="lateral-indicator"><span>VI. DEFUNCIÓN FETAL (MORTINATO)</span></div>
+        <div class="section-content">
+          <div class="sub-row">
+            <div class="field w-100"><strong>DATOS DE LA MADRE</strong></div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-70">
+              <span class="label">20. NOMBRE:</span>
+              <div class="input-line">{{ nombreCompleto(f.madre) }}</div>
+            </div>
+            <div class="field w-30">
+              <span class="label">23. EDAD:</span>
+              <div class="input-line short">{{ f.madre_edad }}</div> años
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-40">
+              <span class="label">21. DOCUMENTO:</span>
+              <div class="input-line">{{ f.madre?.cui }}</div>
+            </div>
+            <div class="field w-30">
+              <span class="label">24. ESTADO CIVIL:</span>
+              <div class="input-line">{{ f.madre?.estado_civil }}</div>
+            </div>
+            <div class="field w-30">
+              <span class="label">25. PUEBLO:</span>
+              <div class="input-line">{{ f.madre?.pueblo_pertenencia }}</div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-40">
+              <span class="label">26. RESIDENCIA:</span>
+              <div class="input-line">{{ f.madre?.residencia_direccion }}</div>
+            </div>
+            <div class="field w-30">
+              <span class="label">27. OCUPACIÓN:</span>
+              <div class="input-line">{{ f.madre?.ocupacion }}</div>
+            </div>
+            <div class="field w-30">
+              <span class="label">28. SABE LEER Y ESCRIBIR:</span>
+              <div class="options-row">
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.madre_sabe_leer_escribir, "1") }}</div>Sí</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.madre_sabe_leer_escribir, "2") }}</div>No</div>
+              </div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-40">
+              <span class="label">29. ESCOLARIDAD:</span>
+              <div class="input-line">{{ f.madre?.escolaridad }}</div>
+            </div>
+            <div class="field w-30">
+              <span class="label">30. NACIONALIDAD:</span>
+              <div class="input-line">{{ f.madre?.nacionalidad }}</div>
+            </div>
+            <div class="field w-30">
+              <span class="label">31. EMBARAZOS ANTERIORES:</span>
+              <div class="inline-fields">
+                Vivos: <div class="input-line vshort">{{ f.embarazos_previvos_vivos }}</div>
+                Muertos: <div class="input-line vshort">{{ f.embarazos_previvos_muertos }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-100"><strong>DATOS DEL FETO (MORTINATO)</strong></div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-50">
+              <span class="label">32. SEXO:</span>
+              <div class="options-row">
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.fetal_sexo, "1") }}</div>Hombre</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.fetal_sexo, "2") }}</div>Mujer</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.fetal_sexo, "9") }}</div>Ignorado</div>
+              </div>
+            </div>
+            <div class="field w-50">
+              <span class="label">33. MURIÓ:</span>
+              <div class="options-row">
+                <div class="option-item"><div class="checkbox-box">{{ marcadoBool(f.fetal_murio_antes_parto, true) }}</div>Antes del parto</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcadoBool(f.fetal_murio_antes_parto, false) }}</div>Durante el parto</div>
+              </div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-33">
+              <span class="label">34. PARTO:</span>
+              <div class="options-row">
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.fetal_parto_tipo, "simple") }}</div>Simple</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.fetal_parto_tipo, "doble") }}</div>Doble</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.fetal_parto_tipo, "multiple") }}</div>Múltiple</div>
+              </div>
+            </div>
+            <div class="field w-33">
+              <span class="label">35. CLASE:</span>
+              <div class="options-row">
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.fetal_clase_parto, "eutocico") }}</div>Eutócico</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.fetal_clase_parto, "distocico") }}</div>Distócico</div>
+              </div>
+            </div>
+            <div class="field w-33">
+              <span class="label">36. VÍA:</span>
+              <div class="options-row">
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.fetal_via_parto, "vaginal") }}</div>Vaginal</div>
+                <div class="option-item"><div class="checkbox-box">{{ marcado(f.fetal_via_parto, "cesarea") }}</div>Cesárea</div>
+              </div>
+            </div>
+          </div>
+          <div class="sub-row">
+            <div class="field w-50">
+              <span class="label">37. SEMANAS DE GESTACIÓN:</span>
+              <div class="input-line short">{{ f.fetal_semanas_gestacion }}</div>
+            </div>
+            <div class="field w-50">
+              <span class="label">38. CAUSAS DEL MORTINATO:</span>
+              <div class="inline-fields">
+                Fetales: <div class="input-line">{{ f.fetal_causas_fetales }}</div>
+                Maternas: <div class="input-line">{{ f.fetal_causas_maternas }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- VII. OTROS DATOS DE LA DEFUNCIÓN -->
+    <div class="form-row">
+      <div class="lateral-indicator"><span>VII. OTROS DATOS</span></div>
+      <div class="section-content">
+        <div class="sub-row">
+          <div class="field w-33">
+            <span class="label">39. ¿HUBO NECROPSIA?</span>
+            <div class="options-row">
+              <div class="option-item"><div class="checkbox-box">{{ marcado(f.hubo_necropsia, "1") }}</div>Sí</div>
+              <div class="option-item"><div class="checkbox-box">{{ marcado(f.hubo_necropsia, "2") }}</div>No</div>
+            </div>
+          </div>
+          <div class="field w-33">
+            <span class="label">40. CLASE DE ASISTENCIA RECIBIDA:</span>
+            <div class="input-line">{{ f.clase_asistencia }}</div>
+          </div>
+          <div class="field w-33">
+            <span class="label">41. LUGAR DONDE OCURRIÓ LA DEFUNCIÓN:</span>
+            <div class="input-line">{{ f.lugar_ocurrio_defuncion }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FIRMAS -->
+  <div class="signatures-row">
+    <div class="signature-box">
+      <div class="signature-line"></div>
+      <span class="label">TIMBRE MÉDICO</span>
+    </div>
+    <div class="signature-box">
+      <div class="signature-line"></div>
+      <span class="label">SELLO INSTITUCIONAL Y/O PROFESIONAL</span>
+    </div>
+    <div class="signature-box wide">
+      <p>Y para que se haga la inscripción respectiva en el Registro Nacional de las Personas, se emite el presente informe de defunción en:</p>
+      <div class="inline-fields">
+        <div class="input-line medium">{{ f.lugar_defuncion_municipio }}</div> a los
+        <div class="input-line vshort">{{ hoy().dia }}</div> días del mes de
+        <div class="input-line medium">{{ hoy().mes }}</div> del año
+        <div class="input-line short">{{ hoy().anio }}</div>
+      </div>
+      <div class="signature-line"></div>
+      <span class="label">Firma de la persona que extiende el informe: {{ nombreCompleto(f.medico) }}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+<div class="botones no-imprimir">
+  <button (click)="regresar()">&#9664; Regresar</button>
+  <button (click)="imprimir()" [disabled]="!cargado()">&#128424; Imprimir</button>
+</div>
+
+<app-defuncion-informe
+  [defuncionId]="defuncionId()"
+  (cargado)="onCargado()"
+/>

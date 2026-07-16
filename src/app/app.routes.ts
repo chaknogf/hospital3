@@ -308,7 +308,7 @@ export const routes: Routes = [
       },
       {
         path: 'cdprint/:id',
-        loadComponent: () => import('./registros/defunciones/hoja-cdefuncion/hoja-cdefuncion.component').then(c => c.HojaCdefuncionComponent),
+        loadComponent: () => import('./registros/defunciones/hoja-defuncion/hoja-defuncion.component').then(c => c.HojaDefuncionComponent),
         canActivate: [roleGuard(['admin', 'registro', 'std'])]
       },
 

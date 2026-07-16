@@ -1,0 +1,45 @@
+.botones {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 0.5px solid rgba(0,0,0,0.1);
+  padding: 8px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.botones button {
+  border: 0.5px solid rgba(0,0,0,0.15);
+  border-radius: 8px;
+  background: #0f2548fe;
+  cursor: pointer;
+  padding: 6px 14px;
+  color: #fff;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+
+.botones button:hover {
+  background: #89aee4;
+  border-color: #1a3a6a;
+}
+
+.botones button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 6mm;
+}
+
+@media print {
+  .no-imprimir {
+    display: none !important;
+  }
+}
