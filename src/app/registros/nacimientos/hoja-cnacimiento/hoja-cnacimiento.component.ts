@@ -6,13 +6,14 @@ import { Subject, of } from 'rxjs';
 import { takeUntil, finalize, catchError } from 'rxjs/operators';
 import { ApiService } from '../../../service/api.service';
 import { CnAcimientoInformeComponent, CnacimientoOut, MedicoInfo } from './cnacimiento-informe.component';
+import { CnAcimientoInformeAuxiliarComponent } from './cnacimiento-informe-auxiliar.component';
 
 @Component({
   selector: 'app-hoja-cnacimiento',
   standalone: true,
   templateUrl: './hoja-cnacimiento.component.html',
   styleUrls: ['./hoja-cnacimiento.component.css'],
-  imports: [CommonModule, CnAcimientoInformeComponent]
+  imports: [CommonModule, CnAcimientoInformeComponent, CnAcimientoInformeAuxiliarComponent]
 })
 export class HojaCnacimientoComponent implements OnInit, OnDestroy {
 
@@ -26,11 +27,15 @@ export class HojaCnacimientoComponent implements OnInit, OnDestroy {
   isLoading = signal(false);
   error = signal<string | null>(null);
   detalleVisible = signal(false);
+  esAuxiliar = signal(false);
 
   private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      this.esAuxiliar.set(params['tipo'] === 'auxiliar');
+    });
 
     if (id && !isNaN(id)) {
       this.cargarDatos(id);
@@ -79,23 +84,25 @@ export class HojaCnacimientoComponent implements OnInit, OnDestroy {
         };
         this.constancia.set(out);
 
-        const medicoId = data.paciente?.datos_extra?.neonatales?.id_medico;
-        if (medicoId) {
-          this.apis.getMedicos({ id: medicoId })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe({
-              next: res => {
-                if (res?.length) {
-                  const m = res[0];
-                  this.medico.set({
-                    nombre: m.nombre,
-                    sexo: m.sexo,
-                    colegiado: m.colegiado,
-                    dpi: m.dpi,
-                  });
+        if (!this.esAuxiliar()) {
+          const medicoId = data.paciente?.datos_extra?.neonatales?.id_medico;
+          if (medicoId) {
+            this.apis.getMedicos({ id: medicoId })
+              .pipe(takeUntil(this.destroy$))
+              .subscribe({
+                next: res => {
+                  if (res?.length) {
+                    const m = res[0];
+                    this.medico.set({
+                      nombre: m.nombre,
+                      sexo: m.sexo,
+                      colegiado: m.colegiado,
+                      dpi: m.dpi,
+                    });
+                  }
                 }
-              }
-            });
+              });
+          }
         }
         this.detalleVisible.set(true);
       });

@@ -1,0 +1,243 @@
+import { Component, Input, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { IconService } from '../../../service/icon.service';
+import { SafeHtml } from '@angular/platform-browser';
+import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
+import { LibrasOnzasPipe } from '../../../pipes/librasOnza.pipe';
+import { ApiService } from '../../../service/api.service';
+
+export interface NombrePersona {
+  primer_nombre?: string | null;
+  segundo_nombre?: string | null;
+  otro_nombre?: string | null;
+  primer_apellido?: string | null;
+  segundo_apellido?: string | null;
+  apellido_casada?: string | null;
+}
+
+export interface NeonatalesInfo {
+  peso_nacimiento?: string | null;
+  hora_nacimiento?: string | null;
+  tipo_parto?: string | null;
+  clase_parto?: string | null;
+  edad_gestacional?: string | null;
+  id_medico?: number | null;
+}
+
+export interface DemograficosInfo {
+  vecindad?: string | null;
+  lugar_nacimiento?: string | null;
+  nacionalidad?: string | null;
+}
+
+export interface MadreInfo {
+  nombre?: NombrePersona | null;
+  fecha_nacimiento?: string | null;
+  cui?: string | null;
+  pasaporte?: string | null;
+  datos_extra?: { demograficos?: DemograficosInfo | null } | null;
+}
+
+export interface PacienteInfo {
+  nombre?: NombrePersona | null;
+  sexo?: string | null;
+  fecha_nacimiento?: string | null;
+  datos_extra?: { neonatales?: NeonatalesInfo | null } | null;
+}
+
+export interface CnacimientoOut {
+  id: number;
+  documento?: string | null;
+  fecha_registro?: string | null;
+  hijos?: number | null;
+  vivos?: number | null;
+  muertos?: number | null;
+  observaciones?: string | null;
+  paciente?: PacienteInfo | null;
+  madre?: MadreInfo | null;
+  medico?: MedicoInfo | null;
+}
+
+export interface MedicoInfo {
+  nombre?: string | null;
+  sexo?: string | null;
+  colegiado?: string | number | null;
+  dpi?: string | number | bigint | null;
+}
+
+const str = (v: unknown): string =>
+  v == null ? '' : String(v);
+
+const MESES = [
+  'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+  'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
+];
+
+const capitalize = (s: string | null | undefined): string =>
+  !s ? '' : s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+
+function parseDateLocal(iso: string): Date | null {
+  if (!iso) return null;
+  const parts = iso.split('T')[0].split('-').map(Number);
+  if (parts.length === 3 && parts.every(n => !isNaN(n))) {
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+  }
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+@Component({
+  selector: 'app-cnacimiento-informe-auxiliar',
+  standalone: true,
+  imports: [CommonModule, DatosExtraPipe, LibrasOnzasPipe],
+  templateUrl: './cnacimiento-informe-auxiliar.component.html',
+  styleUrls: ['./cnacimiento-informe-auxiliar.component.scss'],
+})
+export class CnAcimientoInformeAuxiliarComponent {
+  @Input({ required: true }) constancia!: CnacimientoOut;
+  @Input() usuarioNombre?: string | null;
+
+  private iconService = inject(IconService);
+  private api = inject(ApiService);
+  logo: SafeHtml;
+
+  constructor() {
+    this.logo = this.iconService.getIcon("logoicon2");
+  }
+
+  get nombreUsuario(): string {
+    return this.usuarioNombre ?? (this.api.getUsuarioActual().nombre || 'Auxiliar de Registros Médicos');
+  }
+
+  nombreCompleto(n: NombrePersona | null | undefined): string {
+    if (!n) return '—';
+    return [
+      n.primer_nombre, n.segundo_nombre, n.otro_nombre,
+      n.primer_apellido, n.segundo_apellido,
+      n.apellido_casada ? `de ${n.apellido_casada}` : null,
+    ].filter(Boolean).join(' ');
+  }
+
+  private formatearFecha(iso: string | null | undefined): string {
+    if (!iso) return '';
+    const d = parseDateLocal(iso);
+    if (!d) return '';
+    const dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+    return `${dias[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+  }
+
+  get fechaEmision() {
+    return this.formatearFecha(this.constancia?.fecha_registro);
+  }
+
+  get fechaNacimiento() {
+    return this.formatearFecha(this.constancia?.paciente?.fecha_nacimiento);
+  }
+
+  get horaNacimiento(): string {
+    return this.constancia?.paciente?.datos_extra?.neonatales?.hora_nacimiento ?? '—';
+  }
+
+  get sexoNeonato(): string {
+    const s = this.constancia?.paciente?.sexo;
+    return s === 'M' ? 'Masculino' : s === 'F' ? 'Femenino' : s || '—';
+  }
+
+  get pesoNacer(): string {
+    const p = this.constancia?.paciente?.datos_extra?.neonatales?.peso_nacimiento;
+    if (!p) return '—';
+    const s = String(p).trim();
+    if (s.includes('.')) return s;
+    const oz = Number(s);
+    const lbs = Math.floor(oz / 16);
+    return `${lbs}.${oz % 16}`;
+  }
+
+  get tipoParto(): string {
+    return this.constancia?.paciente?.datos_extra?.neonatales?.tipo_parto ?? '—';
+  }
+
+  get clasePartoTexto(): string {
+    const c = this.constancia?.paciente?.datos_extra?.neonatales?.clase_parto;
+    if (c === 'Pes') return 'Eutócico (Parto Vaginal Espontáneo)';
+    if (c === 'Cstp') return 'Distócico (Cesárea)';
+    return c ?? '—';
+  }
+
+  get edadMadre(): number | string {
+    const fn = this.constancia?.madre?.fecha_nacimiento;
+    if (!fn) return '—';
+    const nac = parseDateLocal(fn);
+    if (!nac) return '—';
+    return Math.floor((Date.now() - nac.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+  }
+
+  get documentoIdentificacionMadre(): string {
+    const m = this.constancia?.madre;
+    if (!m) return '—';
+    if (typeof this.edadMadre === 'number' && this.edadMadre < 18) return 'Certificado de Nacimiento - CUI';
+    if (m.cui) return 'DPI - CUI';
+    if (m.pasaporte) return 'Pasaporte';
+    return '—';
+  }
+
+  get numeroIdentificacionMadre(): string {
+    const m = this.constancia?.madre;
+    if (!m) return '—';
+    if (m.cui) return str(m.cui).replace(/(\d{4})(\d{5})(\d{4})/, '$1 $2 $3');
+    if (m.pasaporte) return m.pasaporte;
+    return '—';
+  }
+
+  get vecindadMadre(): string {
+    return this.constancia?.madre?.datos_extra?.demograficos?.vecindad ?? '—';
+  }
+
+  get nacionalidadMadre(): string {
+    return this.constancia?.madre?.datos_extra?.demograficos?.nacionalidad ?? '—';
+  }
+
+  get nacionalidadMadreTexto(): string {
+    const nacionalidadesFem: Record<string, string> = {
+      GTM: 'Guatemalteca',
+      USA: 'Estadounidense',
+      MEX: 'Mexicana',
+      SLV: 'Salvadoreña',
+      HND: 'Hondureña',
+      NIC: 'Nicaragüense',
+      CRI: 'Costarricense',
+      CAN: 'Canadiense',
+      COL: 'Colombiana',
+      PAN: 'Panameña',
+      CUB: 'Cubana',
+      DOM: 'Dominicana',
+      ARG: 'Argentina',
+      CHL: 'Chilena',
+      PER: 'Peruana',
+      VEN: 'Venezolana',
+      ECU: 'Ecuatoriana',
+      BOL: 'Boliviana',
+      PRY: 'Paraguaya',
+      URY: 'Uruguaya',
+    };
+    const n = this.nacionalidadMadre;
+    return nacionalidadesFem[n] || n;
+  }
+
+  get lugarNacimientoMadre(): string {
+    return this.constancia?.madre?.datos_extra?.demograficos?.lugar_nacimiento ?? '—';
+  }
+
+  get nombreMadre(): string {
+    return this.nombreCompleto(this.constancia?.madre?.nombre ?? null);
+  }
+
+  get esGuatemalteca(): boolean {
+    return this.nacionalidadMadre === 'GTM' || !!this.constancia?.madre?.cui;
+  }
+
+  hoy() {
+    const d = new Date();
+    return { dia: d.getDate(), mes: MESES[d.getMonth()], anio: d.getFullYear() };
+  }
+}

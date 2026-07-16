@@ -142,6 +142,10 @@ export class ListarConstanciasComponent implements OnInit, OnDestroy {
     this.router.navigate(['/cnprint', id])
   }
 
+  imprimirAuxiliar(id: number) {
+    this.router.navigate(['/cnprint', id], { queryParams: { tipo: 'auxiliar' } })
+  }
+
   pacientes() {
     this.router.navigate(['/pacientes']);
   }

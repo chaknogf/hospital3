@@ -10,7 +10,12 @@
 
 <div class="print-wrapper" *ngIf="detalleVisible() && constancia() as c">
   <app-cnacimiento-informe
+    *ngIf="!esAuxiliar()"
     [constancia]="c"
     [medico]="medico()"
+  />
+  <app-cnacimiento-informe-auxiliar
+    *ngIf="esAuxiliar()"
+    [constancia]="c"
   />
 </div>

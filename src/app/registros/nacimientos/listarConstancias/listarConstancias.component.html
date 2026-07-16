@@ -142,9 +142,14 @@
                 <span [innerHTML]="icons['edit']"></span>
               </button>
 
-              <button (click)="imprimir(data.id); $event.stopPropagation()">
-                <span [innerHTML]="icons['print']"></span>
-              </button>
+              <div class="btn-group" style="display: inline-flex; gap: 2px;">
+                <button (click)="imprimir(data.id); $event.stopPropagation()" title="Imprimir por médico">
+                  <span [innerHTML]="icons['print']"></span>
+                </button>
+                <button (click)="imprimirAuxiliar(data.id); $event.stopPropagation()" title="Imprimir por auxiliar" style="font-size: 10px; padding: 2px 4px;">
+                  👤
+                </button>
+              </div>
             </div>
           </td>
         </tr>
