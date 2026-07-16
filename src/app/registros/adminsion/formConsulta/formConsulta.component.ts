@@ -1,10 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
-import { catchError, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { catchError, tap, map, takeUntil } from 'rxjs/operators';
+import { of, Observable, Subject } from 'rxjs';
 import { ConsultaService } from '../../consultas/consultas.service';
 import { ApiService } from '../../../service/api.service';
 import { ConsultaUtilService } from '../../../service/consulta-util.service';
@@ -28,7 +28,7 @@ import { PacienteService } from '../../patient/paciente.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, EdadPipe, DatosExtraPipe, CuiPipe]
 })
-export class FormConsultaComponent implements OnInit {
+export class FormConsultaComponent implements OnInit, OnDestroy {
 
   form: FormGroup = new FormGroup({});
   paciente: Paciente = {} as Paciente;
@@ -37,6 +37,7 @@ export class FormConsultaComponent implements OnInit {
   historialCiclos: CicloClinico[] = [];
   enEdicion = false;
   usuarioActual = '';
+  private destroy$ = new Subject<void>();
 
   tipoConsulta: Dict[] = tipoConsulta;
   ciclos: Dict[] = ciclos;
@@ -79,6 +80,11 @@ export class FormConsultaComponent implements OnInit {
       this.enEdicion = true;
       this.cargarConsulta(id);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // ══════════════════════════════════════════════════════════
@@ -190,30 +196,34 @@ export class FormConsultaComponent implements OnInit {
   // GUARDAR
   // ══════════════════════════════════════════════════════════
   guardar(): void {
-    if (this.enEdicion) this.actualizarConsulta();
-    else this.registrarNuevaAdmision();
-    this.router.navigate(['/detalleAdmision', this.consultaId]);
+    const obs$ = this.enEdicion
+      ? this.actualizarConsulta()
+      : this.registrarNuevaAdmision();
+
+    obs$.pipe(takeUntil(this.destroy$)).subscribe(id => {
+      if (id) this.router.navigate(['/detalleAdmision', id]);
+      else this.volver();
+    });
   }
 
-  private registrarNuevaAdmision(): void {
+  private registrarNuevaAdmision(): Observable<number | null> {
     const v = this.form.getRawValue();
-    this.api.registrarAdmision({
+    return this.api.registrarAdmision({
       paciente_id: v.paciente_id,
       tipo_consulta: v.tipo_consulta,
       especialidad: v.especialidad,
       servicio: v.servicio,
       indicadores: v.indicadores,
       ciclo: [],
-    })
-      .pipe(
-        tap(() => this.mostrarExito('Admisión registrada')),
-        catchError(err => { this.mostrarError('registrar', err); return of(null); })
-      )
-      .subscribe(r => { if (r) this.volver(); });
+    }).pipe(
+      tap(() => this.mostrarExito('Admisión registrada')),
+      map(r => r?.id ?? null),
+      catchError(err => { this.mostrarError('registrar', err); return of(null); })
+    );
   }
 
-  private actualizarConsulta(): void {
-    if (!this.consultaId) return;
+  private actualizarConsulta(): Observable<number | null> {
+    if (!this.consultaId) return of(null);
     const v = this.form.getRawValue();
 
     // ── Payload base ───────────────────────────────────────
@@ -234,7 +244,6 @@ export class FormConsultaComponent implements OnInit {
     }
 
     // ── Egreso: campo propio de la consulta ────────────────
-    // Se envía solo si condicion tiene valor
     if (v.egreso?.condicion) {
       payload.egreso = {
         registro: v.egreso.registro
@@ -243,24 +252,20 @@ export class FormConsultaComponent implements OnInit {
         condicion: v.egreso.condicion,
         referencia: v.egreso.referencia || undefined,
         medico: v.egreso.medico || undefined,
-        // Diagnóstico solo si hay descripción
         diagnosticos: v.egreso.descripcion
-
       } as Egreso;
     }
 
     // ── Request ────────────────────────────────────────────
-    this.api.updateConsulta(this.consultaId, payload)
-      .pipe(
-        tap(() => this.mostrarExito('Consulta actualizada')),
-        catchError(err => { this.mostrarError('actualizar', err); return of(null); })
-      )
-      .subscribe(r => {
-        if (r) {
-          this.form.patchValue({ nuevo_estado: '', nuevo_servicio: '', nuevo_comentario: '' });
-          this.cargarConsulta(this.consultaId!);
-        }
-      });
+    return this.api.updateConsulta(this.consultaId, payload).pipe(
+      tap(() => {
+        this.mostrarExito('Consulta actualizada');
+        this.form.patchValue({ nuevo_estado: '', nuevo_servicio: '', nuevo_comentario: '' });
+        this.cargarConsulta(this.consultaId!);
+      }),
+      map(r => r?.id ?? this.consultaId),
+      catchError(err => { this.mostrarError('actualizar', err); return of(null); })
+    );
   }
 
   actualizarIndicadores(): void {

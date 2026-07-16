@@ -95,6 +95,7 @@ function parseDateLocal(iso: string): Date | null {
 })
 export class CnAcimientoInformeAuxiliarComponent {
   @Input({ required: true }) constancia!: CnacimientoOut;
+  @Input() medico?: MedicoInfo | null;
   @Input() usuarioNombre?: string | null;
 
   private iconService = inject(IconService);
@@ -230,6 +231,38 @@ export class CnAcimientoInformeAuxiliarComponent {
 
   get nombreMadre(): string {
     return this.nombreCompleto(this.constancia?.madre?.nombre ?? null);
+  }
+
+  get medicoParto(): string {
+    return this.medico?.nombre ?? '—';
+  }
+
+  get nombreMedico(): string {
+    return this.medico?.nombre ?? '—';
+  }
+
+  get cargoMedico(): string {
+    return this.medico?.sexo === 'F'
+      ? 'Ginecóloga y Obstetra'
+      : 'Ginecólogo y Obstetra';
+  }
+
+
+
+  get medicoDPI(): string {
+    const dpi = this.medico?.dpi;
+    if (!dpi) return '—';
+    return str(dpi).replace(/(\d{4})(\d{5})(\d{4})/, '$1 $2 $3');
+  }
+
+  get colegiadoMedico(): string {
+    const m = this.medico;
+    if (m?.colegiado) {
+      const cui = str(m.dpi).replace(/(\d{4})(\d{5})(\d{4})/, '$1 $2 $3');
+      const sufijo = cui ? ` — CUI: ${cui}` : '';
+      return `Colegiado ${m.colegiado}${sufijo}`;
+    }
+    return '';
   }
 
   get esGuatemalteca(): boolean {

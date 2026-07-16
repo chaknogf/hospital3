@@ -66,7 +66,7 @@ export class AdmisionComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    private api: ConsultaService,
+    public api: ConsultaService,
     private apis: ApiService,
     private apip: PacienteService,
     private sanitizer: DomSanitizer

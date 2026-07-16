@@ -253,7 +253,7 @@ export class CnAcimientoInformeComponent {
       const sufijo = cui ? ` — CUI: ${cui}` : '';
       return `Colegiado ${m.colegiado}`;
     }
-    return 'Hospital General Tipo I de Tecpán Guatemala';
+    return '';
   }
 
   get esGuatemalteca(): boolean {

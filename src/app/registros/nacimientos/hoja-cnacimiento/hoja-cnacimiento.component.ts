@@ -84,25 +84,23 @@ export class HojaCnacimientoComponent implements OnInit, OnDestroy {
         };
         this.constancia.set(out);
 
-        if (!this.esAuxiliar()) {
-          const medicoId = data.paciente?.datos_extra?.neonatales?.id_medico;
-          if (medicoId) {
-            this.apis.getMedicos({ id: medicoId })
-              .pipe(takeUntil(this.destroy$))
-              .subscribe({
-                next: res => {
-                  if (res?.length) {
-                    const m = res[0];
-                    this.medico.set({
-                      nombre: m.nombre,
-                      sexo: m.sexo,
-                      colegiado: m.colegiado,
-                      dpi: m.dpi,
-                    });
-                  }
+        const medicoId = data.paciente?.datos_extra?.neonatales?.id_medico;
+        if (medicoId) {
+          this.apis.getMedicos({ id: medicoId })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: res => {
+                if (res?.length) {
+                  const m = res[0];
+                  this.medico.set({
+                    nombre: m.nombre,
+                    sexo: m.sexo,
+                    colegiado: m.colegiado,
+                    dpi: m.dpi,
+                  });
                 }
-              });
-          }
+              }
+            });
         }
         this.detalleVisible.set(true);
       });

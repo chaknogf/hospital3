@@ -32,9 +32,9 @@
     Actualizar Indicadores
   </button>
 
-  <button type="button" class="btn-dock btn-dock-save" (click)="guardar()">
+  <button type="button" class="btn-dock btn-dock-save" (click)="guardar()" [disabled]="api.isLoading()">
     <span [innerHTML]="saveIcon"></span>
-    {{ enEdicion ? "Actualizar" : "Registrar" }}
+    {{ api.isLoading() ? 'Guardando...' : (enEdicion ? 'Actualizar' : 'Registrar') }}
   </button>
 </div>
 
@@ -503,7 +503,7 @@
               <span class="ind-label">Partograma Lactancia Materna</span>
             </label>
           }
-          @if (form.get("egreso_condicion")?.value === "referido") {
+          @if (form.get("condicion")?.value === "referido") {
             <div class="field">
               <span class="field-label">Referido a</span>
               <input
