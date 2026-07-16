@@ -35,15 +35,16 @@
   <div class="cn-prologo">
     <p class="cn-parrafo">
       Para los efectos legales de la inscripción correspondiente ante el
-      Registro Nacional de las Personas —RENAP—, el/la infrascrito/a Auxiliar de
-      Registros Médicos del Hospital General Tipo I de Tecpán Guatemala hace
-      constar que en las instalaciones del Hospital General Tipo I de Tecpán
-      Guatemala, ubicado en el Barrio San Antonio, Sector Pachulalí de Tecpán
-      Guatemala, Chimaltenango, se atendió el parto de la paciente que a
-      continuación se identifica, habiéndose producido el nacimiento de un
-      producto vivo en la fecha y hora que se indican en el presente documento.
-      Se extiende la presente constancia a solicitud de la parte interesada,
-      para los usos legales que estime convenientes.
+      Registro Nacional de las Personas —RENAP—, el/la infrascrito/a Médico de
+      Turno del Hospital General Tipo I de Tecpán Guatemala, colegiado/a activo
+      número {{ colegiadoM }}, hace constar que en las instalaciones del
+      Hospital General Tipo I de Tecpán Guatemala, ubicado en el Barrio San
+      Antonio, Sector Pachulalí de Tecpán Guatemala, Chimaltenango, atendió el
+      parto de la paciente que a continuación se identifica, habiéndose
+      producido el nacimiento de un producto vivo en la fecha y hora que se
+      indican en el presente documento. Se extiende la presente constancia a
+      solicitud de la parte interesada, para los usos legales que estime
+      convenientes.
     </p>
   </div>
 
@@ -74,17 +75,23 @@
     </div>
     <div class="form-field" style="flex: 3" *ngIf="c.madre?.cui">
       <span class="form-lbl">Vecindad</span>
-      <span class="form-val">{{ vecindadMadre | datosExtra:'municipio' }}</span>
+      <span class="form-val">{{
+        vecindadMadre | datosExtra: "municipio"
+      }}</span>
     </div>
   </div>
 
   <div class="form-row">
     <div class="form-field" style="flex: 1">
       <span class="form-lbl">
-        Lugar de {{ nacionalidadMadre === 'GTM' ? 'Nacimiento' : 'Origen' }}
+        Lugar de {{ nacionalidadMadre === "GTM" ? "Nacimiento" : "Origen" }}
       </span>
       <span class="form-val">
-        {{ nacionalidadMadre === 'GTM' ? (lugarNacimientoMadre | datosExtra:'municipio') : nacionalidadMadreTexto }}
+        {{
+          nacionalidadMadre === "GTM"
+            ? (lugarNacimientoMadre | datosExtra: "municipio")
+            : nacionalidadMadreTexto
+        }}
       </span>
     </div>
   </div>

@@ -246,6 +246,16 @@ export class CnAcimientoInformeComponent {
     return 'Hospital General Tipo I de Tecpán Guatemala';
   }
 
+  get colegiadoM(): string {
+    const m = this.medico;
+    if (m?.colegiado) {
+      const cui = str(m.dpi).replace(/(\d{4})(\d{5})(\d{4})/, '$1 $2 $3');
+      const sufijo = cui ? ` — CUI: ${cui}` : '';
+      return `Colegiado ${m.colegiado}`;
+    }
+    return 'Hospital General Tipo I de Tecpán Guatemala';
+  }
+
   get esGuatemalteca(): boolean {
     return this.nacionalidadMadre === 'GTM' || !!this.constancia?.madre?.cui;
   }
