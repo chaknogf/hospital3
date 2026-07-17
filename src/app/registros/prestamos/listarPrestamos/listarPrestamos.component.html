@@ -3,7 +3,7 @@
   <div
     class="botones justify-content-between"
     [ngClass]="{ 'd-none': filtrar }"
-    >
+  >
     <button type="button" (click)="volver()">
       <span [innerHTML]="menuIcon"></span>
       Menu
@@ -22,7 +22,7 @@
     <form
       class="form-filtros"
       (submit)="cargarPrestamos(); $event.preventDefault()"
-      >
+    >
       <!-- Estado -->
       <fieldset class="fieldset-filtros">
         <label class="label-filtros">Estado</label>
@@ -30,7 +30,7 @@
           class="input-filtros"
           [(ngModel)]="filtros.activo"
           name="estado"
-          >
+        >
           <option [ngValue]="true">Activos</option>
           <option [ngValue]="false">Inactivos</option>
           <option [ngValue]="null">Todos</option>
@@ -41,12 +41,12 @@
       <fieldset class="fieldset-filtros">
         <label class="label-filtros">Expediente</label>
         <input
-          type="number"
+          type="text"
           class="input-filtros"
-          [(ngModel)]="filtros.id_paciente"
+          [(ngModel)]="filtros.expediente"
           name="idPaciente"
           placeholder="Ej: 1042"
-          />
+        />
       </fieldset>
 
       <!-- Botones -->
@@ -72,10 +72,7 @@
 
   <!-- Mensaje -->
   @if (mensaje()) {
-    <div
-      class="alerta"
-      [ngClass]="'alerta--' + mensaje()!.tipo"
-      >
+    <div class="alerta" [ngClass]="'alerta--' + mensaje()!.tipo">
       {{ mensaje()!.texto }}
     </div>
   }
@@ -101,7 +98,7 @@
           <tr
             class="aurora-table-row"
             [class.touch-active]="rowActiva === p.id"
-            >
+          >
             <!-- Index -->
             <td class="cell-index">{{ i + 1 }}</td>
             <!-- Expediente -->
@@ -149,7 +146,7 @@
                 class="badge-estado"
                 [class.badge-activo]="p.activo"
                 [class.badge-inactivo]="!p.activo"
-                >
+              >
                 {{ p.activo ? "Activo" : "Inactivo" }}
               </span>
             </td>
@@ -165,44 +162,44 @@
                 >
                 <span [innerHTML]="cancelIcon"></span>
               </button> -->
-            </div>
-          </td>
-        </tr>
-      }
+              </div>
+            </td>
+          </tr>
+        }
 
-      <!-- Sin resultados -->
-      @if (!cargando && prestamos.length === 0) {
-        <tr>
-          <td colspan="7" class="text-center py-3">
-            <em>No se encontraron préstamos con los filtros aplicados.</em>
-          </td>
-        </tr>
-      }
+        <!-- Sin resultados -->
+        @if (!cargando && prestamos.length === 0) {
+          <tr>
+            <td colspan="7" class="text-center py-3">
+              <em>No se encontraron préstamos con los filtros aplicados.</em>
+            </td>
+          </tr>
+        }
 
-      <!-- Cargando -->
-      @if (cargando) {
-        <tr>
-          <td colspan="7" class="text-center py-3">
-            <em>Cargando préstamos...</em>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
-</div>
-
-<!-- Paginación -->
-<div class="d-flex justify-content-center align-items-center p-0">
-  <button class="btn" [disabled]="filtros.skip === 0">
-    <span [innerHTML]="skipLeftIcon"></span>
-  </button>
-
-  <div>
-    <strong>{{ filtros.skip }}</strong>
+        <!-- Cargando -->
+        @if (cargando) {
+          <tr>
+            <td colspan="7" class="text-center py-3">
+              <em>Cargando préstamos...</em>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </div>
 
-  <button class="btn" [disabled]="finPagina">
-    <span [innerHTML]="skipRightIcon"></span>
-  </button>
-</div>
+  <!-- Paginación -->
+  <div class="d-flex justify-content-center align-items-center p-0">
+    <button class="btn" [disabled]="filtros.skip === 0">
+      <span [innerHTML]="skipLeftIcon"></span>
+    </button>
+
+    <div>
+      <strong>{{ filtros.skip }}</strong>
+    </div>
+
+    <button class="btn" [disabled]="finPagina">
+      <span [innerHTML]="skipRightIcon"></span>
+    </button>
+  </div>
 </div>
