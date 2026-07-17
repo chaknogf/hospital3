@@ -1,0 +1,105 @@
+<div class="hud-header">
+  <div class="hud-title">Limpiar CUI de Paciente</div>
+</div>
+
+<div class="action-dock">
+  <span class="dock-hint">Eliminar el número de CUI de un paciente</span>
+
+  <button
+    class="btn btn-danger"
+    (click)="limpiarCui()"
+    [disabled]="
+      isLoading() || !pacienteDetail()
+    "
+  >
+    {{ isLoading() ? "Procesando..." : "Limpiar CUI" }}
+  </button>
+
+  <button class="btn" (click)="volver()">Cancelar</button>
+</div>
+
+<div class="adm-body">
+  @if (error(); as msg) {
+    <div class="alert-error">{{ msg }}</div>
+  }
+
+  @if (success(); as msg) {
+    <div class="alert-success">{{ msg }}</div>
+  }
+
+  <div class="adm-grid">
+    <div class="adm-col">
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Buscar paciente</span>
+        </div>
+
+        <div class="sec-body">
+          <div class="field">
+            <label class="field-label">ID del Paciente</label>
+            <input
+              class="field-input"
+              type="number"
+              [ngModel]="pacienteId()"
+              (ngModelChange)="pacienteId.set($event)"
+              placeholder="ID del paciente"
+            />
+          </div>
+
+          <button
+            class="btn-add"
+            (click)="cargar()"
+            [disabled]="!pacienteId() || loadingDetail()"
+          >
+            {{ loadingDetail() ? "Cargando..." : "Cargar datos" }}
+          </button>
+        </div>
+      </div>
+
+      @if (pacienteDetail(); as p) {
+        <div class="section-card">
+          <div class="sec-head">
+            <span class="sec-title">Detalle del paciente</span>
+          </div>
+
+          <div class="sec-body detail-grid">
+            <div class="detail-row">
+              <span class="detail-label">ID</span>
+              <span class="detail-value">{{ p.id }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Expediente</span>
+              <span class="detail-value">{{ p.expediente || "—" }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Nombre</span>
+              <span class="detail-value">{{ p.nombre_completo || "—" }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">CUI actual</span>
+              <span class="detail-value">{{ p.cui ?? "—" }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Sexo</span>
+              <span class="detail-value">{{ p.sexo || "—" }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Fecha Nac.</span>
+              <span class="detail-value">{{ p.fecha_nacimiento || "—" }}</span>
+            </div>
+          </div>
+
+          <div class="sec-foot" style="padding: 12px 16px; display: flex; justify-content: center;">
+            <button
+              class="btn btn-danger"
+              (click)="limpiarCui()"
+              [disabled]="isLoading()"
+            >
+              {{ isLoading() ? "Procesando..." : "Limpiar CUI" }}
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

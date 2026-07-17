@@ -76,6 +76,16 @@ export const routes: Routes = [
         loadComponent: () => import('./principal/administrador/reasignar-paciente/reasignar-paciente.component').then(c => c.ReasignarPacienteComponent),
         canActivate: [roleGuard(['admin'])]
       },
+      {
+        path: 'eliminar-paciente',
+        loadComponent: () => import('./principal/administrador/eliminar-paciente/eliminar-paciente.component').then(c => c.EliminarPacienteComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
+      {
+        path: 'limpiar-cui-paciente',
+        loadComponent: () => import('./principal/administrador/limpiar-cui/limpiar-cui.component').then(c => c.LimpiarCuiComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
 
       // Registros Médicos
       {

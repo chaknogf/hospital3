@@ -17,6 +17,7 @@ export interface ConstanciaNacimiento {
   muertos?: number;
   observaciones?: string;
   metadatos?: Record<string, unknown>;
+  estado_informe?: string;
   created_at?: string;
   updated_at?: string;
   paciente?: Paciente;

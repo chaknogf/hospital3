@@ -1,0 +1,122 @@
+<div class="hud-header">
+  <div class="hud-title">Eliminar Paciente</div>
+</div>
+
+<div class="action-dock">
+  <span class="dock-hint">Eliminar paciente permanentemente de la base de datos</span>
+
+  <button
+    class="btn btn-danger"
+    (click)="eliminar()"
+    [disabled]="
+      isLoading() || !pacienteDetail() || confirmText() !== 'confirmar'
+    "
+  >
+    {{ isLoading() ? "Eliminando..." : "Eliminar Permanentemente" }}
+  </button>
+
+  <button class="btn" (click)="volver()">Cancelar</button>
+</div>
+
+<div class="adm-body">
+  @if (error(); as msg) {
+    <div class="alert-error">{{ msg }}</div>
+  }
+
+  @if (success(); as msg) {
+    <div class="alert-success">{{ msg }}</div>
+  }
+
+  <div class="adm-grid">
+    <div class="adm-col">
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Buscar paciente</span>
+        </div>
+
+        <div class="sec-body">
+          <div class="field">
+            <label class="field-label">ID del Paciente</label>
+            <input
+              class="field-input"
+              type="number"
+              [ngModel]="pacienteId()"
+              (ngModelChange)="pacienteId.set($event)"
+              placeholder="ID del paciente a eliminar"
+            />
+          </div>
+
+          <button
+            class="btn-add"
+            (click)="cargar()"
+            [disabled]="!pacienteId() || loadingDetail()"
+          >
+            {{ loadingDetail() ? "Cargando..." : "Cargar datos" }}
+          </button>
+        </div>
+      </div>
+
+      @if (pacienteDetail(); as p) {
+        <div class="section-card">
+          <div class="sec-head">
+            <span class="sec-title">Detalle del paciente</span>
+          </div>
+
+          <div class="sec-body detail-grid">
+            <div class="detail-row">
+              <span class="detail-label">ID</span>
+              <span class="detail-value">{{ p.id }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Expediente</span>
+              <span class="detail-value">{{ p.expediente || "—" }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Nombre</span>
+              <span class="detail-value">{{ p.nombre_completo || "—" }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">CUI</span>
+              <span class="detail-value">{{ p.cui ?? "—" }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Sexo</span>
+              <span class="detail-value">{{ p.sexo || "—" }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Fecha Nac.</span>
+              <span class="detail-value">{{ p.fecha_nacimiento || "—" }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Estado</span>
+              <span class="detail-value">{{ p.estado || "—" }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="sec-head">
+            <span class="sec-title">Confirmar acción</span>
+          </div>
+
+          <div class="sec-body">
+            <div class="field">
+              <label class="field-label"
+                >Escribe <strong>confirmar</strong> para habilitar el
+                botón de eliminación</label
+              >
+              <input
+                class="field-input"
+                type="text"
+                [ngModel]="confirmText()"
+                (ngModelChange)="confirmText.set($event)"
+                placeholder="Escribe 'confirmar'"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

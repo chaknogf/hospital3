@@ -1,3 +1,4 @@
+import 'iconify-icon';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideRouter, withPreloading, PreloadAllModules } from '@angular/router';

@@ -34,6 +34,12 @@ export class ListarConstanciasComponent implements OnInit, OnDestroy {
   paginaActual: number = 1;
   totalDeRegistros = 0;
 
+  estadoInformeModal = false;
+  constanciaSeleccionada: ConstanciaNacimiento | null = null;
+  estadoInformeActual = '';
+  cargandoEstado = false;
+  estadosValidos = ['creado', 'entregado', 'reimpreso', 'perdido', 'anulado'];
+
   filtros: any = {
     id_usuario: '',
     id_constancia: '',
@@ -66,6 +72,8 @@ export class ListarConstanciasComponent implements OnInit, OnDestroy {
       skipLeft: this.iconService.getIcon("skipLeft"),
       skipRight: this.iconService.getIcon("skipRight"),
       print: this.iconService.getIcon("printIcon"),
+      estado: this.iconService.getIcon("estadoIcon"),
+      auxiliar: this.iconService.getIcon("auxiliarIcon"),
     };
   }
 
@@ -187,6 +195,51 @@ export class ListarConstanciasComponent implements OnInit, OnDestroy {
     this.filtros.limit = this.pageSize;
     this.cargarDatos();
   }
+
+  abrirModalEstado(id: number): void {
+    this.constanciaSeleccionada = this.datos.find(d => d.id === id) || null;
+    this.estadoInformeActual = this.constanciaSeleccionada?.metadatos?.['estado_informe'] as string || '';
+    this.estadoInformeModal = true;
+  }
+
+  cerrarModalEstado(): void {
+    this.estadoInformeModal = false;
+    this.constanciaSeleccionada = null;
+    this.estadoInformeActual = '';
+  }
+
+  guardarEstadoInforme(): void {
+    if (!this.constanciaSeleccionada || !this.estadoInformeActual) return;
+    const id = this.constanciaSeleccionada.id;
+    const estado = this.estadoInformeActual;
+    this.cerrarModalEstado();
+    this.api.updateEstadoInforme(id, estado)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => this.cargarDatos(),
+        error: (err) => {
+          console.error('Error al guardar estado:', err);
+          this.error = 'No se pudo guardar el estado. Revisa la consola.';
+          this.cdr.markForCheck();
+        }
+      });
+  }
+
+  getMetadatoEstado(metadatos: Record<string, any> | null | undefined): string {
+    return metadatos?.['estado_informe'] ?? '';
+  }
+
+  getEstadoLabel(estado: string): string {
+    const labels: Record<string, string> = {
+      creado: 'Creado',
+      entregado: 'Entregado',
+      reimpreso: 'Reimpreso',
+      perdido: 'Perdido',
+      anulado: 'Anulado'
+    };
+    return labels[estado] || estado;
+  }
+
 
   trackById(index: number, item: any): any {
     return item.id ?? index;

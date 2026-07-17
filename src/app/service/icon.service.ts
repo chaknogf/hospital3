@@ -1,4 +1,3 @@
-// icon.service.ts
 import { Injectable } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as icons from '../shared/icons/svg-icon';

@@ -7,3 +7,139 @@ form {
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
+/* Estado badge */
+.estado-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #555;
+  color: #fff;
+}
+.estado-badge.activo {
+  background: #2d9f2d;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.modal-content {
+  background: #1e1e2f;
+  border-radius: 16px;
+  padding: 24px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.modal-header h3 {
+  margin: 0;
+  color: #fff;
+}
+.modal-close {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 24px;
+  cursor: pointer;
+}
+.modal-close:hover {
+  color: #fff;
+}
+.modal-body {
+  margin-bottom: 20px;
+}
+.modal-body p {
+  margin: 4px 0;
+  color: #ccc;
+  font-size: 14px;
+}
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.btn-submit {
+  background: #2d9f2d;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-submit:hover:not(:disabled) {
+  background: #238b23;
+}
+
+.bottom-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.bottom-option {
+  flex: 1 1 auto;
+  min-width: 80px;
+  padding: 10px 14px;
+  border: 1px solid #333;
+  border-radius: 10px;
+  background: #2a2a3e;
+  color: #999;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.bottom-option:hover {
+  background: #33334d;
+  color: #ccc;
+  border-color: #555;
+}
+
+.alert-error {
+  background: #5a1a1a;
+  color: #ff6b6b;
+  padding: 10px 16px;
+  border-radius: 10px;
+  margin: 0 18px;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.alert-error button {
+  background: none;
+  border: none;
+  color: #ff6b6b;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.bottom-option.active {
+  background: #1a5a9e;
+  color: #fff;
+  border-color: #2d7dd2;
+  box-shadow: 0 0 12px rgba(45, 125, 210, 0.3);
+}
+

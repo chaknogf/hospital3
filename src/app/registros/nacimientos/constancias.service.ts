@@ -24,7 +24,9 @@ export class ConstanciasService extends BaseApiService {
   };
 
   private refrescarConstancias(): void {
-    this.getConstancias(this.ultimimoFiltroConstancia.filtro).subscribe();
+    this.getConstancias(this.ultimimoFiltroConstancia.filtro).subscribe({
+      error: () => {}  // error ya manejado por catchError en getConstancias
+    });
   }
 
   getConstancias(filtros: any): Observable<InformeNacimientoListResponse> {
@@ -92,6 +94,18 @@ export class ConstanciasService extends BaseApiService {
   }
 
 
+
+
+  updateEstadoInforme(id: number, estado_informe: string): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.patch<any>(
+      `${this.baseUrl}/constancias-nacimiento/${id}/estado-informe`,
+      { estado_informe }
+    ).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'actualizar estado de informe'))
+    );
+  }
 
 
   // ========== nacimientos legacy ==========

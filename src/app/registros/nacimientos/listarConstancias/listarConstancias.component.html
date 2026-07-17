@@ -1,4 +1,10 @@
 <div class="aurora-paciente-container" [class.d-none]="modalActivo">
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+    <button type="button" (click)="error = null">&times;</button>
+  </div>
+
   <!-- Botones superiores -->
   <div
     class="botones justify-content-between"
@@ -107,6 +113,7 @@
           <th class="text-justify">Id</th>
           <th>Documento</th>
           <th>Nombre Madre</th>
+          <th>Estado</th>
           <th>Fecha Parto</th>
           <th>Fecha</th>
           <th>Acciones</th>
@@ -133,23 +140,31 @@
             {{ data.nombre_madre | capitalize }}
           </td>
           <td class="oculto">
+            <span class="estado-badge" [class.activo]="getMetadatoEstado(data.metadatos) === 'creado'">
+              {{ getEstadoLabel(getMetadatoEstado(data.metadatos)) || '—' }}
+            </span>
+          </td>
+          <td class="oculto">
             {{ data.paciente?.fecha_nacimiento | date: "dd-MM-yyyy" }}
           </td>
           <td class="oculto">{{ data.fecha_registro | date: "dd-MM-yyyy" }}</td>
           <td class="secundario">
-            <div class="botones-opt">
-              <button (click)="editar(data.id); $event.stopPropagation()">
+            <div class="d-flex gap-1">
+              <button (click)="editar(data.id)" data-label="Editar">
                 <span [innerHTML]="icons['edit']"></span>
               </button>
 
-              <div class="btn-group" style="display: inline-flex; gap: 2px;">
-                <button (click)="imprimir(data.id); $event.stopPropagation()" title="Imprimir por médico">
-                  <span [innerHTML]="icons['print']"></span>
-                </button>
-                <button (click)="imprimirAuxiliar(data.id); $event.stopPropagation()" title="Imprimir por auxiliar" style="font-size: 10px; padding: 2px 4px;">
-                  👤
-                </button>
-              </div>
+              <button (click)="abrirModalEstado(data.id)" data-label="Estado">
+                <span [innerHTML]="icons['estado']"></span>
+              </button>
+
+              <button (click)="imprimir(data.id)" data-label="Imprimir">
+                <span [innerHTML]="icons['print']"></span>
+              </button>
+
+              <button (click)="imprimirAuxiliar(data.id)" data-label="Auxiliar">
+                <span [innerHTML]="icons['auxiliar']"></span>
+              </button>
             </div>
           </td>
         </tr>
@@ -210,5 +225,46 @@
       Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
       {{ totalDeRegistros }} registros
     </span>
+  </div>
+</div>
+
+<!-- Modal Estado Informe -->
+<div class="modal-overlay" *ngIf="estadoInformeModal" (click)="cerrarModalEstado()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Estado del Documento</h3>
+      <button class="modal-close" (click)="cerrarModalEstado()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <p *ngIf="constanciaSeleccionada">
+        <strong>Documento:</strong> {{ constanciaSeleccionada.documento || '—' }}
+      </p>
+      <p *ngIf="constanciaSeleccionada">
+        <strong>Madre:</strong> {{ constanciaSeleccionada.nombre_madre | capitalize }}
+      </p>
+
+      <label class="label-filtros">Estado del Informe</label>
+      <div class="bottom-select">
+        <button *ngFor="let est of estadosValidos"
+          type="button"
+          class="bottom-option"
+          [class.active]="estadoInformeActual === est"
+          (click)="estadoInformeActual = est">
+          {{ getEstadoLabel(est) }}
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="button-filtros" (click)="cerrarModalEstado()">Cancelar</button>
+      <button
+        class="btn-submit"
+        (click)="guardarEstadoInforme()"
+        [disabled]="!estadoInformeActual || cargandoEstado"
+      >
+        {{ cargandoEstado ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
   </div>
 </div>
