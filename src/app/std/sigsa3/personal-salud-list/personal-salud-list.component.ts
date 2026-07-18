@@ -1,5 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
@@ -14,7 +14,7 @@ import { IconService } from '../../../service/icon.service';
   styleUrls: ['./personal-salud-list.component.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, RouterLink]
+  imports: [FormsModule]
 })
 export class PersonalSaludListComponent {
   private api = inject(Sigsa3Service);
