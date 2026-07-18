@@ -175,5 +175,28 @@ export class StdService extends BaseApiService {
     );
   }
 
+  // =====================================================
+  // CHAT INTELIGENTE (NL→SQL)
+  // =====================================================
+
+  consultarChat(mensajes: { role: string; content: string }[]): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/chat/consulta`,
+      { mensajes }
+    ).pipe(
+      catchError(error => this.manejarError(error, 'consultar agente'))
+    );
+  }
+
+  obtenerTablasChat(): Observable<any> {
+    const key = this.cacheKey(`${this.baseUrl}/chat/tablas`);
+    return this.cacheGet(key,
+      this.http.get(`${this.baseUrl}/chat/tablas`).pipe(
+        catchError(error => this.manejarError(error, 'obtener tablas'))
+      ),
+      60 * 60 * 1000
+    );
+  }
+
 
 }

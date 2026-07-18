@@ -329,6 +329,11 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin', 'std'])]
       },
       {
+        path: 'agente',
+        loadComponent: () => import('./std/estadistica/agente/agente.component').then(c => c.AgenteComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
         path: 'personal-hospital',
         loadComponent: () => import('./std/estadistica/personal-hospital/personal-hospital-list.component').then(c => c.PersonalHospitalListComponent),
         canActivate: [roleGuard(['admin', 'std'])]

@@ -1,0 +1,83 @@
+<div class="chat-layout">
+  <div class="chat-header">
+    <span class="chat-header-icon">🤖</span>
+    <span class="chat-header-title">Agente de Datos</span>
+    <span class="chat-header-badge">Solo Lectura</span>
+  </div>
+
+  <div class="chat-messages" #scrollContainer>
+    @for (msg of mensajes(); track trackByIdx($index); let i = $index) {
+      <div class="msg" [class.msg-user]="msg.role === 'user'" [class.msg-error]="msg.error">
+        <div class="msg-avatar">
+          {{ msg.role === 'user' ? '👤' : '🤖' }}
+        </div>
+        <div class="msg-body">
+          <div class="msg-content" [class.msg-content--typing]="cargando() && i === mensajes().length - 1">
+            {{ msg.content }}
+          </div>
+
+          @if (msg.sql) {
+            <div class="msg-sql-toggle" (click)="toggleSql(i)">
+              {{ mostrarSql()[i] ? '▾ Ocultar SQL' : '▸ Ver SQL generado' }}
+            </div>
+            @if (mostrarSql()[i]) {
+              <pre class="msg-sql"><code>{{ msg.sql }}</code></pre>
+            }
+          }
+
+          @if (msg.datos && msg.datos.length > 0 && msg.columnas) {
+            <div class="msg-table-wrapper">
+              <table class="msg-table">
+                <thead>
+                  <tr>
+                    @for (col of msg.columnas; track col) {
+                      <th>{{ col }}</th>
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (fila of msg.datos; track $index) {
+                    <tr>
+                      @for (col of msg.columnas; track col) {
+                        <td>{{ fila[col] ?? '—' }}</td>
+                      }
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            <div class="msg-count">{{ msg.datos.length }} fila(s)</div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (cargando()) {
+      <div class="msg msg-assistant">
+        <div class="msg-avatar">🤖</div>
+        <div class="msg-body">
+          <div class="msg-content msg-content--typing">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="chat-input-area">
+    <textarea
+      class="chat-input"
+      [(ngModel)]="input"
+      (keydown.enter)="$event.preventDefault(); enviar()"
+      (input)="autoResize($event)"
+      placeholder="Escribe tu pregunta sobre los datos..."
+      rows="1"
+      [disabled]="cargando()"
+    ></textarea>
+    <button class="chat-send" (click)="enviar()" [disabled]="!input().trim() || cargando()">
+      {{ cargando() ? '⏳' : '➤' }}
+    </button>
+  </div>
+</div>
