@@ -502,7 +502,7 @@ describe('CnAcimientoInformeComponent', () => {
       });
       fixture.detectChanges();
       const lbls = fixture.nativeElement.querySelectorAll('.form-lbl');
-      const found = Array.from(lbls).find((l: Element) => l.textContent?.includes('Origen'));
+      const found = Array.from(lbls).find((l) => (l as Element).textContent?.includes('Origen'));
       expect(found).toBeTruthy();
     });
 
@@ -510,7 +510,7 @@ describe('CnAcimientoInformeComponent', () => {
       component.constancia = makeConstancia({ madre: makeMadre() as any });
       fixture.detectChanges();
       const lbls = fixture.nativeElement.querySelectorAll('.form-lbl');
-      const found = Array.from(lbls).find((l: Element) => l.textContent?.includes('Nacimiento'));
+      const found = Array.from(lbls).find((l) => (l as Element).textContent?.includes('Nacimiento'));
       expect(found).toBeTruthy();
     });
 

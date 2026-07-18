@@ -193,10 +193,11 @@ export class HijosComponent implements OnInit, OnDestroy {
   manejarTipoPartoMultiple(): void {
     const tipoParto = this.form.get('datos_extra.tipo_parto')?.value;
 
+    this.children = [];
+
     if (tipoParto === 'Multiple') {
       this.mostrarSelectorNacimientos.set(true);
       this.nacimientoActual.set(1);
-      this.children = [];
     } else {
       this.mostrarSelectorNacimientos.set(false);
       this.totalNacimientos.set(1);
@@ -323,10 +324,13 @@ export class HijosComponent implements OnInit, OnDestroy {
     if (esUltimo) {
       // Último nacimiento — enviar batch al backend
       const raw = this.form.getRawValue();
+      const hijos = raw.datos_extra.tipo_parto !== 'Multiple'
+        ? this.children.slice(-1)
+        : this.children;
       const payload: Hijode = {
         fecha_nacimiento: raw.fecha_nacimiento,
         estado: raw.estado,
-        hijos: this.children,
+        hijos,
       };
 
       console.log(`Enviando lote de ${this.children.length} hijos:`, payload);

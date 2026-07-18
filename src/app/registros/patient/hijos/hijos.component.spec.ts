@@ -1,7 +1,5 @@
-/* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { HijosComponent } from './hijos.component';
 
@@ -9,9 +7,10 @@ describe('HijosComponent', () => {
   let component: HijosComponent;
   let fixture: ComponentFixture<HijosComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ HijosComponent ]
+      imports: [ HijosComponent ],
+      providers: [provideRouter([])]
     })
     .compileComponents();
   }));
