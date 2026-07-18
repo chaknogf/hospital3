@@ -151,6 +151,8 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   importar(): void { this.router.navigate(['/sigsa3/importar']); }
 
+  gestionarPersonalSalud(): void { this.router.navigate(['/personal-salud']); }
+
   eliminar(id: number): void {
     if (!confirm('¿Eliminar este registro?')) return;
     this.api.eliminarRegistro(id).pipe(takeUntil(this.destroy$)).subscribe({ next: () => { this.cargar(); this.cdr.markForCheck(); } });
@@ -218,6 +220,19 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
     this.procesando = true;
     this.api.asociarTodo().pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cargar(); this.cdr.markForCheck(); },
+      error: () => { this.procesando = false; this.cdr.markForCheck(); }
+    });
+  }
+
+  sincronizarEspecialidad(): void {
+    this.procesando = true;
+    this.api.sincronizarEspecialidad().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.resultadoOperacion = res;
+        this.procesando = false;
+        this.cargar();
+        this.cdr.markForCheck();
+      },
       error: () => { this.procesando = false; this.cdr.markForCheck(); }
     });
   }

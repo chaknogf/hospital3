@@ -1,0 +1,130 @@
+.sigsa3-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.botones {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.botones button {
+  background: rgba(59,130,246,0.12);
+  border: 1px solid rgba(59,130,246,0.3);
+  border-radius: 8px;
+  color: #60a5fa;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.botones button:hover { background: rgba(59,130,246,0.2); }
+.text-white { color: #e2e8f0; margin: 0 auto; font-size: 1.3rem; font-weight: 700; }
+
+.acciones-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.btn-accion {
+  background: rgba(30,41,59,0.8);
+  border: 1px solid rgba(148,163,184,0.2);
+  border-radius: 8px;
+  color: #e2e8f0;
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-accion:hover { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.3); }
+.btn-accion:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.total-badge {
+  display: inline-block;
+  padding: 5px 14px;
+  background: rgba(59,130,246,0.1);
+  border: 1px solid rgba(59,130,246,0.25);
+  border-radius: 20px;
+  color: #60a5fa;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.state-box { text-align: center; padding: 40px; color: #94a3b8; font-size: 0.9rem; }
+.spinner::after {
+  content: '';
+  display: inline-block;
+  width: 28px; height: 28px;
+  border: 3px solid rgba(148,163,184,0.2);
+  border-top-color: #60a5fa;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.table-wrap { overflow-x: auto; }
+.sigsa3-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(15,23,42,0.8);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.sigsa3-table th {
+  background: #1e293b;
+  color: #94a3b8;
+  padding: 10px 12px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: left;
+  white-space: nowrap;
+}
+.sigsa3-table td {
+  padding: 9px 12px;
+  color: #e2e8f0;
+  border-bottom: 1px solid rgba(148,163,184,0.08);
+  font-size: 0.82rem;
+}
+.sigsa3-table tbody tr:hover { background: rgba(59,130,246,0.05); }
+
+.estado-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.estado-badge.activo { background: rgba(34,197,94,0.15); color: #4ade80; }
+.estado-badge.inactivo { background: rgba(248,113,113,0.15); color: #f87171; }
+
+.btn-sm {
+  background: transparent;
+  border: 1px solid rgba(148,163,184,0.2);
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.15s;
+}
+.btn-sm:hover { background: rgba(59,130,246,0.15); }
+.btn-sm.danger:hover { background: rgba(248,113,113,0.15); }
+
+.d-flex { display: flex; }
+.gap-1 { gap: 6px; }
+.flex-wrap { flex-wrap: wrap; }
+.justify-content-between { justify-content: space-between; }
+.m-0 { margin: 0; }
+.p-0 { padding: 0; }
+.py-3 { padding-top: 12px; padding-bottom: 12px; }
+.text-center { text-align: center; }
+
+@media (max-width: 768px) {
+  .sigsa3-container { padding: 12px; }
+}

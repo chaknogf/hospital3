@@ -9,6 +9,7 @@ import { OfflineDatabaseService, PendingMutation } from './offline-database.serv
 export class OfflineSyncService {
   isOnline = signal(true);
   pendingMutations = signal<number>(0);
+  pendingMutationsList = signal<PendingMutation[]>([]);
   lastSync = signal<Date | null>(null);
 
   private online = true;
@@ -44,6 +45,12 @@ export class OfflineSyncService {
   private async refreshPendingCount(): Promise<void> {
     const count = await this.db.getPendingCount();
     this.pendingMutations.set(count);
+    if (count > 0) {
+      const mutations = await this.db.getPendingMutations();
+      this.pendingMutationsList.set(mutations);
+    } else {
+      this.pendingMutationsList.set([]);
+    }
   }
 
   async getCachedData<T>(key: string): Promise<T | null> {
@@ -105,6 +112,11 @@ export class OfflineSyncService {
     );
   }
 
+  async clearPendingMutations(): Promise<void> {
+    await this.db.clearMutations();
+    await this.refreshPendingCount();
+  }
+
   async enqueueMutation(
     method: PendingMutation['method'],
     url: string,
@@ -121,28 +133,36 @@ export class OfflineSyncService {
   async syncNow(): Promise<{ synced: number; failed: number }> {
     if (!this.online) return { synced: 0, failed: 0 };
 
-    const mutations = await this.db.getPendingMutations();
-    let synced = 0;
-    let failed = 0;
+    try {
+      const mutations = await this.db.getPendingMutations();
+      let synced = 0;
+      let failed = 0;
 
-    for (const mutation of mutations) {
-      try {
-        await this.executeMutation(mutation);
-        await this.db.deleteMutation(mutation.id!);
-        synced++;
-      } catch (err) {
-        failed++;
-        if (mutation.retries >= this.MAX_RETRIES) {
+      for (const mutation of mutations) {
+        try {
+          await this.executeMutation(mutation);
           await this.db.deleteMutation(mutation.id!);
-        } else {
-          await this.db.mutations.update(mutation.id!, { retries: mutation.retries + 1 });
+          synced++;
+        } catch (err) {
+          failed++;
+          console.warn(`[Sync] Error en ${mutation.method} ${mutation.url}:`, err);
+          if (mutation.retries >= this.MAX_RETRIES) {
+            console.warn(`[Sync] Eliminando mutación tras ${this.MAX_RETRIES} intentos: ${mutation.method} ${mutation.url}`);
+            await this.db.deleteMutation(mutation.id!);
+          } else {
+            await this.db.mutations.update(mutation.id!, { retries: mutation.retries + 1 });
+          }
         }
       }
-    }
 
-    await this.refreshPendingCount();
-    this.lastSync.set(new Date());
-    return { synced, failed };
+      await this.refreshPendingCount();
+      this.lastSync.set(new Date());
+      return { synced, failed };
+    } catch (err) {
+      console.error('[Sync] Error inesperado en syncNow:', err);
+      await this.refreshPendingCount();
+      return { synced: 0, failed: 0 };
+    }
   }
 
   private executeMutation(mutation: PendingMutation): Promise<any> {

@@ -136,3 +136,24 @@ export interface Sigsa3DxZResponse {
   total_pacientes: number;
   generado_en: string;
 }
+
+// ── Personal Salud ──
+
+export interface PersonalSalud {
+  id: number;
+  nombre: string;
+  especialidad?: string;
+  activo?: boolean;
+}
+
+export interface PersonalSaludCreate {
+  nombre: string;
+  especialidad?: string;
+  activo?: boolean;
+}
+
+export interface PersonalSaludUpdate {
+  nombre?: string;
+  especialidad?: string;
+  activo?: boolean;
+}

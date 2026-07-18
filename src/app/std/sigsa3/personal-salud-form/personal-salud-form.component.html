@@ -1,0 +1,49 @@
+<div class="form-wrap">
+  <div class="form-card">
+    <div class="form-header">
+      <span class="form-title">{{ enEdicion ? 'Editar' : 'Nuevo' }} Personal Salud</span>
+      @if (enEdicion && registroId) {
+        <span class="form-badge">ID: {{ registroId }}</span>
+      }
+    </div>
+
+    @if (cargando) {
+      <div class="state-box spinner"></div>
+    }
+
+    @if (!cargando) {
+      <form [formGroup]="form" (submit)="guardar(); $event.preventDefault()">
+        <div class="form-body">
+          <div class="field-group">
+            <label>Nombre completo</label>
+            <input type="text" formControlName="nombre" placeholder="Nombre del profesional" />
+            @if (f['nombre'].invalid && f['nombre'].touched) {
+              <span class="field-error">El nombre es obligatorio</span>
+            }
+          </div>
+
+          <div class="field-group">
+            <label>Especialidad</label>
+            <input type="text" formControlName="especialidad" placeholder="Medicina General, Pediatría..." />
+          </div>
+
+          <div class="field-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="activo" />
+              Activo
+            </label>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <button type="button" class="btn-cancel" (click)="volver()">
+            <span [innerHTML]="cancelIcon"></span> Cancelar
+          </button>
+          <button type="submit" class="btn-save" [disabled]="guardando || form.invalid">
+            <span [innerHTML]="saveIcon"></span> {{ guardando ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</div>

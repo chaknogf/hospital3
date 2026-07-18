@@ -1,6 +1,7 @@
 import { Component, HostListener, ChangeDetectionStrategy } from '@angular/core';
 
 import { OfflineSyncService } from '../service/offline-sync.service';
+import { PendingMutation } from '../service/offline-database.service';
 
 @Component({
   selector: 'app-offline-banner',
@@ -11,7 +12,6 @@ import { OfflineSyncService } from '../service/offline-sync.service';
   styleUrls: ['./offline-banner.component.css']
 })
 export class OfflineBannerComponent {
-  isOnline = navigator.onLine;
   sync: OfflineSyncService;
 
   constructor(sync: OfflineSyncService) {
@@ -20,12 +20,12 @@ export class OfflineBannerComponent {
 
   @HostListener('window:online')
   onOnline() {
-    this.isOnline = true;
     this.sync.syncNow();
   }
 
-  @HostListener('window:offline')
-  onOffline() {
-    this.isOnline = false;
+  resumenOperacion(m: PendingMutation): string {
+    const partes = m.url.split('/');
+    const recurso = partes[partes.length - 1] || partes[partes.length - 2] || m.url;
+    return `${m.method} /…/${recurso}`;
   }
 }

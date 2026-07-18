@@ -460,6 +460,21 @@ export const routes: Routes = [
         loadComponent: () => import('./std/sigsa3/sigsa3-import/sigsa3-import.component').then(c => c.Sigsa3ImportComponent),
         canActivate: [roleGuard(['admin', 'std'])]
       },
+      {
+        path: 'personal-salud',
+        loadComponent: () => import('./std/sigsa3/personal-salud-list/personal-salud-list.component').then(c => c.PersonalSaludListComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
+        path: 'personal-salud/nuevo',
+        loadComponent: () => import('./std/sigsa3/personal-salud-form/personal-salud-form.component').then(c => c.PersonalSaludFormComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
+        path: 'personal-salud/editar/:id',
+        loadComponent: () => import('./std/sigsa3/personal-salud-form/personal-salud-form.component').then(c => c.PersonalSaludFormComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
 
       // Censo de Camas
       {

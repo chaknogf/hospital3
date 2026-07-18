@@ -109,22 +109,28 @@ export class ApiService {
     return throwError(() => error);
   }
 
+  private async cacheEstaFresco(key: string): Promise<boolean> {
+    const cached = await this.sync.getCachedData<any>(key);
+    return cached !== null;
+  }
+
   private preCacheAllPatients(): void {
     if (!this.sync.isOnline()) return;
     const limit = 100;
     const url = `${this.baseUrl}/pacientes/`;
     const ttl = 30 * 60 * 1000;
+    const firstKey = this.sync.cacheKey(url, new HttpParams().set('skip', '0').set('limit', String(limit)));
 
-    this.http.get<PacienteListResponse>(url, { params: new HttpParams().set('skip', '0').set('limit', String(limit)) }).pipe(
-      catchError(() => of(null))
-    ).subscribe(firstResponse => {
-      if (!firstResponse) return;
-      const total = firstResponse.total;
-      this.sync.setCachedData(
-        this.sync.cacheKey(url, new HttpParams().set('skip', '0').set('limit', String(limit))),
-        firstResponse, ttl
-      );
-      this.preCachePageSequentially(url, limit, limit, total, ttl);
+    this.cacheEstaFresco(firstKey).then(fresco => {
+      if (fresco) return; // ya está en caché, no descargar de nuevo
+      this.http.get<PacienteListResponse>(url, { params: new HttpParams().set('skip', '0').set('limit', String(limit)) }).pipe(
+        catchError(() => of(null))
+      ).subscribe(firstResponse => {
+        if (!firstResponse) return;
+        const total = firstResponse.total;
+        this.sync.setCachedData(firstKey, firstResponse, ttl);
+        this.preCachePageSequentially(url, limit, limit, total, ttl);
+      });
     });
   }
 
@@ -146,17 +152,18 @@ export class ApiService {
     const limit = 100;
     const url = `${this.baseUrl}/consultas/`;
     const ttl = 30 * 60 * 1000;
+    const firstKey = this.sync.cacheKey(url, new HttpParams().set('skip', '0').set('limit', String(limit)));
 
-    this.http.get<ConsultaListResponse>(url, { params: new HttpParams().set('skip', '0').set('limit', String(limit)) }).pipe(
-      catchError(() => of(null))
-    ).subscribe(firstResponse => {
-      if (!firstResponse) return;
-      const total = firstResponse.total;
-      this.sync.setCachedData(
-        this.sync.cacheKey(url, new HttpParams().set('skip', '0').set('limit', String(limit))),
-        firstResponse, ttl
-      );
-      this.preCachePageSequentially(url, limit, limit, total, ttl);
+    this.cacheEstaFresco(firstKey).then(fresco => {
+      if (fresco) return; // ya está en caché, no descargar de nuevo
+      this.http.get<ConsultaListResponse>(url, { params: new HttpParams().set('skip', '0').set('limit', String(limit)) }).pipe(
+        catchError(() => of(null))
+      ).subscribe(firstResponse => {
+        if (!firstResponse) return;
+        const total = firstResponse.total;
+        this.sync.setCachedData(firstKey, firstResponse, ttl);
+        this.preCachePageSequentially(url, limit, limit, total, ttl);
+      });
     });
   }
 

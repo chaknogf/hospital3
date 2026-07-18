@@ -76,6 +76,8 @@
     <button class="btn-accion" (click)="abrirModalAsociar()">🔗 Asociar Paciente</button>
     <button class="btn-accion" (click)="asociarMedico()" [disabled]="procesando">🩺 Asociar Médico</button>
     <button class="btn-accion" (click)="asociarTodo()" [disabled]="procesando">⚡ Asociar Todo</button>
+    <button class="btn-accion" (click)="sincronizarEspecialidad()" [disabled]="procesando">🔄 Sincronizar Personal Salud</button>
+    <button class="btn-accion accent" (click)="gestionarPersonalSalud()">👤 Gestionar Personal Salud</button>
     @if (seleccionados.size > 0) {
       <button class="btn-accion danger" (click)="eliminarSeleccionados()">
         🗑️ Eliminar ({{ seleccionados.size }})

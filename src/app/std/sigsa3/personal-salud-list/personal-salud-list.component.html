@@ -1,0 +1,70 @@
+<div class="sigsa3-container">
+  <div class="botones justify-content-between">
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="icons['menu']"></span>
+      Menu
+    </button>
+    <h1 class="text-white">Personal Salud</h1>
+    <button type="button" (click)="nuevo()">
+      <span [innerHTML]="icons['create']"></span>
+      Nuevo
+    </button>
+  </div>
+
+  <div class="acciones-bar">
+    <button class="btn-accion" (click)="cargar()" [disabled]="cargando">
+      <span [innerHTML]="icons['search']"></span> Refrescar
+    </button>
+  </div>
+
+  @if (!cargando) {
+    <div class="total-badge">
+      {{ registros.length }} registros
+    </div>
+  }
+
+  @if (cargando) {
+    <div class="state-box spinner"></div>
+  }
+
+  @if (!cargando) {
+    <div class="table-wrap">
+      <table class="sigsa3-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Especialidad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of registros; track r.id) {
+            <tr>
+              <td>{{ r.id }}</td>
+              <td>{{ r.nombre }}</td>
+              <td>{{ r.especialidad || '—' }}</td>
+              <td>
+                <span class="estado-badge" [class.activo]="r.activo" [class.inactivo]="!r.activo">
+                  {{ r.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>
+                <div class="d-flex gap-1">
+                  <button class="btn-sm" (click)="editar(r.id)">✏️</button>
+                  <button class="btn-sm danger" (click)="eliminar(r.id)">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          }
+          @if (!cargando && registros.length === 0) {
+            <tr>
+              <td colspan="5" class="text-center py-3"><em>No hay registros de personal salud.</em></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

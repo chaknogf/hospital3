@@ -13,7 +13,10 @@ import {
   FiltroSigsa3,
   Sigsa3EspecialidadResponse,
   Sigsa3DxFrecuentesResponse,
-  Sigsa3DxZResponse
+  Sigsa3DxZResponse,
+  PersonalSalud,
+  PersonalSaludCreate,
+  PersonalSaludUpdate
 } from '../../interface/sigsa3.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -132,6 +135,14 @@ export class Sigsa3Service extends BaseApiService {
     );
   }
 
+  sincronizarEspecialidad(): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.post<any>(`${this.baseUrl}/sigsa3/sincronizar-especialidad`, {}).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'sincronizar especialidad'))
+    );
+  }
+
   // ── PUT / DELETE ──
 
   actualizarRegistro(id: number, data: Sigsa3Update): Observable<Sigsa3Out> {
@@ -146,6 +157,41 @@ export class Sigsa3Service extends BaseApiService {
     this.isLoading.set(true);
     return this.offMutation('DELETE', `${this.baseUrl}/sigsa3/${id}`).pipe(
       tap(() => this.refrescar()),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  // ── Personal Salud ──
+
+  listarPersonalSalud(): Observable<PersonalSalud[]> {
+    return this.http.get<PersonalSalud[]>(`${this.baseUrl}/sigsa3/personal-salud`).pipe(
+      catchError(error => this.manejarError(error, 'listar personal salud'))
+    );
+  }
+
+  obtenerPersonalSalud(id: number): Observable<PersonalSalud> {
+    return this.http.get<PersonalSalud>(`${this.baseUrl}/sigsa3/personal-salud/${id}`).pipe(
+      catchError(error => this.manejarError(error, 'obtener personal salud'))
+    );
+  }
+
+  crearPersonalSalud(data: PersonalSaludCreate): Observable<PersonalSalud> {
+    this.isLoading.set(true);
+    return this.offMutation('POST', `${this.baseUrl}/sigsa3/personal-salud`, data).pipe(
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  actualizarPersonalSalud(id: number, data: PersonalSaludUpdate): Observable<PersonalSalud> {
+    this.isLoading.set(true);
+    return this.offMutation('PUT', `${this.baseUrl}/sigsa3/personal-salud/${id}`, data).pipe(
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  eliminarPersonalSalud(id: number): Observable<void> {
+    this.isLoading.set(true);
+    return this.offMutation('DELETE', `${this.baseUrl}/sigsa3/personal-salud/${id}`).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }

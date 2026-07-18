@@ -147,6 +147,8 @@ export class OfflineDatabaseService extends Dexie {
   }
 
   async clearOnLogout(): Promise<void> {
-    await this.clearAllData();
+    await this.mutations.clear();
+    // Keep pacientes, consultas, syncMeta y cache — persisten entre sesiones
+    // para evitar descargar todo nuevamente en cada login/refresh
   }
 }

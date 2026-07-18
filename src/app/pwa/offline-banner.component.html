@@ -1,4 +1,4 @@
-@if (!isOnline) {
+@if (!sync.isOnline()) {
   <div class="offline-banner">
     <span>Sin conexion — modo offline activo</span>
     @if (sync.pendingMutations() > 0) {
@@ -8,9 +8,21 @@
     }
   </div>
 }
-@if (isOnline && sync.pendingMutations() > 0) {
+@if (sync.isOnline() && sync.pendingMutations() > 0) {
   <div class="sync-banner">
-    <span>{{ sync.pendingMutations() }} cambio(s) pendientes de sincronizar</span>
-    <button class="btn btn-sm btn-light ms-2" (click)="sync.syncNow()">Sincronizar ahora</button>
+    <div class="acciones">
+      <span class="fw-semibold">{{ sync.pendingMutations() }} cambio(s) pendiente(s)</span>
+      <button class="btn btn-sm btn-light" (click)="sync.syncNow()">Sincronizar ahora</button>
+      <button class="btn btn-sm btn-outline-dark" (click)="sync.clearPendingMutations()"
+              title="Descartar cambios pendientes">Descartar</button>
+    </div>
+    <div class="detalles">
+      @for (m of sync.pendingMutationsList(); track m.id) {
+        <div>
+          <span class="metodo {{ m.method.toLowerCase() }}">{{ m.method }}</span>
+          {{ resumenOperacion(m) }}
+        </div>
+      }
+    </div>
   </div>
 }
