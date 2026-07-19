@@ -1,7 +1,5 @@
-/* tslint:disable:no-unused-variable */
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { ConsultorComponent } from './consultor.component';
 
@@ -9,14 +7,15 @@ describe('ConsultorComponent', () => {
   let component: ConsultorComponent;
   let fixture: ComponentFixture<ConsultorComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ConsultorComponent ]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ ConsultorComponent ],
+      providers: [
+        provideRouter([]),
+      ]
     })
     .compileComponents();
-  }));
-
-  beforeEach(() => {
+    
     fixture = TestBed.createComponent(ConsultorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

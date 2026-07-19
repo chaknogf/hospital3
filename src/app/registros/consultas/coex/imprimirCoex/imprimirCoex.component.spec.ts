@@ -1,7 +1,5 @@
-/* tslint:disable:no-unused-variable */
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { ImprimirCoexComponent } from './imprimirCoex.component';
 
@@ -9,14 +7,15 @@ describe('ImprimirCoexComponent', () => {
   let component: ImprimirCoexComponent;
   let fixture: ComponentFixture<ImprimirCoexComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ImprimirCoexComponent ]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ ImprimirCoexComponent ],
+      providers: [
+        provideRouter([]),
+      ]
     })
     .compileComponents();
-  }));
-
-  beforeEach(() => {
+    
     fixture = TestBed.createComponent(ImprimirCoexComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

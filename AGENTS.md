@@ -78,7 +78,7 @@ back_sys/
 │   ├── dependencies.py        # FastAPI DI re-exports
 │   ├── exceptions.py          # Global error handlers (422, 409, 500)
 │   └── mail.py                # FastAPI-Mail config
-├── modules/                   # 25 domain modules
+├── modules/                   # 28 domain modules
 │   ├── auth/                  # POST /auth/login, GET /auth/me
 │   ├── users/                 # Full user CRUD
 │   ├── pacientes/             # Patient CRUD, duplicates (trigram/soundex), merge, neonates
@@ -97,16 +97,16 @@ back_sys/
 │   ├── paises_iso/            # ISO country codes
 │   ├── renap/                 # RENAP civil registry integration
 │   ├── totales/               # Real-time dashboard KPIs
-│   ├── estadisticas/          # Statistics & reports
+│   ├── estadisticas/          # Statistics & reports (11 endpoints)
 │   ├── audit_log/             # Access audit logging
+│   ├── censo_camas/           # Bed census stats
+│   ├── cie10/                 # ICD-10 diagnosis codes
+│   ├── defunciones/           # Death certificates
+│   ├── chat/                  # Internal chat
 │   ├── laboratorios/          # Lab tests (models only)
 │   ├── rayos_x/               # X-rays (models only)
 │   ├── sigsa3/                # SIGSA-3 consultation registry
 │   └── common/schemas.py      # Shared Pydantic schemas
-├── app/                       # Legacy (being migrated to modules/)
-│   ├── models/                # 18 legacy model files
-│   ├── routes/                # 20 legacy route files
-│   └── schemas/               # 19 legacy schema files
 └── api-cie11/                 # ICD-11 medical coding data
 ```
 
@@ -211,14 +211,17 @@ Each module in `modules/` contains:
 | Eventos | POST | `/eventos/` | auth | Create (ingreso/evolucion/egreso) (201) |
 | Eventos | PATCH | `/eventos/{evento_id}` | auth | Update |
 | Eventos | DELETE | `/eventos/{evento_id}` | auth | Delete (204) |
-| Estadisticas | GET | `/estadisticas/resumen` | auth | Dashboard resumen |
-| Estadisticas | GET | `/estadisticas/consultas/por-dia` | auth | Por día en rango |
-| Estadisticas | GET | `/estadisticas/consultas/por-especialidad` | auth | Por especialidad |
-| Estadisticas | GET | `/estadisticas/pacientes/piramide` | auth | Pirámide poblacional |
-| Estadisticas | GET | `/estadisticas/procedimientos/top` | auth | Top procedimientos |
-| Estadisticas | GET | `/estadisticas/ocupacion` | auth | Ocupación hospitalaria |
-| Estadisticas | GET | `/estadisticas/reporte` | auth | Reporte personalizado |
-| Estadisticas | GET | `/estadisticas/personal-salud` | auth | Personal de salud |
+| Estadisticas | GET | `/estadisticas/consultas/pacientesAtendidos` | auth | Pacientes por tipo, especialidad y sexo |
+| Estadisticas | GET | `/estadisticas/consultas/hospitalizacion-infantil` | auth | Hospitalizaciones >28d y <5años |
+| Estadisticas | GET | `/estadisticas/consultas/promedioDiario` | auth | Promedio diario por especialidad |
+| Estadisticas | GET | `/estadisticas/consultas/personal-hospital` | auth | Consultas de personal del hospital |
+| Estadisticas | GET | `/estadisticas/consultas/estudiante-publico` | auth | Consultas de estudiantes públicos |
+| Estadisticas | GET | `/estadisticas/consultas/reingresos` | auth | Reingresos hospitalarios |
+| Estadisticas | GET | `/estadisticas/consultas/reingresos-tipo3` | auth | Reingresos tipo 3 (paginado) |
+| Estadisticas | GET | `/estadisticas/consultas/mayores-a-7-dias` | auth | Consultas activas >7 días |
+| Estadisticas | GET | `/estadisticas/nacimientos` | auth | Estadísticas de nacimientos |
+| Estadisticas | GET | `/estadisticas/sigsa3/por-especialidad` | auth | SIGSA-3 por especialidad |
+| Estadisticas | GET | `/estadisticas/sigsa3/dx-frecuentes` | auth | Diagnósticos frecuentes SIGSA-3 |
 | Audit | GET | `/audit-log/` | admin | Logs (filtros: tabla, username, desde, hasta) |
 | Encamamiento | POST | `/encamamiento/` | public | Create servicio (201) |
 | Encamamiento | GET | `/encamamiento/` | public | List (filtro: activo) |
@@ -325,12 +328,31 @@ All API calls go through `ApiService` (`service/api.service.ts`) to `http://loca
 | `EliminarConstanciaComponent` | `/eliminar-constancia` | `ConstanciasService.deleteConstancia()` | `DELETE /constancias-nacimiento/{id}` |
 | `NuevaConstanciaNacimientoComponent` | `/nueva-cons-nac` | `PacienteService.pacienteExpediente()` | `GET /pacientes/expediente/{expediente}` |
 
-### STD / Catalog Components
+### Statistics / Reports Components
 
 | Component | Route | ApiService Method | Backend Endpoint |
 |-----------|-------|--------------------|------------------|
-| `EstadisticaComponent` | `/estadistica` | `ApiService` | `GET /estadisticas/*` |
-| `ConsultorComponent` | `/consultar` | `ApiService` | `GET /estadisticas/reporte` |
+| `PacientesAtendidosComponent` | `/reportes/pacientes-atendidos` | `getPacientesAtendidos()` | `GET /estadisticas/consultas/pacientesAtendidos` |
+| `HospitalizacionInfantilComponent` | `/reportes/hospitalizacion-infantil` | `getHospitalizacionInfantil()` | `GET /estadisticas/consultas/hospitalizacion-infantil` |
+| `PromedioDiarioComponent` | `/reportes/promedio-diario` | `getPromedioDiario()` | `GET /estadisticas/consultas/promedioDiario` |
+| `PersonalHospitalComponent` | `/reportes/personal-hospital` | `getPersonalHospital()` | `GET /estadisticas/consultas/personal-hospital` |
+| `EstudiantePublicoComponent` | `/reportes/estudiante-publico` | `getEstudiantePublico()` | `GET /estadisticas/consultas/estudiante-publico` |
+| `ReingresosComponent` | `/reportes/reingresos` | `getReingresos()` | `GET /estadisticas/consultas/reingresos` |
+| `ReingresosTipo3Component` | `/reportes/reingresos-tipo3` | `getReingresosTipo3()` | `GET /estadisticas/consultas/reingresos-tipo3` |
+| `ActivosMayores7DiasComponent` | `/reportes/activos-mayores-7-dias` | `getActivosMayores7Dias()` | `GET /estadisticas/consultas/mayores-a-7-dias` |
+| `EstadisticasNacimientosComponent` | `/reportes/estadisticas-nacimientos` | `getEstadisticasNacimientos()` | `GET /estadisticas/nacimientos` |
+| `Sigsa3EstadisticaComponent` | `/reportes/sigsa3-estadistica` | `sigsa3PorEspecialidad()` | `GET /estadisticas/sigsa3/por-especialidad` |
+| `Sigsa3DxFrecuentesComponent` | `/reportes/sigsa3-dx-frecuentes` | `sigsa3DxFrecuentes()` | `GET /estadisticas/sigsa3/dx-frecuentes` |
+| `ReporteProcedimientosComponent` | `/reportes/reporte-procedimientos` | `getReporteProcedimientos()` | `GET /procedimientos/reporte` |
+| `ResumenProcedimientosComponent` | `/reportes/resumen-procedimientos` | `getResumenProcedimientos()` | `GET /procedimientos/estadisticas/resumen` |
+| `DxZCIe10Component` | `/reportes/dx-z-cie10` | *(via Sigsa3Service, Z34/Z10)* | `GET /sigsa3/?codigo_dx=Z34\|Z10` |
+| `EstadisticaComponent` | `/estadistica` | `ApiService` | `GET /estadisticas/consultas/*` |
+| `ConsultorComponent` | `/consultar` | `ConsultaService` / `PacienteService` | `GET /consultas/buscarpaciente`, `GET /pacientes/` |
+
+### Doctors & Procedures Components
+
+| Component | Route | ApiService Method | Backend Endpoint |
+|-----------|-------|--------------------|------------------|
 | `DoctoresComponent` | `/doctores` | `ApiService` | `GET /medicos/` |
 | `DoctorFormComponent` | `/doctor*` | `ApiService` | `GET/POST/PUT /medicos/`, `DELETE /medicos/{id}` |
 | `CatalogoprocedimientoComponent` | `/catalogoProcedimientos` | `ApiService` | `GET/POST /procedimientos/catalogo`, `PUT/DELETE /procedimientos/catalogo/{id}` |
@@ -344,8 +366,8 @@ All API calls go through `ApiService` (`service/api.service.ts`) to `http://loca
 | `Sigsa3ListComponent` | `/sigsa3` | `Sigsa3Service` | `GET /sigsa3/` |
 | `Sigsa3FormComponent` | `/sigsa3/nuevo`, `/sigsa3/editar/:id` | `Sigsa3Service` | `GET/POST/PUT /sigsa3/` |
 | `Sigsa3ImportComponent` | `/sigsa3/importar` | `Sigsa3Service` | `POST /sigsa3/importar-excel` |
-| `Sigsa3EstadisticaComponent` | `/reportes/sigsa3-estadistica` | `Sigsa3Service` | `GET /estadisticas/sigsa3/por-especialidad` |
-| `Sigsa3DxFrecuentesComponent` | `/reportes/sigsa3-dx-frecuentes` | `Sigsa3Service` | `GET /estadisticas/sigsa3/dx-frecuentes` |
+| `PersonalSaludListComponent` | `/personal-salud` | `Sigsa3Service` | `GET /sigsa3/personal-salud` |
+| `PersonalSaludFormComponent` | `/personal-salud/nuevo`, `/personal-salud/editar/:id` | `Sigsa3Service` | `POST/PUT /sigsa3/personal-salud` |
 
 ### Loan Components
 

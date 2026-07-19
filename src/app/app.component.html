@@ -1,12 +1,6 @@
 <app-offline-banner></app-offline-banner>
 <app-update-notification></app-update-notification>
 
-<section class="bg-stars">
-  <span class="star"></span>
-  <span class="star"></span>
-  <span class="star"></span>
-</section>
-
 @if (fullSync.isSyncing() || fullSync.syncState() === 'paused') {
   <div class="sync-indicator"
     (click)="toggleSyncPause()"

@@ -1,7 +1,4 @@
-/* tslint:disable:no-unused-variable */
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CitaConteoComponent } from './citaConteo.component';
 
@@ -9,14 +6,15 @@ describe('CitaConteoComponent', () => {
   let component: CitaConteoComponent;
   let fixture: ComponentFixture<CitaConteoComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CitaConteoComponent ]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ CitaConteoComponent ],
+      providers: [
+        
+      ]
     })
     .compileComponents();
-  }));
-
-  beforeEach(() => {
+    
     fixture = TestBed.createComponent(CitaConteoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

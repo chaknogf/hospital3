@@ -1,7 +1,4 @@
-/* tslint:disable:no-unused-variable */
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CoexNutriComponent } from './coex-nutri.component';
 
@@ -9,14 +6,15 @@ describe('CoexNutriComponent', () => {
   let component: CoexNutriComponent;
   let fixture: ComponentFixture<CoexNutriComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CoexNutriComponent ]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ CoexNutriComponent ],
+      providers: [
+        
+      ]
     })
     .compileComponents();
-  }));
-
-  beforeEach(() => {
+    
     fixture = TestBed.createComponent(CoexNutriComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
