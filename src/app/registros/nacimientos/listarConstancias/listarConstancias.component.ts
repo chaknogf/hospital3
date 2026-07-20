@@ -38,7 +38,7 @@ export class ListarConstanciasComponent implements OnInit, OnDestroy {
   constanciaSeleccionada: ConstanciaNacimiento | null = null;
   estadoInformeActual = '';
   cargandoEstado = false;
-  estadosValidos = ['creado', 'entregado', 'reimpreso', 'perdido', 'anulado'];
+  estadosValidos = ['creado', 'entregado', 'reimpreso', 'perdido', 'anulado', 'corregir'];
 
   filtros: any = {
     id_usuario: '',
@@ -235,7 +235,8 @@ export class ListarConstanciasComponent implements OnInit, OnDestroy {
       entregado: 'Entregado',
       reimpreso: 'Reimpreso',
       perdido: 'Perdido',
-      anulado: 'Anulado'
+      anulado: 'Anulado',
+      corregir: 'Corregir'
     };
     return labels[estado] || estado;
   }

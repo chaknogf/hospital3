@@ -4,12 +4,10 @@ import { ApiService } from '../../../service/api.service';
 import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subject, of } from 'rxjs';
 import { takeUntil, catchError, finalize } from 'rxjs/operators';
-import { saveIcon, cancelIcon } from '../../../shared/icons/svg-icon';
 import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
-import { Hijode, HijodeItem, HijodeDatosExtra, MadreHijoResponse } from '../../../interface/interfaces';
+import { Hijode, HijodeItem, HijodeDatosExtra, MadreHijoResponse, Paciente } from '../../../interface/interfaces';
 import { Medico } from '../../../interface/medicos.interface';
 
 @Component({
@@ -25,6 +23,7 @@ import { Medico } from '../../../interface/medicos.interface';
   ]
 })
 export class HijosComponent implements OnInit, OnDestroy {
+  readonly Math = Math;
 
   pacienteId!: number;
 
@@ -33,61 +32,61 @@ export class HijosComponent implements OnInit, OnDestroy {
   private apis = inject(ApiService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private sanitizer = inject(DomSanitizer);
   private cdr = inject(ChangeDetectorRef);
 
   isLoading = signal(false);
   error = signal<string | null>(null);
   success = signal<string | null>(null);
 
+  madreInfo = signal<string | null>(null);
+
   form!: FormGroup;
 
-  saveIcon!: SafeHtml;
-  cancelIcon!: SafeHtml;
-
-  sections = [true, true];
+  sectionActiva = signal(0);
+  pasosCompletados = [false, false];
 
   steps = [
-    { label: 'BÁSICO', done: false },
-    { label: 'PARTO', done: false },
+    { label: 'BÁSICO' },
+    { label: 'PARTO' },
   ];
 
-  // ======= OPCIONES DE FORMULARIO =======
-
-  // Sexo: Masculino o Femenino
   opcionesSexo = [
     { label: '♂ Masculino', valor: 'M' },
     { label: '♀ Femenino', valor: 'F' },
   ];
 
-  // Estado: Vivo o Fallecido
   opcionesEstado = [
     { label: '● Vivo', valor: 'V' },
     { label: '● Fallecido', valor: 'F' },
   ];
 
-  // ✅ TIPO DE PARTO: Simple, Múltiple
   opcionesTipoParto = [
     { label: 'Simple', valor: 'Simple' },
     { label: 'Múltiple', valor: 'Multiple' },
   ];
 
-  // ✅ CLASE DE PARTO: Eutócico, Distócico
   opcionesClaseParto = [
     { label: 'Eutócico (Vaginal)', valor: 'Pes' },
     { label: 'Distócico (Cesárea)', valor: 'Cstp' },
   ];
 
-  // ======= CONTROL DE MÚLTIPLES NACIMIENTOS =======
+  opcionesExtra = [
+    { label: 'No', valor: 'no' },
+    { label: 'Sí', valor: 'si' },
+  ];
+
   totalNacimientos = signal(1);
   nacimientoActual = signal(1);
   mostrarSelectorNacimientos = signal(false);
   children: HijodeItem[] = [];
 
-  // ======= MÉDICOS =======
   medicos: Medico[] = [];
 
   private destroy$ = new Subject<void>();
+
+  get esMultiple(): boolean {
+    return this.form.get('datos_extra.tipo_parto')?.value === 'Multiple';
+  }
 
   private pesoValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -110,7 +109,6 @@ export class HijosComponent implements OnInit, OnDestroy {
           return { peso: 'Las onzas deben estar entre 0 y 15' };
         }
       }
-
       return null;
     };
   }
@@ -124,22 +122,36 @@ export class HijosComponent implements OnInit, OnDestroy {
     return limpio;
   }
 
-  // ======= CICLO DE VIDA =======
   ngOnInit(): void {
     this.route.params
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
         this.pacienteId = params['id'];
-        console.log('Paciente ID recibido:', this.pacienteId);
+        this.cargarMadre();
         this.cdr.markForCheck();
       });
 
     this.form = this.crearFormulario();
-
-    this.saveIcon = this.sanitizer.bypassSecurityTrustHtml(saveIcon);
-    this.cancelIcon = this.sanitizer.bypassSecurityTrustHtml(cancelIcon);
-
     this.cargarMedicos();
+  }
+
+  private cargarMadre(): void {
+    this.api.getPaciente(this.pacienteId)
+      .pipe(
+        catchError(() => of(null)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(p => {
+        if (!p?.nombre) return;
+        const nombre = [
+          p.nombre.primer_nombre,
+          p.nombre.segundo_nombre,
+          p.nombre.primer_apellido,
+          p.nombre.segundo_apellido,
+        ].filter(Boolean).join(' ');
+        this.madreInfo.set(nombre);
+        this.cdr.markForCheck();
+      });
   }
 
   private cargarMedicos(): void {
@@ -154,9 +166,7 @@ export class HijosComponent implements OnInit, OnDestroy {
           }
           this.cdr.markForCheck();
         },
-        error: (err) => {
-          console.error('Error al cargar médicos:', err);
-        }
+        error: (err) => console.error('Error al cargar médicos:', err)
       });
   }
 
@@ -165,34 +175,31 @@ export class HijosComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // ======= FORMULARIO =======
   private crearFormulario(): FormGroup {
     return this.fb.group({
-      sexo: [''],
-      fecha_nacimiento: [''],
+      sexo: ['', Validators.required],
+      fecha_nacimiento: ['', Validators.required],
       estado: ['V'],
 
       datos_extra: this.fb.group({
         peso_nacimiento: ['', this.pesoValidator()],
         edad_gestacional: [''],
-        tipo_parto: [''],          // Simple, Múltiple
-        clase_parto: [''],         // Eutocico, Distocico
-        extrahositalario: ['no'],
+        tipo_parto: [''],
+        clase_parto: [''],
+        extrahospitalario: ['no'],
         hora_nacimiento: [''],
         id_medico: [null],
       }),
     });
   }
 
-  // ======= HELPERS PARA MÚLTIPLES NACIMIENTOS =======
+  cerrarSelectorNacimientos(): void {
+    this.mostrarSelectorNacimientos.set(false);
+    this.form.get('datos_extra.tipo_parto')?.setValue('Simple');
+  }
 
-  /**
-   * Se llama cuando el usuario selecciona tipo_parto = Múltiple
-   * Muestra un dialogo para preguntar cuántos nacimientos hubo
-   */
   manejarTipoPartoMultiple(): void {
     const tipoParto = this.form.get('datos_extra.tipo_parto')?.value;
-
     this.children = [];
 
     if (tipoParto === 'Multiple') {
@@ -205,47 +212,47 @@ export class HijosComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Confirma cuántos nacimientos hay y comienza el registro
-   */
   confirmarTotalNacimientos(): void {
     if (this.totalNacimientos() < 2) {
       this.error.set('❌ Debe seleccionar al menos 2 nacimientos para múltiples');
       return;
     }
-
     this.mostrarSelectorNacimientos.set(false);
     this.nacimientoActual.set(1);
-
     this.error.set(null);
-    console.log(`Total de nacimientos: ${this.totalNacimientos()}, iniciando registro del primero...`);
   }
 
-  /**
-   * Incrementa el selector de total de nacimientos
-   */
   incrementarTotalNacimientos(): void {
     if (this.totalNacimientos() < 10) {
       this.totalNacimientos.set(this.totalNacimientos() + 1);
     }
   }
 
-  /**
-   * Decrementa el selector de total de nacimientos
-   */
   decrementarTotalNacimientos(): void {
     if (this.totalNacimientos() > 1) {
       this.totalNacimientos.set(this.totalNacimientos() - 1);
     }
   }
 
-  // ======= HELPERS CHIPS =======
   onPesoInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     const limpio = this.limpiarPeso(input.value);
     if (limpio !== input.value) {
       this.form.get('datos_extra.peso_nacimiento')?.setValue(limpio, { emitEvent: false });
     }
+  }
+
+  toggleSection(i: number): void {
+    this.sectionActiva.set(this.sectionActiva() === i ? -1 : i);
+  }
+
+  goSection(i: number): void {
+    document.getElementById('sec-' + i)?.scrollIntoView({ behavior: 'smooth' });
+    this.sectionActiva.set(i);
+  }
+
+  verMadre(): void {
+    this.router.navigate(['/detallePaciente', this.pacienteId]);
   }
 
   setSexo(valor: string): void {
@@ -266,10 +273,9 @@ export class HijosComponent implements OnInit, OnDestroy {
   }
 
   setExtrahospitalario(valor: string): void {
-    this.form.get('datos_extra.extrahositalario')?.setValue(valor);
+    this.form.get('datos_extra.extrahospitalario')?.setValue(valor);
   }
 
-  // ======= CONSTRUIR ITEM POR HIJO =======
   private buildChildItem(): HijodeItem {
     const raw = this.form.getRawValue();
 
@@ -285,27 +291,24 @@ export class HijosComponent implements OnInit, OnDestroy {
         edad_gestacional: raw.datos_extra.edad_gestacional || undefined,
         tipo_parto: raw.datos_extra.tipo_parto || undefined,
         clase_parto: raw.datos_extra.clase_parto || undefined,
-        extrahositalario: raw.datos_extra.extrahositalario || 'no',
+        extrahositalario: raw.datos_extra.extrahospitalario === 'si',
         hora_nacimiento: hora || undefined,
         id_medico: raw.datos_extra.id_medico ?? undefined,
       }
     };
   }
 
-  // ======= GUARDAR =======
   guardar(): void {
     if (!this.pacienteId) {
       this.error.set('❌ No se ha especificado el ID de la madre.');
       return;
     }
 
-    // ✅ Validar que el formulario tenga al menos los datos básicos
     if (!this.form.get('sexo')?.value || !this.form.get('fecha_nacimiento')?.value) {
       this.error.set('❌ Debes completar al menos el sexo y la fecha de nacimiento.');
       return;
     }
 
-    // ✅ Si es múltiple, validar que tiene tipo_parto y clase_parto
     if (this.form.get('datos_extra.tipo_parto')?.value === 'Multiple') {
       if (!this.form.get('datos_extra.clase_parto')?.value) {
         this.error.set('❌ Debes seleccionar la clase de parto (Eutócico/Distócico)');
@@ -313,18 +316,17 @@ export class HijosComponent implements OnInit, OnDestroy {
       }
     }
 
-    console.log('Formulario raw value:', this.form.getRawValue());
+    this.pasosCompletados[0] = true;
+    this.pasosCompletados[1] = true;
 
-    // Agregar hijo actual a la colección
     const childItem = this.buildChildItem();
     this.children.push(childItem);
 
     const esUltimo = this.nacimientoActual() === this.totalNacimientos();
 
     if (esUltimo) {
-      // Último nacimiento — enviar batch al backend
       const raw = this.form.getRawValue();
-      const hijos = raw.datos_extra.tipo_parto !== 'Multiple'
+      const hijos = this.form.get('datos_extra.tipo_parto')?.value !== 'Multiple'
         ? this.children.slice(-1)
         : this.children;
       const payload: Hijode = {
@@ -333,7 +335,6 @@ export class HijosComponent implements OnInit, OnDestroy {
         hijos,
       };
 
-      console.log(`Enviando lote de ${this.children.length} hijos:`, payload);
       this.isLoading.set(true);
       this.error.set(null);
 
@@ -343,25 +344,18 @@ export class HijosComponent implements OnInit, OnDestroy {
           finalize(() => this.isLoading.set(false)),
           catchError(err => {
             this.error.set(`❌ Error: ${err?.error?.detail || err?.message || 'Error desconocido'}`);
-            console.error('Error guardando hijos:', err);
             return of(null);
           })
         )
         .subscribe(response => {
           if (response) {
             this.success.set(`✅ Se han registrado exitosamente ${response.total} nacimiento(s)`);
-            console.log('Respuesta del servidor:', response);
-
-            setTimeout(() => {
-              this.router.navigate(['/pacientes']);
-            }, 2000);
+            setTimeout(() => this.router.navigate(['/pacientes']), 2000);
           }
           this.cdr.markForCheck();
         });
     } else {
-      // Hay más nacimientos — solo avanzar al siguiente
       this.success.set(`✅ Nacimiento ${this.nacimientoActual()} registrado correctamente`);
-
       this.nacimientoActual.set(this.nacimientoActual() + 1);
       this.limpiarFormularioParaSiguiente();
 
@@ -369,17 +363,12 @@ export class HijosComponent implements OnInit, OnDestroy {
         this.success.set(null);
         document.getElementById('sec-0')?.scrollIntoView({ behavior: 'smooth' });
       }, 1500);
-
       this.cdr.markForCheck();
     }
   }
 
-  /**
-   * Limpia el formulario pero mantiene datos que probablemente son iguales
-   */
   private limpiarFormularioParaSiguiente(): void {
     const raw = this.form.getRawValue();
-
     this.form.patchValue({
       sexo: '',
       datos_extra: {
@@ -387,14 +376,13 @@ export class HijosComponent implements OnInit, OnDestroy {
         edad_gestacional: raw.datos_extra.edad_gestacional,
         tipo_parto: raw.datos_extra.tipo_parto,
         clase_parto: raw.datos_extra.clase_parto,
-        extrahositalario: raw.datos_extra.extrahositalario,
+        extrahospitalario: raw.datos_extra.extrahospitalario,
         hora_nacimiento: '',
         id_medico: null,
       }
     });
   }
 
-  // ======= NAVEGACIÓN =======
   volver(): void {
     if (this.children.length > 0) {
       const confirm = window.confirm(
@@ -403,14 +391,5 @@ export class HijosComponent implements OnInit, OnDestroy {
       if (!confirm) return;
     }
     this.router.navigate(['/pacientes']);
-  }
-
-  toggleSection(i: number): void {
-    this.sections[i] = !this.sections[i];
-  }
-
-  goSection(i: number): void {
-    document.getElementById('sec-' + i)?.scrollIntoView({ behavior: 'smooth' });
-    this.sections[i] = true;
   }
 }

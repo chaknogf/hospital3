@@ -1,388 +1,289 @@
-<!-- ── HEADER ── -->
-<div class="hud-header">
-  <span class="hud-id">REG-HIJO</span>
-  <span class="hud-title">REGISTRAR HIJO / RECIÉN NACIDO</span>
-  <span class="hud-status">{{ isLoading() ? "PROCESANDO" : "ACTIVO" }}</span>
-</div>
-
-<!-- ── PASOS ── -->
-<div class="progress-track">
-  @for (step of steps; track step; let i = $index; let last = $last) {
-    <div
-      class="prog-step"
-      [class.active]="sections[i]"
-      [class.done]="step.done"
-      (click)="goSection(i)"
-      >
-      <div class="prog-dot">
-        @if (step.done) {
-          <span>✓</span>
-        }
-        @if (!step.done) {
-          <span>{{
-            (i + 1).toString().padStart(2, "0")
-          }}</span>
-        }
-      </div>
-      <span class="prog-label">{{ step.label }}</span>
-    </div>
-    @if (!last) {
-      <div class="prog-line"></div>
+<div class="cosmos">
+  <div class="stars">
+    @for (s of [].constructor(40); track $index) {
+      <div class="star-dot" [style.top.%]="Math.random() * 100" [style.left.%]="Math.random() * 100"></div>
     }
-  }
-</div>
+  </div>
 
-<!-- ── ALERTA ── -->
-@if (error()) {
-  <div class="alert-danger">⚠ {{ error() }}</div>
-}
-
-<!-- ── ÉXITO ── -->
-@if (success()) {
-  <div class="alert-success">✅ {{ success() }}</div>
-}
-
-<!-- ── LOADING ── -->
-@if (isLoading()) {
-  <div class="loading-overlay"><div class="spinner"></div></div>
-}
-
-<!-- ── MODAL: SELECTOR DE NACIMIENTOS ── -->
-@if (mostrarSelectorNacimientos()) {
-  <div class="modal-overlay" (click)="mostrarSelectorNacimientos.set(false)">
-    <div class="modal-selector" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2 class="modal-title">¿Cuántos nacimientos hubo?</h2>
-        <p class="modal-subtitle">
-          Registraremos cada recién nacido de forma individual
-        </p>
-      </div>
-
-      <div class="modal-body">
-        <div class="contador-nacimientos">
-          <button
-            type="button"
-            class="btn-contador"
-            (click)="decrementarTotalNacimientos()"
-            [disabled]="totalNacimientos() <= 1"
-            >
-            −
-          </button>
-
-          <div class="numero-nacimientos">
-            <span class="numero">{{ totalNacimientos() }}</span>
-            <span class="label">nacimiento(s)</span>
-          </div>
-
-          <button
-            type="button"
-            class="btn-contador"
-            (click)="incrementarTotalNacimientos()"
-            [disabled]="totalNacimientos() >= 10"
-            >
-            +
-          </button>
-        </div>
-
-        <div class="info-box">
-          <p>
-            Se registrarán
-            <strong>{{ totalNacimientos() }} recién nacido(s)</strong>
-          </p>
-          <p class="text-secondary">
-            Después de ingresar cada uno, podrás continuar con el siguiente
-          </p>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn-modal btn-secondary"
-          (click)="mostrarSelectorNacimientos.set(false)"
-          >
-          Cancelar
-        </button>
-        <button
-          type="button"
-          class="btn-modal btn-primary"
-          (click)="confirmarTotalNacimientos()"
-          >
-          Continuar
-        </button>
-      </div>
+  <div class="hud-header">
+    <div class="hud-left">
+      <span class="hud-badge">NEO</span>
+      <span class="hud-title">REGISTRO DE RECIÉN NACIDO</span>
+    </div>
+    <div class="hud-right">
+      @if (madreInfo()) {
+        <span class="hud-madre" (click)="verMadre()" title="Ver detalle de la madre">
+          👩 {{ madreInfo() }}
+        </span>
+      }
+      <span class="hud-status" [class.procesando]="isLoading()">
+        {{ isLoading() ? "⏳" : "●" }}
+        {{ isLoading() ? "PROCESANDO" : "ACTIVO" }}
+      </span>
     </div>
   </div>
-}
 
-<!-- ============================================================ -->
-<!-- FORMULARIO                                                   -->
-<!-- ============================================================ -->
-<form
-  [formGroup]="form"
-  (ngSubmit)="guardar()"
-  [class.opacity-50]="isLoading()"
-  >
-  <div class="main-body">
-    <!-- INDICADOR DE PROGRESO (si es múltiple) -->
-    @if (
-      form.get("datos_extra.tipo_parto")?.value === "Multiple" &&
-      totalNacimientos() > 1
-      ) {
-      <div class="progress-bar-container">
-        <div class="progress-info">
-          <span class="progress-label"
-            >Registrando nacimiento {{ nacimientoActual() }} de
-            {{ totalNacimientos() }}</span
-            >
-            <span class="progress-percentage"
-              >{{
-              ((nacimientoActual() / totalNacimientos()) * 100).toFixed(0)
-              }}%</span
-              >
+  <div class="progress-track">
+    @for (step of steps; track step; let i = $index; let last = $last) {
+      <div
+        class="prog-step"
+        [class.active]="sectionActiva() === i"
+        [class.done]="pasosCompletados[i]"
+        (click)="goSection(i)"
+      >
+        <div class="prog-dot">
+          @if (pasosCompletados[i]) { <span>✓</span> }
+          @else { <span>{{ (i + 1).toString().padStart(2, "0") }}</span> }
+        </div>
+        <span class="prog-label">{{ step.label }}</span>
+      </div>
+      @if (!last) { <div class="prog-line" [class.done]="pasosCompletados[i]"></div> }
+    }
+  </div>
+
+  @if (error()) {
+    <div class="alert-barra alert-barra--error" (click)="error.set(null)">
+      ⚠️ {{ error() }}
+    </div>
+  }
+  @if (success()) {
+    <div class="alert-barra alert-barra--success" (click)="success.set(null)">
+      ✅ {{ success() }}
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading-overlay"><div class="spinner"></div></div>
+  }
+
+  <!-- ═══════════ MODAL: selector múltiples ═══════════ -->
+  @if (mostrarSelectorNacimientos()) {
+    <div class="modal-overlay" (click)="cerrarSelectorNacimientos()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-head">
+          <div class="modal-icon">👶👶</div>
+          <h2 class="modal-title">¿Cuántos nacimientos?</h2>
+          <p class="modal-sub">Ingrese el número total de recién nacidos</p>
+        </div>
+        <div class="modal-body">
+          <div class="counter">
+            <button class="counter-btn" (click)="decrementarTotalNacimientos()" [disabled]="totalNacimientos() <= 1">−</button>
+            <div class="counter-value">
+              <span class="counter-num">{{ totalNacimientos() }}</span>
+              <span class="counter-label">nacimiento(s)</span>
             </div>
-            <div class="progress-bar">
-              <div
-                class="progress-fill"
-                [style.width.%]="(nacimientoActual() / totalNacimientos()) * 100"
-              ></div>
+            <button class="counter-btn" (click)="incrementarTotalNacimientos()" [disabled]="totalNacimientos() >= 10">+</button>
+          </div>
+          <div class="modal-info">
+            Se registrarán <strong>{{ totalNacimientos() }} recién nacido(s)</strong> de forma individual
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn--ghost" (click)="cerrarSelectorNacimientos()">Cancelar</button>
+          <button class="btn btn--primary" (click)="confirmarTotalNacimientos()">Continuar</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ═══════════ FORMULARIO ═══════════ -->
+  <form [formGroup]="form" (ngSubmit)="guardar()" [class.blur]="isLoading()">
+
+    <div class="main-body">
+
+      <!-- ── PROGRESS BAR (múltiples) ── -->
+      @if (esMultiple) {
+        <div class="multi-progress">
+          <div class="multi-progress-head">
+            <span>👶 Registrando {{ nacimientoActual() }} de {{ totalNacimientos() }}</span>
+            <span>{{ ((nacimientoActual() / totalNacimientos()) * 100).toFixed(0) }}%</span>
+          </div>
+          <div class="multi-progress-bar">
+            <div class="multi-progress-fill" [style.width.%]="(nacimientoActual() / totalNacimientos()) * 100"></div>
+          </div>
+        </div>
+      }
+
+      <!-- ── S1 · DATOS BÁSICOS ── -->
+      <div class="section-card" [class.active]="sectionActiva() === 0" id="sec-0">
+        <div class="sec-head" (click)="toggleSection(0)">
+          <div class="sec-head-left">
+            <div class="sec-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+            </div>
+            <div>
+              <span class="sec-title">Datos Básicos</span>
+              <span class="sec-desc">Identificación y estado del neonato</span>
+            </div>
+          </div>
+          <div class="sec-head-right">
+            @if (pasosCompletados[0]) { <span class="sec-check">✓</span> }
+            <span class="sec-badge">{{ pasosCompletados[0] ? 'COMPLETADO' : 'OBLIGATORIO' }}</span>
+            <span class="sec-toggle">{{ sectionActiva() === 0 ? '−' : '+' }}</span>
+          </div>
+        </div>
+        @if (sectionActiva() === 0) {
+          <div class="sec-body">
+            <div class="field field-full">
+              <span class="field-label">Sexo <span class="req">*</span></span>
+              <div class="chips-row">
+                @for (opt of opcionesSexo; track opt) {
+                  <span class="chip chip-block" [class.on]="form.get('sexo')?.value === opt.valor" (click)="setSexo(opt.valor)">
+                    {{ opt.label }}
+                  </span>
+                }
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <span class="field-label">Fecha de nacimiento <span class="req">*</span></span>
+                <input class="field-input" type="date" formControlName="fecha_nacimiento" />
+              </div>
+            </div>
+            <div class="field field-full">
+              <span class="field-label">Estado vital</span>
+              <div class="chips-row">
+                @for (opt of opcionesEstado; track opt) {
+                  <span class="chip chip-block" [class.on]="form.get('estado')?.value === opt.valor" (click)="setEstado(opt.valor)">
+                    {{ opt.label }}
+                  </span>
+                }
+              </div>
             </div>
           </div>
         }
+      </div>
 
-        <!-- ══════════════════════════════════════════════════════ -->
-        <!-- S1 · DATOS BÁSICOS                                     -->
-        <!-- ══════════════════════════════════════════════════════ -->
-        <div class="section-card" id="sec-0">
-          <div class="sec-head" (click)="toggleSection(0)">
+      <!-- ── S2 · DATOS DEL PARTO ── -->
+      <div class="section-card" [class.active]="sectionActiva() === 1" id="sec-1">
+        <div class="sec-head" (click)="toggleSection(1)">
+          <div class="sec-head-left">
+            <div class="sec-icon sec-icon--amber">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="7"/><path d="M12 8v4l3 3"/></svg>
+            </div>
+            <div>
+              <span class="sec-title">Datos del Parto</span>
+              <span class="sec-desc">Peso, gestación, tipo de parto y médico</span>
+            </div>
+          </div>
+          <div class="sec-head-right">
+            @if (pasosCompletados[1]) { <span class="sec-check">✓</span> }
+            <span class="sec-badge sec-badge--amber">{{ pasosCompletados[1] ? 'COMPLETADO' : 'NEONATALES' }}</span>
+            <span class="sec-toggle">{{ sectionActiva() === 1 ? '−' : '+' }}</span>
+          </div>
+        </div>
+        @if (sectionActiva() === 1) {
+          <div class="sec-body" formGroupName="datos_extra">
+            <div class="field-row">
+              <div class="field">
+                <span class="field-label">Peso al nacer <small>(lb.onza)</small></span>
+                <input class="field-input" type="text" formControlName="peso_nacimiento" placeholder="Ej: 6.08" autocomplete="off" (input)="onPesoInput($event)" />
+                @if (form.get('datos_extra.peso_nacimiento')?.errors?.['peso']; as msg) {
+                  <small class="field-error">{{ msg }}</small>
+                }
+              </div>
+              <div class="field">
+                <span class="field-label">Edad gestacional <small>(semanas)</small></span>
+                <input class="field-input" type="text" formControlName="edad_gestacional" soloNumero placeholder="Ej: 40" autocomplete="off" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <span class="field-label">Hora de nacimiento</span>
+                <input class="field-input" type="time" formControlName="hora_nacimiento" />
+              </div>
+              <div class="field"></div>
+            </div>
+            <div class="field field-full">
+              <span class="field-label">Tipo de parto</span>
+              <div class="chips-row">
+                @for (opt of opcionesTipoParto; track opt) {
+                  <span class="chip chip-block" [class.on]="form.get('datos_extra.tipo_parto')?.value === opt.valor" (click)="setTipoParto(opt.valor)">
+                    {{ opt.label }}
+                  </span>
+                }
+              </div>
+            </div>
+            <div class="field field-full">
+              <span class="field-label">Clase de parto</span>
+              <div class="chips-row">
+                @for (opt of opcionesClaseParto; track opt) {
+                  <span class="chip chip-block" [class.on]="form.get('datos_extra.clase_parto')?.value === opt.valor" (click)="setClaseParto(opt.valor)">
+                    {{ opt.label }}
+                  </span>
+                }
+              </div>
+            </div>
+            <div class="field field-full">
+              <span class="field-label">Extrahospitalario</span>
+              <div class="chips-row">
+                @for (opt of opcionesExtra; track opt) {
+                  <span class="chip chip-block chip-sm" [class.on]="form.get('datos_extra.extrahospitalario')?.value === opt.valor" (click)="setExtrahospitalario(opt.valor)">
+                    {{ opt.label }}
+                  </span>
+                }
+              </div>
+            </div>
+            <div class="field field-full">
+              <span class="field-label">Médico que atendió el parto</span>
+              <select class="field-input" formControlName="id_medico">
+                <option [ngValue]="null">— Seleccione un médico —</option>
+                @for (m of medicos; track m.id) {
+                  <option [ngValue]="m.id">{{ m.nombre }}@if (m.especialidad) { — {{ m.especialidad }} }</option>
+                }
+              </select>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- ── CHILDREN SUMMARY (solo múltiples) ── -->
+      @if (children.length > 0) {
+        <div class="section-card section-card--summary">
+          <div class="sec-head">
             <div class="sec-head-left">
-              <div class="sec-icon">
-                <svg
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  >
-                  <circle cx="8" cy="5" r="3" />
-                  <path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" />
-                </svg>
+              <div class="sec-icon sec-icon--lime">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
               </div>
-              <span class="sec-title">Datos Básicos</span>
+              <span class="sec-title">Registrados</span>
             </div>
-            <div style="display: flex; gap: 8px; align-items: center">
-              <span class="sec-badge">IDENTIFICACIÓN</span>
-              <span class="sec-toggle">{{ sections[0] ? "−" : "+" }}</span>
-            </div>
+            <span class="sec-badge sec-badge--lime">{{ children.length }} / {{ totalNacimientos() }}</span>
           </div>
-
-          @if (sections[0]) {
-            <div class="sec-body">
-              <!-- Sexo -->
-              <div class="field field-full">
-                <span class="field-label"
-                  >Sexo biológico <span class="req">*</span></span
-                  >
-                  <div class="chips-row">
-                    @for (opt of opcionesSexo; track opt) {
-                      <span
-                        class="chip chip-block"
-                        [class.on]="form.get('sexo')?.value === opt.valor"
-                        (click)="setSexo(opt.valor)"
-                        >
-                        {{ opt.label }}
-                      </span>
-                    }
-                  </div>
-                </div>
-                <!-- Fecha de nacimiento -->
-                <div class="field">
-                  <span class="field-label"
-                    >Fecha de nacimiento <span class="req">*</span></span
-                    >
-                    <input
-                      class="field-input"
-                      type="date"
-                      formControlName="fecha_nacimiento"
-                      />
-                  </div>
-                  <!-- Hora de nacimiento -->
-                  <div class="field" formGroupName="datos_extra">
-                    <span class="field-label">Hora de nacimiento</span>
-                    <input
-                      class="field-input"
-                      type="time"
-                      formControlName="hora_nacimiento"
-                      />
-                  </div>
-                  <!-- Estado vital -->
-                  <div class="field field-full">
-                    <span class="field-label">Estado del paciente</span>
-                    <div class="chips-row">
-                      @for (opt of opcionesEstado; track opt) {
-                        <span
-                          class="chip chip-block"
-                          [class.on]="form.get('estado')?.value === opt.valor"
-                          (click)="setEstado(opt.valor)"
-                          >
-                          {{ opt.label }}
-                        </span>
-                      }
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
-            <!-- /S1 -->
-
-            <!-- ══════════════════════════════════════════════════════ -->
-            <!-- S2 · DATOS DEL PARTO                                   -->
-            <!-- ══════════════════════════════════════════════════════ -->
-            <div class="section-card" id="sec-1">
-              <div class="sec-head" (click)="toggleSection(1)">
-                <div class="sec-head-left">
-                  <div class="sec-icon">
-                    <svg
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      >
-                      <circle cx="8" cy="8" r="5" />
-                      <path d="M8 5v3l2 2" />
-                    </svg>
-                  </div>
-                  <span class="sec-title">Datos del Parto</span>
-                </div>
-                <div style="display: flex; gap: 8px; align-items: center">
-                  <span class="sec-badge">NEONATALES</span>
-                  <span class="sec-toggle">{{ sections[1] ? "−" : "+" }}</span>
-                </div>
-              </div>
-
-              @if (sections[1]) {
-                <div class="sec-body" formGroupName="datos_extra">
-                  <!-- Peso al nacer -->
-                  <div class="field">
-                    <span class="field-label">Peso al nacer (libras.onzas)</span>
-                    <input
-                      class="field-input"
-                      type="text"
-                      formControlName="peso_nacimiento"
-                      placeholder="Ej: 3.08"
-                      autocomplete="off"
-                      (input)="onPesoInput($event)"
-                      />
-                    @if (form.get('datos_extra.peso_nacimiento')?.errors?.['peso']; as msg) {
-                      <small class="text-danger">{{ msg }}</small>
-                    }
-                  </div>
-                  <!-- Edad gestacional -->
-                  <div class="field">
-                    <span class="field-label">Edad gestacional (semanas)</span>
-                    <input
-                      class="field-input"
-                      type="text"
-                      formControlName="edad_gestacional"
-                      soloNumero
-                      placeholder="Ej: 40"
-                      autocomplete="off"
-                      />
-                  </div>
-                  <!-- ✅ TIPO DE PARTO: Simple, Múltiple -->
-                  <div class="field field-full">
-                    <span class="field-label">Tipo de parto</span>
-                    <div class="chips-row">
-                      @for (opt of opcionesTipoParto; track opt) {
-                        <span
-                          class="chip chip-block chip-lg"
-              [class.on]="
-                form.get('datos_extra.tipo_parto')?.value === opt.valor
-              "
-                          (click)="setTipoParto(opt.valor)"
-                          >
-                          {{ opt.label }}
-                        </span>
-                      }
-                    </div>
-                  </div>
-                  <!-- ✅ CLASE DE PARTO: Eutócico, Distócico -->
-                  <div class="field field-full">
-                    <span class="field-label">Clase de parto</span>
-                    <div class="chips-row">
-                      @for (opt of opcionesClaseParto; track opt) {
-                        <span
-                          class="chip chip-block chip-lg"
-              [class.on]="
-                form.get('datos_extra.clase_parto')?.value === opt.valor
-              "
-                          (click)="setClaseParto(opt.valor)"
-                          >
-                          {{ opt.label }}
-                        </span>
-                      }
-                    </div>
-                  </div>
-                  <!-- Médico que atendió el parto -->
-                  <div class="field field-full">
-                    <span class="field-label">Médico que atendió el parto</span>
-                    <select class="field-input" formControlName="id_medico">
-                      <option [ngValue]="null">Seleccione un médico</option>
-                      @for (m of medicos; track m.id) {
-                        <option [ngValue]="m.id">
-                          {{ m.nombre }}{{ m.especialidad ? ' — ' + m.especialidad : '' }}
-                        </option>
-                      }
-                    </select>
-                  </div>
-                  <div class="divider"></div>
-                </div>
-              }
-            </div>
-            <!-- /S2 -->
-          </div>
-          <!-- /main-body -->
-
-          <!-- ══════════════════════════════════════════════════════ -->
-          <!-- DOCK DE ACCIONES                                       -->
-          <!-- ══════════════════════════════════════════════════════ -->
-          <div class="action-dock">
-            <span class="dock-hint"
-              >Nuevo registro · hijo de paciente #{{ pacienteId }}
-              @if (
-                form.get('datos_extra.tipo_parto')?.value === 'Multiple' &&
-                totalNacimientos() > 1
-                ) {
-                <span
-                  >
-                  (Nacimiento {{ nacimientoActual() }}/{{ totalNacimientos() }})
+          <div class="sec-body single">
+            @for (child of children; track $index) {
+              <div class="child-chip">
+                <span class="child-sexo">{{ child.sexo === 'M' ? '♂' : '♀' }}</span>
+                <span class="child-detalle">
+                  @if (child.datos_extra.peso_nacimiento) { {{ child.datos_extra.peso_nacimiento }} lb · }
+                  @if (child.datos_extra.hora_nacimiento) { {{ child.datos_extra.hora_nacimiento }} }
                 </span>
-              }
-            </span>
-
-            <button
-              type="button"
-              class="btn-dock btn-dock-cancel"
-              (click)="volver()"
-              [disabled]="isLoading()"
-              >
-              <span [innerHTML]="cancelIcon"></span> Cancelar
-            </button>
-
-            <button
-              type="submit"
-              class="btn-dock btn-dock-save"
-              [disabled]="isLoading()"
-              >
-              <span [innerHTML]="saveIcon"></span>
-              @if (
-                form.get("datos_extra.tipo_parto")?.value === "Multiple" &&
-                totalNacimientos() > 1 &&
-                nacimientoActual() < totalNacimientos()
-                ) {
-                {{ isLoading() ? "Guardando…" : "Guardar y Siguiente" }}
-              } @else {
-                {{ isLoading() ? "Guardando…" : "Registrar Hijo(s)" }}
-              }
-            </button>
+                <span class="child-num">#{{ $index + 1 }}</span>
+              </div>
+            }
           </div>
-        </form>
+        </div>
+      }
+    </div>
+
+    <!-- ═══════════ ACTION DOCK ═══════════ -->
+    <div class="action-dock">
+      <span class="dock-hint">
+        👩 Madre #{{ pacienteId }}
+        @if (esMultiple && totalNacimientos() > 1) {
+          · {{ nacimientoActual() }}/{{ totalNacimientos() }}
+        }
+      </span>
+      <button type="button" class="btn-dock btn-dock--cancel" (click)="volver()" [disabled]="isLoading()">
+        ✕ Cancelar
+      </button>
+      <button type="submit" class="btn-dock btn-dock--save" [disabled]="isLoading()">
+        @if (esMultiple && nacimientoActual() < totalNacimientos()) {
+          {{ isLoading() ? '⏳' : '→' }} Guardar y Siguiente
+        } @else {
+          {{ isLoading() ? '⏳' : '✓' }} Registrar
+        }
+      </button>
+    </div>
+
+  </form>
+</div>

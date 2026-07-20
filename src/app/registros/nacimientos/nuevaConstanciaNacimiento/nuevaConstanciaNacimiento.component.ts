@@ -210,13 +210,23 @@ export class NuevaConstanciaNacimientoComponent implements OnInit, OnDestroy {
           this.mostrarError('crear constancia', err);
           return of(null);
         }),
-        finalize(() => this.isLoading.set(false)),
         takeUntil(this.destroy$)
       )
       .subscribe(res => {
-        if (!res) return;
-        this.guardadoOk.set(true);
-        this.router.navigate(['/nacimientos']);
+        if (!res?.id) return;
+        const id = res.id;
+        this.api.updateEstadoInforme(id, 'creado').pipe(
+          catchError(err => {
+            console.error('Error al establecer estado inicial:', err);
+            return of(null);
+          }),
+          finalize(() => {
+            this.isLoading.set(false);
+            this.guardadoOk.set(true);
+            this.router.navigate(['/nacimientos']);
+          }),
+          takeUntil(this.destroy$)
+        ).subscribe();
       });
   }
 
