@@ -24,7 +24,7 @@
           [class.active]="currentStep() === i"
           [class.done]="step.done"
           (click)="goToStep(i)"
-          >
+        >
           <div class="prog-dot">
             @if (step.done) {
               ✓
@@ -58,14 +58,14 @@
     [formGroup]="form"
     (ngSubmit)="guardar()"
     [class.opacity-50]="isLoading()"
-    >
+  >
     <!-- Honeypot -->
     <input type="text" name="fakeusernameremembered" style="display: none" />
     <input
       type="password"
       name="fakepasswordremembered"
       style="display: none"
-      />
+    />
 
     <div class="main-body">
       <!-- ======================================== -->
@@ -90,7 +90,7 @@
                 mask="0000 00000 0000"
                 (paste)="onPasteCUI($event)"
                 autofocus
-                />
+              />
               @if (form.get("cui")?.errors?.["validarDPI"]) {
                 <span class="text-error">
                   Faltan
@@ -122,7 +122,7 @@
                   formControlName="expediente"
                   placeholder="Número de expediente"
                   autocomplete="off"
-                  />
+                />
               </div>
 
               @if (sections[0]) {
@@ -133,693 +133,691 @@
                       <div class="field">
                         <span class="field-label"
                           >¿Qué hacemos con el expediente?</span
+                        >
+                        <div class="chips-row">
+                          <span
+                            class="chip chip-block"
+                            [class.on]="accionExpediente() === 'mantener'"
+                            (click)="accionExpediente.set('mantener')"
+                            >🔒 Mantener</span
                           >
-                          <div class="chips-row">
-                            <span
-                              class="chip chip-block"
-                              [class.on]="accionExpediente() === 'mantener'"
-                              (click)="accionExpediente.set('mantener')"
-                              >🔒 Mantener</span
-                              >
-                              <span
-                                class="chip chip-block"
-                                [class.on]="accionExpediente() === 'sobrescribir'"
-                                (click)="accionExpediente.set('sobrescribir')"
-                                >♻ Sobrescribir</span
-                                >
-                              </div>
-                            </div>
-                          }
+                          <span
+                            class="chip chip-block"
+                            [class.on]="accionExpediente() === 'sobrescribir'"
+                            (click)="accionExpediente.set('sobrescribir')"
+                            >♻ Sobrescribir</span
+                          >
                         </div>
                       </div>
                     }
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ======================================== -->
+      <!-- STEP 1: NOMBRE COMPLETO                  -->
+      <!-- ======================================== -->
+      @if (currentStep() === 1) {
+        <div class="step-card" formGroupName="nombre">
+          <div class="step-head">
+            <div class="step-number">02</div>
+            <span class="step-title">Nombre Completo</span>
+          </div>
+
+          <div class="step-body">
+            <div class="row-3">
+              <div class="field">
+                <span class="field-label"
+                  >Primer nombre <span class="req">*</span></span
+                >
+                <input
+                  class="field-input"
+                  formControlName="primer_nombre"
+                  placeholder="Ej: Juan"
+                  unaPalabra
+                  [permitirEspacios]="false"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="field">
+                <span class="field-label">Segundo nombre</span>
+                <input
+                  class="field-input"
+                  formControlName="segundo_nombre"
+                  placeholder="Ej: Carlos"
+                  unaPalabra
+                  [permitirEspacios]="true"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="field">
+                <span class="field-label">Otro nombre</span>
+                <input
+                  class="field-input"
+                  formControlName="otro_nombre"
+                  placeholder="Ej: de Jesús"
+                  unaPalabra
+                  [permitirEspacios]="true"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <div class="row-3">
+              <div class="field">
+                <span class="field-label"
+                  >Primer apellido <span class="req">*</span></span
+                >
+                <input
+                  class="field-input"
+                  formControlName="primer_apellido"
+                  placeholder="Ej: Pérez"
+                  unaPalabra
+                  [permitirEspacios]="true"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="field">
+                <span class="field-label">Segundo apellido</span>
+                <input
+                  class="field-input"
+                  formControlName="segundo_apellido"
+                  placeholder="Ej: García"
+                  unaPalabra
+                  [permitirEspacios]="true"
+                  autocomplete="off"
+                />
+              </div>
+              @if (form.get("sexo")?.value === "F") {
+                <div class="field">
+                  <span class="field-label">Apellido de casada</span>
+                  <input
+                    class="field-input"
+                    formControlName="apellido_casada"
+                    placeholder="NO AGREGAR  de "
+                    unaPalabra
+                    [permitirEspacios]="false"
+                    autocomplete="off"
+                  />
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ======================================== -->
+      <!-- STEP 2: DATOS BÁSICOS                    -->
+      <!-- ======================================== -->
+      @if (currentStep() === 2) {
+        <div class="step-card">
+          <div class="step-head">
+            <div class="step-number">03</div>
+            <span class="step-title">Información Básica</span>
+          </div>
+
+          <div class="step-body">
+            <!-- Sexo -->
+            <div class="field">
+              <span class="field-label"
+                >Sexo biológico <span class="req">*</span></span
+              >
+              <div class="chips-row">
+                <span
+                  class="chip chip-lg"
+                  [class.on]="form.get('sexo')?.value === 'M'"
+                  (click)="form.get('sexo')?.setValue('M')"
+                  >♂ Masculino</span
+                >
+                <span
+                  class="chip chip-lg"
+                  [class.on]="form.get('sexo')?.value === 'F'"
+                  (click)="form.get('sexo')?.setValue('F')"
+                  >♀ Femenino</span
+                >
+              </div>
+            </div>
+
+            <!-- Estado vital -->
+            <div class="field">
+              <span class="field-label">Estado del paciente</span>
+              <div class="chips-row">
+                <span
+                  class="chip chip-lg"
+                  [class.on-green]="form.get('estado')?.value === 'V'"
+                  (click)="form.get('estado')?.setValue('V')"
+                  >● Vivo</span
+                >
+                <span
+                  class="chip chip-lg"
+                  [class.on-red]="form.get('estado')?.value === 'F'"
+                  (click)="form.get('estado')?.setValue('F')"
+                  >● Fallecido</span
+                >
+              </div>
+            </div>
+
+            <!-- Fecha nacimiento + edad -->
+            <div class="row-2">
+              <div class="field">
+                <span class="field-label">Fecha de nacimiento</span>
+                <input
+                  class="field-input"
+                  type="date"
+                  formControlName="fecha_nacimiento"
+                  [class.is-null]="!form.get('fecha_nacimiento')?.value"
+                />
+              </div>
+
+              <div class="field" formGroupName="edad">
+                <span class="field-label">Edad calculada</span>
+                <div class="edad-group">
+                  <input
+                    class="edad-input"
+                    type="number"
+                    formControlName="anios"
+                    placeholder="Años"
+                    min="0"
+                  />
+                  <input
+                    class="edad-input"
+                    type="number"
+                    formControlName="meses"
+                    placeholder="Meses"
+                    min="0"
+                    max="11"
+                  />
+                  <input
+                    class="edad-input"
+                    type="number"
+                    formControlName="dias"
+                    placeholder="Días"
+                    min="0"
+                    max="30"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Defunción -->
+            @if (form.get("estado")?.value === "F") {
+              <div class="field" formGroupName="datos_extra">
+                <span class="field-label">Fecha y hora de defunción</span>
+                <input
+                  class="field-input"
+                  type="datetime-local"
+                  formControlName="defuncion"
+                />
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ======================================== -->
+      <!-- STEP 3: CONTACTO                         -->
+      <!-- ======================================== -->
+      @if (currentStep() === 3) {
+        <div class="step-card" formGroupName="contacto">
+          <div class="step-head">
+            <div class="step-number">04</div>
+            <span class="step-title">Contacto</span>
+          </div>
+
+          <div class="step-body">
+            <div class="row-2">
+              <div class="field">
+                <span class="field-label">Teléfonos</span>
+                <input
+                  class="field-input"
+                  type="tel"
+                  formControlName="telefonos"
+                  placeholder="55551234  44449999"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="field">
+                <span class="field-label">Correo electrónico</span>
+                <input
+                  class="field-input"
+                  type="email"
+                  formControlName="email"
+                  placeholder="correo@ejemplo.com"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <div class="row-2">
+              <div class="field">
+                <span class="field-label">Departamento</span>
+                <select
+                  class="field-input"
+                  formControlName="departamento"
+                  (change)="onDeptoChange($event)"
+                >
+                  <option value="">— Seleccione —</option>
+                  @for (dep of enums.departamentos; track dep.value) {
+                    <option [value]="dep.value">{{ dep.label }}</option>
                   }
+                </select>
+              </div>
+              <div class="field">
+                <span class="field-label">Municipio</span>
+                <select class="field-input" formControlName="municipio">
+                  <option value="">— Seleccione —</option>
+                  @for (mun of municipios_direccion(); track mun.codigo) {
+                    <option [value]="mun.codigo">{{ mun.vecindad }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="field-label">Dirección de domicilio</span>
+              <textarea
+                class="field-input"
+                formControlName="domicilio"
+                placeholder="Calle, zona, colonia…"
+                autocomplete="off"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ======================================== -->
+      <!-- STEP 4: REFERENCIAS                      -->
+      <!-- ======================================== -->
+      @if (currentStep() === 4) {
+        <div class="step-card">
+          <div class="step-head">
+            <div class="step-number">05</div>
+            <span class="step-title">Referencias / Parientes</span>
+          </div>
+
+          <div class="step-body" formArrayName="referencias">
+            @for (ref of referencias.controls; track i; let i = $index) {
+              <div [formGroupName]="i" class="referencia-card">
+                <!-- HEADER -->
+                <div class="referencia-header">
+                  <span class="referencia-titulo">
+                    Referencia {{ (i + 1).toString().padStart(2, "0") }}
+
+                    @if (ref.get("responsable")?.value) {
+                      <span class="badge-responsable">★ Responsable</span>
+                    }
+
+                    @if (ref.get("acompanante")?.value) {
+                      <span class="badge-acompanante">✦ Acompañante</span>
+                    }
+                  </span>
+
+                  <div class="referencia-checks">
+                    <label class="check-label">
+                      <input
+                        type="checkbox"
+                        formControlName="responsable"
+                        (change)="marcarComoResponsable(i)"
+                      />
+                      Responsable
+                    </label>
+
+                    <label class="check-label">
+                      <input
+                        type="checkbox"
+                        formControlName="acompanante"
+                        (change)="marcarComoAcompanante(i)"
+                      />
+                      Acompañante
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Campos -->
+                <div class="row-2">
+                  <div class="field">
+                    <span class="field-label">Nombre</span>
+                    <input
+                      class="field-input"
+                      type="text"
+                      formControlName="nombre"
+                      placeholder="Nombre completo"
+                    />
+                  </div>
+
+                  <div class="field">
+                    <span class="field-label">Teléfono</span>
+                    <input
+                      class="field-input"
+                      type="tel"
+                      formControlName="telefono"
+                      placeholder="Teléfono de contacto"
+                    />
+                  </div>
+                </div>
+
+                <!-- Parentesco -->
+                <div class="field">
+                  <span class="field-label">Parentesco</span>
+
+                  <div class="chips-row">
+                    @for (p of enums.parentescos; track p.value) {
+                      <span
+                        class="chip"
+                        [class.on]="ref.get('parentesco')?.value === p.value"
+                        (click)="ref.get('parentesco')?.setValue(p.value)"
+                      >
+                        {{ p.label }}
+                      </span>
+                    }
+                  </div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="referencia-actions">
+                  <button
+                    type="button"
+                    class="btn-nav btn-delete"
+                    (click)="eliminarReferencia(i)"
+                    [disabled]="referencias.length === 1"
+                  >
+                    ✕ Eliminar
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn-nav"
+                    (click)="agregarReferencia()"
+                  >
+                    ＋ Agregar otra
+                  </button>
                 </div>
               </div>
             }
+          </div>
+        </div>
+      }
 
-            <!-- ======================================== -->
-            <!-- STEP 1: NOMBRE COMPLETO                  -->
-            <!-- ======================================== -->
-            @if (currentStep() === 1) {
-              <div class="step-card" formGroupName="nombre">
-                <div class="step-head">
-                  <div class="step-number">02</div>
-                  <span class="step-title">Nombre Completo</span>
-                </div>
+      <!-- ======================================== -->
+      <!-- STEP 5: DEMOGRAFÍA                       -->
+      <!-- ======================================== -->
+      @if (currentStep() === 5) {
+        <div class="step-card" formGroupName="datos_extra">
+          <div class="step-head">
+            <div class="step-number">06</div>
+            <span class="step-title">Demografía</span>
+          </div>
 
-                <div class="step-body">
-                  <div class="row-3">
-                    <div class="field">
-                      <span class="field-label"
-                        >Primer nombre <span class="req">*</span></span
-                        >
-                        <input
-                          class="field-input"
-                          formControlName="primer_nombre"
-                          placeholder="Ej: Juan"
-                          unaPalabra
-                          [permitirEspacios]="false"
-                          autocomplete="off"
-                          />
-                      </div>
-                      <div class="field">
-                        <span class="field-label">Segundo nombre</span>
-                        <input
-                          class="field-input"
-                          formControlName="segundo_nombre"
-                          placeholder="Ej: Carlos"
-                          unaPalabra
-                          [permitirEspacios]="true"
-                          autocomplete="off"
-                          />
-                      </div>
-                      <div class="field">
-                        <span class="field-label">Otro nombre</span>
-                        <input
-                          class="field-input"
-                          formControlName="otro_nombre"
-                          placeholder="Ej: de Jesús"
-                          unaPalabra
-                          [permitirEspacios]="true"
-                          autocomplete="off"
-                          />
-                      </div>
-                    </div>
-
-                    <div class="row-3">
-                      <div class="field">
-                        <span class="field-label"
-                          >Primer apellido <span class="req">*</span></span
-                          >
-                          <input
-                            class="field-input"
-                            formControlName="primer_apellido"
-                            placeholder="Ej: Pérez"
-                            unaPalabra
-                            [permitirEspacios]="true"
-                            autocomplete="off"
-                            />
-                        </div>
-                        <div class="field">
-                          <span class="field-label">Segundo apellido</span>
-                          <input
-                            class="field-input"
-                            formControlName="segundo_apellido"
-                            placeholder="Ej: García"
-                            unaPalabra
-                            [permitirEspacios]="true"
-                            autocomplete="off"
-                            />
-                        </div>
-                        @if (form.get("sexo")?.value === "F") {
-                          <div class="field">
-                            <span class="field-label">Apellido de casada</span>
-                            <input
-                              class="field-input"
-                              formControlName="apellido_casada"
-                              placeholder="NO AGREGAR  de "
-                              unaPalabra
-                              [permitirEspacios]="false"
-                              autocomplete="off"
-                              />
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  </div>
-                }
-
-                <!-- ======================================== -->
-                <!-- STEP 2: DATOS BÁSICOS                    -->
-                <!-- ======================================== -->
-                @if (currentStep() === 2) {
-                  <div class="step-card">
-                    <div class="step-head">
-                      <div class="step-number">03</div>
-                      <span class="step-title">Información Básica</span>
-                    </div>
-
-                    <div class="step-body">
-                      <!-- Sexo -->
-                      <div class="field">
-                        <span class="field-label"
-                          >Sexo biológico <span class="req">*</span></span
-                          >
-                          <div class="chips-row">
-                            <span
-                              class="chip chip-lg"
-                              [class.on]="form.get('sexo')?.value === 'M'"
-                              (click)="form.get('sexo')?.setValue('M')"
-                              >♂ Masculino</span
-                              >
-                              <span
-                                class="chip chip-lg"
-                                [class.on]="form.get('sexo')?.value === 'F'"
-                                (click)="form.get('sexo')?.setValue('F')"
-                                >♀ Femenino</span
-                                >
-                              </div>
-                            </div>
-
-                            <!-- Estado vital -->
-                            <div class="field">
-                              <span class="field-label">Estado del paciente</span>
-                              <div class="chips-row">
-                                <span
-                                  class="chip chip-lg"
-                                  [class.on-green]="form.get('estado')?.value === 'V'"
-                                  (click)="form.get('estado')?.setValue('V')"
-                                  >● Vivo</span
-                                  >
-                                  <span
-                                    class="chip chip-lg"
-                                    [class.on-red]="form.get('estado')?.value === 'F'"
-                                    (click)="form.get('estado')?.setValue('F')"
-                                    >● Fallecido</span
-                                    >
-                                  </div>
-                                </div>
-
-                                <!-- Fecha nacimiento + edad -->
-                                <div class="row-2">
-                                  <div class="field">
-                                    <span class="field-label">Fecha de nacimiento</span>
-                                    <input
-                                      class="field-input"
-                                      type="date"
-                                      formControlName="fecha_nacimiento"
-                                      [class.is-null]="!form.get('fecha_nacimiento')?.value"
-                                      />
-                                  </div>
-
-                                  <div class="field" formGroupName="edad">
-                                    <span class="field-label">Edad calculada</span>
-                                    <div class="edad-group">
-                                      <input
-                                        class="edad-input"
-                                        type="number"
-                                        formControlName="anios"
-                                        placeholder="Años"
-                                        min="0"
-                                        />
-                                      <input
-                                        class="edad-input"
-                                        type="number"
-                                        formControlName="meses"
-                                        placeholder="Meses"
-                                        min="0"
-                                        max="11"
-                                        />
-                                      <input
-                                        class="edad-input"
-                                        type="number"
-                                        formControlName="dias"
-                                        placeholder="Días"
-                                        min="0"
-                                        max="30"
-                                        />
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <!-- Defunción -->
-                                @if (form.get("estado")?.value === "F") {
-                                  <div class="field" formGroupName="datos_extra">
-                                    <span class="field-label">Fecha y hora de defunción</span>
-                                    <input
-                                      class="field-input"
-                                      type="datetime-local"
-                                      formControlName="defuncion"
-                                      />
-                                  </div>
-                                }
-                              </div>
-                            </div>
-                          }
-
-                          <!-- ======================================== -->
-                          <!-- STEP 3: CONTACTO                         -->
-                          <!-- ======================================== -->
-                          @if (currentStep() === 3) {
-                            <div class="step-card" formGroupName="contacto">
-                              <div class="step-head">
-                                <div class="step-number">04</div>
-                                <span class="step-title">Contacto</span>
-                              </div>
-
-                              <div class="step-body">
-                                <div class="row-2">
-                                  <div class="field">
-                                    <span class="field-label">Teléfonos</span>
-                                    <input
-                                      class="field-input"
-                                      type="tel"
-                                      formControlName="telefonos"
-                                      placeholder="55551234  44449999"
-                                      autocomplete="off"
-                                      />
-                                  </div>
-                                  <div class="field">
-                                    <span class="field-label">Correo electrónico</span>
-                                    <input
-                                      class="field-input"
-                                      type="email"
-                                      formControlName="email"
-                                      placeholder="correo@ejemplo.com"
-                                      autocomplete="off"
-                                      />
-                                  </div>
-                                </div>
-
-                                <div class="row-2">
-                                  <div class="field">
-                                    <span class="field-label">Departamento</span>
-                                    <select
-                                      class="field-input"
-                                      formControlName="departamento"
-                                      (change)="onDeptoChange($event)"
-                                      >
-                                      <option value="">— Seleccione —</option>
-                                      @for (dep of enums.departamentos; track dep.value) {
-                                        <option [value]="dep.value">{{ dep.label }}</option>
-                                      }
-                                    </select>
-                                  </div>
-                                  <div class="field">
-                                    <span class="field-label">Municipio</span>
-                                    <select class="field-input" formControlName="municipio">
-                                      <option value="">— Seleccione —</option>
-                                      @for (mun of municipios_direccion(); track mun.codigo) {
-                                        <option [value]="mun.codigo">{{ mun.vecindad }}</option>
-                                      }
-                                    </select>
-                                  </div>
-                                </div>
-
-                                <div class="field">
-                                  <span class="field-label">Dirección de domicilio</span>
-                                  <textarea
-                                    class="field-input"
-                                    formControlName="domicilio"
-                                    placeholder="Calle, zona, colonia…"
-                                    autocomplete="off"
-                                  ></textarea>
-                                </div>
-                              </div>
-                            </div>
-                          }
-
-                          <!-- ======================================== -->
-                          <!-- STEP 4: REFERENCIAS                      -->
-                          <!-- ======================================== -->
-                          @if (currentStep() === 4) {
-                            <div class="step-card">
-                              <div class="step-head">
-                                <div class="step-number">05</div>
-                                <span class="step-title">Referencias / Parientes</span>
-                              </div>
-
-                              <div class="step-body" formArrayName="referencias">
-                                @for (ref of referencias.controls; track i; let i = $index) {
-                                  <div [formGroupName]="i" class="referencia-card">
-                                    <!-- HEADER -->
-                                    <div class="referencia-header">
-                                      <span class="referencia-titulo">
-                                        Referencia {{ (i + 1).toString().padStart(2, "0") }}
-
-                                        @if (ref.get("responsable")?.value) {
-                                          <span class="badge-responsable">★ Responsable</span>
-                                        }
-
-                                        @if (ref.get("acompanante")?.value) {
-                                          <span class="badge-acompanante">✦ Acompañante</span>
-                                        }
-                                      </span>
-
-                                      <div class="referencia-checks">
-                                        <label class="check-label">
-                                          <input
-                                            type="checkbox"
-                                            formControlName="responsable"
-                                            (change)="marcarComoResponsable(i)"
-                                            />
-                                          Responsable
-                                        </label>
-
-                                        <label class="check-label">
-                                          <input
-                                            type="checkbox"
-                                            formControlName="acompanante"
-                                            (change)="marcarComoAcompanante(i)"
-                                            />
-                                          Acompañante
-                                        </label>
-                                      </div>
-                                    </div>
-
-                                    <!-- Campos -->
-                                    <div class="row-2">
-                                      <div class="field">
-                                        <span class="field-label">Nombre</span>
-                                        <input
-                                          class="field-input"
-                                          type="text"
-                                          formControlName="nombre"
-                                          placeholder="Nombre completo"
-                                          />
-                                      </div>
-
-                                      <div class="field">
-                                        <span class="field-label">Teléfono</span>
-                                        <input
-                                          class="field-input"
-                                          type="tel"
-                                          formControlName="telefono"
-                                          placeholder="Teléfono de contacto"
-                                          />
-                                      </div>
-                                    </div>
-
-                                    <!-- Parentesco -->
-                                    <div class="field">
-                                      <span class="field-label">Parentesco</span>
-
-                                      <div class="chips-row">
-                                        @for (p of enums.parentescos; track p.value) {
-                                          <span
-                                            class="chip"
-                                            [class.on]="ref.get('parentesco')?.value === p.value"
-                                            (click)="ref.get('parentesco')?.setValue(p.value)"
-                                            >
-                                            {{ p.label }}
-                                          </span>
-                                        }
-                                      </div>
-                                    </div>
-
-                                    <!-- Acciones -->
-                                    <div class="referencia-actions">
-                                      <button
-                                        type="button"
-                                        class="btn-nav btn-delete"
-                                        (click)="eliminarReferencia(i)"
-                                        [disabled]="referencias.length === 1"
-                                        >
-                                        ✕ Eliminar
-                                      </button>
-
-                                      <button
-                                        type="button"
-                                        class="btn-nav"
-                                        (click)="agregarReferencia()"
-                                        >
-                                        ＋ Agregar otra
-                                      </button>
-                                    </div>
-                                  </div>
-                                }
-                              </div>
-                            </div>
-                          }
-
-                          <!-- ======================================== -->
-                          <!-- STEP 5: DEMOGRAFÍA                       -->
-                          <!-- ======================================== -->
-                          @if (currentStep() === 5) {
-                            <div class="step-card" formGroupName="datos_extra">
-                              <div class="step-head">
-                                <div class="step-number">06</div>
-                                <span class="step-title">Demografía</span>
-                              </div>
-
-                              <div class="step-body" formGroupName="demograficos">
-                                <div class="row-3">
-                                  <div class="field">
-                                    <span class="field-label">Nacionalidad</span>
-                                    <select
-                                      class="field-input"
-                                      formControlName="nacionalidad"
+          <div class="step-body" formGroupName="demograficos">
+            <div class="row-3">
+              <div class="field">
+                <span class="field-label">Nacionalidad</span>
+                <select
+                  class="field-input"
+                  formControlName="nacionalidad"
                   [class.is-null]="
                     !form.get('datos_extra.demograficos.nacionalidad')?.value
                   "
-                                      >
-                                      <option value="">— Seleccione —</option>
-                                      @for (n of paisesIso(); track n.codigo_iso3) {
-                                        <option [value]="n.codigo_iso3">{{ n.nombre }}</option>
-                                      }
-                                    </select>
-                                  </div>
-                                  <div class="field">
-                                    <span class="field-label">Pueblo</span>
-                                    <select class="field-input" formControlName="pueblo">
-                                      <option value="">— Seleccione —</option>
-                                      @for (p of enums.pueblos; track p.value) {
-                                        <option [value]="p.value">{{ p.label }}</option>
-                                      }
-                                    </select>
-                                  </div>
-                                  <div class="field">
-                                    <span class="field-label">Idioma</span>
-                                    <select class="field-input" formControlName="idioma">
-                                      <option value="">— Seleccione —</option>
-                                      @for (i of enums.idiomas; track i.value) {
-                                        <option [value]="i.value">{{ i.label }}</option>
-                                      }
-                                    </select>
-                                  </div>
-                                </div>
+                >
+                  <option value="">— Seleccione —</option>
+                  @for (n of paisesIso(); track n.codigo_iso3) {
+                    <option [value]="n.codigo_iso3">{{ n.nombre }}</option>
+                  }
+                </select>
+              </div>
+              <div class="field">
+                <span class="field-label">Pueblo</span>
+                <select class="field-input" formControlName="pueblo">
+                  <option value="">— Seleccione —</option>
+                  @for (p of enums.pueblos; track p.value) {
+                    <option [value]="p.value">{{ p.label }}</option>
+                  }
+                </select>
+              </div>
+              <div class="field">
+                <span class="field-label">Idioma</span>
+                <select class="field-input" formControlName="idioma">
+                  <option value="">— Seleccione —</option>
+                  @for (i of enums.idiomas; track i.value) {
+                    <option [value]="i.value">{{ i.label }}</option>
+                  }
+                </select>
+              </div>
+            </div>
 
-                                @if (
-                                  form.get("datos_extra.demograficos.nacionalidad")?.value &&
-                                  form.get("datos_extra.demograficos.nacionalidad")?.value !== "GTM"
-                                  ) {
-                                  <div class="field">
-                                    <span class="field-label">Pasaporte</span>
-                                    <input
-                                      class="field-input"
-                                      [formControl]="$any(form.get('pasaporte'))"
-                                      placeholder="Número de pasaporte"
-                                      />
-                                  </div>
-                                }
+            @if (
+              form.get("datos_extra.demograficos.nacionalidad")?.value &&
+              form.get("datos_extra.demograficos.nacionalidad")?.value !== "GTM"
+            ) {
+              <div class="field">
+                <span class="field-label">Pasaporte</span>
+                <input
+                  class="field-input"
+                  [formControl]="$any(form.get('pasaporte'))"
+                  placeholder="Número de pasaporte"
+                />
+              </div>
+            }
 
-                                @if (
-                                  form.get("datos_extra.demograficos.nacionalidad")?.value === "GTM"
-                                  ) {
-                                  <div class="row-2">
-                                    <div class="field">
-                                      <span class="field-label">Depto. de nacimiento</span>
-                                      <select
-                                        class="field-input"
-                                        formControlName="departamento_nacimiento"
-                                        >
-                                        <option value="">— Seleccione —</option>
-                                        @for (dep of enums.departamentos; track dep.value) {
-                                          <option [value]="dep.value">{{ dep.label }}</option>
-                                        }
-                                      </select>
-                                    </div>
-                                    <div class="field">
-                                      <span class="field-label">Municipio de nacimiento</span>
-                                      <select
-                                        class="field-input"
-                                        formControlName="lugar_nacimiento"
-                                        >
-                                        <option value="">— Seleccione —</option>
-                                        @for (mun of municipios_nacimiento(); track mun.codigo) {
-                                          <option [value]="mun.codigo">{{ mun.municipio }}</option>
-                                        }
-                                      </select>
-                                    </div>
-                                    <div class="field field-full">
-                                      <span class="field-label">Vecindado en</span>
-                                      <select class="field-input" formControlName="vecindad">
-                                        <option value="">— Seleccione —</option>
-                                        @for (v of enums.municipios; track v) {
-                                          <option
-                                            [value]="v.codigo"
-                                            >
-                                            {{ v.codigo }} — {{ v.departamento }}, {{ v.municipio }}
-                                          </option>
-                                        }
-                                      </select>
-                                    </div>
-                                  </div>
-                                }
-                              </div>
-                            </div>
-                          }
+            @if (
+              form.get("datos_extra.demograficos.nacionalidad")?.value === "GTM"
+            ) {
+              <div class="row-2">
+                <div class="field">
+                  <span class="field-label">Depto. de nacimiento</span>
+                  <select
+                    class="field-input"
+                    formControlName="departamento_nacimiento"
+                  >
+                    <option value="">— Seleccione —</option>
+                    @for (dep of enums.departamentos; track dep.value) {
+                      <option [value]="dep.value">{{ dep.label }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="field">
+                  <span class="field-label">Municipio de nacimiento</span>
+                  <select
+                    class="field-input"
+                    formControlName="lugar_nacimiento"
+                  >
+                    <option value="">— Seleccione —</option>
+                    @for (mun of municipios_nacimiento(); track mun.codigo) {
+                      <option [value]="mun.codigo">{{ mun.municipio }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="field field-full">
+                  <span class="field-label">Vecindado en</span>
+                  <select class="field-input" formControlName="vecindad">
+                    <option value="">— Seleccione —</option>
+                    @for (v of enums.municipios; track v) {
+                      <option [value]="v.codigo">
+                        {{ v.codigo }} — {{ v.departamento }}, {{ v.municipio }}
+                      </option>
+                    }
+                  </select>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
 
-                          <!-- ======================================== -->
-                          <!-- STEP 6: SOCIOECONÓMICO                   -->
-                          <!-- ======================================== -->
-                          @if (currentStep() === 6) {
-                            <div class="step-card" formGroupName="datos_extra">
-                              <div class="step-head">
-                                <div class="step-number">07</div>
-                                <span class="step-title">Socioeconómico</span>
-                              </div>
+      <!-- ======================================== -->
+      <!-- STEP 6: SOCIOECONÓMICO                   -->
+      <!-- ======================================== -->
+      @if (currentStep() === 6) {
+        <div class="step-card" formGroupName="datos_extra">
+          <div class="step-head">
+            <div class="step-number">07</div>
+            <span class="step-title">Socioeconómico</span>
+          </div>
 
-                              <div class="step-body" formGroupName="socioeconomicos">
-                                <div class="row-2">
-                                  <div class="field">
-                                    <span class="field-label">Estado civil</span>
-                                    <select class="field-input" formControlName="estado_civil">
-                                      <option value="">— Seleccione —</option>
-                                      @for (ec of enums.estadocivil; track ec.value) {
-                                        <option [value]="ec.value">{{ ec.label }}</option>
-                                      }
-                                    </select>
-                                  </div>
-                                  <div class="field">
-                                    <span class="field-label">Ocupación</span>
-                                    <input
-                                      class="field-input"
-                                      type="text"
-                                      formControlName="ocupacion"
-                                      placeholder="Ej: Agricultor, Comerciante…"
-                                      />
-                                  </div>
-                                </div>
+          <div class="step-body" formGroupName="socioeconomicos">
+            <div class="row-2">
+              <div class="field">
+                <span class="field-label">Estado civil</span>
+                <select class="field-input" formControlName="estado_civil">
+                  <option value="">— Seleccione —</option>
+                  @for (ec of enums.estadocivil; track ec.value) {
+                    <option [value]="ec.value">{{ ec.label }}</option>
+                  }
+                </select>
+              </div>
+              <div class="field">
+                <span class="field-label">Ocupación</span>
+                <input
+                  class="field-input"
+                  type="text"
+                  formControlName="ocupacion"
+                  placeholder="Ej: Agricultor, Comerciante…"
+                />
+              </div>
+            </div>
 
-                                <div class="field">
-                                  <span class="field-label">Nivel educativo</span>
-                                  <select class="field-input" formControlName="educacion">
-                                    <option value="">— Seleccione —</option>
-                                    @for (ne of enums.gradoacademico; track ne.value) {
-                                      <option [value]="ne.value">{{ ne.label }}</option>
-                                    }
-                                  </select>
-                                </div>
+            <div class="field">
+              <span class="field-label">Nivel educativo</span>
+              <select class="field-input" formControlName="educacion">
+                <option value="">— Seleccione —</option>
+                @for (ne of enums.gradoacademico; track ne.value) {
+                  <option [value]="ne.value">{{ ne.label }}</option>
+                }
+              </select>
+            </div>
 
-                                <!-- Chips SI/NO grandes -->
-                                <div class="row-3" style="margin-top: 0.5rem">
-                                  <div class="field">
-                                    <span class="field-label">Estudiante público</span>
-                                    <div class="chips-row">
-                                      <span
-                                        class="chip chip-lg"
+            <!-- Chips SI/NO grandes -->
+            <div class="row-3" style="margin-top: 0.5rem">
+              <div class="field">
+                <span class="field-label">Estudiante público</span>
+                <div class="chips-row">
+                  <span
+                    class="chip chip-lg"
                     [class.on-green]="
                       form.get('datos_extra.socioeconomicos.estudiante_publico')
                         ?.value === 'SI'
                     "
-                                        (click)="setSocio('estudiante_publico', 'SI')"
-                                        >✔ Sí</span
-                                        >
-                                        <span
-                                          class="chip chip-lg"
+                    (click)="setSocio('estudiante_publico', 'SI')"
+                    >✔ Sí</span
+                  >
+                  <span
+                    class="chip chip-lg"
                     [class.on-red]="
                       form.get('datos_extra.socioeconomicos.estudiante_publico')
                         ?.value === 'NO'
                     "
-                                          (click)="setSocio('estudiante_publico', 'NO')"
-                                          >✘ No</span
-                                          >
-                                        </div>
-                                      </div>
-                                      <div class="field">
-                                        <span class="field-label">Empleado público</span>
-                                        <div class="chips-row">
-                                          <span
-                                            class="chip chip-lg"
+                    (click)="setSocio('estudiante_publico', 'NO')"
+                    >✘ No</span
+                  >
+                </div>
+              </div>
+              <div class="field">
+                <span class="field-label">Personal de Hospital</span>
+                <div class="chips-row">
+                  <span
+                    class="chip chip-lg"
                     [class.on-green]="
                       form.get('datos_extra.socioeconomicos.empleado_publico')
                         ?.value === 'SI'
                     "
-                                            (click)="setSocio('empleado_publico', 'SI')"
-                                            >✔ Sí</span
-                                            >
-                                            <span
-                                              class="chip chip-lg"
+                    (click)="setSocio('empleado_publico', 'SI')"
+                    >✔ Sí</span
+                  >
+                  <span
+                    class="chip chip-lg"
                     [class.on-red]="
                       form.get('datos_extra.socioeconomicos.empleado_publico')
                         ?.value === 'NO'
                     "
-                                              (click)="setSocio('empleado_publico', 'NO')"
-                                              >✘ No</span
-                                              >
-                                            </div>
-                                          </div>
-                                          <div class="field">
-                                            <span class="field-label">Discapacidad</span>
-                                            <div class="chips-row">
-                                              <span
-                                                class="chip chip-lg"
+                    (click)="setSocio('empleado_publico', 'NO')"
+                    >✘ No</span
+                  >
+                </div>
+              </div>
+              <div class="field">
+                <span class="field-label">Discapacidad</span>
+                <div class="chips-row">
+                  <span
+                    class="chip chip-lg"
                     [class.on-green]="
                       form.get('datos_extra.socioeconomicos.discapacidad')
                         ?.value === 'SI'
                     "
-                                                (click)="setSocio('discapacidad', 'SI')"
-                                                >✔ Sí</span
-                                                >
-                                                <span
-                                                  class="chip chip-lg"
+                    (click)="setSocio('discapacidad', 'SI')"
+                    >✔ Sí</span
+                  >
+                  <span
+                    class="chip chip-lg"
                     [class.on-red]="
                       form.get('datos_extra.socioeconomicos.discapacidad')
                         ?.value === 'NO'
                     "
-                                                  (click)="setSocio('discapacidad', 'NO')"
-                                                  >✘ No</span
-                                                  >
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      }
+                    (click)="setSocio('discapacidad', 'NO')"
+                    >✘ No</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
 
-                                      <!-- ======================================== -->
-                                      <!-- STEP 7: NEONATALES (condicional)         -->
-                                      <!-- ======================================== -->
-                                      @if (esMenorDe1Anio || form.get("datos_extra.neonatales")?.value) {
-                                        @if (currentStep() === 7) {
-                                          <div class="step-card" formGroupName="datos_extra">
-                                            <div class="step-head">
-                                              <div class="step-number" style="background: #f59e0b">08</div>
-                                              <span class="step-title"
-                                                >Datos de Nacimiento — Recién Nacido</span
-                                                >
-                                              </div>
+      <!-- ======================================== -->
+      <!-- STEP 7: NEONATALES (condicional)         -->
+      <!-- ======================================== -->
+      @if (esMenorDe1Anio || form.get("datos_extra.neonatales")?.value) {
+        @if (currentStep() === 7) {
+          <div class="step-card" formGroupName="datos_extra">
+            <div class="step-head">
+              <div class="step-number" style="background: #f59e0b">08</div>
+              <span class="step-title"
+                >Datos de Nacimiento — Recién Nacido</span
+              >
+            </div>
 
-                                              <div class="step-body" formGroupName="neonatales">
-                                                <div class="row-3">
-                                                  <div class="field">
-                                                    <span class="field-label">Hora de nacimiento</span>
-                                                    <input
-                                                      class="field-input"
-                                                      type="time"
-                                                      formControlName="hora_nacimiento"
-                                                      step="60"
-                                                      />
-                                                  </div>
-                                                  <div class="field">
-                                                    <span class="field-label">Peso al nacer (lb.oz)</span>
-                                                    <input
-                                                      class="field-input"
-                                                      type="text"
-                                                      formControlName="peso_nacimiento"
-                                                      placeholder="Ej: 3.08"
-                                                      />
-                                                  </div>
-                                                  <div class="field">
-                                                    <span class="field-label">Edad gestacional (sem.)</span>
-                                                    <input
-                                                      class="field-input"
-                                                      type="text"
-                                                      formControlName="edad_gestacional"
-                                                      soloNumero
-                                                      placeholder="Ej: 40"
-                                                      />
-                                                  </div>
-                                                </div>
+            <div class="step-body" formGroupName="neonatales">
+              <div class="row-3">
+                <div class="field">
+                  <span class="field-label">Hora de nacimiento</span>
+                  <input
+                    class="field-input"
+                    type="time"
+                    formControlName="hora_nacimiento"
+                    step="60"
+                  />
+                </div>
+                <div class="field">
+                  <span class="field-label">Peso al nacer (lb.oz)</span>
+                  <input
+                    class="field-input"
+                    type="text"
+                    formControlName="peso_nacimiento"
+                    placeholder="Ej: 3.08"
+                  />
+                </div>
+                <div class="field">
+                  <span class="field-label">Edad gestacional (sem.)</span>
+                  <input
+                    class="field-input"
+                    type="text"
+                    formControlName="edad_gestacional"
+                    soloNumero
+                    placeholder="Ej: 40"
+                  />
+                </div>
+              </div>
 
-                                                <div class="row-2" style="margin-top: 0.5rem">
-                                                  <div class="field">
-                                                    <span class="field-label">Tipo de parto</span>
-                                                    <div class="chips-row">
-                                                      <span
-                                                        class="chip chip-lg"
+              <div class="row-2" style="margin-top: 0.5rem">
+                <div class="field">
+                  <span class="field-label">Tipo de parto</span>
+                  <div class="chips-row">
+                    <span
+                      class="chip chip-lg"
                       [class.on]="
                         form.get('datos_extra.neonatales.tipo_parto')?.value ===
                         'Simple'
@@ -829,10 +827,10 @@
                           .get('datos_extra.neonatales.tipo_parto')
                           ?.setValue('Simple')
                       "
-                                                        >Simple</span
-                                                        >
-                                                        <span
-                                                          class="chip chip-lg"
+                      >Simple</span
+                    >
+                    <span
+                      class="chip chip-lg"
                       [class.on]="
                         form.get('datos_extra.neonatales.tipo_parto')?.value ===
                         'Multiple'
@@ -842,15 +840,15 @@
                           .get('datos_extra.neonatales.tipo_parto')
                           ?.setValue('Multiple')
                       "
-                                                          >Múltiple</span
-                                                          >
-                                                        </div>
-                                                      </div>
-                                                      <div class="field">
-                                                        <span class="field-label">Clase de parto</span>
-                                                        <div class="chips-row">
-                                                          <span
-                                                            class="chip chip-lg"
+                      >Múltiple</span
+                    >
+                  </div>
+                </div>
+                <div class="field">
+                  <span class="field-label">Clase de parto</span>
+                  <div class="chips-row">
+                    <span
+                      class="chip chip-lg"
                       [class.on]="
                         form.get('datos_extra.neonatales.clase_parto')
                           ?.value === 'Pes'
@@ -860,10 +858,10 @@
                           .get('datos_extra.neonatales.clase_parto')
                           ?.setValue('Pes')
                       "
-                                                            >Vaginal</span
-                                                            >
-                                                            <span
-                                                              class="chip chip-lg"
+                      >Vaginal</span
+                    >
+                    <span
+                      class="chip chip-lg"
                       [class.on]="
                         form.get('datos_extra.neonatales.clase_parto')
                           ?.value === 'Cstp'
@@ -873,122 +871,156 @@
                           .get('datos_extra.neonatales.clase_parto')
                           ?.setValue('Cstp')
                       "
-                                                              >Cesárea</span
-                                                              >
-                                                             </div>
-                                                           </div>
-                                                         </div>
+                      >Cesárea</span
+                    >
+                  </div>
+                </div>
+              </div>
 
-                                                         <div class="row-2" style="margin-top: 0.5rem">
-                                                           <div class="field">
-                                                             <span class="field-label">Médico que atendió el parto</span>
-                                                              <select class="field-input" formControlName="id_medico">
-                                                                <option [ngValue]="null">Seleccione un médico</option>
-                                                                @for (m of medicos; track m.id) {
-                                                                  <option [ngValue]="m.id">{{ m.nombre }}{{ m.especialidad ? ' — ' + m.especialidad : '' }}</option>
-                                                                }
-                                                              </select>
-                                                           </div>
-                                                         </div>
-                                                       </div>
-                                                     </div>
-                                                    }
-                                                  }
+              <div class="row-2" style="margin-top: 0.5rem">
+                <div class="field">
+                  <span class="field-label">Médico que atendió el parto</span>
+                  <select class="field-input" formControlName="id_medico">
+                    <option [ngValue]="null">Seleccione un médico</option>
+                    @for (m of medicos; track m.id) {
+                      <option [ngValue]="m.id">
+                        {{ m.nombre
+                        }}{{ m.especialidad ? " — " + m.especialidad : "" }}
+                      </option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      }
 
-                                                  <!-- ======================================== -->
-                                                  <!-- STEP 7b: PARTOS (sexo F, sin neonatales) -->
-                                                  <!-- ======================================== -->
-                                                  @if (!esMenorDe1Anio && !form.get("datos_extra.neonatales")?.value && esMujerMayorDe12) {
-                                                    @if (currentStep() === 7) {
-                                                      <div class="step-card" formGroupName="datos_extra">
-                                                        <div class="step-head">
-                                                          <div class="step-number" style="background: #8b5cf6">08</div>
-                                                          <span class="step-title">Partos</span>
-                                                        </div>
-                                                        <div class="step-body" formGroupName="partos">
-                                                          <div class="row-2">
-                                                            <div class="field">
-                                                              <span class="field-label">Nacidos Vivos</span>
-                                                              <input class="field-input" type="number" formControlName="nacidos_vivos" min="0" placeholder="0" />
-                                                            </div>
-                                                            <div class="field">
-                                                              <span class="field-label">Nacidos Muertos</span>
-                                                              <input class="field-input" type="number" formControlName="nacidos_muertos" min="0" placeholder="0" />
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                    }
-                                                  }
+      <!-- ======================================== -->
+      <!-- STEP 7b: PARTOS (sexo F, sin neonatales) -->
+      <!-- ======================================== -->
+      @if (
+        !esMenorDe1Anio &&
+        !form.get("datos_extra.neonatales")?.value &&
+        esMujerMayorDe12
+      ) {
+        @if (currentStep() === 7) {
+          <div class="step-card" formGroupName="datos_extra">
+            <div class="step-head">
+              <div class="step-number" style="background: #8b5cf6">08</div>
+              <span class="step-title">Partos</span>
+            </div>
+            <div class="step-body" formGroupName="partos">
+              <div class="row-2">
+                <div class="field">
+                  <span class="field-label">Nacidos Vivos</span>
+                  <input
+                    class="field-input"
+                    type="number"
+                    formControlName="nacidos_vivos"
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
+                <div class="field">
+                  <span class="field-label">Nacidos Muertos</span>
+                  <input
+                    class="field-input"
+                    type="number"
+                    formControlName="nacidos_muertos"
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      }
 
-                                                  <!-- ======================================== -->
-                                                  <!-- STEP 8: PARTOS (sexo F, con neonatales)  -->
-                                                  <!-- ======================================== -->
-                                                  @if ((esMenorDe1Anio || form.get("datos_extra.neonatales")?.value) && esMujerMayorDe12) {
-                                                    @if (currentStep() === 8) {
-                                                      <div class="step-card" formGroupName="datos_extra">
-                                                        <div class="step-head">
-                                                          <div class="step-number" style="background: #8b5cf6">09</div>
-                                                          <span class="step-title">Partos</span>
-                                                        </div>
-                                                        <div class="step-body" formGroupName="partos">
-                                                          <div class="row-2">
-                                                            <div class="field">
-                                                              <span class="field-label">Nacidos Vivos</span>
-                                                              <input class="field-input" type="number" formControlName="nacidos_vivos" min="0" placeholder="0" />
-                                                            </div>
-                                                            <div class="field">
-                                                              <span class="field-label">Nacidos Muertos</span>
-                                                              <input class="field-input" type="number" formControlName="nacidos_muertos" min="0" placeholder="0" />
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                    }
-                                                  }
-                                                </div>
-                                                <!-- /main-body -->
+      <!-- ======================================== -->
+      <!-- STEP 8: PARTOS (sexo F, con neonatales)  -->
+      <!-- ======================================== -->
+      @if (
+        (esMenorDe1Anio || form.get("datos_extra.neonatales")?.value) &&
+        esMujerMayorDe12
+      ) {
+        @if (currentStep() === 8) {
+          <div class="step-card" formGroupName="datos_extra">
+            <div class="step-head">
+              <div class="step-number" style="background: #8b5cf6">09</div>
+              <span class="step-title">Partos</span>
+            </div>
+            <div class="step-body" formGroupName="partos">
+              <div class="row-2">
+                <div class="field">
+                  <span class="field-label">Nacidos Vivos</span>
+                  <input
+                    class="field-input"
+                    type="number"
+                    formControlName="nacidos_vivos"
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
+                <div class="field">
+                  <span class="field-label">Nacidos Muertos</span>
+                  <input
+                    class="field-input"
+                    type="number"
+                    formControlName="nacidos_muertos"
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+    <!-- /main-body -->
 
-                                              <!-- ======================================== -->
-                                              <!-- ACTION DOCK (sticky bottom)              -->
-                                              <!-- ======================================== -->
-                                              <div class="action-dock">
-                                                <div class="dock-nav">
-                                                  <button
-                                                    type="button"
-                                                    class="btn-nav"
-                                                    (click)="prevStep()"
-                                                    [disabled]="currentStep() === 0 || isLoading()"
-                                                    >
-                                                    ← Anterior
-                                                  </button>
-                                                  <button
-                                                    type="button"
-                                                    class="btn-nav"
-                                                    (click)="nextStep()"
-                                                    [disabled]="isLastStep() || isLoading()"
-                                                    >
-                                                    Siguiente →
-                                                  </button>
-                                                </div>
+    <!-- ======================================== -->
+    <!-- ACTION DOCK (sticky bottom)              -->
+    <!-- ======================================== -->
+    <div class="action-dock">
+      <div class="dock-nav">
+        <button
+          type="button"
+          class="btn-nav"
+          (click)="prevStep()"
+          [disabled]="currentStep() === 0 || isLoading()"
+        >
+          ← Anterior
+        </button>
+        <button
+          type="button"
+          class="btn-nav"
+          (click)="nextStep()"
+          [disabled]="isLastStep() || isLoading()"
+        >
+          Siguiente →
+        </button>
+      </div>
 
-                                                <div class="dock-actions">
-                                                  <button
-                                                    type="button"
-                                                    class="btn-cancel"
-                                                    (click)="volver()"
-                                                    [disabled]="isLoading()"
-                                                    >
-                                                    ✕ Cancelar
-                                                  </button>
-                                                  <button
-                                                    type="submit"
-                                                    class="btn-save"
-                                                    [disabled]="!form.valid || isLoading()"
-                                                    >
-                                                    💾 {{ isLoading() ? "Guardando…" : "Guardar" }}
-                                                  </button>
-                                                </div>
-                                              </div>
-                                            </form>
-                                          </div>
+      <div class="dock-actions">
+        <button
+          type="button"
+          class="btn-cancel"
+          (click)="volver()"
+          [disabled]="isLoading()"
+        >
+          ✕ Cancelar
+        </button>
+        <button
+          type="submit"
+          class="btn-save"
+          [disabled]="!form.valid || isLoading()"
+        >
+          💾 {{ isLoading() ? "Guardando…" : "Guardar" }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

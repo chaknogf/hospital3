@@ -219,7 +219,7 @@ export class PacienteUtilService {
         ocupacion: socio.ocupacion || '',
         educacion: socio.educacion ? String(socio.educacion) : '',
         estudiante_publico: socio.estudiante_publico === 'S' ? 'SI' : 'NO',
-        personal_hospital: socio.personal_hospital === 'S' ? 'SI' : 'NO',
+        empleado_publico: socio.personal_hospital === 'S' ? 'SI' : 'NO',
         discapacidad: socio.discapacidad === 'S' ? 'SI' : 'NO'
       },
       neonatales: {
