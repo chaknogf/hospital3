@@ -194,6 +194,25 @@
     </div>
   }
 
+  <!-- PROGRESO ASOCIAR TODO -->
+  @if (progreso) {
+    <div class="modal-overlay">
+      <div class="modal-box progreso-box">
+        <h3>⚡ Asociando datos SIGSA-3</h3>
+        <div class="progreso-barra-container">
+          <div class="progreso-barra" [style.width.%]="progreso.progress"></div>
+        </div>
+        <p class="progreso-mensaje">{{ progreso.message }}</p>
+        @if (progreso.step !== 'load' && progreso.step !== 'data_loaded' && progreso.step !== 'done') {
+          <div class="progreso-detalle">
+            <span>Pacientes: {{ progreso.paso1_paciente + progreso.paso2_paciente + progreso.paso3_paciente }}</span>
+            <span>Consultas: {{ progreso.paso4_consulta + progreso.paso5_consulta }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
   <!-- MODAL ASOCIAR -->
   @if (modalAsociar) {
     <div class="modal-overlay" (click)="cerrarModalAsociar()">

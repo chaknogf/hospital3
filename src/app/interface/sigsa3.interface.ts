@@ -137,6 +137,20 @@ export interface Sigsa3DxZResponse {
   generado_en: string;
 }
 
+// ── Progreso asociar-todo (SSE) ──
+
+export interface ProgresoSigsa3 {
+  step: string;
+  message: string;
+  progress: number;
+  paso1_paciente: number;
+  paso2_paciente: number;
+  paso3_paciente: number;
+  paso4_consulta: number;
+  paso5_consulta: number;
+  paso5_paciente: number;
+}
+
 // ── Personal Salud ──
 
 export interface PersonalSalud {

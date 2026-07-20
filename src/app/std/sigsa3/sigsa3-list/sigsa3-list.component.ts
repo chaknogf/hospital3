@@ -4,7 +4,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Sigsa3Out } from '../../../interface/sigsa3.interface';
+import { Sigsa3Out, ProgresoSigsa3 } from '../../../interface/sigsa3.interface';
 import { Sigsa3Service } from '../sigsa3.service';
 import { IconService } from '../../../service/icon.service';
 import { Subject } from 'rxjs';
@@ -40,6 +40,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
   asociarHistoria = '';
   procesando = false;
   resultadoOperacion: any = null;
+  progreso: ProgresoSigsa3 | null = null;
 
   // ── Paginación ──
   pageSize = 20;
@@ -218,9 +219,21 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   asociarTodo(): void {
     this.procesando = true;
-    this.api.asociarTodo().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cargar(); this.cdr.markForCheck(); },
-      error: () => { this.procesando = false; this.cdr.markForCheck(); }
+    this.progreso = null;
+    this.api.asociarTodoStream().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (p) => {
+        this.progreso = p;
+        this.cdr.markForCheck();
+      },
+      complete: () => {
+        this.procesando = false;
+        this.cargar();
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.procesando = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 

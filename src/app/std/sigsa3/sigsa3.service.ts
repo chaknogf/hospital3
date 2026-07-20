@@ -14,6 +14,7 @@ import {
   Sigsa3EspecialidadResponse,
   Sigsa3DxFrecuentesResponse,
   Sigsa3DxZResponse,
+  ProgresoSigsa3,
   PersonalSalud,
   PersonalSaludCreate,
   PersonalSaludUpdate
@@ -133,6 +134,62 @@ export class Sigsa3Service extends BaseApiService {
     return this.offMutation('POST', `${this.baseUrl}/sigsa3/asociar-todo`).pipe(
       finalize(() => this.isLoading.set(false))
     );
+  }
+
+  asociarTodoStream(): Observable<ProgresoSigsa3> {
+    return new Observable<ProgresoSigsa3>(subscriber => {
+      const token = localStorage.getItem('access_token');
+      const url = `${this.baseUrl}/sigsa3/asociar-todo-stream`;
+      const controller = new AbortController();
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'text/event-stream',
+        },
+        signal: controller.signal,
+      }).then(response => {
+        if (!response.ok) {
+          subscriber.error(new Error(`HTTP ${response.status}`));
+          return;
+        }
+        const reader = response.body!.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        function pump(): void {
+          reader.read().then(({ done, value }) => {
+            if (done) {
+              subscriber.complete();
+              return;
+            }
+            buffer += decoder.decode(value, { stream: true });
+            const parts = buffer.split('\n');
+            buffer = parts.pop() || '';
+            for (const line of parts) {
+              if (line.startsWith('data: ')) {
+                try {
+                  const data: ProgresoSigsa3 = JSON.parse(line.slice(6));
+                  subscriber.next(data);
+                  if (data.step === 'done' || data.step === 'error') {
+                    reader.cancel();
+                    subscriber.complete();
+                    return;
+                  }
+                } catch (e) {
+                  console.warn('SSE parse error:', e);
+                }
+              }
+            }
+            pump();
+          }).catch(err => subscriber.error(err));
+        }
+        pump();
+      }).catch(err => subscriber.error(err));
+
+      return () => controller.abort();
+    });
   }
 
   sincronizarEspecialidad(): Observable<any> {
