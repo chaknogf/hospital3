@@ -51,6 +51,7 @@ export class DoctorFormComponent implements OnInit {
       Validators.minLength(4)
     ]],
     colegiado: [''],
+    pasaporte: [''],
     especialidad: [''],
     dpi: [''],
     sexo: [''],
@@ -90,6 +91,7 @@ export class DoctorFormComponent implements OnInit {
         this.form.patchValue({
           nombre: data.nombre,
           colegiado: data.colegiado,
+          pasaporte: data.pasaporte,
           especialidad: data.especialidad,
           dpi: data.dpi,
           sexo: data.sexo,

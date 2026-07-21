@@ -247,6 +247,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
           ID: m.id,
           Nombre: m.nombre,
           Colegiado: m.colegiado || '',
+          Pasaporte: m.pasaporte || '',
           Especialidad: m.especialidad || '',
           Estado: m.activo ? 'Activo' : 'Inactivo',
           DPI: m.dpi || '',

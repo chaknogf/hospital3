@@ -4,6 +4,7 @@ export interface MedicoOut {
   id: number;
   nombre: string;
   colegiado?: string;
+  pasaporte?: string;
   especialidad?: string;
   activo: boolean;
   dpi?: bigint;
@@ -13,6 +14,7 @@ export interface MedicoOut {
 export interface MedicoCreate {
   nombre: string;
   colegiado?: string;
+  pasaporte?: string;
   especialidad?: string;
   activo?: boolean;
   dpi?: bigint;
@@ -22,6 +24,7 @@ export interface MedicoCreate {
 export interface MedicoUpdate {
   nombre?: string;
   colegiado?: string;
+  pasaporte?: string;
   especialidad?: string;
   activo?: boolean;
   dpi?: bigint;
@@ -33,6 +36,7 @@ export interface FiltroMedico {
   activo?: boolean;
   nombre?: string;
   colegiado?: string;
+  pasaporte?: string;
   especialidad?: string;
   skip?: number;
   limit?: number;
@@ -45,7 +49,8 @@ export interface MedicoListResponse {
 export interface Medico {
   id?: number;
   nombre: string;
-  colegiado: string;
+  colegiado?: string;
+  pasaporte?: string;
   dpi: bigint;
   sexo: string;
   especialidad: string;

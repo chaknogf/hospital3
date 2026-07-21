@@ -98,6 +98,7 @@
         <tr>
           <th>Nombre</th>
           <th>Colegiado</th>
+          <th>Pasaporte</th>
           <th>Especialidad</th>
           <th>Estado</th>
           <th>Acciones</th>
@@ -122,6 +123,9 @@
             <td data-label="Colegiado">
               {{ data.colegiado || "—" }}
             </td>
+            <td data-label="Pasaporte">
+              {{ data.pasaporte || "—" }}
+            </td>
             <td data-label="Especialidad">
               {{ data.especialidad || "—" }}
             </td>
@@ -143,7 +147,7 @@
         <!-- VACÍO -->
         @if (!cargando && medicos.length === 0) {
           <tr>
-            <td colspan="5" class="text-center py-3">
+            <td colspan="6" class="text-center py-3">
               <em>No se encontraron médicos.</em>
             </td>
           </tr>
@@ -152,7 +156,7 @@
         <!-- CARGANDO -->
         @if (cargando) {
           <tr>
-            <td colspan="5" class="text-center py-3">
+            <td colspan="6" class="text-center py-3">
               <em>Cargando médicos... 🛰️</em>
             </td>
           </tr>
