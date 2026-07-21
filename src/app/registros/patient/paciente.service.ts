@@ -232,6 +232,22 @@ export class PacienteService extends BaseApiService {
     );
   }
 
+  // ======= EXPEDIENTES POR CONSULTAS =======
+
+  getPacientesSinConsultasRecientes(filtros: any): Observable<PacienteListResponse> {
+    const params = this.limpiarParametros(filtros);
+    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/sin-consultas-recientes`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'obtener pacientes sin consultas recientes'))
+    );
+  }
+
+  getPacientesConConsultasRecientes(filtros: any): Observable<PacienteListResponse> {
+    const params = this.limpiarParametros(filtros);
+    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/con-consultas-recientes`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'obtener pacientes con consultas recientes'))
+    );
+  }
+
   // ======= CITAS =======
 
   private citasSubject = new BehaviorSubject<CitaResponse[]>([]);

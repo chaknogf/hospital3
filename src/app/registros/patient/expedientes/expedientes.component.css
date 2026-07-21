@@ -1,0 +1,178 @@
+.aurora-expedientes-container {
+  padding: 1rem;
+  color: #fff;
+}
+
+.botones {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.botones button {
+  background: rgba(59, 130, 246, 0.15);
+  border: 0.5px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modo-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.modo-btn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 0.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(1, 12, 30, 0.5);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.modo-btn:hover {
+  background: rgba(59, 130, 246, 0.2);
+  color: #fff;
+}
+
+.modo-activo {
+  background: rgba(59, 130, 246, 0.3);
+  color: #fff;
+  border-color: rgba(59, 130, 246, 0.6);
+  font-weight: 600;
+}
+
+.busqueda-bar {
+  margin-bottom: 1rem;
+}
+
+.busqueda-bar form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.busqueda-bar input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 0.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(1, 12, 30, 0.5);
+  color: #fff;
+}
+
+.busqueda-bar button {
+  padding: 0.5rem 1rem;
+  border: 0.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.15);
+  color: #fff;
+  cursor: pointer;
+}
+
+.expediente-range {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.expediente-range label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.expediente-range input {
+  flex: 0 1 200px;
+  padding: 0.4rem 0.6rem;
+  border: 0.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: rgba(1, 12, 30, 0.5);
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.tabla-wrapper {
+  background: rgba(1, 12, 30, 0.76);
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.aurora-tb {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.aurora-tb th {
+  text-align: left;
+  padding: 0.75rem;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.aurora-table-row td {
+  padding: 0.75rem;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+  vertical-align: middle;
+}
+
+.aurora-table-row:hover {
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.nombre-table p {
+  margin: 0;
+}
+
+.nombre-table p:first-child {
+  font-weight: 600;
+}
+
+.paginador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.pag-btn, .pag-num {
+  background: rgba(59, 130, 246, 0.1);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.pag-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.pag-num-active {
+  background: rgba(59, 130, 246, 0.4);
+  font-weight: 700;
+}
+
+.pag-ellipsis {
+  color: rgba(255, 255, 255, 0.4);
+  padding: 0 0.2rem;
+}
+
+.pag-info {
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+}

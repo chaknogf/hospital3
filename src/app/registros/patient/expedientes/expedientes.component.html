@@ -1,0 +1,146 @@
+<div class="aurora-expedientes-container">
+  <div class="botones justify-content-between">
+    <button type="button" (click)="volver()">Menu</button>
+    <h1 class="text-white">Expedientes</h1>
+    <div style="width:80px"></div>
+  </div>
+
+  <div class="modo-selector">
+    <button
+      class="modo-btn"
+      [class.modo-activo]="modo === 'recientes'"
+      (click)="seleccionarModo('recientes')"
+    >
+      Con consulta reciente
+    </button>
+    <button
+      class="modo-btn"
+      [class.modo-activo]="modo === 'mayores-1anio'"
+      (click)="seleccionarModo('mayores-1anio')"
+    >
+      Sin consulta &ge;1 año
+    </button>
+  </div>
+
+  <div class="busqueda-bar">
+    <form (ngSubmit)="buscar()">
+      <input
+        type="text"
+        [(ngModel)]="filtros.q"
+        name="q"
+        placeholder="Buscar por nombre o expediente..."
+        autocomplete="off"
+      />
+      <button type="submit">Buscar</button>
+      @if (filtros.q || filtros.expediente_desde || filtros.expediente_hasta) {
+        <button type="button" (click)="limpiarBusqueda()">Limpiar</button>
+      }
+    </form>
+    <div class="expediente-range">
+      <label>Expediente desde:</label>
+      <input
+        type="text"
+        [(ngModel)]="filtros.expediente_desde"
+        name="expediente_desde"
+        placeholder="Ej: EXP-2025-000001"
+        autocomplete="off"
+      />
+      <label>hasta:</label>
+      <input
+        type="text"
+        [(ngModel)]="filtros.expediente_hasta"
+        name="expediente_hasta"
+        placeholder="Ej: EXP-2025-000100"
+        autocomplete="off"
+      />
+    </div>
+  </div>
+
+  <div class="tabla-wrapper">
+    <table class="aurora-tb">
+      <thead>
+        <tr>
+          <th>Nombre Completo</th>
+          <th>Expediente</th>
+          <th>Fecha Nacimiento</th>
+          <th>Sexo</th>
+          <th>Última Consulta</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (paciente of pacientes; track trackById($index, paciente)) {
+          <tr class="aurora-table-row">
+            <td data-label="Nombre:">
+              <div class="nombre-table">
+                <p [innerHTML]="nombreCompleto(paciente) | highlight: filtros.q"></p>
+              </div>
+            </td>
+            <td data-label="Expediente:">
+              <strong>{{ paciente.expediente }}</strong>
+            </td>
+            <td data-label="Fecha Nacimiento:">
+              {{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
+              @if (paciente.fecha_nacimiento) {
+                <small class="d-block">{{ paciente.fecha_nacimiento | edad }}</small>
+              }
+            </td>
+            <td data-label="Sexo:">
+              {{ paciente.sexo === "M" ? "Masculino" : "Femenino" }}
+            </td>
+            <td data-label="Última Consulta:">
+              @if (paciente.ultima_consulta) {
+                {{ paciente.ultima_consulta | date: "dd/MM/yyyy" }}
+              } @else {
+                <em class="text-muted">Sin consultas</em>
+              }
+            </td>
+            <td data-label="Acciones:">
+              <button (click)="verDetalle(paciente.id)">Detalle</button>
+            </td>
+          </tr>
+        } @empty {
+          @if (!cargando) {
+            <tr>
+              <td colspan="6" class="text-center py-3">
+                <em>No se encontraron coincidencias.</em>
+              </td>
+            </tr>
+          }
+        }
+        @if (cargando) {
+          <tr>
+            <td colspan="6" class="text-center py-3">
+              <em>Cargando...</em>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="paginador">
+    <button class="pag-btn" [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">Anterior</button>
+    @if (paginas[0] > 1) {
+      <button class="pag-num" (click)="irAPagina(1)">1</button>
+    }
+    @if (paginas[0] > 2) {
+      <span class="pag-ellipsis">…</span>
+    }
+    @for (p of paginas; track p) {
+      <button class="pag-num" [class.pag-num-active]="p === paginaActual" (click)="irAPagina(p)">
+        {{ p }}
+      </button>
+    }
+    @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+      <span class="pag-ellipsis">…</span>
+    }
+    @if (paginas[paginas.length - 1] < totalPaginas) {
+      <button class="pag-num" (click)="irAPagina(totalPaginas)">{{ totalPaginas }}</button>
+    }
+    <button class="pag-btn" [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">Siguiente</button>
+    <span class="pag-info">
+      Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;{{ totalDeRegistros }} registros
+    </span>
+  </div>
+</div>

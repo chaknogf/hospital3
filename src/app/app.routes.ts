@@ -153,6 +153,10 @@ export const routes: Routes = [
         loadComponent: () => import('./registros/patient/formularioPaciente/formularioPaciente.component').then(c => c.FormularioPacienteComponent),
         canActivate: [roleGuard(['admin', 'registro', 'std'])]
       },
+      {
+        path: 'expedientes',
+        loadComponent: () => import('./registros/patient/expedientes/expedientes.component').then(c => c.ExpedientesComponent),
+      },
       // Emergencias
       {
         path: 'emergencias',

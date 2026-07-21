@@ -60,6 +60,7 @@ export class RegistrosMedicosComponent implements OnInit {
       { nombre: 'Ingresos', descripcion: 'Hospitalizaciones Registradas', ruta: '/ingresos', icon: 'ingresoIcon' },
       { nombre: 'Recepcion', descripcion: 'Gestion de expedientes', ruta: '/recepcion', icon: 'archivo' },
       { nombre: 'Prestamo', descripcion: 'Gestor de expedientes prestados', ruta: '/prestamos', icon: 'compartir' },
+      { nombre: 'Expedientes', descripcion: 'Expedientes con/sin consulta reciente', ruta: '/expedientes', icon: 'archivo' },
       { nombre: 'Citas', descripcion: 'Gestor de citas', ruta: '/citas', icon: 'calendar' },
       { nombre: 'Nacimientos', descripcion: 'Constancias de nacimiento', ruta: '/nacimientos', icon: 'baby' },
       { nombre: 'Defunciones', descripcion: 'Informe de Defunción formato oficial', ruta: '/defunciones', icon: 'defuncion' },

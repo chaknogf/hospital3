@@ -139,7 +139,7 @@ export interface PacienteResumen {
   fecha_nacimiento?: string | null;
   estado?: 'V' | 'F' | 'I'; // V = Vivo, F = Fallecido, I = Inactivo
   defuncion?: string;
-
+  ultima_consulta?: string | null;
 }
 
 export interface PacienteListResponse {
