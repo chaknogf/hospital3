@@ -116,8 +116,11 @@ export class DoctorFormComponent implements OnInit {
       return;
     }
     this.guardando = true;
+    const raw = this.form.value;
     const payload: MedicoCreate | MedicoUpdate = {
-      ...this.form.value
+      ...raw,
+      dpi: raw.dpi === '' ? null : raw.dpi,
+      colegiado: raw.colegiado === '' ? null : raw.colegiado,
     };
     // ======= EDITAR =======
     if (this.enEdicion && this.medicoId) {
