@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { BaseApiService, PaginationState } from '../../service/base-api.service';
-import { FiltroMedico, MedicoCreate, MedicoOut, MedicoUpdate } from '../../interface/medicos.interface';
+import { FiltroMedico, MedicoCreate, MedicoListResponse, MedicoOut, MedicoUpdate } from '../../interface/medicos.interface';
 
 
 
@@ -44,23 +44,20 @@ export class MedicosService extends BaseApiService {
   // ======= GET =======
 
   /**
-   * Lista médicos
+   * Lista médicos (paginado)
    * GET /medicos
    */
-  getMedicos(filtros?: FiltroMedico): Observable<MedicoOut[]> {
+  getMedicos(filtros?: FiltroMedico): Observable<MedicoListResponse> {
     this.ultimoFiltro.filtro = filtros ?? {};
 
     const params = this.limpiarParametros(filtros ?? {});
-    const key = this.cacheKey(`${this.baseUrl}/medicos`, params);
 
-    return this.cacheGet(key,
-      this.http.get<MedicoOut[]>(
-        `${this.baseUrl}/medicos`,
-        { params }
-      ).pipe(
-        tap(medicos => this.medicosSubject.next(medicos)),
-        catchError(error => this.manejarError(error, 'obtener médicos'))
-      )
+    return this.http.get<MedicoListResponse>(
+      `${this.baseUrl}/medicos`,
+      { params }
+    ).pipe(
+      tap(response => this.medicosSubject.next(response.medicos)),
+      catchError(error => this.manejarError(error, 'obtener médicos'))
     );
   }
 
@@ -69,10 +66,11 @@ export class MedicosService extends BaseApiService {
    */
   getAllMedicos(): Observable<MedicoOut[]> {
     const params = this.limpiarParametros({ skip: 0, limit: 500 });
-    return this.http.get<MedicoOut[]>(
+    return this.http.get<MedicoListResponse>(
       `${this.baseUrl}/medicos`,
       { params }
     ).pipe(
+      map(response => response.medicos),
       catchError(error => this.manejarError(error, 'obtener todos los médicos'))
     );
   }
@@ -95,11 +93,11 @@ export class MedicosService extends BaseApiService {
   buscarMedico(filtros: FiltroMedico): Observable<MedicoOut | null> {
     const params = this.limpiarParametros(filtros);
 
-    return this.http.get<MedicoOut[]>(
+    return this.http.get<MedicoListResponse>(
       `${this.baseUrl}/medicos`,
       { params }
     ).pipe(
-      map(medicos => medicos?.length > 0 ? medicos[0] : null),
+      map(response => response.medicos?.length > 0 ? response.medicos[0] : null),
       catchError(error => this.manejarError(error, 'buscar médico'))
     );
   }

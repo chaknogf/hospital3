@@ -10,7 +10,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { combineLatest, Subject, of } from 'rxjs';
-import { debounceTime, takeUntil, catchError, finalize, tap } from 'rxjs/operators';
+import { debounceTime, takeUntil, catchError, finalize, map, tap } from 'rxjs/operators';
 import { Municipio, PaisesIso } from '../../../interface/interfaces';
 import { Enumeradores } from '../../../interface/enumsIterfaces';
 import {
@@ -24,6 +24,7 @@ import { provideNgxMask, NgxMaskDirective } from 'ngx-mask';
 import { ApiService } from '../../../service/api.service';
 import { PacienteUtilService } from '../../../service/paciente-util.service';
 import { Medico } from '../../../interface/medicos.interface';
+import { MedicosService } from '../../../std/medicos/medicos.service';
 import {
   addIcon, removeIcon, saveIcon, cancelIcon, findIcon,
   touchicon,
@@ -63,6 +64,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private api = inject(PacienteService);
   private apis = inject(ApiService);
+  private medicosSrvc = inject(MedicosService);
   private fb = inject(FormBuilder);
   private sanitizer = inject(DomSanitizer);
   private pacienteUtil = inject(PacienteUtilService);
@@ -299,9 +301,12 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   }
 
   private cargarMedicos(): void {
-    const filtros = { activo: true, especialidad: 'GINECOLOGÍA', limit: 200 };
-    this.apis.getMedicos(filtros)
-      .pipe(takeUntil(this.destroy$))
+    const filtros = { activo: true, especialidad: 'GINE', limit: 200 };
+    this.medicosSrvc.getMedicos(filtros)
+      .pipe(
+        map(r => r.medicos as unknown as Medico[]),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: (data) => {
           this.medicos = data;

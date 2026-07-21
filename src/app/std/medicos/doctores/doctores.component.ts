@@ -56,6 +56,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
     colegiado: '',
     especialidad: '',
     activo: '',
+    skip: 0,
     limit: this.pageSize
   };
 
@@ -110,8 +111,8 @@ export class DoctoresComponent implements OnInit, OnDestroy {
 
       next: (resultado) => {
 
-        this.medicos = resultado;
-        this.totalDeRegistros = resultado.length;
+        this.medicos = resultado.medicos;
+        this.totalDeRegistros = resultado.total;
         this.cdr.markForCheck();
       },
 
@@ -132,6 +133,8 @@ export class DoctoresComponent implements OnInit, OnDestroy {
   }
 
   buscar(): void {
+    this.paginaActual = 1;
+    this.filtros.skip = 0;
     this.cargarMedicos();
   }
 
@@ -149,9 +152,11 @@ export class DoctoresComponent implements OnInit, OnDestroy {
       colegiado: '',
       especialidad: '',
       activo: '',
+      skip: 0,
       limit: this.pageSize
     };
 
+    this.paginaActual = 1;
     this.cargarMedicos();
   }
 
@@ -292,6 +297,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
     if (nueva < 1 || nueva > this.totalPaginas) return;
 
     this.paginaActual = nueva;
+    this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
 
     this.cargarMedicos();
   }
@@ -301,6 +307,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
     if (pagina < 1 || pagina > this.totalPaginas) return;
 
     this.paginaActual = pagina;
+    this.filtros.skip = (this.paginaActual - 1) * this.pageSize;
 
     this.cargarMedicos();
   }

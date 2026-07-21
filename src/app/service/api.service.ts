@@ -648,7 +648,8 @@ export class ApiService {
     const key = this.sync.cacheKey(`${this.baseUrl}/medicos/`, params);
 
     return this.sync.cacheGet(key,
-      this.http.get<Medico[]>(`${this.baseUrl}/medicos/`, { params }).pipe(
+      this.http.get<{ total: number; medicos: Medico[] }>(`${this.baseUrl}/medicos/`, { params }).pipe(
+        map(r => r.medicos),
         finalize(() => this.isLoading.set(false)),
         catchError(error => this.manejarError(error, 'obtener datos'))
       )

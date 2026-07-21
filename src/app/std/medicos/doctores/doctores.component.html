@@ -159,5 +159,55 @@
         }
       </tbody>
     </table>
+
+    <!-- PAGINADOR -->
+    <div class="paginador">
+      <button
+        class="pag-btn"
+        [disabled]="!hayPaginaAnterior"
+        (click)="cambiarPagina(-1)"
+        >
+        <span [innerHTML]="icons['skipLeft']"></span>
+      </button>
+
+      @if (paginas[0] > 1) {
+        <button class="pag-num" (click)="irAPagina(1)">1</button>
+      }
+      @if (paginas[0] > 2) {
+        <span class="pag-ellipsis">…</span>
+      }
+
+      @for (p of paginas; track p) {
+        <button
+          class="pag-num"
+          [class.pag-num-active]="p === paginaActual"
+          (click)="irAPagina(p)"
+          >
+          {{ p }}
+        </button>
+      }
+
+      @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+        <span class="pag-ellipsis">…</span>
+      }
+      @if (paginas[paginas.length - 1] < totalPaginas) {
+        <button class="pag-num" (click)="irAPagina(totalPaginas)">
+          {{ totalPaginas }}
+        </button>
+      }
+
+      <button
+        class="pag-btn"
+        [disabled]="!hayPaginaSiguiente"
+        (click)="cambiarPagina(1)"
+        >
+        <span [innerHTML]="icons['skipRight']"></span>
+      </button>
+
+      <span class="pag-info">
+        Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+        {{ totalDeRegistros }} registros
+      </span>
+    </div>
   </div>
 </div>

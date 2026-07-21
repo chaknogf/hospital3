@@ -34,7 +34,13 @@ export interface FiltroMedico {
   nombre?: string;
   colegiado?: string;
   especialidad?: string;
+  skip?: number;
   limit?: number;
+}
+
+export interface MedicoListResponse {
+  total: number;
+  medicos: MedicoOut[];
 }
 export interface Medico {
   id?: number;
