@@ -295,8 +295,8 @@
 
   <!-- PROGRESO ASOCIAR TODO -->
   @if (progreso) {
-    <div class="modal-overlay">
-      <div class="modal-box progreso-box">
+    <div class="modal-overlay" (click)="cerrarProgreso()">
+      <div class="modal-box progreso-box" (click)="$event.stopPropagation()">
         <h3>⚡ Asociando datos SIGSA-3</h3>
         <div class="progreso-barra-container">
           <div class="progreso-barra" [style.width.%]="progreso.progress"></div>
@@ -320,6 +320,13 @@
               >Consultas:
               {{ progreso.paso4_consulta + progreso.paso5_consulta }}</span
             >
+          </div>
+        }
+        @if (progreso.step === "done" || progreso.step === "error") {
+          <div class="modal-actions" style="margin-top: 16px;">
+            <button class="btn-accion accent" (click)="cerrarProgreso()">
+              Cerrar
+            </button>
           </div>
         }
       </div>

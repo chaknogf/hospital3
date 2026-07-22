@@ -250,6 +250,11 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
     });
   }
 
+  cerrarProgreso(): void {
+    this.progreso = null;
+    this.cdr.markForCheck();
+  }
+
   // ── Exportar CSV ──
 
   exportarCsv(): void {
