@@ -2,7 +2,10 @@
 
 <div class="sigsa3-container">
   <!-- HEADER -->
-  <div class="botones justify-content-between" [ngClass]="{ 'd-none': filtrar }">
+  <div
+    class="botones justify-content-between"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
     <button type="button" (click)="volver()">
       <span [innerHTML]="icons['menu']"></span>
       Menu
@@ -20,27 +23,63 @@
       <div class="d-flex gap-1 flex-wrap">
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Buscar general</label>
-          <input type="text" class="input-filtros" [(ngModel)]="filtros.q" name="q" placeholder="Nombre, historia, dx..." />
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.q"
+            name="q"
+            placeholder="Nombre, historia, dx..."
+          />
         </fieldset>
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Personal Salud</label>
-          <input type="text" class="input-filtros" [(ngModel)]="filtros.personal_salud" name="personal_salud" placeholder="Dr. ..." />
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.personal_salud"
+            name="personal_salud"
+            placeholder="Dr. ..."
+          />
         </fieldset>
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Paciente</label>
-          <input type="text" class="input-filtros" [(ngModel)]="filtros.nombre_paciente" name="nombre_paciente" placeholder="Nombre" />
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.nombre_paciente"
+            name="nombre_paciente"
+            placeholder="Nombre"
+          />
         </fieldset>
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Tipo Consulta</label>
-          <input type="text" class="input-filtros" [(ngModel)]="filtros.tipo_consulta" name="tipo_consulta" placeholder="Primera, Reconsulta..." />
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.tipo_consulta"
+            name="tipo_consulta"
+            placeholder="Primera, Reconsulta..."
+          />
         </fieldset>
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Especialidad</label>
-          <input type="text" class="input-filtros" [(ngModel)]="filtros.especialidad" name="especialidad" placeholder="Medicina General" />
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.especialidad"
+            name="especialidad"
+            placeholder="Medicina General"
+          />
         </fieldset>
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">CIE-10</label>
-          <input type="text" class="input-filtros" [(ngModel)]="filtros.codigo_cie_10" name="codigo_cie_10" placeholder="A00" />
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.codigo_cie_10"
+            name="codigo_cie_10"
+            placeholder="A00"
+          />
         </fieldset>
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Sexo</label>
@@ -73,24 +112,43 @@
   <!-- ACCIONES BAR -->
   <div class="acciones-bar">
     <button class="btn-accion" (click)="importar()">📄 Importar CSV</button>
-    <button class="btn-accion" (click)="abrirModalAsociar()">🔗 Asociar Paciente</button>
-    <button class="btn-accion" (click)="asociarMedico()" [disabled]="procesando">🩺 Asociar Médico</button>
-    <button class="btn-accion" (click)="asociarTodo()" [disabled]="procesando">⚡ Asociar Todo</button>
-    <button class="btn-accion" (click)="sincronizarEspecialidad()" [disabled]="procesando">🔄 Sincronizar Personal Salud</button>
-    <button class="btn-accion accent" (click)="gestionarPersonalSalud()">👤 Gestionar Personal Salud</button>
+    <button class="btn-accion" (click)="abrirModalAsociar()">
+      🔗 Asociar Paciente
+    </button>
+    <button
+      class="btn-accion"
+      (click)="asociarMedico()"
+      [disabled]="procesando"
+    >
+      🩺 Asociar Médico
+    </button>
+    <button class="btn-accion" (click)="asociarTodo()" [disabled]="procesando">
+      ⚡ Asociar Todo
+    </button>
+    <button
+      class="btn-accion"
+      (click)="sincronizarEspecialidad()"
+      [disabled]="procesando"
+    >
+      🔄 Sincronizar Personal Salud
+    </button>
+    <button class="btn-accion accent" (click)="gestionarPersonalSalud()">
+      👤 Gestionar Personal Salud
+    </button>
     @if (seleccionados.size > 0) {
       <button class="btn-accion danger" (click)="eliminarSeleccionados()">
         🗑️ Eliminar ({{ seleccionados.size }})
       </button>
     }
-    <button class="btn-accion danger" (click)="abrirModalPeriodo()">📅 Eliminar por período</button>
+    <!-- <button class="btn-accion" (click)="exportarCsv()">📥 Exportar CSV</button> -->
+    <button class="btn-accion danger" (click)="abrirModalPeriodo()">
+      📅 Eliminar por período
+    </button>
   </div>
 
   <!-- CONTADOR -->
   @if (!cargando) {
-    <div class="total-badge">
-      {{ totalDeRegistros }} registros encontrados
-    </div>
+    <div class="total-badge">{{ totalDeRegistros }} registros encontrados</div>
   }
 
   <!-- CARGANDO -->
@@ -105,7 +163,14 @@
         <thead>
           <tr>
             <th class="th-check">
-              <input type="checkbox" (change)="toggleTodos()" [checked]="seleccionados.size === registros.length && registros.length > 0" />
+              <input
+                type="checkbox"
+                (change)="toggleTodos()"
+                [checked]="
+                  seleccionados.size === registros.length &&
+                  registros.length > 0
+                "
+              />
             </th>
             <th>Fecha</th>
             <th>Paciente</th>
@@ -122,36 +187,55 @@
           @for (r of registrosPaginados; track r) {
             <tr
               [class.row-seleccionado]="seleccionados.has(r.id)"
-              (click)="activarFila(r.id, $event)">
+              (click)="activarFila(r.id, $event)"
+            >
               <td class="td-check">
-                <input type="checkbox" [checked]="seleccionados.has(r.id)" (click)="activarFila(r.id, $event)" />
+                <input
+                  type="checkbox"
+                  [checked]="seleccionados.has(r.id)"
+                  (click)="activarFila(r.id, $event)"
+                />
               </td>
-              <td>{{ r.fecha_consulta || '—' }}</td>
+              <td>{{ r.fecha_consulta || "—" }}</td>
               <td>
                 <div class="cell-paciente">
-                  <strong>{{ r.nombre_paciente || '—' }}</strong>
+                  <strong>{{ r.nombre_paciente || "—" }}</strong>
                   @if (r.paciente_id) {
                     <small>ID: {{ r.paciente_id }}</small>
                   }
                 </div>
               </td>
-              <td>{{ r.no_historia_clinica || '—' }}</td>
-              <td>{{ r.personal_salud || '—' }}</td>
-              <td>{{ r.tipo_consulta || '—' }}</td>
-              <td>{{ r.especialidad || '—' }}</td>
-              <td><span class="cie-badge">{{ r.codigo_cie_10 || '—' }}</span></td>
-              <td class="cell-dx">{{ r.dx || '—' }}</td>
+              <td>{{ r.no_historia_clinica || "—" }}</td>
+              <td>{{ r.personal_salud || "—" }}</td>
+              <td>{{ r.tipo_consulta || "—" }}</td>
+              <td>{{ r.especialidad || "—" }}</td>
+              <td>
+                <span class="cie-badge">{{ r.codigo_cie_10 || "—" }}</span>
+              </td>
+              <td class="cell-dx">{{ r.dx || "—" }}</td>
               <td>
                 <div class="d-flex gap-1">
-                  <button class="btn-sm" (click)="editar(r.id); $event.stopPropagation()">✏️</button>
-                  <button class="btn-sm danger" (click)="eliminar(r.id); $event.stopPropagation()">🗑️</button>
+                  <button
+                    class="btn-sm"
+                    (click)="editar(r.id); $event.stopPropagation()"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    class="btn-sm danger"
+                    (click)="eliminar(r.id); $event.stopPropagation()"
+                  >
+                    🗑️
+                  </button>
                 </div>
               </td>
             </tr>
           }
           @if (!cargando && registros.length === 0) {
             <tr>
-              <td colspan="10" class="text-center py-3"><em>No se encontraron registros SIGSA-3.</em></td>
+              <td colspan="10" class="text-center py-3">
+                <em>No se encontraron registros SIGSA-3.</em>
+              </td>
             </tr>
           }
         </tbody>
@@ -162,11 +246,20 @@
   <!-- PAGINADOR -->
   @if (totalPaginas > 1) {
     <div class="paginador">
-      <button [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">◀</button>
+      <button [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">
+        ◀
+      </button>
       @for (p of paginas; track trackById($index, p)) {
-        <button       [class.pag-activa]="p === paginaActual" (click)="paginaActual = p">{{ p }}</button>
+        <button
+          [class.pag-activa]="p === paginaActual"
+          (click)="paginaActual = p"
+        >
+          {{ p }}
+        </button>
       }
-      <button [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">▶</button>
+      <button [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">
+        ▶
+      </button>
     </div>
   }
 
@@ -180,9 +273,15 @@
           <label>Hasta: <input type="date" [(ngModel)]="HastaPeriodo" /></label>
         </div>
         <div class="modal-actions">
-          <button class="btn-accion" (click)="cerrarModalPeriodo()">Cancelar</button>
-          <button class="btn-accion danger" (click)="eliminarPorPeriodo()" [disabled]="procesando">
-            {{ procesando ? 'Eliminando...' : 'Eliminar' }}
+          <button class="btn-accion" (click)="cerrarModalPeriodo()">
+            Cancelar
+          </button>
+          <button
+            class="btn-accion danger"
+            (click)="eliminarPorPeriodo()"
+            [disabled]="procesando"
+          >
+            {{ procesando ? "Eliminando..." : "Eliminar" }}
           </button>
         </div>
         @if (resultadoOperacion) {
@@ -203,10 +302,24 @@
           <div class="progreso-barra" [style.width.%]="progreso.progress"></div>
         </div>
         <p class="progreso-mensaje">{{ progreso.message }}</p>
-        @if (progreso.step !== 'load' && progreso.step !== 'data_loaded' && progreso.step !== 'done') {
+        @if (
+          progreso.step !== "load" &&
+          progreso.step !== "data_loaded" &&
+          progreso.step !== "done"
+        ) {
           <div class="progreso-detalle">
-            <span>Pacientes: {{ progreso.paso1_paciente + progreso.paso2_paciente + progreso.paso3_paciente }}</span>
-            <span>Consultas: {{ progreso.paso4_consulta + progreso.paso5_consulta }}</span>
+            <span
+              >Pacientes:
+              {{
+                progreso.paso1_paciente +
+                  progreso.paso2_paciente +
+                  progreso.paso3_paciente
+              }}</span
+            >
+            <span
+              >Consultas:
+              {{ progreso.paso4_consulta + progreso.paso5_consulta }}</span
+            >
           </div>
         }
       </div>
@@ -219,19 +332,38 @@
       <div class="modal-box" (click)="$event.stopPropagation()">
         <h3>Asociar registro a paciente</h3>
         <div class="modal-fields">
-          <label>Expediente: <input type="text" [(ngModel)]="asociarExpediente" placeholder="EXP-YYYY-######" /></label>
-          <label>No. Historia Clínica: <input type="text" [(ngModel)]="asociarHistoria" placeholder="Historia clínica" /></label>
+          <label
+            >Expediente:
+            <input
+              type="text"
+              [(ngModel)]="asociarExpediente"
+              placeholder="EXP-YYYY-######"
+          /></label>
+          <label
+            >No. Historia Clínica:
+            <input
+              type="text"
+              [(ngModel)]="asociarHistoria"
+              placeholder="Historia clínica"
+          /></label>
         </div>
         <div class="modal-actions">
-          <button class="btn-accion" (click)="cerrarModalAsociar()">Cancelar</button>
-          <button class="btn-accion accent" (click)="asociarPaciente()" [disabled]="procesando">
-            {{ procesando ? 'Asociando...' : 'Asociar' }}
+          <button class="btn-accion" (click)="cerrarModalAsociar()">
+            Cancelar
+          </button>
+          <button
+            class="btn-accion accent"
+            (click)="asociarPaciente()"
+            [disabled]="procesando"
+          >
+            {{ procesando ? "Asociando..." : "Asociar" }}
           </button>
         </div>
         @if (resultadoOperacion) {
           <div class="resultado-box">
-            Registros encontrados: {{ resultadoOperacion.registros_encontrados || 0 }} |
-            Asociados: {{ resultadoOperacion.registros_asociados || 0 }}
+            Registros encontrados:
+            {{ resultadoOperacion.registros_encontrados || 0 }} | Asociados:
+            {{ resultadoOperacion.registros_asociados || 0 }}
           </div>
         }
       </div>

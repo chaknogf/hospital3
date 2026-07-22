@@ -3,7 +3,7 @@
   @for (app of options; track app) {
     <div
       class="aurora-cards"
-      (click)="navegar(app.ruta)"
+      (click)="app.accion ? app.accion() : navegar(app.ruta)"
       >
       <div class="aurora-items">
         <div class="">

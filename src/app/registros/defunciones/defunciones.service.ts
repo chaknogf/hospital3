@@ -92,6 +92,17 @@ export class DefuncionesService extends BaseApiService {
     );
   }
 
+  sincronizarDefunciones(): Observable<{ sincronizados: number; errores: number }> {
+    this.isLoading.set(true);
+    return this.http.post<{ sincronizados: number; errores: number }>(
+      `${this.baseUrl}/defunciones/sincronizar`, {}
+    ).pipe(
+      tap(() => this.refrescar()),
+      finalize(() => this.isLoading.set(false)),
+      catchError(e => this.manejarError(e, 'sincronizar defunciones'))
+    );
+  }
+
   buscarPacientesFallecidos(filtros: any): Observable<PacientesFallecidosResponse> {
     const params = this.limpiarParametros(filtros);
     return this.http.get<PacientesFallecidosResponse>(

@@ -250,6 +250,22 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
     });
   }
 
+  // ── Exportar CSV ──
+
+  exportarCsv(): void {
+    this.api.exportarCsv().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `sigsa3_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => this.cdr.markForCheck()
+    });
+  }
+
   // ── Paginador ──
 
   trackById(index: number, item: any): any {

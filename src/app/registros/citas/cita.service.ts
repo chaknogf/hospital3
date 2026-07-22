@@ -55,6 +55,22 @@ export class CitaService extends BaseApiService {
     );
   }
 
+  getCitasPorPaciente(pacienteId: number): Observable<CitaResponse[]> {
+    return this.http.get<CitaResponse[]>(
+      `${this.baseUrl}/citas/paciente/${pacienteId}`
+    ).pipe(
+      catchError(error => this.manejarError(error, 'obtener citas por paciente'))
+    );
+  }
+
+  deleteCita(id: number): Observable<any> {
+    this.isLoading.set(true);
+    return this.offMutation('DELETE', `${this.baseUrl}/citas/${id}`).pipe(
+      tap(() => this.refrescarCitas()),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
   updateCita(id: number, datos: any): Observable<any> {
     this.isLoading.set(true);
     return this.offMutation('PUT', `${this.baseUrl}/citas/${id}`, datos).pipe(

@@ -3,6 +3,8 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { IconService } from '../../../service/icon.service';
+import { Sigsa3Service } from '../../../std/sigsa3/sigsa3.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin',
@@ -14,7 +16,7 @@ import { IconService } from '../../../service/icon.service';
 })
 export class AdminComponent implements OnInit {
 
-  options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
+  options: { nombre: string; descripcion: string; ruta: string; icon: string; accion?: () => void }[] = [];
 
   // iconos
   icons: { [key: string]: any } = {};
@@ -24,7 +26,8 @@ export class AdminComponent implements OnInit {
   constructor(
     private router: Router,
     private sanitizer: DomSanitizer,
-    private iconService: IconService
+    private iconService: IconService,
+    private sigsa3: Sigsa3Service
   ) {
     this.icons = {
       menu: this.iconService.getIcon("menuIcon"),
@@ -62,6 +65,8 @@ export class AdminComponent implements OnInit {
       { nombre: 'Municipios', descripcion: 'Gestionar catálogo de municipios', ruta: '/gestion-municipios', icon: '' },
       { nombre: 'Encamamiento', descripcion: 'Gestionar servicios y camas', ruta: '/gestion-encamamiento', icon: '' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
+      { nombre: 'Exportar SIGSA-3 CSV', descripcion: 'Descargar todos los registros SIGSA-3 como CSV', ruta: '', icon: '', accion: () => this.exportarCsv() },
+      { nombre: 'Truncar SIGSA-3', descripcion: 'Eliminar TODOS los registros SIGSA-3 (irreversible)', ruta: '', icon: '', accion: () => this.truncar() },
 
     ];
 
@@ -73,5 +78,23 @@ export class AdminComponent implements OnInit {
     this.router.navigate([ruta]);
   }
 
+  private exportarCsv(): void {
+    this.sigsa3.exportarCsv().pipe(take(1)).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `sigsa3_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
+    });
+  }
+
+  private truncar(): void {
+    if (!confirm('⚠️ ¿TRUNCAR toda la tabla SIGSA-3?\n\nEsta acción es irreversible y eliminará TODOS los registros.\n¿Estás seguro?')) return;
+    if (!confirm('⚠️ CONFIRMACIÓN FINAL\n\n¿Estás 100% seguro de eliminar todos los datos SIGSA-3?')) return;
+    this.sigsa3.truncate().pipe(take(1)).subscribe();
+  }
 
 }

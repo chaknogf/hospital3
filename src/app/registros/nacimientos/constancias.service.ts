@@ -96,6 +96,14 @@ export class ConstanciasService extends BaseApiService {
 
 
 
+  getHistorial(constanciaId: number): Observable<ConstanciaNacHistorial[]> {
+    return this.http.get<ConstanciaNacHistorial[]>(
+      `${this.baseUrl}/constancias-nacimiento/historial/${constanciaId}`
+    ).pipe(
+      catchError(error => this.manejarError(error, 'obtener historial de constancia'))
+    );
+  }
+
   updateEstadoInforme(id: number, estado_informe: string): Observable<any> {
     this.isLoading.set(true);
     return this.http.patch<any>(

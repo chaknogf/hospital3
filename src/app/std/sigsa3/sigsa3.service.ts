@@ -192,6 +192,25 @@ export class Sigsa3Service extends BaseApiService {
     });
   }
 
+  truncate(): Observable<{ truncado: boolean; tabla: string }> {
+    this.isLoading.set(true);
+    return this.http.post<{ truncado: boolean; tabla: string }>(
+      `${this.baseUrl}/sigsa3/truncate`, {}
+    ).pipe(
+      tap(() => this.refrescar()),
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'truncar SIGSA3'))
+    );
+  }
+
+  exportarCsv(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/sigsa3/exportar-csv`, {
+      responseType: 'blob'
+    }).pipe(
+      catchError(error => this.manejarError(error, 'exportar CSV SIGSA3'))
+    );
+  }
+
   sincronizarEspecialidad(): Observable<any> {
     this.isLoading.set(true);
     return this.http.post<any>(`${this.baseUrl}/sigsa3/sincronizar-especialidad`, {}).pipe(

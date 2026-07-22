@@ -65,6 +65,51 @@ export class NacimientosService extends BaseApiService {
     );
   }
 
+  createDesdePaciente(pacienteId: number): Observable<NacimientoOut> {
+    this.isLoading.set(true);
+    return this.http.post<NacimientoOut>(
+      `${this.baseUrl}/nacimientos/desde-paciente/${pacienteId}`, {}
+    ).pipe(
+      tap(() => this.refrescarNacimientos()),
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'crear nacimiento desde paciente'))
+    );
+  }
+
+  updateNeonatales(id: number, neonatales: NeonatalesPayload): Observable<NacimientoOut> {
+    this.isLoading.set(true);
+    return this.offMutation('PATCH', `${this.baseUrl}/nacimientos/${id}/neonatales`, { neonatales }).pipe(
+      tap(() => this.refrescarNacimientos()),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  sincronizar(): Observable<{ sincronizados: number; creados: number; errores: number }> {
+    this.isLoading.set(true);
+    return this.http.post<{ sincronizados: number; creados: number; errores: number }>(
+      `${this.baseUrl}/nacimientos/sincronizar`, {}
+    ).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'sincronizar nacimientos'))
+    );
+  }
+
+  referenciarLegacy(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/nacimientos/referenciar-legacy`).pipe(
+      catchError(error => this.manejarError(error, 'referenciar legacy'))
+    );
+  }
+
+  recomputar(): Observable<{ procesados: number; actualizados: number }> {
+    this.isLoading.set(true);
+    return this.http.post<{ procesados: number; actualizados: number }>(
+      `${this.baseUrl}/nacimientos/recomputar`, {}
+    ).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'recomputar nacimientos'))
+    );
+  }
+
   deleteNacimiento(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/nacimientos/${id}`).pipe(
       tap(() => this.refrescarNacimientos()),
