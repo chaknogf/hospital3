@@ -21,11 +21,11 @@ export class PersonalHospitalComponent implements OnInit {
   hasta = '';
 
   pagina = 1;
-  porPagina = 10;
+  porPagina = 100;
   totalRegistros = 0;
 
   get totalPaginas(): number {
-    return Math.ceil(this.totalRegistros / this.pagina) || 1;
+    return Math.ceil(this.totalRegistros / this.porPagina) || 1;
   }
 
   ngOnInit(): void {
@@ -49,6 +49,33 @@ export class PersonalHospitalComponent implements OnInit {
       },
       error: () => { this.error = 'Error al cargar datos'; this.cargando = false; }
     });
+  }
+
+  async descargarExcel(): Promise<void> {
+    const rows = this.datos.map((d: any) => ({
+      Expediente: d.expediente || '-',
+      Fecha: d.fecha_consulta,
+      Paciente: d.nombre_completo,
+      Especialidad: d.especialidad,
+      Tipo: d.tipo_consulta_nombre,
+      Sexo: d.sexo || '-',
+      Edad: d.edad ?? '-',
+      Diagnostico: d.diagnostico,
+    }));
+    if (!rows.length) { alert('No hay datos para exportar.'); return; }
+    const { default: ExcelJS } = await import('exceljs');
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('Personal Hospital');
+    ws.columns = Object.keys(rows[0]).map(k => ({ header: k, key: k, width: Math.max(k.length, 18) }));
+    ws.addRows(rows);
+    const buffer = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `personal_hospital_${this.desde}_${this.hasta}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   irPagina(p: number): void {

@@ -32,6 +32,7 @@
         autocomplete="off"
       />
       <button type="submit">Buscar</button>
+      <button type="button" class="btn-excel" (click)="descargarExcel()">📥 Excel</button>
       @if (filtros.q || filtros.expediente_desde || filtros.expediente_hasta) {
         <button type="button" (click)="limpiarBusqueda()">Limpiar</button>
       }

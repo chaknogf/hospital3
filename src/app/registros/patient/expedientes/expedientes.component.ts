@@ -29,7 +29,7 @@ export class ExpedientesComponent implements OnInit, OnDestroy {
   cargando = false;
   modo: Modo = 'recientes';
 
-  readonly pageSize = 14;
+  readonly pageSize = 100;
   paginaActual = 1;
   totalDeRegistros = 0;
 
@@ -138,6 +138,33 @@ export class ExpedientesComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       },
     });
+  }
+
+  async descargarExcel(): Promise<void> {
+    const rows = this.pacientes.map((p: PacienteResumen) => ({
+      Nombre: this.nombreCompleto(p),
+      Expediente: p.expediente || '-',
+      'Fecha Nacimiento': p.fecha_nacimiento || '-',
+      Sexo: p.sexo === 'M' ? 'Masculino' : 'Femenino',
+      'Última Consulta': p.ultima_consulta || '-',
+      Estado: p.estado || '-',
+    }));
+    if (!rows.length) { alert('No hay datos para exportar.'); return; }
+    const { default: ExcelJS } = await import('exceljs');
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('Expedientes');
+    ws.columns = Object.keys(rows[0]).map(k => ({ header: k, key: k, width: Math.max(k.length, 18) }));
+    ws.addRows(rows);
+    const buffer = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const label = this.modo === 'recientes' ? 'con_consulta' : 'sin_consulta';
+    a.download = `expedientes_${label}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
+    this.cdr.markForCheck();
   }
 
   volver(): void {

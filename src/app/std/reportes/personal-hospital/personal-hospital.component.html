@@ -11,6 +11,7 @@
       >Hasta: <input type="date" [(ngModel)]="hasta" (change)="cargar()"
     /></label>
     <button class="btn-primary" (click)="cargar()">Actualizar</button>
+    <button class="btn-primary" (click)="descargarExcel()">📥 Excel</button>
   </div>
   @if (cargando) {
     <div class="state-box spinner"></div>
@@ -20,7 +21,10 @@
   }
   @if (!cargando && datos.length > 0) {
     <div>
-      <div class="total-badge">Total: {{ totalRegistros }} registros · Página {{ pagina }} de {{ totalPaginas }}</div>
+      <div class="total-badge">
+        Total: {{ totalRegistros }} registros · Página {{ pagina }} de
+        {{ totalPaginas }}
+      </div>
       <div class="table-wrap">
         <table class="reporte-table">
           <thead>
@@ -55,17 +59,39 @@
       </div>
       <!-- Paginador -->
       <div class="paginador">
-        <button class="btn-page" [disabled]="pagina === 1" (click)="irPagina(1)">«</button>
-        <button class="btn-page" [disabled]="pagina === 1" (click)="irPagina(pagina - 1)">‹</button>
+        <button
+          class="btn-page"
+          [disabled]="pagina === 1"
+          (click)="irPagina(1)"
+        >
+          «
+        </button>
+        <button
+          class="btn-page"
+          [disabled]="pagina === 1"
+          (click)="irPagina(pagina - 1)"
+        >
+          ‹
+        </button>
         <span class="page-info">Página {{ pagina }} de {{ totalPaginas }}</span>
-        <button class="btn-page" [disabled]="pagina === totalPaginas" (click)="irPagina(pagina + 1)">›</button>
-        <button class="btn-page" [disabled]="pagina === totalPaginas" (click)="irPagina(totalPaginas)">»</button>
+        <button
+          class="btn-page"
+          [disabled]="pagina === totalPaginas"
+          (click)="irPagina(pagina + 1)"
+        >
+          ›
+        </button>
+        <button
+          class="btn-page"
+          [disabled]="pagina === totalPaginas"
+          (click)="irPagina(totalPaginas)"
+        >
+          »
+        </button>
       </div>
     </div>
   }
   @if (!cargando && !error && datos.length === 0) {
-    <div class="state-box">
-      Sin datos para el rango seleccionado.
-    </div>
+    <div class="state-box">Sin datos para el rango seleccionado.</div>
   }
 </div>
