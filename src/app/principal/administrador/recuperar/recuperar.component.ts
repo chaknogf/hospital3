@@ -1,9 +1,9 @@
 import { roles } from './../../../enum/roles.enum';
 import { of } from 'rxjs';
-import { Component, OnInit, OnDestroy, inject, signal, OnChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CrearUsuario, Passreset, Usuario, UsuarioOut } from '../../../interface/usuarios.interface';
@@ -66,8 +66,8 @@ export class RecuperarComponent implements OnInit {
   // ======= FORMULARIO =======
   private crearFormulario(): FormGroup {
     return this.fb.group({
-      email: [''],
-      password: ['']
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(4)]]
     });
   }
 
@@ -101,7 +101,10 @@ export class RecuperarComponent implements OnInit {
       )
       .subscribe(response => {
         if (!response) return;
-
+        if (response.queued) {
+          this.error.set('Sin conexión al servidor. Intente de nuevo.');
+          return;
+        }
         console.log('Usuario Restablecido: ', response);
         this.volver();
       })

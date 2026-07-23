@@ -209,18 +209,10 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
     });
   }
 
-  asociarMedico(): void {
-    this.procesando = true;
-    this.api.asociarMedico().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res) => { this.resultadoOperacion = res; this.procesando = false; this.cdr.markForCheck(); },
-      error: () => { this.procesando = false; this.cdr.markForCheck(); }
-    });
-  }
-
   asociarTodo(): void {
     this.procesando = true;
     this.progreso = null;
-    this.api.asociarTodoStream().pipe(takeUntil(this.destroy$)).subscribe({
+    this.api.asociarPacientesMasivoStream().pipe(takeUntil(this.destroy$)).subscribe({
       next: (p) => {
         this.progreso = p;
         this.cdr.markForCheck();
@@ -237,9 +229,9 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
     });
   }
 
-  sincronizarEspecialidad(): void {
+  sincronizarMedicoEspecialidad(): void {
     this.procesando = true;
-    this.api.sincronizarEspecialidad().pipe(takeUntil(this.destroy$)).subscribe({
+    this.api.sincronizarMedicoEspecialidad().pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.resultadoOperacion = res;
         this.procesando = false;

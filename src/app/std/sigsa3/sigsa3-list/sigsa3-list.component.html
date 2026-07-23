@@ -115,22 +115,15 @@
     <button class="btn-accion" (click)="abrirModalAsociar()">
       🔗 Asociar Paciente
     </button>
-    <button
-      class="btn-accion"
-      (click)="asociarMedico()"
-      [disabled]="procesando"
-    >
-      🩺 Asociar Médico
-    </button>
     <button class="btn-accion" (click)="asociarTodo()" [disabled]="procesando">
-      ⚡ Asociar Todo
+      ⚡ Asociar Pacientes Masivo
     </button>
     <button
       class="btn-accion"
-      (click)="sincronizarEspecialidad()"
+      (click)="sincronizarMedicoEspecialidad()"
       [disabled]="procesando"
     >
-      🔄 Sincronizar Personal Salud
+      🩺 Sincronizar Médico + Especialidad
     </button>
     <button class="btn-accion accent" (click)="gestionarPersonalSalud()">
       👤 Gestionar Personal Salud

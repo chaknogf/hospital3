@@ -97,15 +97,6 @@ export class Sigsa3Service extends BaseApiService {
     );
   }
 
-  actualizarEspecialidad(personalSalud: string): Observable<any> {
-    this.isLoading.set(true);
-    return this.offMutation('POST', `${this.baseUrl}/sigsa3/actualizar-especialidad`, {
-      personal_salud: personalSalud
-    }).pipe(
-      finalize(() => this.isLoading.set(false))
-    );
-  }
-
   eliminarPorIds(ids: number[]): Observable<{ eliminados: number }> {
     this.isLoading.set(true);
     return this.offMutation('POST', `${this.baseUrl}/sigsa3/eliminar-por-ids`, { ids }).pipe(
@@ -122,24 +113,17 @@ export class Sigsa3Service extends BaseApiService {
     );
   }
 
-  asociarMedico(): Observable<any> {
+  asociarPacientesMasivo(): Observable<any> {
     this.isLoading.set(true);
-    return this.offMutation('POST', `${this.baseUrl}/sigsa3/asociar-medico`).pipe(
+    return this.offMutation('POST', `${this.baseUrl}/sigsa3/asociar-pacientes-masivo`).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }
 
-  asociarTodo(): Observable<any> {
-    this.isLoading.set(true);
-    return this.offMutation('POST', `${this.baseUrl}/sigsa3/asociar-todo`).pipe(
-      finalize(() => this.isLoading.set(false))
-    );
-  }
-
-  asociarTodoStream(): Observable<ProgresoSigsa3> {
+  asociarPacientesMasivoStream(): Observable<ProgresoSigsa3> {
     return new Observable<ProgresoSigsa3>(subscriber => {
       const token = localStorage.getItem('access_token');
-      const url = `${this.baseUrl}/sigsa3/asociar-todo-stream`;
+      const url = `${this.baseUrl}/sigsa3/asociar-pacientes-masivo-stream`;
       const controller = new AbortController();
 
       fetch(url, {
@@ -211,11 +195,11 @@ export class Sigsa3Service extends BaseApiService {
     );
   }
 
-  sincronizarEspecialidad(): Observable<any> {
+  sincronizarMedicoEspecialidad(): Observable<any> {
     this.isLoading.set(true);
-    return this.http.post<any>(`${this.baseUrl}/sigsa3/sincronizar-especialidad`, {}).pipe(
+    return this.http.post<any>(`${this.baseUrl}/sigsa3/sincronizar-medico-especialidad`, {}).pipe(
       finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'sincronizar especialidad'))
+      catchError(error => this.manejarError(error, 'sincronizar médico especialidad'))
     );
   }
 
