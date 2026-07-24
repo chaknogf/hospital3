@@ -53,6 +53,7 @@ export class PersonalHospitalComponent implements OnInit {
 
   async descargarExcel(): Promise<void> {
     const rows = this.datos.map((d: any) => ({
+      'ID Paciente': d.paciente_id,
       Expediente: d.expediente || '-',
       Fecha: d.fecha_consulta,
       Paciente: d.nombre_completo,

@@ -39,6 +39,7 @@
     <div class="field-actions">
       <button class="btn-search" (click)="buscar()">Buscar</button>
       <button class="btn-clear" (click)="limpiarFiltros()">Limpiar</button>
+      <button class="btn-search" (click)="descargarExcel()">📥 Excel</button>
     </div>
   </div>
 
@@ -58,6 +59,7 @@
             <thead>
               <tr>
                 <th>#</th>
+                <th>ID</th>
                 <th>Expediente</th>
                 <th>Nombre</th>
                 <th>Sexo</th>
@@ -70,6 +72,7 @@
               @for (p of pacientes; track p; let i = $index) {
                 <tr>
                   <td>{{ i + 1 + (paginaActual - 1) * pageSize }}</td>
+                  <td class="text-left">{{ p.id }}</td>
                   <td>{{ p.expediente || '-' }}</td>
                   <td class="text-left">{{ p.nombre_completo || '—' }}</td>
                   <td>{{ p.sexo || '-' }}</td>

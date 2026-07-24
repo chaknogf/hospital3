@@ -29,6 +29,7 @@
         <table class="reporte-table">
           <thead>
             <tr>
+              <th>ID</th>
               <th>Expediente</th>
               <th>Fecha_consulta</th>
               <th>Paciente</th>
@@ -42,6 +43,7 @@
           <tbody>
             @for (d of datos; track d) {
               <tr>
+                <td>{{ d.paciente_id }}</td>
                 <td>{{ d.expediente || "-" }}</td>
                 <td>{{ d.fecha_consulta }}</td>
                 <td>

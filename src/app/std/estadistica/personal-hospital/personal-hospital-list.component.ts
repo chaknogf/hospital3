@@ -101,4 +101,33 @@ export class PersonalHospitalListComponent implements OnInit {
     this.paginaActual = pagina;
     this.cargar();
   }
+
+  async descargarExcel(): Promise<void> {
+    if (this.totalDeRegistros === 0) return;
+    this.api.getPersonalHospitalPacientes({ skip: 0, limit: this.totalDeRegistros, ...this.filtros }).subscribe({
+      next: async (res) => {
+        const rows = res.pacientes.map((p: any) => ({
+          ID: p.id,
+          Expediente: p.expediente || '-',
+          Nombre: p.nombre_completo || '—',
+          Sexo: p.sexo || '-',
+          'Fecha Nacimiento': p.fecha_nacimiento ? new Date(p.fecha_nacimiento).toLocaleDateString('es-GT') : '-',
+          Estado: p.estado === 'V' ? 'Vivo' : p.estado === 'F' ? 'Fallecido' : 'Inactivo',
+        }));
+        const { default: ExcelJS } = await import('exceljs');
+        const wb = new ExcelJS.Workbook();
+        const ws = wb.addWorksheet('Personal Hospital');
+        ws.columns = Object.keys(rows[0]).map(k => ({ header: k, key: k, width: Math.max(k.length, 20) }));
+        ws.addRows(rows);
+        const buffer = await wb.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `personal_hospital_${new Date().toISOString().split('T')[0]}.xlsx`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    });
+  }
 }
