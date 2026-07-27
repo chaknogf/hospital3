@@ -155,7 +155,9 @@ export class CnAcimientoInformeAuxiliarComponent {
   }
 
   get tipoParto(): string {
-    return this.constancia?.paciente?.datos_extra?.neonatales?.tipo_parto ?? '—';
+    const map: Record<string, string> = { Simple: 'Simple', Doble: 'Doble', Multiple: 'Doble' };
+    const v = this.constancia?.paciente?.datos_extra?.neonatales?.tipo_parto;
+    return v ? (map[v] ?? v) : '—';
   }
 
   get clasePartoTexto(): string {
