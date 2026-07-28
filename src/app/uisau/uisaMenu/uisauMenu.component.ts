@@ -54,6 +54,7 @@ export class UisauMenuComponent implements OnInit {
 
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
       { nombre: 'Encamamiento', descripcion: 'Listado de Pacientes Hospitalizados', ruta: '/encamamiento', icon: '' },
+      { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: '/reportes', icon: 'archivo' },
       // { nombre: 'Informados', descripcion: 'Gestión de usuarios informados', ruta: '/informados', icon: '' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 

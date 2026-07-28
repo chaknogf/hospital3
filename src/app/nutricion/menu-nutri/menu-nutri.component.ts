@@ -58,6 +58,7 @@ export class MenuNutriComponent implements OnInit {
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
       { nombre: 'COEX', descripcion: 'Consulta Externa de Nutrición', ruta: '/coex-nutri', icon: 'cmedic' },
       { nombre: 'Citas', descripcion: 'Agendar y Consultar Citas', ruta: '/citas-nutri', icon: 'calendar' },
+      { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: '/reportes', icon: 'archivo' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];

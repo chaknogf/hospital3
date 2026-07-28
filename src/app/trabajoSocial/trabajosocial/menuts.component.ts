@@ -54,6 +54,7 @@ export class MenutsComponent implements OnInit {
 
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
       { nombre: 'Nacimientos', descripcion: 'Registro de Nacimientos (solo lectura)', ruta: '/ts-nacimientos', icon: 'baby' },
+      { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: '/reportes', icon: 'archivo' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];

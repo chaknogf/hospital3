@@ -58,7 +58,9 @@ export class MenuOdontoComponent implements OnInit {
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
       { nombre: 'COEX', descripcion: 'Consulta Externa de Odontología', ruta: '/coex-odonto', icon: 'cmedic' },
       { nombre: 'Citas', descripcion: 'Agendar y Consultar Citas', ruta: '/citas-odonto', icon: 'calendar' },
+      { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: '/reportes', icon: 'archivo' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
+
 
     ];
 
