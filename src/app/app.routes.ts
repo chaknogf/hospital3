@@ -521,7 +521,7 @@ export const routes: Routes = [
       {
         path: 'reportes',
         loadComponent: () => import('./std/reportes/reportes.component').then(c => c.ReportesComponent),
-        canActivate: [roleGuard(['admin', 'std'])],
+        // canActivate: [roleGuard(['admin', 'std'])],
         children: [
           {
             path: '',

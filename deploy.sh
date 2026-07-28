@@ -69,4 +69,4 @@ sudo systemctl reload nginx
 
 # 12. Mensaje final
 echo "✅ Despliegue completado correctamente. Visite:"
-echo "🌐 https://hgtecpan.duckdns.org/medicapp/"
+echo "🌐 https://hgtecpan.com/medicapp/"
