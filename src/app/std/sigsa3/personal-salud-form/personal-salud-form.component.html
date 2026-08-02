@@ -24,7 +24,12 @@
 
           <div class="field-group">
             <label>Especialidad</label>
-            <input type="text" formControlName="especialidad" placeholder="Medicina General, Pediatría..." />
+            <select formControlName="especialidad_id">
+              <option [ngValue]="null">Seleccione una especialidad</option>
+              @for (e of especialidades; track e.id) {
+                <option [ngValue]="e.id">{{ e.nombre }}</option>
+              }
+            </select>
           </div>
 
           <div class="field-group">

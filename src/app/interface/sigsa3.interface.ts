@@ -1,11 +1,10 @@
-// sigsa3.interface.ts
-
 export interface Sigsa3Out {
   id: number;
   paciente_id?: number | null;
   medico_id?: number | null;
   consulta_id?: number | null;
   personal_salud?: string | null;
+  personal_salud_id?: number | null;
   fecha_consulta?: string | null;
   no_historia_clinica?: string | null;
   nombre_paciente?: string | null;
@@ -17,12 +16,15 @@ export interface Sigsa3Out {
   control?: string | null;
   semana_gestacional?: number | null;
   codigo_cie_10?: string | null;
+  codigo_cie_10_id?: number | null;
   dx?: string | null;
-  especialidad?: string | null;
+  especialidad_id?: number | null;
+  especialidad_nombre?: string | null;
 }
 
 export interface Sigsa3Create {
   personal_salud?: string;
+  personal_salud_id?: number;
   fecha_consulta?: string;
   no_historia_clinica?: string;
   nombre_paciente?: string;
@@ -34,14 +36,17 @@ export interface Sigsa3Create {
   control?: string;
   semana_gestacional?: number;
   codigo_cie_10?: string;
+  codigo_cie_10_id?: number;
   dx?: string;
-  especialidad?: string;
+  especialidad_id?: number;
   medico_id?: number;
   consulta_id?: number;
+  paciente_id?: number;
 }
 
 export interface Sigsa3Update {
   personal_salud?: string;
+  personal_salud_id?: number;
   fecha_consulta?: string;
   no_historia_clinica?: string;
   nombre_paciente?: string;
@@ -53,8 +58,9 @@ export interface Sigsa3Update {
   control?: string;
   semana_gestacional?: number;
   codigo_cie_10?: string;
+  codigo_cie_10_id?: number;
   dx?: string;
-  especialidad?: string;
+  especialidad_id?: number;
   medico_id?: number;
   consulta_id?: number;
 }
@@ -66,13 +72,11 @@ export interface FiltroSigsa3 {
   nombre_paciente?: string;
   sexo?: string;
   tipo_consulta?: string;
-  especialidad?: string;
+  especialidad_id?: number;
   codigo_cie_10?: string;
   q?: string;
   limit?: number;
 }
-
-// ── Estadísticas ──
 
 export interface Sigsa3EspecialidadItem {
   especialidad?: string | null;
@@ -117,8 +121,6 @@ export interface Sigsa3DxFrecuentesResponse {
   generado_en: string;
 }
 
-// ── Diagnósticos CIE-10 Z ──
-
 export interface Sigsa3DxZItem {
   tipo_consulta: string;
   codigo_cie_10: string;
@@ -133,11 +135,9 @@ export interface Sigsa3DxZResponse {
   codigos_filtrados: string[];
   datos: Sigsa3DxZItem[];
   total_general: number;
-  total_pacientes: number;
+  total_pacientes?: number;
   generado_en: string;
 }
-
-// ── Progreso asociar-todo (SSE) ──
 
 export interface ProgresoSigsa3 {
   step: string;
@@ -151,23 +151,22 @@ export interface ProgresoSigsa3 {
   paso5_paciente: number;
 }
 
-// ── Personal Salud ──
-
 export interface PersonalSalud {
   id: number;
   nombre: string;
-  especialidad?: string;
+  especialidad_id?: number;
+  especialidad_nombre?: string;
   activo?: boolean;
 }
 
 export interface PersonalSaludCreate {
   nombre: string;
-  especialidad?: string;
+  especialidad_id?: number;
   activo?: boolean;
 }
 
 export interface PersonalSaludUpdate {
   nombre?: string;
-  especialidad?: string;
+  especialidad_id?: number;
   activo?: boolean;
 }

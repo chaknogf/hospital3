@@ -50,13 +50,16 @@
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Especialidad</label>
 
-          <input
-            type="text"
+          <select
             class="input-filtros"
-            [(ngModel)]="filtros.especialidad"
-            name="especialidad"
-            placeholder="Cardiología"
-            />
+            [(ngModel)]="filtros.especialidad_id"
+            name="especialidad_id"
+            >
+            <option [ngValue]="''">Todas</option>
+            @for (e of especialidades; track e.id) {
+              <option [ngValue]="e.id">{{ e.nombre }}</option>
+            }
+          </select>
         </fieldset>
       </div>
 
@@ -127,7 +130,7 @@
               {{ data.pasaporte || "—" }}
             </td>
             <td data-label="Especialidad">
-              {{ data.especialidad || "—" }}
+              {{ data.especialidad_nombre || "—" }}
             </td>
             <td data-label="Estado">
               <span [ngClass]="data.activo ? 'text-success' : 'text-danger'">

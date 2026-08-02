@@ -485,6 +485,23 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin', 'std'])]
       },
 
+      // SIGSA-3 Registros (normalizados)
+      {
+        path: 'sigsa3-registros',
+        loadComponent: () => import('./std/sigsa3-registros/sigsa3-registros-list/sigsa3-registros-list.component').then(c => c.Sigsa3RegistrosListComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
+        path: 'sigsa3-registros/nuevo',
+        loadComponent: () => import('./std/sigsa3-registros/sigsa3-registros-form/sigsa3-registros-form.component').then(c => c.Sigsa3RegistrosFormComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+      {
+        path: 'sigsa3-registros/editar/:id',
+        loadComponent: () => import('./std/sigsa3-registros/sigsa3-registros-form/sigsa3-registros-form.component').then(c => c.Sigsa3RegistrosFormComponent),
+        canActivate: [roleGuard(['admin', 'std'])]
+      },
+
       // Censo de Camas
       {
         path: 'censo-camas',

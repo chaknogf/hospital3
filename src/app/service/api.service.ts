@@ -29,6 +29,10 @@ export class ApiService {
   role = signal<string | null>(null);
   nombreUsuario = signal<string | null>(null);
   isLoading = signal(false);
+  /** Bandera para cancelar la precarga paginada de pacientes/consultas (ej. al hacer logout). */
+  private precacheCancelado = false;
+  /** Tope máximo de registros precacheados por recurso (evita descargar catálogos completos). */
+  private readonly precacheMaxRegistros = 5000;
 
   private usuariosSubject = new BehaviorSubject<UsuarioOut[]>([]);
   usuarios$ = this.usuariosSubject.asObservable();
@@ -115,6 +119,7 @@ export class ApiService {
   }
 
   private preCacheAllPatients(): void {
+    this.precacheCancelado = false;
     if (!this.sync.isOnline()) return;
     const limit = 100;
     const url = `${this.baseUrl}/pacientes/`;
@@ -127,7 +132,7 @@ export class ApiService {
         catchError(() => of(null))
       ).subscribe(firstResponse => {
         if (!firstResponse) return;
-        const total = firstResponse.total;
+        const total = Math.min(firstResponse.total, this.precacheMaxRegistros);
         this.sync.setCachedData(firstKey, firstResponse, ttl);
         this.preCachePageSequentially(url, limit, limit, total, ttl);
       });
@@ -135,7 +140,7 @@ export class ApiService {
   }
 
   private preCachePageSequentially(url: string, skip: number, limit: number, total: number, ttl: number): void {
-    if (skip >= total) return;
+    if (skip >= total || this.precacheCancelado) return;
     const params = new HttpParams().set('skip', String(skip)).set('limit', String(limit));
     this.http.get<PacienteListResponse>(url, { params }).pipe(
       catchError(() => of(null))
@@ -148,6 +153,7 @@ export class ApiService {
   }
 
   private preCacheAllConsultations(): void {
+    this.precacheCancelado = false;
     if (!this.sync.isOnline()) return;
     const limit = 100;
     const url = `${this.baseUrl}/consultas/`;
@@ -160,7 +166,7 @@ export class ApiService {
         catchError(() => of(null))
       ).subscribe(firstResponse => {
         if (!firstResponse) return;
-        const total = firstResponse.total;
+        const total = Math.min(firstResponse.total, this.precacheMaxRegistros);
         this.sync.setCachedData(firstKey, firstResponse, ttl);
         this.preCachePageSequentially(url, limit, limit, total, ttl);
       });
@@ -255,6 +261,7 @@ export class ApiService {
   }
 
   logOut(): void {
+    this.precacheCancelado = true;
     this.sync.clearOnLogout();
     localStorage.removeItem('access_token');
     localStorage.removeItem('username');

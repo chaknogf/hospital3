@@ -1,5 +1,3 @@
-// doctorForm.component.ts
-
 import { Location } from '@angular/common';
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import {
@@ -11,7 +9,7 @@ import {
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { MedicoCreate, MedicoOut, MedicoUpdate } from '../../../interface/medicos.interface';
-import { MedicosService } from '../medicos.service';
+import { MedicosService, EspecialidadItem } from '../medicos.service';
 import { IconService } from '../../../service/icon.service';
 
 
@@ -37,6 +35,7 @@ export class DoctorFormComponent implements OnInit {
   medicoId: number | null = null;
   medicoActual: MedicoOut | null = null;
 
+  especialidades: EspecialidadItem[] = [];
   cargando = false;
   guardando = false;
 
@@ -52,7 +51,7 @@ export class DoctorFormComponent implements OnInit {
     ]],
     colegiado: [''],
     pasaporte: [''],
-    especialidad: [''],
+    especialidad_id: [null],
     dpi: [''],
     sexo: [''],
     activo: [true]
@@ -74,11 +73,23 @@ export class DoctorFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargarEspecialidades();
     this.medicoId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.medicoId) {
       this.enEdicion = true;
       this.cargarMedico(this.medicoId);
     }
+  }
+
+  cargarEspecialidades(): void {
+    this.api.getEspecialidades().subscribe({
+      next: (data) => {
+        this.especialidades = data;
+      },
+      error: (err) => {
+        console.error('Error cargando especialidades:', err);
+      }
+    });
   }
 
   // ======= API =======
@@ -92,7 +103,7 @@ export class DoctorFormComponent implements OnInit {
           nombre: data.nombre,
           colegiado: data.colegiado,
           pasaporte: data.pasaporte,
-          especialidad: data.especialidad,
+          especialidad_id: data.especialidad_id,
           dpi: data.dpi,
           sexo: data.sexo,
           activo: data.activo

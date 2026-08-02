@@ -833,6 +833,19 @@
                       class="chip chip-lg"
                       [class.on]="
                         form.get('datos_extra.neonatales.tipo_parto')?.value ===
+                        'Doble'
+                      "
+                      (click)="
+                        form
+                          .get('datos_extra.neonatales.tipo_parto')
+                          ?.setValue('Doble')
+                      "
+                      >Doble</span
+                    >
+                    <span
+                      class="chip chip-lg"
+                      [class.on]="
+                        form.get('datos_extra.neonatales.tipo_parto')?.value ===
                         'Multiple'
                       "
                       (click)="
@@ -885,7 +898,7 @@
                     @for (m of medicos; track m.id) {
                       <option [ngValue]="m.id">
                         {{ m.nombre
-                        }}{{ m.especialidad ? " — " + m.especialidad : "" }}
+                        }}{{ m.especialidad_nombre ? " — " + m.especialidad_nombre : "" }}
                       </option>
                     }
                   </select>

@@ -1,0 +1,209 @@
+<!-- sigsa3-registros-list.component.html -->
+
+<div class="sigsa3-container">
+  <!-- HEADER -->
+  <div
+    class="botones justify-content-between"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="icons['menu']"></span>
+      Menu
+    </button>
+    <h1 class="text-white">SIGSA-3 Registros (Normalizados)</h1>
+    <button type="button" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['find']"></span>
+      Buscar
+    </button>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar }">
+    <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
+      <div class="d-flex gap-1 flex-wrap">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Buscar general</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.q"
+            name="q"
+            placeholder="Paciente, expediente, CIE-10..."
+          />
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Paciente ID</label>
+          <input
+            type="number"
+            class="input-filtros"
+            [(ngModel)]="filtros.paciente_id"
+            name="paciente_id"
+            placeholder="ID"
+          />
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Tipo Consulta</label>
+          <select
+            class="input-filtros"
+            [(ngModel)]="filtros.tipo_consulta_id"
+            name="tipo_consulta_id"
+          >
+            <option [ngValue]="undefined">Todos</option>
+            @for (t of tiposConsulta; track t.id) {
+              <option [ngValue]="t.id">{{ t.nombre }}</option>
+            }
+          </select>
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Especialidad</label>
+          <select
+            class="input-filtros"
+            [(ngModel)]="filtros.especialidad_id"
+            name="especialidad_id"
+          >
+            <option [ngValue]="undefined">Todas</option>
+            @for (e of especialidades; track e.id) {
+              <option [ngValue]="e.id">{{ e.nombre }}</option>
+            }
+          </select>
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Desde</label>
+          <input
+            type="date"
+            class="input-filtros"
+            [(ngModel)]="filtros.fecha_desde"
+            name="fecha_desde"
+          />
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Hasta</label>
+          <input
+            type="date"
+            class="input-filtros"
+            [(ngModel)]="filtros.fecha_hasta"
+            name="fecha_hasta"
+          />
+        </fieldset>
+      </div>
+      <div class="d-flex gap-1 flex-wrap">
+        <button class="button-filtros" type="submit" (click)="toggleFiltrar()">
+          <span [innerHTML]="icons['search']"></span> Buscar
+        </button>
+        <button class="button-filtros" type="button" (click)="limpiarFiltros()">
+          <span [innerHTML]="icons['delete']"></span> Limpiar
+        </button>
+        <button class="button-filtros accent" type="button" (click)="nuevo()">
+          <span [innerHTML]="icons['create']"></span> Nuevo
+        </button>
+      </div>
+    </form>
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="toggle-panel-btn" (click)="toggleFiltrar()">
+        <span [innerHTML]="icons['arrowDown']"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTADOR -->
+  @if (!cargando) {
+    <div class="total-badge">{{ totalDeRegistros }} registros encontrados</div>
+  }
+
+  <!-- CARGANDO -->
+  @if (cargando) {
+    <div class="state-box spinner"></div>
+  }
+
+  <!-- TABLA -->
+  @if (!cargando) {
+    <div class="table-wrap">
+      <table class="sigsa3-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Paciente</th>
+            <th>Sexo</th>
+            <th>Tipo</th>
+            <th>Especialidad</th>
+            <th>CIE-10</th>
+            <th>Médico / Personal</th>
+            <th>Control</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of registrosPaginados; track r.id) {
+            <tr>
+              <td>{{ r.fecha_consulta || "—" }}</td>
+              <td>
+                <div class="cell-paciente">
+                  <strong>{{ r.paciente_nombre || "—" }}</strong>
+                  @if (r.paciente_expediente) {
+                    <small>{{ r.paciente_expediente }}</small>
+                  }
+                </div>
+              </td>
+              <td>{{ r.sexo || "—" }}</td>
+              <td>{{ r.tipo_consulta_nombre || "—" }}</td>
+              <td>{{ r.especialidad_nombre || "—" }}</td>
+              <td>
+                <span class="cie-badge">{{ r.codigo_cie_10 || "—" }}</span>
+                @if (r.codigo_cie_10_descripcion) {
+                  <small class="cie-desc">{{ r.codigo_cie_10_descripcion }}</small>
+                }
+              </td>
+              <td>
+                <div class="cell-paciente">
+                  @if (r.medico_nombre) {
+                    <span>{{ r.medico_nombre }}</span>
+                  }
+                  @if (r.personal_salud_nombre) {
+                    <small>{{ r.personal_salud_nombre }}</small>
+                  }
+                  @if (!r.medico_nombre && !r.personal_salud_nombre) {
+                    <span>—</span>
+                  }
+                </div>
+              </td>
+              <td>{{ r.control || "—" }}</td>
+              <td>
+                <div class="d-flex gap-1">
+                  <button class="btn-sm" (click)="editar(r.id)">✏️</button>
+                  <button class="btn-sm danger" (click)="eliminar(r.id)">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          }
+          @if (!cargando && registros.length === 0) {
+            <tr>
+              <td colspan="9" class="text-center py-3">
+                <em>No se encontraron registros SIGSA-3 normalizados.</em>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- PAGINADOR -->
+  @if (totalPaginas > 1) {
+    <div class="paginador">
+      <button [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">
+        ◀
+      </button>
+      @for (p of paginas; track trackById($index, p)) {
+        <button
+          [class.pag-activa]="p === paginaActual"
+          (click)="paginaActual = p"
+        >
+          {{ p }}
+        </button>
+      }
+      <button [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">
+        ▶
+      </button>
+    </div>
+  }
+</div>

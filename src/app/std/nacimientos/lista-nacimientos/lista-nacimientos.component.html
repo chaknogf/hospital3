@@ -733,10 +733,10 @@
                     <span class="ps-lbl">Colegiado</span>
                     <span class="ps-val">{{ cn.medico.colegiado || "—" }}</span>
                   </div>
-                  @if (cn.medico.especialidad) {
+                  @if (cn.medico.especialidad_nombre) {
                     <div class="ps-field">
                       <span class="ps-lbl">Especialidad</span>
-                      <span class="ps-val">{{ cn.medico.especialidad }}</span>
+                      <span class="ps-val">{{ cn.medico.especialidad_nombre }}</span>
                     </div>
                   }
                 </div>

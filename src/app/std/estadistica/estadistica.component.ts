@@ -61,6 +61,7 @@ export class EstadisticaComponent implements OnInit {
       { nombre: 'Nacimientos', descripcion: 'Registro de Nacimientos', ruta: '/nacimientos-std', icon: 'baby' },
       { nombre: 'Medicos', descripcion: 'Medicos Registrados', ruta: '/doctores', icon: 'doctor' },
       { nombre: 'SIGSA-3', descripcion: 'Registros SIGSA-3 e importación CSV', ruta: '/sigsa3', icon: 'consultas' },
+      { nombre: 'SIGSA-3 Registros', descripcion: 'Registros SIGSA-3 normalizados', ruta: '/sigsa3-registros', icon: 'consultas' },
       { nombre: 'Agente', descripcion: 'Chat inteligente de datos (NL→SQL)', ruta: '/agente', icon: 'compartir' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 

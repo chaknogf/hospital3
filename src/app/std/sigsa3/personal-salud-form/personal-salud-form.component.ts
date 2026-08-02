@@ -1,10 +1,11 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Sigsa3Service } from '../sigsa3.service';
 import { PersonalSaludCreate, PersonalSaludUpdate } from '../../../interface/sigsa3.interface';
+import { MedicosService, EspecialidadItem } from '../../medicos/medicos.service';
 import { IconService } from '../../../service/icon.service';
 
 @Component({
@@ -15,12 +16,13 @@ import { IconService } from '../../../service/icon.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReactiveFormsModule]
 })
-export class PersonalSaludFormComponent {
+export class PersonalSaludFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private location = inject(Location);
   private api = inject(Sigsa3Service);
+  private medicosService = inject(MedicosService);
   private iconService = inject(IconService);
 
   registroId: number | null = null;
@@ -28,9 +30,11 @@ export class PersonalSaludFormComponent {
   guardando = false;
   enEdicion = false;
 
+  especialidades: EspecialidadItem[] = [];
+
   form: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
-    especialidad: [''],
+    especialidad_id: [null],
     activo: [true],
   });
 
@@ -38,11 +42,19 @@ export class PersonalSaludFormComponent {
   cancelIcon = this.iconService.getIcon('cancelIcon');
 
   ngOnInit(): void {
+    this.cargarEspecialidades();
     this.registroId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.registroId) {
       this.enEdicion = true;
       this.cargarRegistro(this.registroId);
     }
+  }
+
+  cargarEspecialidades(): void {
+    this.medicosService.getEspecialidades().subscribe({
+      next: (data) => this.especialidades = data,
+      error: () => {}
+    });
   }
 
   cargarRegistro(id: number): void {
@@ -51,7 +63,7 @@ export class PersonalSaludFormComponent {
       next: (data) => {
         this.form.patchValue({
           nombre: data.nombre,
-          especialidad: data.especialidad || '',
+          especialidad_id: data.especialidad_id,
           activo: data.activo ?? true,
         });
         this.cargando = false;

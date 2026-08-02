@@ -8,6 +8,13 @@ import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { BaseApiService, PaginationState } from '../../service/base-api.service';
 import { FiltroMedico, MedicoCreate, MedicoListResponse, MedicoOut, MedicoUpdate } from '../../interface/medicos.interface';
 
+export interface EspecialidadItem {
+  id: number;
+  nombre: string;
+  abreviatura?: string;
+  codigo?: string;
+}
+
 
 
 @Injectable({
@@ -39,6 +46,14 @@ export class MedicosService extends BaseApiService {
 
   private refrescarMedicos(): void {
     this.getMedicos(this.ultimoFiltro.filtro).subscribe();
+  }
+
+  getEspecialidades(): Observable<EspecialidadItem[]> {
+    return this.http.get<EspecialidadItem[]>(
+      `${this.baseUrl}/especialidades`
+    ).pipe(
+      catchError(error => this.manejarError(error, 'obtener especialidades'))
+    );
   }
 
   // ======= GET =======

@@ -1,11 +1,9 @@
-// doctores.component.ts
-
 import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MedicoOut } from '../../../interface/medicos.interface';
-import { MedicosService } from '../medicos.service';
+import { MedicosService, EspecialidadItem } from '../medicos.service';
 import { IconService } from '../../../service/icon.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -32,6 +30,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
   // ======= DATA =======
 
   medicos: MedicoOut[] = [];
+  especialidades: EspecialidadItem[] = [];
   cargando = false;
 
   // ======= UI =======
@@ -54,7 +53,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
     id: '',
     nombre: '',
     colegiado: '',
-    especialidad: '',
+    especialidad_id: '',
     activo: '',
     skip: 0,
     limit: this.pageSize
@@ -93,12 +92,23 @@ export class DoctoresComponent implements OnInit, OnDestroy {
       this.cdr.markForCheck();
     });
 
+    this.cargarEspecialidades();
     this.cargarMedicos();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  cargarEspecialidades(): void {
+    this.api.getEspecialidades().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data) => {
+        this.especialidades = data;
+        this.cdr.markForCheck();
+      },
+      error: (err) => console.error('Error cargando especialidades:', err)
+    });
   }
 
   // ======= API =======
@@ -150,7 +160,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
       id: '',
       nombre: '',
       colegiado: '',
-      especialidad: '',
+      especialidad_id: '',
       activo: '',
       skip: 0,
       limit: this.pageSize
@@ -248,7 +258,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
           Nombre: m.nombre,
           Colegiado: m.colegiado || '',
           Pasaporte: m.pasaporte || '',
-          Especialidad: m.especialidad || '',
+          Especialidad: m.especialidad_nombre || '',
           Estado: m.activo ? 'Activo' : 'Inactivo',
           DPI: m.dpi || '',
           Sexo: m.sexo || ''

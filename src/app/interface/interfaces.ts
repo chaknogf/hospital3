@@ -68,7 +68,7 @@ export interface Socioeconomicos {
 export interface Neonatales {
   peso_nacimiento?: string | null;
   edad_gestacional?: string | null;
-  tipo_parto?: 'Simple' | 'Multiple' | null;
+  tipo_parto?: 'Simple' | 'Doble' | 'Multiple' | null;
   clase_parto?: 'Pes' | 'Cstp' | null;
   gemelo?: string | null;
   expediente_madre?: string | null;
@@ -120,6 +120,10 @@ export interface Paciente {
   contacto?: Contacto;
   referencias?: Referencia[];
   datos_extra?: DatosExtra;
+  idioma_id?: number | null;
+  pueblo_id?: number | null;
+  nacionalidad?: string | null;
+  lugar_nacimiento?: string | null;
   estado?: 'V' | 'F' | 'I'; // V = Vivo, F = Fallecido, I = Inactivo
   metadatos?: EventoMetadato[];
   creado_en?: string | null;

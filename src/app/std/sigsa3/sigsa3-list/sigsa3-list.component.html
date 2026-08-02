@@ -63,13 +63,16 @@
         </fieldset>
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Especialidad</label>
-          <input
-            type="text"
+          <select
             class="input-filtros"
-            [(ngModel)]="filtros.especialidad"
-            name="especialidad"
-            placeholder="Medicina General"
-          />
+            [(ngModel)]="filtros.especialidad_id"
+            name="especialidad_id"
+          >
+            <option value="">Todas</option>
+            @for (e of especialidades; track e.id) {
+              <option [ngValue]="e.id">{{ e.nombre }}</option>
+            }
+          </select>
         </fieldset>
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">CIE-10</label>
@@ -201,7 +204,7 @@
               <td>{{ r.no_historia_clinica || "—" }}</td>
               <td>{{ r.personal_salud || "—" }}</td>
               <td>{{ r.tipo_consulta || "—" }}</td>
-              <td>{{ r.especialidad || "—" }}</td>
+              <td>{{ r.especialidad_nombre || "—" }}</td>
               <td>
                 <span class="cie-badge">{{ r.codigo_cie_10 || "—" }}</span>
               </td>

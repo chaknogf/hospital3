@@ -67,15 +67,19 @@
         </div>
         <div class="modal-body">
           <div class="counter">
-            <button class="counter-btn" (click)="decrementarTotalNacimientos()" [disabled]="totalNacimientos() <= 1">−</button>
+            <button class="counter-btn" (click)="decrementarTotalNacimientos()" [disabled]="totalNacimientos() <= (esDoble ? 2 : 1)">−</button>
             <div class="counter-value">
               <span class="counter-num">{{ totalNacimientos() }}</span>
               <span class="counter-label">nacimiento(s)</span>
             </div>
-            <button class="counter-btn" (click)="incrementarTotalNacimientos()" [disabled]="totalNacimientos() >= 10">+</button>
+            <button class="counter-btn" (click)="incrementarTotalNacimientos()" [disabled]="totalNacimientos() >= maxNacimientos">+</button>
           </div>
           <div class="modal-info">
-            Se registrarán <strong>{{ totalNacimientos() }} recién nacido(s)</strong> de forma individual
+            @if (esDoble) {
+              Parto doble: se registrarán exactamente <strong>2 recién nacidos</strong> de forma individual
+            } @else {
+              Se registrarán <strong>{{ totalNacimientos() }} recién nacido(s)</strong> de forma individual
+            }
           </div>
         </div>
         <div class="modal-foot">
@@ -229,7 +233,7 @@
               <select class="field-input" formControlName="id_medico">
                 <option [ngValue]="null">— Seleccione un médico —</option>
                 @for (m of medicos; track m.id) {
-                  <option [ngValue]="m.id">{{ m.nombre }}@if (m.especialidad) { — {{ m.especialidad }} }</option>
+                  <option [ngValue]="m.id">{{ m.nombre }}@if (m.especialidad_nombre) { — {{ m.especialidad_nombre }} }</option>
                 }
               </select>
             </div>

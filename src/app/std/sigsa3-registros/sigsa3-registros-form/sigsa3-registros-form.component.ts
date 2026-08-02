@@ -2,21 +2,21 @@ import { Location } from '@angular/common';
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Sigsa3Create, Sigsa3Out, Sigsa3Update } from '../../../interface/sigsa3.interface';
-import { Sigsa3Service } from '../sigsa3.service';
+import { Sigsa3Registro, Sigsa3RegistroCreate, Sigsa3RegistroUpdate } from '../../../interface/sigsa3-registros.interface';
+import { Sigsa3RegistrosService } from '../sigsa3-registros.service';
 import { IconService } from '../../../service/icon.service';
 import { MedicosService, EspecialidadItem } from '../../medicos/medicos.service';
 import { MedicoOut } from '../../../interface/medicos.interface';
 
 @Component({
-  selector: 'app-sigsa3-form',
-  templateUrl: './sigsa3-form.component.html',
-  styleUrls: ['./sigsa3-form.component.css'],
+  selector: 'app-sigsa3-registros-form',
+  templateUrl: './sigsa3-registros-form.component.html',
+  styleUrls: ['./sigsa3-registros-form.component.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReactiveFormsModule]
 })
-export class Sigsa3FormComponent implements OnInit {
+export class Sigsa3RegistrosFormComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
@@ -24,43 +24,45 @@ export class Sigsa3FormComponent implements OnInit {
   private location = inject(Location);
 
   registroId: number | null = null;
-  registroActual: Sigsa3Out | null = null;
+  registroActual: Sigsa3Registro | null = null;
   cargando = false;
   guardando = false;
   enEdicion = false;
 
   medicos: MedicoOut[] = [];
   especialidades: EspecialidadItem[] = [];
+  tiposConsulta = [
+    { id: 1, nombre: 'Primeras' },
+    { id: 2, nombre: 'Reconsultas' },
+    { id: 3, nombre: 'Emergencia' },
+    { id: 4, nombre: 'Interconsultas' },
+  ];
 
   form: FormGroup = this.fb.group({
-    paciente_id: [null],
+    paciente_id: [null, [Validators.required, Validators.min(1)]],
     consulta_id: [null],
     medico_id: [null],
-    personal_salud: [''],
-    fecha_consulta: [''],
-    no_historia_clinica: [''],
-    nombre_paciente: [''],
-    sexo: [''],
-    edad_dias: [null],
-    edad_meses: [null],
-    edad_anios: [null],
-    tipo_consulta: [''],
+    personal_salud_id: [null],
+    fecha_consulta: ['', Validators.required],
+    tipo_consulta_id: [null],
     control: [''],
     semana_gestacional: [null],
-    codigo_cie_10: [''],
-    dx: [''],
+    codigo_cie_10_id: [null],
     especialidad_id: [null],
   });
 
   saveIcon: any;
   cancelIcon: any;
 
-  get nombre_paciente_display(): string {
-    return this.form.get('nombre_paciente')?.value || (this.enEdicion ? 'EDITANDO' : 'NUEVO');
+  get paciente_display(): string {
+    if (this.enEdicion && this.registroActual?.paciente_nombre) {
+      return this.registroActual.paciente_nombre;
+    }
+    return this.enEdicion ? 'EDITANDO' : 'NUEVO';
   }
 
   constructor(
-    private api: Sigsa3Service,
+    private api: Sigsa3RegistrosService,
     private apiService: MedicosService,
     private iconService: IconService
   ) {
@@ -101,19 +103,12 @@ export class Sigsa3FormComponent implements OnInit {
           paciente_id: data.paciente_id,
           consulta_id: data.consulta_id,
           medico_id: data.medico_id,
-          personal_salud: data.personal_salud,
+          personal_salud_id: data.personal_salud_id,
           fecha_consulta: data.fecha_consulta,
-          no_historia_clinica: data.no_historia_clinica,
-          nombre_paciente: data.nombre_paciente,
-          sexo: data.sexo,
-          edad_dias: data.edad_dias,
-          edad_meses: data.edad_meses,
-          edad_anios: data.edad_anios,
-          tipo_consulta: data.tipo_consulta,
+          tipo_consulta_id: data.tipo_consulta_id,
           control: data.control,
           semana_gestacional: data.semana_gestacional,
-          codigo_cie_10: data.codigo_cie_10,
-          dx: data.dx,
+          codigo_cie_10_id: data.codigo_cie_10_id,
           especialidad_id: data.especialidad_id,
         });
       },
@@ -128,19 +123,19 @@ export class Sigsa3FormComponent implements OnInit {
       return;
     }
     this.guardando = true;
-    const payload: Sigsa3Create | Sigsa3Update = { ...this.form.value };
+    const payload: Sigsa3RegistroCreate | Sigsa3RegistroUpdate = { ...this.form.value };
 
     if (this.enEdicion && this.registroId) {
-      this.api.actualizarRegistro(this.registroId, payload as Sigsa3Update).subscribe({
-        next: () => this.router.navigate(['/sigsa3']),
+      this.api.actualizarRegistro(this.registroId, payload as Sigsa3RegistroUpdate).subscribe({
+        next: () => this.router.navigate(['/sigsa3-registros']),
         error: () => { this.guardando = false; },
         complete: () => { this.guardando = false; }
       });
       return;
     }
 
-    this.api.crearRegistro(payload as Sigsa3Create).subscribe({
-      next: () => this.router.navigate(['/sigsa3']),
+    this.api.crearRegistro(payload as Sigsa3RegistroCreate).subscribe({
+      next: () => this.router.navigate(['/sigsa3-registros']),
       error: () => { this.guardando = false; },
       complete: () => { this.guardando = false; }
     });

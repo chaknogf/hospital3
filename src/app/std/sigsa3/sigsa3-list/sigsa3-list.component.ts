@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Sigsa3Out, ProgresoSigsa3 } from '../../../interface/sigsa3.interface';
 import { Sigsa3Service } from '../sigsa3.service';
+import { MedicosService, EspecialidadItem } from '../../medicos/medicos.service';
 import { IconService } from '../../../service/icon.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -27,6 +28,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   // ── Data ──
   registros: Sigsa3Out[] = [];
+  especialidades: EspecialidadItem[] = [];
   cargando = false;
 
   // ── UI ──
@@ -53,7 +55,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
     personal_salud: '',
     nombre_paciente: '',
     tipo_consulta: '',
-    especialidad: '',
+    especialidad_id: '',
     codigo_cie_10: '',
     sexo: '',
     limit: 500
@@ -64,6 +66,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   constructor(
     private api: Sigsa3Service,
+    private medicosApi: MedicosService,
     private router: Router,
     private iconService: IconService
   ) {
@@ -83,7 +86,15 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
       this.registros = data;
       this.cdr.markForCheck();
     });
+    this.cargarEspecialidades();
     this.cargar();
+  }
+
+  cargarEspecialidades(): void {
+    this.medicosApi.getEspecialidades().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data) => { this.especialidades = data; this.cdr.markForCheck(); },
+      error: () => {}
+    });
   }
 
   ngOnDestroy(): void {
@@ -121,7 +132,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
   toggleFiltrar(): void { this.filtrar = !this.filtrar; }
 
   limpiarFiltros(): void {
-    this.filtros = { q: '', personal_salud: '', nombre_paciente: '', tipo_consulta: '', especialidad: '', codigo_cie_10: '', sexo: '', limit: 500 };
+    this.filtros = { q: '', personal_salud: '', nombre_paciente: '', tipo_consulta: '', especialidad_id: '', codigo_cie_10: '', sexo: '', limit: 500 };
     this.cargar();
   }
 

@@ -32,6 +32,8 @@ export interface Citas {
   paciente_id: number;
   especialidad: string;
   fecha_cita: string;
+  razon_consulta?: string;
+  notas?: string;
   datos_extra: DatosExtras;
   created_by: string
   paciente: PacienteJoin;

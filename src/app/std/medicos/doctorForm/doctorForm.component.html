@@ -117,12 +117,15 @@
           <div class="field">
             <span class="field-label"> Especialidad </span>
 
-            <input
+            <select
               class="field-input"
-              type="text"
-              formControlName="especialidad"
-              placeholder="Cardiología"
-              />
+              formControlName="especialidad_id"
+              >
+              <option [ngValue]="null">Seleccione una especialidad</option>
+              @for (e of especialidades; track e.id) {
+                <option [ngValue]="e.id">{{ e.nombre }}</option>
+              }
+            </select>
           </div>
 
           <!-- DPI -->

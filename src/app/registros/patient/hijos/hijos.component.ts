@@ -62,6 +62,7 @@ export class HijosComponent implements OnInit, OnDestroy {
 
   opcionesTipoParto = [
     { label: 'Simple', valor: 'Simple' },
+    { label: 'Doble', valor: 'Doble' },
     { label: 'Múltiple', valor: 'Multiple' },
   ];
 
@@ -85,7 +86,16 @@ export class HijosComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   get esMultiple(): boolean {
-    return this.form.get('datos_extra.tipo_parto')?.value === 'Multiple';
+    const v = this.form.get('datos_extra.tipo_parto')?.value;
+    return v === 'Multiple' || v === 'Doble';
+  }
+
+  get esDoble(): boolean {
+    return this.form.get('datos_extra.tipo_parto')?.value === 'Doble';
+  }
+
+  get maxNacimientos(): number {
+    return this.esDoble ? 2 : 10;
   }
 
   private pesoValidator(): ValidatorFn {
@@ -202,9 +212,12 @@ export class HijosComponent implements OnInit, OnDestroy {
     const tipoParto = this.form.get('datos_extra.tipo_parto')?.value;
     this.children = [];
 
-    if (tipoParto === 'Multiple') {
+    if (tipoParto === 'Multiple' || tipoParto === 'Doble') {
       this.mostrarSelectorNacimientos.set(true);
       this.nacimientoActual.set(1);
+      if (tipoParto === 'Doble') {
+        this.totalNacimientos.set(2);
+      }
     } else {
       this.mostrarSelectorNacimientos.set(false);
       this.totalNacimientos.set(1);
@@ -213,7 +226,9 @@ export class HijosComponent implements OnInit, OnDestroy {
   }
 
   confirmarTotalNacimientos(): void {
-    if (this.totalNacimientos() < 2) {
+    if (this.esDoble) {
+      this.totalNacimientos.set(2);
+    } else if (this.totalNacimientos() < 2) {
       this.error.set('❌ Debe seleccionar al menos 2 nacimientos para múltiples');
       return;
     }
@@ -223,13 +238,13 @@ export class HijosComponent implements OnInit, OnDestroy {
   }
 
   incrementarTotalNacimientos(): void {
-    if (this.totalNacimientos() < 10) {
+    if (this.totalNacimientos() < this.maxNacimientos) {
       this.totalNacimientos.set(this.totalNacimientos() + 1);
     }
   }
 
   decrementarTotalNacimientos(): void {
-    if (this.totalNacimientos() > 1) {
+    if (this.totalNacimientos() > (this.esDoble ? 2 : 1)) {
       this.totalNacimientos.set(this.totalNacimientos() - 1);
     }
   }
@@ -309,7 +324,7 @@ export class HijosComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.form.get('datos_extra.tipo_parto')?.value === 'Multiple') {
+    if (this.esMultiple) {
       if (!this.form.get('datos_extra.clase_parto')?.value) {
         this.error.set('❌ Debes seleccionar la clase de parto (Eutócico/Distócico)');
         return;
@@ -326,7 +341,7 @@ export class HijosComponent implements OnInit, OnDestroy {
 
     if (esUltimo) {
       const raw = this.form.getRawValue();
-      const hijos = this.form.get('datos_extra.tipo_parto')?.value !== 'Multiple'
+      const hijos = !this.esMultiple
         ? this.children.slice(-1)
         : this.children;
       const payload: Hijode = {
