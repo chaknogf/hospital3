@@ -128,6 +128,21 @@
     >
       🩺 Sincronizar Médico + Especialidad
     </button>
+    <button
+      class="btn-accion"
+      [disabled]="procesando"
+      (click)="normalizarDatos()"
+    >
+      🧾 Normalizar Datos
+    </button>
+
+    <button
+      class="btn-accion"
+      [disabled]="procesando"
+      (click)="sincronizarTodo()"
+    >
+      📋 Sincronizar-Todo
+    </button>
     <button class="btn-accion accent" (click)="gestionarPersonalSalud()">
       👤 Gestionar Personal Salud
     </button>
@@ -145,6 +160,26 @@
   <!-- CONTADOR -->
   @if (!cargando) {
     <div class="total-badge">{{ totalDeRegistros }} registros encontrados</div>
+  }
+
+  <!-- ALERTA PERSONAL SALUD SIN ASOCIAR -->
+  @if (alertaPersonalSalud && alertaPersonalSalud.length > 0) {
+    <div class="alert-personal-salud">
+      <div class="alert-header">
+        <strong>
+          ⚠️ {{ alertaPersonalSalud.length }} personal de salud sin asociar:
+        </strong>
+        <button class="alert-cerrar" (click)="cerrarAlertaPersonalSalud()">✕</button>
+      </div>
+      <ul class="alert-lista">
+        @for (item of alertaPersonalSalud; track item.nombre) {
+          <li>
+            <span class="ps-nombre">{{ item.nombre }}</span>
+            <span class="ps-total">{{ item.total }} reg.</span>
+          </li>
+        }
+      </ul>
+    </div>
   }
 
   <!-- CARGANDO -->
@@ -319,7 +354,7 @@
           </div>
         }
         @if (progreso.step === "done" || progreso.step === "error") {
-          <div class="modal-actions" style="margin-top: 16px;">
+          <div class="modal-actions" style="margin-top: 16px">
             <button class="btn-accion accent" (click)="cerrarProgreso()">
               Cerrar
             </button>

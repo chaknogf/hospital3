@@ -71,6 +71,10 @@ export class DxZCie10Component implements OnInit {
     });
   }
 
+  private nrm(codigo?: string | null): string {
+    return (codigo ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  }
+
   private procesarPivotZ10(): void {
     if (!this.dataZ10) return;
     const datos = this.dataZ10.datos;
@@ -82,9 +86,10 @@ export class DxZCie10Component implements OnInit {
         tipoMap.set(tc, { tipo_consulta: tc, z10_4: null, z10_5: null, z10_6: null, total: 0, pacientes: 0 });
       }
       const row = tipoMap.get(tc)!;
-      if (d.codigo_cie_10 === 'Z:10:4') row.z10_4 = d;
-      else if (d.codigo_cie_10 === 'Z:10:5') row.z10_5 = d;
-      else if (d.codigo_cie_10 === 'Z:10:6') row.z10_6 = d;
+      const cod = this.nrm(d.codigo_cie_10);
+      if (cod === 'Z104') row.z10_4 = d;
+      else if (cod === 'Z105') row.z10_5 = d;
+      else if (cod === 'Z106') row.z10_6 = d;
       row.total += d.total;
       row.pacientes += d.pacientes;
     }

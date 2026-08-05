@@ -305,3 +305,57 @@
   .acciones-bar { flex-direction: column; }
   .btn-accion { width: 100%; text-align: center; }
 }
+
+/* ── Alerta personal salud sin asociar ── */
+.alert-personal-salud {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid #b45309;
+  background: linear-gradient(0deg, rgba(180,83,9,0.12), rgba(180,83,9,0.12)), #0f172a;
+  border-radius: 8px;
+  color: #fde68a;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+}
+.alert-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+.alert-header strong { font-size: 0.9rem; }
+.alert-cerrar {
+  background: transparent;
+  border: none;
+  color: #fbbf24;
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.alert-cerrar:hover { color: #fff; }
+.alert-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.alert-lista li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+}
+.alert-lista li:nth-child(odd) { background: rgba(251,191,36,0.06); }
+.ps-nombre { color: #fde68a; word-break: break-word; }
+.ps-total {
+  margin-left: 12px;
+  flex-shrink: 0;
+  background: rgba(251,191,36,0.15);
+  color: #fbbf24;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+}

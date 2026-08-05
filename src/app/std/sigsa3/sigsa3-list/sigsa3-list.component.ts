@@ -43,6 +43,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
   procesando = false;
   resultadoOperacion: any = null;
   progreso: ProgresoSigsa3 | null = null;
+  alertaPersonalSalud: { nombre: string; total: number }[] | null = null;
 
   // ── Paginación ──
   pageSize = 20;
@@ -93,7 +94,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
   cargarEspecialidades(): void {
     this.medicosApi.getEspecialidades().pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => { this.especialidades = data; this.cdr.markForCheck(); },
-      error: () => {}
+      error: () => { }
     });
   }
 
@@ -242,7 +243,43 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   sincronizarMedicoEspecialidad(): void {
     this.procesando = true;
+    this.alertaPersonalSalud = null;
     this.api.sincronizarMedicoEspecialidad().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.resultadoOperacion = res;
+        this.alertaPersonalSalud =
+          Array.isArray(res?.personal_salud_sin_match) && res.personal_salud_sin_match.length > 0
+            ? res.personal_salud_sin_match
+            : null;
+        this.procesando = false;
+        this.cargar();
+        this.cdr.markForCheck();
+      },
+      error: () => { this.procesando = false; this.cdr.markForCheck(); }
+    });
+  }
+
+  cerrarAlertaPersonalSalud(): void {
+    this.alertaPersonalSalud = null;
+    this.cdr.markForCheck();
+  }
+
+  normalizarDatos(): void {
+    this.procesando = true;
+    this.api.normalizarDatos().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.resultadoOperacion = res;
+        this.procesando = false;
+        this.cargar();
+        this.cdr.markForCheck();
+      },
+      error: () => { this.procesando = false; this.cdr.markForCheck(); }
+    });
+  }
+
+  sincronizarTodo(): void {
+    this.procesando = true;
+    this.api.sincronizarTodo().pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.resultadoOperacion = res;
         this.procesando = false;

@@ -203,6 +203,22 @@ export class Sigsa3Service extends BaseApiService {
     );
   }
 
+  normalizarDatos(): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.post<any>(`${this.baseUrl}/sigsa3/normalizar`, {}).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'normalizar datos'))
+    );
+  }
+
+  sincronizarTodo(): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.post<any>(`${this.baseUrl}/sigsa3/sincronizar-todo`, {}).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'sincronizar todo'))
+    );
+  }
+
   // ── PUT / DELETE ──
 
   actualizarRegistro(id: number, data: Sigsa3Update): Observable<Sigsa3Out> {
