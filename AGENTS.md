@@ -11,7 +11,7 @@ pnpm test             # Jasmine/Karma tests
 
 ## Stack
 
-- **Framework**: Angular 20 standalone components
+- **Framework**: Angular 22 standalone components
 - **Language**: TypeScript 5.8 strict mode
 - **Styling**: CSS + PostCSS + PurgeCSS + Autoprefixer (Bootstrap-like classes)
 - **State**: Angular Signals + RxJS BehaviorSubject

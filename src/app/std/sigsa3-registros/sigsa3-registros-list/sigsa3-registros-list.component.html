@@ -32,6 +32,26 @@
           />
         </fieldset>
         <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Nombre paciente</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.nombre_paciente"
+            name="nombre_paciente"
+            placeholder="Nombre o apellidos"
+          />
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Historia clínica</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtros.no_historia_clinica"
+            name="no_historia_clinica"
+            placeholder="N° expediente"
+          />
+        </fieldset>
+        <fieldset class="fieldset-filtros">
           <label class="label-filtros">Paciente ID</label>
           <input
             type="number"
@@ -66,6 +86,15 @@
               <option [ngValue]="e.id">{{ e.nombre }}</option>
             }
           </select>
+        </fieldset>
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Fecha consulta</label>
+          <input
+            type="date"
+            class="input-filtros"
+            [(ngModel)]="filtros.fecha_consulta"
+            name="fecha_consulta"
+          />
         </fieldset>
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Desde</label>

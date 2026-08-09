@@ -54,6 +54,9 @@ export class Sigsa3RegistrosListComponent implements OnInit, OnDestroy {
     medico_id: undefined,
     tipo_consulta_id: undefined,
     especialidad_id: undefined,
+    nombre_paciente: '',
+    no_historia_clinica: '',
+    fecha_consulta: '',
     fecha_desde: '',
     fecha_hasta: '',
     limit: 100
@@ -125,7 +128,7 @@ export class Sigsa3RegistrosListComponent implements OnInit, OnDestroy {
   toggleFiltrar(): void { this.filtrar = !this.filtrar; }
 
   limpiarFiltros(): void {
-    this.filtros = { q: '', paciente_id: undefined, medico_id: undefined, tipo_consulta_id: undefined, especialidad_id: undefined, fecha_desde: '', fecha_hasta: '', limit: 100 };
+    this.filtros = { q: '', paciente_id: undefined, medico_id: undefined, tipo_consulta_id: undefined, especialidad_id: undefined, nombre_paciente: '', no_historia_clinica: '', fecha_consulta: '', fecha_desde: '', fecha_hasta: '', limit: 100 };
     this.cargar();
   }
 

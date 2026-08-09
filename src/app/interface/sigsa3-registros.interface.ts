@@ -19,6 +19,7 @@ export interface Sigsa3Registro {
   tipo_consulta_nombre?: string | null;
   codigo_cie_10?: string | null;
   codigo_cie_10_descripcion?: string | null;
+  codigo_cie_10_completo?: string | null;
   especialidad_nombre?: string | null;
 }
 
@@ -56,8 +57,11 @@ export interface FiltroSigsa3Registro {
   consulta_id?: number;
   tipo_consulta_id?: number;
   especialidad_id?: number;
+  fecha_consulta?: string;
   fecha_desde?: string;
   fecha_hasta?: string;
+  nombre_paciente?: string;
+  no_historia_clinica?: string;
   skip?: number;
   limit?: number;
 }

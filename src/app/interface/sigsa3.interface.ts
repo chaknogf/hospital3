@@ -149,6 +149,7 @@ export interface ProgresoSigsa3 {
   paso4_consulta: number;
   paso5_consulta: number;
   paso5_paciente: number;
+  aviso?: string;
 }
 
 export interface PersonalSalud {

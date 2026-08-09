@@ -44,6 +44,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
   resultadoOperacion: any = null;
   progreso: ProgresoSigsa3 | null = null;
   alertaPersonalSalud: { nombre: string; total: number }[] | null = null;
+  avisoAsociado: string | null = null;
 
   // ── Paginación ──
   pageSize = 20;
@@ -55,6 +56,10 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
     q: '',
     personal_salud: '',
     nombre_paciente: '',
+    no_historia_clinica: '',
+    fecha_consulta: '',
+    fecha_desde: '',
+    fecha_hasta: '',
     tipo_consulta: '',
     especialidad_id: '',
     codigo_cie_10: '',
@@ -133,7 +138,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
   toggleFiltrar(): void { this.filtrar = !this.filtrar; }
 
   limpiarFiltros(): void {
-    this.filtros = { q: '', personal_salud: '', nombre_paciente: '', tipo_consulta: '', especialidad_id: '', codigo_cie_10: '', sexo: '', limit: 500 };
+    this.filtros = { q: '', personal_salud: '', nombre_paciente: '', no_historia_clinica: '', fecha_consulta: '', fecha_desde: '', fecha_hasta: '', tipo_consulta: '', especialidad_id: '', codigo_cie_10: '', sexo: '', limit: 500 };
     this.cargar();
   }
 
@@ -154,7 +159,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
     }
   }
 
-  volver(): void { this.location.back(); }
+  volver(): void { this.router.navigate(['/estadistica']); }
 
   // ── CRUD ──
 
@@ -227,6 +232,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
     this.api.asociarPacientesMasivoStream().pipe(takeUntil(this.destroy$)).subscribe({
       next: (p) => {
         this.progreso = p;
+        if (p.aviso) this.avisoAsociado = p.aviso;
         this.cdr.markForCheck();
       },
       complete: () => {
@@ -261,6 +267,11 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   cerrarAlertaPersonalSalud(): void {
     this.alertaPersonalSalud = null;
+    this.cdr.markForCheck();
+  }
+
+  cerrarAvisoAsociado(): void {
+    this.avisoAsociado = null;
     this.cdr.markForCheck();
   }
 
