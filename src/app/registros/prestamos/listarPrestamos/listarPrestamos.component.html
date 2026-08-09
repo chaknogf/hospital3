@@ -44,8 +44,41 @@
           type="text"
           class="input-filtros"
           [(ngModel)]="filtros.expediente"
-          name="idPaciente"
+          name="expediente"
           placeholder="Ej: 1042"
+        />
+      </fieldset>
+
+      <!-- Nombre del paciente -->
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Nombre del paciente</label>
+        <input
+          type="text"
+          class="input-filtros"
+          [(ngModel)]="filtros.nombre_paciente"
+          name="nombrePaciente"
+          placeholder="Ej: Ana María"
+        />
+      </fieldset>
+
+      <!-- Rango de fechas -->
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Desde</label>
+        <input
+          type="date"
+          class="input-filtros"
+          [(ngModel)]="filtros.fecha_desde"
+          name="fechaDesde"
+        />
+      </fieldset>
+
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Hasta</label>
+        <input
+          type="date"
+          class="input-filtros"
+          [(ngModel)]="filtros.fecha_hasta"
+          name="fechaHasta"
         />
       </fieldset>
 
@@ -190,15 +223,23 @@
 
   <!-- Paginación -->
   <div class="d-flex justify-content-center align-items-center p-0">
-    <button class="btn" [disabled]="filtros.skip === 0">
+    <button
+      class="btn"
+      [disabled]="paginaActual === 1"
+      (click)="paginaAnterior()"
+    >
       <span [innerHTML]="skipLeftIcon"></span>
     </button>
 
-    <div>
-      <strong>{{ filtros.skip }}</strong>
+    <div class="mx-2">
+      Página <strong>{{ paginaActual }}</strong> / {{ totalPaginas }} — {{ total() }} registros
     </div>
 
-    <button class="btn" [disabled]="finPagina">
+    <button
+      class="btn"
+      [disabled]="finPagina || paginaActual >= totalPaginas"
+      (click)="paginaSiguiente()"
+    >
       <span [innerHTML]="skipRightIcon"></span>
     </button>
   </div>

@@ -74,6 +74,8 @@ export interface FiltroPrestamos {
   expediente?: string | null;        // ← nuevo
   tipo_documento?: string | null;    // ← nuevo
   nombre_paciente?: string | null;   // ← nuevo
+  fecha_desde?: string | null;       // ← rango (YYYY-MM-DD)
+  fecha_hasta?: string | null;       // ← rango (YYYY-MM-DD)
   skip?: number;                     // ← paginación
   limit?: number;                    // ← paginación
 }

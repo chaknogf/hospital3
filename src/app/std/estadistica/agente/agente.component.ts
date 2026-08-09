@@ -7,7 +7,6 @@ interface Mensaje {
   role: 'user' | 'assistant';
   content: string;
   error?: boolean;
-  sql?: string;
   datos?: any[];
   columnas?: string[];
 }
@@ -30,7 +29,6 @@ export class AgenteComponent {
   ]);
   input = signal('');
   cargando = signal(false);
-  mostrarSql = signal<Record<number, boolean>>({});
 
   enviar(): void {
     const texto = this.input().trim();
@@ -51,7 +49,6 @@ export class AgenteComponent {
         const msgAsistente: Mensaje = {
           role: 'assistant',
           content: res.respuesta,
-          sql: res.sql_generado ?? undefined,
           datos: res.datos?.length ? res.datos : undefined,
           columnas: res.columnas?.length ? res.columnas : undefined,
         };
@@ -68,10 +65,6 @@ export class AgenteComponent {
         this.cargando.set(false);
       },
     });
-  }
-
-  toggleSql(idx: number): void {
-    this.mostrarSql.update(m => ({ ...m, [idx]: !m[idx] }));
   }
 
   autoResize(event: Event): void {

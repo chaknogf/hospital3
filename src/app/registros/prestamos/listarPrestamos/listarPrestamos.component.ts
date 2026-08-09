@@ -65,6 +65,8 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
     expediente: null,
     tipo_documento: null,
     nombre_paciente: null,
+    fecha_desde: null,
+    fecha_hasta: null,
     skip: 0,
     limit: this.limit,
   };
@@ -119,6 +121,8 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
       expediente: null,
       tipo_documento: null,
       nombre_paciente: null,
+      fecha_desde: null,
+      fecha_hasta: null,
       skip: 0,
       limit: this.limit,
     };

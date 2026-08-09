@@ -114,7 +114,7 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
     this.form.id_consulta = consulta.id;
     this.form.id_paciente = consulta.paciente_id ?? consulta.paciente?.id ?? 0;
     this.form.expediente = consulta.expediente ?? consulta.paciente?.expediente ?? '';
-
+    this.form.fecha_prestamo = this.aDateTimeLocal(new Date().toISOString());
   }
 
   // =========================================================
@@ -145,8 +145,8 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
       id_paciente: prestamo.id_paciente,
       id_consulta: prestamo.id_consulta ?? null,
       expediente: prestamo.expediente ?? '',
-      fecha_prestamo: prestamo.fecha_prestamo ?? null,
-      fecha_limite: prestamo.fecha_limite ?? null,
+      fecha_prestamo: this.aDateTimeLocal(prestamo.fecha_prestamo),
+      fecha_limite: this.aDateTimeLocal(prestamo.fecha_limite),
       solicitante: prestamo.solicitante,
       motivo: prestamo.motivo ?? '',
       tipo_documento: prestamo.tipo_documento ?? 'EXPEDIENTE',
@@ -155,10 +155,23 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
       nota: prestamo.nota ?? ''
     };
     // Campo extra solo disponible en edición
-    this.formUpdate.fecha_devolucion = prestamo.fecha_devolucion ?? null;
+    this.formUpdate.fecha_devolucion = this.aDateTimeLocal(prestamo.fecha_devolucion);
     // Auditoría (solo lectura)
     this.usuarioEntrega = prestamo.usuario_entrega ?? null;
     this.usuarioRecibe = prestamo.usuario_recibe ?? null;
+  }
+
+  /**
+   * Convierte una fecha ISO del backend ("2026-06-11T09:17:50.917279-06:00")
+   * al formato que acepta <input type="datetime-local">: "YYYY-MM-DDTHH:mm"
+   * (sin zona horaria ni microsegundos). Devuelve "" si no hay fecha válida.
+   */
+  private aDateTimeLocal(fecha?: string | null): string {
+    if (!fecha) return '';
+    const d = new Date(fecha);
+    if (isNaN(d.getTime())) return '';
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
   // =========================================================
@@ -171,11 +184,35 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const errorFechas = this.validarFechas();
+    if (errorFechas) {
+      this.mostrarMensaje(errorFechas, 'error');
+      return;
+    }
+
     if (this.modoEditar) {
       this.actualizar();
     } else {
       this.crear();
     }
+  }
+
+  /** Valida que fecha_limite >= fecha_prestamo (si ambas presentes). */
+  validarFechas(): string | null {
+    const prestamo = this.form.fecha_prestamo;
+    const limite = this.form.fecha_limite;
+
+    if (prestamo && limite && new Date(limite) < new Date(prestamo)) {
+      return 'La fecha límite no puede ser anterior a la fecha de préstamo.';
+    }
+    if (this.modoEditar && this.formUpdate.fecha_devolucion) {
+      const fecDevol = this.formUpdate.fecha_devolucion;
+      const fecPrestamo = this.form.fecha_prestamo ?? fecDevol;
+      if (prestamo && new Date(fecDevol) < new Date(prestamo)) {
+        return 'La fecha de devolución no puede ser anterior a la fecha de préstamo.';
+      }
+    }
+    return null;
   }
 
   private crear(): void {

@@ -60,20 +60,25 @@
 
       <div class="card-body">
         <!-- ── DATOS PACIENTE (solo lectura) ── -->
-        @if (consulta(); as c) {
+        @if (consulta() || modoEditar) {
           <div class="seccion-readonly">
             <p class="seccion-readonly__titulo">Datos del paciente</p>
             <div class="readonly-grid">
               <div class="readonly-item readonly-item--wide">
                 <span class="readonly-item__label">Paciente</span>
                 <span class="readonly-item__valor">{{
-                  construirNombre(c.paciente.nombre)
+                  consulta()
+                    ? construirNombre(consulta()!.paciente?.nombre)
+                    : "—"
                 }}</span>
               </div>
               <div class="readonly-item">
                 <span class="readonly-item__label">Expediente</span>
                 <span class="readonly-item__valor">{{
-                  c.expediente ?? c.paciente.expediente ?? "—"
+                  modoEditar
+                    ? form.expediente || "—"
+                    : (consulta()?.expediente ??
+                      consulta()?.paciente?.expediente ?? "—")
                 }}</span>
               </div>
               <div class="readonly-item">
@@ -169,6 +174,19 @@
                 [(ngModel)]="form.ubicacion"
                 placeholder="Ej: Archivo central, Estante 3"
                 maxlength="100"
+              />
+            </div>
+
+            <!-- Expediente -->
+            <div class="form-grupo">
+              <label for="expediente">Expediente</label>
+              <input
+                id="expediente"
+                type="text"
+                [(ngModel)]="form.expediente"
+                placeholder="Ej: 26A-1547"
+                maxlength="50"
+                [readonly]="!modoEditar"
               />
             </div>
 

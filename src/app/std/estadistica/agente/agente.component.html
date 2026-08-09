@@ -16,15 +16,6 @@
             {{ msg.content }}
           </div>
 
-          @if (msg.sql) {
-            <div class="msg-sql-toggle" (click)="toggleSql(i)">
-              {{ mostrarSql()[i] ? '▾ Ocultar SQL' : '▸ Ver SQL generado' }}
-            </div>
-            @if (mostrarSql()[i]) {
-              <pre class="msg-sql"><code>{{ msg.sql }}</code></pre>
-            }
-          }
-
           @if (msg.datos && msg.datos.length > 0 && msg.columnas) {
             <div class="msg-table-wrapper">
               <table class="msg-table">
