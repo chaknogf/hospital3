@@ -2,6 +2,7 @@ import { logoicon2, logoicon } from './../../shared/icons/svg-icon';
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
+import { ThemeService } from '../../service/theme.service';
 
 
 @Component({
@@ -24,10 +25,15 @@ export class NavbarComponent {
 
   constructor(
     private router: Router,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private themeService: ThemeService
   ) {
     this.logoicon = this.sanitizarSvg(logoicon);
     this.logoicon2 = this.sanitizarSvg(logoicon2);
+  }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
   }
 
   logout() {

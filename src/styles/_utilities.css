@@ -1,0 +1,207 @@
+/* ═══════════════════════════════════════════════════════════════
+   UTILITIES — recetas reutilizables construidas sobre los tokens
+   ═══════════════════════════════════════════════════════════════
+
+   Patrones visuales compartidos por muchos componentes. Se definen
+   UNA sola vez con intenciones semánticas; el tema decide el color.
+
+   Usar estas clases (o replicar sus estilos con los mismos tokens)
+   garantiza coherencia y evita valores hardcodeados repetidos.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── BOTÓN BASE (skeuomórfico) ─────────────────────────────── */
+.theme-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--theme-space-1);
+  padding: var(--theme-space-1) var(--theme-space-3);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-md);
+  background: var(--theme-gradient-surface);
+  color: var(--theme-text);
+  font-family: var(--theme-font-ui);
+  font-size: var(--theme-font-size-sm);
+  font-weight: var(--theme-font-weight-bold);
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: var(--theme-shadow-md);
+  transition: background var(--theme-transition-fast),
+    border-color var(--theme-transition-fast),
+    color var(--theme-transition-fast),
+    transform var(--theme-transition-fast),
+    box-shadow var(--theme-transition-fast);
+}
+
+.theme-btn:hover {
+  background: var(--theme-gradient-surface-hover);
+  border-color: var(--theme-border-strong);
+  transform: translateY(-1px);
+}
+
+.theme-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--theme-shadow-inset);
+}
+
+.theme-btn:disabled,
+.theme-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Botón primario */
+.theme-btn--primary {
+  background: var(--theme-gradient-primary);
+  border-color: var(--theme-primary-deep);
+  color: var(--theme-text-inverse);
+}
+
+.theme-btn--primary:hover {
+  background: var(--theme-gradient-primary);
+  filter: brightness(1.08);
+  border-color: var(--theme-primary);
+}
+
+/* Botón fantasma / discreto */
+.theme-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--theme-text-muted);
+  box-shadow: none;
+}
+
+.theme-btn--ghost:hover {
+  background: var(--theme-danger-dim);
+  border-color: var(--theme-danger);
+  color: var(--theme-danger-soft);
+}
+
+/* ── TARJETA / PANEL ───────────────────────────────────────── */
+.theme-card {
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+  box-shadow: var(--theme-shadow-md);
+  color: var(--theme-text);
+}
+
+.theme-card--hover {
+  transition: transform var(--theme-transition),
+    border-color var(--theme-transition),
+    box-shadow var(--theme-transition),
+    background var(--theme-transition);
+}
+
+.theme-card--hover:hover {
+  transform: translateY(-4px);
+  border-color: var(--theme-border-strong);
+  box-shadow: var(--theme-shadow-lg);
+  background: var(--theme-gradient-surface-hover);
+}
+
+/* ── INPUT / SELECT ────────────────────────────────────────── */
+.theme-input {
+  width: 100%;
+  padding: var(--theme-space-1) var(--theme-space-2);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-sm);
+  background: var(--theme-surface-raised);
+  color: var(--theme-text);
+  font-family: var(--theme-font-ui);
+  font-size: var(--theme-font-size-sm);
+  box-shadow: var(--theme-shadow-inset);
+  transition: border-color var(--theme-transition-fast),
+    box-shadow var(--theme-transition-fast),
+    background var(--theme-transition-fast);
+}
+
+.theme-input::placeholder {
+  color: var(--theme-text-muted);
+}
+
+.theme-input:hover:not(:disabled):not(:focus) {
+  border-color: var(--theme-border-strong);
+  background: var(--theme-surface);
+}
+
+.theme-input:focus {
+  outline: none;
+  border-color: var(--theme-primary);
+  background: var(--theme-surface-raised);
+  box-shadow: var(--theme-shadow-inset), 0 0 0 3px var(--theme-focus-ring);
+}
+
+.theme-input:disabled {
+  background: var(--theme-surface-deep);
+  opacity: 0.7;
+}
+
+/* ── ETIQUETA DE CAMPO ─────────────────────────────────────── */
+.theme-label {
+  display: block;
+  font-size: var(--theme-font-size-xs);
+  font-weight: var(--theme-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--theme-text-muted);
+}
+
+/* ── BADGE / CHIP ──────────────────────────────────────────── */
+.theme-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--theme-space-1);
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--theme-radius-pill);
+  font-size: var(--theme-font-size-xs);
+  font-weight: var(--theme-font-weight-bold);
+  letter-spacing: 0.2px;
+  line-height: 1.4;
+}
+
+.theme-badge--success { color: var(--theme-success); background: var(--theme-success-dim); }
+.theme-badge--warning { color: var(--theme-warning); background: var(--theme-warning-dim); }
+.theme-badge--danger { color: var(--theme-danger-soft); background: var(--theme-danger-dim); }
+.theme-badge--info { color: var(--theme-info); background: var(--theme-info-dim); }
+.theme-badge--primary { color: var(--theme-primary-light); background: var(--theme-primary-dim); }
+
+/* ── TABLA ─────────────────────────────────────────────────── */
+.theme-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+  overflow: hidden;
+  background: var(--theme-gradient-surface);
+  color: var(--theme-text);
+  text-align: center;
+  box-shadow: var(--theme-shadow-md);
+}
+
+.theme-table thead th {
+  background: var(--theme-gradient-surface-hover);
+  color: var(--theme-text);
+  padding: var(--theme-space-1) 0.5rem;
+  text-transform: uppercase;
+  font-size: var(--theme-font-size-xs);
+  letter-spacing: 0.12em;
+  font-weight: var(--theme-font-weight-heavy);
+  border-bottom: 1px solid var(--theme-border-strong);
+}
+
+.theme-table tbody td {
+  padding: var(--theme-space-1) 0.5rem;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.theme-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.theme-table tbody tr:hover {
+  background: var(--theme-gradient-surface-hover);
+}

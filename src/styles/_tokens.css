@@ -1,0 +1,140 @@
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — capa semántica (--theme-*)
+   ═══════════════════════════════════════════════════════════════
+
+   Un componente NO debe conocer el color concreto del diseño.
+   Solo conoce la INTENCIÓN visual: var(--theme-primary),
+   var(--theme-surface), var(--theme-text), var(--theme-border),
+   var(--theme-danger)…
+
+   El TEMA decide qué valores concretos representan esas
+   intenciones. Los temas viven en src/styles/themes/ y solo
+   redefinen las variables base (--accent, --deep, --panel,
+   --surface, --rim, --text, --muted…) junto con aquellos tokens
+   semánticos que no pueden expresarse como alias (fondos con
+   degradado, sombras, textos atenuados…).
+
+   ═══════════════════════════════════════════════════════════════
+   CONVENCIÓN DE TEMAS (obligatoria)
+   ═══════════════════════════════════════════════════════════════
+
+   Los temas DEBEN sobrescribir tokens exclusivamente mediante
+   el atributo, sin base pelada:
+
+     :root[data-theme="current"] { … }
+     :root[data-theme="light"]   { … }
+     :root[data-theme="hospital"] { … }      (futuros)
+     :root[data-theme="glass"]     { … }
+     :root[data-theme="high-contrast"] { … }
+
+   - NUNCA se sobrescribe con :root pelado: el tema actual
+     no debe actuar como fallback silencioso para temas desconocidos.
+   - Los componentes NO deben declarar bloques :root para modificar
+     variables visuales. Si un componente necesita una variable
+     local, se declara sobre su propio :host { … }.
+   - Para que un futuro tema gane a la especificidad de las reglas
+     globales, siempre se usa :root[data-theme="X"] (0,2,0).
+
+   Convención de nombres:
+   - --theme-<rol>        = intención funcional (no color concreto)
+   - --theme-<rol>-light  = variante clara del rol (texto/borde sobre
+     superficie oscura), p. ej. --theme-primary-light
+   - --theme-<rol>-soft   = variante suave para texto sobre superficie
+     oscura, p. ej. --theme-success-soft
+   - --theme-<rol>-dim    = fondo/halo translúcido del rol
+   - --theme-<rol>-deep   = extremo oscuro del rol (gradientes)
+   - cada tema sobrescribe los valores base y los alias se
+     resuelven automáticamente en el punto de uso.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── COLORES SEMÁNTICOS ───────────────────────────────────── */
+  --theme-primary: var(--accent);            /* acción principal, foco */
+  --theme-primary-light: var(--accent-light);/* variante clara (texto/bordes) */
+  --theme-primary-deep: var(--accent-deep);  /* extremo oscuro del degradado primario */
+  --theme-primary-dim: var(--pulse-dim);     /* halo / fondo suave del primary */
+
+  --theme-background: var(--deep);           /* fondo de página */
+  --theme-background-viewport-sm: var(--deep); /* ≥576px */
+  --theme-background-viewport-lg: var(--deep); /* ≥992px */
+  --theme-surface: var(--panel);             /* tarjetas, paneles, tablas */
+  --theme-surface-raised: var(--surface);    /* inputs, elementos elevados */
+  --theme-surface-deep: var(--deep);         /* superficie más profunda (headers) */
+
+  --theme-text: var(--text);
+  --theme-text-muted: var(--muted);
+  --theme-text-faint: var(--text-faint);
+  --theme-text-inverse: var(--text-inverse); /* texto sobre rellenos brillantes */
+
+  --theme-border: var(--rim);
+  --theme-border-strong: var(--rim-hot);
+
+  --theme-success: var(--success);
+  --theme-success-dim: var(--success-dim);
+  --theme-success-soft: var(--success-soft); /* texto verde claro sobre superficie oscura */
+  --theme-warning: var(--warning);
+  --theme-warning-dim: var(--warning-dim);
+  --theme-warning-soft: var(--warning-soft); /* texto ámbar claro sobre superficie oscura */
+  --theme-danger: var(--danger);
+  --theme-danger-dim: var(--danger-dim);
+  --theme-danger-soft: var(--red);           /* variante clara del danger */
+  --theme-info: var(--info);
+  --theme-info-dim: var(--info-dim);
+
+  /* Anillo de foco. Comparte el valor con --theme-primary-dim porque
+     el foco usa el mismo halo del primary, pero es un rol distinto. */
+  --theme-focus-ring: var(--theme-primary-dim);
+
+  /* ── DEGRADADOS REUTILIZABLES ─────────────────────────────── */
+  --theme-gradient-surface: linear-gradient(180deg, var(--surface) 0%, var(--panel) 100%);
+  --theme-gradient-surface-hover: linear-gradient(180deg, var(--panel) 0%, var(--deep) 100%);
+  --theme-gradient-surface-active: linear-gradient(180deg, var(--deep) 0%, var(--panel) 100%);
+  --theme-gradient-primary: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+  --theme-gradient-primary-hover: linear-gradient(135deg, var(--accent-deep) 0%, var(--accent-dark) 100%);
+
+  /* ── TIPOGRAFÍA ───────────────────────────────────────────── */
+  --theme-font-ui: var(--font-ui);
+  --theme-font-mono: var(--font-mono);
+  --theme-font-serif: var(--font-serif);
+  --theme-font-size-xs: 0.75rem;
+  --theme-font-size-sm: 0.875rem;
+  --theme-font-size-md: 1rem;
+  --theme-font-size-lg: 1.25rem;
+  --theme-font-size-xl: 1.5rem;
+  --theme-font-weight-normal: 400;
+  --theme-font-weight-medium: 500;
+  --theme-font-weight-bold: 600;
+  --theme-font-weight-heavy: 800;
+
+  /* ── BORDER-RADIUS ────────────────────────────────────────── */
+  --theme-radius-sm: 0.5rem;     /* inputs, botones pequeños */
+  --theme-radius-md: 0.75rem;    /* botones, chips */
+  --theme-radius-lg: 1rem;       /* tarjetas, paneles */
+  --theme-radius-xl: 1.5rem;     /* contenedores grandes */
+  --theme-radius-pill: 999px;    /* badges, toggles */
+
+  /* ── SOMBRAS ──────────────────────────────────────────────── */
+  --theme-shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  --theme-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --theme-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --theme-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  /* ── ESPACIADO ────────────────────────────────────────────── */
+  /* Escala única (1–6). --space-* legacy se eliminó; los consumidores
+     usan --theme-space-N. */
+  --theme-space-1: 0.5rem;
+  --theme-space-2: 0.75rem;
+  --theme-space-3: 1rem;
+  --theme-space-4: 1.5rem;
+  --theme-space-5: 2rem;
+  --theme-space-6: 3rem;
+
+  /* ── TRANSICIONES ─────────────────────────────────────────── */
+  --theme-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --theme-transition: all 0.25s ease;
+  --theme-transition-slow: all 0.3s ease;
+
+  /* ── Z-INDEX ──────────────────────────────────────────────── */
+  /* Sin valores predefinidos: cada consumidor declara su propio
+     z-index localmente para no mantener abstracciones sin uso. */
+}

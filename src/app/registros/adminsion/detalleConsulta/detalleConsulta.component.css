@@ -2,17 +2,17 @@
    DARK DOCUMENT-STYLE VARIABLES — SKEUOMORPHIC
    ══════════════════════════════════════════════════════════════ */
 :root {
-  --doc-deep:      #060d1f;
-  --doc-panel:     #0a1428;
-  --doc-surface:   #0f1e3a;
-  --doc-rim:       rgba(96,165,250,0.12);
+  --doc-deep:      var(--theme-surface-deep);
+  --doc-panel:     var(--theme-surface);
+  --doc-surface:   var(--theme-surface-raised);
+  --doc-rim:       var(--theme-border);
   --doc-rim-hot:   rgba(96,165,250,0.32);
   --doc-accent:    #1a3a6a;
   --doc-accent-lt: rgba(26,58,106,0.15);
-  --doc-text:      #e2eeff;
+  --doc-text:      var(--theme-text);
   --doc-text-dim:  #7a9cc8;
-  --doc-muted:     #4a6fa5;
-  --doc-star:      #60a5fa;
+  --doc-muted:     var(--theme-text-muted);
+  --doc-star:      var(--theme-primary-light);
   --doc-lime:      #a3e635;
   --doc-lime-dim:  rgba(163,230,53,0.12);
   --doc-red:       #f87171;
@@ -301,7 +301,7 @@ body {
   height: 56px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, #1e40af 100%);
   border: 2px solid rgba(96,165,250,0.4);
   display: flex;
   align-items: center;
@@ -309,7 +309,7 @@ body {
   box-shadow: 0 4px 12px rgba(59,130,246,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 .patient-avatar.avatar-m {
-  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, #1e40af 100%);
   border-color: rgba(96,165,250,0.4);
   box-shadow: 0 4px 12px rgba(59,130,246,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
 }
@@ -360,7 +360,7 @@ body {
   letter-spacing: 0.5px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04);
 }
-.ptag-m { color: #60a5fa; border-color: rgba(96,165,250,0.35); background: linear-gradient(180deg, rgba(59,130,246,0.15) 0%, rgba(59,130,246,0.08) 100%); box-shadow: 0 1px 4px rgba(59,130,246,0.15), inset 0 1px 0 rgba(255,255,255,0.05); }
+.ptag-m { color: var(--theme-primary-light); border-color: var(--theme-border-strong); background: linear-gradient(180deg, rgba(59,130,246,0.15) 0%, rgba(59,130,246,0.08) 100%); box-shadow: 0 1px 4px rgba(59,130,246,0.15), inset 0 1px 0 rgba(255,255,255,0.05); }
 .ptag-f { color: #f472b6; border-color: rgba(236,72,153,0.35); background: linear-gradient(180deg, rgba(236,72,153,0.15) 0%, rgba(236,72,153,0.08) 100%); box-shadow: 0 1px 4px rgba(236,72,153,0.15), inset 0 1px 0 rgba(255,255,255,0.05); }
 .ptag-age {
   color: var(--doc-lime);

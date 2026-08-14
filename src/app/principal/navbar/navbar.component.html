@@ -21,6 +21,10 @@
         <span class="text-bold">{{ usuario }}</span>
         <span class="text-muted rounded px-2">[ {{ rol }} ]</span>
       </span>
+      <button class="btn btn-sm btn-outline" (click)="toggleTheme()" title="Cambiar tema"
+        aria-label="Cambiar tema">
+        <i class="bi bi-circle-half"></i>
+      </button>
       <button class="btn btn-sm btn-outline" (click)="logout()">
         <i class="bi bi-box-arrow-right"></i> Salir
       </button>
@@ -33,8 +37,8 @@
     <button class="btn" (click)="menu()">
       <i class="bi bi-list fs-4"></i>
     </button>
-    <button class="btn">
-      <i class="bi bi-person-circle fs-4"></i>
+    <button class="btn" (click)="toggleTheme()">
+      <i class="bi bi-circle-half fs-4"></i>
     </button>
     <button class="btn" (click)="logout()">
       <i class="bi bi-box-arrow-right fs-4"></i>

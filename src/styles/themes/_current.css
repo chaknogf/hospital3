@@ -1,0 +1,92 @@
+/* ═══════════════════════════════════════════════════════════════
+   THEME: CURRENT (referencia) — skeuomorfismo oscuro actual
+   ═══════════════════════════════════════════════════════════════
+
+   Tema por defecto. Reproduce exactamente la identidad visual
+   actual: superficies azul oscuro, acento azul eléctrico, bordes
+   translúcidos (--rim), texto azul claro y fondo con degradado
+   radial cian.
+
+   Se aplica por defecto (también con data-theme="current" en el
+   elemento raíz). Las variables base se sobrescriben por completo
+   en themes/_light.css para generar el segundo tema.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root[data-theme="current"] {
+  color-scheme: dark;
+
+  /* ── PALETA DE ACENTO ── */
+  --accent: #3b82f6;
+  --accent-light: #60a5fa;
+  --accent-deep: #2563eb;
+  --accent-dark: #1d4ed8;
+  --success: #10b981;
+  --success-soft: #4ade80;
+  --warning: #f59e0b;
+  --warning-soft: #fbbf24;
+  --danger: #ef4444;
+  --info: #287bb5;
+
+  /* ── SUPERFICIES OSCURAS ── */
+  --deep: #060d1f;
+  --panel: #0a1428;
+  --surface: #0f1e3a;
+
+  /* ── BORDES / RIM ── */
+  --rim: rgba(96, 165, 250, 0.12);
+  --rim-hot: rgba(96, 165, 250, 0.35);
+
+  /* ── TEXTOS / ACENTOS ── */
+  --pulse: #3b82f6;
+  --pulse-dim: rgba(59, 130, 246, 0.18);
+  --star: #60a5fa;
+  --star-dim: rgba(96, 165, 250, 0.5);
+  --lime: #a3e635;
+  --lime-dim: rgba(163, 230, 53, 0.15);
+  --red: #f87171;
+  --red-dim: rgba(248, 113, 113, 0.15);
+  --amber: #fbbf24;
+  --amber-dim: rgba(251, 191, 36, 0.15);
+  --text: #e2eeff;
+  --muted: #4a6fa5;
+
+  /* Textos derivados usados por los tokens semánticos */
+  --text-faint: rgba(226, 238, 255, 0.5);
+  --text-inverse: #ffffff;
+
+  /* ── FONDOS SEMÁNTICOS (estados) ── */
+  --success-dim: rgba(16, 185, 129, 0.16);
+  --warning-dim: rgba(245, 158, 11, 0.16);
+  --danger-dim: rgba(239, 68, 68, 0.16);
+  --info-dim: rgba(40, 123, 181, 0.16);
+
+  /* ── TIPOGRAFÍAS ── */
+  --font-mono: 'Orbitron', monospace;
+  --font-ui: 'Space Grotesk', sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+
+  /* ── GLASS COMPAT ── */
+  --glass-bg: rgba(10, 20, 40, 0.85);
+  --glass-border: rgba(96, 165, 250, 0.15);
+  --shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.4);
+
+  /* ── ESTADOS MÉDICOS ── */
+  --urgente: rgba(255, 0, 0, 1);
+  --moderado: rgba(255, 255, 0, 1);
+  --estable: rgba(0, 128, 0, 1);
+  --muerto: rgba(0, 0, 0, 1);
+  --standar: rgba(173, 216, 230, 1);
+
+  /* ── TOKENS SEMÁNTICOS CON VALOR PROPIO ── */
+  /* Los demás --theme-* se resuelven como alias en _tokens.css */
+  --theme-background: radial-gradient(ellipse at bottom, #00d5ffc8 -15%, #090979 75%);
+  --theme-background-viewport-sm: radial-gradient(ellipse at bottom, #00d5ffcc -20%, #090979 75%);
+  --theme-background-viewport-lg: radial-gradient(ellipse at bottom, #00d5ffcc -25%, #090979 80%);
+}
+
+/* El tema actual fuerza el esquema oscuro de bootstrap.
+   En el tema "light" esto se revierte (ver themes/_light.css). */
+:root[data-theme="current"] body,
+body[data-bs-theme="dark"] {
+  color-scheme: dark;
+}

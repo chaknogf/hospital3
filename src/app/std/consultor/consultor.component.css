@@ -463,7 +463,7 @@
   transition: all 0.2s;
 }
 .btn-select:hover {
-  background: linear-gradient(180deg, #6ff2ff, #3b82f6);
+  background: linear-gradient(180deg, #6ff2ff, var(--theme-primary));
   box-shadow: 0 5px 18px rgba(37,99,235,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
   transform: translateY(-1px);
 }
@@ -872,7 +872,7 @@
   max-width: 560px;
   height: 80vh;
   max-height: 700px;
-  background: #0a1428;
+  background: var(--theme-surface);
   border: 1px solid rgba(148,180,220,0.18);
   border-radius: 16px;
   box-shadow: 0 0 0 1px rgba(69,194,240,0.12), 0 30px 70px rgba(0,0,0,0.6);

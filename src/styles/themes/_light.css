@@ -1,0 +1,142 @@
+/* ═══════════════════════════════════════════════════════════════
+   THEME: LIGHT (tema de prueba)
+   ═══════════════════════════════════════════════════════════════
+
+   Segundo tema para demostrar que el sistema funciona: cambia la
+   identidad visual por completo SIN tocar un solo componente.
+
+   Los componentes solo conocen intenciones (--theme-*); este tema
+   redefine las variables base y la mayoría de tokens semánticos
+   se resuelven solos. Los valores concretos (degradados de fondo,
+   sombras, textos atenuados) se sobrescriben aquí.
+
+   Activación: <html data-theme="light"> (lo gestiona ThemeService).
+   ═══════════════════════════════════════════════════════════════ */
+
+:root[data-theme="light"],
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* ── PALETA DE ACENTO ── */
+  --accent: #2563eb;
+  --accent-light: #3b82f6;
+  --accent-deep: #1d4ed8;
+  --accent-dark: #1e40af;
+  --success: #16a34a;
+  --success-soft: #15803d;
+  --warning: #d97706;
+  --warning-soft: #b45309;
+  --danger: #dc2626;
+  --info: #0369a1;
+
+  /* ── SUPERFICIES CLARAS ── */
+  --deep: #eef3fb;
+  --panel: #ffffff;
+  --surface: #e2eaf6;
+
+  /* ── BORDES / RIM ── */
+  --rim: rgba(37, 99, 235, 0.18);
+  --rim-hot: rgba(37, 99, 235, 0.45);
+
+  /* ── TEXTOS / ACENTOS ── */
+  --pulse: #2563eb;
+  --pulse-dim: rgba(37, 99, 235, 0.14);
+  --star: #3b82f6;
+  --star-dim: rgba(59, 130, 246, 0.35);
+  --lime: #4d7c0f;
+  --lime-dim: rgba(132, 204, 22, 0.18);
+  --red: #dc2626;
+  --red-dim: rgba(220, 38, 38, 0.12);
+  --amber: #b45309;
+  --amber-dim: rgba(245, 158, 11, 0.15);
+  --text: #1e293b;
+  --muted: #64748b;
+
+  /* Textos derivados usados por los tokens semánticos */
+  --text-faint: rgba(30, 41, 59, 0.6);
+  --text-inverse: #ffffff;
+
+  /* ── FONDOS SEMÁNTICOS (estados) ── */
+  --success-dim: rgba(22, 163, 74, 0.14);
+  --warning-dim: rgba(217, 119, 6, 0.14);
+  --danger-dim: rgba(220, 38, 38, 0.12);
+  --info-dim: rgba(3, 105, 161, 0.12);
+
+  /* ── TIPOGRAFÍAS ── */
+  --font-mono: 'Orbitron', monospace;
+  --font-ui: 'Space Grotesk', sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+
+  /* ── GLASS COMPAT ── */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(37, 99, 235, 0.15);
+  --shadow-soft: 0 4px 16px rgba(15, 23, 42, 0.14);
+
+  /* ── ESTADOS MÉDICOS ── */
+  --urgente: rgba(220, 38, 38, 1);
+  --moderado: rgba(202, 138, 4, 1);
+  --estable: rgba(22, 163, 74, 1);
+  --muerto: rgba(15, 23, 42, 1);
+  --standar: rgba(2, 132, 199, 1);
+
+  /* ── TOKENS SEMÁNTICOS CON VALOR PROPIO ── */
+  --theme-background: linear-gradient(135deg, #eef4ff 0%, #dfe9fb 100%);
+  --theme-background-viewport-sm: linear-gradient(135deg, #eef4ff 0%, #dfe9fb 100%);
+  --theme-background-viewport-lg: linear-gradient(135deg, #eef4ff 0%, #dfe9fb 100%);
+
+  --theme-shadow-inset: inset 0 2px 4px rgba(15, 23, 42, 0.08);
+  --theme-shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.12);
+  --theme-shadow-md: 0 4px 16px rgba(15, 23, 42, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --theme-shadow-lg: 0 8px 32px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  /* Bootstrap: ajustes mínimos para que el tema claro se vea coherente */
+  --bs-body-bg: var(--deep);
+  --bs-body-color: var(--text);
+  --bs-border-color: var(--rim);
+  --bs-border-color-translucent: rgba(15, 23, 42, 0.12);
+  --bs-secondary-bg: var(--surface);
+  --bs-tertiary-bg: #d7e2f1;
+  --bs-secondary-color: #475569;
+  --bs-tertiary-color: #64748b;
+  --bs-light: #f8fafc;
+  --bs-dark: #1e293b;
+  --bs-primary: var(--accent);
+  --bs-link-color: var(--accent);
+  --bs-link-hover-color: var(--accent-light);
+  --bs-link-color-rgb: 37, 99, 235;
+  --bs-link-hover-color-rgb: 59, 130, 246;
+
+  /* Énfasis de texto / utilidades Bootstrap */
+  --bs-primary-text-emphasis: #1e40af;
+  --bs-secondary-text-emphasis: #475569;
+  --bs-success-text-emphasis: #15803d;
+  --bs-info-text-emphasis: #0369a1;
+  --bs-warning-text-emphasis: #b45309;
+  --bs-danger-text-emphasis: #b91c1c;
+  --bs-light-text-emphasis: #f8fafc;
+  --bs-dark-text-emphasis: #1e293b;
+
+  /* Subtles y bordes de estado (bg-*-subtle / border-*-subtle) */
+  --bs-primary-bg-subtle: #dbeafe;
+  --bs-secondary-bg-subtle: #e2e8f0;
+  --bs-success-bg-subtle: #dcfce7;
+  --bs-info-bg-subtle: #e0f2fe;
+  --bs-warning-bg-subtle: #fef3c7;
+  --bs-danger-bg-subtle: #fee2e2;
+  --bs-primary-border-subtle: #93c5fd;
+  --bs-secondary-border-subtle: #cbd5e1;
+  --bs-success-border-subtle: #86efac;
+  --bs-info-border-subtle: #7dd3fc;
+  --bs-warning-border-subtle: #fde68a;
+  --bs-danger-border-subtle: #fecaca;
+
+  /* Validación de formularios */
+  --bs-form-valid-color: #16a34a;
+  --bs-form-valid-border-color: #16a34a;
+  --bs-form-invalid-color: #dc2626;
+  --bs-form-invalid-border-color: #dc2626;
+
+  --bs-code-color: #be185d;
+  --bs-highlight-color: #1e293b;
+  --bs-highlight-bg: #fef08a;
+}

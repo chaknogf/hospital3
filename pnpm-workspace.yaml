@@ -3,8 +3,8 @@ allowBuilds:
   esbuild: set this to true or false
   lmdb: set this to true or false
   msgpackr-extract: set this to true or false
-ignoredBuiltDependencies:
-  - '@parcel/watcher'
+onlyBuiltDependencies:
   - esbuild
+  - '@parcel/watcher'
   - lmdb
   - msgpackr-extract
