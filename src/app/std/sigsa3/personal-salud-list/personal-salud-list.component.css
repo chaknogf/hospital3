@@ -44,6 +44,37 @@
 .btn-accion:hover { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.3); }
 .btn-accion:disabled { opacity: 0.5; cursor: not-allowed; }
 
+.filtros-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.filtro-input {
+  flex: 1;
+  min-width: 200px;
+  background: rgba(30,41,59,0.8);
+  border: 1px solid rgba(148,163,184,0.25);
+  border-radius: 8px;
+  color: #e2e8f0;
+  padding: 7px 12px;
+  font-size: 0.82rem;
+}
+.filtro-select {
+  background: rgba(30,41,59,0.8);
+  border: 1px solid rgba(148,163,184,0.25);
+  border-radius: 8px;
+  color: #e2e8f0;
+  padding: 7px 12px;
+  font-size: 0.82rem;
+  max-width: 240px;
+}
+.filtro-input:focus, .filtro-select:focus {
+  outline: none;
+  border-color: rgba(59,130,246,0.5);
+}
+
 .total-badge {
   display: inline-block;
   padding: 5px 14px;

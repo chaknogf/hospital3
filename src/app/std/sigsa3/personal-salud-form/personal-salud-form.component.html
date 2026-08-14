@@ -1,7 +1,9 @@
 <div class="form-wrap">
   <div class="form-card">
     <div class="form-header">
-      <span class="form-title">{{ enEdicion ? 'Editar' : 'Nuevo' }} Personal Salud</span>
+      <span class="form-title"
+        >{{ enEdicion ? "Editar" : "Nuevo" }} Personal Salud</span
+      >
       @if (enEdicion && registroId) {
         <span class="form-badge">ID: {{ registroId }}</span>
       }
@@ -16,8 +18,12 @@
         <div class="form-body">
           <div class="field-group">
             <label>Nombre completo</label>
-            <input type="text" formControlName="nombre" placeholder="Nombre del profesional" />
-            @if (f['nombre'].invalid && f['nombre'].touched) {
+            <input
+              type="text"
+              formControlName="nombre"
+              placeholder="Nombre del profesional"
+            />
+            @if (f["nombre"].invalid && f["nombre"].touched) {
               <span class="field-error">El nombre es obligatorio</span>
             }
           </div>
@@ -33,6 +39,15 @@
           </div>
 
           <div class="field-group">
+            <label>Medico Id</label>
+            <input
+              type="number"
+              formControlName="medico_id"
+              placeholder="ID del médico"
+            />
+          </div>
+
+          <div class="field-group">
             <label class="checkbox-label">
               <input type="checkbox" formControlName="activo" />
               Activo
@@ -44,8 +59,13 @@
           <button type="button" class="btn-cancel" (click)="volver()">
             <span [innerHTML]="cancelIcon"></span> Cancelar
           </button>
-          <button type="submit" class="btn-save" [disabled]="guardando || form.invalid">
-            <span [innerHTML]="saveIcon"></span> {{ guardando ? 'Guardando...' : 'Guardar' }}
+          <button
+            type="submit"
+            class="btn-save"
+            [disabled]="guardando || form.invalid"
+          >
+            <span [innerHTML]="saveIcon"></span>
+            {{ guardando ? "Guardando..." : "Guardar" }}
           </button>
         </div>
       </form>

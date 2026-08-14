@@ -203,6 +203,24 @@
         ><span class="line-signus"></span>
       </div>
     </div>
+
+    @if (consulta()?.especialidad == "PEDI") {
+      <!-- Fila 3: tamizaje neonatal -->
+      <div class="campos-clinicos--spread">
+        <div class="signus">
+          <span class="label-line">Tamizaje Neonatal Realizado:</span
+          ><span class="line-signus"></span>
+        </div>
+        <div class="signus">
+          <span class="label-line">Fecha de Tamizaje:</span
+          ><span class="line-signus"></span>
+        </div>
+        <div class="signus">
+          <span class="label-line">Resultado:</span>
+          <span class="line_resultado"></span>
+        </div>
+      </div>
+    }
   </div>
 
   <!-- ── MOTIVO DE CONSULTA ── -->

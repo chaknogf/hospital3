@@ -384,6 +384,14 @@ label {
   min-height: 14px;
 }
 
+.line_resultado {
+  display: block;
+  border-bottom: 0.8px solid var(--ink-muted);
+  margin: 0;
+  width: 260px;
+  min-height: 14px;
+}
+
 .line-mini {
   display: block;
   border-radius: 4px;

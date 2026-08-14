@@ -157,17 +157,20 @@ export interface PersonalSalud {
   nombre: string;
   especialidad_id?: number;
   especialidad_nombre?: string;
+  medico_id?: number;
   activo?: boolean;
 }
 
 export interface PersonalSaludCreate {
   nombre: string;
   especialidad_id?: number;
+  medico_id?: number;
   activo?: boolean;
 }
 
 export interface PersonalSaludUpdate {
   nombre?: string;
   especialidad_id?: number;
+  medico_id?: number;
   activo?: boolean;
 }
