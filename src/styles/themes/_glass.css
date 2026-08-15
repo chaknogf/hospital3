@@ -1,0 +1,180 @@
+/* ═══════════════════════════════════════════════════════════════
+   THEME: GLASS (prueba de arquitectura — Glassmorphism)
+   ═══════════════════════════════════════════════════════════════
+
+   Identidad Glassmorphism moderna y sobria: profundidad, transparencia
+   y elegancia tecnológica, sin perder legibilidad ni la naturaleza
+   hospitalaria de la app.
+
+   Tema OSCURO (data-bs-theme="dark"). Se sobrescriben únicamente
+   variables base + tokens semánticos mediante
+   :root[data-theme="glass"] (0,2,0). No hay selectores de
+   componentes ni `:root` pelado.
+
+   Estrategia sin tocar componentes:
+   - Fondo "aurora" (--theme-background): la superficie translúcida
+     muestra el degradado de colores detrás.
+   - Superficies translúcidas (--deep/--panel/--surface con alpha).
+   - Bordes de cristal (--rim) translúcidos de bajo contraste.
+   - Highlights sutiles en el borde superior (inset de las sombras).
+   - Los componentes que ya declaran `backdrop-filter` (docks, banners
+     HUD, navbar) reciben blur real; el resto, translucidez pura.
+
+   Activación: <html data-theme="glass"> (lo gestiona ThemeService).
+   ═══════════════════════════════════════════════════════════════ */
+
+:root[data-theme="glass"],
+[data-theme="glass"] {
+  color-scheme: dark;
+
+  /* ── PALETA DE ACENTO ──
+     Cian tecnológico (distinto del azul de current y del sky claro
+     de hospital). La semántica clínica se mantiene intacta:
+     success/verde, warning/ámbar, danger/rojo, info/cian. */
+  --accent: #0ea5e9;          /* azul-cian tecnológico */
+  --accent-light: #7dd3fc;    /* variante brillante (texto/bordes) */
+  --accent-deep: #0284c7;     /* extremo oscuro del degradado */
+  --accent-dark: #075985;     /* más oscuro (hover del degradado) */
+  --success: #34d399;
+  --success-soft: #6ee7b7;
+  --warning: #fbbf24;
+  --warning-soft: #fde68a;
+  --danger: #f87171;
+  --info: #22d3ee;            /* cian para información */
+
+  /* ── SUPERFICIES TRANSLÚCIDAS ──
+     Con alpha para que el fondo aurora se transparente (cristal). */
+  --deep: rgba(10, 15, 34, 0.6);     /* superficie más profunda */
+  --panel: rgba(23, 34, 72, 0.5);    /* tarjetas, paneles, tablas */
+  --surface: rgba(32, 46, 94, 0.55); /* inputs / elementos elevados */
+
+  /* ── BORDES / RIM (cristal) ── */
+  --rim: rgba(148, 197, 255, 0.16);
+  --rim-hot: rgba(148, 197, 255, 0.42);
+
+  /* ── TEXTOS / ACENTOS ── */
+  --pulse: #0ea5e9;
+  --pulse-dim: rgba(14, 165, 233, 0.16);
+  --star: #7dd3fc;
+  --star-dim: rgba(125, 211, 252, 0.3);
+  --lime: #a3e635;
+  --lime-dim: rgba(163, 230, 53, 0.12);
+  --red: #f87171;
+  --red-dim: rgba(248, 113, 113, 0.14);
+  --amber: #fbbf24;
+  --amber-dim: rgba(251, 191, 36, 0.14);
+  --text: #e8f2ff;
+  --muted: #8fa6c8;
+
+  /* Textos derivados usados por los tokens semánticos */
+  --text-faint: rgba(232, 242, 255, 0.55);
+  --text-inverse: #ffffff;
+
+  /* ── FONDOS SEMÁNTICOS (estados) ── */
+  --success-dim: rgba(52, 211, 153, 0.15);
+  --warning-dim: rgba(251, 191, 36, 0.15);
+  --danger-dim: rgba(248, 113, 113, 0.14);
+  --info-dim: rgba(34, 211, 238, 0.14);
+
+  /* ── TIPOGRAFÍAS ──
+     Se mantiene la tipografía actual (Space Grotesk/Orbitron): ya es
+     legible y encaja con la estética tecnológica del cristal. */
+  --font-mono: 'Orbitron', monospace;
+  --font-ui: 'Space Grotesk', sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+
+  /* ── GLASS COMPAT ──
+     Consumidas por componentes admin (dock, banners, modales) que ya
+     combinan backdrop-filter + estas variables. El tema controla el
+     cristal completo sin tocarlos. */
+  --glass-bg: rgba(17, 26, 58, 0.42);
+  --glass-border: rgba(148, 197, 255, 0.22);
+  --shadow-soft: 0 8px 32px rgba(2, 6, 23, 0.45);
+
+  /* ── ESTADOS MÉDICOS ── */
+  --urgente: #f43f5e;
+  --moderado: #fbbf24;
+  --estable: #34d399;
+  --muerto: #334155;
+  --standar: #7dd3fc;
+
+  /* ── TOKENS SEMÁNTICOS CON VALOR PROPIO ── */
+  /* Fondo "aurora": degradado profundo con halos cian/índigo. Es la
+     capa que da vida a la translucidez del cristal. */
+  --theme-background:
+    radial-gradient(1100px 560px at 8% -12%, rgba(14, 165, 233, 0.3), transparent 55%),
+    radial-gradient(900px 520px at 90% 8%, rgba(99, 102, 241, 0.26), transparent 55%),
+    radial-gradient(1000px 640px at 55% 112%, rgba(34, 211, 238, 0.22), transparent 60%),
+    linear-gradient(180deg, #070b1c 0%, #0b1129 100%);
+  --theme-background-viewport-sm:
+    radial-gradient(1100px 560px at 8% -12%, rgba(14, 165, 233, 0.32), transparent 55%),
+    radial-gradient(900px 520px at 90% 8%, rgba(99, 102, 241, 0.28), transparent 55%),
+    radial-gradient(1000px 640px at 55% 112%, rgba(34, 211, 238, 0.24), transparent 60%),
+    linear-gradient(180deg, #070b1c 0%, #0b1129 100%);
+  --theme-background-viewport-lg:
+    radial-gradient(1100px 560px at 8% -12%, rgba(14, 165, 233, 0.34), transparent 55%),
+    radial-gradient(900px 520px at 90% 8%, rgba(99, 102, 241, 0.3), transparent 55%),
+    radial-gradient(1000px 640px at 55% 112%, rgba(34, 211, 238, 0.26), transparent 60%),
+    linear-gradient(180deg, #070b1c 0%, #0b1129 100%);
+
+  /* Sombras suaves y profundas, con highlight interior superior
+     (borde de cristal) en vez de borde blanco opaco. */
+  --theme-shadow-inset: inset 0 2px 6px rgba(2, 6, 23, 0.35);
+  --theme-shadow-sm: 0 4px 16px rgba(2, 6, 23, 0.35);
+  --theme-shadow-md: 0 8px 28px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --theme-shadow-lg: 0 16px 48px rgba(2, 6, 23, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  /* Bootstrap: ajustes mínimos para que el cristal oscuro sea
+     coherente. El resto del esquema oscuro lo da el propio Bootstrap
+     ([data-bs-theme="dark"]), sin overrides innecesarios. */
+  --bs-body-bg: var(--deep);
+  --bs-body-color: var(--text);
+  --bs-border-color: var(--rim);
+  --bs-border-color-translucent: rgba(148, 197, 255, 0.12);
+  --bs-secondary-bg: var(--surface);
+  --bs-tertiary-bg: rgba(32, 46, 94, 0.5);
+  --bs-secondary-color: var(--muted);
+  --bs-tertiary-color: var(--muted);
+  --bs-light: #eef4ff;
+  --bs-dark: #0b1129;
+  --bs-primary: var(--accent);
+  --bs-primary-rgb: 14, 165, 233;
+  --bs-link-color: var(--accent-light);
+  --bs-link-hover-color: #38bdf8;
+  --bs-link-color-rgb: 125, 211, 252;
+  --bs-link-hover-color-rgb: 56, 189, 248;
+
+  /* Énfasis de texto / utilidades Bootstrap */
+  --bs-primary-text-emphasis: #7dd3fc;
+  --bs-secondary-text-emphasis: #a3b8d6;
+  --bs-success-text-emphasis: #6ee7b7;
+  --bs-info-text-emphasis: #67e8f9;
+  --bs-warning-text-emphasis: #fde68a;
+  --bs-danger-text-emphasis: #fca5a5;
+  --bs-light-text-emphasis: #eef4ff;
+  --bs-dark-text-emphasis: #8fa6c8;
+
+  /* Subtles y bordes de estado (bg-*-subtle / border-*-subtle) */
+  --bs-primary-bg-subtle: rgba(14, 165, 233, 0.16);
+  --bs-secondary-bg-subtle: rgba(148, 197, 255, 0.1);
+  --bs-success-bg-subtle: rgba(52, 211, 153, 0.14);
+  --bs-info-bg-subtle: rgba(34, 211, 238, 0.14);
+  --bs-warning-bg-subtle: rgba(251, 191, 36, 0.14);
+  --bs-danger-bg-subtle: rgba(248, 113, 113, 0.14);
+  --bs-primary-border-subtle: rgba(14, 165, 233, 0.4);
+  --bs-secondary-border-subtle: rgba(148, 197, 255, 0.25);
+  --bs-success-border-subtle: rgba(52, 211, 153, 0.4);
+  --bs-info-border-subtle: rgba(34, 211, 238, 0.4);
+  --bs-warning-border-subtle: rgba(251, 191, 36, 0.4);
+  --bs-danger-border-subtle: rgba(248, 113, 113, 0.4);
+
+  /* Validación de formularios */
+  --bs-form-valid-color: #34d399;
+  --bs-form-valid-border-color: #34d399;
+  --bs-form-invalid-color: #f87171;
+  --bs-form-invalid-border-color: #f87171;
+
+  --bs-code-color: #7dd3fc;
+  --bs-highlight-color: #e8f2ff;
+  --bs-highlight-bg: rgba(251, 191, 36, 0.35);
+}

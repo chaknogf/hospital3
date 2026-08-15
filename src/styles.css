@@ -7,7 +7,8 @@
    - src/styles/_tokens.css              → tokens semánticos (--theme-*)
    - src/styles/themes/_current.css      → tema por defecto (look actual)
    - src/styles/themes/_light.css        → tema de prueba claro
-   - src/styles/themes/_hospital.css     → tema hospitalario (nuevo)
+   - src/styles/themes/_hospital.css     → tema hospitalario
+   - src/styles/themes/_glass.css        → tema glassmorphism
    - src/styles/_utilities.css           → recetas reutilizables
 
    Los componentes solo usan intenciones (--theme-*). El tema se
@@ -17,6 +18,7 @@
 @import './styles/themes/_current.css';
 @import './styles/themes/_light.css';
 @import './styles/themes/_hospital.css';
+@import './styles/themes/_glass.css';
 @import './styles/_utilities.css';
 
 :root {
