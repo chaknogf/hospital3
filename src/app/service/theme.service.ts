@@ -4,8 +4,9 @@ import { Injectable, signal, effect } from '@angular/core';
  * Gestión de temas.
  *
  * Los temas se activan cambiando un atributo en el elemento raíz:
- *   <html data-theme="current">  → tema por defecto (look actual)
- *   <html data-theme="light">    → tema de prueba claro
+ *   <html data-theme="current">   → tema por defecto (look actual)
+ *   <html data-theme="light">     → tema de prueba claro
+ *   <html data-theme="hospital">  → tema hospitalario (primer tema nuevo)
  *
  * Para añadir un tema nuevo basta con registrarlo en `REGISTERED_THEMES`
  * (nombre + data-bs-theme) y definir su hoja en src/styles/themes/
@@ -24,6 +25,7 @@ export interface RegisteredTheme {
 export const REGISTERED_THEMES: RegisteredTheme[] = [
   { name: 'current', bsTheme: 'dark' },
   { name: 'light', bsTheme: 'light' },
+  { name: 'hospital', bsTheme: 'light' },
 ];
 
 export type ThemeName = (typeof REGISTERED_THEMES)[number]['name'];

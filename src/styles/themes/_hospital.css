@@ -1,0 +1,149 @@
+/* ═══════════════════════════════════════════════════════════════
+   THEME: HOSPITAL (primer tema visual nuevo)
+   ═══════════════════════════════════════════════════════════════
+
+   Entorno hospitalario moderno: limpio, profesional, de alta
+   legibilidad y apto para uso prolongado de personal administrativo
+   y clínico. Es un tema CLARO (data-bs-theme="light").
+
+   Se sobrescriben exclusivamente variables base + tokens semánticos
+   mediante :root[data-theme="hospital"] (0,2,0). Los componentes no
+   se tocan: solo conocen intenciones (--theme-*).
+
+   Activación: <html data-theme="hospital"> (lo gestiona ThemeService).
+   ═══════════════════════════════════════════════════════════════ */
+
+:root[data-theme="hospital"],
+[data-theme="hospital"] {
+  color-scheme: light;
+
+  /* ── PALETA DE ACENTO ──
+     Azul hospitalario con acentos teal/cian moderados. Se mantiene
+     la semántica: success/verde, warning/ámbar, danger/rojo. */
+  --accent: #0284c7;          /* azul hospitalario principal */
+  --accent-light: #38bdf8;    /* variante brillante (hover, enlaces) */
+  --accent-deep: #0369a1;     /* extremo oscuro del degradado primario */
+  --accent-dark: #075985;     /* más oscuro (hover del degradado) */
+  --success: #16a34a;
+  --success-soft: #15803d;
+  --warning: #d97706;
+  --warning-soft: #b45309;
+  --danger: #dc2626;
+  --info: #0e7490;            /* teal/cian moderado (información) */
+
+  /* ── SUPERFICIES CLARAS ── */
+  --deep: #f3f8fc;            /* fondo de página (muy claro azulado) */
+  --panel: #ffffff;           /* tarjetas, paneles, tablas */
+  --surface: #e6eef8;         /* inputs / elementos elevados */
+
+  /* ── BORDES / RIM ── */
+  --rim: rgba(2, 132, 199, 0.16);
+  --rim-hot: rgba(2, 132, 199, 0.42);
+
+  /* ── TEXTOS / ACENTOS ── */
+  --pulse: #0284c7;
+  --pulse-dim: rgba(2, 132, 199, 0.12);
+  --star: #38bdf8;
+  --star-dim: rgba(56, 189, 248, 0.3);
+  --lime: #16a34a;
+  --lime-dim: rgba(22, 163, 74, 0.14);
+  --red: #dc2626;
+  --red-dim: rgba(220, 38, 38, 0.11);
+  --amber: #d97706;
+  --amber-dim: rgba(217, 119, 6, 0.13);
+  --text: #0f2b46;            /* azul muy oscuro: alto contraste */
+  --muted: #5b7ca0;           /* azul grisáceo legible sobre blanco */
+
+  /* Textos derivados usados por los tokens semánticos */
+  --text-faint: rgba(15, 43, 70, 0.55);
+  --text-inverse: #ffffff;
+
+  /* ── FONDOS SEMÁNTICOS (estados) ── */
+  --success-dim: rgba(22, 163, 74, 0.13);
+  --warning-dim: rgba(217, 119, 6, 0.13);
+  --danger-dim: rgba(220, 38, 38, 0.11);
+  --info-dim: rgba(14, 116, 144, 0.12);
+
+  /* ── TIPOGRAFÍAS ──
+     Inter para el UI: legibilidad máxima en uso prolongado.
+     Mono con DM Mono (ya cargado) en lugar de Orbitron (display). */
+  --font-mono: 'DM Mono', 'SFMono-Regular', Consolas, monospace;
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+
+  /* ── GLASS COMPAT ── */
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(2, 132, 199, 0.14);
+  --shadow-soft: 0 4px 16px rgba(15, 43, 70, 0.12);
+
+  /* ── ESTADOS MÉDICOS ── */
+  --urgente: #e11d48;
+  --moderado: #d97706;
+  --estable: #16a34a;
+  --muerto: #334155;
+  --standar: #0284c7;
+
+  /* ── TOKENS SEMÁNTICOS CON VALOR PROPIO ── */
+  /* Fondo limpio: degradado vertical sutil, sin cian saturado. */
+  --theme-background: linear-gradient(180deg, #f5f9fd 0%, #e7effa 100%);
+  --theme-background-viewport-sm: linear-gradient(180deg, #f5f9fd 0%, #e7effa 100%);
+  --theme-background-viewport-lg: linear-gradient(180deg, #f5f9fd 0%, #e4edf9 100%);
+
+  /* Sombras suaves, coherentes con superficies claras */
+  --theme-shadow-inset: inset 0 2px 4px rgba(15, 43, 70, 0.05);
+  --theme-shadow-sm: 0 1px 3px rgba(15, 43, 70, 0.1);
+  --theme-shadow-md: 0 4px 16px rgba(15, 43, 70, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  --theme-shadow-lg: 0 12px 32px rgba(15, 43, 70, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  /* Bootstrap: capa de integración coherente con el tema hospital */
+  --bs-body-bg: var(--deep);
+  --bs-body-color: var(--text);
+  --bs-border-color: var(--rim);
+  --bs-border-color-translucent: rgba(15, 43, 70, 0.1);
+  --bs-secondary-bg: var(--surface);
+  --bs-tertiary-bg: #d9e6f4;
+  --bs-secondary-color: #5b7ca0;
+  --bs-tertiary-color: #6c86a2;
+  --bs-light: #f8fafc;
+  --bs-dark: #0f2b46;
+  --bs-primary: var(--accent);
+  --bs-primary-rgb: 2, 132, 199;
+  --bs-link-color: var(--accent);
+  --bs-link-hover-color: var(--accent-light);
+  --bs-link-color-rgb: 2, 132, 199;
+  --bs-link-hover-color-rgb: 56, 189, 248;
+
+  /* Énfasis de texto / utilidades Bootstrap */
+  --bs-primary-text-emphasis: #0369a1;
+  --bs-secondary-text-emphasis: #5b7ca0;
+  --bs-success-text-emphasis: #15803d;
+  --bs-info-text-emphasis: #0e7490;
+  --bs-warning-text-emphasis: #b45309;
+  --bs-danger-text-emphasis: #b91c1c;
+  --bs-light-text-emphasis: #f8fafc;
+  --bs-dark-text-emphasis: #0f2b46;
+
+  /* Subtles y bordes de estado (bg-*-subtle / border-*-subtle) */
+  --bs-primary-bg-subtle: #dbf0fb;
+  --bs-secondary-bg-subtle: #e8eef5;
+  --bs-success-bg-subtle: #dcf5e7;
+  --bs-info-bg-subtle: #d5f0f7;
+  --bs-warning-bg-subtle: #fdf1d8;
+  --bs-danger-bg-subtle: #fde4e2;
+  --bs-primary-border-subtle: #79c3ec;
+  --bs-secondary-border-subtle: #b9cbe0;
+  --bs-success-border-subtle: #83dfae;
+  --bs-info-border-subtle: #70d2e4;
+  --bs-warning-border-subtle: #f5d884;
+  --bs-danger-border-subtle: #f5a59c;
+
+  /* Validación de formularios */
+  --bs-form-valid-color: #16a34a;
+  --bs-form-valid-border-color: #16a34a;
+  --bs-form-invalid-color: #dc2626;
+  --bs-form-invalid-border-color: #dc2626;
+
+  --bs-code-color: #0e7490;
+  --bs-highlight-color: #0f2b46;
+  --bs-highlight-bg: #fef08a;
+}
