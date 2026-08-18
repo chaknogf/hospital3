@@ -1,10 +1,15 @@
 /* ═══════════════════════════════════════════════════════════════
-   THEME: HOSPITAL (profesional, clínico y sereno)
+   THEME: HOSPITAL (claro, clínico y sereno)
    ═══════════════════════════════════════════════════════════════
 
    Entorno hospitalario moderno: limpio, profesional, sobrio y de
    alta legibilidad, apto para uso prolongado de personal
    administrativo y clínico. Es un tema CLARO (data-bs-theme="light").
+
+   Base: identidad hospitalaria (superficies clínicas, tipografía
+   Inter/DM Mono, capa Bootstrap). Paleta de colores: familia oceánica
+   (fresh-sky #00a6fb, steel-blue #0582ca, baltic-blue #006494,
+   deep-space-blue #003554, ink-black #051923).
 
    Se sobrescriben exclusivamente variables base + tokens semánticos
    mediante :root[data-theme="hospital"] (0,2,0). Los componentes no
@@ -17,30 +22,30 @@
 [data-theme="hospital"] {
   color-scheme: light;
 
-  /* ── PALETA DE ACENTO ──
-     Primario teal hospitalario (#007C91), secundario azul (#1D4ED8)
-     y acento aguamarina (#0F9F9A). Semántica clínica intacta:
-     success/verde, warning/ámbar, danger/rojo. */
-  --accent: #007c91;
-  --accent-light: #0891b2;
-  --accent-deep: #03637a;
-  --accent-dark: #06586e;
-  --secondary: #1d4ed8;
-  --secondary-light: #3b82f6;
-  --secondary-deep: #1e40af;
-  --secondary-dim: rgba(29, 78, 216, 0.12);
-  --tertiary: #0f9f9a;
-  --tertiary-light: #2dd4bf;
-  --tertiary-deep: #0d7e7a;
-  --tertiary-dim: rgba(15, 159, 154, 0.14);
-  --success: #16803a;
-  --success-soft: #14532d;
-  --warning: #b7791f;
-  --warning-soft: #92400e;
-  --danger: #c53030;
+/* ── PALETA DE ACENTO (oceánica) ──
+     Primario steel-blue #0582ca, claro fresh-sky #00a6fb, profundo
+     baltic-blue #006494 y oscuro deep-space-blue #003554. Semántica
+     clínica intacta: success/verde, warning/ámbar, danger/rojo. */
+  --accent: #0582ca;
+  --accent-light: #00a6fb;
+  --accent-deep: #006494;
+  --accent-dark: #003554;
+  --secondary: #0f766e;
+  --secondary-light: #14b8a6;
+  --secondary-deep: #115e59;
+  --secondary-dim: rgba(15, 118, 110, 0.14);
+  --tertiary: #7c3aed;
+  --tertiary-light: #a78bfa;
+  --tertiary-deep: #6d28d9;
+  --tertiary-dim: rgba(124, 58, 237, 0.12);
+  --success: #15803d;
+  --success-soft: #166534;
+  --warning: #d97706;
+  --warning-soft: #b45309;
+  --danger: #dc2626;
   --info: #0e7490;
 
-  /* ── SUPERFICIES CLARAS ── */
+  /* ── SUPERFICIES CLARAS (base hospital) ── */
   --deep: #f4fafc;
   --panel: #ffffff;
   --surface: #eaf3f6;
@@ -48,19 +53,19 @@
 
   /* ── BORDES / RIM ── */
   --rim: #c9e1e8;
-  --rim-hot: #007c91;
+  --rim-hot: #0582ca;
 
   /* ── TEXTOS / ACENTOS ── */
-  --pulse: #007c91;
-  --pulse-dim: rgba(0, 124, 145, 0.12);
-  --star: #0891b2;
-  --star-dim: rgba(8, 145, 178, 0.3);
-  --lime: #16803a;
-  --lime-dim: rgba(22, 128, 58, 0.13);
-  --red: #c53030;
-  --red-dim: rgba(197, 48, 48, 0.11);
-  --amber: #b7791f;
-  --amber-dim: rgba(183, 121, 31, 0.13);
+  --pulse: #0582ca;
+  --pulse-dim: rgba(5, 130, 202, 0.12);
+  --star: #00a6fb;
+  --star-dim: rgba(0, 166, 251, 0.3);
+  --lime: #15803d;
+  --lime-dim: rgba(21, 128, 61, 0.14);
+  --red: #dc2626;
+  --red-dim: rgba(220, 38, 38, 0.11);
+  --amber: #d97706;
+  --amber-dim: rgba(217, 119, 6, 0.13);
   --text: #123047;
   --muted: #577085;
 
@@ -69,9 +74,9 @@
   --text-inverse: #ffffff;
 
   /* ── FONDOS SEMÁNTICOS (estados) ── */
-  --success-dim: rgba(22, 128, 58, 0.12);
-  --warning-dim: rgba(183, 121, 31, 0.12);
-  --danger-dim: rgba(197, 48, 48, 0.11);
+  --success-dim: rgba(21, 128, 61, 0.12);
+  --warning-dim: rgba(217, 119, 6, 0.12);
+  --danger-dim: rgba(220, 38, 38, 0.11);
   --info-dim: rgba(14, 116, 144, 0.12);
 
   /* ── TIPOGRAFÍAS ──
@@ -83,15 +88,15 @@
 
   /* ── GLASS COMPAT ── */
   --glass-bg: rgba(255, 255, 255, 0.82);
-  --glass-border: rgba(0, 124, 145, 0.14);
+  --glass-border: rgba(5, 130, 202, 0.14);
   --shadow-soft: 0 4px 16px rgba(18, 48, 71, 0.12);
 
   /* ── ESTADOS MÉDICOS ── */
-  --urgente: #c53030;
-  --moderado: #b7791f;
-  --estable: #16803a;
+  --urgente: #dc2626;
+  --moderado: #d97706;
+  --estable: #15803d;
   --muerto: #334155;
-  --standar: #007c91;
+  --standar: #0582ca;
 
   /* ── TOKENS SEMÁNTICOS CON VALOR PROPIO ── */
   /* Fondo limpio: degradado vertical sutil, sin saturación. */
@@ -117,43 +122,43 @@
   --bs-light: #f8fafc;
   --bs-dark: #123047;
   --bs-primary: var(--accent);
-  --bs-primary-rgb: 0, 124, 145;
+  --bs-primary-rgb: 5, 130, 202;
   --bs-link-color: var(--accent);
   --bs-link-hover-color: var(--accent-light);
-  --bs-link-color-rgb: 0, 124, 145;
-  --bs-link-hover-color-rgb: 8, 145, 178;
+  --bs-link-color-rgb: 5, 130, 202;
+  --bs-link-hover-color-rgb: 0, 166, 251;
 
   /* Énfasis de texto / utilidades Bootstrap */
-  --bs-primary-text-emphasis: #03637a;
-  --bs-secondary-text-emphasis: #1e40af;
-  --bs-success-text-emphasis: #16803a;
+  --bs-primary-text-emphasis: #003554;
+  --bs-secondary-text-emphasis: #115e59;
+  --bs-success-text-emphasis: #15803d;
   --bs-info-text-emphasis: #0e7490;
-  --bs-warning-text-emphasis: #92400e;
+  --bs-warning-text-emphasis: #b45309;
   --bs-danger-text-emphasis: #b91c1c;
   --bs-light-text-emphasis: #f8fafc;
   --bs-dark-text-emphasis: #123047;
 
   /* Subtles y bordes de estado (bg-*-subtle / border-*-subtle) */
-  --bs-primary-bg-subtle: #d9f0f5;
-  --bs-secondary-bg-subtle: #dbe4fb;
-  --bs-success-bg-subtle: #dcf5e7;
-  --bs-info-bg-subtle: #d5f0f7;
-  --bs-warning-bg-subtle: #faf0d9;
-  --bs-danger-bg-subtle: #fde4e2;
-  --bs-primary-border-subtle: #79d3e0;
-  --bs-secondary-border-subtle: #9dbcf5;
-  --bs-success-border-subtle: #83dfae;
-  --bs-info-border-subtle: #70d2e4;
-  --bs-warning-border-subtle: #e5c78a;
-  --bs-danger-border-subtle: #f0a6a0;
+  --bs-primary-bg-subtle: rgba(0, 166, 251, 0.10);
+  --bs-secondary-bg-subtle: #ccfbf1;
+  --bs-success-bg-subtle: #dcfce7;
+  --bs-info-bg-subtle: #e0f2fe;
+  --bs-warning-bg-subtle: #fef3c7;
+  --bs-danger-bg-subtle: #fee2e2;
+  --bs-primary-border-subtle: rgba(0, 166, 251, 0.35);
+  --bs-secondary-border-subtle: #5eead4;
+  --bs-success-border-subtle: #86efac;
+  --bs-info-border-subtle: #7dd3fc;
+  --bs-warning-border-subtle: #fde68a;
+  --bs-danger-border-subtle: #fecaca;
 
   /* Validación de formularios */
-  --bs-form-valid-color: #16803a;
-  --bs-form-valid-border-color: #16803a;
-  --bs-form-invalid-color: #c53030;
-  --bs-form-invalid-border-color: #c53030;
+  --bs-form-valid-color: #15803d;
+  --bs-form-valid-border-color: #15803d;
+  --bs-form-invalid-color: #dc2626;
+  --bs-form-invalid-border-color: #dc2626;
 
-  --bs-code-color: #0e7490;
+  --bs-code-color: #be185d;
   --bs-highlight-color: #123047;
   --bs-highlight-bg: #fef08a;
 }

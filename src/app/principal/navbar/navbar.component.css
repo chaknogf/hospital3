@@ -111,6 +111,13 @@
   font-size: .85rem;
 }
 
+.theme-label {
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--theme-text-muted);
+  text-transform: capitalize;
+}
+
 /* Botón salir */
 .btn-outline-danger {
   display:flex;

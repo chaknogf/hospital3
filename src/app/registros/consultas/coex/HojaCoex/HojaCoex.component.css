@@ -103,7 +103,7 @@ label { letter-spacing: 0.4px; }
   font-family: var(--mono);
   font-size: 11pt; font-weight: 700;
   text-transform: uppercase; letter-spacing: 1.8px;
-  color: var(--accent); margin-bottom: 2px;
+  color: var(--ink); margin-bottom: 2px;
 }
 .aurora-textos h4 {
   font-family: var(--serif);
@@ -127,7 +127,7 @@ label { letter-spacing: 0.4px; }
 .meta-num {
   font-family: var(--mono);
   font-size: 18pt; font-weight: 700;
-  color: var(--accent); line-height: 1;
+  color: var(--ink); line-height: 1;
 }
 .meta-sep {
   font-family: var(--mono);
@@ -142,7 +142,7 @@ label { letter-spacing: 0.4px; }
 .meta-exp {
   font-family: var(--mono);
   font-size: 16pt; font-weight: 700;
-  color: var(--accent);
+  color: var(--ink);
 }
 
 /* ══ SECCIONES ══════════════════════════════════════════════ */

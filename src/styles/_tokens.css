@@ -24,7 +24,7 @@
      :root[data-theme="current"] { … }
      :root[data-theme="light"]   { … }
      :root[data-theme="hospital"] { … }      (futuros)
-     :root[data-theme="glass"]     { … }
+     :root[data-theme="neumorfismo"] { … }
      :root[data-theme="high-contrast"] { … }
 
    - NUNCA se sobrescribe con :root pelado: el tema actual

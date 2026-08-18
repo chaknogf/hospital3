@@ -1,0 +1,588 @@
+/* ═══════════════════════════════════════════════════════════════
+   THEME: NEUMORFISMO — Soft UI (claro)
+   ═══════════════════════════════════════════════════════════════
+   Neumorfismo claro inspirado en Soft UI: fondo base suave, todas
+   las superficies pintadas con el MISMO color de fondo y profundidad
+   creada solo con sombras duales (luz arriba-izquierda + sombra
+   abajo-derecha). Elementos elevados (raised) vs. hundidos (inset)
+   para inputs. SIN blur ni translucencias: el material es sólido.
+   Identidad fuerte SIN tocar componentes. Tema CLARO
+   (data-bs-theme="light"). Solo reescribe variables base + tokens
+   semánticos. No hay `:root` pelado.
+   Activación: <html data-theme="neumorfismo"> (ThemeService).
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme="neumorfismo"] {
+  color-scheme: light;
+
+  /* ── BASE NEUMÓRFICA ─────────────────────────────────────────
+     Color de fondo = color de superficie. La profundidad se logra
+     con sombras duales, no con contraste de color. */
+  --neu-base:           #e8eef6;
+  --neu-base-light:     #f2f6fb;
+  --neu-base-dark:      #dde6f1;
+  --neu-highlight:      rgba(255, 255, 255, 0.90);   /* luz superior-izq */
+  --neu-shade:          rgba(163, 178, 201, 0.55);   /* sombra inf-der */
+
+  /* ── BOOTSTRAP BASE OVERRIDES ─────────────────────────────── */
+  --bs-body-color:            #1a1a2e;
+  --bs-body-color-rgb:        26, 26, 46;
+  --bs-body-bg:               transparent;
+  --bs-body-bg-rgb:           232, 238, 246;
+
+  --bs-emphasis-color:        #0d0d1a;
+  --bs-emphasis-color-rgb:    13, 13, 26;
+  --bs-secondary-color:       rgba(30, 30, 60, 0.65);
+  --bs-secondary-color-rgb:   30, 30, 60;
+  --bs-tertiary-color:        rgba(30, 30, 60, 0.4);
+  --bs-tertiary-color-rgb:    30, 30, 60;
+
+  --bs-secondary-bg:          #dde6f1;
+  --bs-secondary-bg-rgb:      221, 230, 241;
+  --bs-tertiary-bg:           #d8e2ee;
+  --bs-tertiary-bg-rgb:       216, 226, 238;
+
+  --bs-border-color:          rgba(0, 53, 84, 0.10);
+  --bs-border-color-translucent: rgba(0, 53, 84, 0.08);
+
+  --bs-heading-color:         #0d0d1a;
+  --bs-link-color:            #0582ca;
+  --bs-link-color-rgb:        5, 130, 202;
+  --bs-link-hover-color:      #006494;
+  --bs-code-color:            #0582ca;
+  --bs-highlight-color:       #1a1a2e;
+  --bs-highlight-bg:          rgba(255, 204, 0, 0.3);
+
+  /* ── BOOTSTRAP PALETTE (Primario azul oceánico) ───────────── */
+  --bs-primary:               #0582ca;
+  --bs-primary-rgb:           5, 130, 202;
+  --bs-secondary:             #8b5cf6;
+  --bs-secondary-rgb:         139, 92, 246;
+  --bs-success:               #34c759;
+  --bs-success-rgb:           52, 199, 89;
+  --bs-info:                  #64d2ff;
+  --bs-info-rgb:              100, 210, 255;
+  --bs-warning:               #ff9f0a;
+  --bs-warning-rgb:           255, 159, 10;
+  --bs-danger:                #ff3b30;
+  --bs-danger-rgb:            255, 59, 48;
+  --bs-light:                 #f2f6fb;
+  --bs-dark:                  #1a1a2e;
+
+  /* Énfasis de texto de estado */
+  --bs-primary-text-emphasis:   #006494;
+  --bs-secondary-text-emphasis: #5b21b6;
+  --bs-success-text-emphasis:   #1a7a35;
+  --bs-info-text-emphasis:      #0084b4;
+  --bs-warning-text-emphasis:   #a05c00;
+  --bs-danger-text-emphasis:    #d70015;
+  --bs-light-text-emphasis:     #ffffff;
+  --bs-dark-text-emphasis:      #1a1a2e;
+
+  /* Fondos sutiles de estado */
+  --bs-primary-bg-subtle:     rgba(5, 130, 202, 0.10);
+  --bs-secondary-bg-subtle:   rgba(139, 92, 246, 0.10);
+  --bs-success-bg-subtle:     rgba(52, 199, 89, 0.10);
+  --bs-info-bg-subtle:        rgba(100, 210, 255, 0.14);
+  --bs-warning-bg-subtle:     rgba(255, 159, 10, 0.12);
+  --bs-danger-bg-subtle:      rgba(255, 59, 48, 0.10);
+
+  /* Bordes sutiles de estado */
+  --bs-primary-border-subtle:   rgba(5, 130, 202, 0.35);
+  --bs-secondary-border-subtle: rgba(139, 92, 246, 0.35);
+  --bs-success-border-subtle:   rgba(52, 199, 89, 0.35);
+  --bs-info-border-subtle:      rgba(100, 210, 255, 0.35);
+  --bs-warning-border-subtle:   rgba(255, 159, 10, 0.35);
+  --bs-danger-border-subtle:    rgba(255, 59, 48, 0.35);
+
+  /* Validación */
+  --bs-form-valid-color:        #248a3d;
+  --bs-form-valid-border-color: #248a3d;
+  --bs-form-invalid-color:      #d70015;
+  --bs-form-invalid-border-color: #d70015;
+
+  /* ── BOOTSTRAP COMPONENT VARS ──────────────────────────────
+     Bootstrap pinta las superficies de sus componentes con estas
+     vars. En neumorfismo son SÓLIDAS (color base) porque la
+     profundidad la dan las sombras duales, no la transparencia.   */
+  --bs-card-bg:                   #e8eef6;
+  --bs-card-border-color:         rgba(0, 53, 84, 0.10);
+  --bs-card-cap-bg:               #f2f6fb;
+  --bs-list-group-bg:             #e8eef6;
+  --bs-list-group-border-color:   rgba(0, 53, 84, 0.10);
+  --bs-table-bg:                  transparent;
+  --bs-table-striped-bg:          rgba(5, 130, 202, 0.05);
+  --bs-table-hover-bg:            rgba(5, 130, 202, 0.08);
+  --bs-table-border-color:        rgba(0, 53, 84, 0.10);
+  --bs-navbar-bg:                 #e8eef6;
+  --bs-modal-bg:                  #e8eef6;
+  --bs-offcanvas-bg:              #e8eef6;
+  --bs-popover-bg:                #e8eef6;
+  --bs-toast-bg:                  #e8eef6;
+  --bs-dropdown-bg:               #e8eef6;
+  --bs-accordion-bg:              #e8eef6;
+  --bs-accordion-btn-bg:          #e8eef6;
+
+  /* ── TOKENS SEMÁNTICOS --theme-* ──────────────────────────── */
+
+  /* Colores base */
+  --surface:          #e8eef6;
+  --panel:            #dde6f1;
+  --deep:             #dde6f1;
+  --accent:           #0582ca;
+  --accent-deep:      #006494;
+  --accent-dark:      #003554;
+  --muted:            rgba(30, 30, 60, 0.50);
+
+  /* Texto */
+  --theme-text:             #1a1a2e;
+  --theme-text-muted:       rgba(30, 30, 60, 0.60);
+  --theme-text-subtle:      rgba(30, 30, 60, 0.40);
+  --theme-text-inverse:     #ffffff;
+  --theme-text-on-primary:  #ffffff;
+
+  /* Superficies neumórficas (sólidas, color base) */
+  --theme-surface:          #e8eef6;
+  --theme-surface-deep:     #dde6f1;
+  --theme-surface-hover:    #f2f6fb;
+  --theme-surface-active:   #dce6f2;
+  --theme-panel:            #e8eef6;
+  --theme-panel-hover:      #f2f6fb;
+  --theme-input-bg:         #e8eef6;
+
+  /* Bordes mínimos (la profundidad la dan las sombras) */
+  --theme-border:           rgba(0, 53, 84, 0.10);
+  --theme-border-strong:    rgba(0, 53, 84, 0.18);
+  --theme-border-subtle:    rgba(0, 53, 84, 0.06);
+  --theme-rim:              rgba(255, 255, 255, 0.85);
+
+  /* Primario */
+  --theme-primary:          #0582ca;
+  --theme-primary-light:    #00a6fb;
+  --theme-primary-dim:      rgba(5, 130, 202, 0.12);
+  --theme-primary-hover:    #006494;
+  --theme-focus-ring:       rgba(5, 130, 202, 0.30);
+
+  /* Estados */
+  --theme-success:          #1a7a35;
+  --theme-success-dim:      rgba(52, 199, 89, 0.12);
+  --theme-warning:          #a05c00;
+  --theme-warning-dim:      rgba(255, 159, 10, 0.14);
+  --theme-danger:           #ff3b30;
+  --theme-danger-soft:      #d70015;
+  --theme-danger-dim:       rgba(255, 59, 48, 0.12);
+  --theme-info:             #0084b4;
+  --theme-info-dim:         rgba(100, 210, 255, 0.14);
+
+  /* Gradientes de superficie (sutiles: luz→base) */
+  --theme-gradient-surface:
+    linear-gradient(145deg,
+      #f2f6fb 0%,
+      #e2eaf3 100%);
+  --theme-gradient-surface-hover:
+    linear-gradient(145deg,
+      #f5f8fc 0%,
+      #e6eef6 100%);
+  --theme-gradient-surface-active:
+    linear-gradient(145deg,
+      #dce5ef 0%,
+      #e9f0f7 100%);
+  --theme-gradient-primary:
+    linear-gradient(135deg, #0582ca 0%, #006494 100%);
+  --theme-gradient-primary-hover:
+    linear-gradient(135deg, #006494 0%, #003554 100%);
+
+  /* ── RADIOS NEUMÓRFICOS (generosos) ── */
+  --theme-radius-sm:    10px;
+  --theme-radius-md:    14px;
+  --theme-radius-lg:    20px;
+  --theme-radius-xl:    24px;
+  --theme-radius-pill:  999px;
+
+  /* ── SOMBRAS DUALES ──
+     Raised = luz arriba-izquierda + sombra abajo-derecha.
+     Inset  = sombras invertidas (hundido), para inputs.        */
+  --theme-shadow-inset:
+    inset -3px -3px 6px var(--neu-highlight),
+    inset 3px 3px 6px var(--neu-shade);
+  --theme-shadow-sm:
+    -4px -4px 8px var(--neu-highlight),
+    4px 4px 8px var(--neu-shade);
+  --theme-shadow-md:
+    -6px -6px 12px var(--neu-highlight),
+    6px 6px 12px var(--neu-shade);
+  --theme-shadow-lg:
+    -10px -10px 20px var(--neu-highlight),
+    10px 10px 20px rgba(163, 178, 201, 0.60);
+
+  /* Fondo del tema (base suave con tintes oceánicos) */
+  --theme-background:
+    radial-gradient(1100px 560px at 8% -12%,  rgba(5, 130, 202, 0.10), transparent 55%),
+    radial-gradient(900px  520px at 90%   8%,  rgba(139, 92, 246, 0.08), transparent 55%),
+    radial-gradient(1000px 640px at 55% 112%,  rgba(255, 45, 85, 0.06), transparent 60%),
+    linear-gradient(180deg, #eef3fa 0%, #e2eaf3 100%);
+}
+
+/* ── FONDO BASE FIJO ────────────────────────────────────────────
+   Color base sólido sobre el que las sombras duales crean el
+   efecto "extruido". El degradado suave añade calidez sin romper
+   el material.                                                    */
+[data-theme="neumorfismo"] body {
+  color:            var(--theme-text);
+  background-color: #e8eef6;
+  background-image: var(--theme-background);
+  background-attachment: fixed;
+  background-size:  cover;
+  min-height: 100vh;
+}
+
+/* ── SUPERFICIES: raised (elevadas) con sombras duales ────────── */
+[data-theme="neumorfismo"] .card {
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+  box-shadow: var(--theme-shadow-md);
+  color: var(--theme-text);
+}
+[data-theme="neumorfismo"] .card-header,
+[data-theme="neumorfismo"] .card-footer {
+  background: var(--theme-gradient-surface);
+  border-color: var(--theme-border);
+}
+
+[data-theme="neumorfismo"] .navbar {
+  background: #e8eef6 !important;
+  border-bottom: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-sm);
+}
+[data-theme="neumorfismo"] .navbar .nav-link {
+  color: var(--theme-text);
+  border-radius: var(--theme-radius-sm);
+}
+[data-theme="neumorfismo"] .navbar .nav-link:hover {
+  background: rgba(5, 130, 202, 0.08);
+  color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-inset);
+}
+[data-theme="neumorfismo"] .navbar .nav-link.active {
+  background: rgba(5, 130, 202, 0.12);
+  color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-inset);
+}
+
+[data-theme="neumorfismo"] .modal-content {
+  background: var(--neu-base);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-xl);
+  box-shadow: var(--theme-shadow-lg);
+  color: var(--theme-text);
+}
+[data-theme="neumorfismo"] .modal-header,
+[data-theme="neumorfismo"] .modal-footer {
+  border-color: var(--theme-border);
+  background: var(--theme-gradient-surface);
+}
+
+[data-theme="neumorfismo"] .offcanvas {
+  background: var(--neu-base);
+  border-color: var(--theme-border);
+  box-shadow: var(--theme-shadow-lg);
+  color: var(--theme-text);
+}
+
+[data-theme="neumorfismo"] .accordion-item {
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border) !important;
+  border-radius: var(--theme-radius-lg) !important;
+  box-shadow: var(--theme-shadow-sm);
+  color: var(--theme-text);
+}
+[data-theme="neumorfismo"] .accordion-button {
+  background: var(--theme-gradient-surface);
+  color: var(--theme-text);
+  border-radius: var(--theme-radius-lg) !important;
+  box-shadow: var(--theme-shadow-inset);
+}
+[data-theme="neumorfismo"] .accordion-button:not(.collapsed) {
+  background: var(--theme-gradient-surface-active);
+  color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-inset);
+}
+[data-theme="neumorfismo"] .accordion-button::after {
+  filter: brightness(0) saturate(100%) invert(30%) sepia(80%)
+          saturate(600%) hue-rotate(195deg);
+}
+
+[data-theme="neumorfismo"] .list-group-item {
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  color: var(--theme-text);
+}
+[data-theme="neumorfismo"] .list-group-item:hover {
+  background: var(--theme-surface-hover);
+  box-shadow: var(--theme-shadow-sm);
+}
+[data-theme="neumorfismo"] .list-group-item.active {
+  background: var(--theme-gradient-primary);
+  border-color: var(--theme-primary-hover);
+  color: #fff;
+  box-shadow: var(--theme-shadow-sm);
+}
+
+[data-theme="neumorfismo"] .nav-tabs {
+  border-bottom: 1px solid var(--theme-border);
+}
+[data-theme="neumorfismo"] .nav-tabs .nav-link {
+  background: var(--theme-input-bg);
+  border: 1px solid transparent;
+  color: var(--theme-text-muted);
+  border-radius: var(--theme-radius-sm) var(--theme-radius-sm) 0 0;
+  box-shadow: var(--theme-shadow-inset);
+}
+[data-theme="neumorfismo"] .nav-tabs .nav-link:hover {
+  background: var(--theme-surface-hover);
+  border-color: var(--theme-border) var(--theme-border) transparent;
+  color: var(--theme-text);
+  box-shadow: var(--theme-shadow-inset);
+}
+[data-theme="neumorfismo"] .nav-tabs .nav-link.active {
+  background: var(--theme-surface);
+  border-color: var(--theme-border) var(--theme-border) transparent;
+  color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-sm);
+}
+
+[data-theme="neumorfismo"] .dropdown-menu {
+  background: var(--neu-base);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-md);
+  box-shadow: var(--theme-shadow-lg);
+  color: var(--theme-text);
+}
+[data-theme="neumorfismo"] .dropdown-item {
+  color: var(--theme-text);
+  border-radius: var(--theme-radius-sm);
+}
+[data-theme="neumorfismo"] .dropdown-item:hover {
+  background: rgba(5, 130, 202, 0.08);
+  color: var(--theme-primary);
+}
+[data-theme="neumorfismo"] .dropdown-divider {
+  border-color: var(--theme-border);
+}
+
+[data-theme="neumorfismo"] .popover {
+  background: var(--neu-base);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-md);
+  box-shadow: var(--theme-shadow-lg);
+  color: var(--theme-text);
+}
+[data-theme="neumorfismo"] .popover-header {
+  background: var(--theme-gradient-surface);
+  border-bottom: 1px solid var(--theme-border);
+  color: var(--theme-text);
+}
+
+[data-theme="neumorfismo"] .toast {
+  background: var(--neu-base);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-md);
+  box-shadow: var(--theme-shadow-md);
+  color: var(--theme-text);
+}
+[data-theme="neumorfismo"] .toast-header {
+  background: var(--theme-gradient-surface);
+  border-bottom: 1px solid var(--theme-border);
+  color: var(--theme-text);
+}
+
+/* ── FORMULARIOS (hundidos / inset) ─────────────────────────── */
+[data-theme="neumorfismo"] .form-control,
+[data-theme="neumorfismo"] .form-select {
+  background: var(--theme-input-bg);
+  border: 1px solid var(--theme-border);
+  color: var(--theme-text);
+  border-radius: var(--theme-radius-sm);
+  box-shadow: var(--theme-shadow-inset);
+}
+[data-theme="neumorfismo"] .form-control:hover,
+[data-theme="neumorfismo"] .form-select:hover {
+  border-color: var(--theme-border-strong);
+}
+[data-theme="neumorfismo"] .form-control:focus,
+[data-theme="neumorfismo"] .form-select:focus {
+  border-color: var(--theme-primary);
+  box-shadow:
+    var(--theme-shadow-inset),
+    0 0 0 3px var(--theme-focus-ring);
+  background: var(--theme-surface-hover);
+  outline: none;
+}
+[data-theme="neumorfismo"] .form-control::placeholder {
+  color: var(--theme-text-subtle);
+}
+[data-theme="neumorfismo"] .input-group-text {
+  background: var(--theme-gradient-surface);
+  border: 1px solid var(--theme-border);
+  color: var(--theme-text-muted);
+  box-shadow: var(--theme-shadow-inset);
+}
+
+/* ── BOTONES (raised; :active → inset = presionado) ─────────── */
+[data-theme="neumorfismo"] .btn-primary {
+  background: var(--theme-gradient-primary);
+  border-color: var(--theme-primary-hover);
+  border-radius: var(--theme-radius-sm);
+  color: #fff;
+  box-shadow: var(--theme-shadow-sm),
+              inset 0 1px 0 rgba(255, 255, 255, 0.20);
+}
+[data-theme="neumorfismo"] .btn-primary:hover {
+  background: var(--theme-gradient-primary-hover);
+  border-color: var(--accent-dark);
+  box-shadow: var(--theme-shadow-md),
+              inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+[data-theme="neumorfismo"] .btn-primary:active,
+[data-theme="neumorfismo"] .btn-primary:focus:active {
+  background: var(--theme-gradient-primary-hover);
+  border-color: var(--accent-dark);
+  box-shadow: var(--theme-shadow-inset);
+  transform: translateY(1px);
+}
+[data-theme="neumorfismo"] .btn-outline-primary {
+  border-color: var(--theme-primary);
+  border-radius: var(--theme-radius-sm);
+  color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-sm);
+}
+[data-theme="neumorfismo"] .btn-outline-primary:hover {
+  background: rgba(5, 130, 202, 0.10);
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-md);
+}
+[data-theme="neumorfismo"] .btn-secondary {
+  background: var(--theme-gradient-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-sm);
+  color: var(--theme-text);
+  box-shadow: var(--theme-shadow-sm),
+              inset 0 1px 0 var(--neu-highlight);
+}
+[data-theme="neumorfismo"] .btn-secondary:hover {
+  background: var(--theme-gradient-surface-hover);
+  color: var(--theme-text);
+  box-shadow: var(--theme-shadow-md);
+}
+[data-theme="neumorfismo"] .btn-secondary:active,
+[data-theme="neumorfismo"] .btn-secondary:focus:active {
+  background: var(--theme-gradient-surface-active);
+  color: var(--theme-text);
+  box-shadow: var(--theme-shadow-inset);
+  transform: translateY(1px);
+}
+
+/* ── PROGRESS (pista hundida, barra extruida de acento) ─────── */
+[data-theme="neumorfismo"] .progress {
+  background: var(--theme-input-bg);
+  border-radius: var(--theme-radius-pill);
+  box-shadow: var(--theme-shadow-inset);
+}
+[data-theme="neumorfismo"] .progress-bar {
+  background: var(--theme-gradient-primary);
+  border-radius: var(--theme-radius-pill);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* ── CHECKS / SWITCHES ────────────────────────────────────── */
+[data-theme="neumorfismo"] .form-check-input {
+  background-color: var(--theme-input-bg);
+  border: 1.5px solid rgba(5, 130, 202, 0.30);
+  box-shadow: var(--theme-shadow-inset);
+}
+[data-theme="neumorfismo"] .form-check-input:checked {
+  background-color: var(--theme-primary);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-sm);
+}
+[data-theme="neumorfismo"] .form-check-input:focus {
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-inset), 0 0 0 3px var(--theme-focus-ring);
+}
+[data-theme="neumorfismo"] .form-switch .form-check-input {
+  background-color: var(--theme-input-bg);
+  border: none;
+  box-shadow: var(--theme-shadow-inset);
+}
+[data-theme="neumorfismo"] .form-switch .form-check-input:checked {
+  background-color: var(--theme-primary);
+}
+
+/* ── BADGES ───────────────────────────────────────────────── */
+[data-theme="neumorfismo"] .badge {
+  box-shadow:
+    -2px -2px 4px var(--neu-highlight),
+    2px 2px 4px var(--neu-shade),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* ── TOOLTIP (sólido oscuro, legible) ──────────────────────── */
+[data-theme="neumorfismo"] .tooltip-inner {
+  background: rgba(26, 26, 46, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: var(--theme-radius-sm);
+  box-shadow: var(--theme-shadow-md);
+  color: #fff;
+}
+
+/* ── TABLAS ───────────────────────────────────────────────── */
+[data-theme="neumorfismo"] .table {
+  color: var(--theme-text);
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: rgba(5, 130, 202, 0.05);
+  --bs-table-hover-bg: rgba(5, 130, 202, 0.08);
+  --bs-table-border-color: var(--theme-border);
+}
+[data-theme="neumorfismo"] .table thead th {
+  background: var(--theme-gradient-surface);
+  border-bottom: 1px solid var(--theme-border-strong);
+  color: var(--theme-text);
+}
+
+/* ── COMPONENTES CUSTOM: MENÚ Y TABLA DE PACIENTES ────────────
+   El grid de tarjetas del menú (.aurora-cards) y el contenedor
+   que envuelve la tabla de pacientes (.aurora-paciente-container)
+   son clases propias, no de Bootstrap. Reciben el mismo
+   tratamiento neumórfico: sólidas del color base + sombras
+   duales extruidas.                                              */
+[data-theme="neumorfismo"] .aurora-container .aurora-cards,
+[data-theme="neumorfismo"] .aurora-paciente-container {
+  background: var(--neu-base);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+  box-shadow: var(--theme-shadow-md);
+}
+
+/* ── SCROLLBAR (Webkit) ───────────────────────────────────── */
+[data-theme="neumorfismo"] ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+[data-theme="neumorfismo"] ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04);
+}
+[data-theme="neumorfismo"] ::-webkit-scrollbar-thumb {
+  background: rgba(5, 130, 202, 0.25);
+  border-radius: 99px;
+}
+[data-theme="neumorfismo"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(5, 130, 202, 0.45);
+}
+
+/* ── SELECCIÓN DE TEXTO ───────────────────────────────────── */
+[data-theme="neumorfismo"] ::selection {
+  background: rgba(5, 130, 202, 0.20);
+  color: var(--theme-text);
+}

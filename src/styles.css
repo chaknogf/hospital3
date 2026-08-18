@@ -6,9 +6,8 @@
    ═══════════════════════════════════════════════════════════════
    - src/styles/_tokens.css              → tokens semánticos (--theme-*)
    - src/styles/themes/_current.css      → tema por defecto (look actual)
-   - src/styles/themes/_light.css        → tema de prueba claro
-   - src/styles/themes/_hospital.css     → tema hospitalario
-   - src/styles/themes/_glass.css        → tema glassmorphism
+   - src/styles/themes/_hospital.css     → tema claro (base hospital + paleta light)
+   - src/styles/themes/_neumorfismo.css → tema Neumorfismo (claro)
    - src/styles/themes/_cyber-brutalism.css → tema cyber-brutalism
    - src/styles/_utilities.css           → recetas reutilizables
 
@@ -17,9 +16,8 @@
    ═══════════════════════════════════════════════════════════════ */
 @import './styles/_tokens.css';
 @import './styles/themes/_current.css';
-@import './styles/themes/_light.css';
 @import './styles/themes/_hospital.css';
-@import './styles/themes/_glass.css';
+@import './styles/themes/_neumorfismo.css';
 @import './styles/themes/_cyber-brutalism.css';
 @import './styles/_utilities.css';
 

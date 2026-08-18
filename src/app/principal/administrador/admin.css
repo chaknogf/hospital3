@@ -4,7 +4,7 @@
    Panel de control nocturno — espacio profundo, nebulosa y
    estrellas en CSS puro, con acentos del tema activo (--theme-*).
    Todos los colores vienen de los tokens semánticos: el tema
-   (current | light | hospital | glass | cyber-brutalism) decide
+   (current | light | hospital | neumorfismo | cyber-brutalism) decide
    la identidad visual sin que este archivo defina paletas propias.
    Tipografía: serif para identidad (título del sistema, nombre
    del paciente), mono para etiquetas estructurales/datos,

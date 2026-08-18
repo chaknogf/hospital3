@@ -5,9 +5,8 @@ import { Injectable, signal, effect } from '@angular/core';
  *
  * Los temas se activan cambiando un atributo en el elemento raíz:
  *   <html data-theme="current">   → tema por defecto (look actual)
- *   <html data-theme="light">     → tema de prueba claro
- *   <html data-theme="hospital">  → tema hospitalario (nuevo)
- *   <html data-theme="glass">     → tema glassmorphism (prueba de arquitectura)
+ *   <html data-theme="hospital">  → tema claro (base hospital + paleta light)
+ *   <html data-theme="neumorfismo"> → tema Neumorfismo (claro)
  *   <html data-theme="cyber-brutalism"> → tema cyber-brutalism
  *
  * Para añadir un tema nuevo basta con registrarlo en `REGISTERED_THEMES`
@@ -26,9 +25,8 @@ export interface RegisteredTheme {
 
 export const REGISTERED_THEMES: RegisteredTheme[] = [
   { name: 'current', bsTheme: 'dark' },
-  { name: 'light', bsTheme: 'light' },
   { name: 'hospital', bsTheme: 'light' },
-  { name: 'glass', bsTheme: 'dark' },
+  { name: 'neumorfismo', bsTheme: 'light' },
   { name: 'cyber-brutalism', bsTheme: 'dark' },
 ];
 

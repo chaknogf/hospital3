@@ -25,6 +25,7 @@
         <button class="btn btn-sm btn-outline" (click)="toggleTheme()" title="Cambiar tema"
           aria-label="Cambiar tema">
           <i class="bi bi-circle-half"></i>
+          <span class="theme-label">{{ themeLabel() }}</span>
         </button>
         <button class="btn btn-sm btn-outline" (click)="logout()">
           <i class="bi bi-box-arrow-right"></i> Salir
@@ -42,6 +43,7 @@
     </button>
     <button class="btn" (click)="toggleTheme()">
       <i class="bi bi-circle-half fs-4"></i>
+      <span class="theme-label">{{ themeLabel() }}</span>
     </button>
     <button class="btn" (click)="logout()">
       <i class="bi bi-box-arrow-right fs-4"></i>
