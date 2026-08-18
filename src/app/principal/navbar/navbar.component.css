@@ -2,10 +2,10 @@
 
 /* ---------- NAVBAR BASE ---------- */
 .aurora-navbar {
-  background: linear-gradient(180deg, rgba(10,14,18,0.25), rgba(10,14,18,0.18));
+  background: color-mix(in srgb, var(--theme-surface) 82%, transparent);
   backdrop-filter: blur(8px);
   border-radius: 0 0 8px 8px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--theme-border);
   box-shadow: 0 6px 18px rgba(0,0,0,0.28);
   transition: background-color .25s ease, box-shadow .25s ease, padding .2s ease;
   padding: .45rem;
@@ -28,7 +28,7 @@
   display: flex;
   align-items: center;
   gap: 1px;
-  color: #e6eef6;
+  color: var(--theme-text);
   text-decoration: none;
   cursor: pointer;
   user-select: none;
@@ -40,14 +40,14 @@
 .navbar-brand img {
   width: 1.5rem;
   height: 1.5rem;
-  color: var(--aurora-brand);
+  color: var(--theme-primary);
   display: inline-block;
   vertical-align: middle;
 }
 
 /* Nombre "MedicalApp" visible en desktop */
 .medicalapp {
-  color: #e6eef6;
+  color: var(--theme-text);
   font-size: 1.4rem;
   margin-left: .25rem;
   letter-spacing: .4px;
@@ -58,7 +58,7 @@
 /* abreviatura para mobile (oculta desktop) */
 .abreviatura {
   display: none;
-  color: #fff;
+  color: var(--theme-text);
   font-weight: 500;
   margin-left: .25rem;
 }
@@ -74,7 +74,7 @@
 .institucion-title {
   font-family: "Altivo", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   font-weight: 500;
-  color: #fff;
+  color: var(--theme-text);
   margin: 0;
   font-size: 1.25rem;
 }
@@ -82,7 +82,7 @@
 .institucion-subtitle {
   font-family: "Altivo", system-ui, -apple-system, "Segoe UI", Roboto;
   font-weight: 400;
-  color: rgba(230,240,255,0.9);
+  color: var(--theme-text-muted);
   margin: 0;
   font-size: .92rem;
   opacity: .95;
@@ -93,21 +93,21 @@
   display: flex;
   align-items: center;
   gap: .5rem;
-  color: var(--muted);
+  color: var(--theme-text-muted);
   font-size: .95rem;
   white-space: nowrap;
 }
 
 .navbar-text .text-bold {
-  color: #e6eef6;
+  color: var(--theme-text);
   font-weight: 600;
 }
 
 .navbar-text .bg-dark {
-  background-color: rgba(255,255,255,0.06);
+  background-color: var(--theme-surface-raised);
   border-radius: 6px;
   padding: 3px 8px;
-  color: var(--muted);
+  color: var(--theme-text-muted);
   font-size: .85rem;
 }
 
@@ -116,8 +116,8 @@
   display:flex;
   align-items:center;
   gap:.4rem;
-  color: #ff6b6b;
-  border-color: #ff6b6b;
+  color: var(--theme-danger-soft);
+  border-color: var(--theme-danger-soft);
   background: transparent;
   padding: .32rem .6rem;
   border-radius: .45rem;
@@ -134,25 +134,25 @@
 /* hover / focus del btn salir */
 .btn-outline-danger:hover,
 .btn-outline-danger:focus {
-  background-color: #ff6b6b;
-  color: #fff;
-  border-color:#ff6b6b;
-  box-shadow: 0 8px 20px rgba(255,107,107,0.14);
+  background-color: var(--theme-danger);
+  color: var(--theme-text-on-primary);
+  border-color: var(--theme-danger);
+  box-shadow: 0 8px 20px var(--theme-danger-dim);
   transform: translateY(-1px);
   outline: none;
 }
 
 /* navbar toggler (si usas) */
 .navbar-toggler {
-  border-color: rgba(255,255,255,0.12);
-  color: #fff;
+  border-color: var(--theme-border-strong);
+  color: var(--theme-text);
 }
 
 /* ---------- ACCESIBILITY FOCUS ---------- */
 .navbar-brand:focus,
 .btn-outline-danger:focus,
 .navbar-toggler:focus {
-  outline: 3px solid rgba(0,255,255,0.12);
+  outline: 3px solid var(--theme-focus-ring);
   outline-offset: 2px;
 }
 
@@ -170,7 +170,7 @@
 
   /* Brand compacto: oculta texto largo y muestra abreviatura */
   /* .medicalapp { display: none; } */
-  .abreviatura { display: inline-block; font-size: .98rem; color: #fff; }
+  .abreviatura { display: inline-block; font-size: .98rem; color: var(--theme-text); }
 
   /* Oculta el bloque central con textos largos para ganar espacio */
   .title { display: none; }
@@ -211,13 +211,13 @@
 }
 
 /* ---------- PEQUEÑOS AJUSTES VISUALES ---------- */
-.aurora-navbar:hover { background-color: rgba(107,243,225,0.03); }
+.aurora-navbar:hover { background-color: color-mix(in srgb, var(--theme-primary) 6%, transparent); }
 
 .aurora-navbar .nav-item { list-style: none; }
 
 .aurora-navbar .badge-role {
-  background: rgba(255,255,255,0.06);
-  color: var(--muted);
+  background: var(--theme-surface-raised);
+  color: var(--theme-text-muted);
   padding: .2rem .5rem;
   border-radius: 6px;
   font-size: .85rem;
@@ -231,7 +231,7 @@
 }
 
 .aurora-navbar {
-  background: rgba(20,20,30,0.85);
+  background: color-mix(in srgb, var(--theme-surface) 82%, transparent);
   backdrop-filter: blur(6px);
   border-radius: 0 0 8px 8px;
   padding: 0.5rem 1rem;
@@ -255,30 +255,30 @@
 .title .institucion-title {
   font-size: 1.05rem;
   font-weight: 500;
-  color: #fff;
+  color: var(--theme-text);
 }
 
 .title .institucion-subtitle {
   font-size: 0.9rem;
   font-weight: 400;
-  color: #ddd;
+  color: var(--theme-text-muted);
 }
 
 .navbar-text {
   font-size: 0.95rem;
-  color: #eee;
+  color: var(--theme-text-muted);
 }
 
 .btn-outline {
-  border: 1px solid #eee;
-  color: #eee;
+  border: 1px solid var(--theme-border-strong);
+  color: var(--theme-text-muted);
   padding: 0.25rem 0.6rem;
   font-weight: 500;
 }
 
 .btn-outline:hover {
-  background-color: #eee;
-  color: #111;
+  background-color: var(--theme-surface-raised);
+  color: var(--theme-text);
 }
 
 @media (max-width: 768px) {

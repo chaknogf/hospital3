@@ -16,7 +16,7 @@
   justify-content: center;
   gap: var(--theme-space-1);
   padding: var(--theme-space-1) var(--theme-space-3);
-  border: 1px solid var(--theme-border);
+  border: var(--theme-border-width) solid var(--theme-border);
   border-radius: var(--theme-radius-md);
   background: var(--theme-gradient-surface);
   color: var(--theme-text);
@@ -56,7 +56,7 @@
 .theme-btn--primary {
   background: var(--theme-gradient-primary);
   border-color: var(--theme-primary-deep);
-  color: var(--theme-text-inverse);
+  color: var(--theme-text-on-primary);
 }
 
 .theme-btn--primary:hover {
@@ -82,7 +82,7 @@
 /* ── TARJETA / PANEL ───────────────────────────────────────── */
 .theme-card {
   background: var(--theme-surface);
-  border: 1px solid var(--theme-border);
+  border: var(--theme-border-width) solid var(--theme-border);
   border-radius: var(--theme-radius-lg);
   box-shadow: var(--theme-shadow-md);
   color: var(--theme-text);
@@ -106,7 +106,7 @@
 .theme-input {
   width: 100%;
   padding: var(--theme-space-1) var(--theme-space-2);
-  border: 1px solid var(--theme-border);
+  border: var(--theme-border-width) solid var(--theme-border);
   border-radius: var(--theme-radius-sm);
   background: var(--theme-surface-raised);
   color: var(--theme-text);
@@ -173,7 +173,7 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  border: 1px solid var(--theme-border);
+  border: var(--theme-border-width) solid var(--theme-border);
   border-radius: var(--theme-radius-lg);
   overflow: hidden;
   background: var(--theme-gradient-surface);

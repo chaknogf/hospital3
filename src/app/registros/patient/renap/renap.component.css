@@ -21,14 +21,14 @@ fieldset.grupo input {
   width: 100%;
   padding: 0.7rem;
   border-radius: 15px;
-  border: 1px solid var(--cerulean);
+  border: 1px solid var(--theme-primary);
   background: rgba(255, 255, 255, 0.08);
-  color: var(--white);
+  color: var(--theme-text-on-primary);
   font-weight: 300; /* más claro */
 }
 
 fieldset.grupo input:focus {
-  border-color: var(--picton-blue);
+  border-color: var(--theme-primary);
   outline: none;
   box-shadow: 0 0 0 2px rgba(0, 168, 232, 0.4);
 }

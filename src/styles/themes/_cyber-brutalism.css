@@ -1,0 +1,192 @@
+/* ═══════════════════════════════════════════════════════════════
+   THEME: CYBER-BRUTALISM (oscuro, eléctrico, crudo)
+   ═══════════════════════════════════════════════════════════════
+
+   Identidad brutalista digital: superficies planas, bordes sólidos
+   de 2–4px, esquinas rectas, sombras duras desplazadas y acentos
+   neón limitados (verde ácido, cian, magenta). Retrofuturista y
+   funcional, con contraste alto y accesibilidad WCAG AA.
+
+   Tema OSCURO (data-bs-theme="dark"). Se sobrescriben únicamente
+   variables base + tokens semánticos mediante
+   :root[data-theme="cyber-brutalism"] (0,2,0). Sin glassmorphism,
+   sin gradientes suaves, sin sombras difusas ni estética médica.
+
+   Activación: <html data-theme="cyber-brutalism"> (ThemeService).
+   ═══════════════════════════════════════════════════════════════ */
+
+:root[data-theme="cyber-brutalism"],
+[data-theme="cyber-brutalism"] {
+  color-scheme: dark;
+
+  /* ── PALETA DE ACENTO ──
+     Verde ácido (primario), cian (secundario) y magenta (acento).
+     Semántica clínica: success/verde, warning/amarillo, danger/rojo. */
+  --accent: #d7ff00;
+  --accent-light: #e7ff66;
+  --accent-deep: #b3db00;
+  --accent-dark: #8fbf00;
+  --secondary: #00e5ff;
+  --secondary-light: #66f0ff;
+  --secondary-deep: #00b3d6;
+  --secondary-dim: rgba(0, 229, 255, 0.16);
+  --tertiary: #ff2bd6;
+  --tertiary-light: #ff6be5;
+  --tertiary-deep: #d61fb4;
+  --tertiary-dim: rgba(255, 43, 214, 0.16);
+  --success: #39ff88;
+  --success-soft: #b9ffd2;
+  --warning: #ffd60a;
+  --warning-soft: #ffe066;
+  --danger: #ff3b30;
+  --info: #00e5ff;
+
+  /* ── SUPERFICIES PLANAS ── */
+  --deep: #0a0a0a;
+  --panel: #151515;
+  --surface: #202020;
+  --overlay: rgba(0, 0, 0, 0.75);
+
+  /* ── BORDES / RIM (sólidos, visibles) ── */
+  --rim: #f5f5f5;
+  --rim-hot: #d7ff00;
+
+  /* ── TEXTOS / ACENTOS ── */
+  --pulse: #d7ff00;
+  --pulse-dim: rgba(215, 255, 0, 0.16);
+  --star: #f5f5f5;
+  --star-dim: rgba(245, 245, 245, 0.3);
+  --lime: #39ff88;
+  --lime-dim: rgba(57, 255, 136, 0.14);
+  --red: #ff6b61;
+  --red-dim: rgba(255, 59, 48, 0.15);
+  --amber: #ffd60a;
+  --amber-dim: rgba(255, 214, 10, 0.15);
+  --text: #f5f5f5;
+  --muted: #a3a3a3;
+
+  /* Textos derivados usados por los tokens semánticos.
+     El texto sobre primario es OSCURO: los acentos neón brillantes
+     requieren tinta negra para cumplir WCAG AA. */
+  --text-faint: rgba(245, 245, 245, 0.55);
+  --text-inverse: #f5f5f5;
+
+  /* ── FONDOS SEMÁNTICOS (estados) ── */
+  --success-dim: rgba(57, 255, 136, 0.14);
+  --warning-dim: rgba(255, 214, 10, 0.15);
+  --danger-dim: rgba(255, 59, 48, 0.15);
+  --info-dim: rgba(0, 229, 255, 0.15);
+
+  /* ── TIPOGRAFÍAS ──
+     Space Grotesk geométrica y contundente para el UI; DM Mono para
+     datos estructurales. Jerarquía agresiva y legible. */
+  --font-mono: 'DM Mono', 'SFMono-Regular', Consolas, monospace;
+  --font-ui: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+
+  /* ── GLASS COMPAT (opaco: sin glassmorphism) ── */
+  --glass-bg: #151515;
+  --glass-border: #f5f5f5;
+  --shadow-soft: 4px 4px 0 #000000;
+
+  /* ── ESTADOS MÉDICOS ── */
+  --urgente: #ff3b30;
+  --moderado: #ffd60a;
+  --estable: #39ff88;
+  --muerto: #a3a3a3;
+  --standar: #d7ff00;
+
+  /* ── TOKENS SEMÁNTICOS CON VALOR PROPIO ── */
+  /* Fondo plano de alto contraste (sin aurora, sin gradientes suaves) */
+  --theme-background: #0a0a0a;
+  --theme-background-viewport-sm: #0a0a0a;
+  --theme-background-viewport-lg: #0a0a0a;
+
+  /* Superficies planas (los degradados semánticos se vuelven sólidos) */
+  --theme-gradient-surface: #151515;
+  --theme-gradient-surface-hover: #202020;
+  --theme-gradient-surface-active: #0a0a0a;
+  --theme-gradient-primary: #d7ff00;
+  --theme-gradient-primary-hover: #e7ff66;
+
+  /* Esquinas rectas */
+  --theme-radius-sm: 0;
+  --theme-radius-md: 0;
+  --theme-radius-lg: 0;
+  --theme-radius-xl: 0;
+  --theme-radius-pill: 0;
+
+  /* Bordes sólidos de 2px */
+  --theme-border-width: 2px;
+
+  /* Sombras duras desplazadas, sin desenfoque predominante */
+  --theme-shadow-inset: inset 2px 2px 0 #000000;
+  --theme-shadow-sm: 2px 2px 0 #000000;
+  --theme-shadow-md: 4px 4px 0 #000000;
+  --theme-shadow-lg: 6px 6px 0 #000000;
+
+  /* Anillo de foco: neón primario con alpha alta para visibilidad */
+  --theme-focus-ring: rgba(215, 255, 0, 0.55);
+
+  /* Bootstrap: capa de integración plana y de alto contraste */
+  --bs-body-bg: var(--deep);
+  --bs-body-color: var(--text);
+  --bs-border-color: var(--rim);
+  --bs-border-color-translucent: rgba(245, 245, 245, 0.25);
+  --bs-secondary-bg: var(--surface);
+  --bs-tertiary-bg: #202020;
+  --bs-secondary-color: var(--muted);
+  --bs-tertiary-color: var(--muted);
+  --bs-light: #f5f5f5;
+  --bs-dark: #0a0a0a;
+  --bs-primary: var(--accent);
+  --bs-primary-rgb: 215, 255, 0;
+  --bs-link-color: var(--accent);
+  --bs-link-hover-color: var(--accent-light);
+  --bs-link-color-rgb: 215, 255, 0;
+  --bs-link-hover-color-rgb: 231, 255, 102;
+
+  /* Esquinas rectas y sombras duras también para componentes Bootstrap */
+  --bs-border-radius: 0;
+  --bs-border-radius-sm: 0;
+  --bs-border-radius-lg: 0;
+  --bs-border-radius-xl: 0;
+  --bs-border-radius-pill: 0;
+  --bs-box-shadow: 4px 4px 0 #000000;
+  --bs-box-shadow-sm: 2px 2px 0 #000000;
+  --bs-box-shadow-lg: 6px 6px 0 #000000;
+
+  /* Énfasis de texto / utilidades Bootstrap */
+  --bs-primary-text-emphasis: #e7ff66;
+  --bs-secondary-text-emphasis: #66f0ff;
+  --bs-success-text-emphasis: #b9ffd2;
+  --bs-info-text-emphasis: #66f0ff;
+  --bs-warning-text-emphasis: #ffe066;
+  --bs-danger-text-emphasis: #ff8a80;
+  --bs-light-text-emphasis: #f5f5f5;
+  --bs-dark-text-emphasis: #a3a3a3;
+
+  /* Subtles y bordes de estado (bg-*-subtle / border-*-subtle) */
+  --bs-primary-bg-subtle: rgba(215, 255, 0, 0.14);
+  --bs-secondary-bg-subtle: rgba(0, 229, 255, 0.14);
+  --bs-success-bg-subtle: rgba(57, 255, 136, 0.14);
+  --bs-info-bg-subtle: rgba(0, 229, 255, 0.14);
+  --bs-warning-bg-subtle: rgba(255, 214, 10, 0.14);
+  --bs-danger-bg-subtle: rgba(255, 59, 48, 0.14);
+  --bs-primary-border-subtle: rgba(215, 255, 0, 0.5);
+  --bs-secondary-border-subtle: rgba(0, 229, 255, 0.5);
+  --bs-success-border-subtle: rgba(57, 255, 136, 0.5);
+  --bs-info-border-subtle: rgba(0, 229, 255, 0.5);
+  --bs-warning-border-subtle: rgba(255, 214, 10, 0.5);
+  --bs-danger-border-subtle: rgba(255, 59, 48, 0.5);
+
+  /* Validación de formularios */
+  --bs-form-valid-color: #39ff88;
+  --bs-form-valid-border-color: #39ff88;
+  --bs-form-invalid-color: #ff3b30;
+  --bs-form-invalid-border-color: #ff3b30;
+
+  --bs-code-color: #66f0ff;
+  --bs-highlight-color: #f5f5f5;
+  --bs-highlight-bg: rgba(255, 214, 10, 0.35);
+}

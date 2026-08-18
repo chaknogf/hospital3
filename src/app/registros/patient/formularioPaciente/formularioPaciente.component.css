@@ -6,12 +6,12 @@
 
 /* ──────────── BASE ──────────── */
 .cosmos {
-  background: var(--deep);
+  background: var(--theme-background);
   min-height: 100vh;
   padding: 0;
   font-size: 16px;
-  color: var(--text);
-  /* font-family: var(--font-ui); */
+  color: var(--theme-text);
+  /* font-family: var(--theme-font-ui); */
 }
 
 /* ──────────── HEADER COMPACTO ──────────── */
@@ -20,31 +20,31 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--rim);
-  background: rgba(10,15,26,0.95);
+  border-bottom: 1px solid var(--theme-border);
+  background: var(--theme-surface-deep);
   position: sticky;
   top: 0;
   z-index: 20;
 }
 
 .hud-id {
-  /* font-family: var(--font-mono); */
+  /* font-family: var(--theme-font-mono); */
   font-size: 10px;
-  color: var(--pulse);
+  color: var(--theme-primary);
   letter-spacing: 1px;
 }
 
 .hud-title {
-  /* font-family: var(--font-mono); */
+  /* font-family: var(--theme-font-mono); */
   font-size: 13px;
-  color: #fff;
+  color: var(--theme-text);
   letter-spacing: 1px;
 }
 
 .hud-status {
   font-size: 10px;
-  color: var(--lime);
-  /* font-family: var(--font-mono); */
+  color: var(--theme-success);
+  /* font-family: var(--theme-font-mono); */
 }
 
 /* ──────────── WIZARD STEPS (horizontal scroll) ──────────── */
@@ -52,8 +52,8 @@
   display: flex;
   align-items: center;
   padding: 0.5rem 1rem;
-  background: rgba(22,30,45,0.8);
-  border-bottom: 1px solid var(--rim);
+  background: var(--theme-surface-deep);
+  border-bottom: 1px solid var(--theme-border);
   overflow-x: auto;
   gap: 0;
   position: sticky;
@@ -74,38 +74,38 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid var(--muted);
+  border: 1px solid var(--theme-text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 10px;
-  /* font-family: var(--font-mono); */
-  color: var(--muted);
+  /* font-family: var(--theme-font-mono); */
+  color: var(--theme-text-muted);
   transition: 0.15s;
 }
 
 .prog-step.active .prog-dot {
-  background: var(--pulse);
-  color: #fff;
-  border-color: var(--pulse);
+  background: var(--theme-primary);
+  color: var(--theme-text-on-primary);
+  border-color: var(--theme-primary);
 }
 
 .prog-step.done .prog-dot {
-  background: rgba(34,197,94,0.15);
-  border-color: var(--lime);
-  color: var(--lime);
+  background: var(--theme-success-dim);
+  border-color: var(--theme-success);
+  color: var(--theme-success);
 }
 
 .prog-label {
   font-size: 10px;
-  color: var(--muted);
+  color: var(--theme-text-muted);
   white-space: nowrap;
 }
 
 .prog-line {
   width: 16px;
   height: 1px;
-  background: var(--rim);
+  background: var(--theme-border);
   margin: 0 2px;
   flex-shrink: 0;
 }
@@ -122,20 +122,20 @@
 
 /* ──────────── STEP CARD ──────────── */
 .step-card {
-  background: var(--surface);
-  border: 1px solid var(--rim);
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 0;
   margin-bottom: 0.5rem;
 }
 
 .step-card:focus-within {
-  border-color: var(--pulse);
+  border-color: var(--theme-primary);
 }
 
 .step-head {
   padding: 0.6rem 1rem;
-  background: rgba(255,255,255,0.02);
-  border-bottom: 1px solid var(--rim);
+  background: var(--theme-surface-raised);
+  border-bottom: 1px solid var(--theme-border);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -145,20 +145,20 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--pulse);
-  color: #fff;
+  background: var(--theme-primary);
+  color: var(--theme-text-on-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  /* font-family: var(--font-mono); */
+  /* font-family: var(--theme-font-mono); */
   font-size: 12px;
   font-weight: 600;
 }
 
 .step-title {
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-size: 11px;
-  color: var(--text);
+  color: var(--theme-text);
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
@@ -174,37 +174,37 @@
 
 .field-label {
   display: block;
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-size: 11px;
-  color: var(--muted);
+  color: var(--theme-text-muted);
   text-transform: uppercase;
   margin-bottom: 4px;
 }
 
 .req {
-  color: #ef4444;
+  color: var(--theme-danger);
 }
 
 .field-input {
   width: 100%;
-  background: rgb(204, 218, 248);
-  border: 1px solid #2d3748;
+  background: var(--theme-surface-raised);
+  border: 1px solid var(--theme-border);
   border-radius: 6px;
   padding: 0.7rem 0.85rem;
-  color: #0e0e0e;
-  /* font-family: var(--font-mono); */
+  color: var(--theme-text);
+  /* font-family: var(--theme-font-mono); */
   font-size: 18px;
   transition: border-color 0.15s;
 }
 
 .field-input:focus {
   outline: none;
-  border-color: var(--pulse);
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px var(--theme-focus-ring);
 }
 
 .field-input.is-null {
-  border-color: #ef4444;
+  border-color: var(--theme-danger);
 }
 
 textarea.field-input {
@@ -218,7 +218,7 @@ select.field-input {
 
 .error-msg {
   font-size: 11px;
-  color: #ef4444;
+  color: var(--theme-danger);
   margin-top: 3px;
 }
 
@@ -249,10 +249,10 @@ select.field-input {
 /* ──────────── CHIPS GRANDES (para velocidad) ──────────── */
 .chip {
   padding: 0.6rem 1.2rem;
-  border: 1px solid var(--rim);
+  border: 1px solid var(--theme-border);
   border-radius: 8px;
-  background: rgba(255,255,255,0.03);
-  /* font-family: var(--font-mono); */
+  background: var(--theme-surface-raised);
+  /* font-family: var(--theme-font-mono); */
   font-size: 15px;
   cursor: pointer;
   transition: all 0.12s;
@@ -261,14 +261,14 @@ select.field-input {
 }
 
 .chip:hover {
-  background: rgba(255,255,255,0.08);
+  background: var(--theme-surface-raised);
 }
 
 .chip.on {
-  background: rgba(59,130,246,0.2);
-  border-color: var(--pulse);
-  color: #fff;
-  box-shadow: 0 0 0 1px var(--pulse);
+  background: var(--theme-primary-dim);
+  border-color: var(--theme-primary);
+  color: var(--theme-text-on-primary);
+  box-shadow: 0 0 0 1px var(--theme-primary);
 }
 
 .chips-row {
@@ -285,32 +285,32 @@ select.field-input {
 
 /* Variantes de color para chips */
 .chip.on-green {
-  background: rgba(34,197,94,0.2);
-  border-color: #22c55e;
-  color: #fff;
-  box-shadow: 0 0 0 1px #22c55e;
+  background: var(--theme-success-dim);
+  border-color: var(--theme-success);
+  color: var(--theme-text-on-primary);
+  box-shadow: 0 0 0 1px var(--theme-success);
 }
 
 .chip.on-red {
-  background: rgba(239,68,68,0.2);
-  border-color: #ef4444;
-  color: #fff;
-  box-shadow: 0 0 0 1px #ef4444;
+  background: var(--theme-danger-dim);
+  border-color: var(--theme-danger);
+  color: var(--theme-text-on-primary);
+  box-shadow: 0 0 0 1px var(--theme-danger);
 }
 
 .chip.on-amber {
-  background: rgba(245,158,11,0.2);
-  border-color: #f59e0b;
-  color: #fff;
-  box-shadow: 0 0 0 1px #f59e0b;
+  background: var(--theme-warning-dim);
+  border-color: var(--theme-warning);
+  color: var(--theme-text-on-primary);
+  box-shadow: 0 0 0 1px var(--theme-warning);
 }
 
 /* ──────────── ACCIONES STICKY ──────────── */
 .action-dock {
   position: sticky;
   bottom: 0;
-  background: rgba(10,15,26,0.98);
-  border-top: 1px solid var(--rim);
+  background: var(--theme-surface-deep);
+  border-top: 1px solid var(--theme-border);
   padding: 0.75rem 1rem;
   display: flex;
   justify-content: space-between;
@@ -332,18 +332,18 @@ select.field-input {
 .btn-nav {
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  /* font-family: var(--font-mono); */
+  /* font-family: var(--theme-font-mono); */
   font-size: 12px;
   cursor: pointer;
-  border: 1px solid var(--rim);
-  background: rgba(255,255,255,0.05);
-  color: var(--text);
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface-raised);
+  color: var(--theme-text);
   transition: 0.15s;
 }
 
 .btn-nav:hover {
-  border-color: var(--pulse);
-  color: #fff;
+  border-color: var(--theme-primary);
+  color: var(--theme-text);
 }
 
 .btn-nav:disabled {
@@ -354,18 +354,18 @@ select.field-input {
 .btn-save {
   padding: 0.5rem 1.5rem;
   border-radius: 6px;
-  /* font-family: var(--font-mono); */
+  /* font-family: var(--theme-font-mono); */
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  border: 1px solid var(--pulse);
-  background: var(--pulse);
-  color: #fff;
+  border: 1px solid var(--theme-primary);
+  background: var(--theme-primary);
+  color: var(--theme-text-on-primary);
   transition: 0.15s;
 }
 
 .btn-save:hover:not(:disabled) {
-  box-shadow: 0 0 15px rgba(59,130,246,0.4);
+  box-shadow: 0 0 15px var(--theme-primary-dim);
 }
 
 .btn-save:disabled {
@@ -376,17 +376,17 @@ select.field-input {
 .btn-cancel {
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  /* font-family: var(--font-mono); */
+  /* font-family: var(--theme-font-mono); */
   font-size: 12px;
   cursor: pointer;
-  border: 1px solid #ef4444;
+  border: 1px solid var(--theme-danger);
   background: transparent;
-  color: #ef4444;
+  color: var(--theme-danger);
   transition: 0.15s;
 }
 
 .btn-cancel:hover:not(:disabled) {
-  background: rgba(239,68,68,0.1);
+  background: var(--theme-danger-dim);
 }
 
 .btn-cancel:disabled {
@@ -406,18 +406,18 @@ select.field-input {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--rim);
+  background: var(--theme-border);
   transition: 0.2s;
 }
 
 .step-dot.active {
-  background: var(--pulse);
+  background: var(--theme-primary);
   width: 24px;
   border-radius: 4px;
 }
 
 .step-dot.done {
-  background: var(--lime);
+  background: var(--theme-success);
 }
 
 /* ──────────── EDAD INPUTS ──────────── */
@@ -427,35 +427,35 @@ select.field-input {
 }
 
 .edad-input {
-  background: rgba(10,15,26,0.5);
-  border: 1px solid #2d3748;
+  background: var(--theme-surface-deep);
+  border: 1px solid var(--theme-border);
   border-radius: 6px;
   padding: 0.7rem;
-  color: #fff;
-  /* font-family: var(--font-mono); */
+  color: var(--theme-text);
+  /* font-family: var(--theme-font-mono); */
   width: 70px;
   text-align: center;
 }
 
 .edad-input:focus {
-  border-color: var(--pulse);
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px var(--theme-focus-ring);
   outline: none;
 }
 
 .edad-input.is-null {
-  border-color: #ef4444;
+  border-color: var(--theme-danger);
 }
 
 /* ──────────── UTILIDADES ──────────── */
 .text-muted {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--theme-text-muted);
 }
 
 .text-error {
   font-size: 11px;
-  color: #ef4444;
+  color: var(--theme-danger);
 }
 
 .mb-0 { margin-bottom: 0; }
@@ -489,7 +489,7 @@ select.field-input {
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(10,15,26,0.8);
+  background: var(--theme-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -499,8 +499,8 @@ select.field-input {
 .spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid var(--rim);
-  border-top-color: var(--pulse);
+  border: 3px solid var(--theme-border);
+  border-top-color: var(--theme-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -510,9 +510,9 @@ select.field-input {
 }
 
 .alert-danger {
-  background: rgba(239,68,68,0.1);
-  border: 1px solid #ef4444;
-  color: #ef4444;
+  background: var(--theme-danger-dim);
+  border: 1px solid var(--theme-danger);
+  color: var(--theme-danger-soft);
   padding: 0.5rem 1rem;
   font-size: 13px;
   text-align: center;
@@ -520,7 +520,7 @@ select.field-input {
 .referencia-card {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--rim);
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .referencia-header {
@@ -533,17 +533,17 @@ select.field-input {
 }
 
 .referencia-titulo {
-  /* font-family: var(--font-mono); */
+  /* font-family: var(--theme-font-mono); */
   font-size: 12px;
-  color: var(--text);
+  color: var(--theme-text);
 }
 
 .badge-responsable {
-  color: #f59e0b;
+  color: var(--theme-warning);
 }
 
 .badge-acompanante {
-  color: #3b82f6;
+  color: var(--theme-primary);
 }
 
 .referencia-checks {
@@ -557,7 +557,7 @@ select.field-input {
   gap: 0.25rem;
   cursor: pointer;
   font-size: 14px;
-  color: var(--muted);
+  color: var(--theme-text-muted);
 }
 
 .referencia-actions {
@@ -567,6 +567,6 @@ select.field-input {
 }
 
 .btn-delete {
-  color: #ef4444;
-  border-color: #ef4444;
+  color: var(--theme-danger);
+  border-color: var(--theme-danger);
 }

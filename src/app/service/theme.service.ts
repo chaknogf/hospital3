@@ -8,6 +8,7 @@ import { Injectable, signal, effect } from '@angular/core';
  *   <html data-theme="light">     → tema de prueba claro
  *   <html data-theme="hospital">  → tema hospitalario (nuevo)
  *   <html data-theme="glass">     → tema glassmorphism (prueba de arquitectura)
+ *   <html data-theme="cyber-brutalism"> → tema cyber-brutalism
  *
  * Para añadir un tema nuevo basta con registrarlo en `REGISTERED_THEMES`
  * (nombre + data-bs-theme) y definir su hoja en src/styles/themes/
@@ -28,6 +29,7 @@ export const REGISTERED_THEMES: RegisteredTheme[] = [
   { name: 'light', bsTheme: 'light' },
   { name: 'hospital', bsTheme: 'light' },
   { name: 'glass', bsTheme: 'dark' },
+  { name: 'cyber-brutalism', bsTheme: 'dark' },
 ];
 
 export type ThemeName = (typeof REGISTERED_THEMES)[number]['name'];

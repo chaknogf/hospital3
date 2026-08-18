@@ -25,11 +25,11 @@
 
   padding: 4px 10px;
 
-  border: 1px solid var(--rim, #d1d5db);
+  border: 1px solid var(--theme-border);
   border-radius: 999px;
 
-  background: var(--panel, #fff);
-  color: var(--text, #374151);
+  background: var(--theme-surface);
+  color: var(--theme-text);
 
   font-size: 12px;
   font-weight: 500;
@@ -43,8 +43,8 @@
 }
 
 .filtro-grupo button.activo {
-  background: var(--accent, #2563eb);
-  border-color: var(--accent, #2563eb);
+  background: var(--theme-primary);
+  border-color: var(--theme-primary);
   color: #fff;
 }
 

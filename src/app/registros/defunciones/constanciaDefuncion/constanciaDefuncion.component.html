@@ -36,7 +36,7 @@
       </div>
     </div>
   } @else {
-    <div class="skeleton-block" style="height:70px;border-radius:var(--radius)"></div>
+    <div class="skeleton-block" style="height:70px;border-radius:var(--theme-radius-md)"></div>
   }
 
   <div class="tab-bar">
@@ -96,7 +96,7 @@
           </div>
           <div class="sec-body">
             <div class="field">
-              <label class="field-label">Causa A (directa) <span style="color:var(--danger)">*</span></label>
+              <label class="field-label">Causa A (directa) <span style="color:var(--theme-danger)">*</span></label>
               <textarea class="field-input" formControlName="causa_a" placeholder="Causa inmediata de la muerte" style="height:60px;padding:10px 14px;resize:vertical"></textarea>
             </div>
             <div class="field">
@@ -258,7 +258,7 @@
               <input class="field-input" formControlName="madre_id" placeholder="ID de la madre en sistema" />
             </div>
             @if (defuncion?.madre) {
-              <div style="padding:8px 12px;background:rgba(59,130,246,0.08);border-radius:var(--radius-sm);border:1px solid rgba(59,130,246,0.15)">
+              <div style="padding:8px 12px;background:rgba(59,130,246,0.08);border-radius:var(--theme-radius-sm);border:1px solid rgba(59,130,246,0.15)">
                 <strong style="color:#93c5fd">{{ defuncion.madre.nombre_completo }}</strong>
                 <span style="color:#94a3b8;font-size:12px;margin-left:8px">{{ defuncion.madre.expediente }}</span>
               </div>

@@ -1,14 +1,12 @@
 /* ═══════════════════════════════════════════════════════════════
-   THEME: LIGHT (tema de prueba)
+   THEME: LIGHT (claro, moderno y neutral)
    ═══════════════════════════════════════════════════════════════
 
-   Segundo tema para demostrar que el sistema funciona: cambia la
-   identidad visual por completo SIN tocar un solo componente.
-
-   Los componentes solo conocen intenciones (--theme-*); este tema
+   Tema claro de alto contraste, neutral y moderno. Cambia la
+   identidad visual por completo SIN tocar un solo componente:
+   los componentes solo conocen intenciones (--theme-*); este tema
    redefine las variables base y la mayoría de tokens semánticos
-   se resuelven solos. Los valores concretos (degradados de fondo,
-   sombras, textos atenuados) se sobrescriben aquí.
+   se resuelven solos.
 
    Activación: <html data-theme="light"> (lo gestiona ThemeService).
    ═══════════════════════════════════════════════════════════════ */
@@ -22,45 +20,54 @@
   --accent-light: #3b82f6;
   --accent-deep: #1d4ed8;
   --accent-dark: #1e40af;
-  --success: #16a34a;
-  --success-soft: #15803d;
+  --secondary: #0f766e;
+  --secondary-light: #14b8a6;
+  --secondary-deep: #115e59;
+  --secondary-dim: rgba(15, 118, 110, 0.14);
+  --tertiary: #7c3aed;
+  --tertiary-light: #a78bfa;
+  --tertiary-deep: #6d28d9;
+  --tertiary-dim: rgba(124, 58, 237, 0.12);
+  --success: #15803d;
+  --success-soft: #166534;
   --warning: #d97706;
   --warning-soft: #b45309;
   --danger: #dc2626;
-  --info: #0369a1;
+  --info: #0e7490;
 
   /* ── SUPERFICIES CLARAS ── */
-  --deep: #eef3fb;
+  --deep: #f6f8fc;
   --panel: #ffffff;
-  --surface: #e2eaf6;
+  --surface: #edf1f7;
+  --overlay: rgba(23, 32, 51, 0.5);
 
   /* ── BORDES / RIM ── */
-  --rim: rgba(37, 99, 235, 0.18);
-  --rim-hot: rgba(37, 99, 235, 0.45);
+  --rim: #d9e2f0;
+  --rim-hot: #2563eb;
 
   /* ── TEXTOS / ACENTOS ── */
   --pulse: #2563eb;
-  --pulse-dim: rgba(37, 99, 235, 0.14);
+  --pulse-dim: rgba(37, 99, 235, 0.12);
   --star: #3b82f6;
-  --star-dim: rgba(59, 130, 246, 0.35);
-  --lime: #4d7c0f;
-  --lime-dim: rgba(132, 204, 22, 0.18);
+  --star-dim: rgba(59, 130, 246, 0.3);
+  --lime: #15803d;
+  --lime-dim: rgba(21, 128, 61, 0.14);
   --red: #dc2626;
-  --red-dim: rgba(220, 38, 38, 0.12);
-  --amber: #b45309;
-  --amber-dim: rgba(245, 158, 11, 0.15);
-  --text: #1e293b;
+  --red-dim: rgba(220, 38, 38, 0.11);
+  --amber: #d97706;
+  --amber-dim: rgba(217, 119, 6, 0.13);
+  --text: #172033;
   --muted: #64748b;
 
   /* Textos derivados usados por los tokens semánticos */
-  --text-faint: rgba(30, 41, 59, 0.6);
+  --text-faint: rgba(23, 32, 51, 0.55);
   --text-inverse: #ffffff;
 
   /* ── FONDOS SEMÁNTICOS (estados) ── */
-  --success-dim: rgba(22, 163, 74, 0.14);
-  --warning-dim: rgba(217, 119, 6, 0.14);
-  --danger-dim: rgba(220, 38, 38, 0.12);
-  --info-dim: rgba(3, 105, 161, 0.12);
+  --success-dim: rgba(21, 128, 61, 0.12);
+  --warning-dim: rgba(217, 119, 6, 0.12);
+  --danger-dim: rgba(220, 38, 38, 0.11);
+  --info-dim: rgba(14, 116, 144, 0.12);
 
   /* ── TIPOGRAFÍAS ── */
   --font-mono: 'Orbitron', monospace;
@@ -70,36 +77,36 @@
   /* ── GLASS COMPAT ── */
   --glass-bg: rgba(255, 255, 255, 0.85);
   --glass-border: rgba(37, 99, 235, 0.15);
-  --shadow-soft: 0 4px 16px rgba(15, 23, 42, 0.14);
+  --shadow-soft: 0 4px 16px rgba(23, 32, 51, 0.1);
 
   /* ── ESTADOS MÉDICOS ── */
-  --urgente: rgba(220, 38, 38, 1);
-  --moderado: rgba(202, 138, 4, 1);
-  --estable: rgba(22, 163, 74, 1);
-  --muerto: rgba(15, 23, 42, 1);
-  --standar: rgba(2, 132, 199, 1);
+  --urgente: #dc2626;
+  --moderado: #d97706;
+  --estable: #15803d;
+  --muerto: #172033;
+  --standar: #2563eb;
 
   /* ── TOKENS SEMÁNTICOS CON VALOR PROPIO ── */
-  --theme-background: linear-gradient(135deg, #eef4ff 0%, #dfe9fb 100%);
-  --theme-background-viewport-sm: linear-gradient(135deg, #eef4ff 0%, #dfe9fb 100%);
-  --theme-background-viewport-lg: linear-gradient(135deg, #eef4ff 0%, #dfe9fb 100%);
+  --theme-background: linear-gradient(180deg, #f6f8fc 0%, #eef2f9 100%);
+  --theme-background-viewport-sm: linear-gradient(180deg, #f6f8fc 0%, #eef2f9 100%);
+  --theme-background-viewport-lg: linear-gradient(180deg, #f6f8fc 0%, #eaf0f8 100%);
 
-  --theme-shadow-inset: inset 0 2px 4px rgba(15, 23, 42, 0.08);
-  --theme-shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.12);
-  --theme-shadow-md: 0 4px 16px rgba(15, 23, 42, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  --theme-shadow-lg: 0 8px 32px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --theme-shadow-inset: inset 0 2px 4px rgba(23, 32, 51, 0.06);
+  --theme-shadow-sm: 0 1px 3px rgba(23, 32, 51, 0.08);
+  --theme-shadow-md: 0 4px 14px rgba(23, 32, 51, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --theme-shadow-lg: 0 10px 28px rgba(23, 32, 51, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
   /* Bootstrap: ajustes mínimos para que el tema claro se vea coherente */
   --bs-body-bg: var(--deep);
   --bs-body-color: var(--text);
   --bs-border-color: var(--rim);
-  --bs-border-color-translucent: rgba(15, 23, 42, 0.12);
+  --bs-border-color-translucent: rgba(23, 32, 51, 0.12);
   --bs-secondary-bg: var(--surface);
-  --bs-tertiary-bg: #d7e2f1;
-  --bs-secondary-color: #475569;
+  --bs-tertiary-bg: #e3e9f3;
+  --bs-secondary-color: #64748b;
   --bs-tertiary-color: #64748b;
   --bs-light: #f8fafc;
-  --bs-dark: #1e293b;
+  --bs-dark: #172033;
   --bs-primary: var(--accent);
   --bs-link-color: var(--accent);
   --bs-link-hover-color: var(--accent-light);
@@ -108,35 +115,35 @@
 
   /* Énfasis de texto / utilidades Bootstrap */
   --bs-primary-text-emphasis: #1e40af;
-  --bs-secondary-text-emphasis: #475569;
+  --bs-secondary-text-emphasis: #115e59;
   --bs-success-text-emphasis: #15803d;
-  --bs-info-text-emphasis: #0369a1;
+  --bs-info-text-emphasis: #0e7490;
   --bs-warning-text-emphasis: #b45309;
   --bs-danger-text-emphasis: #b91c1c;
   --bs-light-text-emphasis: #f8fafc;
-  --bs-dark-text-emphasis: #1e293b;
+  --bs-dark-text-emphasis: #172033;
 
   /* Subtles y bordes de estado (bg-*-subtle / border-*-subtle) */
   --bs-primary-bg-subtle: #dbeafe;
-  --bs-secondary-bg-subtle: #e2e8f0;
+  --bs-secondary-bg-subtle: #ccfbf1;
   --bs-success-bg-subtle: #dcfce7;
   --bs-info-bg-subtle: #e0f2fe;
   --bs-warning-bg-subtle: #fef3c7;
   --bs-danger-bg-subtle: #fee2e2;
   --bs-primary-border-subtle: #93c5fd;
-  --bs-secondary-border-subtle: #cbd5e1;
+  --bs-secondary-border-subtle: #5eead4;
   --bs-success-border-subtle: #86efac;
   --bs-info-border-subtle: #7dd3fc;
   --bs-warning-border-subtle: #fde68a;
   --bs-danger-border-subtle: #fecaca;
 
   /* Validación de formularios */
-  --bs-form-valid-color: #16a34a;
-  --bs-form-valid-border-color: #16a34a;
+  --bs-form-valid-color: #15803d;
+  --bs-form-valid-border-color: #15803d;
   --bs-form-invalid-color: #dc2626;
   --bs-form-invalid-border-color: #dc2626;
 
   --bs-code-color: #be185d;
-  --bs-highlight-color: #1e293b;
+  --bs-highlight-color: #172033;
   --bs-highlight-bg: #fef08a;
 }

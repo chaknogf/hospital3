@@ -3,8 +3,8 @@
 /* ── Especialidad Card ── */
 .esp-card {
   margin-bottom: 28px;
-  background: linear-gradient(145deg, #1e3358 0%, #1a2d4e 50%, #162744 100%);
-  border: 1px solid rgba(80,120,180,0.25);
+  background: var(--theme-gradient-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
   overflow: hidden;
   box-shadow:
@@ -15,11 +15,11 @@
 .esp-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 18px;
-  background: linear-gradient(135deg, rgba(74,144,226,0.15) 0%, rgba(58,123,213,0.1) 100%);
-  border-bottom: 1px solid rgba(80,120,180,0.2);
+  background: var(--theme-primary-dim);
+  border-bottom: 1px solid var(--theme-border);
 }
-.esp-name { font-size: 1rem; font-weight: 700; color: #e0ecff; }
-.esp-total { font-size: 0.78rem; color: #4a90e2; font-weight: 600; }
+.esp-name { font-size: 1rem; font-weight: 700; color: var(--theme-text); }
+.esp-total { font-size: 0.78rem; color: var(--theme-primary-light); font-weight: 600; }
 
 /* ── Tipo Consulta Block ── */
 .tc-block { padding: 0 16px 16px; }
@@ -27,12 +27,12 @@
   display: inline-block;
   margin: 14px 0 8px;
   padding: 4px 14px;
-  background: rgba(80,120,180,0.1);
-  border: 1px solid rgba(80,120,180,0.2);
+  background: var(--theme-primary-dim);
+  border: 1px solid var(--theme-border);
   border-radius: 6px;
   font-size: 0.78rem;
   font-weight: 700;
-  color: #7aa3d4;
+  color: var(--theme-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -40,8 +40,8 @@
 /* ── DX Table ── */
 .dx-table { width: 100%; border-collapse: collapse; }
 .dx-table th {
-  background: linear-gradient(180deg, #2d5a9e 0%, #244d8a 50%, #1c4076 100%);
-  color: #e0ecff;
+  background: var(--theme-gradient-primary);
+  color: var(--theme-text);
   padding: 8px 12px;
   font-size: 0.72rem;
   text-transform: uppercase;
@@ -52,29 +52,29 @@
 }
 .dx-table td {
   padding: 7px 12px;
-  color: #1a2744;
-  border-bottom: 1px solid rgba(140,170,210,0.3);
+  color: var(--theme-text);
+  border-bottom: 1px solid var(--theme-border);
   font-size: 0.82rem;
-  background: linear-gradient(180deg, #f0f4fa 0%, #e4ecf5 100%);
+  background: linear-gradient(180deg, var(--theme-surface-raised) 0%, var(--theme-surface) 100%);
 }
 .dx-table tbody tr:hover {
-  background: linear-gradient(180deg, #e4ecf5 0%, #d8e6f5 100%);
+  background: linear-gradient(180deg, var(--theme-surface) 0%, var(--theme-surface-deep) 100%);
 }
 .th-rank { width: 36px; text-align: center; }
 .th-dx { text-align: left; }
 .th-num { width: 70px; text-align: right; }
-.th-total { color: #e0ecff; }
-.rank { font-weight: 700; color: #2d6bc4; text-align: center; }
+.th-total { color: var(--theme-text); }
+.rank { font-weight: 700; color: var(--theme-primary-deep); text-align: center; }
 .dx-cell { font-weight: 500; }
-.cell-m { color: #3a6ab5; }
-.cell-f { color: #db2777; }
-.total-cell { font-weight: 700; color: #1c4076; }
+.cell-m { color: var(--theme-primary); }
+.cell-f { color: var(--theme-accent); }
+.total-cell { font-weight: 700; color: var(--theme-primary-deep); }
 
 /* ── Footer ── */
 .dx-table tfoot th {
-  background: linear-gradient(180deg, #1c4076 0%, #1a2d4e 100%);
-  color: #7aa3d4;
-  border-top: 3px solid rgba(40,80,140,0.4);
+  background: linear-gradient(180deg, var(--theme-primary-deep) 0%, var(--theme-surface-deep) 100%);
+  color: var(--theme-text-muted);
+  border-top: 3px solid var(--theme-border-strong);
   padding: 8px 12px;
   font-size: 0.72rem;
   text-transform: uppercase;
@@ -82,11 +82,11 @@
   text-shadow: 0 1px 2px rgba(0,0,0,0.4);
   box-shadow: inset 0 1px 0 rgba(150,190,255,0.08);
 }
-.dx-table tfoot .total-cell { color: #1c4076; }
+.dx-table tfoot .total-cell { color: var(--theme-primary-deep); }
 .tf-label { text-align: left; }
 
 /* ── Resto de causas ── */
-.resto-row { background: rgba(80,120,180,0.04); }
-.resto-row td { color: #7aa3d4; font-style: italic; }
-.resto-row .rank { color: #5a7a9e; }
-.resto-row .total-cell { color: #7aa3d4; font-style: normal; }
+.resto-row { background: var(--theme-primary-dim); }
+.resto-row td { color: var(--theme-text-muted); font-style: italic; }
+.resto-row .rank { color: var(--theme-text-muted); }
+.resto-row .total-cell { color: var(--theme-text-muted); font-style: normal; }

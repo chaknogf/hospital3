@@ -52,7 +52,20 @@
   --theme-primary: var(--accent);            /* acción principal, foco */
   --theme-primary-light: var(--accent-light);/* variante clara (texto/bordes) */
   --theme-primary-deep: var(--accent-deep);  /* extremo oscuro del degradado primario */
+  --theme-primary-dark: var(--accent-dark);  /* más oscuro aún (hover de degradados) */
   --theme-primary-dim: var(--pulse-dim);     /* halo / fondo suave del primary */
+
+  /* Secundario y acento: colores de marca complementarios.
+     Los temas los resuelven vía --secondary-* y --tertiary-*. */
+  --theme-secondary: var(--secondary);
+  --theme-secondary-light: var(--secondary-light);
+  --theme-secondary-deep: var(--secondary-deep);
+  --theme-secondary-dim: var(--secondary-dim);
+
+  --theme-accent: var(--tertiary);
+  --theme-accent-light: var(--tertiary-light);
+  --theme-accent-deep: var(--tertiary-deep);
+  --theme-accent-dim: var(--tertiary-dim);
 
   --theme-background: var(--deep);           /* fondo de página */
   --theme-background-viewport-sm: var(--deep); /* ≥576px */
@@ -61,10 +74,13 @@
   --theme-surface-raised: var(--surface);    /* inputs, elementos elevados */
   --theme-surface-deep: var(--deep);         /* superficie más profunda (headers) */
 
+  --theme-overlay: var(--overlay);           /* fondo de superposición (modales, overlays) */
+
   --theme-text: var(--text);
   --theme-text-muted: var(--muted);
   --theme-text-faint: var(--text-faint);
   --theme-text-inverse: var(--text-inverse); /* texto sobre rellenos brillantes */
+  --theme-text-on-primary: var(--text-inverse); /* texto sobre rellenos primarios brillantes */
 
   --theme-border: var(--rim);
   --theme-border-strong: var(--rim-hot);
@@ -112,6 +128,11 @@
   --theme-radius-lg: 1rem;       /* tarjetas, paneles */
   --theme-radius-xl: 1.5rem;     /* contenedores grandes */
   --theme-radius-pill: 999px;    /* badges, toggles */
+
+  /* ── BORDER-WIDTH ─────────────────────────────────────────── */
+  /* Ancho de borde base. Los temas brutales/duros pueden subirlo
+     para bordes visibles de 2–4px sin tocar componentes. */
+  --theme-border-width: 1px;
 
   /* ── SOMBRAS ──────────────────────────────────────────────── */
   --theme-shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.3);

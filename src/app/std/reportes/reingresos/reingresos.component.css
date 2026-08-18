@@ -12,21 +12,21 @@
   align-items: center;
   gap: 4px;
   padding: 16px;
-  background: linear-gradient(145deg, #1e3358 0%, #1a2d4e 50%, #162744 100%);
-  border: 1px solid rgba(80,120,180,0.25);
+  background: var(--theme-gradient-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
   box-shadow:
     inset 0 1px 0 rgba(150,190,255,0.06),
     inset 0 -1px 0 rgba(0,0,0,0.2),
     0 4px 12px rgba(0,0,0,0.3);
 }
-.resumen-val { font-size: 1.6rem; font-weight: 700; color: #4a90e2; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
-.resumen-lbl { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #7aa3d4; }
+.resumen-val { font-size: 1.6rem; font-weight: 700; color: var(--theme-primary); text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+.resumen-lbl { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--theme-text-muted); }
 .table-wrap + .table-wrap { margin-top: 18px; }
 .reporte-table th.th-section {
-  background: linear-gradient(180deg, #1c4076 0%, #1a2d4e 100%) !important;
+  background: linear-gradient(180deg, var(--theme-primary-deep) 0%, var(--theme-surface-deep) 100%) !important;
   font-size: 0.8rem;
-  color: #e0ecff;
+  color: var(--theme-text);
   padding: 8px 14px;
   text-transform: none;
   letter-spacing: normal;
@@ -35,9 +35,9 @@
 .table-compact td { padding: 6px 10px; font-size: 0.8rem; }
 .tr-total td {
   font-weight: 700;
-  color: #4a90e2;
-  border-top: 2px solid rgba(80,120,180,0.3);
-  background: rgba(74,144,226,0.06);
+  color: var(--theme-primary);
+  border-top: 2px solid var(--theme-border-strong);
+  background: var(--theme-primary-dim);
 }
 .text-right { text-align: right; font-weight: 600; }
 .clasif-badge {
@@ -48,8 +48,8 @@
   white-space: nowrap;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 1px 3px rgba(0,0,0,0.2);
 }
-.clasif-roja { background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%); color: #fff; }
-.clasif-ambar { background: linear-gradient(180deg, #d97706 0%, #b45309 100%); color: #fff; }
+.clasif-roja { background: var(--theme-danger); color: var(--theme-text-on-primary); }
+.clasif-ambar { background: var(--theme-warning); color: var(--theme-text-on-primary); }
 
 @media (max-width: 600px) {
   .resumen-cards { grid-template-columns: 1fr 1fr; }

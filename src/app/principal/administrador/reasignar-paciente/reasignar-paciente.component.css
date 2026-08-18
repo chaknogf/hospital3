@@ -1,29 +1,29 @@
 .search-result-item {
   padding: 0.85rem 1rem;
-  border: 1px solid var(--color-border-soft);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-sm);
   cursor: pointer;
-  transition: background var(--transition), border-color var(--transition);
+  transition: background var(--theme-transition), border-color var(--theme-transition);
   margin-bottom: 0.35rem;
 }
 
 .search-result-item:hover {
-  background: var(--color-accent-light);
-  border-color: var(--color-accent);
+  background: var(--theme-primary-dim);
+  border-color: var(--theme-primary);
 }
 
 .search-result-nombre {
-  font-family: var(--font-display);
+  font-family: var(--theme-font-ui);
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-ink);
+  color: var(--theme-text);
   margin-bottom: 4px;
 }
 
 .search-result-meta {
   display: flex;
   gap: 12px;
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-size: 11px;
-  color: var(--color-ink-muted);
+  color: var(--theme-text-muted);
 }

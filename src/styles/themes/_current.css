@@ -20,6 +20,14 @@
   --accent-light: #60a5fa;
   --accent-deep: #2563eb;
   --accent-dark: #1d4ed8;
+  --secondary: #818cf8;          /* índigo: complementario del azul cosmos */
+  --secondary-light: #a5b4fc;
+  --secondary-deep: #6366f1;
+  --secondary-dim: rgba(129, 140, 248, 0.18);
+  --tertiary: #e879f9;           /* fucsia: tercer acento de la nebulosa */
+  --tertiary-light: #f0abfc;
+  --tertiary-deep: #c026d3;
+  --tertiary-dim: rgba(232, 121, 249, 0.16);
   --success: #10b981;
   --success-soft: #4ade80;
   --warning: #f59e0b;
@@ -31,6 +39,7 @@
   --deep: #060d1f;
   --panel: #0a1428;
   --surface: #0f1e3a;
+  --overlay: rgba(2, 5, 12, 0.78);
 
   /* ── BORDES / RIM ── */
   --rim: rgba(96, 165, 250, 0.12);

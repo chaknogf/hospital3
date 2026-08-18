@@ -7,20 +7,20 @@
   border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 700;
-  background: linear-gradient(180deg, #d97706 0%, #b45309 100%);
-  color: #fff;
+  background: var(--theme-warning);
+  color: var(--theme-text-on-primary);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 1px 3px rgba(0,0,0,0.2);
 }
 .dias-badge.dias-alta {
-  background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
-  color: #fff;
+  background: var(--theme-danger);
+  color: var(--theme-text-on-primary);
 }
 .load-more-wrap { text-align: center; padding: 20px 0; }
 .btn-load-more {
-  background: linear-gradient(180deg, #3a6ab5 0%, #2d5a9e 50%, #244d8a 100%);
-  border: 1px solid rgba(20,50,90,0.6);
+  background: var(--theme-gradient-primary);
+  border: 1px solid var(--theme-border-strong);
   border-radius: 6px;
-  color: #e0ecff;
+  color: var(--theme-text-on-primary);
   padding: 8px 24px;
   font-size: 0.85rem;
   font-weight: 600;
@@ -33,7 +33,7 @@
   transition: all 0.15s ease;
 }
 .btn-load-more:hover:not(:disabled) {
-  background: linear-gradient(180deg, #4a7ac5 0%, #3d6aae 50%, #345d9a 100%);
+  background: var(--theme-gradient-primary-hover);
   box-shadow:
     inset 0 1px 0 rgba(150,190,255,0.25),
     inset 0 -1px 0 rgba(0,0,0,0.2),

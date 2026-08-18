@@ -5,33 +5,13 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* ── Tokens ─────────────────────────────────────────────── */
-/* Variables locales del componente. La paleta global la provee el
-   sistema de temas (--theme-*); aquí solo lo específico de admin. */
-:host {
-  --color-border-soft: rgba(96,165,250,0.08);
-  --color-ink-faint: rgba(74,111,165,0.5);
-  --color-accent-light: rgba(59,130,246,0.12);
-  --color-danger-bg: rgba(248,113,113,0.12);
-  --color-danger-border: rgba(248,113,113,0.25);
-  --color-success-bg: rgba(16,185,129,0.12);
-  --color-success-border: rgba(16,185,129,0.25);
-  --color-keep: #a78bfa;
-  --color-keep-bg: rgba(167,139,250,0.12);
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --font: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'Inter', system-ui, -apple-system, sans-serif;
-  --transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 /* ── Reset scoped ───────────────────────────────────────── */
 .hud-header,
 .action-dock,
 .adm-body,
 .adm-body * {
   box-sizing: border-box;
-  font-family: var(--font);
+  font-family: var(--theme-font-ui);
 }
 
 /* ── HUD HEADER (Más estilizado) ── */
@@ -42,19 +22,19 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  border-bottom: 1px solid var(--rim);
+  border-bottom: 1px solid var(--theme-border);
   background: rgba(6, 13, 31, 0.92);
   backdrop-filter: blur(15px);
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
 .hud-title {
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 3px;
   color: #fff;
-  border-left: 3px solid var(--pulse);
+  border-left: 3px solid var(--theme-primary);
   padding-left: 12px;
   line-height: 1.2;
 }
@@ -67,19 +47,19 @@
   margin: 10px 1.5rem;
   background: rgba(8,12,35,0.55);
   backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--theme-border-strong);
   border-radius: 14px;
   padding: 0.75rem 1.25rem;
   display: flex;
   gap: 0.75rem;
   align-items: center;
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .dock-hint {
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-size: 14px;
-  color: var(--muted);
+  color: var(--theme-text-muted);
   margin-right: auto;
 }
 
@@ -111,15 +91,15 @@
 
 /* ── PACIENTE BANNER (Diseño Card Elegante) ── */
 .paciente-banner {
-  background: var(--glass-bg);
+  background: var(--theme-surface-raised);
   backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--theme-border-strong);
   border-radius: 20px;
   padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--theme-shadow-md);
   transition: transform 0.3s ease;
 }
 
@@ -133,14 +113,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--pulse);
+  color: var(--theme-primary);
   font-size: 48px;
 }
 
 .paciente-nombre {
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--theme-text);
   margin-bottom: 4px;
 }
 
@@ -156,17 +136,17 @@
 
 /* ── SECTION CARDS (Refinamiento visual) ── */
 .section-card {
-  background: var(--glass-bg);
+  background: var(--theme-surface-raised);
   backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--theme-border-strong);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--theme-shadow-md);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .section-card:hover {
-  border-color: var(--pulse);
+  border-color: var(--theme-primary);
   transform: translateY(-2px);
 }
 
@@ -180,14 +160,14 @@
 }
 
 .sec-badge {
-  color: var(--star);
+  color: var(--theme-primary-light);
 }
 
 .sec-title {
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-weight: 700;
   font-size: 14px;
-  color: var(--muted);
+  color: var(--theme-text-muted);
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
@@ -214,7 +194,7 @@
 .field-label {
   font-size: 12px;
   font-weight: 700;
-  color: var(--muted);
+  color: var(--theme-text-muted);
   padding-left: 4px;
   display: flex;
   align-items: center;
@@ -229,26 +209,26 @@
 }
 
 .field-input {
-  background: var(--surface);
-  border: 1.5px solid var(--rim);
-  color: var(--text);
+  background: var(--theme-surface);
+  border: 1.5px solid var(--theme-border);
+  color: var(--theme-text);
   border-radius: 12px;
   padding: 0.75rem 1rem;
   font-size: 14px;
   width: 100%;
   transition: all 0.2s;
-  font-family: var(--font);
+  font-family: var(--theme-font-ui);
   appearance: none;
   -moz-appearance: textfield;
 }
 
 .field-input::placeholder {
-  color: var(--color-ink-faint);
+  color: var(--theme-text-faint);
   font-weight: 400;
 }
 
 .field-input:focus {
-  border-color: var(--pulse);
+  border-color: var(--theme-primary);
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
   outline: none;
 }
@@ -268,9 +248,9 @@
 
 .ind-chip {
   flex: 1 1 calc(50% - 10px);
-  background: var(--surface);
-  border: 2px solid var(--rim);
-  color: var(--muted);
+  background: var(--theme-surface);
+  border: 2px solid var(--theme-border);
+  color: var(--theme-text-muted);
   border-radius: 10px;
   padding: 0.2rem;
   display: flex;
@@ -282,20 +262,20 @@
 
 .ind-chip:hover {
   background: rgba(255,255,255,0.06);
-  border-color: var(--pulse);
+  border-color: var(--theme-primary);
 }
 
 .ind-chip.active {
-  background: var(--surface);
-  border-color: var(--surface);
+  background: var(--theme-surface);
+  border-color: var(--theme-surface);
   color: #f1f5f9;
   font-weight: 500;
   font-size: 18px;
 }
 
 .ind-chip.active .ind-check {
-  background: var(--surface);
-  border-color: var(--surface);
+  background: var(--theme-surface);
+  border-color: var(--theme-surface);
 }
 
 .ind-chip.active .ind-check svg {
@@ -307,7 +287,7 @@
   letter-spacing: 1px;
   text-transform: uppercase;
   font-weight: 500;
-  color: var(--text);
+  color: var(--theme-text);
   border: 2.2px solid rgba(59,130,246,0.18);
   padding: 3px 9px;
   border-radius: 10px;
@@ -320,14 +300,14 @@
   align-items: center;
   justify-content: center;
   padding: 7px 18px;
-  font-family: var(--font);
+  font-family: var(--theme-font-ui);
   font-size: 13px;
   font-weight: 500;
-  border-radius: var(--radius-sm);
+  border-radius: var(--theme-radius-sm);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background var(--transition), color var(--transition),
-              border-color var(--transition), opacity var(--transition);
+  transition: background var(--theme-transition), color var(--theme-transition),
+              border-color var(--theme-transition), opacity var(--theme-transition);
   white-space: nowrap;
   letter-spacing: 0.01em;
   background: #1e293b;
@@ -384,15 +364,15 @@
   gap: 6px;
   margin-top: 4px;
   padding: 7px 14px;
-  font-family: var(--font);
+  font-family: var(--theme-font-ui);
   font-size: 12.5px;
   font-weight: 500;
   color: var(--theme-primary);
-  background: var(--color-accent-light);
+  background: var(--theme-primary-dim);
   border: 1px dashed var(--theme-primary);
-  border-radius: var(--radius-sm);
+  border-radius: var(--theme-radius-sm);
   cursor: pointer;
-  transition: background var(--transition), border-color var(--transition);
+  transition: background var(--theme-transition), border-color var(--theme-transition);
   letter-spacing: 0.01em;
   white-space: nowrap;
 }
@@ -424,18 +404,18 @@
   flex-shrink: 0;
   background: transparent;
   border: 1px solid var(--theme-border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--theme-radius-sm);
   color: var(--theme-text-muted);
   cursor: pointer;
   font-size: 16px;
   line-height: 1;
-  transition: background var(--transition), color var(--transition),
-              border-color var(--transition);
+  transition: background var(--theme-transition), color var(--theme-transition),
+              border-color var(--theme-transition);
 }
 
 .btn-remove:hover {
-  background: var(--color-danger-bg);
-  border-color: var(--color-danger-border);
+  background: var(--theme-danger-dim);
+  border-color: var(--theme-danger);
   color: var(--theme-danger);
 }
 
@@ -452,7 +432,7 @@
   align-items: flex-start;
   gap: 10px;
   padding: 11px 16px;
-  border-radius: var(--radius-md);
+  border-radius: var(--theme-radius-md);
   font-size: 13px;
   font-weight: 400;
   line-height: 1.5;
@@ -477,8 +457,8 @@
 }
 
 .alert-success {
-  background: var(--color-success-bg);
-  border-color: var(--color-success-border);
+  background: var(--theme-success-dim);
+  border-color: var(--theme-success);
   color: var(--theme-success);
 }
 
@@ -499,8 +479,8 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-keep);
-  background: var(--color-keep-bg);
+  color: var(--theme-accent);
+  background: var(--theme-accent-dim);
   border-radius: 20px;
   border: 1px solid rgba(123,94,167,0.25);
 }
@@ -508,9 +488,9 @@
 /* ── Merge-specific ──────────────────────────────────────── */
 .merge-field-principal {
   border: 1px solid rgba(59,110,165,0.3);
-  border-radius: var(--radius-md);
+  border-radius: var(--theme-radius-md);
   padding: 14px;
-  background: var(--color-accent-light);
+  background: var(--theme-primary-dim);
 }
 
 .merge-field-principal .field-input {
@@ -525,7 +505,7 @@
 
 .merge-field-adicional {
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--color-border-soft);
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .merge-field-adicional:last-of-type {
@@ -538,7 +518,7 @@
   align-items: center;
   gap: 12px;
   margin: 4px 0;
-  color: var(--color-ink-faint);
+  color: var(--theme-text-faint);
   font-size: 11.5px;
   font-weight: 500;
   letter-spacing: 0.05em;
@@ -550,7 +530,7 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--color-border-soft);
+  background: var(--theme-border);
 }
 
 .merge-input-row {
@@ -572,7 +552,7 @@
   margin-top: 12px;
   padding: 12px 14px;
   background: var(--theme-surface);
-  border-radius: var(--radius-md);
+  border-radius: var(--theme-radius-md);
 }
 
 .sec-body.detail-grid {
@@ -585,7 +565,7 @@
   align-items: baseline;
   gap: 12px;
   padding: 6px 0;
-  border-bottom: 1px solid var(--color-border-soft);
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .detail-row:last-child {

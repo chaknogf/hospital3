@@ -5,7 +5,7 @@
     {{ isLoading() ? "PROCESANDO…" : guardadoOk() ? "✓ CREADO" : "NUEVO" }}
   </div>
   @if (documentoCorrelativo) {
-    <div class="hud-id" style="color:var(--warning)">{{ documentoCorrelativo }}</div>
+    <div class="hud-id" style="color:var(--theme-warning)">{{ documentoCorrelativo }}</div>
   }
 </div>
 
@@ -123,7 +123,7 @@
             <div class="field">
               <label class="field-label">
                 Muerte Gestacional
-                <span style="color:var(--text-muted);font-size:10px">(semanas)</span>
+                <span style="color:var(--theme-text-muted);font-size:10px">(semanas)</span>
               </label>
               <input type="text" class="field-input" formControlName="muerte_gestacion" placeholder="Ej. 38" />
             </div>
@@ -186,7 +186,7 @@
           </div>
           <div class="sec-body">
             <div class="field">
-              <label class="field-label">Causa A (directa) <span style="color:var(--danger)">*</span></label>
+              <label class="field-label">Causa A (directa) <span style="color:var(--theme-danger)">*</span></label>
               <textarea class="field-input" formControlName="causa_a" placeholder="Causa inmediata de la muerte" style="height:60px;padding:10px 14px;resize:vertical"></textarea>
             </div>
             <div class="field">

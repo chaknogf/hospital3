@@ -16,18 +16,21 @@
     </div>
 
     <!-- MENU / USUARIO (desktop) -->
-    <div class="d-none d-md-flex align-items-center gap-3">
-      <span class="navbar-text">
-        <span class="text-bold">{{ usuario }}</span>
-        <span class="text-muted rounded px-2">[ {{ rol }} ]</span>
-      </span>
-      <button class="btn btn-sm btn-outline" (click)="toggleTheme()" title="Cambiar tema"
-        aria-label="Cambiar tema">
-        <i class="bi bi-circle-half"></i>
-      </button>
-      <button class="btn btn-sm btn-outline" (click)="logout()">
-        <i class="bi bi-box-arrow-right"></i> Salir
-      </button>
+    <div class="d-none d-md-flex flex-column align-items-end">
+      <div class="d-flex align-items-center gap-3">
+        <span class="navbar-text">
+          <span class="text-bold">{{ usuario }}</span>
+          <span class="text-muted rounded px-2">[ {{ rol }} ]</span>
+        </span>
+        <button class="btn btn-sm btn-outline" (click)="toggleTheme()" title="Cambiar tema"
+          aria-label="Cambiar tema">
+          <i class="bi bi-circle-half"></i>
+        </button>
+        <button class="btn btn-sm btn-outline" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i> Salir
+        </button>
+      </div>
+      <ng-content select=".sync-indicator"></ng-content>
     </div>
 
   </div>

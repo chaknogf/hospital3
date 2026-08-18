@@ -16,14 +16,14 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  border-bottom: 1px solid var(--rim);
+  border-bottom: 1px solid var(--theme-border);
   background: rgba(6, 13, 31, 0.92);
   backdrop-filter: blur(15px);
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
 .hud-title {
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -38,19 +38,19 @@
   margin: 10px 1.5rem;
   background: rgba(8,12,35,0.55);
   backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--theme-border-strong);
   border-radius: 14px;
   padding: 0.75rem 1.25rem;
   display: flex;
   gap: 0.75rem;
   align-items: center;
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .dock-hint {
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-size: 14px;
-  color: var(--muted);
+  color: var(--theme-text-muted);
   margin-right: auto;
 }
 
@@ -79,15 +79,15 @@
 
 /* ── PACIENTE BANNER (Diseño Card Elegante) ── */
 .paciente-banner {
-  background: var(--glass-bg);
+  background: var(--theme-surface-raised);
   backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--theme-border-strong);
   border-radius: 20px;
   padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--theme-shadow-md);
   transition: transform 0.3s ease;
 }
 
@@ -101,30 +101,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--pulse);
+  color: var(--theme-primary);
   font-size: 48px;
 }
 
 .paciente-nombre {
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--theme-text);
   margin-bottom: 4px;
 }
 
 /* ── SECTION CARDS (Refinamiento visual) ── */
 .section-card {
-  background: var(--glass-bg);
+  background: var(--theme-surface-raised);
   backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--theme-border-strong);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--theme-shadow-md);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .section-card:hover {
-    border-color: var(--pulse);
+    border-color: var(--theme-primary);
     transform: translateY(-2px);
 }
 
@@ -138,14 +138,14 @@
 }
 
 .sec-badge {
-color: var(--muted);
+color: var(--theme-text-muted);
 }
 
 .sec-title {
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-weight: 700;
   font-size: 14px;
-  color: var(--muted);
+  color: var(--theme-text-muted);
   letter-spacing: 1.5px;
 }
 
@@ -171,14 +171,14 @@ color: var(--muted);
 .field-label {
   font-size: 12px;
   font-weight: 700;
-  color: var(--muted);
+  color: var(--theme-text-muted);
   padding-left: 4px;
 }
 
 .field-input {
-  background: var(--surface);
-  border: 1.5px solid var(--rim);
-  color: var(--text);
+  background: var(--theme-surface);
+  border: 1.5px solid var(--theme-border);
+  color: var(--theme-text);
   border-radius: 12px;
   padding: 0.75rem 1rem;
   font-size: 14px;
@@ -186,7 +186,7 @@ color: var(--muted);
 }
 
 .field-input:focus {
-  border-color: var(--pulse);
+  border-color: var(--theme-primary);
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
 
@@ -199,9 +199,9 @@ color: var(--muted);
 
 .ind-chip {
   flex: 1 1 calc(50% - 10px);
-  background: var(--surface);
-  border: 2px solid var(--rim);
-  color: var(--muted);
+  background: var(--theme-surface);
+  border: 2px solid var(--theme-border);
+  color: var(--theme-text-muted);
   border-radius: 10px;
   padding: 0.2rem;
   display: flex;
@@ -213,7 +213,7 @@ color: var(--muted);
 
 .ind-chip:hover {
     background: rgba(255,255,255,0.06);
-    border-color: var(--pulse);
+    border-color: var(--theme-primary);
 }
 
 /* ── RESPONSIVE ADAPTATIVO ── */
@@ -243,16 +243,16 @@ color: var(--muted);
 }
 
 .ind-chip.active {
-  background: var(--surface);
-  border-color: var(--surface);
+  background: var(--theme-surface);
+  border-color: var(--theme-surface);
   color: #f1f5f9;
   font-weight: 500;
   font-size: 18px;
 }
 
 .ind-chip.active .ind-check {
-  background: var(--surface);
-  border-color: var(--surface);
+  background: var(--theme-surface);
+  border-color: var(--theme-surface);
 }
 
 .ind-chip.active .ind-check svg {
@@ -267,12 +267,12 @@ color: var(--muted);
 }
 
 .p-chip {
-  /* font-family: var(--font-mono); */
+  /* font-family: var(--theme-font-mono); */
   font-size: 16px;
   letter-spacing: 1px;
   text-transform: uppercase;
   font-weight: 500;
-  color: var(--text);
+  color: var(--theme-text);
   border: 2.2px solid rgba(59,130,246,0.18);
   padding: 3px 9px;
   border-radius: 10px;

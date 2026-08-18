@@ -9,13 +9,13 @@
 .submenu-nav {
   width: 220px;
   flex-shrink: 0;
-  background: linear-gradient(180deg, #1a2744 0%, #132038 50%, #0e192e 100%);
-  border-right: 1px solid rgba(100,140,200,0.2);
+  background: var(--theme-gradient-surface);
+  border-right: 1px solid var(--theme-border);
   padding: 16px 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  box-shadow: inset -1px 0 0 rgba(150,190,255,0.05);
+  box-shadow: inset -1px 0 0 var(--theme-border);
 }
 
 .submenu-brand {
@@ -23,9 +23,9 @@
   padding: 10px 18px 16px;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #e0ecff;
+  color: var(--theme-text);
   text-decoration: none;
-  border-bottom: 1px solid rgba(100,160,255,0.15);
+  border-bottom: 1px solid var(--theme-border);
   margin-bottom: 8px;
   text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
@@ -42,21 +42,21 @@
   gap: 10px;
   padding: 8px 18px;
   text-decoration: none;
-  color: #7aa3d4;
+  color: var(--theme-text-muted);
   font-size: 0.8rem;
   transition: background 0.15s, color 0.15s;
   border-left: 3px solid transparent;
 }
 
 .submenu-link:hover {
-  background: rgba(74,144,226,0.1);
-  color: #e0ecff;
+  background: var(--theme-primary-dim);
+  color: var(--theme-text);
 }
 
 .submenu-active {
-  background: rgba(74,144,226,0.15);
-  color: #4a90e2;
-  border-left-color: #4a90e2;
+  background: var(--theme-primary-dim);
+  color: var(--theme-primary);
+  border-left-color: var(--theme-primary);
 }
 
 .submenu-icono {
@@ -78,10 +78,10 @@
 }
 
 .btn-regresar {
-  background: linear-gradient(180deg, #3a6ab5 0%, #2d5a9e 50%, #244d8a 100%);
-  border: 1px solid rgba(20,50,90,0.6);
+  background: var(--theme-gradient-primary);
+  border: 1px solid var(--theme-border-strong);
   border-radius: 6px;
-  color: #e0ecff;
+  color: var(--theme-text-on-primary);
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
@@ -96,7 +96,7 @@
   text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 .btn-regresar:hover {
-  background: linear-gradient(180deg, #4a7ac5 0%, #3d6aae 50%, #345d9a 100%);
+  background: var(--theme-gradient-primary-hover);
   box-shadow:
     inset 0 1px 0 rgba(150,190,255,0.25),
     inset 0 -1px 0 rgba(0,0,0,0.2),
@@ -116,7 +116,7 @@
     overflow-x: auto;
     padding: 0;
     border-right: none;
-    border-bottom: 1px solid rgba(100,140,200,0.2);
+    border-bottom: 1px solid var(--theme-border);
     -webkit-overflow-scrolling: touch;
   }
 
@@ -136,7 +136,7 @@
   }
 
   .submenu-active {
-    border-bottom-color: #4a90e2;
+    border-bottom-color: var(--theme-primary);
     border-left-color: transparent;
   }
 

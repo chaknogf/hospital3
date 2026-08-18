@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   THEME: GLASS (prueba de arquitectura — Glassmorphism)
+   THEME: GLASS (oscuro, translúcido y sofisticado)
    ═══════════════════════════════════════════════════════════════
 
    Identidad Glassmorphism moderna y sobria: profundidad, transparencia
@@ -28,52 +28,61 @@
   color-scheme: dark;
 
   /* ── PALETA DE ACENTO ──
-     Cian tecnológico (distinto del azul de current y del sky claro
-     de hospital). La semántica clínica se mantiene intacta:
-     success/verde, warning/ámbar, danger/rojo, info/cian. */
-  --accent: #0ea5e9;          /* azul-cian tecnológico */
-  --accent-light: #7dd3fc;    /* variante brillante (texto/bordes) */
-  --accent-deep: #0284c7;     /* extremo oscuro del degradado */
-  --accent-dark: #075985;     /* más oscuro (hover del degradado) */
-  --success: #34d399;
+     Cian tecnológico (primario), índigo (secundario) y fucsia
+     (acento). La semántica clínica se mantiene intacta:
+     success/verde, warning/ámbar, danger/rojo. */
+  --accent: #38bdf8;
+  --accent-light: #7dd3fc;
+  --accent-deep: #0284c7;
+  --accent-dark: #075985;
+  --secondary: #818cf8;
+  --secondary-light: #a5b4fc;
+  --secondary-deep: #6366f1;
+  --secondary-dim: rgba(129, 140, 248, 0.15);
+  --tertiary: #e879f9;
+  --tertiary-light: #f0abfc;
+  --tertiary-deep: #d946ef;
+  --tertiary-dim: rgba(232, 121, 249, 0.13);
+  --success: #4ade80;
   --success-soft: #6ee7b7;
   --warning: #fbbf24;
   --warning-soft: #fde68a;
-  --danger: #f87171;
-  --info: #22d3ee;            /* cian para información */
+  --danger: #fb7185;
+  --info: #22d3ee;
 
   /* ── SUPERFICIES TRANSLÚCIDAS ──
      Con alpha para que el fondo aurora se transparente (cristal). */
-  --deep: rgba(10, 15, 34, 0.6);     /* superficie más profunda */
-  --panel: rgba(23, 34, 72, 0.5);    /* tarjetas, paneles, tablas */
-  --surface: rgba(32, 46, 94, 0.55); /* inputs / elementos elevados */
+  --deep: #07101f;
+  --panel: rgba(255, 255, 255, 0.09);
+  --surface: rgba(255, 255, 255, 0.15);
+  --overlay: rgba(7, 16, 31, 0.6);
 
   /* ── BORDES / RIM (cristal) ── */
-  --rim: rgba(148, 197, 255, 0.16);
-  --rim-hot: rgba(148, 197, 255, 0.42);
+  --rim: rgba(255, 255, 255, 0.22);
+  --rim-hot: rgba(255, 255, 255, 0.42);
 
   /* ── TEXTOS / ACENTOS ── */
-  --pulse: #0ea5e9;
-  --pulse-dim: rgba(14, 165, 233, 0.16);
+  --pulse: #38bdf8;
+  --pulse-dim: rgba(56, 189, 248, 0.16);
   --star: #7dd3fc;
   --star-dim: rgba(125, 211, 252, 0.3);
-  --lime: #a3e635;
-  --lime-dim: rgba(163, 230, 53, 0.12);
-  --red: #f87171;
-  --red-dim: rgba(248, 113, 113, 0.14);
+  --lime: #4ade80;
+  --lime-dim: rgba(74, 222, 128, 0.12);
+  --red: #fb7185;
+  --red-dim: rgba(251, 113, 133, 0.14);
   --amber: #fbbf24;
   --amber-dim: rgba(251, 191, 36, 0.14);
-  --text: #e8f2ff;
-  --muted: #8fa6c8;
+  --text: #f8fafc;
+  --muted: #b7c5d6;
 
   /* Textos derivados usados por los tokens semánticos */
-  --text-faint: rgba(232, 242, 255, 0.55);
-  --text-inverse: #ffffff;
+  --text-faint: rgba(248, 250, 252, 0.55);
+  --text-inverse: #0b1129;
 
   /* ── FONDOS SEMÁNTICOS (estados) ── */
-  --success-dim: rgba(52, 211, 153, 0.15);
+  --success-dim: rgba(74, 222, 128, 0.15);
   --warning-dim: rgba(251, 191, 36, 0.15);
-  --danger-dim: rgba(248, 113, 113, 0.14);
+  --danger-dim: rgba(251, 113, 133, 0.14);
   --info-dim: rgba(34, 211, 238, 0.14);
 
   /* ── TIPOGRAFÍAS ──
@@ -92,30 +101,30 @@
   --shadow-soft: 0 8px 32px rgba(2, 6, 23, 0.45);
 
   /* ── ESTADOS MÉDICOS ── */
-  --urgente: #f43f5e;
+  --urgente: #fb7185;
   --moderado: #fbbf24;
-  --estable: #34d399;
-  --muerto: #334155;
-  --standar: #7dd3fc;
+  --estable: #4ade80;
+  --muerto: #b7c5d6;
+  --standar: #38bdf8;
 
   /* ── TOKENS SEMÁNTICOS CON VALOR PROPIO ── */
-  /* Fondo "aurora": degradado profundo con halos cian/índigo. Es la
-     capa que da vida a la translucidez del cristal. */
+  /* Fondo "aurora": degradado profundo con halos de la paleta
+     (cian/índigo/fucsia). Es la capa que da vida a la translucidez. */
   --theme-background:
-    radial-gradient(1100px 560px at 8% -12%, rgba(14, 165, 233, 0.3), transparent 55%),
-    radial-gradient(900px 520px at 90% 8%, rgba(99, 102, 241, 0.26), transparent 55%),
-    radial-gradient(1000px 640px at 55% 112%, rgba(34, 211, 238, 0.22), transparent 60%),
-    linear-gradient(180deg, #070b1c 0%, #0b1129 100%);
+    radial-gradient(1100px 560px at 8% -12%, rgba(56, 189, 248, 0.14), transparent 55%),
+    radial-gradient(900px 520px at 90% 8%, rgba(129, 140, 248, 0.12), transparent 55%),
+    radial-gradient(1000px 640px at 55% 112%, rgba(232, 121, 249, 0.08), transparent 60%),
+    linear-gradient(180deg, #07101f 0%, #0a1428 100%);
   --theme-background-viewport-sm:
-    radial-gradient(1100px 560px at 8% -12%, rgba(14, 165, 233, 0.32), transparent 55%),
-    radial-gradient(900px 520px at 90% 8%, rgba(99, 102, 241, 0.28), transparent 55%),
-    radial-gradient(1000px 640px at 55% 112%, rgba(34, 211, 238, 0.24), transparent 60%),
-    linear-gradient(180deg, #070b1c 0%, #0b1129 100%);
+    radial-gradient(1100px 560px at 8% -12%, rgba(56, 189, 248, 0.16), transparent 55%),
+    radial-gradient(900px 520px at 90% 8%, rgba(129, 140, 248, 0.14), transparent 55%),
+    radial-gradient(1000px 640px at 55% 112%, rgba(232, 121, 249, 0.1), transparent 60%),
+    linear-gradient(180deg, #07101f 0%, #0a1428 100%);
   --theme-background-viewport-lg:
-    radial-gradient(1100px 560px at 8% -12%, rgba(14, 165, 233, 0.34), transparent 55%),
-    radial-gradient(900px 520px at 90% 8%, rgba(99, 102, 241, 0.3), transparent 55%),
-    radial-gradient(1000px 640px at 55% 112%, rgba(34, 211, 238, 0.26), transparent 60%),
-    linear-gradient(180deg, #070b1c 0%, #0b1129 100%);
+    radial-gradient(1100px 560px at 8% -12%, rgba(56, 189, 248, 0.18), transparent 55%),
+    radial-gradient(900px 520px at 90% 8%, rgba(129, 140, 248, 0.16), transparent 55%),
+    radial-gradient(1000px 640px at 55% 112%, rgba(232, 121, 249, 0.12), transparent 60%),
+    linear-gradient(180deg, #07101f 0%, #0a1428 100%);
 
   /* Sombras suaves y profundas, con highlight interior superior
      (borde de cristal) en vez de borde blanco opaco. */
@@ -130,51 +139,51 @@
   --bs-body-bg: var(--deep);
   --bs-body-color: var(--text);
   --bs-border-color: var(--rim);
-  --bs-border-color-translucent: rgba(148, 197, 255, 0.12);
+  --bs-border-color-translucent: rgba(255, 255, 255, 0.12);
   --bs-secondary-bg: var(--surface);
-  --bs-tertiary-bg: rgba(32, 46, 94, 0.5);
+  --bs-tertiary-bg: rgba(255, 255, 255, 0.12);
   --bs-secondary-color: var(--muted);
   --bs-tertiary-color: var(--muted);
   --bs-light: #eef4ff;
-  --bs-dark: #0b1129;
+  --bs-dark: #07101f;
   --bs-primary: var(--accent);
-  --bs-primary-rgb: 14, 165, 233;
+  --bs-primary-rgb: 56, 189, 248;
   --bs-link-color: var(--accent-light);
-  --bs-link-hover-color: #38bdf8;
+  --bs-link-hover-color: #7dd3fc;
   --bs-link-color-rgb: 125, 211, 252;
   --bs-link-hover-color-rgb: 56, 189, 248;
 
   /* Énfasis de texto / utilidades Bootstrap */
   --bs-primary-text-emphasis: #7dd3fc;
-  --bs-secondary-text-emphasis: #a3b8d6;
+  --bs-secondary-text-emphasis: #a5b4fc;
   --bs-success-text-emphasis: #6ee7b7;
   --bs-info-text-emphasis: #67e8f9;
   --bs-warning-text-emphasis: #fde68a;
   --bs-danger-text-emphasis: #fca5a5;
   --bs-light-text-emphasis: #eef4ff;
-  --bs-dark-text-emphasis: #8fa6c8;
+  --bs-dark-text-emphasis: #b7c5d6;
 
   /* Subtles y bordes de estado (bg-*-subtle / border-*-subtle) */
-  --bs-primary-bg-subtle: rgba(14, 165, 233, 0.16);
-  --bs-secondary-bg-subtle: rgba(148, 197, 255, 0.1);
-  --bs-success-bg-subtle: rgba(52, 211, 153, 0.14);
+  --bs-primary-bg-subtle: rgba(56, 189, 248, 0.16);
+  --bs-secondary-bg-subtle: rgba(129, 140, 248, 0.16);
+  --bs-success-bg-subtle: rgba(74, 222, 128, 0.14);
   --bs-info-bg-subtle: rgba(34, 211, 238, 0.14);
   --bs-warning-bg-subtle: rgba(251, 191, 36, 0.14);
-  --bs-danger-bg-subtle: rgba(248, 113, 113, 0.14);
-  --bs-primary-border-subtle: rgba(14, 165, 233, 0.4);
-  --bs-secondary-border-subtle: rgba(148, 197, 255, 0.25);
-  --bs-success-border-subtle: rgba(52, 211, 153, 0.4);
+  --bs-danger-bg-subtle: rgba(251, 113, 133, 0.14);
+  --bs-primary-border-subtle: rgba(56, 189, 248, 0.4);
+  --bs-secondary-border-subtle: rgba(129, 140, 248, 0.4);
+  --bs-success-border-subtle: rgba(74, 222, 128, 0.4);
   --bs-info-border-subtle: rgba(34, 211, 238, 0.4);
   --bs-warning-border-subtle: rgba(251, 191, 36, 0.4);
-  --bs-danger-border-subtle: rgba(248, 113, 113, 0.4);
+  --bs-danger-border-subtle: rgba(251, 113, 133, 0.4);
 
   /* Validación de formularios */
-  --bs-form-valid-color: #34d399;
-  --bs-form-valid-border-color: #34d399;
-  --bs-form-invalid-color: #f87171;
-  --bs-form-invalid-border-color: #f87171;
+  --bs-form-valid-color: #4ade80;
+  --bs-form-valid-border-color: #4ade80;
+  --bs-form-invalid-color: #fb7185;
+  --bs-form-invalid-border-color: #fb7185;
 
   --bs-code-color: #7dd3fc;
-  --bs-highlight-color: #e8f2ff;
+  --bs-highlight-color: #f8fafc;
   --bs-highlight-bg: rgba(251, 191, 36, 0.35);
 }

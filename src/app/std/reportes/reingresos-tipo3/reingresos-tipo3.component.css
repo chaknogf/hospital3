@@ -7,12 +7,12 @@
   border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 600;
-  background: rgba(100,140,200,0.15);
-  color: #7aa3d4;
+  background: var(--theme-primary-dim);
+  color: var(--theme-text-muted);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
 }
 .estado-badge.activo {
-  background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
-  color: #fff;
+  background: var(--theme-success);
+  color: var(--theme-text-on-primary);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 1px 3px rgba(0,0,0,0.2);
 }

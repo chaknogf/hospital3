@@ -16,7 +16,7 @@
 }
 
 .hud-id {
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-size: 10px;
   color: #4a90e2;
   letter-spacing: 2px;
@@ -24,7 +24,7 @@
 }
 
 .hud-title {
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-size: 14px;
   font-weight: 500;
   color: #e0ecff;
@@ -38,7 +38,7 @@
   gap: 6px;
   font-size: 11px;
   color: #a3e635;
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   letter-spacing: 1px;
 }
 
@@ -73,7 +73,7 @@
 }
 
 .dock-hint {
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-size: 9px;
   letter-spacing: 1px;
   color: #7aa3d4;
@@ -88,7 +88,7 @@
   gap: 7px;
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
-  font-family: var(--font-ui);
+  font-family: var(--theme-font-ui);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -131,7 +131,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  font-family: var(--font-ui);
+  font-family: var(--theme-font-ui);
 }
 
 /* ── FLEX LAYOUT ── */
@@ -205,7 +205,7 @@
 .sec-icon svg { width: 14px; height: 14px; }
 
 .sec-title {
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-size: 12px;
   letter-spacing: 2px;
   color: #e0ecff;
@@ -234,7 +234,7 @@
 }
 
 .field-label {
-  font-family: var(--font-mono);
+  font-family: var(--theme-font-mono);
   font-size: 10px;
   letter-spacing: 2px;
   color: #7aa3d4;
@@ -248,7 +248,7 @@
   border-radius: 8px;
   padding: 0.6rem 0.85rem;
   color: #1a2744;
-  font-family: var(--font-ui);
+  font-family: var(--theme-font-ui);
   font-size: 1rem;
   font-weight: 400;
   outline: none;
@@ -367,7 +367,7 @@
 }
 
 .ind-label {
-  font-family: var(--font-ui);
+  font-family: var(--theme-font-ui);
   font-size: 12px;
   font-weight: 500;
   color: #1a2744;

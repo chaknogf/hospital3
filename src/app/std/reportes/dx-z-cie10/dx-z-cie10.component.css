@@ -1,9 +1,9 @@
 @import '../_reportes-skeuo.css';
 
 .section-title { display: flex; align-items: center; gap: 12px; margin: 24px 0 12px; }
-.section-title h2 { font-size: 1.1rem; font-weight: 700; color: #e0ecff; margin: 0; }
-.total-badge { display: inline-block; padding: 4px 12px; background: linear-gradient(180deg, #4a90e2 0%, #3a7bd5 50%, #2d6bc4 100%); border: 1px solid rgba(20,60,120,0.5); border-radius: 6px; color: #fff; font-size: 0.8rem; font-weight: 600; }
+.section-title h2 { font-size: 1.1rem; font-weight: 700; color: var(--theme-text); margin: 0; }
+.total-badge { display: inline-block; padding: 4px 12px; background: var(--theme-gradient-primary); border: 1px solid var(--theme-border-strong); border-radius: 6px; color: var(--theme-text-on-primary); font-size: 0.8rem; font-weight: 600; }
 .section-gap { margin-top: 32px; }
-.code-cell { font-family: 'Fira Code', monospace; font-weight: 600; color: #2d6bc4; }
-.total-col { background: rgba(74,144,226,0.06); }
-.pivot-table tfoot .total-sub { color: #2d6bc4; }
+.code-cell { font-family: var(--theme-font-mono); font-weight: 600; color: var(--theme-primary-deep); }
+.total-col { background: var(--theme-primary-dim); }
+.pivot-table tfoot .total-sub { color: var(--theme-primary-deep); }
