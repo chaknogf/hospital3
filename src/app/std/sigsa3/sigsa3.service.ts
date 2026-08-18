@@ -239,8 +239,9 @@ export class Sigsa3Service extends BaseApiService {
 
   // ── Personal Salud ──
 
-  listarPersonalSalud(): Observable<PersonalSalud[]> {
-    return this.http.get<PersonalSalud[]>(`${this.baseUrl}/sigsa3/personal-salud`).pipe(
+  listarPersonalSalud(filtros?: { nombre?: string; especialidad_id?: number; medico_id?: number }): Observable<PersonalSalud[]> {
+    const params = this.limpiarParametros(filtros ?? {});
+    return this.http.get<PersonalSalud[]>(`${this.baseUrl}/sigsa3/personal-salud/`, { params }).pipe(
       catchError(error => this.manejarError(error, 'listar personal salud'))
     );
   }

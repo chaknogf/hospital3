@@ -17,6 +17,26 @@
     </button>
   </div>
 
+  <div class="filtros-bar">
+    <input type="text" placeholder="Buscar por nombre..." [(ngModel)]="filtros.nombre"
+           (keyup.enter)="cargar()" class="filtro-input">
+    <select [(ngModel)]="filtros.especialidad_id" (change)="cargar()" class="filtro-select">
+      <option [ngValue]="null">Todas las especialidades</option>
+      @for (e of especialidades; track e.id) {
+        <option [ngValue]="e.id">{{ e.nombre }}</option>
+      }
+    </select>
+    <select [(ngModel)]="filtros.medico_id" (change)="cargar()" class="filtro-select">
+      <option [ngValue]="null">Todos los médicos</option>
+      @for (m of medicos; track m.id) {
+        <option [ngValue]="m.id">{{ m.nombre }}</option>
+      }
+    </select>
+    <button class="btn-accion" (click)="limpiarFiltros()" [disabled]="cargando">
+      Limpiar
+    </button>
+  </div>
+
   @if (!cargando) {
     <div class="total-badge">
       {{ registros.length }} registros
