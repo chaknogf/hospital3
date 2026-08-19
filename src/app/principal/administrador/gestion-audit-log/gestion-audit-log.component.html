@@ -13,12 +13,12 @@
     <button class="btn btn-volver" (click)="volver()">Volver</button>
   </div>
 
-  <!-- FILTRO (flex row) -->
+  <!-- FILTRO: flex row responsive -->
   <div class="filter-bar">
     <div class="filter-field">
       <label class="filter-label">Tabla</label>
       <input class="filter-input" type="text" [ngModel]="filtros.tabla"
-             (ngModelChange)="filtros.tabla = $event; cargar()" placeholder="Ej: pacientes">
+             (ngModelChange)="filtros.tabla = $event; cargar()" placeholder="Ej: pacientes, consultas">
     </div>
     <div class="filter-field">
       <label class="filter-label">Usuario</label>
@@ -37,23 +37,25 @@
     </div>
   </div>
 
-  <!-- RESUMEN -->
+  <!-- RESUMEN: stat card -->
   <div class="theme-card theme-card--stat">
     <span class="theme-card__stat-value">{{ totalRegistros }}</span>
     <span class="theme-card__stat-label">eventos de auditoría</span>
   </div>
 
-  <!-- CARDS GRID -->
+  <!-- LISTA DE CARDS: flex grid responsive -->
   <div class="cards-grid">
+
     @if (loading) {
       <div class="card-placeholder">Cargando...</div>
     } @else if (sortLogs().length === 0) {
       <div class="card-placeholder">No se encontraron registros</div>
     } @else {
+
       @for (log of sortLogs(); track log.id) {
         <div class="audit-card">
 
-          <!-- Header -->
+          <!-- Header: badge + tabla -->
           <div class="audit-header">
             <span
               class="theme-badge"
@@ -67,44 +69,53 @@
             <span class="audit-tabla">{{ log.tabla || '—' }}</span>
           </div>
 
-          <!-- Fields Grid (flex wrap) -->
+          <!-- FIELDS: flexbox wrap interno -->
           <div class="audit-fields">
+
             <div class="audit-field">
               <span class="audit-label">ID</span>
               <span class="audit-value mono">{{ log.id }}</span>
             </div>
+
             <div class="audit-field">
               <span class="audit-label">Usuario</span>
               <span class="audit-value">{{ log.username || '—' }}</span>
             </div>
+
             <div class="audit-field">
               <span class="audit-label">Fecha</span>
               <span class="audit-value mono">{{ log.fecha_hora | fecha }}</span>
             </div>
+
             <div class="audit-field">
               <span class="audit-label">Endpoint</span>
               <span class="audit-value mono">{{ log.endpoint || '—' }}</span>
             </div>
+
             <div class="audit-field">
               <span class="audit-label">IP</span>
               <span class="audit-value mono">{{ log.ip_address || '—' }}</span>
             </div>
+
             <div class="audit-field">
               <span class="audit-label">SO</span>
               <span class="audit-value">{{ log.so || '—' }}</span>
             </div>
+
             <div class="audit-field">
               <span class="audit-label">Equipo</span>
               <span class="audit-value">{{ log.nombre_equipo || '—' }}</span>
             </div>
+
             <div class="audit-field">
               <span class="audit-label">User Agent</span>
               <span class="audit-value mono">{{ log.user_agent || '—' }}</span>
             </div>
+
           </div>
         </div>
       }
     }
-  </div>
 
+  </div>
 </div>

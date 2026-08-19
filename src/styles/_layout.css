@@ -1,0 +1,236 @@
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT GLOBAL — mobile-first
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── RESET MÍNIMO ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  font-family: var(--theme-font-ui);
+  font-size: var(--theme-font-size-md);
+  color: var(--theme-text);
+  line-height: 1.5;
+  min-height: 100dvh;   /* dvh para mobile browsers */
+  overflow-x: hidden;   /* REGLA 5: sin scroll horizontal */
+  background: var(--theme-background);
+}
+
+/* ── APP SHELL ── */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* ── NAVBAR ── */
+.app-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+}
+
+/* ── CONTENIDO PRINCIPAL ── */
+.app-content {
+  flex: 1;
+  padding: var(--theme-space-3) var(--theme-space-2);
+  width: 100%;
+  max-width: 100%;
+}
+@media (min-width: 768px) {
+  .app-content { padding: var(--theme-space-4) var(--theme-space-3); }
+}
+@media (min-width: 1280px) {
+  .app-content {
+    padding: var(--theme-space-5) var(--theme-space-6);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+}
+
+/* ── GRIDS RESPONSIVOS ── */
+/* adm-grid: 1 col mobile → 2 col tablet → 3 col laptop → 4 col desktop */
+.adm-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--theme-space-3);
+}
+@media (min-width: 768px) {
+  .adm-grid { grid-template-columns: repeat(2, 1fr); gap: var(--theme-space-4); }
+}
+@media (min-width: 1024px) {
+  .adm-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1280px) {
+  .adm-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* adm-grid--2: 1 col mobile → 2 col tablet */
+.adm-grid--2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--theme-space-3);
+}
+@media (min-width: 768px) {
+  .adm-grid--2 { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* adm-grid--sidebar: 1 col mobile → sidebar + content laptop */
+.adm-grid--sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--theme-space-3);
+}
+@media (min-width: 1024px) {
+  .adm-grid--sidebar { grid-template-columns: 280px 1fr; }
+}
+
+/* ── HUD HEADER ── */
+.hud-header {
+  padding: var(--theme-space-2) 0;
+  margin-bottom: var(--theme-space-2);
+}
+.hud-title {
+  font-size: var(--theme-font-size-lg);
+  font-weight: var(--theme-font-weight-heavy);
+  color: var(--theme-text);
+}
+@media (min-width: 768px) {
+  .hud-title { font-size: var(--theme-font-size-xl); }
+}
+
+/* ── ACTION DOCK ── */
+.action-dock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--theme-space-2);
+  margin-bottom: var(--theme-space-3);
+}
+.dock-hint {
+  flex: 1 1 100%;
+  font-size: var(--theme-font-size-xs);
+  color: var(--theme-text-muted);
+  font-family: var(--theme-font-mono);
+}
+@media (min-width: 768px) {
+  .dock-hint { flex: 1 1 auto; }
+}
+
+/* ── BOTONES: touch targets ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--theme-space-1);
+  min-height: var(--theme-touch-min);
+  min-width: var(--theme-touch-min);
+  padding: var(--theme-space-1) var(--theme-space-3);
+  font-family: var(--theme-font-ui);
+  font-size: var(--theme-font-size-sm);
+  font-weight: 500;
+  border-radius: var(--theme-radius-md);
+  border: 1px solid var(--theme-border);
+  cursor: pointer;
+  transition: var(--theme-transition-fast);
+  white-space: nowrap;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+}
+
+/* Toolbar buttons: flex wrap */
+.action-dock .btn {
+  flex: 0 0 auto;
+}
+
+/* Volver botón: pushed to right on desktop */
+.action-dock .btn-volver {
+  margin-left: auto;
+}
+@media (max-width: 767px) {
+  .action-dock {
+    justify-content: stretch;
+  }
+  .action-dock .btn-volver {
+    margin-left: 0;
+  }
+}
+
+/* ── FORMULARIO RESPONSIVO ── */
+.form-control,
+.form-select {
+  width: 100%;
+  min-height: var(--theme-touch-min);
+  padding: var(--theme-space-1) var(--theme-space-2);
+  font-size: 16px;  /* CRÍTICO: evita zoom en iOS */
+  font-family: var(--theme-font-ui);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-sm);
+  background: var(--theme-surface-raised);
+  color: var(--theme-text);
+  transition: var(--theme-transition-fast);
+}
+.form-control:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 2px var(--theme-focus-ring);
+}
+
+/* Form grid: 1 col mobile → auto-fit */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--theme-space-3);
+}
+@media (min-width: 576px) {
+  .form-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .form-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ── TABLAS RESPONSIVE ── */
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+}
+@media (max-width: 767px) {
+  .theme-table .col-secondary { display: none; }
+  .theme-table td, .theme-table th {
+    padding: var(--theme-space-1) var(--theme-space-2);
+    font-size: var(--theme-font-size-xs);
+  }
+}
+
+/* ── NAVBAR RESPONSIVE ── */
+.navbar-brand {
+  font-size: var(--theme-font-size-md);
+}
+.navbar-nav {
+  display: flex;
+  gap: var(--theme-space-1);
+  flex-wrap: wrap;
+}
+.nav-link {
+  min-height: var(--theme-touch-min);
+  padding: var(--theme-space-1) var(--theme-space-2);
+  font-family: var(--theme-font-ui);
+  font-size: var(--theme-font-size-sm);
+  display: inline-flex;
+  align-items: center;
+}
+.nav-link-text { display: none; }
+@media (min-width: 768px) {
+  .nav-link-text { display: inline; }
+}

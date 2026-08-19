@@ -1,0 +1,49 @@
+/* ═══════════════════════════════════════════════════════════════
+   FORMULARIOS — mobile-first, touch-friendly
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Todos los inputs/selects full-width en mobile con min-touch */
+.form-control,
+.form-select {
+  width: 100%;
+  min-height: var(--theme-touch-min);
+  padding: var(--theme-space-1) var(--theme-space-2);
+  font-size: 16px;  /* CRÍTICO: evita zoom automático en iOS */
+  font-family: var(--theme-font-ui);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-sm);
+  background: var(--theme-surface-raised);
+  color: var(--theme-text);
+  transition: var(--theme-transition-fast);
+}
+.form-control:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 2px var(--theme-focus-ring);
+}
+
+/* Form grid: 1 col mobile → escala */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--theme-space-3);
+}
+@media (min-width: 576px) {
+  .form-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .form-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Labels */
+.form-label {
+  display: block;
+  font-family: var(--theme-font-mono);
+  font-size: var(--theme-font-size-xs);
+  font-weight: var(--theme-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--theme-text-muted);
+  margin-bottom: 0.25rem;
+}

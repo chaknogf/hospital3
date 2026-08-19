@@ -1,20 +1,15 @@
 /* ═══════════════════════════════════════════════════════════════
-   UTILITIES — recetas reutilizables construidas sobre los tokens
-   ═══════════════════════════════════════════════════════════════
-
-   Patrones visuales compartidos por muchos componentes. Se definen
-   UNA sola vez con intenciones semánticas; el tema decide el color.
-
-   Usar estas clases (o replicar sus estilos con los mismos tokens)
-   garantiza coherencia y evita valores hardcodeados repetidos.
+   UTILITIES — recetas reutilizables sobre tokens [mobile-first]
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── BOTÓN BASE (skeuomórfico) ─────────────────────────────── */
+/* ── BOTÓN BASE ── */
 .theme-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--theme-space-1);
+  min-height: var(--theme-touch-min);
+  min-width: var(--theme-touch-min);
   padding: var(--theme-space-1) var(--theme-space-3);
   border: var(--theme-border-width) solid var(--theme-border);
   border-radius: var(--theme-radius-md);
@@ -58,14 +53,12 @@
   border-color: var(--theme-primary-deep);
   color: var(--theme-text-on-primary);
 }
-
 .theme-btn--primary:hover {
-  background: var(--theme-gradient-primary);
-  filter: brightness(1.08);
+  background: var(--theme-gradient-primary-hover);
   border-color: var(--theme-primary);
 }
 
-/* Botón fantasma / discreto */
+/* Botón ghost */
 .theme-btn--ghost {
   background: transparent;
   border-color: transparent;
@@ -73,19 +66,16 @@
   box-shadow: none;
 }
 
-.theme-btn--ghost:hover {
-  background: var(--theme-danger-dim);
-  border-color: var(--theme-danger);
-  color: var(--theme-danger-soft);
-}
-
-/* ── TARJETA / PANEL ───────────────────────────────────────── */
+/* ── TARJETA / PANEL ── */
 .theme-card {
   background: var(--theme-surface);
   border: var(--theme-border-width) solid var(--theme-border);
   border-radius: var(--theme-radius-lg);
   box-shadow: var(--theme-shadow-md);
   color: var(--theme-text);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .theme-card--hover {
@@ -102,44 +92,129 @@
   background: var(--theme-gradient-surface-hover);
 }
 
-/* ── INPUT / SELECT ────────────────────────────────────────── */
+/* theme-card base responsive */
+.theme-card__header {
+  padding: var(--theme-space-2);
+  border-bottom: var(--theme-border-width) solid var(--theme-border);
+  background: var(--theme-gradient-surface-hover);
+}
+@media (min-width: 768px) {
+  .theme-card__header { padding: var(--theme-space-2) var(--theme-space-3); }
+}
+
+.theme-card__body {
+  padding: var(--theme-space-3);
+  flex: 1;
+}
+
+.theme-card__footer {
+  padding: var(--theme-space-2) var(--theme-space-3);
+  border-top: var(--theme-border-width) solid var(--theme-border);
+  background: var(--theme-gradient-surface);
+}
+
+/* Variante --data: grid de campos responsivo */
+.theme-card--data .theme-card__body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--theme-space-2);
+}
+@media (min-width: 576px) {
+  .theme-card--data .theme-card__body {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .theme-card--data .theme-card__body {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+}
+
+.theme-card__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.theme-card__label {
+  font-family: var(--theme-font-mono);
+  font-size: var(--theme-font-size-xs);
+  font-weight: var(--theme-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--theme-text-muted);
+}
+.theme-card__value {
+  font-size: var(--theme-font-size-sm);
+  color: var(--theme-text);
+  word-break: break-word;
+}
+.theme-card__value--empty { color: var(--theme-text-faint); font-style: italic; }
+.theme-card__value--mono  { font-family: var(--theme-font-mono); }
+
+/* Variante --stat: KPI */
+.theme-card__stat-value {
+  font-size: 2rem;
+  font-weight: var(--theme-font-weight-heavy);
+  color: var(--theme-text);
+  line-height: 1;
+}
+@media (min-width: 768px) {
+  .theme-card__stat-value { font-size: var(--theme-font-size-xl); }
+}
+.theme-card__stat-label {
+  font-family: var(--theme-font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--theme-text-muted);
+}
+
+/* Variante --stat layout */
+.theme-card--stat {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.theme-card--stat .theme-card__body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-2);
+}
+
+/* ── INPUT / SELECT ── */
 .theme-input {
   width: 100%;
+  min-height: var(--theme-touch-min);
   padding: var(--theme-space-1) var(--theme-space-2);
   border: var(--theme-border-width) solid var(--theme-border);
   border-radius: var(--theme-radius-sm);
   background: var(--theme-surface-raised);
   color: var(--theme-text);
   font-family: var(--theme-font-ui);
-  font-size: var(--theme-font-size-sm);
+  font-size: 16px;  /* CRÍTICO: evita zoom iOS */
   box-shadow: var(--theme-shadow-inset);
   transition: border-color var(--theme-transition-fast),
     box-shadow var(--theme-transition-fast),
     background var(--theme-transition-fast);
 }
-
-.theme-input::placeholder {
-  color: var(--theme-text-muted);
-}
-
+.theme-input::placeholder { color: var(--theme-text-muted); }
 .theme-input:hover:not(:disabled):not(:focus) {
   border-color: var(--theme-border-strong);
   background: var(--theme-surface);
 }
-
 .theme-input:focus {
   outline: none;
   border-color: var(--theme-primary);
   background: var(--theme-surface-raised);
   box-shadow: var(--theme-shadow-inset), 0 0 0 3px var(--theme-focus-ring);
 }
-
 .theme-input:disabled {
   background: var(--theme-surface-deep);
   opacity: 0.7;
 }
 
-/* ── ETIQUETA DE CAMPO ─────────────────────────────────────── */
+/* ── ETIQUETA DE CAMPO ── */
 .theme-label {
   display: block;
   font-size: var(--theme-font-size-xs);
@@ -149,7 +224,7 @@
   color: var(--theme-text-muted);
 }
 
-/* ── BADGE / CHIP ──────────────────────────────────────────── */
+/* ── BADGE / CHIP ── */
 .theme-badge {
   display: inline-flex;
   align-items: center;
@@ -161,14 +236,13 @@
   letter-spacing: 0.2px;
   line-height: 1.4;
 }
-
 .theme-badge--success { color: var(--theme-success); background: var(--theme-success-dim); }
 .theme-badge--warning { color: var(--theme-warning); background: var(--theme-warning-dim); }
 .theme-badge--danger { color: var(--theme-danger-soft); background: var(--theme-danger-dim); }
 .theme-badge--info { color: var(--theme-info); background: var(--theme-info-dim); }
 .theme-badge--primary { color: var(--theme-primary-light); background: var(--theme-primary-dim); }
 
-/* ── TABLA ─────────────────────────────────────────────────── */
+/* ── TABLA ── */
 .theme-table {
   width: 100%;
   border-collapse: separate;
@@ -180,6 +254,24 @@
   color: var(--theme-text);
   text-align: center;
   box-shadow: var(--theme-shadow-md);
+}
+
+/* Tabla responsive wrapper */
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+}
+
+/* Oculta columnas secundarias en mobile */
+@media (max-width: 767px) {
+  .theme-table .col-secondary { display: none; }
+  .theme-table td, .theme-table th {
+    padding: var(--theme-space-1) var(--theme-space-2);
+    font-size: var(--theme-font-size-xs);
+  }
 }
 
 .theme-table thead th {
@@ -198,10 +290,5 @@
   border-bottom: 1px solid var(--theme-border);
 }
 
-.theme-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.theme-table tbody tr:hover {
-  background: var(--theme-gradient-surface-hover);
-}
+.theme-table tbody tr:last-child td { border-bottom: none; }
+.theme-table tbody tr:hover { background: var(--theme-gradient-surface-hover); }
