@@ -1,17 +1,17 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiService } from '../../../service/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ApiService } from '../../../service/api.service';
+import { FechasPipe } from '../../../pipes/fecha.pipe';
+import { AuditLogResponse, AuditLogEntry } from '../../../interface/interfaces';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AuditLogResponse, AuditLogEntry } from '../../../interface/interfaces';
-import { FechasPipe } from '../../../pipes/fecha.pipe';
 
 @Component({
   selector: 'app-gestion-audit-log',
   templateUrl: './gestion-audit-log.component.html',
-  styleUrls: [],
+  styleUrls: ['./gestion-audit-log.component.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, FechasPipe]
@@ -27,7 +27,8 @@ export class GestionAuditLogComponent implements OnInit, OnDestroy {
   auditLogs: AuditLogEntry[] = [];
   totalRegistros = 0;
   loading = false;
-  filtros: any = {
+
+  filtros = {
     tabla: '',
     username: '',
     desde: '',
@@ -35,8 +36,6 @@ export class GestionAuditLogComponent implements OnInit, OnDestroy {
     skip: 0,
     limit: 50,
   };
-
-  constructor() { }
 
   ngOnInit() {
     this.cargarAuditLogs();
@@ -47,21 +46,33 @@ export class GestionAuditLogComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  cargar(): void {
+  cargar() {
     this.cargarAuditLogs();
   }
 
-  volver(): void {
+  volver() {
     this.router.navigate(['/adminsys']);
+  }
+
+  limpiarFiltros() {
+    this.filtros = {
+      tabla: '', username: '', desde: '', hasta: '',
+      skip: 0, limit: 50,
+    };
+    this.cargarAuditLogs();
+  }
+
+  sortLogs(): AuditLogEntry[] {
+    return [...this.auditLogs].sort((a: AuditLogEntry, b: AuditLogEntry) => 
+      new Date(b.fecha_hora).getTime() - new Date(a.fecha_hora).getTime()
+    );
   }
 
   cargarAuditLogs(): void {
     this.loading = true;
     this.api.getAuditLog(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: (response: AuditLogResponse) => {
-        this.auditLogs = (response.logs || []).sort((a: AuditLogEntry, b: AuditLogEntry) => 
-          new Date(b.fecha_hora).getTime() - new Date(a.fecha_hora).getTime()
-        );
+        this.auditLogs = response.logs || [];
         this.totalRegistros = response.total || 0;
         this.loading = false;
         this.cdr.markForCheck();
@@ -72,13 +83,5 @@ export class GestionAuditLogComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       }
     });
-  }
-
-  limpiarFiltros(): void {
-    this.filtros = {
-      tabla: '', username: '', desde: '', hasta: '',
-      skip: 0, limit: 50,
-    }
-    this.cargarAuditLogs();
   }
 }

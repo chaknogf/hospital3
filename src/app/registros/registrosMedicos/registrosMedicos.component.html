@@ -1,10 +1,7 @@
-<h2>Registros Médicos</h2>
+<h3>Registros Médicos</h3>
 <div class="aurora-container">
   @for (opt of options; track opt) {
-    <div
-      class="aurora-cards"
-      (click)="navegar(opt.ruta)"
-      >
+    <div class="aurora-cards" (click)="navegar(opt.ruta)">
       <div class="aurora-items">
         <span [innerHTML]="icons[opt.icon]"></span>
         <h2>{{ opt.nombre }}</h2>

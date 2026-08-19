@@ -844,6 +844,39 @@
   border: var(--theme-border-width) solid var(--theme-danger);
 }
 
+/* ── theme-badge (para theme-card method badges) ── */
+.theme-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--theme-font-mono);
+  border: var(--theme-border-width) solid transparent;
+}
+.theme-badge--primary {
+  background: var(--theme-primary-dim);
+  color: var(--theme-primary);
+  border-color: var(--theme-primary);
+}
+.theme-badge--success {
+  background: var(--theme-success-dim);
+  color: var(--theme-success);
+  border-color: var(--theme-success);
+}
+.theme-badge--warning {
+  background: var(--theme-warning-dim);
+  color: var(--theme-warning);
+  border-color: var(--theme-warning);
+}
+.theme-badge--danger {
+  background: var(--theme-danger-dim);
+  color: var(--theme-danger-soft);
+  border-color: var(--theme-danger);
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;

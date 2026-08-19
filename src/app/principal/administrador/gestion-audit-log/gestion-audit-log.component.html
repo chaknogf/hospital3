@@ -1,143 +1,110 @@
-<div class="hud-header">
-  <div class="hud-title">Auditoría de Accesos</div>
-</div>
+<div class="admin-grid">
 
-<div class="action-dock">
-  <span class="dock-hint">Registro de accesos y actividades del sistema</span>
-  <button class="btn" (click)="limpiarFiltros()">Limpiar filtros</button>
-  <button class="btn" (click)="cargar()">Buscar</button>
-  <button class="btn" (click)="volver()">Volver</button>
-</div>
+  <!-- Header -->
+  <div class="admin-header">
+    <h1 class="admin-title">Auditoría de Accesos</h1>
+    <p class="dock-hint">Registro de accesos y actividades del sistema</p>
+  </div>
 
-<div class="adm-body">
-  <div class="adm-grid">
-    <div class="adm-col">
-      <!-- ── KPI: total de registros ── -->
-      <div class="theme-card theme-card--stat theme-card--lg">
-        <div class="theme-card__header">
-          <span class="theme-card__icon">📊</span>
-          <span class="theme-card__title">Resumen de auditoría</span>
-        </div>
-        <div class="theme-card__body">
-          <div class="theme-card__stat">
-            <span class="theme-card__stat-value">{{ totalRegistros }}</span>
-            <span class="theme-card__stat-label">eventos de auditoría</span>
-          </div>
-        </div>
-      </div>
+  <!-- Toolbar -->
+  <div class="admin-toolbar">
+    <button class="btn btn-clear" (click)="limpiarFiltros()">Limpiar filtros</button>
+    <button class="btn btn-buscar" (click)="cargar()">Buscar</button>
+    <button class="btn btn-volver" (click)="volver()">Volver</button>
+  </div>
 
-      <!-- ── REGISTROS: una card --data por log ── -->
-      @for (log of auditLogs; track log.id) {
-        <div class="theme-card theme-card--data">
-          <!-- Header con icono, título e ID -->
-          <div class="theme-card__header">
-            <span class="theme-card__icon">📝</span>
-            <span class="theme-card__title">Registro #{{ log.id }}</span>
-            <!-- Badge de método como acción -->
-            <div class="theme-card__actions">
-              <span
-                class="theme-badge"
-                [class.theme-badge--primary]="log.metodo === 'GET'"
-                [class.theme-badge--success]="log.metodo === 'POST'"
-                [class.theme-badge--warning]="
-                  log.metodo === 'PUT' || log.metodo === 'PATCH'
-                "
-                [class.theme-badge--danger]="log.metodo === 'DELETE'"
-              >
-                {{ log.metodo || "GET" }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Grid de campos -->
-          <div class="theme-card__body">
-            <div class="theme-card__field">
-              <span class="theme-card__label">Tabla</span>
-              <span class="theme-card__value theme-card__value--mono">
-                {{ log.tabla || "—" }}
-              </span>
-            </div>
-
-            <div class="theme-card__field">
-              <span class="theme-card__label">Usuario</span>
-              <span class="theme-card__value">
-                {{ log.username || "—" }}
-              </span>
-            </div>
-
-            <div class="theme-card__field">
-              <span class="theme-card__label">Método / Acción</span>
-              <span class="theme-card__value theme-card__value--mono">
-                {{ log.metodo || "—" }}
-              </span>
-            </div>
-
-            <div class="theme-card__field">
-              <span class="theme-card__label">IP</span>
-              <span class="theme-card__value theme-card__value--mono">
-                {{ log.ip_address || "—" }}
-              </span>
-            </div>
-
-            <div class="theme-card__field">
-              <span class="theme-card__label">Fecha y hora</span>
-              <span class="theme-card__value theme-card__value--mono">
-                {{ log.fecha_hora ? (log.fecha_hora | fecha) : "—" }}
-              </span>
-            </div>
-
-            <div class="theme-card__field">
-              <span class="theme-card__label">Endpoint</span>
-              <span class="theme-card__value theme-card__value--mono">
-                {{ log.endpoint || "—" }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Footer con timestamp relativo -->
-          <div class="theme-card__footer">
-            <span class="theme-card__footer-meta">
-              ID {{ log.id }} ·
-              {{ log.fecha_hora ? (log.fecha_hora | fecha) : "sin fecha" }}
-            </span>
-          </div>
-        </div>
-      }
-
-      <!-- ── ESTADO VACÍO ── -->
-      @if (auditLogs.length === 0) {
-        <div class="theme-card theme-card--flush">
-          <div
-            class="theme-card__body"
-            style="
-              padding: var(--theme-space-5);
-              align-items: center;
-              justify-content: center;
-              text-align: center;
-              gap: var(--theme-space-2);
-            "
-          >
-            <span style="font-size: 2rem">🔍</span>
-            <span
-              style="
-                font-family: var(--theme-font-mono);
-                font-size: var(--theme-font-size-sm);
-                color: var(--theme-text-muted);
-                text-transform: uppercase;
-                letter-spacing: 0.1em;
-              "
-              >No se encontraron registros de auditoría</span
-            >
-            <span
-              style="
-                font-size: var(--theme-font-size-xs);
-                color: var(--theme-text-subtle);
-              "
-              >Ajusta los filtros e intenta de nuevo</span
-            >
-          </div>
-        </div>
-      }
+  <!-- FILTRO (flex row) -->
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label class="filter-label">Tabla</label>
+      <input class="filter-input" type="text" [ngModel]="filtros.tabla"
+             (ngModelChange)="filtros.tabla = $event; cargar()" placeholder="Ej: pacientes">
+    </div>
+    <div class="filter-field">
+      <label class="filter-label">Usuario</label>
+      <input class="filter-input" type="text" [ngModel]="filtros.username"
+             (ngModelChange)="filtros.username = $event; cargar()" placeholder="Ej: chak">
+    </div>
+    <div class="filter-field">
+      <label class="filter-label">Fecha desde</label>
+      <input class="filter-input" type="date" [ngModel]="filtros.desde"
+             (ngModelChange)="filtros.desde = $event; cargar()">
+    </div>
+    <div class="filter-field">
+      <label class="filter-label">Fecha hasta</label>
+      <input class="filter-input" type="date" [ngModel]="filtros.hasta"
+             (ngModelChange)="filtros.hasta = $event; cargar()">
     </div>
   </div>
+
+  <!-- RESUMEN -->
+  <div class="theme-card theme-card--stat">
+    <span class="theme-card__stat-value">{{ totalRegistros }}</span>
+    <span class="theme-card__stat-label">eventos de auditoría</span>
+  </div>
+
+  <!-- CARDS GRID -->
+  <div class="cards-grid">
+    @if (loading) {
+      <div class="card-placeholder">Cargando...</div>
+    } @else if (sortLogs().length === 0) {
+      <div class="card-placeholder">No se encontraron registros</div>
+    } @else {
+      @for (log of sortLogs(); track log.id) {
+        <div class="audit-card">
+
+          <!-- Header -->
+          <div class="audit-header">
+            <span
+              class="theme-badge"
+              [class.theme-badge--primary]="log.metodo !== 'POST' && log.metodo !== 'PUT' && log.metodo !== 'PATCH' && log.metodo !== 'DELETE'"
+              [class.theme-badge--success]="log.metodo === 'POST'"
+              [class.theme-badge--warning]="log.metodo === 'PUT' || log.metodo === 'PATCH'"
+              [class.theme-badge--danger]="log.metodo === 'DELETE'"
+            >
+              {{ log.metodo || 'GET' }}
+            </span>
+            <span class="audit-tabla">{{ log.tabla || '—' }}</span>
+          </div>
+
+          <!-- Fields Grid (flex wrap) -->
+          <div class="audit-fields">
+            <div class="audit-field">
+              <span class="audit-label">ID</span>
+              <span class="audit-value mono">{{ log.id }}</span>
+            </div>
+            <div class="audit-field">
+              <span class="audit-label">Usuario</span>
+              <span class="audit-value">{{ log.username || '—' }}</span>
+            </div>
+            <div class="audit-field">
+              <span class="audit-label">Fecha</span>
+              <span class="audit-value mono">{{ log.fecha_hora | fecha }}</span>
+            </div>
+            <div class="audit-field">
+              <span class="audit-label">Endpoint</span>
+              <span class="audit-value mono">{{ log.endpoint || '—' }}</span>
+            </div>
+            <div class="audit-field">
+              <span class="audit-label">IP</span>
+              <span class="audit-value mono">{{ log.ip_address || '—' }}</span>
+            </div>
+            <div class="audit-field">
+              <span class="audit-label">SO</span>
+              <span class="audit-value">{{ log.so || '—' }}</span>
+            </div>
+            <div class="audit-field">
+              <span class="audit-label">Equipo</span>
+              <span class="audit-value">{{ log.nombre_equipo || '—' }}</span>
+            </div>
+            <div class="audit-field">
+              <span class="audit-label">User Agent</span>
+              <span class="audit-value mono">{{ log.user_agent || '—' }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+
 </div>
