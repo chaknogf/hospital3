@@ -1,0 +1,265 @@
+/* gestiona-audit-log component styles */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #dee2e6;
+  padding: 8px;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.filter-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.field {
+  flex: 1;
+  min-width: 150px;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #666;
+}
+
+.field-input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.table-status {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+/* ── BASE ── */
+.theme-card {
+  background:    var(--theme-surface);
+  border:        var(--theme-border-width, 1px) solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+  box-shadow:    var(--theme-shadow-md);
+  color:         var(--theme-text);
+  font-family:   var(--theme-font-ui);
+  display:       flex;
+  flex-direction: column;
+  overflow:      hidden;
+  transition:    var(--theme-transition, 0.2s ease all);
+}
+.theme-card:hover {
+  background:  var(--theme-surface-hover);
+  box-shadow:  var(--theme-shadow-lg);
+  transform:   translateY(-1px);
+}
+.theme-card:focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+}
+
+/* ── HEADER ── */
+.theme-card__header {
+  display:         flex;
+  align-items:     center;
+  gap:             var(--theme-space-2);
+  padding:         var(--theme-space-2) var(--theme-space-3);
+  background:      var(--theme-gradient-surface-hover);
+  border-bottom:   var(--theme-border-width, 1px) solid var(--theme-border);
+  flex-shrink: 0;
+}
+.theme-card__icon   { font-size: 1.2rem; flex-shrink: 0; }
+.theme-card__title  {
+  font-size:      var(--theme-font-size-xs);
+  font-weight:    var(--theme-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color:          var(--theme-text-muted);
+  font-family:    var(--theme-font-mono);
+  flex:           1;
+  white-space:    nowrap;
+  overflow:       hidden;
+  text-overflow:  ellipsis;
+}
+.theme-card__actions { display: flex; gap: var(--theme-space-1); margin-left: auto; }
+
+/* ── BODY ── */
+.theme-card__body {
+  padding: var(--theme-space-3);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme-space-2);
+}
+
+/* ── VARIANTE --data: grid de campos ── */
+.theme-card--data .theme-card__body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--theme-space-2) var(--theme-space-3);
+  align-content: start;
+}
+.theme-card--data .theme-card__header { display: none; }
+.theme-card__field  { display: flex; flex-direction: column; gap: 0.2rem; }
+.theme-card__label  {
+  font-family:    var(--theme-font-mono);
+  font-size:      0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color:          var(--theme-text-muted);
+}
+.theme-card__value  {
+  font-size:      var(--theme-font-size-sm);
+  font-weight:    var(--theme-font-weight-medium);
+  color:          var(--theme-text);
+  word-break:     break-word;
+}
+.theme-card__value--empty { color: var(--theme-text-subtle); font-style: italic; }
+.theme-card__value--mono  { font-family: var(--theme-font-mono); }
+
+/* ── VARIANTE --stat: KPI ── */
+.theme-card--stat .theme-card__body { align-items: flex-start; gap: var(--theme-space-1); }
+.theme-card--stat .theme-card__header { justify-content: space-between; }
+.theme-card__stat        { display: flex; flex-direction: column; gap: 0.25rem; }
+.theme-card__stat-value  {
+  font-size:      var(--theme-font-size-xl);
+  font-weight:    var(--theme-font-weight-heavy);
+  color:          var(--theme-text);
+  line-height:    1;
+}
+.theme-card__stat-label  {
+  font-family:    var(--theme-font-mono);
+  font-size:      0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color:          var(--theme-text-muted);
+}
+.theme-card__stat-delta         { font-size: 0.75rem; font-weight: var(--theme-font-weight-bold); }
+.theme-card__stat-delta--up     { color: var(--theme-success); }
+.theme-card__stat-delta--down   { color: var(--theme-danger); }
+.theme-card__stat-delta--neutral{ color: var(--theme-text-muted); }
+
+/* ── VARIANTE --profile: avatar + info ── */
+.theme-card__profile-hero {
+  display: flex; align-items: center; gap: var(--theme-space-3);
+  padding-bottom: var(--theme-space-2);
+  border-bottom: var(--theme-border-width, 1px) solid var(--theme-border);
+  margin-bottom: var(--theme-space-1);
+}
+.theme-card__avatar {
+  width: 48px; height: 48px;
+  border-radius: var(--theme-radius-md);
+  background: var(--theme-primary-dim);
+  border: var(--theme-border-width, 1px) solid var(--theme-primary);
+  color: var(--theme-primary);
+  font-weight: var(--theme-font-weight-heavy);
+  font-size: var(--theme-font-size-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--theme-shadow-sm);
+}
+.theme-card__profile-name {
+  font-size: var(--theme-font-size-lg);
+  font-weight: var(--theme-font-weight-heavy);
+  color: var(--theme-text);
+  line-height: 1.1;
+}
+.theme-card__profile-sub {
+  font-family: var(--theme-font-mono);
+  font-size: 0.72rem;
+  color: var(--theme-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.theme-card__profile-badges { display: flex; flex-wrap: wrap; gap: var(--theme-space-1); margin-top: 0.3rem; }
+
+/* ── VARIANTE --list: ítems ── */
+.theme-card--list .theme-card__body { gap: 0; padding: 0; }
+.theme-card--list .theme-card__header { padding: 0; margin-bottom: 0; }
+.theme-card__item {
+  display: flex; align-items: center; gap: var(--theme-space-2);
+  padding: var(--theme-space-2) var(--theme-space-3);
+  border-bottom: 1px solid var(--theme-border-subtle);
+  transition: background var(--theme-transition-fast);
+}
+.theme-card__item:last-child { border-bottom: none; }
+.theme-card__item:hover      { background: var(--theme-surface-hover); }
+.theme-card__item-label {
+  font-family: var(--theme-font-mono); font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 0.10em;
+  color: var(--theme-text-muted); min-width: 80px;
+}
+.theme-card__item-value { flex: 1; font-size: var(--theme-font-size-sm); color: var(--theme-text); }
+.theme-card__item-badge { flex-shrink: 0; }
+
+/* ── VARIANTE --timeline: eventos ── */
+.theme-card--timeline .theme-card__body { gap: 0; }
+.theme-card__event {
+  display: flex; gap: var(--theme-space-2); align-items: flex-start;
+  padding: var(--theme-space-1) 0;
+  position: relative;
+}
+.theme-card__event:not(:last-child)::after {
+  content: '';
+  position: absolute; left: 5px; top: 18px;
+  width: 1px; bottom: 0;
+  background: var(--theme-border);
+}
+.theme-card__event-dot {
+  width: 10px; height: 10px; flex-shrink: 0; margin-top: 4px;
+  border-radius: var(--theme-radius-sm);
+  background: var(--theme-primary);
+  border: 2px solid var(--theme-surface);
+  box-shadow: 0 0 0 2px var(--theme-primary);
+}
+.theme-card__event-title { font-size: var(--theme-font-size-sm); font-weight: var(--theme-font-weight-medium); color: var(--theme-text); }
+.theme-card__event-time  { font-family: var(--theme-font-mono); font-size: 0.65rem; color: var(--theme-text-muted); }
+
+/* ── FOOTER ── */
+.theme-card__footer {
+  padding: var(--theme-space-1) var(--theme-space-3);
+  border-top: var(--theme-border-width, 1px) solid var(--theme-border);
+  background: var(--theme-gradient-surface);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.theme-card__footer-meta {
+  font-family: var(--theme-font-mono);
+  font-size: 0.60rem;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--theme-text-subtle);
+}
+
+/* ── UTILIDADES DE TAMAÑO ── */
+.theme-card--sm .theme-card__body { padding: var(--theme-space-2); }
+.theme-card--lg .theme-card__body { padding: var(--theme-space-4); }
+.theme-card--flush .theme-card__body { padding: 0; }

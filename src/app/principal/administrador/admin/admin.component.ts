@@ -64,6 +64,7 @@ export class AdminComponent implements OnInit {
       { nombre: 'Limpiar CUI', descripcion: 'Limpiar número de CUI de un paciente', ruta: '/limpiar-cui-paciente', icon: '' },
       { nombre: 'Municipios', descripcion: 'Gestionar catálogo de municipios', ruta: '/gestion-municipios', icon: '' },
       { nombre: 'Encamamiento', descripcion: 'Gestionar servicios y camas', ruta: '/gestion-encamamiento', icon: '' },
+      { nombre: 'Auditoría', descripcion: 'Ver reporte de accesos y actividades', ruta: '/gestion-audit-log', icon: '' },
       { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
       { nombre: 'Exportar SIGSA-3 CSV', descripcion: 'Descargar todos los registros SIGSA-3 como CSV', ruta: '', icon: '', accion: () => this.exportarCsv() },
       { nombre: 'Truncar SIGSA-3', descripcion: 'Eliminar TODOS los registros SIGSA-3 (irreversible)', ruta: '', icon: '', accion: () => this.truncar() },

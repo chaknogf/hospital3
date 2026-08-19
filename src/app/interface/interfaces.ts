@@ -246,3 +246,22 @@ export interface DepartamentoOut {
   codigo: string;
   departamento: string;
 }
+
+export interface AuditLogResponse {
+  total: number;
+  logs: AuditLogEntry[];
+}
+
+export interface AuditLogEntry {
+  id: number;
+  fecha_hora: string;
+  username: string;
+  tabla: string;
+  registro_id: number | null;
+  endpoint: string;
+  metodo: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  ip_address: string;
+  so: string | null;
+  nombre_equipo: string | null;
+  user_agent: string;
+}

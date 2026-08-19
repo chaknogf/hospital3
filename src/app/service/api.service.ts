@@ -286,6 +286,17 @@ export class ApiService {
     );
   }
 
+  getAuditLog(filtros: any): Observable<any> {
+    const params = this.limpiarParametros(filtros);
+    const key = this.sync.cacheKey(`${this.baseUrl}/audit-log/`, params);
+    return this.sync.cacheGet(key,
+      this.http.get<any>(`${this.baseUrl}/audit-log/`, { params }).pipe(
+        catchError(error => this.manejarError(error, 'obtener auditoría'))
+      ),
+      30 * 60 * 1000
+    );
+  }
+
   getUser(id: number): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.baseUrl}/users/${id}`).pipe(
       catchError(error => this.manejarError(error, 'obtener usuario'))

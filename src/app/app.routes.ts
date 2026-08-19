@@ -57,6 +57,11 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin'])]
       },
       {
+        path: 'gestion-audit-log',
+        loadComponent: () => import('./principal/administrador/gestion-audit-log/gestion-audit-log.component').then(c => c.GestionAuditLogComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
+      {
         path: 'desactivar-consulta',
         loadComponent: () => import('./principal/administrador/desactivar-consulta/desactivar-consulta.component').then(c => c.DesactivarConsultaComponent),
         canActivate: [roleGuard(['admin'])]

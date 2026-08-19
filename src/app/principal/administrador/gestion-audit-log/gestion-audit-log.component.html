@@ -1,0 +1,143 @@
+<div class="hud-header">
+  <div class="hud-title">Auditoría de Accesos</div>
+</div>
+
+<div class="action-dock">
+  <span class="dock-hint">Registro de accesos y actividades del sistema</span>
+  <button class="btn" (click)="limpiarFiltros()">Limpiar filtros</button>
+  <button class="btn" (click)="cargar()">Buscar</button>
+  <button class="btn" (click)="volver()">Volver</button>
+</div>
+
+<div class="adm-body">
+  <div class="adm-grid">
+    <div class="adm-col">
+      <!-- ── KPI: total de registros ── -->
+      <div class="theme-card theme-card--stat theme-card--lg">
+        <div class="theme-card__header">
+          <span class="theme-card__icon">📊</span>
+          <span class="theme-card__title">Resumen de auditoría</span>
+        </div>
+        <div class="theme-card__body">
+          <div class="theme-card__stat">
+            <span class="theme-card__stat-value">{{ totalRegistros }}</span>
+            <span class="theme-card__stat-label">eventos de auditoría</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── REGISTROS: una card --data por log ── -->
+      @for (log of auditLogs; track log.id) {
+        <div class="theme-card theme-card--data">
+          <!-- Header con icono, título e ID -->
+          <div class="theme-card__header">
+            <span class="theme-card__icon">📝</span>
+            <span class="theme-card__title">Registro #{{ log.id }}</span>
+            <!-- Badge de método como acción -->
+            <div class="theme-card__actions">
+              <span
+                class="theme-badge"
+                [class.theme-badge--primary]="log.metodo === 'GET'"
+                [class.theme-badge--success]="log.metodo === 'POST'"
+                [class.theme-badge--warning]="
+                  log.metodo === 'PUT' || log.metodo === 'PATCH'
+                "
+                [class.theme-badge--danger]="log.metodo === 'DELETE'"
+              >
+                {{ log.metodo || "GET" }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Grid de campos -->
+          <div class="theme-card__body">
+            <div class="theme-card__field">
+              <span class="theme-card__label">Tabla</span>
+              <span class="theme-card__value theme-card__value--mono">
+                {{ log.tabla || "—" }}
+              </span>
+            </div>
+
+            <div class="theme-card__field">
+              <span class="theme-card__label">Usuario</span>
+              <span class="theme-card__value">
+                {{ log.username || "—" }}
+              </span>
+            </div>
+
+            <div class="theme-card__field">
+              <span class="theme-card__label">Método / Acción</span>
+              <span class="theme-card__value theme-card__value--mono">
+                {{ log.metodo || "—" }}
+              </span>
+            </div>
+
+            <div class="theme-card__field">
+              <span class="theme-card__label">IP</span>
+              <span class="theme-card__value theme-card__value--mono">
+                {{ log.ip_address || "—" }}
+              </span>
+            </div>
+
+            <div class="theme-card__field">
+              <span class="theme-card__label">Fecha y hora</span>
+              <span class="theme-card__value theme-card__value--mono">
+                {{ log.fecha_hora ? (log.fecha_hora | fecha) : "—" }}
+              </span>
+            </div>
+
+            <div class="theme-card__field">
+              <span class="theme-card__label">Endpoint</span>
+              <span class="theme-card__value theme-card__value--mono">
+                {{ log.endpoint || "—" }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Footer con timestamp relativo -->
+          <div class="theme-card__footer">
+            <span class="theme-card__footer-meta">
+              ID {{ log.id }} ·
+              {{ log.fecha_hora ? (log.fecha_hora | fecha) : "sin fecha" }}
+            </span>
+          </div>
+        </div>
+      }
+
+      <!-- ── ESTADO VACÍO ── -->
+      @if (auditLogs.length === 0) {
+        <div class="theme-card theme-card--flush">
+          <div
+            class="theme-card__body"
+            style="
+              padding: var(--theme-space-5);
+              align-items: center;
+              justify-content: center;
+              text-align: center;
+              gap: var(--theme-space-2);
+            "
+          >
+            <span style="font-size: 2rem">🔍</span>
+            <span
+              style="
+                font-family: var(--theme-font-mono);
+                font-size: var(--theme-font-size-sm);
+                color: var(--theme-text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+              "
+              >No se encontraron registros de auditoría</span
+            >
+            <span
+              style="
+                font-size: var(--theme-font-size-xs);
+                color: var(--theme-text-subtle);
+              "
+              >Ajusta los filtros e intenta de nuevo</span
+            >
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
