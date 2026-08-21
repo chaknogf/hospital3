@@ -254,7 +254,7 @@ export class Sigsa3Service extends BaseApiService {
 
   crearPersonalSalud(data: PersonalSaludCreate): Observable<PersonalSalud> {
     this.isLoading.set(true);
-    return this.offMutation('POST', `${this.baseUrl}/sigsa3/personal-salud`, data).pipe(
+    return this.offMutation('POST', `${this.baseUrl}/sigsa3/personal-salud/`, data).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }
