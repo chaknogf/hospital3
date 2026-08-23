@@ -89,7 +89,7 @@ export class PersonalSaludListComponent {
     });
   }
 
-  volver(): void { this.location.back(); }
+  volver(): void { this.router.navigate(['/sigsa3']); }
 
   limpiarFiltros(): void {
     this.filtros = { nombre: '', especialidad_id: null, medico_id: null };

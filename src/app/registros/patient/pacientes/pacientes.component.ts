@@ -208,7 +208,7 @@ export class PacientesComponent implements OnInit, OnDestroy {
   nombreCompleto(p: any): string {
     if (!p?.nombre) return '';
     const n = p.nombre;
-    const cap = (s: string) => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    const cap = (s: string) => s.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     const nombres = [n.primer_nombre, n.segundo_nombre, n.otro_nombre]
       .filter(Boolean)
       .map(cap)
@@ -226,7 +226,7 @@ export class PacientesComponent implements OnInit, OnDestroy {
   nombres(p: any): string {
     if (!p?.nombre) return '';
     const n = p.nombre;
-    const cap = (s: string) => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    const cap = (s: string) => s.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     return [n.primer_nombre, n.segundo_nombre, n.otro_nombre]
       .filter(Boolean)
       .map(cap)
@@ -236,7 +236,7 @@ export class PacientesComponent implements OnInit, OnDestroy {
   apellidos(p: any): string {
     if (!p?.nombre) return '';
     const n = p.nombre;
-    const cap = (s: string) => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    const cap = (s: string) => s.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     let ap = [n.primer_apellido, n.segundo_apellido]
       .filter(Boolean)
       .map(cap)

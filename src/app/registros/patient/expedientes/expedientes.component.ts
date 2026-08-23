@@ -178,7 +178,7 @@ export class ExpedientesComponent implements OnInit, OnDestroy {
   nombreCompleto(p: PacienteResumen): string {
     if (!p?.nombre) return '';
     const n = p.nombre;
-    const cap = (s: string) => s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+    const cap = (s: string) => s.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     const nombres = [n.primer_nombre, n.segundo_nombre, n.otro_nombre].filter((s): s is string => !!s).map(cap).join(' ');
     let apellidos = [n.primer_apellido, n.segundo_apellido].filter((s): s is string => !!s).map(cap).join(' ');
     if (n.apellido_casada) {

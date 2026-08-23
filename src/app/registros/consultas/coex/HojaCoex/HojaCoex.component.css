@@ -230,7 +230,6 @@ label { letter-spacing: 0.4px; }
 .nombres-fila {
   font-size: 12pt !important;                 /* ← era 10.5pt */
   font-weight: 700 !important;
-  text-transform: uppercase;
   color: var(--navy) !important;
   letter-spacing: 0.3px !important;
   line-height: 1.1 !important;
@@ -294,7 +293,6 @@ label {
 .nombres-fila {
   font-size: 11pt !important;
   font-weight: 700 !important;
-  text-transform: uppercase;
   color: var(--navy) !important;
   letter-spacing: 0.3px !important;
 }
