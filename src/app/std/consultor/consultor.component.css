@@ -119,6 +119,42 @@
   font-family: var(--theme-font-ui);
 }
 
+/* ── SWITCH DE MODO DE BÚSQUEDA ────────────────────────── */
+.modo-switch {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--theme-surface-deep);
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.modo-option {
+  flex: 1;
+  height: 30px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--theme-text-muted);
+  font-family: var(--theme-font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modo-option:hover:not(.modo-option--active) {
+  color: var(--theme-text);
+  background: var(--theme-primary-dim);
+}
+
+.modo-option--active {
+  background: var(--theme-gradient-primary);
+  color: var(--theme-text-on-primary);
+  box-shadow: 0 2px 8px var(--theme-primary-dim), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+
 /* ── INPUTS (sidebar) ──────────────────────────────────── */
 .field-group {
   display: flex;
@@ -159,6 +195,31 @@
 }
 .field-group input:hover:not(:focus) {
   border-color: var(--theme-border-strong);
+}
+
+.field-group select {
+  height: 32px;
+  padding: 0 8px;
+  background: var(--theme-surface-raised);
+  border: 1px solid var(--theme-border);
+  border-top-color: var(--theme-border-strong);
+  border-radius: 8px;
+  color: var(--theme-text);
+  font-family: var(--theme-font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.08), 0 1px 0 rgba(255,255,255,0.3);
+}
+.field-group select:focus {
+  border-color: var(--theme-primary);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.08), 0 0 0 3px var(--theme-focus-ring);
+}
+.field-group select option {
+  background: var(--theme-surface-deep);
+  color: var(--theme-text);
 }
 
 /* ── BUTTONS ───────────────────────────────────────────── */

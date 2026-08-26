@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ConsultaService } from '../../registros/consultas/consultas.service';
 import { Router } from '@angular/router';
 import { PacienteService } from '../../registros/patient/paciente.service';
-import { ConsultasIdPaciente, PacienteBuscado } from '../../interface/consultas';
+import { ConsultasIdPaciente, ConsultaOut, ConsultaListResponse, PacienteBuscado } from '../../interface/consultas';
 import { Paciente, Referencia } from '../../interface/interfaces';
 import { DatosExtraPipe } from '../../pipes/datos-extra.pipe';
 import { TimePipe } from '../../pipes/time.pipe';
@@ -15,6 +15,7 @@ import { Citas } from '../../interface/citas';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Cie10Component } from '../../medica/cie10/cie10.component';
+import { Dict, especialidades, tipoConsulta } from '../../enum/diccionarios';
 
 @Component({
   selector: 'app-consultor',
@@ -42,6 +43,8 @@ export class ConsultorComponent implements OnInit, OnDestroy {
   cie10Mensaje = signal('');
 
   // ── Estado de búsqueda ──────────────────────────────────
+  modoBusqueda: 'pacientes' | 'consultas' = 'pacientes';
+
   filtros = {
     q: '',
     paciente_id: '',
@@ -52,11 +55,19 @@ export class ConsultorComponent implements OnInit, OnDestroy {
     segundo_nombre: '',
     primer_apellido: '',
     segundo_apellido: '',
-    fecha_nacimiento: ''
+    fecha_nacimiento: '',
+    especialidad: '',
+    tipo_consulta: '',
+    fecha_consulta: ''
   };
   limit: number = 10;
 
+  listaEspecialidades: Dict[] = especialidades;
+  listaTiposConsulta: Dict[] = tipoConsulta;
+
   resultados: PacienteBuscado[] = [];
+  resultadosConsultas: ConsultaOut[] = [];
+  totalConsultas: number = 0;
   mostrarTabla: boolean = false;
   buscando: boolean = false;
 
@@ -117,8 +128,17 @@ export class ConsultorComponent implements OnInit, OnDestroy {
 
   // ── Búsqueda ────────────────────────────────────────────
   buscar(): void {
+    if (this.modoBusqueda === 'consultas') {
+      this.buscarConsultas();
+    } else {
+      this.buscarPacientes();
+    }
+  }
+
+  private buscarPacientes(): void {
     this.buscando = true;
     this.resultados = [];
+    this.resultadosConsultas = [];
 
     const params: any = { limit: this.limit };
 
@@ -169,15 +189,85 @@ export class ConsultorComponent implements OnInit, OnDestroy {
     }
   }
 
+  private buscarConsultas(): void {
+    this.buscando = true;
+    this.resultados = [];
+    this.resultadosConsultas = [];
+
+    const params: any = { limit: this.limit };
+
+    if (this.filtros.expediente.trim()) params.expediente = this.filtros.expediente.trim();
+    if (this.filtros.paciente_id) params.paciente_id = this.filtros.paciente_id;
+    if (this.filtros.documento.trim()) params.documento = this.filtros.documento.trim();
+    if (this.filtros.primer_nombre.trim()) params.primer_nombre = this.filtros.primer_nombre.trim();
+    if (this.filtros.segundo_nombre.trim()) params.segundo_nombre = this.filtros.segundo_nombre.trim();
+    if (this.filtros.primer_apellido.trim()) params.primer_apellido = this.filtros.primer_apellido.trim();
+    if (this.filtros.segundo_apellido.trim()) params.segundo_apellido = this.filtros.segundo_apellido.trim();
+    if (this.filtros.especialidad) params.especialidad = this.filtros.especialidad;
+    if (this.filtros.tipo_consulta !== '') params.tipo_consulta = this.filtros.tipo_consulta;
+    if (this.filtros.fecha_consulta) params.fecha = this.filtros.fecha_consulta;
+    if (this.filtros.q.trim()) params.q = this.filtros.q.trim();
+
+    this.api.getConsultas(params).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data: ConsultaListResponse) => {
+        this.resultadosConsultas = data.consultas ?? [];
+        this.totalConsultas = data.total ?? this.resultadosConsultas.length;
+        this.mostrarTabla = true;
+        this.buscando = false;
+        this.cerrarSidebarEnMobile();
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.buscando = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
   limpiarFiltros(): void {
     Object.keys(this.filtros).forEach(k => (this.filtros as any)[k] = '');
     this.resultados = [];
+    this.resultadosConsultas = [];
+    this.totalConsultas = 0;
     this.mostrarTabla = false;
+  }
+
+  cambiarModo(modo: 'pacientes' | 'consultas'): void {
+    this.modoBusqueda = modo;
+    this.resultados = [];
+    this.resultadosConsultas = [];
+    this.totalConsultas = 0;
+    this.mostrarTabla = false;
+    this.limpiarFiltros();
   }
 
   cerrarTabla(): void {
     this.mostrarTabla = false;
   }
+
+  seleccionarConsulta(c: ConsultaOut): void {
+    this.mostrarTabla = false;
+    this.cerrarSidebarEnMobile();
+    if (c.paciente_id) {
+      this.pacienteId = c.paciente_id;
+      this.cargarPaciente();
+      this.cargarConsultas();
+      this.cargarCitas();
+    } else {
+      this.router.navigate(['/detalleAdmision', c.id]);
+    }
+  }
+
+  nombrePacienteDe(c: ConsultaOut): string {
+    const n = c.paciente?.nombre;
+    if (!n) return '—';
+    return [
+      n.primer_nombre, n.segundo_nombre, n.otro_nombre,
+      n.primer_apellido, n.segundo_apellido
+    ].filter(Boolean).join(' ').trim() || '—';
+  }
+
+  editarPaciente(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
 
   editarCita(id: number): void {
 

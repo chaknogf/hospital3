@@ -15,9 +15,31 @@
 
     <div class="sidebar-header">
       <button class="btn" (click)="regresar()">❌ Salir</button>
-      <span class="sidebar-title">Buscar paciente</span>
+      <span class="sidebar-title">{{
+        modoBusqueda === "pacientes" ? "Buscar paciente" : "Buscar consulta"
+      }}</span>
       <button class="btn-clear" (click)="limpiarFiltros()" title="Limpiar">
         Reset
+      </button>
+    </div>
+
+    <!-- ══ SWITCH DE MODO DE BÚSQUEDA ══════════════════════════ -->
+    <div class="modo-switch">
+      <button
+        type="button"
+        class="modo-option"
+        [class.modo-option--active]="modoBusqueda === 'pacientes'"
+        (click)="cambiarModo('pacientes')"
+      >
+        🧑‍🤝‍🧑 Pacientes
+      </button>
+      <button
+        type="button"
+        class="modo-option"
+        [class.modo-option--active]="modoBusqueda === 'consultas'"
+        (click)="cambiarModo('consultas')"
+      >
+        📋 Consultas
       </button>
     </div>
 
@@ -112,6 +134,36 @@
         <input type="text" name="q" [(ngModel)]="filtros.q" placeholder="q" />
       </div>
 
+      @if (modoBusqueda === "consultas") {
+        <div class="sidebar-divider"></div>
+        <div class="field-group">
+          <label>Especialidad</label>
+          <select name="especialidad" [(ngModel)]="filtros.especialidad">
+            <option value="">Todas</option>
+            @for (e of listaEspecialidades; track e.value) {
+              <option [value]="e.value">{{ e.label }}</option>
+            }
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Tipo de consulta</label>
+          <select name="tipo_consulta" [(ngModel)]="filtros.tipo_consulta">
+            <option value="">Todos</option>
+            @for (t of listaTiposConsulta; track t.value) {
+              <option [value]="t.value">{{ t.label }}</option>
+            }
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Fecha de consulta</label>
+          <input
+            type="date"
+            name="fecha_consulta"
+            [(ngModel)]="filtros.fecha_consulta"
+          />
+        </div>
+      }
+
       <button class="btn-buscar btn" type="submit" [disabled]="buscando">
         {{ buscando ? "Buscando..." : "Buscar" }}
       </button>
@@ -154,51 +206,138 @@
         <div class="results-box" (click)="$event.stopPropagation()">
           <div class="rbox-header">
             <span class="rbox-title">Resultados</span>
-            <span class="rbox-badge">{{ resultados.length }} encontrados</span>
+            <span class="rbox-badge">
+              {{
+                modoBusqueda === "pacientes"
+                  ? resultados.length + " encontrados"
+                  : totalConsultas + " encontradas"
+              }}
+            </span>
             <button class="btn-close" (click)="cerrarTabla()">✕</button>
           </div>
           <div class="rbox-body">
-            @if (resultados.length === 0) {
-              <div class="rbox-empty">
-                Sin resultados para los filtros aplicados
-              </div>
-            }
-            @if (resultados.length > 0) {
-              <table class="results-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Expediente</th>
-                    <th>Nombre completo</th>
-                    <th>CUI</th>
-                    <th>Nacimiento</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (p of resultados; track trackById($index, p)) {
+            <!-- ══ TABLA PACIENTES ══════════════════════════════ -->
+            @if (modoBusqueda === "pacientes") {
+              @if (resultados.length === 0) {
+                <div class="rbox-empty">
+                  Sin resultados para los filtros aplicados
+                </div>
+              }
+              @if (resultados.length > 0) {
+                <table class="results-table">
+                  <thead>
                     <tr>
-                      <td>{{ p.id }}</td>
-                      <td
-                        [ngClass]="p.expediente ? 'text-normal' : 'text-muted'"
-                      >
-                        {{ p.expediente || "—" }}
-                      </td>
-                      <td>{{ p.nombre_completo }}</td>
-                      <td>{{ p.cui | cui }}</td>
-                      <td>{{ p.fecha_nacimiento | date: "dd/MM/yyyy" }}</td>
-                      <td>
-                        <button
-                          class="btn-select"
-                          (click)="seleccionarPaciente(p)"
-                        >
-                          Seleccionar
-                        </button>
-                      </td>
+                      <th>ID</th>
+                      <th>Expediente</th>
+                      <th>Nombre completo</th>
+                      <th>CUI</th>
+                      <th>Nacimiento</th>
+                      <th></th>
                     </tr>
-                  }
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    @for (p of resultados; track trackById($index, p)) {
+                      <tr>
+                        <td>{{ p.id }}</td>
+                        <td
+                          [ngClass]="p.expediente ? 'text-normal' : 'text-muted'"
+                        >
+                          {{ p.expediente || "—" }}
+                        </td>
+                        <td>{{ p.nombre_completo }}</td>
+                        <td>{{ p.cui | cui }}</td>
+                        <td>{{ p.fecha_nacimiento | date: "dd/MM/yyyy" }}</td>
+                        <td>
+                          <button
+                            class="btn-select"
+                            (click)="seleccionarPaciente(p)"
+                          >
+                            Seleccionar
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              }
+            }
+
+            <!-- ══ TABLA CONSULTAS ══════════════════════════════ -->
+            @if (modoBusqueda === "consultas") {
+              @if (resultadosConsultas.length === 0) {
+                <div class="rbox-empty">
+                  Sin consultas para los filtros aplicados
+                </div>
+              }
+              @if (resultadosConsultas.length > 0) {
+                <table class="results-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Fecha y Hora</th>
+                      <th>Paciente</th>
+                      <th>Expediente</th>
+                      <th>Especialidad</th>
+                      <th>Tipo</th>
+                      <th>Estado</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (c of resultadosConsultas; track trackById($index, c)) {
+                      <tr>
+                        <td>{{ c.id }}</td>
+                        <td>
+                          {{ c.fecha_consulta | date: "dd/MM/yyyy" }}
+                          <br />
+                          <small>{{
+                            c.hora_consulta | time
+                          }}</small>
+                        </td>
+                        <td>
+                          {{ nombrePacienteDe(c) }}
+                        </td>
+                        <td
+                          [ngClass]="
+                            c.expediente ? 'text-normal' : 'text-muted'
+                          "
+                        >
+                          {{ c.expediente || "—" }}
+                        </td>
+                        <td>
+                          {{ c.especialidad | datosExtra: "especialidad" }}
+                          @if (c.servicio) {
+                            <br />
+                            <small class="doc-badge">{{
+                              c.servicio | datosExtra: "servicio"
+                            }}</small>
+                          }
+                        </td>
+                        <td>
+                          {{ c.tipo_consulta | datosExtra: "tipo_consulta" }}
+                          @if (c.documento) {
+                            <br />
+                            <small class="doc-badge">{{ c.documento }}</small>
+                          }
+                        </td>
+                        <td>
+                          <span class="doc-badge">{{
+                            c.ultimo_estado || "—"
+                          }}</span>
+                        </td>
+                        <td>
+                          <button
+                            class="btn-select"
+                            (click)="seleccionarConsulta(c)"
+                          >
+                            Ver
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              }
             }
           </div>
         </div>
@@ -262,6 +401,17 @@
         <div class="dc-grid">
           <!-- PERFIL -->
           <div class="dc-card">
+            @if (rol === "admin") {
+              <div class="card-header">
+                <button
+                  class="card-badge"
+                  (click)="editarPaciente(paciente.id)"
+                >
+                  Editar
+                </button>
+              </div>
+            }
+
             <div class="patient-hero">
               <div class="patient-avatar">
                 <span class="avatar-letter m-0">
