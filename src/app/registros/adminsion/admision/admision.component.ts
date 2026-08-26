@@ -110,7 +110,9 @@ export class AdmisionComponent implements OnInit, OnDestroy {
         arma_fuego: [false],
         arma_blanca: [false],
         ambulancia: [false],
-        embarazo: [false]
+        embarazo: [false],
+        viene_referido: [''],
+        fue_referido: ['']
       }),
       nuevo_estado: [''],
       nuevo_servicio: [''],

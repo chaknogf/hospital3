@@ -184,6 +184,12 @@ export class DetalleConsultaComponent implements OnInit, OnDestroy {
     if (!ind) return false;
     return (ind as unknown as Record<string, boolean>)[field] ?? false;
   }
+
+  getIndicadorTexto(field: string): string {
+    const ind = this.consulta()?.indicadores;
+    if (!ind) return '';
+    return (ind as unknown as Record<string, string>)[field] ?? '';
+  }
   editar(id: number) {
     this.router.navigate(['/editarAdmision', id]);
   }

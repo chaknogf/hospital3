@@ -91,7 +91,11 @@
         </div>
 
         <div class="patient-hero">
-          <div class="patient-avatar" [class.avatar-m]="paciente()?.sexo === 'M'" [class.avatar-f]="paciente()?.sexo !== 'M'">
+          <div
+            class="patient-avatar"
+            [class.avatar-m]="paciente()?.sexo === 'M'"
+            [class.avatar-f]="paciente()?.sexo !== 'M'"
+          >
             <span class="avatar-letter">
               {{ paciente()?.nombre?.primer_nombre?.charAt(0)
               }}{{ paciente()?.nombre?.primer_apellido?.charAt(0) }}
@@ -377,6 +381,24 @@
           <div class="ind-item" [class.ind-on]="getIndicador('ambulancia')">
             <span class="ind-icon">🚑</span>
             <span class="ind-lbl">Ambulancia</span>
+          </div>
+          <div
+            class="ind-item ind-on"
+            *ngIf="getIndicadorTexto('viene_referido')"
+          >
+            <span class="ind-icon">↩️</span>
+            <span class="ind-lbl">Viene Referido</span>
+            <span class="ind-val">{{
+              getIndicadorTexto("viene_referido")
+            }}</span>
+          </div>
+          <div
+            class="ind-item ind-on"
+            *ngIf="getIndicadorTexto('fue_referido')"
+          >
+            <span class="ind-icon">↪️</span>
+            <span class="ind-lbl">Fue Referido</span>
+            <span class="ind-val">{{ getIndicadorTexto("fue_referido") }}</span>
           </div>
         </div>
       </div>

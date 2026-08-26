@@ -72,6 +72,8 @@ export interface Indicador {
   arma_blanca: boolean;
   ambulancia: boolean;
   embarazo: boolean;
+  viene_referido: string;
+  fue_referido: string;
 }
 
 // ===================================================================
@@ -346,7 +348,9 @@ export function crearIndicadorVacio(): Indicador {
     arma_fuego: false,
     arma_blanca: false,
     ambulancia: false,
-    embarazo: false
+    embarazo: false,
+    viene_referido: '',
+    fue_referido: ''
   };
 }
 

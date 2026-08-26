@@ -113,6 +113,7 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
         accidente_transito: [false], arma_fuego: [false],
         arma_blanca: [false], ambulancia: [false],
         embarazo: [false],
+        viene_referido: [''], fue_referido: [''],
       }),
 
       // Nuevo ciclo

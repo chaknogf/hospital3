@@ -424,6 +424,32 @@ body {
 }
 .ind-item.ind-on .ind-lbl { color: var(--theme-primary-light); font-weight: 600; }
 
+.ind-val {
+  font-family: var(--theme-font-ui);
+  font-size: 8px;
+  font-weight: 500;
+  color: var(--theme-text);
+  text-align: center;
+  line-height: 1.2;
+  margin-top: 2px;
+  word-break: break-word;
+  max-width: 100%;
+}
+.ind-item.ind-on .ind-val { color: var(--theme-primary-light); }
+
+/* ══ INDICADORES DE REFERENCIA ══════════════════════════════════ */
+.ind-referidos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--theme-border);
+}
+@media (max-width: 600px) {
+  .ind-referidos { grid-template-columns: 1fr; }
+}
+
 /* ══ ESPECIALIDADES ═══════════════════════════════════════════ */
 .esp-grid {
   display: flex;
@@ -679,7 +705,8 @@ body {
   .esp-item.esp-on .esp-lbl,
   .ciclo-estado.ciclo-estado-actual,
   .ciclo-badge-actual,
-  .meta-tag-estado {
+  .meta-tag-estado,
+  .ind-referidos .dc-lbl {
     color: #111 !important;
   }
 
