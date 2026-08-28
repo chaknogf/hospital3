@@ -17,9 +17,9 @@
 @import './styles/_tokens.css';
 @import './styles/themes/_current.css';
 @import './styles/themes/_hospital.css';
-@import './styles/themes/_neumorfismo.css';
 @import './styles/themes/_cyber-brutalism.css';
 @import './styles/_utilities.css';
+@import './styles/_layout-mobile-first.css';
 
 :root {
   /* ── GRAYS (escala neutra, independiente del tema) ── */

@@ -1,0 +1,606 @@
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT MOBILE-FIRST — Design System Foundation
+   ═══════════════════════════════════════════════════════════════
+   Capa EXCLUSIVA de adaptabilidad, responsividad y estructura.
+   NO modifica paleta de colores existente.
+   Filosofía: el diseño base es móvil → escala con @media (min-width).
+   ═══════════════════════════════════════════════════════════════ */
+
+
+/* ═══════════════════════════════════════════════════════════════
+   1. ACCESSIBLE RESET — base sólida mobile-first
+   ═══════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  hanging-punctuation: first last;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  min-height: 100dvh;
+  line-height: 1.5;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input, button, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+textarea { white-space: revert; }
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   2. FLUID TOKENS — tipografía y espaciado con clamp()
+   ═══════════════════════════════════════════════════════════════
+   Mobile base → Desktop max. Sin brincos, escala continua.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── TIPOGRAFÍA FLUIDA ── */
+  --fs-xs:    clamp(0.65rem, 0.58rem + 0.25vw, 0.75rem);
+  --fs-sm:    clamp(0.75rem, 0.68rem + 0.3vw,  0.875rem);
+  --fs-base:  clamp(0.85rem, 0.78rem + 0.35vw, 1rem);
+  --fs-md:    clamp(1rem, 0.9rem + 0.45vw,     1.125rem);
+  --fs-lg:    clamp(1.125rem, 1rem + 0.55vw,   1.25rem);
+  --fs-xl:    clamp(1.25rem, 1.1rem + 0.7vw,   1.5rem);
+  --fs-2xl:   clamp(1.5rem, 1.2rem + 1.2vw,    2rem);
+  --fs-3xl:   clamp(1.75rem, 1.3rem + 1.8vw,   2.5rem);
+
+  /* ── ESPACIADOS FLUIDOS ── */
+  --space-2xs: clamp(0.125rem, 0.1rem + 0.1vw,  0.25rem);
+  --space-xs:  clamp(0.25rem, 0.2rem + 0.15vw,   0.5rem);
+  --space-sm:  clamp(0.5rem, 0.4rem + 0.3vw,     0.75rem);
+  --space-md:  clamp(0.75rem, 0.6rem + 0.5vw,    1rem);
+  --space-lg:  clamp(1rem, 0.8rem + 0.8vw,       1.5rem);
+  --space-xl:  clamp(1.5rem, 1.2rem + 1.2vw,     2rem);
+  --space-2xl: clamp(2rem, 1.5rem + 2vw,         3rem);
+  --space-3xl: clamp(2.5rem, 1.8rem + 3vw,       4rem);
+
+  /* ── LAYOUT ── */
+  --gutter:       clamp(1rem, 0.6rem + 1.5vw, 2rem);
+  --gutter-half:  calc(var(--gutter) / 2);
+  --container-sm: 540px;
+  --container-md: 720px;
+  --container-lg: 960px;
+  --container-xl: 1140px;
+  --container-2xl: 1320px;
+
+  /* ── TOUCH TARGETS (WCAG 2.5.8) ── */
+  --touch-min: 44px;
+  --touch-comfortable: 48px;
+
+  /* ── GRID ADAPTATIVO ── */
+  --grid-min: 280px;
+  --grid-gap: var(--gutter);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   3. BODY — fondo reticular adaptativo (Uiverse.io)
+   ═══════════════════════════════════════════════════════════════
+   Mobile: 40px grid → Desktop: 55px grid
+   ═══════════════════════════════════════════════════════════════ */
+
+body {
+  background-size: 40px 40px;
+}
+
+@media (min-width: 768px) {
+  body {
+    background-size: 55px 55px;
+  }
+}
+
+@media (min-width: 1200px) {
+  body {
+    background-size: 65px 65px;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   4. LAYOUTS UNIVERSALES — contenedor y grilla auto-adaptable
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── CONTENEDOR RESPONSIVE ── */
+.ds-container {
+  width: 100%;
+  max-width: var(--container-xl);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.ds-container--narrow {
+  max-width: var(--container-md);
+}
+
+.ds-container--wide {
+  max-width: var(--container-2xl);
+}
+
+/* ── GRILLA AUTO-ADAPTABLE ──
+   Se acomoda solo: de 1 columna en móvil a N en desktop.
+   Nunca rompe la vista. */
+.ds-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, var(--grid-min)), 1fr)
+  );
+  gap: var(--grid-gap);
+}
+
+/* Variantes de densidad */
+.ds-grid--tight {
+  gap: var(--space-sm);
+}
+
+.ds-grid--loose {
+  gap: var(--space-xl);
+}
+
+/* Columnas fijas cuando se necesita control */
+.ds-grid--2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.ds-grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.ds-grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Responsive: colapsar en móvil */
+@media (max-width: 575.98px) {
+  .ds-grid--2,
+  .ds-grid--3,
+  .ds-grid--4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .ds-grid--3,
+  .ds-grid--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── FLEX UTILITIES ── */
+.ds-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gutter);
+}
+
+.ds-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.ds-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ds-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   5. COMPONENTES BASE — adaptación táctil y responsive
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── BOTONES — touch-first ── */
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  min-height: var(--touch-min);
+  min-width: var(--touch-min);
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--theme-radius-sm, 0.4rem);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.ds-btn:active {
+  transform: scale(0.97);
+}
+
+.ds-btn:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Tamaños */
+.ds-btn--sm {
+  min-height: 36px;
+  padding: var(--space-2xs) var(--space-sm);
+  font-size: var(--fs-xs);
+}
+
+.ds-btn--lg {
+  min-height: 52px;
+  padding: var(--space-sm) var(--space-lg);
+  font-size: var(--fs-md);
+}
+
+/* Full-width en móvil */
+.ds-btn--full {
+  width: 100%;
+}
+
+@media (min-width: 576px) {
+  .ds-btn--full {
+    width: auto;
+  }
+}
+
+/* ── INPUTS / FORM CONTROLS — touch-first ── */
+.ds-input {
+  display: block;
+  width: 100%;
+  min-height: var(--touch-comfortable);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  border: 1px solid var(--theme-border, rgba(34, 56, 67, 0.10));
+  border-radius: var(--theme-radius-sm, 0.4rem);
+  background: var(--theme-surface, #eff1f3);
+  color: var(--theme-text, #223843);
+  touch-action: manipulation;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ds-input:focus {
+  outline: none;
+  border-color: var(--theme-primary, #1f7a8c);
+  box-shadow: 0 0 0 3px var(--theme-focus-ring, rgba(31, 122, 140, 0.25));
+}
+
+.ds-input::placeholder {
+  color: var(--theme-text-muted, #5a6e7a);
+  opacity: 0.7;
+}
+
+.ds-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Select */
+.ds-select {
+  display: block;
+  width: 100%;
+  min-height: var(--touch-comfortable);
+  padding: var(--space-sm) var(--space-lg) var(--space-sm) var(--space-md);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  border: 1px solid var(--theme-border, rgba(34, 56, 67, 0.10));
+  border-radius: var(--theme-radius-sm, 0.4rem);
+  background: var(--theme-surface, #eff1f3);
+  color: var(--theme-text, #223843);
+  touch-action: manipulation;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23223843' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right var(--space-sm) center;
+  background-size: 16px 12px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ds-select:focus {
+  outline: none;
+  border-color: var(--theme-primary, #1f7a8c);
+  box-shadow: 0 0 0 3px var(--theme-focus-ring, rgba(31, 122, 140, 0.25));
+}
+
+/* Textarea */
+.ds-textarea {
+  display: block;
+  width: 100%;
+  min-height: 100px;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  border: 1px solid var(--theme-border, rgba(34, 56, 67, 0.10));
+  border-radius: var(--theme-radius-sm, 0.4rem);
+  background: var(--theme-surface, #eff1f3);
+  color: var(--theme-text, #223843);
+  resize: vertical;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ds-textarea:focus {
+  outline: none;
+  border-color: var(--theme-primary, #1f7a8c);
+  box-shadow: 0 0 0 3px var(--theme-focus-ring, rgba(31, 122, 140, 0.25));
+}
+
+/* ── CARDS — estructura base ── */
+.ds-card {
+  background: var(--theme-surface, #eff1f3);
+  border: 1px solid var(--theme-border, rgba(34, 56, 67, 0.10));
+  border-radius: var(--theme-radius-lg, 0.85rem);
+  padding: var(--space-lg);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.ds-card--flush {
+  padding: 0;
+}
+
+.ds-card__header {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--theme-border, rgba(34, 56, 67, 0.10));
+}
+
+.ds-card__body {
+  padding: var(--space-lg);
+}
+
+.ds-card__footer {
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--theme-border, rgba(34, 56, 67, 0.10));
+}
+
+/* Responsive card padding */
+@media (max-width: 575.98px) {
+  .ds-card {
+    padding: var(--space-md);
+    border-radius: var(--theme-radius-md, 0.6rem);
+  }
+  .ds-card__header,
+  .ds-card__body,
+  .ds-card__footer {
+    padding: var(--space-sm) var(--space-md);
+  }
+}
+
+/* ── TABLES — responsive wrapper ── */
+.ds-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--theme-radius-md, 0.6rem);
+}
+
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+
+.ds-table th,
+.ds-table td {
+  padding: var(--space-sm) var(--space-md);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.ds-table th {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Stack table en móvil */
+@media (max-width: 575.98px) {
+  .ds-table--stack thead {
+    display: none;
+  }
+  .ds-table--stack tbody tr {
+    display: block;
+    padding: var(--space-sm);
+    border-bottom: 1px solid var(--theme-border, rgba(34, 56, 67, 0.10));
+  }
+  .ds-table--stack td {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-xs) 0;
+    white-space: normal;
+    text-align: right;
+  }
+  .ds-table--stack td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    text-align: left;
+    margin-right: var(--space-md);
+  }
+}
+
+/* ── BADGES ── */
+.ds-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-2xs) var(--space-sm);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.4;
+  border-radius: var(--theme-radius-pill, 999px);
+  white-space: nowrap;
+}
+
+/* ── ALERTS ── */
+.ds-alert {
+  padding: var(--space-md);
+  border-radius: var(--theme-radius-md, 0.6rem);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   6. ACCESIBILIDAD TÁCTIL Y FOCO
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Touch: evitar zoom en doble-tap */
+a, button, input, select, textarea, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* Focus visible: respetar tokens del tema sin forzar color */
+:focus-visible {
+  outline: 3px solid var(--theme-primary, #1f7a8c);
+  outline-offset: 2px;
+}
+
+/* Skip link */
+.ds-skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-md);
+  z-index: 9999;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--theme-primary, #1f7a8c);
+  color: var(--theme-text-on-primary, #ffffff);
+  font-weight: 600;
+  border-radius: 0 0 var(--theme-radius-sm, 0.4rem) var(--theme-radius-sm, 0.4rem);
+  text-decoration: none;
+  transition: top 0.2s;
+}
+
+.ds-skip-link:focus {
+  top: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   7. UTILIDADES RESPONSIVE ADICIONALES
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Visibility */
+.ds-hidden { display: none !important; }
+.ds-block  { display: block !important; }
+.ds-flex   { display: flex !important; }
+.ds-grid-display { display: grid !important; }
+
+@media (min-width: 576px) {
+  .ds-hidden-sm-up { display: none !important; }
+  .ds-block-sm-up  { display: block !important; }
+}
+
+@media (max-width: 575.98px) {
+  .ds-hidden-sm-down { display: none !important; }
+  .ds-block-sm-down  { display: block !important; }
+}
+
+@media (min-width: 768px) {
+  .ds-hidden-md-up { display: none !important; }
+  .ds-block-md-up  { display: block !important; }
+}
+
+@media (max-width: 767.98px) {
+  .ds-hidden-md-down { display: none !important; }
+  .ds-block-md-down  { display: block !important; }
+}
+
+/* Spacing responsive */
+.ds-mb-responsive {
+  margin-bottom: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .ds-mb-responsive {
+    margin-bottom: var(--space-xl);
+  }
+}
+
+/* Texto responsive */
+.ds-text-responsive {
+  font-size: var(--fs-sm);
+}
+
+@media (min-width: 768px) {
+  .ds-text-responsive {
+    font-size: var(--fs-base);
+  }
+}
+
+/* Overflow control */
+.ds-overflow-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Safe area (notch devices) */
+@supports (padding: env(safe-area-inset-top)) {
+  .ds-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .ds-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .ds-safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  .ds-safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}

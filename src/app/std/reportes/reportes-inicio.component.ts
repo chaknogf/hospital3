@@ -26,9 +26,7 @@ import { IconService } from '../../service/icon.service';
     </div>
     `,
   changeDetection: ChangeDetectionStrategy.Eager,
-  styles: [`
-    h2 { justify-content: center; color: aliceblue; text-align: center; margin: 24px 0 12px; }
-  `]
+
 })
 export class ReportesInicioComponent implements OnInit {
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
