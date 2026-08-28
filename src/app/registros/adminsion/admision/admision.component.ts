@@ -173,6 +173,12 @@ export class AdmisionComponent implements OnInit, OnDestroy {
           paciente_id: idP,
           expediente: data.expediente || 'Se generará automáticamente'
         });
+        if (data.datos_extra?.partos) {
+          this.form.patchValue({
+            partos_vivos: data.datos_extra.partos.nacidos_vivos ?? null,
+            partos_muertos: data.datos_extra.partos.nacidos_muertos ?? null
+          });
+        }
         this.cdr.markForCheck();
       });
   }
@@ -210,6 +216,24 @@ export class AdmisionComponent implements OnInit, OnDestroy {
         });
 
         this.filtrarPorTipo(Number(data.tipo_consulta));
+
+        // Cargar paciente completo para datos_extra (partos, socioeconomicos, etc.)
+        if (data.paciente_id) {
+          this.apip.getPaciente(data.paciente_id)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(p => {
+              if (!p) return;
+              this.paciente = p;
+              if (p.datos_extra?.partos) {
+                this.form.patchValue({
+                  partos_vivos: p.datos_extra.partos.nacidos_vivos ?? null,
+                  partos_muertos: p.datos_extra.partos.nacidos_muertos ?? null
+                });
+              }
+              this.cdr.markForCheck();
+            });
+        }
+
         this.cdr.markForCheck();
       });
   }
