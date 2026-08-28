@@ -9,6 +9,7 @@
    - src/styles/themes/_hospital.css     → tema claro (base hospital + paleta light)
    - src/styles/themes/_neumorfismo.css → tema Neumorfismo (claro)
    - src/styles/themes/_cyber-brutalism.css → tema cyber-brutalism
+   - src/styles/themes/_cerulean.css     → tema Cerulean (claro, Bootswatch)
    - src/styles/_utilities.css           → recetas reutilizables
 
    Los componentes solo usan intenciones (--theme-*). El tema se
@@ -18,6 +19,7 @@
 @import './styles/themes/_current.css';
 @import './styles/themes/_hospital.css';
 @import './styles/themes/_cyber-brutalism.css';
+@import './styles/themes/_cerulean.css';
 @import './styles/_utilities.css';
 @import './styles/_layout-mobile-first.css';
 

@@ -1,0 +1,135 @@
+/* ═══════════════════════════════════════════════════════════════
+   THEME: CERULEAN — Bootswatch Cerulean (light, clean)
+   ═══════════════════════════════════════════════════════════════
+
+   Tema claro basado en la paleta Bootswatch Cerulean.
+   Azul cielo como primario, fondo blanco, tipografía Nunito Sans.
+   Aspecto profesional y limpio, ideal para entorno hospitalario.
+
+   Se activa con data-theme="cerulean" en el elemento raíz.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root[data-theme="cerulean"] {
+  color-scheme: light;
+
+  /* ── PALETA DE ACENTO ── */
+  --accent: #2fa4e7;
+  --accent-light: #5bb8f5;
+  --accent-deep: #1a8ed4;
+  --accent-dark: #0f6fa8;
+  --secondary: #033c73;
+  --secondary-light: #1a5a9e;
+  --secondary-deep: #022a52;
+  --secondary-dim: rgba(3, 60, 115, 0.12);
+  --tertiary: #dd5600;
+  --tertiary-light: #e87430;
+  --tertiary-deep: #b84500;
+  --tertiary-dim: rgba(221, 86, 0, 0.10);
+  --success: #73a839;
+  --success-soft: #8fc050;
+  --warning: #dd5600;
+  --warning-soft: #e87430;
+  --danger: #c71c22;
+  --info: #033c73;
+
+  /* ── SUPERFICIES CLARAS ── */
+  --deep: #f0f4f8;
+  --panel: #f8fafc;
+  --surface: #ffffff;
+  --overlay: rgba(255, 255, 255, 0.92);
+
+  /* ── BORDES / RIM ── */
+  --rim: rgba(47, 164, 231, 0.15);
+  --rim-hot: rgba(47, 164, 231, 0.40);
+
+  /* ── TEXTOS / ACENTOS ── */
+  --pulse: #2fa4e7;
+  --pulse-dim: rgba(47, 164, 231, 0.12);
+  --star: #033c73;
+  --star-dim: rgba(3, 60, 115, 0.08);
+  --lime: #73a839;
+  --lime-dim: rgba(115, 168, 57, 0.12);
+  --red: #c71c22;
+  --red-dim: rgba(199, 28, 34, 0.10);
+  --amber: #dd5600;
+  --amber-dim: rgba(221, 86, 0, 0.10);
+  --text: #29354a;
+  --muted: #6c7a8d;
+
+  /* Textos derivados usados por los tokens semánticos */
+  --text-faint: rgba(41, 53, 74, 0.50);
+  --text-inverse: #ffffff;
+  --bs-heading-color: #033c73;
+
+  /* ── FONDOS SEMÁNTICOS (estados) ── */
+  --success-dim: rgba(115, 168, 57, 0.14);
+  --warning-dim: rgba(221, 86, 0, 0.12);
+  --danger-dim: rgba(199, 28, 34, 0.12);
+  --info-dim: rgba(3, 60, 115, 0.10);
+
+  /* ── TIPOGRAFÍAS ── */
+  --font-mono: 'DM Mono', 'Courier New', monospace;
+  --font-ui: 'Nunito Sans', 'Inter', sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+
+  /* ── GLASS COMPAT ── */
+  --glass-bg: rgba(255, 255, 255, 0.80);
+  --glass-border: rgba(47, 164, 231, 0.18);
+  --shadow-soft: 0 2px 12px rgba(47, 164, 231, 0.10);
+
+  /* ── ESTADOS MÉDICOS ── */
+  --urgente: #c71c22;
+  --moderado: #dd5600;
+  --estable: #73a839;
+  --muerto: #29354a;
+  --standar: #5bb8f5;
+
+  /* ── TOKENS SEMÁNTICOS ── */
+  --theme-background: transparent;
+  --theme-background-viewport-sm: transparent;
+  --theme-background-viewport-lg: transparent;
+}
+
+/* Fuerza esquema claro de Bootstrap */
+:root[data-theme="cerulean"] body,
+body[data-bs-theme="light"] {
+  color-scheme: light;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GRADIENT BACKGROUND + GRID LINES
+   ═══════════════════════════════════════════════════════════════
+   Teal-to-purple gradient with fading vertical grid lines.
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme="cerulean"] body {
+  background:
+    linear-gradient(
+      to bottom,
+      #fff 0%,
+      #fff 40%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    linear-gradient(to right, #0ed2da, #5f29c7);
+  background-attachment: fixed;
+}
+
+[data-theme="cerulean"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(90deg, #ccc 1px, transparent 1px);
+  background-size: 50px 100%;
+  pointer-events: none;
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0) 70%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0) 70%
+  );
+  z-index: 0;
+}
