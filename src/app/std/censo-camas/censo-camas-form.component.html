@@ -5,7 +5,7 @@
   </div>
 
   @if (mostrarAlerta) {
-    <div class="alerta-exito">{{ mensajeAlerta }}</div>
+    <div class="alerta-exito" [class.alerta-error]="tipoAlerta === 'error'">{{ mensajeAlerta }}</div>
   }
 
   @if (cargando) {
@@ -46,75 +46,162 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <!-- Ocupados -->
-      <div class="section-card">
-        <div class="sec-head">
-          <span class="sec-title">Ocupación</span>
-        </div>
-        <div class="sec-body">
-          <div class="form-grid">
-            <div class="field">
-              <label class="field-label">Ocupados *</label>
-              <input class="field-input" type="number" min="0" formControlName="ocupados" />
+
+          <!-- Indicador de capacidad -->
+          @if (servicioSeleccionado) {
+            <div class="capacidad-wrapper">
+              <div class="capacidad-info">
+                <span class="capacidad-label">
+                  {{ servicioSeleccionado.nombre_servicio }} ·
+                  {{ camasOcupadasTotales }} de {{ camasCensables }} camas ocupadas
+                </span>
+                <span class="capacidad-pct" [class.pct-critico]="capacidadNivel === 'critico'"
+                  [class.pct-alto]="capacidadNivel === 'alto'"
+                  [class.pct-medio]="capacidadNivel === 'medio'"
+                  [class.pct-bajo]="capacidadNivel === 'bajo'">
+                  {{ porcentajeOcupacion }}%
+                </span>
+              </div>
+              <div class="barra-capacidad">
+                <div class="barra-fill" [class.barra-critico]="capacidadNivel === 'critico'"
+                  [class.barra-alto]="capacidadNivel === 'alto'"
+                  [class.barra-medio]="capacidadNivel === 'medio'"
+                  [class.barra-bajo]="capacidadNivel === 'bajo'"
+                  [style.width.%]="porcentajeOcupacion"></div>
+              </div>
+              <div class="capacidad-sub">
+                <span>✔ {{ camasDisponibles }} camas disponibles</span>
+                @if (capacidadNivel === 'critico') {
+                  <span class="capacidad-aviso">⚠ Servicio al límite o sobre su capacidad</span>
+                }
+                @if (capacidadNivel === 'alto') {
+                  <span class="capacidad-aviso">⚠ Ocupación alta (≥80%)</span>
+                }
+              </div>
             </div>
+          }
+
+          <!-- Acciones rápidas -->
+          <div class="quick-actions">
+            <button type="button" class="btn-quick" (click)="copiarDiaAnterior()" [disabled]="copiandoDiaAnterior">
+              {{ copiandoDiaAnterior ? 'Copiando...' : '⧉ Copiar del día anterior' }}
+            </button>
+            @if (mostrarCopia) {
+              <span class="copia-msg">{{ mensajeCopia }}</span>
+            }
           </div>
+
+          <!-- Aviso de duplicado -->
+          @if (existeRegistro && !enEdicion) {
+            <div class="aviso-duplicado">
+              ⚠ Ya existe un registro para esta fecha, servicio y sexo.
+              <button type="button" class="btn-link" (click)="irAEditarExistente()">
+                Ver / editar el registro existente
+              </button>
+            </div>
+          }
         </div>
       </div>
-      <!-- Egresos -->
+      <!-- Ocupación y Movimientos por sexo -->
       <div class="section-card">
         <div class="sec-head">
-          <span class="sec-title">Egresos</span>
+          <span class="sec-title">Ocupación y Movimientos</span>
+          <span class="sec-badge">Se edita la columna del sexo seleccionado</span>
         </div>
         <div class="sec-body">
-          <div class="form-grid">
-            <div class="field">
-              <label class="field-label">Egresos *</label>
-              <input class="field-input" type="number" min="0" formControlName="egresos" />
-            </div>
-            <div class="field">
-              <label class="field-label">Fallecidos *</label>
-              <input class="field-input" type="number" min="0" formControlName="fallecidos" />
-            </div>
-            <div class="field">
-              <label class="field-label">Referidos *</label>
-              <input class="field-input" type="number" min="0" formControlName="referido" />
-            </div>
-            <div class="field">
-              <label class="field-label">Traslados *</label>
-              <input class="field-input" type="number" min="0" formControlName="traslado" />
-            </div>
-            <div class="field">
-              <label class="field-label">Contraindicados *</label>
-              <input class="field-input" type="number" min="0" formControlName="contraindicados" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Ingresos -->
-      <div class="section-card">
-        <div class="sec-head">
-          <span class="sec-title">Ingresos</span>
-        </div>
-        <div class="sec-body">
-          <div class="form-grid">
-            <div class="field">
-              <label class="field-label">Otros Ingresos *</label>
-              <input class="field-input" type="number" min="0" formControlName="otro_ingresos" />
-            </div>
-            <div class="field">
-              <label class="field-label">Ingresos *</label>
-              <input class="field-input" type="number" min="0" formControlName="ingresos" />
-            </div>
-            <div class="field">
-              <label class="field-label">Huéspedes *</label>
-              <input class="field-input" type="number" min="0" formControlName="huespedes" />
-            </div>
-            <div class="field">
-              <label class="field-label">Emergencia *</label>
-              <input class="field-input" type="number" min="0" formControlName="emergencia" />
-            </div>
+          <div class="sexo-columns">
+            <!-- Masculino -->
+            <fieldset class="sexo-col" [class.active]="sexoActivo(0)" [class.inactive]="!sexoActivo(0)" [disabled]="!sexoActivo(0)">
+              <div class="sexo-col-head masc" (click)="seleccionarSexo(0)">♂ Masculino</div>
+              <div class="form-grid">
+                <div class="field">
+                  <label class="field-label">Ocupados *</label>
+                  <input class="field-input" type="number" min="0" formControlName="ocupados" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Otros Ingresos *</label>
+                  <input class="field-input" type="number" min="0" formControlName="otro_ingresos" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Ingresos *</label>
+                  <input class="field-input" type="number" min="0" formControlName="ingresos" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Huéspedes *</label>
+                  <input class="field-input" type="number" min="0" formControlName="huespedes" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Emergencia *</label>
+                  <input class="field-input" type="number" min="0" formControlName="emergencia" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Egresos *</label>
+                  <input class="field-input" type="number" min="0" formControlName="egresos" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Fallecidos *</label>
+                  <input class="field-input" type="number" min="0" formControlName="fallecidos" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Referidos *</label>
+                  <input class="field-input" type="number" min="0" formControlName="referido" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Traslados *</label>
+                  <input class="field-input" type="number" min="0" formControlName="traslado" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Contraindicados *</label>
+                  <input class="field-input" type="number" min="0" formControlName="contraindicados" />
+                </div>
+              </div>
+            </fieldset>
+            <!-- Femenino -->
+            <fieldset class="sexo-col" [class.active]="sexoActivo(1)" [class.inactive]="!sexoActivo(1)" [disabled]="!sexoActivo(1)">
+              <div class="sexo-col-head fem" (click)="seleccionarSexo(1)">♀ Femenino</div>
+              <div class="form-grid">
+                <div class="field">
+                  <label class="field-label">Ocupados *</label>
+                  <input class="field-input" type="number" min="0" formControlName="ocupados" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Otros Ingresos *</label>
+                  <input class="field-input" type="number" min="0" formControlName="otro_ingresos" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Ingresos *</label>
+                  <input class="field-input" type="number" min="0" formControlName="ingresos" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Huéspedes *</label>
+                  <input class="field-input" type="number" min="0" formControlName="huespedes" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Emergencia *</label>
+                  <input class="field-input" type="number" min="0" formControlName="emergencia" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Egresos *</label>
+                  <input class="field-input" type="number" min="0" formControlName="egresos" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Fallecidos *</label>
+                  <input class="field-input" type="number" min="0" formControlName="fallecidos" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Referidos *</label>
+                  <input class="field-input" type="number" min="0" formControlName="referido" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Traslados *</label>
+                  <input class="field-input" type="number" min="0" formControlName="traslado" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Contraindicados *</label>
+                  <input class="field-input" type="number" min="0" formControlName="contraindicados" />
+                </div>
+              </div>
+            </fieldset>
           </div>
         </div>
       </div>

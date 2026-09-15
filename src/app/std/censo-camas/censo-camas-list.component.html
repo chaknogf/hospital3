@@ -16,6 +16,9 @@
     <button class="tab-btn" [class.tab-active]="tabActiva === 'estadisticas'" (click)="cambiarTab('estadisticas')">
       Estadísticas
     </button>
+    <button class="tab-btn" [class.tab-active]="tabActiva === 'hospitalizacion'" (click)="cambiarTab('hospitalizacion')">
+      Hospitalización
+    </button>
   </div>
 
   <!-- ═══ TAB REGISTROS ═══ -->
@@ -81,15 +84,12 @@
             <table class="reporte-table">
               <thead>
                 <tr>
-                  <th>#</th>
                   <th>Fecha</th>
                   <th>Servicio</th>
                   <th>Sexo</th>
-                  <th>Ocupados</th>
-                  <th>Ingresos</th>
-                  <th>Egresos</th>
                   <th>Egr. Totales</th>
                   <th>Camas Ocup.</th>
+                  <th>% Ocupacional</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -98,7 +98,6 @@
                   <tr
                     (click)="activarFila(r.id)"
                     [class.row-active]="rowActiva === r.id">
-                    <td>{{ i + 1 + (paginaActual - 1) * pageSize }}</td>
                     <td>{{ r.fecha }}</td>
                     <td class="text-left">{{ servicioNombre(r.servicio_id) }}</td>
                     <td>
@@ -106,13 +105,17 @@
                         {{ sexoLabel(r.sexo) }}
                       </span>
                     </td>
-                    <td>{{ r.ocupados }}</td>
-                    <td>{{ r.ingresos }}</td>
-                    <td>{{ r.egresos }}</td>
                     <td>{{ r.egresos_totales }}</td>
                     <td>
                       <span class="badge-cama" [class.positivo]="r.camas_ocupadas > 0" [class.negativo]="r.camas_ocupadas < 0">
                         {{ r.camas_ocupadas }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge-pct" [class.alto]="porcentajeOcupacional(r) >= 80"
+                        [class.medio]="porcentajeOcupacional(r) >= 50 && porcentajeOcupacional(r) < 80"
+                        [class.bajo]="porcentajeOcupacional(r) < 50">
+                        {{ porcentajeOcupacional(r) }}%
                       </span>
                     </td>
                     <td class="secundario">
@@ -280,6 +283,85 @@
           </div>
         }
       </div>
+    }
+  }
+
+  <!-- ═══ TAB HOSPITALIZACIÓN POR ESPECIALIDAD ═══ -->
+  @if (tabActiva === 'hospitalizacion') {
+    @if (cargandoHospitalizacion) {
+      <div class="state-box spinner"></div>
+    }
+    @if (!cargandoHospitalizacion) {
+      <!-- KPIs -->
+      <div class="hosp-kpis">
+        <div class="kpi-card">
+          <span class="kpi-label">Hospitalizados Activos</span>
+          <span class="kpi-value">{{ totalHospitalizados }}</span>
+          <span class="kpi-sub">tipo consulta 2 · {{ rangoHospitalizacion?.desde }} → {{ rangoHospitalizacion?.hasta }}</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">♂ Masculinos</span>
+          <span class="kpi-value kpi-masc">{{ totalMasculinosHosp }}</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">♀ Femeninos</span>
+          <span class="kpi-value kpi-fem">{{ totalFemeninosHosp }}</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Censo Hoy (DCO)</span>
+          <span class="kpi-value">{{ camasOcupadasHoy }}</span>
+        </div>
+      </div>
+
+      <!-- Brecha censo vs hospitalizados -->
+      <div class="hosp-brecha">
+        <span class="brecha-label">Censo reportado vs hospitalizaciones activas:</span>
+        @if (brechaCensoHosp >= 0) {
+          <span class="brecha-val brecha-ok">± {{ brechaCensoHosp }} camas de diferencia</span>
+        } @else {
+          <span class="brecha-val brecha-warn">⚠ Faltan {{ absBrechaCensoHosp }} camas por reportar</span>
+        }
+      </div>
+
+      @if (hospitalizacion.length) {
+        <div class="table-wrap">
+          <table class="reporte-table hosp-table">
+            <thead>
+              <tr>
+                <th>Especialidad</th>
+                <th>Servicio Encamamiento</th>
+                <th>♂ Masc.</th>
+                <th>♀ Fem.</th>
+                <th>Total</th>
+                <th>Días Prom. Estancia</th>
+                <th>Ocupación</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (e of hospitalizacion; track e.especialidad) {
+                <tr>
+                  <td class="text-left font-semibold">{{ e.especialidad }}</td>
+                  <td>{{ e.servicio_encamamiento || '—' }}</td>
+                  <td>{{ e.masculinos }}</td>
+                  <td>{{ e.femeninos }}</td>
+                  <td class="font-semibold">{{ e.total }}</td>
+                  <td>{{ e.dias_promedio_estancia | number:'1.0-0' }} días</td>
+                  <td>
+                    <span class="hosp-ocup" [class.ocup-alto]="porcentajeServicio(e.especialidad) >= 80"
+                      [class.ocup-critico]="porcentajeServicio(e.especialidad) >= 100">
+                      {{ porcentajeServicio(e.especialidad) }}%
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="state-box">
+          No hay hospitalizaciones activas (tipo_consulta=2) en el período.
+        </div>
+      }
     }
   }
 </div>

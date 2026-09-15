@@ -12,6 +12,8 @@ import {
   CensoDiarioResumen,
   CensoCamasFiltros,
   CensoEstadisticaResponse,
+  HospitalizacionEspecialidadResponse,
+  CopiarDiaResponse,
 } from './censo-camas.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -92,6 +94,26 @@ export class CensoCamasService extends BaseApiService {
     formData.append('archivo', archivo);
     return this.http.post<any>(`${this.baseUrl}/censo-camas/importar-csv`, formData).pipe(
       catchError(error => this.manejarError(error, 'importar CSV de censo')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  getHospitalizacionPorEspecialidad(desde: string, hasta: string): Observable<HospitalizacionEspecialidadResponse> {
+    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
+    return this.http.get<HospitalizacionEspecialidadResponse>(
+      `${this.baseUrl}/censo-camas/hospitalizacion-por-especialidad`, { params }
+    ).pipe(
+      catchError(error => this.manejarError(error, 'obtener hospitalización por especialidad'))
+    );
+  }
+
+  copiarDiaAnterior(origen: string, destino: string, servicio_id?: number | null): Observable<CopiarDiaResponse> {
+    this.isLoading.set(true);
+    return this.offMutation('POST', `${this.baseUrl}/censo-camas/copiar-dia-anterior`, {
+      origen,
+      destino,
+      servicio_id: servicio_id ?? null,
+    }).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }

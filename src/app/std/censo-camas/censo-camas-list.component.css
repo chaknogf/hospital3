@@ -94,3 +94,23 @@
 .stats-transposed .th-global { background: rgba(59,130,246,0.12); color: var(--theme-primary-light); }
 .stats-transposed .td-label { text-align: left; font-weight: 600; color: #94a3b8; white-space: nowrap; background: rgba(30,41,59,0.5); }
 .stats-transposed .td-global { background: rgba(59,130,246,0.06); font-weight: 700; color: #e2e8f0; }
+
+/* ── HOSPITALIZACIÓN ── */
+.hosp-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.kpi-card { background: rgba(15,23,42,0.6); border: 1px solid rgba(148,163,184,0.15); border-radius: 10px; padding: 14px 16px; text-align: center; }
+.kpi-label { display: block; font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.kpi-value { display: block; font-size: 1.5rem; font-weight: 800; color: #e2e8f0; font-family: 'DM Mono', monospace; }
+.kpi-sub { display: block; font-size: 0.7rem; color: #64748b; margin-top: 4px; }
+.kpi-masc { color: var(--theme-primary-light); }
+.kpi-fem { color: #f472b6; }
+
+.hosp-brecha { padding: 10px 16px; background: rgba(15,23,42,0.5); border-radius: 8px; border: 1px solid rgba(148,163,184,0.1); margin-bottom: 16px; font-size: 0.82rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.brecha-label { color: #94a3b8; }
+.brecha-val { font-weight: 700; font-family: 'DM Mono', monospace; }
+.brecha-ok { color: var(--theme-success-soft); }
+.brecha-warn { color: #f87171; }
+
+.hosp-table th, .hosp-table td { min-width: 100px; }
+.hosp-ocup { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 0.78rem; font-weight: 700; background: rgba(148,163,184,0.15); color: #94a3b8; }
+.ocup-alto { background: rgba(234,179,8,0.15); color: #facc15; }
+.ocup-critico { background: rgba(239,68,68,0.15); color: #f87171; }

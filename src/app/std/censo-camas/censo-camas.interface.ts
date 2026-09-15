@@ -108,3 +108,27 @@ export interface CensoEstadisticaResponse {
   servicios: CensoEstadisticaServicio[];
   global: CensoEstadisticaGlobal;
 }
+
+export interface HospitalizacionEspecialidadItem {
+  especialidad: string;
+  masculinos: number;
+  femeninos: number;
+  total: number;
+  dias_promedio_estancia: number;
+  servicio_encamamiento: string | null;
+}
+
+export interface HospitalizacionEspecialidadResponse {
+  desde: string;
+  hasta: string;
+  total_hospitalizados: number;
+  especialidades: HospitalizacionEspecialidadItem[];
+}
+
+export interface CopiarDiaResponse {
+  origen: string;
+  destino: string;
+  copiados: number;
+  actualizados: number;
+  sin_datos: number;
+}

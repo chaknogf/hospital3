@@ -1,10 +1,11 @@
-.page-container { padding: 20px; max-width: 800px; margin: 0 auto; }
+.page-container { padding: 20px; max-width: 1000px; margin: 0 auto; }
 .page-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
 .page-header h1 { font-size: 1.4rem; font-weight: 700; color: #e2e8f0; margin: 0; flex: 1; }
 .btn-back { background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3); border-radius: 8px; color: #60a5fa; padding: 6px 14px; font-size: 0.8rem; cursor: pointer; text-decoration: none; }
 .btn-back:hover { background: rgba(59,130,246,0.2); }
 
 .alerta-exito { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: var(--theme-success-soft); padding: 10px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.85rem; text-align: center; }
+.alerta-error { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); color: #f87171; }
 .state-box { text-align: center; padding: 40px; color: #94a3b8; font-size: 0.9rem; }
 .spinner::after { content: ''; display: inline-block; width: 28px; height: 28px; border: 3px solid rgba(148,163,184,0.2); border-top-color: #60a5fa; border-radius: 50%; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -22,6 +23,24 @@
 .field-input:focus { border-color: #3b82f6; }
 .field-static { padding: 7px 10px; background: rgba(15,23,42,0.4); border: 1px solid rgba(148,163,184,0.1); border-radius: 6px; color: #cbd5e1; font-size: 0.82rem; }
 
+/* ── COLUMNAS POR SEXO ── */
+.sexo-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+.sexo-col { border: 1px solid rgba(148,163,184,0.15); border-radius: 8px; padding: 12px 14px; margin: 0; min-width: 0; background: rgba(15,23,42,0.35); transition: border-color 0.15s, opacity 0.15s, box-shadow 0.15s; }
+.sexo-col.active { border-color: #3b82f6; box-shadow: 0 0 0 1px rgba(59,130,246,0.35) inset, 0 2px 8px rgba(59,130,246,0.12); }
+.sexo-col.inactive { opacity: 0.55; }
+.sexo-col.inactive .field-input { cursor: not-allowed; }
+.sexo-col-head { font-size: 0.85rem; font-weight: 700; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid rgba(148,163,184,0.15); cursor: pointer; letter-spacing: 0.3px; display: flex; align-items: center; gap: 6px; }
+.sexo-col-head.masc { color: #60a5fa; }
+.sexo-col-head.fem { color: #f472b6; }
+.sexo-col.active .sexo-col-head { cursor: pointer; }
+.sexo-col.inactive .sexo-col-head { cursor: default; }
+.sexo-col .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 640px) {
+  .sexo-columns { grid-template-columns: 1fr; }
+  .sexo-col .form-grid { grid-template-columns: 1fr; }
+}
+.sexo-col .field { flex: none; min-width: 0; }
+
 .section-readonly { border-color: rgba(59,130,246,0.2); }
 .field-readonly { background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.2); color: #94a3b8; cursor: default; }
 .field-hint { display: block; font-size: 0.65rem; color: #60a5fa; margin-top: 3px; }
@@ -36,3 +55,32 @@
 .btn-save { padding: 8px 24px; border-radius: 8px; border: none; background: #3b82f6; color: #fff; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
 .btn-save:hover { background: #2563eb; }
 .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── INDICADOR DE CAPACIDAD ── */
+.capacidad-wrapper { margin-top: 14px; padding: 12px 14px; background: rgba(15,23,42,0.6); border: 1px solid rgba(148,163,184,0.15); border-radius: 8px; }
+.capacidad-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.capacidad-label { font-size: 0.78rem; color: #cbd5e1; font-weight: 600; }
+.capacidad-pct { font-size: 0.85rem; font-weight: 700; font-family: 'DM Mono', monospace; }
+.pct-bajo { color: #34d399; }
+.pct-medio { color: #facc15; }
+.pct-alto { color: #fb923c; }
+.pct-critico { color: #f87171; }
+.barra-capacidad { height: 8px; background: rgba(148,163,184,0.15); border-radius: 5px; overflow: hidden; }
+.barra-fill { height: 100%; border-radius: 5px; transition: width 0.3s ease, background 0.3s ease; }
+.barra-bajo { background: #10b981; }
+.barra-medio { background: #eab308; }
+.barra-alto { background: #f97316; }
+.barra-critico { background: #ef4444; }
+.capacidad-sub { display: flex; align-items: center; gap: 12px; margin-top: 8px; font-size: 0.72rem; color: #94a3b8; flex-wrap: wrap; }
+.capacidad-aviso { color: #f87171; font-weight: 600; }
+
+/* ── ACCIONES RÁPIDAS ── */
+.quick-actions { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.btn-quick { padding: 7px 14px; border-radius: 8px; border: 1px solid rgba(59,130,246,0.35); background: rgba(59,130,246,0.12); color: #60a5fa; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.btn-quick:hover { background: rgba(59,130,246,0.22); }
+.btn-quick:disabled { opacity: 0.5; cursor: not-allowed; }
+.copia-msg { font-size: 0.78rem; color: #34d399; }
+
+/* ── AVISO DUPPLICADO ── */
+.aviso-duplicado { margin-top: 12px; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(234,179,8,0.35); background: rgba(234,179,8,0.1); color: #facc15; font-size: 0.8rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.btn-link { background: none; border: none; color: #60a5fa; text-decoration: underline; cursor: pointer; font-size: 0.78rem; padding: 0; }

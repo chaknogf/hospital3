@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -8,6 +9,7 @@ import {
   CensoCamasFiltros,
   CensoEstadisticaResponse,
   CensoEstadisticaServicio,
+  HospitalizacionEspecialidadItem,
 } from './censo-camas.interface';
 import { Encamamiento } from '../../interface/interfaces';
 import { ApiService } from '../../service/api.service';
@@ -20,7 +22,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./censo-camas-list.component.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, RouterLink]
+  imports: [FormsModule, RouterLink, DecimalPipe]
 })
 export class CensoCamasListComponent implements OnInit, OnDestroy {
 
@@ -52,10 +54,42 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
     limit: this.pageSize
   };
 
-  tabActiva: 'registros' | 'estadisticas' = 'registros';
+  tabActiva: 'registros' | 'estadisticas' | 'hospitalizacion' = 'registros';
   estadisticaHoy: CensoEstadisticaResponse | null = null;
   estadisticaMes: CensoEstadisticaResponse | null = null;
   cargandoEstadisticas = false;
+
+  hospitalizacion: HospitalizacionEspecialidadItem[] = [];
+  totalHospitalizados = 0;
+  cargandoHospitalizacion = false;
+  rangoHospitalizacion: { desde: string; hasta: string } | null = null;
+
+  get totalMasculinosHosp(): number {
+    return this.hospitalizacion.reduce((acc, e) => acc + (e.masculinos || 0), 0);
+  }
+  get totalFemeninosHosp(): number {
+    return this.hospitalizacion.reduce((acc, e) => acc + (e.femeninos || 0), 0);
+  }
+  get camasOcupadasHoy(): number {
+    const hoy = this.estadisticaHoy?.global?.dco ?? 0;
+    return hoy;
+  }
+  get brechaCensoHosp(): number {
+    return this.camasOcupadasHoy - this.totalHospitalizados;
+  }
+  get absBrechaCensoHosp(): number {
+    return Math.abs(this.brechaCensoHosp);
+  }
+  get especialidadesConServicio(): HospitalizacionEspecialidadItem[] {
+    return this.hospitalizacion.filter(e => !!e.servicio_encamamiento);
+  }
+  porcentajeServicio(esp: string): number {
+    const item = this.hospitalizacion.find(e => e.especialidad === esp);
+    if (!item) return 0;
+    const svc = this.servicios.find(s => s.nombre_servicio === item.servicio_encamamiento);
+    if (!svc || svc.camas_censables <= 0) return 0;
+    return Math.round((item.total / svc.camas_censables) * 100);
+  }
 
   readonly metricas = [
     { key: 'camas_censables', label: 'Camas Censables' },
@@ -170,12 +204,50 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
     return (sexo: number) => sexo === 0 ? 'Masculino' : 'Femenino';
   }
 
+  porcentajeOcupacional(r: CensoCamasOut): number {
+    const svc = this.servicios.find(s => s.id === r.servicio_id);
+    if (!svc || svc.camas_censables <= 0) return 0;
+    return Math.round((r.camas_ocupadas / svc.camas_censables) * 100);
+  }
+
   // ── Tabs ──
-  cambiarTab(tab: 'registros' | 'estadisticas'): void {
+  cambiarTab(tab: 'registros' | 'estadisticas' | 'hospitalizacion'): void {
     this.tabActiva = tab;
     if (tab === 'estadisticas' && !this.estadisticaHoy) {
       this.cargarEstadisticas();
     }
+    if (tab === 'hospitalizacion' && this.hospitalizacion.length === 0) {
+      this.cargarHospitalizaciones();
+    }
+  }
+
+  cargarHospitalizaciones(): void {
+    this.cargandoHospitalizacion = true;
+    const hoy = this.fechaActual();
+    const inicioMes = this.primeroDelMes();
+
+    this.censoService.getHospitalizacionPorEspecialidad(inicioMes, hoy).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.hospitalizacion = res.especialidades;
+        this.totalHospitalizados = res.total_hospitalizados;
+        this.rangoHospitalizacion = { desde: res.desde, hasta: res.hasta };
+        this.cargandoHospitalizacion = false;
+        if (!this.estadisticaHoy) this.cargarEstadisticasHoy();
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.cargandoHospitalizacion = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  private cargarEstadisticasHoy(): void {
+    const hoy = this.fechaActual();
+    this.censoService.getEstadisticas(hoy, hoy).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => { this.estadisticaHoy = res; this.cdr.markForCheck(); },
+      error: () => { this.cdr.markForCheck(); }
+    });
   }
 
   cargarEstadisticas(): void {
