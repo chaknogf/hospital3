@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { menuIcon, patientIcon, ambulanceIcon, enfermoIcon, hospitalconsvg, consultasIcon, archivoIcon, compartirIcon, calendarIcon } from '../../shared/icons/svg-icon';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { IconService } from '../../service/icon.service';
+import { menuColor } from '../../shared/module-menu';
 
 
 @Component({
@@ -16,6 +17,12 @@ import { IconService } from '../../service/icon.service';
 })
 
 export class MenuOdontoComponent implements OnInit {
+
+  title = 'Odontología';
+  subtitle = 'Consulta externa, citas y reportes de odontología';
+  accent = '#f472b6';
+  menuColor = menuColor;
+
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
 
   // iconos
@@ -59,7 +66,6 @@ export class MenuOdontoComponent implements OnInit {
       { nombre: 'COEX', descripcion: 'Consulta Externa de Odontología', ruta: '/coex-odonto', icon: 'cmedic' },
       { nombre: 'Citas', descripcion: 'Agendar y Consultar Citas', ruta: '/citas-odonto', icon: 'calendar' },
       { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: '/reportes', icon: 'archivo' },
-      { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
 
     ];

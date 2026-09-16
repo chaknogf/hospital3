@@ -62,6 +62,11 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin'])]
       },
       {
+        path: 'gestion-procedimientos',
+        loadComponent: () => import('./principal/administrador/gestion-procedimientos/gestion-procedimientos.component').then(c => c.GestionProcedimientosComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
+      {
         path: 'desactivar-consulta',
         loadComponent: () => import('./principal/administrador/desactivar-consulta/desactivar-consulta.component').then(c => c.DesactivarConsultaComponent),
         canActivate: [roleGuard(['admin'])]
@@ -260,6 +265,22 @@ export const routes: Routes = [
       {
         path: 'historiaClinica/:consultaId',
         loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
+      },
+      // Quirófano
+      {
+        path: 'quirofano',
+        loadComponent: () => import('./medica/quirofano/quirofano.component').then(c => c.QuirofanoComponent),
+        canActivate: [roleGuard(['admin', 'medico'])]
+      },
+      {
+        path: 'quirofano/nueva',
+        loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
+        canActivate: [roleGuard(['admin', 'medico'])]
+      },
+      {
+        path: 'quirofano/editar/:id',
+        loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
+        canActivate: [roleGuard(['admin', 'medico'])]
       },
 
       //Citas

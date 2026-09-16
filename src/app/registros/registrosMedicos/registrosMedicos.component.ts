@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { menuIcon, patientIcon, ambulanceIcon, hospitalconsvg, consultasIcon, archivoIcon, compartirIcon, calendarIcon } from '../../shared/icons/svg-icon';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { IconService } from '../../service/icon.service';
+import { menuColor } from '../../shared/module-menu';
 @Component({
   selector: 'app-registrosMedicos',
   templateUrl: './registrosMedicos.component.html',
@@ -14,6 +15,11 @@ import { IconService } from '../../service/icon.service';
 
 })
 export class RegistrosMedicosComponent implements OnInit {
+
+  title = 'Registros Médicos';
+  subtitle = 'Gestión de pacientes, consultas y expedientes clínicos';
+  accent = '#3b82f6';
+  menuColor = menuColor;
 
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
 
@@ -65,7 +71,6 @@ export class RegistrosMedicosComponent implements OnInit {
       { nombre: 'Nacimientos', descripcion: 'Constancias de nacimiento', ruta: '/nacimientos', icon: 'baby' },
       { nombre: 'Defunciones', descripcion: 'Informe de Defunción formato oficial', ruta: '/defunciones', icon: 'defuncion' },
       { nombre: 'Medicos', descripcion: 'Medicos Registrados', ruta: '/doctores', icon: 'doctor' },
-      { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];
 

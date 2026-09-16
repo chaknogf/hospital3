@@ -1,16 +1,67 @@
-<div class="aurora-container">
-  @for (app of modulos; track app) {
-    <div
-      class="aurora-cards"
-      (click)="navegar(app.ruta)"
-      >
-      <div class="aurora-items">
-        <div class="">
-          <span [innerHTML]="icons[app.icon]"></span>
-          <h2 class="">{{ app.nombre }}</h2>
-          <p class="">{{ app.descripcion }}</p>
-        </div>
-      </div>
+<div class="dashboard">
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="header-left">
+      <h1 class="greeting">{{ greeting }}</h1>
+      <p class="date">{{ fechaFormateada }}</p>
     </div>
-  }
+    <div class="header-right">
+      <span class="clock">{{ horaFormateada }}</span>
+      @if (generatedAt()) {
+        <span class="generated">Última actualización: {{ generatedAt() }}</span>
+      }
+    </div>
+  </header>
+
+  <!-- Stats Strip -->
+  <section class="stats-strip">
+    @if (isLoadingTotales()) {
+      <div class="stats-loading">
+        @for (i of [1,2,3,4]; track i) {
+          <div class="stat-card skeleton">
+            <div class="stat-skeleton-bar"></div>
+            <div class="stat-skeleton-bar short"></div>
+          </div>
+        }
+      </div>
+    } @else if (totales().length > 0) {
+      <div class="stats-grid">
+        @for (item of totales(); track item.entidad; let idx = $index) {
+          <div class="stat-card" [style.--accent]="colorForIndex(idx)">
+            <div class="stat-icon">
+              <span class="stat-dot" [style.background]="colorForIndex(idx)"></span>
+            </div>
+            <div class="stat-body">
+              <span class="stat-value">{{ item.total }}@if (item.entidad.toLowerCase().includes('ocup')){%}</span>
+              <span class="stat-label">{{ item.entidad }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Modules Grid -->
+  <section class="modules-section">
+    <h2 class="section-title">Módulos</h2>
+    <div class="modules-grid">
+      @for (app of modulos; track app.ruta) {
+        <button
+          class="module-card"
+          (click)="navegar(app.ruta)"
+          [style.--accent]="app.color || '#3b82f6'">
+          <div class="module-icon">
+            <span [innerHTML]="icons[app.icon]"></span>
+          </div>
+          <div class="module-info">
+            <h3 class="module-name">{{ app.nombre }}</h3>
+            <p class="module-desc">{{ app.descripcion }}</p>
+          </div>
+          <svg class="module-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 18 6-6-6-6"/>
+          </svg>
+        </button>
+      }
+    </div>
+  </section>
 </div>

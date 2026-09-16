@@ -1,0 +1,263 @@
+<!-- quirofano.component.html -->
+
+<div class="quirofano-container">
+  <!-- HEADER -->
+  <div
+    class="botones justify-content-between"
+    [ngClass]="{ 'd-none': filtrar }"
+  >
+    <button type="button" (click)="volver()">
+      <span [innerHTML]="icons['menu']"></span>
+      Menú
+    </button>
+    <h1 class="text-white">Quirófano</h1>
+    <button type="button" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['find']"></span>
+      Buscar
+    </button>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="find-form" [ngClass]="{ 'd-none': !filtrar }">
+    <form class="form-filtros" (submit)="$event.preventDefault()">
+      <div class="d-flex gap-1 flex-wrap">
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Expediente / Paciente</label>
+          <input
+            type="text"
+            class="input-filtros"
+            [(ngModel)]="filtroExpediente"
+            name="expediente"
+            placeholder="Buscar expediente para intervenir"
+          />
+        </fieldset>
+        <div class="d-flex gap-1 flex-wrap align-items-end">
+          <button
+            class="button-filtros accent"
+            type="button"
+            (click)="buscarExpedienteParaIntervencion()"
+            [disabled]="buscandoExpediente || !filtroExpediente"
+          >
+            <span [innerHTML]="icons['search']"></span>
+            {{ buscandoExpediente ? 'Buscando...' : 'Nueva intervención' }}
+          </button>
+        </div>
+      </div>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Intervenciones — expediente</label>
+        <input
+          type="text"
+          class="input-filtros"
+          [(ngModel)]="filtroInt.expediente"
+          name="filtro_int_expediente"
+          placeholder="Filtrar historial por expediente"
+        />
+      </fieldset>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Desde</label>
+        <input
+          type="date"
+          class="input-filtros"
+          [(ngModel)]="filtroInt.fecha_desde"
+          name="fecha_desde"
+        />
+      </fieldset>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Hasta</label>
+        <input
+          type="date"
+          class="input-filtros"
+          [(ngModel)]="filtroInt.fecha_hasta"
+          name="fecha_hasta"
+        />
+      </fieldset>
+      <div class="d-flex gap-1 flex-wrap">
+        <button class="button-filtros" type="button" (click)="buscarIntervenciones()">
+          <span [innerHTML]="icons['search']"></span> Buscar
+        </button>
+        <button class="button-filtros" type="button" (click)="limpiarFiltros()">
+          <span [innerHTML]="icons['delete']"></span> Limpiar
+        </button>
+      </div>
+    </form>
+    <div class="d-flex justify-content-center m-0 p-0">
+      <button class="toggle-panel-btn" (click)="toggleFiltrar()">
+        <span [innerHTML]="icons['arrowDown']"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- VISTA -->
+  <div class="vista-tabs">
+    <button type="button" [class.on]="vista === 'ambos'" (click)="setVista('ambos')">
+      Ambos
+    </button>
+    <button type="button" [class.on]="vista === 'hospitalizacion'" (click)="setVista('hospitalizacion')">
+      Hospitalización
+    </button>
+    <button type="button" [class.on]="vista === 'intervenciones'" (click)="setVista('intervenciones')">
+      Intervenciones
+    </button>
+  </div>
+
+  <!-- HOSPITALIZACIÓN -->
+  @if (vista === 'ambos' || vista === 'hospitalizacion') {
+    <section class="sec-block">
+      <div class="sec-head">
+        <h2 class="sec-title">Pacientes en Hospitalización</h2>
+        <span class="sec-badge">{{ consultasTotal }}</span>
+      </div>
+
+      @if (consultasCargando) {
+        <div class="state-box spinner"></div>
+      }
+
+      @if (!consultasCargando) {
+        <div class="table-wrap">
+          <table class="qro-table">
+            <thead>
+              <tr>
+                <th>Expediente</th>
+                <th>Paciente</th>
+                <th>Especialidad</th>
+                <th>Servicio</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (c of consultas; track c.id) {
+                <tr>
+                  <td>{{ experienciaPaciente(c) }}</td>
+                  <td>
+                    <div class="cell-paciente">
+                      <strong>{{ nombrePaciente(c) }}</strong>
+                    </div>
+                  </td>
+                  <td>{{ c.especialidad || '—' }}</td>
+                  <td>{{ c.servicio || '—' }}</td>
+                  <td>{{ c.fecha_consulta || '—' }}</td>
+                  <td>
+                    <span class="qro-chip">{{ ultimoEstadoLabel(c.ultimo_estado) }}</span>
+                  </td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="btn-sm accent" (click)="registrarIntervencion(c)">
+                        <span [innerHTML]="icons['addPerson']"></span> Intervenir
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+              @if (!consultasCargando && consultas.length === 0) {
+                <tr>
+                  <td colspan="7" class="text-center py-3">
+                    <em>No hay pacientes en hospitalización.</em>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @if (consultasTotalPaginas > 1) {
+        <div class="paginador">
+          <button [disabled]="!hayPaginaAnteriorConsultas" (click)="cambiarPaginaConsulta(-1)">◀</button>
+          <span class="pag-info">{{ consultasPagina }} / {{ consultasTotalPaginas }}</span>
+          <button [disabled]="!hayPaginaSiguienteConsultas" (click)="cambiarPaginaConsulta(1)">▶</button>
+        </div>
+      }
+    </section>
+  }
+
+  <!-- INTERVENCIONES -->
+  @if (vista === 'ambos' || vista === 'intervenciones') {
+    <section class="sec-block">
+      <div class="sec-head">
+        <h2 class="sec-title">Historial de Intervenciones</h2>
+        <span class="sec-badge">{{ intervencionesTotal }}</span>
+      </div>
+
+      @if (intervencionesCargando) {
+        <div class="state-box spinner"></div>
+      }
+
+      @if (!intervencionesCargando) {
+        <div class="table-wrap">
+          <table class="qro-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Hora ini.</th>
+                <th>Quirófano</th>
+                <th>Paciente</th>
+                <th>Procedimiento</th>
+                <th>Estado</th>
+                <th>Formato</th>
+                <th>Médico</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (i of intervenciones; track i.intervencion_id) {
+                <tr>
+                  <td>{{ i.fecha || '—' }}</td>
+                  <td>{{ i.hora_inicio_intervencion || '—' }}</td>
+                  <td>{{ i.quirofano_numero_nombre || '—' }}</td>
+                  <td>
+                    <div class="cell-paciente">
+                      <strong>{{ i.paciente_nombre || '—' }}</strong>
+                      @if (i.expediente) {
+                        <small>{{ i.expediente }}</small>
+                      }
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-paciente">
+                      <strong>{{ i.procedimiento_principal || '—' }}</strong>
+                      @if (i.area_cuerpo_intervenida) {
+                        <small>Área: {{ i.area_cuerpo_intervenida }}</small>
+                      }
+                    </div>
+                  </td>
+                  <td>
+                    <span class="qro-chip">{{ i.estado_cirugia_nombre || '—' }}</span>
+                  </td>
+                  <td>{{ i.formato_procedimiento_nombre || '—' }}</td>
+                  <td>{{ i.medico_nombre || '—' }}</td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="btn-sm" (click)="editarIntervencion(i.intervencion_id)" title="Editar">
+                        <span [innerHTML]="icons['edit']"></span>
+                      </button>
+                      <button class="btn-sm danger" (click)="eliminarIntervencion(i.intervencion_id)" title="Eliminar">
+                        <span [innerHTML]="icons['delete']"></span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+              @if (!intervencionesCargando && intervenciones.length === 0) {
+                <tr>
+                  <td colspan="9" class="text-center py-3">
+                    <em>No se encontraron intervenciones.</em>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @if (intTotalPaginas > 1) {
+        <div class="paginador">
+          <button [disabled]="!intHayPaginaAnterior" (click)="cambiarPaginaIntervencion(-1)">◀</button>
+          <span class="pag-info">{{ intPagina }} / {{ intTotalPaginas }}</span>
+          <button [disabled]="!intHayPaginaSiguiente" (click)="cambiarPaginaIntervencion(1)">▶</button>
+        </div>
+      }
+    </section>
+  }
+</div>

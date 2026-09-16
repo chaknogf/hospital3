@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { menuIcon, patientIcon, ambulanceIcon, enfermoIcon, hospitalconsvg, consultasIcon, archivoIcon, compartirIcon, calendarIcon } from '../../shared/icons/svg-icon';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { IconService } from '../../service/icon.service';
+import { menuColor } from '../../shared/module-menu';
 
 
 @Component({
@@ -16,6 +17,12 @@ import { IconService } from '../../service/icon.service';
 })
 
 export class UisauMenuComponent implements OnInit {
+
+  title = 'UISAU';
+  subtitle = 'Unidad de Información en Salud al Usuario';
+  accent = '#818cf8';
+  menuColor = menuColor;
+
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
 
   // iconos
@@ -56,8 +63,6 @@ export class UisauMenuComponent implements OnInit {
       { nombre: 'Encamamiento', descripcion: 'Listado de Pacientes Hospitalizados', ruta: '/encamamiento', icon: '' },
       { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: '/reportes', icon: 'archivo' },
       // { nombre: 'Informados', descripcion: 'Gestión de usuarios informados', ruta: '/informados', icon: '' },
-      { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
-
     ];
 
 

@@ -5,6 +5,7 @@ import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-brows
 import { IconService } from '../../../service/icon.service';
 import { Sigsa3Service } from '../../../std/sigsa3/sigsa3.service';
 import { take } from 'rxjs/operators';
+import { menuColor } from '../../../shared/module-menu';
 
 @Component({
   selector: 'app-admin',
@@ -16,7 +17,12 @@ import { take } from 'rxjs/operators';
 })
 export class AdminComponent implements OnInit {
 
-  options: { nombre: string; descripcion: string; ruta: string; icon: string; accion?: () => void }[] = [];
+  title = 'Panel de Control';
+  subtitle = 'Administración del sistema y mantenimiento de datos';
+  accent = '#fb7185';
+  menuColor = menuColor;
+
+  options: { nombre: string; descripcion: string; ruta: string; icon: string; accion?: () => void; danger?: boolean }[] = [];
 
   // iconos
   icons: { [key: string]: any } = {};
@@ -40,7 +46,14 @@ export class AdminComponent implements OnInit {
       compartir: this.iconService.getIcon("compartirIcon"),
       calendar: this.iconService.getIcon("calendarIcon"),
       baby: this.iconService.getIcon("babyIcon"),
-      persons: this.iconService.getIcon("persons2")
+      persons: this.iconService.getIcon("persons2"),
+      addPerson: this.iconService.getIcon("addPerson"),
+      documento: this.iconService.getIcon("documentoIcon"),
+      find: this.iconService.getIcon("findIcon"),
+      cancel: this.iconService.getIcon("cancelIcon"),
+      remove: this.iconService.getIcon("removeIcon"),
+      nota: this.iconService.getIcon("notaIcon"),
+      edit: this.iconService.getIcon("editPerson")
 
     }
 
@@ -53,21 +66,21 @@ export class AdminComponent implements OnInit {
 
     this.options = [
 
-      { nombre: 'Usuarios', descripcion: 'Gestionar Usuarios', ruta: '/usuarios', icon: '' },
-      { nombre: 'Registrar', descripcion: 'Registrar Usuario', ruta: '/newuser', icon: '' },
-      { nombre: 'Fusionar Pacientes', descripcion: 'Unir registros duplicados', ruta: '/merge-pacientes', icon: '' },
-      { nombre: 'Desactivar Consulta', descripcion: 'Cambiar estado a descartado', ruta: '/desactivar-consulta', icon: '' },
-      { nombre: 'Eliminar Consulta', descripcion: 'Eliminar consulta permanentemente', ruta: '/eliminar-consulta', icon: '' },
-      { nombre: 'Eliminar Constancia', descripcion: 'Eliminar constancia de nacimiento', ruta: '/eliminar-constancia', icon: '' },
-      { nombre: 'Reasignar Paciente', descripcion: 'Reasignar paciente en consulta (XX/desconocido)', ruta: '/consultas/0/reasignar-paciente', icon: '' },
-      { nombre: 'Eliminar Paciente', descripcion: 'Eliminar paciente permanentemente', ruta: '/eliminar-paciente', icon: '' },
-      { nombre: 'Limpiar CUI', descripcion: 'Limpiar número de CUI de un paciente', ruta: '/limpiar-cui-paciente', icon: '' },
-      { nombre: 'Municipios', descripcion: 'Gestionar catálogo de municipios', ruta: '/gestion-municipios', icon: '' },
-      { nombre: 'Encamamiento', descripcion: 'Gestionar servicios y camas', ruta: '/gestion-encamamiento', icon: '' },
-      { nombre: 'Auditoría', descripcion: 'Ver reporte de accesos y actividades', ruta: '/gestion-audit-log', icon: '' },
-      { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
-      { nombre: 'Exportar SIGSA-3 CSV', descripcion: 'Descargar todos los registros SIGSA-3 como CSV', ruta: '', icon: '', accion: () => this.exportarCsv() },
-      { nombre: 'Truncar SIGSA-3', descripcion: 'Eliminar TODOS los registros SIGSA-3 (irreversible)', ruta: '', icon: '', accion: () => this.truncar() },
+      { nombre: 'Usuarios', descripcion: 'Gestionar Usuarios', ruta: '/usuarios', icon: 'persons' },
+      { nombre: 'Registrar', descripcion: 'Registrar Usuario', ruta: '/newuser', icon: 'addPerson' },
+      { nombre: 'Fusionar Pacientes', descripcion: 'Unir registros duplicados', ruta: '/merge-pacientes', icon: 'find' },
+      { nombre: 'Desactivar Consulta', descripcion: 'Cambiar estado a descartado', ruta: '/desactivar-consulta', icon: 'cancel' },
+      { nombre: 'Eliminar Consulta', descripcion: 'Eliminar consulta permanentemente', ruta: '/eliminar-consulta', icon: 'remove' },
+      { nombre: 'Eliminar Constancia', descripcion: 'Eliminar constancia de nacimiento', ruta: '/eliminar-constancia', icon: 'documento' },
+      { nombre: 'Reasignar Paciente', descripcion: 'Reasignar paciente en consulta (XX/desconocido)', ruta: '/consultas/0/reasignar-paciente', icon: 'compartir' },
+      { nombre: 'Eliminar Paciente', descripcion: 'Eliminar paciente permanentemente', ruta: '/eliminar-paciente', icon: 'remove' },
+      { nombre: 'Limpiar CUI', descripcion: 'Limpiar número de CUI de un paciente', ruta: '/limpiar-cui-paciente', icon: 'edit' },
+      { nombre: 'Municipios', descripcion: 'Gestionar catálogo de municipios', ruta: '/gestion-municipios', icon: 'archivo' },
+      { nombre: 'Procedimientos Quirófano', descripcion: 'Gestionar catálogo de procedimientos quirúrgicos', ruta: '/gestion-procedimientos', icon: 'cmedic' },
+      { nombre: 'Encamamiento', descripcion: 'Gestionar servicios y camas', ruta: '/gestion-encamamiento', icon: 'ingresoIcon' },
+      { nombre: 'Auditoría', descripcion: 'Ver reporte de accesos y actividades', ruta: '/gestion-audit-log', icon: 'nota' },
+      { nombre: 'Exportar SIGSA-3 CSV', descripcion: 'Descargar todos los registros SIGSA-3 como CSV', ruta: '', icon: 'compartir', accion: () => this.exportarCsv() },
+      { nombre: 'Truncar SIGSA-3', descripcion: 'Eliminar TODOS los registros SIGSA-3 (irreversible)', ruta: '', icon: 'remove', accion: () => this.truncar(), danger: true },
 
     ];
 

@@ -1,40 +1,28 @@
-
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SafeHtml } from '@angular/platform-browser';
 import { IconService } from '../../service/icon.service';
+import { menuColor } from '../../shared/module-menu';
 
 @Component({
   selector: 'app-reportes-inicio',
   standalone: true,
   imports: [RouterModule],
-  template: `
-    <h2>Reportes y Estadísticas</h2>
-    <div class="aurora-container">
-      @for (opt of options; track opt) {
-        <div
-          class="aurora-cards"
-          (click)="navegar(opt.ruta)"
-          >
-          <div class="aurora-items">
-            <span [innerHTML]="icons[opt.icon]"></span>
-            <h2>{{ opt.nombre }}</h2>
-            <p>{{ opt.descripcion }}</p>
-          </div>
-        </div>
-      }
-    </div>
-    `,
+  templateUrl: './reportes-inicio.component.html',
+  styleUrls: ['./reportes-inicio.component.css'],
   changeDetection: ChangeDetectionStrategy.Eager,
-
 })
 export class ReportesInicioComponent implements OnInit {
+  title = 'Reportes';
+  subtitle = 'Reportes y estadísticas del hospital';
+  accent = '#22d3ee';
+  menuColor = menuColor;
+
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
   icons: { [key: string]: SafeHtml } = {};
 
   constructor(
     private router: Router,
-    private sanitizer: DomSanitizer,
     private iconService: IconService
   ) {
     this.icons = {

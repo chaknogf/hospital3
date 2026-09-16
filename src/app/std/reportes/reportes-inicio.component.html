@@ -1,7 +1,7 @@
 <div class="menu-shell" [style.--accent]="accent">
   <header class="menu-header">
     <div class="menu-heading">
-      <p class="menu-kicker">Módulo</p>
+      <p class="menu-kicker">Reportes</p>
       <h1 class="menu-title">{{ title }}</h1>
       <p class="menu-subtitle">{{ subtitle }}</p>
     </div>
@@ -14,12 +14,11 @@
   </header>
 
   <main class="menu-grid">
-    @for (opt of options; track opt.ruta + opt.nombre) {
+    @for (opt of options; track opt.ruta) {
       <button
         class="menu-card"
-        [class.danger]="opt.danger"
         [style.--card-accent]="menuColor($index)"
-        (click)="opt.accion ? opt.accion() : navegar(opt.ruta)">
+        (click)="navegar(opt.ruta)">
         <span class="menu-card-icon">
           @if (icons[opt.icon]) {
             <span [innerHTML]="icons[opt.icon]"></span>

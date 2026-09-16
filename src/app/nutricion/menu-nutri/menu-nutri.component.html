@@ -1,12 +1,39 @@
-<h3>Nutrición</h3>
-<div class="aurora-container">
-  @for (opt of options; track opt) {
-    <div class="aurora-cards" (click)="navegar(opt.ruta)">
-      <div class="aurora-items">
-        <span [innerHTML]="icons[opt.icon]"></span>
-        <h2>{{ opt.nombre }}</h2>
-        <p>{{ opt.descripcion }}</p>
-      </div>
+<div class="menu-shell" [style.--accent]="accent">
+  <header class="menu-header">
+    <div class="menu-heading">
+      <p class="menu-kicker">Módulo</p>
+      <h1 class="menu-title">{{ title }}</h1>
+      <p class="menu-subtitle">{{ subtitle }}</p>
     </div>
-  }
+    <button class="back-btn" (click)="navegar('/dash')">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5m0 0 6-6m-6 6 6 6"/>
+      </svg>
+      Menú principal
+    </button>
+  </header>
+
+  <main class="menu-grid">
+    @for (opt of options; track opt.ruta) {
+      <button
+        class="menu-card"
+        [style.--card-accent]="menuColor($index)"
+        (click)="navegar(opt.ruta)">
+        <span class="menu-card-icon">
+          @if (icons[opt.icon]) {
+            <span [innerHTML]="icons[opt.icon]"></span>
+          } @else {
+            <span class="menu-card-dot"></span>
+          }
+        </span>
+        <span class="menu-card-body">
+          <span class="menu-card-name">{{ opt.nombre }}</span>
+          <span class="menu-card-desc">{{ opt.descripcion }}</span>
+        </span>
+        <svg class="menu-card-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 18 6-6-6-6"/>
+        </svg>
+      </button>
+    }
+  </main>
 </div>

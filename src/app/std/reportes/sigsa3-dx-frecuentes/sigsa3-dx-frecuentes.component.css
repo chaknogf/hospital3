@@ -3,23 +3,30 @@
 /* ── Especialidad Card ── */
 .esp-card {
   margin-bottom: 28px;
-  background: var(--theme-gradient-surface);
-  border: 1px solid var(--theme-border);
-  border-radius: 10px;
+  background: var(--theme-surface);
+  border: var(--theme-border-width) solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
   overflow: hidden;
-  box-shadow:
-    inset 0 1px 0 rgba(150,190,255,0.06),
-    inset 0 -1px 0 rgba(0,0,0,0.2),
-    0 4px 16px rgba(0,0,0,0.3);
 }
 .esp-header {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 14px 18px;
   background: var(--theme-primary-dim);
-  border-bottom: 1px solid var(--theme-border);
+  border-bottom: var(--theme-border-width) solid var(--theme-border);
 }
-.esp-name { font-size: 1rem; font-weight: 700; color: var(--theme-text); }
-.esp-total { font-size: 0.78rem; color: var(--theme-primary-light); font-weight: 600; }
+.esp-name {
+  font-family: var(--theme-font-mono);
+  font-size: var(--theme-font-size-md);
+  font-weight: var(--theme-font-weight-bold);
+  color: var(--theme-text);
+}
+.esp-total {
+  font-size: var(--theme-font-size-xs);
+  color: var(--theme-primary);
+  font-weight: var(--theme-font-weight-bold);
+}
 
 /* ── Tipo Consulta Block ── */
 .tc-block { padding: 0 16px 16px; }
@@ -28,61 +35,65 @@
   margin: 14px 0 8px;
   padding: 4px 14px;
   background: var(--theme-primary-dim);
-  border: 1px solid var(--theme-border);
-  border-radius: 6px;
-  font-size: 0.78rem;
-  font-weight: 700;
+  border: var(--theme-border-width) solid var(--theme-border);
+  border-radius: var(--theme-radius-sm);
+  font-size: var(--theme-font-size-xs);
+  font-weight: var(--theme-font-weight-bold);
   color: var(--theme-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.08em;
 }
 
 /* ── DX Table ── */
 .dx-table { width: 100%; border-collapse: collapse; }
 .dx-table th {
-  background: var(--theme-gradient-primary);
+  background: var(--theme-primary-dim);
   color: var(--theme-text);
   padding: 8px 12px;
-  font-size: 0.72rem;
+  font-size: var(--theme-font-size-xs);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.08em;
   text-align: left;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-  box-shadow: inset 0 1px 0 rgba(150,190,255,0.08);
 }
 .dx-table td {
   padding: 7px 12px;
   color: var(--theme-text);
-  border-bottom: 1px solid var(--theme-border);
-  font-size: 0.82rem;
-  background: linear-gradient(180deg, var(--theme-surface-raised) 0%, var(--theme-surface) 100%);
+  border-bottom: var(--theme-border-width) solid var(--theme-border);
+  font-size: var(--theme-font-size-sm);
 }
 .dx-table tbody tr:hover {
-  background: linear-gradient(180deg, var(--theme-surface) 0%, var(--theme-surface-deep) 100%);
+  background: color-mix(in srgb, var(--theme-primary) 6%, transparent);
 }
 .th-rank { width: 36px; text-align: center; }
 .th-dx { text-align: left; }
 .th-num { width: 70px; text-align: right; }
 .th-total { color: var(--theme-text); }
-.rank { font-weight: 700; color: var(--theme-primary-deep); text-align: center; }
-.dx-cell { font-weight: 500; }
+.rank {
+  font-family: var(--theme-font-mono);
+  font-weight: var(--theme-font-weight-bold);
+  color: var(--theme-primary);
+  text-align: center;
+}
+.dx-cell { font-weight: var(--theme-font-weight-medium); }
 .cell-m { color: var(--theme-primary); }
 .cell-f { color: var(--theme-accent); }
-.total-cell { font-weight: 700; color: var(--theme-primary-deep); }
+.total-cell {
+  font-family: var(--theme-font-mono);
+  font-weight: var(--theme-font-weight-bold);
+  color: var(--theme-primary);
+}
 
 /* ── Footer ── */
 .dx-table tfoot th {
-  background: linear-gradient(180deg, var(--theme-primary-deep) 0%, var(--theme-surface-deep) 100%);
+  background: var(--theme-surface-raised);
   color: var(--theme-text-muted);
-  border-top: 3px solid var(--theme-border-strong);
+  border-top: var(--theme-border-width) solid var(--theme-border-strong);
   padding: 8px 12px;
-  font-size: 0.72rem;
+  font-size: var(--theme-font-size-xs);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-  box-shadow: inset 0 1px 0 rgba(150,190,255,0.08);
+  letter-spacing: 0.08em;
 }
-.dx-table tfoot .total-cell { color: var(--theme-primary-deep); }
+.dx-table tfoot .total-cell { color: var(--theme-primary); }
 .tf-label { text-align: left; }
 
 /* ── Resto de causas ── */

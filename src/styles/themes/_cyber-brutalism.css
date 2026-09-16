@@ -7,11 +7,11 @@
      Steel Azure    #00509d   → bg-surface-elevated
      Regal Navy     #0d3b66   → border-default, shadow
      Lemon Chiffon  #faf0ca   → text-on-dark
-     Royal Gold     #f4d35e   → btn-primary-bg
+     Royal Gold     #ffffff  → btn-primary-bg
      Sandy Brown    #ee964b   → interactive-active-bg
      Tomato         #f95738   → border-active, text-accent
-     School Bus Yel #fdc500   → border-focus
-     Gold           #ffd500   → text-highlight
+     School Bus Yel #ffff   → border-focus
+     Gold           #ffff   → text-highlight
 
    WCAG AA: All foreground/background combos ≥ 4.5:1.
    Activación: <html data-theme="cyber-brutalism">
@@ -33,19 +33,19 @@
   --cb-steel-azure:     #00509d;
   --cb-regal-navy:      #0d3b66;
   --cb-lemon-chiffon:   #faf0ca;
-  --cb-royal-gold:      #f4d35e;
+  --cb-royal-gold:      #ffff;
   --cb-sandy-brown:     #ee964b;
   --cb-tomato:          #f95738;
-  --cb-school-bus:      #fdc500;
-  --cb-gold:            #ffd500;
+  --cb-school-bus:      #ffff;
+  --cb-gold:            #ffff;
 
   /* ── ACCENT PALETTE (aliases for token system) ── */
-  --accent:             #f4d35e;    /* Royal Gold — primary action */
-  --accent-light:       #ffd500;    /* Gold — highlight */
+  --accent:             #ffff;    /* Royal Gold — primary action */
+  --accent-light:       #ffff;    /* Gold — highlight */
   --accent-deep:        #ee964b;    /* Sandy Brown */
   --accent-dark:        #0d3b66;    /* Regal Navy */
   --secondary:          #ee964b;    /* Sandy Brown */
-  --secondary-light:    #ffd500;
+  --secondary-light:    #ffff;
   --secondary-deep:     #f95738;    /* Tomato */
   --secondary-dim:      rgba(238, 150, 75, 0.16);
   --tertiary:           #f95738;    /* Tomato */
@@ -54,8 +54,8 @@
   --tertiary-dim:       rgba(249, 87, 56, 0.16);
   --success:            #39ff88;
   --success-soft:       #b9ffd2;
-  --warning:            #fdc500;
-  --warning-soft:       #ffd500;
+  --warning:            #ffff;
+  --warning-soft:       #ffff;
   --danger:             #f95738;
   --info:               #00a6fb;
 
@@ -67,10 +67,10 @@
 
   /* ── BORDERS ── */
   --rim:     #0d3b66;   /* Regal Navy — default border */
-  --rim-hot: #fdc500;   /* School Bus Yellow — focus/hot border */
+  --rim-hot: #ffff;   /* School Bus Yellow — focus/hot border */
 
   /* ── TEXTS ── */
-  --pulse:      #f4d35e;
+  --pulse:      #ffff;
   --pulse-dim:  rgba(244, 211, 94, 0.16);
   --star:       #faf0ca;
   --star-dim:   rgba(250, 240, 202, 0.30);
@@ -78,7 +78,7 @@
   --lime-dim:   rgba(57, 255, 136, 0.14);
   --red:        #f95738;
   --red-dim:    rgba(249, 87, 56, 0.15);
-  --amber:      #fdc500;
+  --amber:      #ffff;
   --amber-dim:  rgba(253, 197, 0, 0.15);
   --text:       #faf0ca;   /* Lemon Chiffon on dark blue → 13.6:1 */
   --muted:      #8a9bb5;   /* Desaturated lemon for secondary text */
@@ -103,7 +103,7 @@
 
   /* ── MEDICAL STATES ── */
   --urgente:  #f95738;
-  --moderado: #fdc500;
+  --moderado: #ffff;
   --estable:  #39ff88;
   --muerto:   #8a9bb5;
   --standar:  #00a6fb;
@@ -125,17 +125,17 @@
   --theme-panel-hover:            #00509d;
   --theme-input-bg:               #000814;
   --theme-border:                 #0d3b66;
-  --theme-border-strong:          #fdc500;
+  --theme-border-strong:          #ffff;
   --theme-border-subtle:          rgba(13, 59, 102, 0.60);
   --theme-rim:                    #0d3b66;
-  --theme-primary:                #f4d35e;
-  --theme-primary-light:          #ffd500;
+  --theme-primary:                #ffff;
+  --theme-primary-light:          #ffff;
   --theme-primary-dim:            rgba(244, 211, 94, 0.14);
-  --theme-primary-hover:          #ffd500;
+  --theme-primary-hover:          #ffff;
   --theme-focus-ring:             rgba(253, 197, 0, 0.55);
   --theme-success:                #39ff88;
   --theme-success-dim:            rgba(57, 255, 136, 0.14);
-  --theme-warning:                #fdc500;
+  --theme-warning:                #ffff;
   --theme-warning-dim:            rgba(253, 197, 0, 0.15);
   --theme-danger:                 #f95738;
   --theme-danger-soft:            #f95738;
@@ -145,8 +145,8 @@
   --theme-gradient-surface:       #001d3d;
   --theme-gradient-surface-hover: #00509d;
   --theme-gradient-surface-active:#000814;
-  --theme-gradient-primary:       #f4d35e;
-  --theme-gradient-primary-hover: #ffd500;
+  --theme-gradient-primary:       #ffff;
+  --theme-gradient-primary-hover: #ffff;
 
   /* ── BRUTALIST: no radius ── */
   --theme-radius-sm:   0;
@@ -176,16 +176,16 @@
   --bs-border-color:               #0d3b66;
   --bs-border-color-translucent:   rgba(13, 59, 102, 0.60);
   --bs-heading-color:              #faf0ca;
-  --bs-link-color:                 #f4d35e;
+  --bs-link-color:                 #ffff;
   --bs-link-color-rgb:             244, 211, 94;
-  --bs-link-hover-color:           #ffd500;
+  --bs-link-hover-color:           #ffff;
   --bs-link-hover-color-rgb:       255, 213, 0;
-  --bs-code-color:                 #fdc500;
+  --bs-code-color:                 #ffff;
   --bs-highlight-color:            #faf0ca;
   --bs-highlight-bg:               rgba(253, 197, 0, 0.30);
   --bs-light:                      #faf0ca;
   --bs-dark:                       #000814;
-  --bs-primary:                    #f4d35e;
+  --bs-primary:                    #ffff;
   --bs-primary-rgb:                244, 211, 94;
 
   /* Bootstrap component backgrounds */
@@ -219,11 +219,11 @@
   --bs-box-shadow-lg:              7px 7px 0 #0d3b66;
 
   /* Bootstrap text emphasis */
-  --bs-primary-text-emphasis:      #ffd500;
+  --bs-primary-text-emphasis:      #ffff;
   --bs-secondary-text-emphasis:    #ee964b;
   --bs-success-text-emphasis:      #b9ffd2;
   --bs-info-text-emphasis:         #00a6fb;
-  --bs-warning-text-emphasis:      #ffd500;
+  --bs-warning-text-emphasis:      #ffff;
   --bs-danger-text-emphasis:       #f95738;
   --bs-light-text-emphasis:        #faf0ca;
   --bs-dark-text-emphasis:         #8a9bb5;
@@ -309,7 +309,7 @@
 [data-theme="cyber-brutalism"] kbd,
 [data-theme="cyber-brutalism"] samp {
   font-family: 'DM Mono', monospace;
-  color: #fdc500;
+  color: #ffff;
 }
 
 
@@ -319,7 +319,7 @@
 
 [data-theme="cyber-brutalism"] .navbar {
   background: #000814 !important;
-  border-bottom: 4px solid #f4d35e;
+  border-bottom: 4px solid #ffff;
   box-shadow: 0 4px 0 rgba(244, 211, 94, 0.25);
 }
 
@@ -336,14 +336,14 @@
 }
 
 [data-theme="cyber-brutalism"] .navbar .nav-link:hover {
-  color: #ffd500;
-  border-bottom-color: #ffd500;
+  color: #ffff;
+  border-bottom-color: #ffff;
   background: rgba(255, 213, 0, 0.06);
 }
 
 [data-theme="cyber-brutalism"] .navbar .nav-link.active {
-  color: #f4d35e;
-  border-bottom: 3px solid #f4d35e;
+  color: #ffff;
+  border-bottom: 3px solid #ffff;
   background: rgba(244, 211, 94, 0.10);
 }
 
@@ -370,8 +370,8 @@
 }
 
 [data-theme="cyber-brutalism"] .card:hover {
-  box-shadow: 5px 5px 0 #f4d35e;
-  border-color: #f4d35e !important;
+  box-shadow: 5px 5px 0 #ffff;
+  border-color: #ffffff !important;
   transform: translate(-2px, -2px);
 }
 
@@ -382,7 +382,7 @@
   font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: #f4d35e;
+  color: #ffff;
   border-radius: 0 !important;
 }
 
@@ -429,16 +429,16 @@
 
 /* Primary: Royal Gold bg, Regal Navy text */
 [data-theme="cyber-brutalism"] .btn-primary {
-  background: #f4d35e;
+  background: #ffff;
   border: 4px solid #f95738;
   color: #0d3b66;
   box-shadow: 5px 5px 0 #0d3b66;
 }
 [data-theme="cyber-brutalism"] .btn-primary:hover {
-  background: #ffd500;
-  border-color: #ffd500;
+  background: #ffff;
+  border-color: #63c3ff;
   color: #0d3b66;
-  box-shadow: 5px 5px 0 #f4d35e;
+  box-shadow: 5px 5px 0 #ffff;
 }
 
 /* Secondary: outline, warm border */
@@ -458,15 +458,15 @@
 /* Outline primary: gold border */
 [data-theme="cyber-brutalism"] .btn-outline-primary {
   background: transparent;
-  border: 4px solid #f4d35e;
-  color: #f4d35e;
+  border: 4px solid #ffff;
+  color: #ffff;
   box-shadow: 4px 4px 0 #0d3b66;
 }
 [data-theme="cyber-brutalism"] .btn-outline-primary:hover {
   background: rgba(244, 211, 94, 0.12);
-  color: #ffd500;
-  border-color: #ffd500;
-  box-shadow: 4px 4px 0 #f4d35e;
+  color: #ffff;
+  border-color: #ffff;
+  box-shadow: 4px 4px 0 #ffff;
 }
 
 /* Outline secondary */
@@ -500,8 +500,8 @@
 
 /* Warning */
 [data-theme="cyber-brutalism"] .btn-warning {
-  background: #fdc500;
-  border: 4px solid #fdc500;
+  background: #ffff;
+  border: 4px solid #ffff;
   color: #000814;
   box-shadow: 4px 4px 0 #0d3b66;
 }
@@ -539,7 +539,7 @@
 /* Focus: School Bus Yellow border + warm ring */
 [data-theme="cyber-brutalism"] .form-control:focus,
 [data-theme="cyber-brutalism"] .form-select:focus {
-  border-color: #fdc500;
+  border-color: #ffff;
   box-shadow: inset 3px 3px 0 #0d3b66, 0 0 0 3px rgba(253, 197, 0, 0.30);
   background: #000814;
   color: #faf0ca;
@@ -563,7 +563,7 @@
   background: #00509d;
   border: 4px solid #0d3b66;
   border-radius: 0 !important;
-  color: #f4d35e;
+  color: #ffff;
   font-family: 'DM Mono', monospace;
   font-size: 0.75rem;
   box-shadow: inset 3px 3px 0 #0d3b66;
@@ -580,11 +580,11 @@
   border-radius: 0 !important;
 }
 [data-theme="cyber-brutalism"] .form-check-input:checked {
-  background-color: #f4d35e;
-  border-color: #f4d35e;
+  background-color: #ffff;
+  border-color: #ffff;
 }
 [data-theme="cyber-brutalism"] .form-check-input:focus {
-  border-color: #fdc500;
+  border-color: #ffff;
   box-shadow: 0 0 0 3px rgba(253, 197, 0, 0.30);
 }
 [data-theme="cyber-brutalism"] .form-switch .form-check-input {
@@ -593,8 +593,8 @@
   border-radius: 0 !important;
 }
 [data-theme="cyber-brutalism"] .form-switch .form-check-input:checked {
-  background-color: #f4d35e;
-  border-color: #f4d35e;
+  background-color: #ffff;
+  border-color: #ffff;
 }
 
 
@@ -622,9 +622,9 @@
 }
 [data-theme="cyber-brutalism"] .accordion-button:not(.collapsed) {
   background: rgba(244, 211, 94, 0.10);
-  color: #f4d35e;
+  color: #ffff;
   box-shadow: none;
-  border-bottom-color: #f4d35e;
+  border-bottom-color: #ffff;
 }
 [data-theme="cyber-brutalism"] .accordion-button::after {
   filter: invert(38%) sepia(87%) saturate(600%) hue-rotate(10deg);
@@ -648,13 +648,13 @@
 }
 [data-theme="cyber-brutalism"] .list-group-item:hover {
   background: rgba(244, 211, 94, 0.06);
-  border-color: #f4d35e;
+  border-color: #ffff;
   color: #faf0ca;
 }
 [data-theme="cyber-brutalism"] .list-group-item.active {
   background: rgba(244, 211, 94, 0.15);
-  border: 4px solid #f4d35e;
-  color: #f4d35e;
+  border: 4px solid #ffff;
+  color: #ffff;
   box-shadow: 4px 4px 0 #0d3b66;
 }
 
@@ -680,13 +680,13 @@
 [data-theme="cyber-brutalism"] .nav-tabs .nav-link:hover {
   background: rgba(244, 211, 94, 0.06);
   border-color: rgba(244, 211, 94, 0.25) rgba(244, 211, 94, 0.25) transparent;
-  color: #f4d35e;
+  color: #ffff;
 }
 [data-theme="cyber-brutalism"] .nav-tabs .nav-link.active {
   background: #001d3d;
-  border-color: #f4d35e #f4d35e #001d3d;
-  color: #f4d35e;
-  box-shadow: 4px 0 0 #f4d35e;
+  border-color: #ffffff#ffffff#001d3d;
+  color: #ffff;
+  box-shadow: 4px 0 0 #ffff;
 }
 
 
@@ -707,8 +707,8 @@
 [data-theme="cyber-brutalism"] .table thead th,
 [data-theme="cyber-brutalism"] .theme-table thead th {
   background: #000814;
-  border-bottom: 4px solid #f4d35e;
-  color: #f4d35e;
+  border-bottom: 4px solid #ffff;
+  color: #ffff;
   font-family: 'DM Mono', monospace;
   font-size: 0.65rem;
   text-transform: uppercase;
@@ -737,12 +737,12 @@
   background: #001d3d;
   border: 4px solid #0d3b66;
   border-radius: 0 !important;
-  box-shadow: 8px 8px 0 #0d3b66, 0 0 0 4px #f4d35e;
+  box-shadow: 8px 8px 0 #0d3b66, 0 0 0 4px #ffff;
   color: #faf0ca;
 }
 [data-theme="cyber-brutalism"] .modal-header {
   background: #00509d;
-  border-bottom: 4px solid #f4d35e;
+  border-bottom: 4px solid #ffff;
   border-radius: 0 !important;
 }
 [data-theme="cyber-brutalism"] .modal-title {
@@ -765,13 +765,13 @@
 
 [data-theme="cyber-brutalism"] .offcanvas {
   background: #001d3d;
-  border-right: 4px solid #f4d35e !important;
+  border-right: 4px solid #ffffff!important;
   box-shadow: 6px 0 0 #0d3b66;
   color: #faf0ca;
 }
 [data-theme="cyber-brutalism"] .offcanvas-header {
   background: #00509d;
-  border-bottom: 4px solid #f4d35e;
+  border-bottom: 4px solid #ffff;
   color: #faf0ca;
 }
 [data-theme="cyber-brutalism"] .offcanvas-title {
@@ -802,7 +802,7 @@
 }
 [data-theme="cyber-brutalism"] .dropdown-item:hover {
   background: rgba(244, 211, 94, 0.12);
-  color: #f4d35e;
+  color: #ffff;
 }
 [data-theme="cyber-brutalism"] .dropdown-item:active {
   background: rgba(244, 211, 94, 0.20);
@@ -816,7 +816,7 @@
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: #f4d35e;
+  color: #ffff;
 }
 
 
@@ -834,11 +834,11 @@
 }
 
 [data-theme="cyber-brutalism"] .badge.bg-primary,
-[data-theme="cyber-brutalism"] .badge.text-bg-primary  { background: #f4d35e !important; color: #0d3b66 !important; }
+[data-theme="cyber-brutalism"] .badge.text-bg-primary  { background: #ffffff!important; color: #0d3b66 !important; }
 [data-theme="cyber-brutalism"] .badge.bg-success,
 [data-theme="cyber-brutalism"] .badge.text-bg-success  { background: #39ff88 !important; color: #000814 !important; }
 [data-theme="cyber-brutalism"] .badge.bg-warning,
-[data-theme="cyber-brutalism"] .badge.text-bg-warning  { background: #fdc500 !important; color: #000814 !important; }
+[data-theme="cyber-brutalism"] .badge.text-bg-warning  { background: #ffff !important; color: #000814 !important; }
 [data-theme="cyber-brutalism"] .badge.bg-danger,
 [data-theme="cyber-brutalism"] .badge.text-bg-danger   { background: #f95738 !important; color: #faf0ca !important; }
 [data-theme="cyber-brutalism"] .badge.bg-info,
@@ -855,10 +855,10 @@
   box-shadow: 3px 3px 0 #0d3b66;
 }
 [data-theme="cyber-brutalism"] .theme-badge--success { color: #39ff88; background: rgba(57, 255, 136, 0.14); border: 4px solid rgba(57,255,136,0.4); }
-[data-theme="cyber-brutalism"] .theme-badge--warning { color: #fdc500; background: rgba(253, 197, 0, 0.14); border: 4px solid rgba(253,197,0,0.4); }
+[data-theme="cyber-brutalism"] .theme-badge--warning { color: #ffff; background: rgba(253, 197, 0, 0.14); border: 4px solid rgba(253,197,0,0.4); }
 [data-theme="cyber-brutalism"] .theme-badge--danger  { color: #f95738; background: rgba(249, 87, 56, 0.14); border: 4px solid rgba(249,87,56,0.4); }
 [data-theme="cyber-brutalism"] .theme-badge--info    { color: #00a6fb; background: rgba(0, 166, 251, 0.14); border: 4px solid rgba(0,166,251,0.4); }
-[data-theme="cyber-brutalism"] .theme-badge--primary { color: #f4d35e; background: rgba(244, 211, 94, 0.14); border: 4px solid rgba(244,211,94,0.4); }
+[data-theme="cyber-brutalism"] .theme-badge--primary { color: #ffff; background: rgba(244, 211, 94, 0.14); border: 4px solid rgba(244,211,94,0.4); }
 
 
 /* ═══════════════════════════════════════════════════════════════
@@ -873,7 +873,7 @@
   height: 1rem;
 }
 [data-theme="cyber-brutalism"] .progress-bar {
-  background: #f4d35e;
+  background: #ffff;
   border-radius: 0 !important;
   box-shadow: none;
   font-family: 'DM Mono', monospace;
@@ -894,7 +894,7 @@
 }
 [data-theme="cyber-brutalism"] .toast-header {
   background: #00509d;
-  border-bottom: 4px solid #f4d35e;
+  border-bottom: 4px solid #ffff;
   color: #faf0ca;
   font-family: 'DM Mono', monospace;
   font-size: 0.72rem;
@@ -917,8 +917,8 @@
 }
 [data-theme="cyber-brutalism"] .popover-header {
   background: #00509d;
-  border-bottom: 4px solid #f4d35e;
-  color: #f4d35e;
+  border-bottom: 4px solid #ffff;
+  color: #ffff;
   font-family: 'DM Mono', monospace;
   font-size: 0.72rem;
   text-transform: uppercase;
@@ -935,7 +935,7 @@
 
 [data-theme="cyber-brutalism"] .tooltip-inner {
   background: #00509d;
-  border: 4px solid #f4d35e;
+  border: 4px solid #ffff;
   border-radius: 0 !important;
   box-shadow: 4px 4px 0 #0d3b66;
   color: #faf0ca;
@@ -950,8 +950,8 @@
 
 [data-theme="cyber-brutalism"] ::-webkit-scrollbar       { width: 6px; height: 6px; }
 [data-theme="cyber-brutalism"] ::-webkit-scrollbar-track { background: #000814; }
-[data-theme="cyber-brutalism"] ::-webkit-scrollbar-thumb { background: #f4d35e; border-radius: 0; }
-[data-theme="cyber-brutalism"] ::-webkit-scrollbar-thumb:hover { background: #ffd500; }
+[data-theme="cyber-brutalism"] ::-webkit-scrollbar-thumb { background: #ffff; border-radius: 0; }
+[data-theme="cyber-brutalism"] ::-webkit-scrollbar-thumb:hover { background: #ffff; }
 
 
 /* ═══════════════════════════════════════════════════════════════
@@ -969,12 +969,12 @@
    ═══════════════════════════════════════════════════════════════ */
 
 [data-theme="cyber-brutalism"] a {
-  color: #f4d35e;
+  color: #ffff;
   text-decoration: none;
   transition: color 0.10s;
 }
 [data-theme="cyber-brutalism"] a:hover {
-  color: #ffd500;
+  color: #ffff;
   text-decoration: underline;
 }
 
@@ -984,7 +984,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 [data-theme="cyber-brutalism"] :focus-visible {
-  outline: 4px solid #fdc500;
+  outline: 4px solid #ffff;
   outline-offset: 2px;
   box-shadow: 0 0 0 6px rgba(253, 197, 0, 0.25);
 }
@@ -1008,8 +1008,8 @@
   background: #001d3d !important;
 }
 [data-theme="cyber-brutalism"] .card:hover {
-  border-color: #f4d35e !important;
-  box-shadow: 5px 5px 0 #f4d35e !important;
+  border-color: #ffffff!important;
+  box-shadow: 5px 5px 0 #ffffff!important;
 }
 [data-theme="cyber-brutalism"] .card-header {
   border-bottom: 4px solid #0d3b66 !important;
@@ -1018,7 +1018,7 @@
 
 /* 3. Navbar: thick gold bottom border */
 [data-theme="cyber-brutalism"] .navbar {
-  border-bottom: 4px solid #f4d35e !important;
+  border-bottom: 4px solid #ffffff!important;
   box-shadow: 0 4px 0 rgba(244, 211, 94, 0.25) !important;
 }
 
@@ -1047,7 +1047,7 @@
 [data-theme="cyber-brutalism"] .rounded-circle,
 [data-theme="cyber-brutalism"] [class*="avatar"] {
   border-radius: 0 !important;
-  border: 4px solid #f4d35e !important;
+  border: 4px solid #ffffff!important;
   box-shadow: 4px 4px 0 #0d3b66 !important;
 }
 

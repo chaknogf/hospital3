@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { menuIcon, patientIcon, ambulanceIcon, enfermoIcon, hospitalconsvg, consultasIcon, archivoIcon, compartirIcon, calendarIcon } from '../../shared/icons/svg-icon';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { IconService } from '../../service/icon.service';
+import { menuColor } from '../../shared/module-menu';
 
 
 @Component({
@@ -16,6 +17,12 @@ import { IconService } from '../../service/icon.service';
 })
 
 export class MenutsComponent implements OnInit {
+
+  title = 'Trabajo Social';
+  subtitle = 'Gestión social: casos, nacimientos y reportes';
+  accent = '#e879f9';
+  menuColor = menuColor;
+
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
 
   // iconos
@@ -55,7 +62,6 @@ export class MenutsComponent implements OnInit {
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
       { nombre: 'Nacimientos', descripcion: 'Registro de Nacimientos (solo lectura)', ruta: '/ts-nacimientos', icon: 'baby' },
       { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: '/reportes', icon: 'archivo' },
-      { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];
 

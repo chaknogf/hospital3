@@ -1,0 +1,357 @@
+<!-- quirofano-form.component.html -->
+
+<!-- HUD -->
+<div class="hud-header">
+  <span class="hud-id">{{ enEdicion ? 'QRO-EDIT : ' + intervencionId : 'QRO-NUEVO' }}</span>
+  <span class="hud-title">{{ enEdicion ? 'ACTUALIZAR INTERVENCIÓN' : 'NUEVA INTERVENCIÓN QUIRÚRGICA' }}</span>
+  <span class="hud-status">{{ enEdicion ? 'Modo edición' : (pacienteLabel || 'Sin paciente') }}</span>
+</div>
+
+<!-- ACTION DOCK -->
+<div class="action-dock">
+  <span class="dock-hint">{{ enEdicion ? 'Edición de intervención' : 'Registro de intervención' }}</span>
+  <button type="button" class="btn-dock btn-dock-cancel" (click)="volver()">
+    <span [innerHTML]="cancelIcon"></span> Cancelar
+  </button>
+  <button type="button" class="btn-dock btn-dock-save" [disabled]="guardando" (click)="guardar()">
+    <span [innerHTML]="saveIcon"></span>
+    {{ guardando ? 'Guardando...' : enEdicion ? 'Actualizar' : 'Registrar' }}
+  </button>
+</div>
+
+@if (cargando) {
+  <div class="adm-body">
+    <div class="state-box spinner"></div>
+  </div>
+}
+
+@if (!cargando) {
+  <form [formGroup]="form" class="adm-body">
+
+    <!-- PACIENTE -->
+    <div class="section-card">
+      <div class="sec-head">
+        <div class="sec-head-left">
+          <div class="sec-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="4.5" r="2"/>
+              <path d="M3.5 13v-1.5a2.5 2.5 0 0 1 2.5-2.5h4a2.5 2.5 0 0 1 2.5 2.5V13"/>
+            </svg>
+          </div>
+          <span class="sec-title">Paciente</span>
+        </div>
+        @if (pacienteInfo) {
+          <span class="sec-ok">✔ Verificado</span>
+        }
+      </div>
+      <div class="sec-body">
+        <div class="field-row">
+          <div class="field">
+            <span class="field-label">Expediente *</span>
+            <div class="field-inline">
+              <input
+                class="field-input"
+                type="text"
+                formControlName="expediente"
+                placeholder="Ej. EXP-2026-000123"
+                [attr.disabled]="enEdicion ? '' : null"
+              />
+              <button
+                type="button"
+                class="btn-inline"
+                [disabled]="buscandoPaciente || enEdicion"
+                (click)="buscarPaciente()"
+              >
+                {{ buscandoPaciente ? 'Buscando…' : 'Buscar' }}
+              </button>
+              @if (pacienteInfo) {
+                <button type="button" class="btn-inline ghost" (click)="limpiarPaciente()">✕</button>
+              }
+            </div>
+            @if (f['expediente'].touched && f['expediente'].errors) {
+              <small class="field-error">El expediente es obligatorio</small>
+            }
+            @if (errorPaciente) {
+              <small class="field-error">{{ errorPaciente }}</small>
+            }
+          </div>
+          <div class="field">
+            <span class="field-label">Paciente</span>
+            <div class="patient-chip">
+              @if (pacienteLabel) {
+                <strong>{{ pacienteLabel }}</strong>
+                <small>ID: {{ pacienteId }}</small>
+              } @else {
+                <span class="placeholder-text">Busque el expediente para vincular</span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROCEDIMIENTOS -->
+    <div class="section-card">
+      <div class="sec-head">
+        <div class="sec-head-left">
+          <div class="sec-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M2 8h4M10 8h4M8 2v4M8 10v4"/>
+            </svg>
+          </div>
+          <span class="sec-title">Procedimientos realizados</span>
+        </div>
+      </div>
+      <div class="sec-body">
+        <div class="field-row">
+          <div class="field">
+            <span class="field-label">Especialidad</span>
+            <select class="field-input" formControlName="especialidad_id" (change)="onEspecialidadChange()">
+              <option [ngValue]="null">Todas</option>
+              @for (c of categorias; track c.categoria_procedimiento_id) {
+                <option [ngValue]="c.categoria_procedimiento_id">{{ c.nombre }}</option>
+              }
+            </select>
+            <small class="field-hint">Filtra los procedimientos por especialidad.</small>
+          </div>
+          <div class="field">
+            <span class="field-label">Área del cuerpo intervenida</span>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="area_cuerpo_intervenida"
+              placeholder="Ej. Abdomen"
+            />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <span class="field-label">Procedimiento principal #1 *</span>
+            @if (!esOtro['procedimiento_principal']) {
+              <select class="field-input" formControlName="procedimiento_principal" (change)="onProcChange('procedimiento_principal')">
+                <option [ngValue]="null">Seleccionar procedimiento</option>
+                @for (t of procedimientos; track t.tipo_procedimiento_id) {
+                  <option [ngValue]="t.nombre">{{ t.nombre }}</option>
+                }
+                <option [ngValue]="OTRO_VAL">Otro (no está en la lista)</option>
+              </select>
+            } @else {
+              <div class="field-inline">
+                <input class="field-input" type="text" formControlName="procedimiento_principal" placeholder="Escriba el procedimiento" />
+                <button type="button" class="btn-inline ghost" (click)="volverASeleccion('procedimiento_principal')" title="Volver a la lista">✕</button>
+              </div>
+            }
+            @if (f['procedimiento_principal'].touched && f['procedimiento_principal'].errors) {
+              <small class="field-error">El procedimiento principal es obligatorio</small>
+            }
+            @if (esOtro['procedimiento_principal']) {
+              <small class="field-hint">Especifique los detalles del procedimiento en Observaciones.</small>
+            }
+          </div>
+          <div class="field">
+            <span class="field-label">Procedimiento #2</span>
+            @if (!esOtro['procedimiento_2']) {
+              <select class="field-input" formControlName="procedimiento_2" (change)="onProcChange('procedimiento_2')">
+                <option [ngValue]="null">Opcional</option>
+                @for (t of procedimientos; track t.tipo_procedimiento_id) {
+                  <option [ngValue]="t.nombre">{{ t.nombre }}</option>
+                }
+                <option [ngValue]="OTRO_VAL">Otro</option>
+              </select>
+            } @else {
+              <div class="field-inline">
+                <input class="field-input" type="text" formControlName="procedimiento_2" placeholder="Escriba el procedimiento" />
+                <button type="button" class="btn-inline ghost" (click)="volverASeleccion('procedimiento_2')" title="Volver a la lista">✕</button>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <span class="field-label">Procedimiento #3</span>
+            @if (!esOtro['procedimiento_3']) {
+              <select class="field-input" formControlName="procedimiento_3" (change)="onProcChange('procedimiento_3')">
+                <option [ngValue]="null">Opcional</option>
+                @for (t of procedimientos; track t.tipo_procedimiento_id) {
+                  <option [ngValue]="t.nombre">{{ t.nombre }}</option>
+                }
+                <option [ngValue]="OTRO_VAL">Otro</option>
+              </select>
+            } @else {
+              <div class="field-inline">
+                <input class="field-input" type="text" formControlName="procedimiento_3" placeholder="Escriba el procedimiento" />
+                <button type="button" class="btn-inline ghost" (click)="volverASeleccion('procedimiento_3')" title="Volver a la lista">✕</button>
+              </div>
+            }
+          </div>
+          <div class="field">
+            <span class="field-label">Procedimiento #4</span>
+            @if (!esOtro['procedimiento_4']) {
+              <select class="field-input" formControlName="procedimiento_4" (change)="onProcChange('procedimiento_4')">
+                <option [ngValue]="null">Opcional</option>
+                @for (t of procedimientos; track t.tipo_procedimiento_id) {
+                  <option [ngValue]="t.nombre">{{ t.nombre }}</option>
+                }
+                <option [ngValue]="OTRO_VAL">Otro</option>
+              </select>
+            } @else {
+              <div class="field-inline">
+                <input class="field-input" type="text" formControlName="procedimiento_4" placeholder="Escriba el procedimiento" />
+                <button type="button" class="btn-inline ghost" (click)="volverASeleccion('procedimiento_4')" title="Volver a la lista">✕</button>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <span class="field-label">Procedimiento #5</span>
+            @if (!esOtro['procedimiento_5']) {
+              <select class="field-input" formControlName="procedimiento_5" (change)="onProcChange('procedimiento_5')">
+                <option [ngValue]="null">Opcional</option>
+                @for (t of procedimientos; track t.tipo_procedimiento_id) {
+                  <option [ngValue]="t.nombre">{{ t.nombre }}</option>
+                }
+                <option [ngValue]="OTRO_VAL">Otro</option>
+              </select>
+            } @else {
+              <div class="field-inline">
+                <input class="field-input" type="text" formControlName="procedimiento_5" placeholder="Escriba el procedimiento" />
+                <button type="button" class="btn-inline ghost" (click)="volverASeleccion('procedimiento_5')" title="Volver a la lista">✕</button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATOS DEL PROCEDIMIENTO -->
+    <div class="section-card">
+      <div class="sec-head">
+        <div class="sec-head-left">
+          <div class="sec-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="3" width="12" height="10" rx="1.5"/>
+              <path d="M2 6h12"/>
+            </svg>
+          </div>
+          <span class="sec-title">Datos del procedimiento</span>
+        </div>
+      </div>
+      <div class="sec-body">
+        <div class="field-row">
+          <div class="field">
+            <span class="field-label">Nº de quirófano</span>
+            <select class="field-input" formControlName="quirofano_numero_id">
+              <option [ngValue]="null">Seleccionar</option>
+              @for (qn of quirofanosNumero; track qn.quirofano_numero_id) {
+                <option [ngValue]="qn.quirofano_numero_id">{{ qn.nombre }}</option>
+              }
+            </select>
+          </div>
+          <div class="field">
+            <span class="field-label">Estado de cirugía</span>
+            <select class="field-input" formControlName="estado_cirugia_id">
+              <option [ngValue]="null">Seleccionar</option>
+              @for (e of estados; track e.estado_cirugia_id) {
+                <option [ngValue]="e.estado_cirugia_id">{{ e.nombre }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <span class="field-label">Formato</span>
+            <select class="field-input" formControlName="formato_procedimiento_id">
+              <option [ngValue]="null">Seleccionar</option>
+              @for (fo of formatos; track fo.formato_procedimiento_id) {
+                <option [ngValue]="fo.formato_procedimiento_id">{{ fo.nombre }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <span class="field-label">Procedencia</span>
+            <select class="field-input" formControlName="procedencia_procedimiento_id">
+              <option [ngValue]="null">Seleccionar</option>
+              @for (p of procedencias; track p.procedencia_procedimiento_id) {
+                <option [ngValue]="p.procedencia_procedimiento_id">{{ p.nombre }}</option>
+              }
+            </select>
+          </div>
+          <div class="field">
+            <span class="field-label">Rango de especialista</span>
+            <select class="field-input" formControlName="rango_especialista_id">
+              <option [ngValue]="null">Seleccionar</option>
+              @for (r of rangos; track r.rango_especialista_id) {
+                <option [ngValue]="r.rango_especialista_id">{{ r.nombre }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLANIFICACIÓN -->
+    <div class="section-card">
+      <div class="sec-head">
+        <div class="sec-head-left">
+          <div class="sec-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="3" width="12" height="10" rx="1.5"/>
+              <path d="M2 6h12M5 1.5V4M11 1.5V4"/>
+            </svg>
+          </div>
+          <span class="sec-title">Planificación</span>
+        </div>
+      </div>
+      <div class="sec-body">
+        <div class="field-row">
+          <div class="field">
+            <span class="field-label">Médico / Cirujano</span>
+            <select class="field-input" formControlName="medico_id">
+              <option [ngValue]="null">Seleccionar</option>
+              @for (m of medicos; track m.id) {
+                <option [ngValue]="m.id">
+                  {{ m.nombre }}{{ m.especialidad_nombre ? ' — ' + m.especialidad_nombre : '' }}
+                </option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <span class="field-label">Hora inicio de anestesia</span>
+            <input class="field-input" type="time" formControlName="hora_inicio_anestesia" />
+          </div>
+          <div class="field">
+            <span class="field-label">Hora inicio intervención</span>
+            <input class="field-input" type="time" formControlName="hora_inicio_intervencion" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <span class="field-label">Hora finaliza intervención</span>
+            <input class="field-input" type="time" formControlName="hora_finaliza_intervencion" />
+          </div>
+          <div class="field">
+            <span class="field-label">Hora finaliza limpieza / prep. quirófano</span>
+            <input class="field-input" type="time" formControlName="hora_finaliza_limpieza_prepara_quirofano" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <span class="field-label">Observaciones</span>
+            <textarea
+              class="field-input textarea"
+              formControlName="observaciones"
+              rows="3"
+              placeholder="Notas de la intervención"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
+}

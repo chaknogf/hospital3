@@ -1,9 +1,34 @@
 @import '../_reportes-skeuo.css';
 
-.section-title { display: flex; align-items: center; gap: 12px; margin: 24px 0 12px; }
-.section-title h2 { font-size: 1.1rem; font-weight: 700; color: var(--theme-text); margin: 0; }
-.total-badge { display: inline-block; padding: 4px 12px; background: var(--theme-gradient-primary); border: 1px solid var(--theme-border-strong); border-radius: 6px; color: var(--theme-text-on-primary); font-size: 0.8rem; font-weight: 600; }
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 12px;
+}
+.section-title h2 {
+  font-family: var(--theme-font-mono);
+  font-size: var(--theme-font-size-lg);
+  font-weight: var(--theme-font-weight-bold);
+  color: var(--theme-text);
+  margin: 0;
+}
+.total-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: color-mix(in srgb, var(--theme-primary) 12%, transparent);
+  border: var(--theme-border-width) solid color-mix(in srgb, var(--theme-primary) 35%, transparent);
+  border-radius: var(--theme-radius-md);
+  color: var(--theme-primary);
+  font-family: var(--theme-font-mono);
+  font-size: var(--theme-font-size-sm);
+  font-weight: var(--theme-font-weight-bold);
+}
 .section-gap { margin-top: 32px; }
-.code-cell { font-family: var(--theme-font-mono); font-weight: 600; color: var(--theme-primary-deep); }
+.code-cell {
+  font-family: var(--theme-font-mono);
+  font-weight: var(--theme-font-weight-bold);
+  color: var(--theme-primary);
+}
 .total-col { background: var(--theme-primary-dim); }
-.pivot-table tfoot .total-sub { color: var(--theme-primary-deep); }
+.pivot-table tfoot .total-sub { color: var(--theme-primary); }

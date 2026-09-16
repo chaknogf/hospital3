@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { menuIcon, patientIcon, ambulanceIcon, enfermoIcon, hospitalconsvg, consultasIcon, archivoIcon, compartirIcon, calendarIcon } from '../../shared/icons/svg-icon';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { IconService } from '../../service/icon.service';
+import { menuColor } from '../../shared/module-menu';
 
 
 @Component({
@@ -16,6 +17,12 @@ import { IconService } from '../../service/icon.service';
 })
 
 export class EstadisticaComponent implements OnInit {
+
+  title = 'Estadística';
+  subtitle = 'Reportes, censo de camas y datos estadísticos';
+  accent = '#22d3ee';
+  menuColor = menuColor;
+
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
 
   // iconos
@@ -63,7 +70,6 @@ export class EstadisticaComponent implements OnInit {
       { nombre: 'SIGSA-3', descripcion: 'Registros SIGSA-3 e importación CSV', ruta: '/sigsa3', icon: 'consultas' },
       { nombre: 'SIGSA-3 Registros', descripcion: 'Registros SIGSA-3 normalizados', ruta: '/sigsa3-registros', icon: 'consultas' },
       { nombre: 'Agente', descripcion: 'Chat inteligente de datos (NL→SQL)', ruta: '/agente', icon: 'compartir' },
-      { nombre: 'Menu', descripcion: 'Regresar al menu principal', ruta: '/dash', icon: 'menu' },
 
     ];
 
