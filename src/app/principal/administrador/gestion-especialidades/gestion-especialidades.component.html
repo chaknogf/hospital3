@@ -1,0 +1,153 @@
+<div class="hud-header">
+  <div class="hud-title">Gesti&oacute;n de Especialidades</div>
+</div>
+
+<div class="action-dock">
+  <span class="dock-hint">Cat&aacute;logo de especialidades del hospital</span>
+  <button class="btn" (click)="abrirNuevo()">+ Nueva</button>
+  <button class="btn" (click)="volver()">Volver</button>
+</div>
+
+<div class="adm-body">
+  @if (error(); as msg) {
+    <div class="alert alert-error">{{ msg }}</div>
+  }
+  @if (success(); as msg) {
+    <div class="alert alert-success">{{ msg }}</div>
+  }
+
+  <div class="adm-grid">
+    <div class="adm-col">
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Filtrar</span>
+        </div>
+        <div class="sec-body">
+          <div class="filter-row">
+            <div class="field">
+              <label class="field-label">Buscar</label>
+              <input class="field-input" type="text" [ngModel]="filtro()" (ngModelChange)="filtro.set($event)" placeholder="Nombre de la especialidad" />
+            </div>
+            <div class="field">
+              <label class="field-label">Estado</label>
+              <select class="field-input" [ngModel]="filtroEstado()" (ngModelChange)="filtroEstado.set($event)">
+                <option value="todas">Todas</option>
+                <option value="activas">Activas</option>
+                <option value="inactivas">Inactivas</option>
+                <option value="sop">Activas + SOP</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="sec-head">
+          <span class="sec-title">Especialidades ({{ filtradas().length }})</span>
+        </div>
+        <div class="sec-body">
+          @if (loading()) {
+            <div class="table-status">Cargando...</div>
+          } @else if (filtradas().length === 0) {
+            <div class="table-status">No se encontraron especialidades</div>
+          } @else {
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Especialidad</th>
+                    <th>Abrev.</th>
+                    <th>C&oacute;digo</th>
+                    <th>Estado</th>
+                    <th>SOP</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (e of filtradas(); track e.id) {
+                    <tr>
+                      <td>{{ e.nombre }}</td>
+                      <td>{{ e.abreviatura || '—' }}</td>
+                      <td><code>{{ e.codigo || '—' }}</code></td>
+                      <td>
+                        <span class="badge" [class.badge-active]="e.estado" [class.badge-inactive]="!e.estado">{{ e.estado ? 'Activa' : 'Inactiva' }}</span>
+                      </td>
+                      <td>
+                        <span class="badge" [class.badge-active]="e.sop" [class.badge-inactive]="!e.sop">{{ e.sop ? 'Sí' : 'No' }}</span>
+                      </td>
+                      <td class="cell-actions">
+                        <button class="btn-sm" (click)="abrirEditar(e)" title="Editar">Editar</button>
+                        <button class="btn-sm" (click)="toggleEstado(e)">{{ e.estado ? 'Desactivar' : 'Activar' }}</button>
+                        <button class="btn-sm" (click)="toggleSop(e)">{{ e.sop ? 'SOP off' : 'SOP on' }}</button>
+                        @if (confirmarEliminar() === e.id) {
+                          <span class="confirm-group">
+                            <span class="confirm-msg">¿Eliminar?</span>
+                            <button class="btn-sm btn-danger" (click)="eliminar(e.id)">S&iacute;</button>
+                            <button class="btn-sm" (click)="cancelarEliminacion()">No</button>
+                          </span>
+                        } @else {
+                          <button class="btn-sm btn-danger" (click)="confirmarEliminacion(e.id)" title="Eliminar">Eliminar</button>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (mostrarFormulario()) {
+  <div class="modal-overlay" (click)="cerrarFormulario()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="sec-head">
+        <span class="sec-title">{{ editando() ? 'Editar' : 'Nueva' }} Especialidad</span>
+        <button class="btn-close" (click)="cerrarFormulario()">&times;</button>
+      </div>
+      <div class="sec-body">
+        @if (error(); as msg) {
+          <div class="alert alert-error">{{ msg }}</div>
+        }
+
+        <div class="field">
+          <label class="field-label">Nombre *</label>
+          <input class="field-input" type="text" maxlength="100" [ngModel]="formNombre()" (ngModelChange)="formNombre.set($event)" placeholder="Ej: Cirug&iacute;a" />
+        </div>
+
+        <div class="field">
+          <label class="field-label">Abreviatura</label>
+          <input class="field-input" type="text" maxlength="10" [ngModel]="formAbreviatura()" (ngModelChange)="formAbreviatura.set($event)" placeholder="Opcional" />
+        </div>
+
+        <div class="field">
+          <label class="field-label">C&oacute;digo</label>
+          <input class="field-input" type="text" maxlength="10" [ngModel]="formCodigo()" (ngModelChange)="formCodigo.set($event)" placeholder="Opcional" />
+        </div>
+
+        <div class="filter-row">
+          <div class="field">
+            <label class="field-label">
+              <input type="checkbox" [ngModel]="formEstado()" (ngModelChange)="formEstado.set($event)" />
+              Estado (activa)
+            </label>
+          </div>
+          <div class="field">
+            <label class="field-label">
+              <input type="checkbox" [ngModel]="formSop()" (ngModelChange)="formSop.set($event)" />
+              SOP (quir&oacute;fano)
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn" (click)="guardar()" [disabled]="guardando()">{{ guardando() ? 'Guardando...' : 'Guardar' }}</button>
+          <button class="btn" (click)="cerrarFormulario()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

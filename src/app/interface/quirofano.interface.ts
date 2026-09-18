@@ -26,18 +26,21 @@ export interface ProcedenciaProcedimiento {
   activo: boolean;
 }
 
-export interface CategoriaProcedimiento {
-  categoria_procedimiento_id: number;
-  codigo: string;
+export interface Especialidad {
+  id: number;
   nombre: string;
-  activo: boolean;
+  abreviatura?: string | null;
+  codigo?: string | null;
+  estado: boolean;
+  sop: boolean;
 }
 
-export interface TipoProcedimiento {
-  tipo_procedimiento_id: number;
+export interface ProcedimientoQuirofano {
+  procedimiento_quirofano_id: number;
   codigo: string;
   nombre: string;
-  categoria_procedimiento_id: number;
+  especialidad_id: number | null;
+  especialidad_nombre?: string | null;
   activo: boolean;
 }
 

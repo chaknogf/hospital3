@@ -76,6 +76,7 @@ export class AdminComponent implements OnInit {
       { nombre: 'Eliminar Paciente', descripcion: 'Eliminar paciente permanentemente', ruta: '/eliminar-paciente', icon: 'remove' },
       { nombre: 'Limpiar CUI', descripcion: 'Limpiar número de CUI de un paciente', ruta: '/limpiar-cui-paciente', icon: 'edit' },
       { nombre: 'Municipios', descripcion: 'Gestionar catálogo de municipios', ruta: '/gestion-municipios', icon: 'archivo' },
+      { nombre: 'Especialidades', descripcion: 'Gestionar catálogo de especialidades (estado y SOP)', ruta: '/gestion-especialidades', icon: 'archivo' },
       { nombre: 'Procedimientos Quirófano', descripcion: 'Gestionar catálogo de procedimientos quirúrgicos', ruta: '/gestion-procedimientos', icon: 'cmedic' },
       { nombre: 'Encamamiento', descripcion: 'Gestionar servicios y camas', ruta: '/gestion-encamamiento', icon: 'ingresoIcon' },
       { nombre: 'Auditoría', descripcion: 'Ver reporte de accesos y actividades', ruta: '/gestion-audit-log', icon: 'nota' },

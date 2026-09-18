@@ -9,8 +9,8 @@ import {
   EstadoCirugia,
   RangoEspecialista,
   ProcedenciaProcedimiento,
-  CategoriaProcedimiento,
-  TipoProcedimiento,
+  Especialidad,
+  ProcedimientoQuirofano,
   QuirofanoNumero,
   IntervencionQuirurgica,
   IntervencionCreate,
@@ -78,69 +78,70 @@ export class QuirofanoService extends BaseApiService {
     ));
   }
 
-  getCategorias(activos = true): Observable<CategoriaProcedimiento[]> {    this.isLoading.set(true);
-    const url = `${this.baseUrl}/quirofano/categorias/?activos=${activos}`;
+  getEspecialidades(): Observable<Especialidad[]> {
+    this.isLoading.set(true);
+    const url = `${this.baseUrl}/especialidades/`;
     const key = this.cacheKey(url);
-    return this.cacheGet(key, this.http.get<CategoriaProcedimiento[]>(url).pipe(
+    return this.cacheGet(key, this.http.get<Especialidad[]>(url).pipe(
       finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener categorías'))
+      catchError(error => this.manejarError(error, 'obtener especialidades'))
     ));
   }
 
-  getTiposProcedimiento(categoriaId?: number, q?: string, activos = true): Observable<TipoProcedimiento[]> {
+  getProcedimientosQuirofano(especialidadId?: number, q?: string, activos = true): Observable<ProcedimientoQuirofano[]> {
     this.isLoading.set(true);
     const params: any = { activos };
-    if (categoriaId) params.categoria_id = categoriaId;
+    if (especialidadId) params.especialidad_id = especialidadId;
     if (q) params.q = q;
-    const url = `${this.baseUrl}/quirofano/tipos/?${new URLSearchParams(params).toString()}`;
+    const url = `${this.baseUrl}/quirofano/procedimientos-quirofano/?${new URLSearchParams(params).toString()}`;
     const key = this.cacheKey(url);
-    return this.cacheGet(key, this.http.get<TipoProcedimiento[]>(url).pipe(
+    return this.cacheGet(key, this.http.get<ProcedimientoQuirofano[]>(url).pipe(
       finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener tipos de procedimiento'))
+      catchError(error => this.manejarError(error, 'obtener procedimientos de quirófano'))
     ));
   }
 
-  crearTipoProcedimiento(data: any): Observable<TipoProcedimiento> {
+  crearProcedimientoQuirofano(data: any): Observable<ProcedimientoQuirofano> {
     this.isLoading.set(true);
-    const url = `${this.baseUrl}/quirofano/tipos/`;
+    const url = `${this.baseUrl}/quirofano/procedimientos-quirofano/`;
     return this.offMutation('POST', url, data).pipe(
       finalize(() => this.isLoading.set(false))
-    ) as Observable<TipoProcedimiento>;
+    ) as Observable<ProcedimientoQuirofano>;
   }
 
-  actualizarTipoProcedimiento(id: number, data: any): Observable<TipoProcedimiento> {
+  actualizarProcedimientoQuirofano(id: number, data: any): Observable<ProcedimientoQuirofano> {
     this.isLoading.set(true);
-    const url = `${this.baseUrl}/quirofano/tipos/${id}`;
+    const url = `${this.baseUrl}/quirofano/procedimientos-quirofano/${id}`;
     return this.offMutation('PUT', url, data).pipe(
       finalize(() => this.isLoading.set(false))
-    ) as Observable<TipoProcedimiento>;
+    ) as Observable<ProcedimientoQuirofano>;
   }
 
-  eliminarTipoProcedimiento(id: number): Observable<any> {
+  eliminarProcedimientoQuirofano(id: number): Observable<any> {
     this.isLoading.set(true);
-    const url = `${this.baseUrl}/quirofano/tipos/${id}`;
+    const url = `${this.baseUrl}/quirofano/procedimientos-quirofano/${id}`;
     return this.offMutation('DELETE', url).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }
 
-  importarTiposCsv(file: File): Observable<any> {
+  importarProcedimientosCsv(file: File): Observable<any> {
     this.isLoading.set(true);
     const formData = new FormData();
     formData.append('file', file, file.name);
-    const url = `${this.baseUrl}/quirofano/tipos/importar-csv`;
+    const url = `${this.baseUrl}/quirofano/procedimientos-quirofano/importar-csv`;
     return this.http.post(url, formData).pipe(
       finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'importar tipos de procedimiento'))
+      catchError(error => this.manejarError(error, 'importar procedimientos de quirófano'))
     );
   }
 
-  truncarTipos(): Observable<any> {
+  truncarProcedimientos(): Observable<any> {
     this.isLoading.set(true);
-    const url = `${this.baseUrl}/quirofano/tipos/truncar`;
+    const url = `${this.baseUrl}/quirofano/procedimientos-quirofano/truncar`;
     return this.http.delete(url).pipe(
       finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'vaciar tipos de procedimiento'))
+      catchError(error => this.manejarError(error, 'vaciar procedimientos de quirófano'))
     );
   }
 

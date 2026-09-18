@@ -11,8 +11,8 @@ import {
   RangoEspecialista,
   ProcedenciaProcedimiento,
   QuirofanoNumero,
-  CategoriaProcedimiento,
-  TipoProcedimiento,
+  Especialidad,
+  ProcedimientoQuirofano,
   IntervencionCreate,
   IntervencionUpdate,
 } from '../../../interface/quirofano.interface';
@@ -21,6 +21,7 @@ import { MedicoOut } from '../../../interface/medicos.interface';
 import { PacienteService } from '../../../registros/patient/paciente.service';
 import { MedicosService } from '../../../std/medicos/medicos.service';
 import { IconService } from '../../../service/icon.service';
+import { EspecialidadesService } from '../../../service/especialidades.service';
 import { QuirofanoService } from '../quirofano.service';
 
 @Component({
@@ -55,22 +56,13 @@ export class QuirofanoFormComponent implements OnInit {
   rangos: RangoEspecialista[] = [];
   procedencias: ProcedenciaProcedimiento[] = [];
   quirofanosNumero: QuirofanoNumero[] = [];
-  categorias: CategoriaProcedimiento[] = [];
-  tipos: TipoProcedimiento[] = [];
+  especialidades: Especialidad[] = [];
+  procedimientosQuirofano: ProcedimientoQuirofano[] = [];
   medicos: MedicoOut[] = [];
-
-  readonly OTRO_VAL = 'OTRO';
-  esOtro: { [campo: string]: boolean } = {
-    procedimiento_principal: false,
-    procedimiento_2: false,
-    procedimiento_3: false,
-    procedimiento_4: false,
-    procedimiento_5: false,
-  };
 
   form: FormGroup = this.fb.group({
     expediente: ['', Validators.required],
-    especialidad_id: [null],
+    especialidad_id: [null, Validators.required],
     procedimiento_principal: ['', Validators.required],
     procedimiento_2: [''],
     procedimiento_3: [''],
@@ -95,6 +87,7 @@ export class QuirofanoFormComponent implements OnInit {
 
   constructor(
     private api: QuirofanoService,
+    private especialidadesApi: EspecialidadesService,
     private pacientesApi: PacienteService,
     private medicosApi: MedicosService,
     private iconService: IconService
@@ -130,35 +123,25 @@ export class QuirofanoFormComponent implements OnInit {
     this.api.getRangosEspecialista().subscribe({ next: d => this.rangos = d, error: () => {} });
     this.api.getProcedencias().subscribe({ next: d => this.procedencias = d, error: () => {} });
     this.api.getQuirofanosNumero().subscribe({ next: d => this.quirofanosNumero = d, error: () => {} });
-    this.api.getCategorias().subscribe({ next: d => this.categorias = d, error: () => {} });
-    this.api.getTiposProcedimiento().subscribe({ next: d => this.tipos = d, error: () => {} });
+    this.especialidadesApi.getEspecialidades(true, true).subscribe({ next: d => this.especialidades = d, error: () => {} });
+    this.api.getProcedimientosQuirofano().subscribe({ next: d => this.procedimientosQuirofano = d, error: () => {} });
   }
 
-  get procedimientos(): TipoProcedimiento[] {
+  // Sugerencias del autocompletado: si hay especialidad, sus procedimientos
+  // más los de "Todas (mixta)"; si no, todo el catálogo.
+  get procedimientos(): ProcedimientoQuirofano[] {
     const esp = this.form.value.especialidad_id;
-    if (!esp) return this.tipos;
-    return this.tipos.filter(t => t.categoria_procedimiento_id === esp);
+    if (!esp) return this.procedimientosQuirofano;
+    return this.procedimientosQuirofano.filter(
+      p => p.especialidad_id === esp || p.especialidad_id == null
+    );
   }
 
   onEspecialidadChange(): void {
     const campos = ['procedimiento_principal', 'procedimiento_2', 'procedimiento_3', 'procedimiento_4', 'procedimiento_5'];
     for (const c of campos) {
-      this.form.patchValue({ [c]: null });
-      this.esOtro[c] = false;
+      this.form.patchValue({ [c]: '' });
     }
-  }
-
-  onProcChange(campo: string): void {
-    const val = this.form.value[campo];
-    if (val === this.OTRO_VAL) {
-      this.esOtro[campo] = true;
-      this.form.patchValue({ [campo]: null });
-    }
-  }
-
-  volverASeleccion(campo: string): void {
-    this.esOtro[campo] = false;
-    this.form.patchValue({ [campo]: null });
   }
 
   cargarMedicos(): void {

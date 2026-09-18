@@ -3,7 +3,7 @@
 </div>
 
 <div class="action-dock">
-  <span class="dock-hint">Cat&aacute;logo de tipos de procedimiento del quir&oacute;fano</span>
+  <span class="dock-hint">Cat&aacute;logo de procedimientos de quir&oacute;fano</span>
   <button class="btn" (click)="abrirNuevo()">+ Nuevo</button>
   <label class="btn button-file" [class.disabled]="importando()">
     {{ importando() ? 'Importando...' : 'Importar CSV' }}
@@ -26,7 +26,7 @@
     <div class="alert alert-info">
       <strong>Resultado de importaci&oacute;n:</strong> {{ r.creados }} creados, {{ r.omitidos }} omitidos.
       @if (r.errores.length > 0) {
-        <span> {{ r.errores.length }} errores. El CSV debe tener las columnas <code>especialidad</code> y <code>procedimiento</code>.</span>
+        <span> {{ r.errores.length }} errores. El CSV debe tener las columnas <code>referencia_especialidad</code> y <code>procedimiento</code>.</span>
       }
     </div>
   }
@@ -45,10 +45,10 @@
             </div>
             <div class="field">
               <label class="field-label">Especialidad</label>
-              <select class="field-input" [ngModel]="categoriaFiltro()" (ngModelChange)="categoriaFiltro.set($event); cargar()">
+              <select class="field-input" [ngModel]="especialidadFiltro()" (ngModelChange)="especialidadFiltro.set($event); cargar()">
                 <option [ngValue]="null">Todas</option>
-                @for (c of categorias(); track c.categoria_procedimiento_id) {
-                  <option [ngValue]="c.categoria_procedimiento_id">{{ c.nombre }}</option>
+                @for (e of especialidades(); track e.id) {
+                  <option [ngValue]="e.id">{{ e.nombre }}</option>
                 }
               </select>
             </div>
@@ -58,12 +58,12 @@
 
       <div class="section-card">
         <div class="sec-head">
-          <span class="sec-title">Procedimientos ({{ tipos().length }})</span>
+          <span class="sec-title">Procedimientos ({{ procedimientosQuirofano().length }})</span>
         </div>
         <div class="sec-body">
           @if (loading()) {
             <div class="table-status">Cargando...</div>
-          } @else if (tipos().length === 0) {
+          } @else if (procedimientosQuirofano().length === 0) {
             <div class="table-status">No se encontraron procedimientos</div>
           } @else {
             <div class="table-wrap">
@@ -78,24 +78,24 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @for (t of tipos(); track t.tipo_procedimiento_id) {
+                  @for (t of procedimientosQuirofano(); track t.procedimiento_quirofano_id) {
                     <tr>
                       <td>{{ t.nombre }}</td>
-                      <td>{{ nombreCategoria(t.categoria_procedimiento_id) }}</td>
+                      <td>{{ nombreEspecialidad(t.especialidad_id) }}</td>
                       <td><code>{{ t.codigo }}</code></td>
                       <td>
                         <span class="badge" [class.badge-active]="t.activo" [class.badge-inactive]="!t.activo">{{ t.activo ? 'Activo' : 'Inactivo' }}</span>
                       </td>
                       <td class="cell-actions">
                         <button class="btn-sm" (click)="abrirEditar(t)" title="Editar">Editar</button>
-                        @if (confirmarEliminar() === t.tipo_procedimiento_id) {
+                        @if (confirmarEliminar() === t.procedimiento_quirofano_id) {
                           <span class="confirm-group">
                             <span class="confirm-msg">¿Eliminar?</span>
-                            <button class="btn-sm btn-danger" (click)="eliminar(t.tipo_procedimiento_id)">S&iacute;</button>
+                            <button class="btn-sm btn-danger" (click)="eliminar(t.procedimiento_quirofano_id)">S&iacute;</button>
                             <button class="btn-sm" (click)="cancelarEliminacion()">No</button>
                           </span>
                         } @else {
-                          <button class="btn-sm btn-danger" (click)="confirmarEliminacion(t.tipo_procedimiento_id)" title="Eliminar">Eliminar</button>
+                          <button class="btn-sm btn-danger" (click)="confirmarEliminacion(t.procedimiento_quirofano_id)" title="Eliminar">Eliminar</button>
                         }
                       </td>
                     </tr>
@@ -123,13 +123,17 @@
         }
 
         <div class="field">
-          <label class="field-label">Especialidad (Categor&iacute;a) *</label>
-          <select class="field-input" [ngModel]="formCategoriaId()" (ngModelChange)="formCategoriaId.set($event); onCategoriaChange()">
+          <label class="field-label">Especialidad *</label>
+          <select class="field-input" [ngModel]="formEspecialidadId()" (ngModelChange)="formEspecialidadId.set($event); onEspecialidadChange()">
             <option [ngValue]="null">Seleccionar especialidad</option>
-            @for (c of categorias(); track c.categoria_procedimiento_id) {
-              <option [ngValue]="c.categoria_procedimiento_id">{{ c.nombre }}</option>
+            <option [ngValue]="MIXTA_VAL">Todas (mixta)</option>
+            @for (e of especialidades(); track e.id) {
+              <option [ngValue]="e.id">{{ e.nombre }}</option>
             }
           </select>
+          @if (formEspecialidadId() === MIXTA_VAL) {
+            <small class="field-hint">Aplica a todas las especialidades (sin especialidad).</small>
+          }
         </div>
 
         <div class="field">

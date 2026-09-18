@@ -105,14 +105,17 @@
       <div class="sec-body">
         <div class="field-row">
           <div class="field">
-            <span class="field-label">Especialidad</span>
+            <span class="field-label">Especialidad *</span>
             <select class="field-input" formControlName="especialidad_id" (change)="onEspecialidadChange()">
-              <option [ngValue]="null">Todas</option>
-              @for (c of categorias; track c.categoria_procedimiento_id) {
-                <option [ngValue]="c.categoria_procedimiento_id">{{ c.nombre }}</option>
+              <option [ngValue]="null">Seleccionar especialidad</option>
+              @for (e of especialidades; track e.id) {
+                <option [ngValue]="e.id">{{ e.nombre }}</option>
               }
             </select>
-            <small class="field-hint">Filtra los procedimientos por especialidad.</small>
+            @if (f['especialidad_id'].touched && f['especialidad_id'].errors) {
+              <small class="field-error">La especialidad es obligatoria</small>
+            }
+            <small class="field-hint">Filtra las sugerencias de procedimientos (incluye "Todas").</small>
           </div>
           <div class="field">
             <span class="field-label">Área del cuerpo intervenida</span>
@@ -127,100 +130,72 @@
         <div class="field-row">
           <div class="field">
             <span class="field-label">Procedimiento principal #1 *</span>
-            @if (!esOtro['procedimiento_principal']) {
-              <select class="field-input" formControlName="procedimiento_principal" (change)="onProcChange('procedimiento_principal')">
-                <option [ngValue]="null">Seleccionar procedimiento</option>
-                @for (t of procedimientos; track t.tipo_procedimiento_id) {
-                  <option [ngValue]="t.nombre">{{ t.nombre }}</option>
-                }
-                <option [ngValue]="OTRO_VAL">Otro (no está en la lista)</option>
-              </select>
-            } @else {
-              <div class="field-inline">
-                <input class="field-input" type="text" formControlName="procedimiento_principal" placeholder="Escriba el procedimiento" />
-                <button type="button" class="btn-inline ghost" (click)="volverASeleccion('procedimiento_principal')" title="Volver a la lista">✕</button>
-              </div>
-            }
+            <input
+              class="field-input"
+              type="text"
+              list="procedimientosQuirofanoList"
+              formControlName="procedimiento_principal"
+              placeholder="Escriba para buscar en el catálogo"
+              autocomplete="off"
+            />
             @if (f['procedimiento_principal'].touched && f['procedimiento_principal'].errors) {
               <small class="field-error">El procedimiento principal es obligatorio</small>
-            }
-            @if (esOtro['procedimiento_principal']) {
-              <small class="field-hint">Especifique los detalles del procedimiento en Observaciones.</small>
             }
           </div>
           <div class="field">
             <span class="field-label">Procedimiento #2</span>
-            @if (!esOtro['procedimiento_2']) {
-              <select class="field-input" formControlName="procedimiento_2" (change)="onProcChange('procedimiento_2')">
-                <option [ngValue]="null">Opcional</option>
-                @for (t of procedimientos; track t.tipo_procedimiento_id) {
-                  <option [ngValue]="t.nombre">{{ t.nombre }}</option>
-                }
-                <option [ngValue]="OTRO_VAL">Otro</option>
-              </select>
-            } @else {
-              <div class="field-inline">
-                <input class="field-input" type="text" formControlName="procedimiento_2" placeholder="Escriba el procedimiento" />
-                <button type="button" class="btn-inline ghost" (click)="volverASeleccion('procedimiento_2')" title="Volver a la lista">✕</button>
-              </div>
-            }
+            <input
+              class="field-input"
+              type="text"
+              list="procedimientosQuirofanoList"
+              formControlName="procedimiento_2"
+              placeholder="Opcional"
+              autocomplete="off"
+            />
           </div>
         </div>
         <div class="field-row">
           <div class="field">
             <span class="field-label">Procedimiento #3</span>
-            @if (!esOtro['procedimiento_3']) {
-              <select class="field-input" formControlName="procedimiento_3" (change)="onProcChange('procedimiento_3')">
-                <option [ngValue]="null">Opcional</option>
-                @for (t of procedimientos; track t.tipo_procedimiento_id) {
-                  <option [ngValue]="t.nombre">{{ t.nombre }}</option>
-                }
-                <option [ngValue]="OTRO_VAL">Otro</option>
-              </select>
-            } @else {
-              <div class="field-inline">
-                <input class="field-input" type="text" formControlName="procedimiento_3" placeholder="Escriba el procedimiento" />
-                <button type="button" class="btn-inline ghost" (click)="volverASeleccion('procedimiento_3')" title="Volver a la lista">✕</button>
-              </div>
-            }
+            <input
+              class="field-input"
+              type="text"
+              list="procedimientosQuirofanoList"
+              formControlName="procedimiento_3"
+              placeholder="Opcional"
+              autocomplete="off"
+            />
           </div>
           <div class="field">
             <span class="field-label">Procedimiento #4</span>
-            @if (!esOtro['procedimiento_4']) {
-              <select class="field-input" formControlName="procedimiento_4" (change)="onProcChange('procedimiento_4')">
-                <option [ngValue]="null">Opcional</option>
-                @for (t of procedimientos; track t.tipo_procedimiento_id) {
-                  <option [ngValue]="t.nombre">{{ t.nombre }}</option>
-                }
-                <option [ngValue]="OTRO_VAL">Otro</option>
-              </select>
-            } @else {
-              <div class="field-inline">
-                <input class="field-input" type="text" formControlName="procedimiento_4" placeholder="Escriba el procedimiento" />
-                <button type="button" class="btn-inline ghost" (click)="volverASeleccion('procedimiento_4')" title="Volver a la lista">✕</button>
-              </div>
-            }
+            <input
+              class="field-input"
+              type="text"
+              list="procedimientosQuirofanoList"
+              formControlName="procedimiento_4"
+              placeholder="Opcional"
+              autocomplete="off"
+            />
           </div>
         </div>
         <div class="field-row">
           <div class="field">
             <span class="field-label">Procedimiento #5</span>
-            @if (!esOtro['procedimiento_5']) {
-              <select class="field-input" formControlName="procedimiento_5" (change)="onProcChange('procedimiento_5')">
-                <option [ngValue]="null">Opcional</option>
-                @for (t of procedimientos; track t.tipo_procedimiento_id) {
-                  <option [ngValue]="t.nombre">{{ t.nombre }}</option>
-                }
-                <option [ngValue]="OTRO_VAL">Otro</option>
-              </select>
-            } @else {
-              <div class="field-inline">
-                <input class="field-input" type="text" formControlName="procedimiento_5" placeholder="Escriba el procedimiento" />
-                <button type="button" class="btn-inline ghost" (click)="volverASeleccion('procedimiento_5')" title="Volver a la lista">✕</button>
-              </div>
-            }
+            <input
+              class="field-input"
+              type="text"
+              list="procedimientosQuirofanoList"
+              formControlName="procedimiento_5"
+              placeholder="Opcional"
+              autocomplete="off"
+            />
           </div>
         </div>
+        <datalist id="procedimientosQuirofanoList">
+          @for (p of procedimientos; track p.procedimiento_quirofano_id) {
+            <option [value]="p.nombre"></option>
+          }
+        </datalist>
       </div>
     </div>
 

@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { QuirofanoService } from '../../../medica/quirofano/quirofano.service';
-import { TipoProcedimiento, CategoriaProcedimiento } from '../../../interface/quirofano.interface';
+import { ProcedimientoQuirofano, Especialidad } from '../../../interface/quirofano.interface';
 
 @Component({
   selector: 'app-gestion-procedimientos',
@@ -23,20 +23,21 @@ export class GestionProcedimientosComponent implements OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  tipos = signal<TipoProcedimiento[]>([]);
-  categorias = signal<CategoriaProcedimiento[]>([]);
+  procedimientosQuirofano = signal<ProcedimientoQuirofano[]>([]);
+  especialidades = signal<Especialidad[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
   success = signal<string | null>(null);
 
   filtro = signal<string>('');
-  categoriaFiltro = signal<number | null>(null);
+  especialidadFiltro = signal<number | null>(null);
 
   mostrarFormulario = signal(false);
   editando = signal<boolean>(false);
   guardando = signal(false);
 
-  formCategoriaId = signal<number | null>(null);
+  readonly MIXTA_VAL = -1;
+  formEspecialidadId = signal<number | null>(null);
   formProcedimiento = signal('');
   formCodigo = signal('');
 
@@ -50,6 +51,7 @@ export class GestionProcedimientosComponent implements OnDestroy {
 
   constructor() {
     this.cargar();
+    this.cargarEspecialidades();
   }
 
   ngOnDestroy(): void {
@@ -63,25 +65,25 @@ export class GestionProcedimientosComponent implements OnDestroy {
 
     const params: any = { activos: true, limit: 5000 };
     const q = this.filtro();
-    const cat = this.categoriaFiltro();
+    const esp = this.especialidadFiltro();
     if (q) params.q = q;
-    if (cat) params.categoria_id = cat;
+    if (esp) params.especialidad_id = esp;
 
-    this.api.getTiposProcedimiento(cat ?? undefined, q || undefined).pipe(takeUntil(this.destroy$)).subscribe({
+    this.api.getProcedimientosQuirofano(esp ?? undefined, q || undefined).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
-        this.tipos.set(res);
+        this.procedimientosQuirofano.set(res);
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('Error al cargar tipos de procedimiento');
+        this.error.set('Error al cargar procedimientos de quirófano');
         this.loading.set(false);
       }
     });
   }
 
-  cargarCategorias(): void {
-    this.api.getCategorias().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res) => this.categorias.set(res),
+  cargarEspecialidades(): void {
+    this.api.getEspecialidades().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => this.especialidades.set(res),
       error: () => {}
     });
   }
@@ -89,25 +91,22 @@ export class GestionProcedimientosComponent implements OnDestroy {
   abrirNuevo(): void {
     this.editando.set(false);
     this.idOriginal.set(null);
-    this.formCategoriaId.set(null);
+    this.formEspecialidadId.set(null);
     this.formProcedimiento.set('');
     this.formCodigo.set('');
     this.error.set(null);
-    this.cargarCategorias();
+    this.cargarEspecialidades();
     this.mostrarFormulario.set(true);
   }
 
-  abrirEditar(t: TipoProcedimiento): void {
+  abrirEditar(t: ProcedimientoQuirofano): void {
     this.editando.set(true);
-    this.idOriginal.set(t.tipo_procedimiento_id);
-    this.formCategoriaId.set(t.categoria_procedimiento_id);
-    const parteProcedimiento = t.nombre.includes(' - ')
-      ? t.nombre.split(' - ').slice(1).join(' - ')
-      : t.nombre;
-    this.formProcedimiento.set(parteProcedimiento);
+    this.idOriginal.set(t.procedimiento_quirofano_id);
+    this.formEspecialidadId.set(t.especialidad_id == null ? this.MIXTA_VAL : t.especialidad_id);
+    this.formProcedimiento.set(t.nombre);
     this.formCodigo.set(t.codigo);
     this.error.set(null);
-    this.cargarCategorias();
+    this.cargarEspecialidades();
     this.mostrarFormulario.set(true);
   }
 
@@ -116,16 +115,16 @@ export class GestionProcedimientosComponent implements OnDestroy {
     this.error.set(null);
   }
 
-  onCategoriaChange(): void {
+  onEspecialidadChange(): void {
     this.error.set(null);
   }
 
   guardar(): void {
-    const categoriaId = this.formCategoriaId();
+    const especialidadId = this.formEspecialidadId();
     const procedimiento = this.formProcedimiento().trim();
 
-    if (!categoriaId) {
-      this.error.set('Debe seleccionar una especialidad (categoría)');
+    if (especialidadId === null || especialidadId === undefined) {
+      this.error.set('Debe seleccionar una especialidad');
       return;
     }
     if (!procedimiento) {
@@ -133,23 +132,20 @@ export class GestionProcedimientosComponent implements OnDestroy {
       return;
     }
 
-    const categoria = this.categorias().find(c => c.categoria_procedimiento_id === categoriaId);
-    const nombre = `${categoria?.nombre ?? 'Especialidad'} - ${procedimiento}`;
-
     this.guardando.set(true);
     this.error.set(null);
     this.success.set(null);
 
     const payload: any = {
-      nombre,
-      categoria_procedimiento_id: categoriaId,
+      nombre: procedimiento,
+      especialidad_id: especialidadId === this.MIXTA_VAL ? null : especialidadId,
       codigo: this.formCodigo().trim() || undefined,
       activo: true
     };
 
     const obs = this.editando() && this.idOriginal()
-      ? this.api.actualizarTipoProcedimiento(this.idOriginal()!, payload)
-      : this.api.crearTipoProcedimiento(payload);
+      ? this.api.actualizarProcedimientoQuirofano(this.idOriginal()!, payload)
+      : this.api.crearProcedimientoQuirofano(payload);
 
     obs.pipe(finalize(() => this.guardando.set(false)), takeUntil(this.destroy$)).subscribe({
       next: () => {
@@ -176,7 +172,7 @@ export class GestionProcedimientosComponent implements OnDestroy {
     this.error.set(null);
     this.success.set(null);
 
-    this.api.eliminarTipoProcedimiento(id).pipe(finalize(() => this.loading.set(false)), takeUntil(this.destroy$)).subscribe({
+    this.api.eliminarProcedimientoQuirofano(id).pipe(finalize(() => this.loading.set(false)), takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.success.set('Procedimiento eliminado');
         this.confirmarEliminar.set(null);
@@ -199,7 +195,7 @@ export class GestionProcedimientosComponent implements OnDestroy {
     this.error.set(null);
     this.success.set(null);
 
-    this.api.importarTiposCsv(file).pipe(finalize(() => this.importando.set(false)), takeUntil(this.destroy$)).subscribe({
+    this.api.importarProcedimientosCsv(file).pipe(finalize(() => this.importando.set(false)), takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.resultadoImport.set(res);
         this.success.set(`Importación completada: ${res.creados} creados, ${res.omitidos} omitidos`);
@@ -217,7 +213,7 @@ export class GestionProcedimientosComponent implements OnDestroy {
 
   truncar(): void {
     if (!this.confirmarTruncar) { this.confirmarTruncar = true; return; }
-    if (!confirm('¿Eliminar TODOS los tipos y categorías de procedimiento?\n\nEsta acción es irreversible.')) {
+    if (!confirm('¿Eliminar TODOS los procedimientos de quirófano?\n\nEsta acción es irreversible.')) {
       this.confirmarTruncar = false;
       return;
     }
@@ -225,10 +221,10 @@ export class GestionProcedimientosComponent implements OnDestroy {
     this.error.set(null);
     this.success.set(null);
 
-    this.api.truncarTipos().pipe(finalize(() => this.loading.set(false)), takeUntil(this.destroy$)).subscribe({
+    this.api.truncarProcedimientos().pipe(finalize(() => this.loading.set(false)), takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.confirmarTruncar = false;
-        this.success.set('Tabla de tipos de procedimiento vaciada');
+        this.success.set('Tabla de procedimientos de quirófano vaciada');
         this.cargar();
       },
       error: (err: any) => {
@@ -238,8 +234,9 @@ export class GestionProcedimientosComponent implements OnDestroy {
     });
   }
 
-  nombreCategoria(id: number): string {
-    return this.categorias().find(c => c.categoria_procedimiento_id === id)?.nombre ?? '—';
+  nombreEspecialidad(id: number | null): string {
+    if (id == null) return 'Todas (mixta)';
+    return this.especialidades().find(c => c.id === id)?.nombre ?? '—';
   }
 
   volver(): void {
