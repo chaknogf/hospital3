@@ -1,16 +1,11 @@
-import { roles } from './../../../enum/roles.enum';
 import { of } from 'rxjs';
 import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../service/api.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { CrearUsuario, Passreset, Usuario, UsuarioOut } from '../../../interface/usuarios.interface';
 import { catchError, finalize, takeUntil } from 'rxjs';
-import { addIcon, removeIcon, menuIcon, cancelIcon, findIcon, searchIcon, arrowDown, tablaShanonIcon, editIcon, skipLeft } from '../../../shared/icons/svg-icon';
 import { Subject } from 'rxjs';
-import { Values } from './../../../enum/roles.enum';
 
 @Component({
   selector: 'app-recuperar',
@@ -21,41 +16,47 @@ import { Values } from './../../../enum/roles.enum';
   imports: [ReactiveFormsModule, FormsModule]
 })
 
-export class RecuperarComponent implements OnInit {
+export class RecuperarComponent implements OnInit, OnDestroy {
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private api = inject(ApiService);
   private fb = inject(FormBuilder);
-  private sanitizer = inject(DomSanitizer);
 
-  form: FormGroup;
   private destroy$ = new Subject<void>();
 
-  usuario: CrearUsuario | null = null;
-  rol: Values[] = roles;
-
   // ======= SEÑALES =======
-  enEdicion = signal(false);
+  modo = signal<'solicitar' | 'restablecer'>('solicitar');
+  enviado = signal(false);
+  restablecido = signal(false);
   isLoading = signal(false);
   error = signal<string | null>(null);
 
+  solicitarForm: FormGroup;
+  restablecerForm: FormGroup;
 
-  // ======= ICONOS SVG =======
-  addIcon!: SafeHtml;
-  removeIcon!: SafeHtml;
-  saveIcon!: SafeHtml;
-  cancelIcon!: SafeHtml;
-  findIcon!: SafeHtml;
-  faceidicon!: SafeHtml;
-  touchicon!: SafeHtml;
+  emailEnlace = '';
+  verPassword = false;
+  verConfirmacion = false;
 
   constructor() {
-    this.form = this.crearFormulario();
+    this.solicitarForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]]
+    });
+    this.restablecerForm = this.fb.group({
+      password: ['', [Validators.required, Validators.minLength(4)]],
+      confirmacion: ['', [Validators.required]]
+    });
   }
 
-  ngOnInit() {
-
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe(params => {
+      this.emailEnlace = params.get('email') ?? '';
+      const token = params.get('token') ?? '';
+      if (token && this.emailEnlace) {
+        this.modo.set('restablecer');
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -63,57 +64,74 @@ export class RecuperarComponent implements OnInit {
     this.destroy$.complete();
   }
 
-  // ======= FORMULARIO =======
-  private crearFormulario(): FormGroup {
-    return this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(4)]]
-    });
-  }
-
-
-  guardar(): void {
-    if (this.form.invalid) {
-      this.error.set('Completa los campos requeridos');
+  // ======= PASO 1: SOLICITAR ENLACE =======
+  solicitar(): void {
+    if (this.solicitarForm.invalid) {
+      this.error.set('Ingresa un correo electrónico válido');
       return;
     }
 
-    const data = this.form.value as CrearUsuario;
-
-    this.recuperar(data);
-  }
-
-
-
-
-  private recuperar(usuario: Passreset): void {
+    const email = this.solicitarForm.value.email as string;
     this.isLoading.set(true);
     this.error.set(null);
-    this.api.passReset(usuario)
+
+    this.api.solicitarRecuperacion(email)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => this.isLoading.set(false)),
         catchError(err => {
-          console.error('error al restablecer: ', err);
-          this.error.set('No se puede restablecer');
+          console.error('error al solicitar recuperación: ', err);
+          this.error.set('Hubo un problema. Intenta nuevamente en unos momentos.');
           return of(null);
         })
       )
       .subscribe(response => {
         if (!response) return;
-        if (response.queued) {
-          this.error.set('Sin conexión al servidor. Intente de nuevo.');
-          return;
-        }
-        console.log('Usuario Restablecido: ', response);
-        this.volver();
-      })
+        this.enviado.set(true);
+      });
   }
 
-  volver(): void {
-    this.router.navigate(['/usuarios']);
+  // ======= PASO 2: RESTABLECER CON EL ENLACE =======
+  guardar(): void {
+    const f = this.restablecerForm.value;
+    if (this.restablecerForm.invalid) {
+      this.error.set('La contraseña debe tener al menos 4 caracteres');
+      return;
+    }
+    if (f.password !== f.confirmacion) {
+      this.error.set('Las contraseñas no coinciden');
+      return;
+    }
+
+    const token = this.route.snapshot.queryParamMap.get('token') ?? '';
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    this.api.confirmarRecuperacion(this.emailEnlace, token, f.password)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.isLoading.set(false)),
+        catchError(err => {
+          console.error('error al restablecer: ', err);
+          this.error.set(
+            err?.error?.detail ?? 'El enlace es inválido o ha expirado. Solicita uno nuevo.'
+          );
+          return of(null);
+        })
+      )
+      .subscribe(response => {
+        if (!response) return;
+        this.restablecido.set(true);
+      });
   }
 
+  volverAlInicio(): void {
+    this.router.navigate(['/']);
+  }
 
+  solicitarOtraVez(): void {
+    this.enviado.set(false);
+    this.solicitarForm.reset();
+  }
 
 }

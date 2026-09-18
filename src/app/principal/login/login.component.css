@@ -61,6 +61,38 @@
   border-color: rgba(96,165,250,0.28);
 }
 
+/* ── CAMPO CON TOGGLE DE CONTRASEÑA ── */
+.mlogin__pw {
+  position: relative;
+}
+
+.mlogin__pw .mlogin__input {
+  padding-right: 74px;
+}
+
+.mlogin__pw-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #7b9cc4;
+  background: transparent;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.mlogin__pw-toggle:hover {
+  color: #cfe3ff;
+  background: rgba(255,255,255,0.05);
+}
+
 .mlogin__btn {
   font-family: 'Inter', sans-serif;
   font-size: 14px;
@@ -108,6 +140,22 @@
   background: linear-gradient(180deg, #1e3a5f 0%, #1a2d4a 100%);
   border-top-color: rgba(255,255,255,0.05);
   border-bottom-color: rgba(0,0,0,0.2);
+}
+
+.mlogin__spinner {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  margin-right: 8px;
+  vertical-align: -2px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: mlogin-spin 0.7s linear infinite;
+}
+
+@keyframes mlogin-spin {
+  to { transform: rotate(360deg); }
 }
 
 .mlogin__forgot {

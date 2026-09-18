@@ -26,7 +26,17 @@
     <div class="alert alert-info">
       <strong>Resultado de importaci&oacute;n:</strong> {{ r.creados }} creados, {{ r.omitidos }} omitidos.
       @if (r.errores.length > 0) {
-        <span> {{ r.errores.length }} errores. El CSV debe tener las columnas <code>referencia_especialidad</code> y <code>procedimiento</code>.</span>
+        <div>
+          <span>{{ r.errores.length }} errores.</span>
+          <ul class="import-errors">
+            @for (e of r.errores.slice(0, 5); track $index) {
+              <li>Fila {{ e.fila }}: {{ e.error }}</li>
+            }
+            @if (r.errores.length > 5) {
+              <li>... y {{ r.errores.length - 5 }} m&aacute;s.</li>
+            }
+          </ul>
+        </div>
       }
     </div>
   }

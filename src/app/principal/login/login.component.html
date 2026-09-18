@@ -1,37 +1,53 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="mlogin">
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="mlogin" novalidate>
   <div class="mlogin__group">
-    <label class="mlogin__label">Usuario</label>
+    <label class="mlogin__label" for="login-user">Usuario</label>
     <input
+      id="login-user"
       type="text"
       class="mlogin__input"
       formControlName="username"
       placeholder="Ingrese su usuario"
       autocomplete="username"
+      autofocus
+      aria-label="Usuario"
     />
   </div>
 
   <div class="mlogin__group">
-    <label class="mlogin__label">Contrasena</label>
-    <input
-      type="password"
-      class="mlogin__input"
-      formControlName="password"
-      placeholder="Ingrese su contrasena"
-      autocomplete="current-password"
-    />
+    <label class="mlogin__label" for="login-pass">Contraseña</label>
+    <div class="mlogin__pw">
+      <input
+        id="login-pass"
+        [type]="verPassword ? 'text' : 'password'"
+        class="mlogin__input"
+        formControlName="password"
+        placeholder="Ingrese su contraseña"
+        autocomplete="current-password"
+        aria-label="Contraseña"
+      />
+      <button
+        type="button"
+        class="mlogin__pw-toggle"
+        [attr.aria-label]="verPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+        (click)="alternar()"
+      >
+        {{ verPassword ? 'Ocultar' : 'Mostrar' }}
+      </button>
+    </div>
   </div>
 
   @if (errorMessage) {
-    <div class="mlogin__error">
+    <div class="mlogin__error" role="alert">
       {{ errorMessage }}
     </div>
   }
 
   <button type="submit" class="mlogin__btn" [disabled]="loading">
     @if (!loading) {
-      Iniciar sesion
+      Iniciar sesión
     } @else {
-      Procesando...
+      <span class="mlogin__spinner" aria-hidden="true"></span>
+      Ingresando...
     }
   </button>
 
@@ -39,7 +55,8 @@
     type="button"
     class="mlogin__forgot"
     (click)="reset()"
+    aria-label="Recuperar contraseña"
   >
-    Olvidaste tu contrasena?
+    ¿Olvidaste tu contraseña?
   </button>
 </form>

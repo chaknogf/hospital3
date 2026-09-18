@@ -11,6 +11,8 @@ import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { CuiPipe } from '../../../pipes/cui.pipe';
 import { PacienteService } from '../paciente.service';
+import { PrestamosService } from '../../prestamos/prestamos.service';
+import { Prestamo } from '../../../interface/prestamos';
 import { HighlightPipe } from '../../../pipes/highlight.pipe';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -73,6 +75,9 @@ export class PacientesComponent implements OnInit, OnDestroy {
   pacienteSeleccionado = 0;
   @ViewChild('dialogAdmision') dialog!: ElementRef<HTMLDialogElement>;
 
+  // ── Préstamos activos (indicador de expedientes prestados) ─
+  prestamosActivos: Prestamo[] = [];
+
   optionsTipoConsulta = [
     { nombre: 'Coex', valor: 1, icon: '🏥' },
     { nombre: 'Emergencia', valor: 2, icon: '🚨' },
@@ -90,7 +95,8 @@ export class PacientesComponent implements OnInit, OnDestroy {
   constructor(
     private api: PacienteService,
     private router: Router,
-    private iconService: IconService
+    private iconService: IconService,
+    private prestamosService: PrestamosService
   ) {
     this.icons = {
       editPerson: this.iconService.getIcon('editPerson'),
@@ -112,12 +118,14 @@ export class PacientesComponent implements OnInit, OnDestroy {
       skipRight: this.iconService.getIcon('skipRight'),
       calendar: this.iconService.getIcon('calendarIcon'),
       ghost: this.iconService.getIcon('ghostIcon'),
+      prestar: this.iconService.getIcon('prestarIcon'),
     };
   }
 
   // ══════════════════════════════════════════════════════════
   ngOnInit(): void {
     this.api.pacientes$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.pacientes = data; this.cdr.markForCheck(); });
+    this.cargarPrestamosActivos();
     this.cargarPacientes();
   }
 
@@ -131,6 +139,7 @@ export class PacientesComponent implements OnInit, OnDestroy {
   // ══════════════════════════════════════════════════════════
   cargarPacientes(): void {
     this.cargando = true;
+    this.cargarPrestamosActivos();
 
     this.api.getPacientes(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
 
@@ -355,15 +364,49 @@ export class PacientesComponent implements OnInit, OnDestroy {
   // utras opciones
   // ══════════════════════════════════════════════════════════
 
-  defuncion() {
-    console.log('defuncion');
-  }
+defuncion() {
+  console.log('defuncion');
+}
 
-  prestar(id: number) {
-    this.router.navigate(['/prestamo', id]);
-  }
+prestar(id: number) {
+  this.router.navigate(['/prestamo', id], {
+    queryParams: { origen: 'paciente' }
+  });
+}
 
-  trackById(index: number, item: any): any {
-    return item.id ?? index;
-  }
+// ══════════════════════════════════════════════════════════
+// PRÉSTAMOS — indicador de expedientes prestados
+// ══════════════════════════════════════════════════════════
+
+cargarPrestamosActivos(): void {
+  this.prestamosService.obtenerPrestamosActivos().pipe(takeUntil(this.destroy$)).subscribe({
+    next: prestamos => {
+      this.prestamosActivos = prestamos;
+      this.cdr.markForCheck();
+    },
+    error: () => {
+      this.prestamosActivos = [];
+      this.cdr.markForCheck();
+    }
+  });
+}
+
+/** Devuelve el préstamo activo de un paciente (si tiene el expediente prestado). */
+prestamoActivo(idPaciente: number): Prestamo | null {
+  return this.prestamosActivos.find(p => p.id_paciente === idPaciente) ?? null;
+}
+
+/** El préstamo superó la fecha límite y no ha sido devuelto. */
+prestamoVencido(p: Prestamo): boolean {
+  return !p.fecha_devolucion && !!p.fecha_limite && new Date(p.fecha_limite) < new Date();
+}
+
+/** Ir a editar el préstamo activo del paciente. */
+irPrestamo(p: Prestamo): void {
+  this.router.navigate(['/editarPrestamo', p.id]);
+}
+
+trackById(index: number, item: any): any {
+  return item.id ?? index;
+}
 }

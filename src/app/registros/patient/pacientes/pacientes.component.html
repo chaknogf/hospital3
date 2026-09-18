@@ -211,6 +211,27 @@
                 ></span>
               </div>
             }
+            @let prestamo = prestamoActivo(paciente.id);
+            @if (prestamo) {
+              <div
+                class="prestamo-badge"
+                [class.prestamo-badge--vencido]="prestamoVencido(prestamo)"
+                (click)="irPrestamo(prestamo)"
+                title="Expediente prestado — click para editar"
+              >
+                <span class="prestamo-badge__icon">📁</span>
+                {{
+                  prestamoVencido(prestamo)
+                    ? "Prestado · vencido"
+                    : "Expediente prestado"
+                }}
+                @if (prestamo.fecha_limite) {
+                  <span class="prestamo-badge__fecha">{{
+                    prestamo.fecha_limite | date: "dd/MM"
+                  }}</span>
+                }
+              </div>
+            }
             @if (paciente?.pasaporte) {
               <div>
                 <strong>Pasaporte:</strong>
@@ -258,6 +279,15 @@
 
           <td class="secundario">
             <div class="d-flex gap-1">
+              @if (!prestamoActivo(paciente.id) && paciente.estado === "V") {
+                <button
+                  (click)="prestar(paciente.id)"
+                  data-label="Prestar expediente"
+                  title="Prestar expediente"
+                >
+                  <span [innerHTML]="icons['prestar']"></span>
+                </button>
+              }
               <button (click)="editarPaciente(paciente.id)" data-label="Editar">
                 <span [innerHTML]="icons['edit']"></span>
               </button>

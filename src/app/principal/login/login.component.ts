@@ -36,6 +36,12 @@ export class LoginComponent implements OnDestroy {
     });
   }
 
+  verPassword = false;
+
+  alternar: () => void = () => {
+    this.verPassword = !this.verPassword;
+  };
+
   onSubmit() {
     if (this.loginForm.invalid) {
       this.errorMessage = 'Por favor complete todos los campos.';

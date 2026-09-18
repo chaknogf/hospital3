@@ -1,4 +1,6 @@
-<section class="bg-stars">
+<section class="bg-stars" aria-hidden="true">
+  <span class="star"></span>
+  <span class="star"></span>
   <span class="star"></span>
   <span class="star"></span>
   <span class="star"></span>
@@ -11,27 +13,57 @@
       <span [innerHTML]="logoicon"></span>
       <span class="landing-header__title">MedicalApp</span>
     </div>
-    <nav class="landing-header__nav">
-      <a class="landing-header__link landing-header__link--active" href="#top">Inicio</a>
+    <nav class="landing-header__nav" aria-label="Navegación principal">
+      <a class="landing-header__link landing-header__link--active" href="#inicio">Inicio</a>
+      <a class="landing-header__link" href="#caracteristicas">Características</a>
+      <a class="landing-header__link" href="#ayuda">Ayuda</a>
     </nav>
   </header>
 
   <!-- Hero -->
-  <section class="landing-hero">
-    <div class="landing-hero__card">
+  <main class="landing-hero" id="inicio">
+    <div class="landing-hero__content">
+      <p class="landing-tag">Sistema Hospitalario Nacional</p>
+
       <h1 class="landing-hero__heading">
         Bienvenido a <span class="landing-hero__accent">MedicalApp</span>
       </h1>
+
       <p class="landing-hero__sub">
-        Gestion de pacientes y expedientes electronicos modernos.
+        Gestión de pacientes y expedientes electrónicos moderna, segura y rápida.
       </p>
+
       <div class="landing-hero__login">
         <app-login></app-login>
       </div>
+
+      <ul class="landing-feats" id="caracteristicas">
+        <li class="landing-feat">
+          <span class="landing-feat__dot" aria-hidden="true"></span>
+          Expediente electrónico
+        </li>
+        <li class="landing-feat">
+          <span class="landing-feat__dot" aria-hidden="true"></span>
+          Acceso seguro 24/7
+        </li>
+        <li class="landing-feat">
+          <span class="landing-feat__dot" aria-hidden="true"></span>
+          Citas y consultas
+        </li>
+      </ul>
     </div>
 
-    <div class="landing-hero__illustration">
-      <div [innerHTML]="svgHome"></div>
+    <div class="landing-hero__visual">
+      <div class="landing-hero__illustration" [innerHTML]="svgHome"></div>
+      <p class="landing-help" id="ayuda">
+        ¿Problemas para ingresar?
+        <a class="landing-help__link" href="/resetpass">Recupera tu contraseña</a>
+      </p>
     </div>
-  </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <p>© 2026 Sistema Hospitalario Nacional &middot; MedicalApp</p>
+  </footer>
 </div>

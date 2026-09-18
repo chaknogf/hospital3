@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap, catchError, finalize } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { tap, catchError, finalize, switchMap } from 'rxjs/operators';
 import { BaseApiService, PaginationState } from '../../service/base-api.service';
 import {
   Prestamo,
@@ -51,6 +51,31 @@ export class PrestamosService extends BaseApiService {
         }),
         catchError(error => this.manejarError(error, 'obtener préstamos'))
       );
+  }
+
+  // =========================================================
+  // PRESTAMOS ACTIVOS (para indicadores en listados)
+  // No toca prestamosSubject ni total para no pisar el listado activo.
+  // =========================================================
+
+  obtenerPrestamosActivos(): Observable<Prestamo[]> {
+    const limite = 100;
+
+    const acumular = (skip: number, acumulado: Prestamo[]): Observable<Prestamo[]> => {
+      const params = this.limpiarParametros({ activo: true, skip, limit: limite });
+      return this.http
+        .get<PrestamoListResponse>(`${this.baseUrl}/prestamos/`, { params })
+        .pipe(
+          switchMap(res => {
+            const items = acumulado.concat(res.items);
+            const hayMas = items.length < res.total && res.items.length === limite;
+            return hayMas ? acumular(skip + limite, items) : of(items);
+          }),
+          catchError(error => this.manejarError(error, 'obtener préstamos activos'))
+        );
+    };
+
+    return acumular(0, []);
   }
 
   // =========================================================

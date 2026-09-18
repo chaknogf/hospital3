@@ -310,9 +310,22 @@ export class ApiService {
     );
   }
 
-  passReset(user: any): Observable<any> {
+  solicitarRecuperacion(email: string): Observable<any> {
     this.isLoading.set(true);
-    return this.offMutation('PATCH', `${this.baseUrl}/users/recuperar`, user).pipe(
+    return this.http.post<any>(
+      `${this.baseUrl}/users/recuperar/solicitar`, { email }
+    ).pipe(
+      catchError(error => this.manejarError(error, 'solicitar recuperación de contraseña')),
+      finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  confirmarRecuperacion(email: string, token: string, password: string): Observable<any> {
+    this.isLoading.set(true);
+    return this.http.post<any>(
+      `${this.baseUrl}/users/recuperar/confirmar`, { email, token, password }
+    ).pipe(
+      catchError(error => this.manejarError(error, 'confirmar recuperación de contraseña')),
       finalize(() => this.isLoading.set(false))
     );
   }

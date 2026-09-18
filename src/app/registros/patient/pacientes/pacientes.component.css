@@ -284,3 +284,39 @@ mark {
   border: none;
   width: 40px;
 }
+/* ── Indicador de expediente prestado ── */
+.prestamo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 40px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  color: var(--theme-accent, #10b981);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  transition: filter 0.2s ease;
+}
+
+.prestamo-badge:hover {
+  filter: brightness(1.2);
+}
+
+.prestamo-badge__icon {
+  font-size: 0.7rem;
+}
+
+.prestamo-badge__fecha {
+  opacity: 0.75;
+  font-weight: 600;
+}
+
+.prestamo-badge--vencido {
+  color: var(--theme-danger, #ef4444);
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.5);
+}

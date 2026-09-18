@@ -5,9 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { PrestamosService } from '../prestamos.service';
 import { ConsultaService } from '../../consultas/consultas.service';
+import { PacienteService } from '../../patient/paciente.service';
 import { PrestamoCreate, PrestamoUpdate, Prestamo } from '../../../interface/prestamos';
 import { ConsultaOut } from '../../../interface/consultas';
-import { Nombre } from '../../../interface/interfaces';
+import { Nombre, Paciente } from '../../../interface/interfaces';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -23,6 +24,7 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
 
   private prestamosService = inject(PrestamosService);
   private consultaService = inject(ConsultaService);
+  private pacienteService = inject(PacienteService);
   private route = inject(ActivatedRoute);
   readonly router = inject(Router);
   private location = inject(Location);
@@ -32,13 +34,14 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
 
   isLoading = this.prestamosService.isLoading;
   consulta = signal<ConsultaOut | null>(null);
+  paciente = signal<Paciente | null>(null);
   cargandoConsulta = signal(true);
   errorCarga = signal<string | null>(null);
   mensaje = signal<{ texto: string; tipo: 'success' | 'error' } | null>(null);
   prestamoCreado = signal<Prestamo | null>(null);
 
   // ── Modo ──────────────────────────────────────────────
-  // 'crear'  → ruta /prestamo/:idConsulta
+  // 'crear'  → ruta /prestamo/:id  (origen: paciente por defecto, o consulta vía ?origen=consulta)
   // 'editar' → ruta /editarPrestamo/:idPrestamo
   modoEditar = false;
   idPrestamo: number | null = null;
@@ -78,13 +81,51 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
       this.idPrestamo = id;
       this.cargarPrestamo(id);
     } else {
-      this.cargarConsulta(id);
+      const origen = this.route.snapshot.queryParamMap.get('origen');
+      if (origen === 'consulta') {
+        this.cargarConsulta(id);
+      } else {
+        this.cargarPaciente(id);
+      }
     }
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // =========================================================
+  // MODO CREAR — carga paciente (origen principal) y auto-completa
+  // =========================================================
+
+  private cargarPaciente(idPaciente: number): void {
+    this.cargandoConsulta.set(true);
+    this.errorCarga.set(null);
+
+    this.pacienteService.getPaciente(idPaciente).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (paciente) => {
+        this.autoCompletarPaciente(paciente);
+        this.cargandoConsulta.set(false);
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.errorCarga.set('No se pudo cargar el paciente.');
+        this.cargandoConsulta.set(false);
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  private autoCompletarPaciente(paciente: Paciente): void {
+    this.paciente.set(paciente);
+    this.form.id_paciente = paciente.id;
+    this.form.expediente = paciente.expediente ?? '';
+    this.form.id_consulta = null;
+    this.form.fecha_prestamo = this.aDateTimeLocal(new Date().toISOString());
+    this.form.fecha_limite = this.aDateTimeLocal(
+      new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString()
+    );
   }
 
   // =========================================================
@@ -115,6 +156,9 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
     this.form.id_paciente = consulta.paciente_id ?? consulta.paciente?.id ?? 0;
     this.form.expediente = consulta.expediente ?? consulta.paciente?.expediente ?? '';
     this.form.fecha_prestamo = this.aDateTimeLocal(new Date().toISOString());
+    this.form.fecha_limite = this.aDateTimeLocal(
+      new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString()
+    );
   }
 
   // =========================================================
@@ -251,10 +295,10 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
       solicitante: this.form.solicitante?.trim() || null,
       motivo: this.form.motivo?.trim() || null,
       tipo_documento: this.form.tipo_documento || null,
-      activo: this.form.activo,
       ubicacion: this.form.ubicacion?.trim() || null,
       nota: this.form.nota?.trim() || null,
-      // usuario_recibe lo asigna el backend cuando llega fecha_devolucion
+      // usuario_recibe lo asigna el backend cuando llega fecha_devolucion;
+      // activo lo administra el backend según fecha_devolucion (no se envía).
     };
 
     this.prestamosService.actualizarPrestamo(this.idPrestamo, payload).pipe(takeUntil(this.destroy$)).subscribe({
@@ -277,6 +321,44 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
   // =========================================================
   // UTILIDADES
   // =========================================================
+
+  /** Nombre del paciente según el origen (paciente o consulta). */
+  nombrePaciente(): string {
+    if (this.paciente()) return this.construirNombre(this.paciente()!.nombre);
+    return this.construirNombre(this.consulta()?.paciente?.nombre);
+  }
+
+  /** Estado visual del préstamo en edición. */
+  estadoPrestamo(): 'devuelto' | 'vencido' | 'prestado' {
+    if (this.formUpdate.fecha_devolucion) return 'devuelto';
+    if (this.form.fecha_limite && new Date(this.form.fecha_limite) < new Date()) {
+      return 'vencido';
+    }
+    return 'prestado';
+  }
+
+  /** Carga 'ahora' en el campo de devolución (sin guardar). */
+  ponerDevolucionAhora(): void {
+    this.formUpdate.fecha_devolucion = this.aDateTimeLocal(new Date().toISOString());
+  }
+
+  /** Limpia la devolución para reabrir el préstamo (se persiste al guardar). */
+  reabrirDevolucion(): void {
+    this.formUpdate.fecha_devolucion = null;
+  }
+
+  /** Inicial del paciente para el avatar. */
+  inicialPaciente(): string {
+    const nombre = this.nombrePaciente().trim();
+    return nombre ? nombre.charAt(0).toUpperCase() : '?';
+  }
+
+  /** Registra la devolución con fecha/hora actual y guarda. */
+  registrarDevolucion(): void {
+    if (this.formUpdate.fecha_devolucion) return;
+    this.formUpdate.fecha_devolucion = this.aDateTimeLocal(new Date().toISOString());
+    this.guardar();
+  }
 
   construirNombre(nombre?: Nombre): string {
     if (!nombre) return '';

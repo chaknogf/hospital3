@@ -247,7 +247,9 @@ export class ConsultasComponent implements OnInit, OnDestroy {
   }
 
   prestar(id: number) {
-    this.router.navigate(['/prestamo', id]);
+    this.router.navigate(['/prestamo', id], {
+      queryParams: { origen: 'consulta' }
+    });
   }
 
   trackById(index: number, item: any): any {

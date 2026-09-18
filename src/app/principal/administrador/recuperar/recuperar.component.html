@@ -1,53 +1,169 @@
 <div class="auth-wrapper">
-  <!-- CARD -->
   <div class="auth-card">
-    <!-- HEADER -->
-    <div class="auth-header">
-      <h2>Restablecer contraseña</h2>
-      <p>Define una nueva contraseña para el usuario</p>
-    </div>
 
-    <!-- ERROR -->
-    @if (error()) {
-      <div class="alert-error">
-        {{ error() }}
-      </div>
+    <!-- ── PASO 1: SOLICITAR ENLACE ─────────────────────── -->
+    @if (modo() === 'solicitar') {
+
+      @if (!enviado()) {
+        <!-- HEADER -->
+        <div class="auth-header">
+          <h2>Recuperar contraseña</h2>
+          <p>
+            Ingresa el correo con el que registraste tu cuenta y te
+            enviaremos un enlace para restablecer tu contraseña.
+          </p>
+        </div>
+
+        <!-- ERROR -->
+        @if (error()) {
+          <div class="alert-error">
+            {{ error() }}
+          </div>
+        }
+
+        <!-- FORM -->
+        <form [formGroup]="solicitarForm" (ngSubmit)="solicitar()" class="auth-form">
+          <div class="field">
+            <label class="field-label" for="res-email">Correo electrónico</label>
+            <input
+              id="res-email"
+              class="field-input"
+              type="email"
+              formControlName="email"
+              placeholder="correo@ejemplo.com"
+              autocomplete="email"
+              autofocus
+            />
+          </div>
+
+          <button class="btn primary" type="submit" [disabled]="isLoading()">
+            @if (!isLoading()) {
+              Enviar enlace
+            } @else {
+              Enviando...
+            }
+          </button>
+
+          <button class="btn ghost" type="button" (click)="volverAlInicio()">
+            Volver al inicio de sesión
+          </button>
+        </form>
+      } @else {
+        <!-- CONFIRMACIÓN: REVISA TU CORREO -->
+        <div class="auth-success">
+          <div class="auth-success__icon">✉️</div>
+          <h2>Revisa tu correo</h2>
+          <p>
+            Si el correo <strong>{{ solicitarForm.value.email }}</strong> está
+            registrado, recibirás en unos minutos un enlace para restablecer
+            tu contraseña. El enlace es válido por <strong>30 minutos</strong>.
+          </p>
+          <p class="auth-success__hint">
+            No lo encuentras? Revisa la carpeta de spam o solicítalo de nuevo.
+          </p>
+          <div class="auth-actions auth-actions--column">
+            <button class="btn primary" type="button" (click)="solicitarOtraVez()">
+              Enviar de nuevo
+            </button>
+            <button class="btn ghost" type="button" (click)="volverAlInicio()">
+              Volver al inicio de sesión
+            </button>
+          </div>
+        </div>
+      }
     }
 
-    <!-- FORM -->
-    <form [formGroup]="form" (ngSubmit)="guardar()" class="auth-form">
-      <!-- EMAIL -->
-      <div class="field">
-        <label class="field-label">Correo electrónico</label>
-        <input
-          class="field-input"
-          type="email"
-          formControlName="email"
-          placeholder="correo@ejemplo.com"
-          />
-      </div>
+    <!-- ── PASO 2: RESTABLECER CON EL ENLACE ───────────── -->
+    @if (modo() === 'restablecer') {
 
-      <!-- PASSWORD -->
-      <div class="field">
-        <label class="field-label">Nueva contraseña</label>
-        <input
-          class="field-input"
-          type="password"
-          formControlName="password"
-          placeholder="••••••••"
-          />
-      </div>
+      @if (!restablecido()) {
+        <!-- HEADER -->
+        <div class="auth-header">
+          <h2>Define tu nueva contraseña</h2>
+          <p>Cuenta: <strong>{{ emailEnlace }}</strong></p>
+        </div>
 
-      <!-- ACTIONS -->
-      <div class="auth-actions">
-        <button class="btn primary" type="submit" [disabled]="isLoading()">
-          Guardar
-        </button>
+        <!-- ERROR -->
+        @if (error()) {
+          <div class="alert-error">
+            {{ error() }}
+          </div>
+        }
 
-        <button class="btn ghost" type="button" (click)="volver()">
-          Cancelar
-        </button>
-      </div>
-    </form>
+        <!-- FORM -->
+        <form [formGroup]="restablecerForm" (ngSubmit)="guardar()" class="auth-form">
+          <div class="field">
+            <label class="field-label" for="res-pass">Nueva contraseña</label>
+            <div class="field-wrap">
+              <input
+                id="res-pass"
+                class="field-input"
+                [type]="verPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="••••••••"
+                autocomplete="new-password"
+                autofocus
+              />
+              <button
+                type="button"
+                class="toggle-pass"
+                [attr.aria-label]="verPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                (click)="verPassword = !verPassword"
+              >
+                {{ verPassword ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="res-conf">Confirmar contraseña</label>
+            <div class="field-wrap">
+              <input
+                id="res-conf"
+                class="field-input"
+                [type]="verConfirmacion ? 'text' : 'password'"
+                formControlName="confirmacion"
+                placeholder="••••••••"
+                autocomplete="new-password"
+              />
+              <button
+                type="button"
+                class="toggle-pass"
+                [attr.aria-label]="verConfirmacion ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                (click)="verConfirmacion = !verConfirmacion"
+              >
+                {{ verConfirmacion ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </div>
+          </div>
+
+          <button class="btn primary" type="submit" [disabled]="isLoading()">
+            @if (!isLoading()) {
+              Restablecer contraseña
+            } @else {
+              Guardando...
+            }
+          </button>
+
+          <button class="btn ghost" type="button" (click)="volverAlInicio()">
+            Volver al inicio de sesión
+          </button>
+        </form>
+      } @else {
+        <!-- CONFIRMACIÓN: CONTRASEÑA ACTUALIZADA -->
+        <div class="auth-success">
+          <div class="auth-success__icon">✅</div>
+          <h2>Contraseña actualizada</h2>
+          <p>
+            Tu contraseña se restableció correctamente. Ya puedes iniciar
+            sesión con tu nueva contraseña.
+          </p>
+          <button class="btn primary" type="button" (click)="volverAlInicio()">
+            Iniciar sesión
+          </button>
+        </div>
+      }
+    }
+
   </div>
 </div>
