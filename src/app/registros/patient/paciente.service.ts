@@ -162,7 +162,7 @@ export class PacienteService extends BaseApiService {
   crearPaciente(paciente: Paciente, generar_expediente: boolean = false): Observable<any> {
     this.isLoading.set(true);
     const url = generar_expediente
-      ? `${this.baseUrl}/pacientes/?gen_expediente=true`
+      ? `${this.baseUrl}/pacientes/?auto_expediente=true`
       : `${this.baseUrl}/pacientes`;
     return this.offMutation('POST', url, paciente).pipe(
       tap(() => this.refrescarPacientes()),
