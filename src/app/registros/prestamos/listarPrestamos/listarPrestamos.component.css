@@ -1,6 +1,3 @@
-.aurora-container {
-  background: rgba(1, 12, 30, 0.76);
-}
 
 form {
   display: flex;
@@ -14,4 +11,101 @@ form {
 
 .input-filtros {
   font-size: clamp(13px, 4vw, 18px);
+}
+
+/* ── Panel "Nuevo préstamo" ── */
+.nuevo-form {
+  margin-top: 0.5rem;
+}
+
+/* ── Estado (Vigente / Vencido / Devuelto) ── */
+.badge-estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--theme-radius-pill);
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface-raised);
+  color: var(--theme-text-muted);
+  font-size: var(--theme-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.badge-vigente {
+  color: var(--theme-success);
+  border-color: var(--theme-success);
+  background: var(--theme-success-dim);
+}
+.badge-vencido {
+  color: var(--theme-danger);
+  border-color: var(--theme-danger);
+  background: var(--theme-danger-dim);
+}
+.badge-devuelto {
+  color: var(--theme-text-muted);
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+}
+
+/* ── Tipo de documento ── */
+.badge-doc {
+  display: inline-flex;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--theme-radius-pill);
+  border: 1px solid var(--theme-info);
+  background: var(--theme-info-dim);
+  color: var(--theme-info);
+  font-size: var(--theme-font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* ── Fechas ── */
+.fecha--vencida {
+  color: var(--theme-danger);
+}
+.tag-vencido {
+  margin-left: 0.3rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: var(--theme-radius-pill);
+  background: var(--theme-danger);
+  color: var(--theme-text-inverse);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ── Alertas ── */
+.alerta {
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  border-radius: var(--theme-radius-md);
+  font-size: 0.9rem;
+}
+.alerta--success {
+  border: 1px solid var(--theme-success);
+  background: var(--theme-success-dim);
+  color: var(--theme-success);
+}
+.alerta--error {
+  border: 1px solid var(--theme-danger);
+  background: var(--theme-danger-dim);
+  color: var(--theme-danger);
+}
+
+/* ── Acciones: Devolver / Reentregar (tinte semántico sutil) ── */
+.aurora-tb .botones-opt .btn-devolver:hover {
+  color: var(--theme-success);
+  border-color: var(--theme-success);
+  background: var(--theme-success-dim);
+  box-shadow: 0 0 0 3px var(--theme-success-dim);
+}
+.aurora-tb .botones-opt .btn-reentregar:hover {
+  color: var(--theme-info);
+  border-color: var(--theme-info);
+  background: var(--theme-info-dim);
+  box-shadow: 0 0 0 3px var(--theme-info-dim);
 }

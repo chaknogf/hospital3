@@ -92,8 +92,8 @@
             </td>
             <td class="secundario">
               <div class="botones-opt">
-                <button (click)="editar(data.id); $event.stopPropagation()">&#9998;</button>
-                <button (click)="imprimir(data.id); $event.stopPropagation()">&#128424;</button>
+                <button (click)="editar(data.id); $event.stopPropagation()" data-label="Editar"><span [innerHTML]="editIcon"></span></button>
+                <button (click)="imprimir(data.id); $event.stopPropagation()" data-label="Imprimir"><span [innerHTML]="printIcon"></span></button>
               </div>
             </td>
           </tr>

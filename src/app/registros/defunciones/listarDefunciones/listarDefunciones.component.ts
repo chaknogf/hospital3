@@ -8,6 +8,8 @@ import { DefuncionesService } from '../defunciones.service';
 import { Defuncion } from '../defunciones.interface';
 import { ApiService } from '../../../service/api.service';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { editIcon, printIcon } from '../../../shared/icons/svg-icon';
 
 @Component({
   selector: 'app-listarDefunciones',
@@ -45,8 +47,14 @@ export class ListarDefuncionesComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private cdr = inject(ChangeDetectorRef);
+  private sanitizer = inject(DomSanitizer);
+
+  editIcon!: SafeHtml;
+  printIcon!: SafeHtml;
 
   ngOnInit() {
+    this.editIcon = this.sanitizer.bypassSecurityTrustHtml(editIcon);
+    this.printIcon = this.sanitizer.bypassSecurityTrustHtml(printIcon);
     this.api.defunciones$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.datos = data;
       this.cdr.markForCheck();

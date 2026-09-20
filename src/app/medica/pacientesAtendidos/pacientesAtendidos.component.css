@@ -1,7 +1,3 @@
-.aurora-container {
-  background: rgba(1, 12, 30, 0.76);
-
-}
 
 /* ══ BOTONES DE ACCIÓN EN TABLA ══════════════════════════════ */
 .btn-recibir,
@@ -264,13 +260,7 @@
 .rc-preview-val {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 11px; color: var(--theme-text);
-}
-
-.aurora-container {
-  background: rgba(1, 12, 30, 0.76);
-
-}
- form {
+} form {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;

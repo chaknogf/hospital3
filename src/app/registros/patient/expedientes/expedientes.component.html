@@ -97,7 +97,7 @@
               }
             </td>
             <td data-label="Acciones:">
-              <button (click)="verDetalle(paciente.id)">Detalle</button>
+              <button (click)="verDetalle(paciente.id)" data-label="Detalle"><span [innerHTML]="documentoIcon"></span></button>
             </td>
           </tr>
         } @empty {

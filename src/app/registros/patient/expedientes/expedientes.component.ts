@@ -8,6 +8,8 @@ import { PacienteResumen } from '../../../interface/interfaces';
 import { PacienteService } from '../paciente.service';
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { HighlightPipe } from '../../../pipes/highlight.pipe';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { documentoIcon } from '../../../shared/icons/svg-icon';
 
 type Modo = 'recientes' | 'mayores-1anio';
 
@@ -23,6 +25,9 @@ export class ExpedientesComponent implements OnInit, OnDestroy {
   private api = inject(PacienteService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private sanitizer = inject(DomSanitizer);
+
+  documentoIcon!: SafeHtml;
   private destroy$ = new Subject<void>();
 
   pacientes: PacienteResumen[] = [];
@@ -52,6 +57,7 @@ export class ExpedientesComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
+    this.documentoIcon = this.sanitizer.bypassSecurityTrustHtml(documentoIcon);
     this.cargar();
   }
 

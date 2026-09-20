@@ -125,7 +125,7 @@
             <!-- Acciones -->
             <td class="secundario" data-label="Acciones">
               <div class="botones-opt">
-                <button (click)="editar(u.id); $event.stopPropagation()">
+                <button (click)="editar(u.id); $event.stopPropagation()" data-label="Editar">
                   <span [innerHTML]="editIcon"></span>
                 </button>
               </div>

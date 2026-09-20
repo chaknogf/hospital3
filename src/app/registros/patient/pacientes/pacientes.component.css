@@ -1,6 +1,3 @@
-.aurora-container {
-  background: var(--theme-background);
-}
 
 .paciente-personal-hospital {
   outline: 2px solid var(--theme-warning) !important;

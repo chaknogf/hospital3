@@ -1,0 +1,440 @@
+/* ═══════════════════════════════════════════════════════════════
+   AURORA DATA SURFACES — reinvented, token-driven, technological
+   ───────────────────────────────────────────────────────────────
+   Owns: .aurora-paciente-container · .aurora-container ·
+         .aurora-tb + all descendants (.tb-id, .nombre-table,
+         .orden, .badge, .botones-opt, buttons, mobile cards…)
+   Rules:
+     • NO hardcoded colors — only --theme-* semantic tokens, so it
+       stays coherent across hospital (light) / cyber (dark) / cerulean.
+     • Desktop  = mission-control data table (sticky HUD header,
+       accent rails, mono data, glow-on-focus).
+     • Mobile   = native-style card feed. Data is NOT a table here:
+       each row becomes a card, every field a labeled value, actions
+       a tactile bottom bar. All columns shown (no hidden data).
+     • Print    = plain table. Motion = respects user preference.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Page shell ─────────────────────────────────────────────── */
+.aurora-paciente-container {
+  position: relative;
+  padding: var(--theme-space-3);
+  margin: var(--theme-space-3);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-xl);
+  background: var(--theme-surface);
+  box-shadow: var(--theme-shadow-md);
+}
+
+/* ── Section wrapper (tables, forms, info bars) ─────────────── */
+.aurora-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 var(--theme-space-3);
+  padding: var(--theme-space-2);
+  overflow-x: hidden;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-xl);
+  background: var(--theme-gradient-surface);
+  box-shadow: var(--theme-shadow-sm);
+  color: var(--theme-text);
+}
+
+/* luminous top edge — the "device bezel" */
+.aurora-container::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  border-radius: inherit;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--theme-primary) 20%,
+    var(--theme-primary-light) 50%,
+    var(--theme-primary) 80%,
+    transparent);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.aurora-container a { color: inherit; text-decoration: none; }
+.aurora-container p { margin: 0; line-height: 1.35; }
+
+/* ═══════════════════════════════════════════════════════════════
+   DESKTOP — data table
+   ═══════════════════════════════════════════════════════════════ */
+.aurora-container .aurora-tb {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--theme-text);
+  font-size: var(--theme-font-size-sm);
+  background: transparent;
+}
+
+/* never let a cell push the table wider than the screen */
+.aurora-tb th,
+.aurora-tb td {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* HUD header */
+.aurora-tb thead { position: sticky; top: 0; z-index: 2; }
+.aurora-tb thead th {
+  position: relative;
+  padding: var(--theme-space-2) var(--theme-space-3);
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: var(--theme-text-muted);
+  background: var(--theme-gradient-surface-hover);
+  border-bottom: 1px solid var(--theme-border-strong);
+  font-family: var(--theme-font-mono);
+  font-size: var(--theme-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.aurora-tb thead th:first-child { border-top-left-radius: var(--theme-radius-lg); }
+.aurora-tb thead th:last-child  { border-top-right-radius: var(--theme-radius-lg); }
+
+/* rows */
+.aurora-tb tbody tr {
+  position: relative;
+  transition: background var(--theme-transition-fast), box-shadow var(--theme-transition-fast);
+}
+.aurora-tb tbody tr:hover  { background: var(--theme-primary-dim); }
+.aurora-tb tbody tr:focus-within { box-shadow: inset 0 0 0 1px var(--theme-primary); }
+.aurora-tb tbody tr:last-child td { border-bottom: 0; }
+
+/* cells */
+.aurora-tb tbody td {
+  padding: var(--theme-space-2) var(--theme-space-3);
+  border-bottom: 1px solid var(--theme-border);
+  vertical-align: middle;
+  color: var(--theme-text);
+}
+.aurora-tb td strong { color: var(--theme-text); font-weight: 700; }
+.aurora-tb td small  { display: block; margin-top: 1px; color: var(--theme-text-muted); font-size: var(--theme-font-size-xs); }
+
+/* identifiers / codes → monospaced telemetry */
+.aurora-tb .tb-id {
+  font-family: var(--theme-font-mono);
+  font-size: var(--theme-font-size-xs);
+  color: var(--theme-text-faint);
+  letter-spacing: 0.02em;
+}
+
+/* patient name block */
+.aurora-tb .nombre-table { display: flex; flex-direction: column; gap: 1px; }
+.aurora-tb .nombre-table p { line-height: 1.2; }
+.aurora-tb .nombre-table p:first-child { font-size: var(--theme-font-size-md); font-weight: 700; color: var(--theme-text); }
+.aurora-tb .nombre-table p:last-child  { font-size: var(--theme-font-size-sm); font-weight: 600; color: var(--theme-text-muted); }
+
+/* turn number */
+.aurora-tb .orden {
+  font-family: var(--theme-font-mono);
+  font-size: var(--theme-font-size-lg);
+  font-weight: 700;
+  color: var(--theme-primary);
+  text-align: center;
+}
+.aurora-tb div.orden {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-md);
+  background: var(--theme-surface-raised);
+}
+
+/* status signal */
+.aurora-tb .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-pill);
+  background: var(--theme-surface-raised);
+  color: var(--theme-text-muted);
+  font-size: var(--theme-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.aurora-tb .badge-success { color: var(--theme-success); border-color: var(--theme-success); background: var(--theme-success-dim); }
+.aurora-tb .badge-danger  { color: var(--theme-danger);  border-color: var(--theme-danger);  background: var(--theme-danger-dim); }
+.aurora-tb .badge-warning { color: var(--theme-warning); border-color: var(--theme-warning); background: var(--theme-warning-dim); }
+.aurora-tb .badge-info    { color: var(--theme-info);    border-color: var(--theme-info);    background: var(--theme-info-dim); }
+
+/* deceased */
+.aurora-tb tr.paciente-fallecido { background: var(--theme-danger-dim); }
+.aurora-tb tr.paciente-fallecido td { color: var(--theme-text-muted); }
+
+/* semantic status / gender — resolved from theme tokens so the
+   table palette follows whichever theme is active */
+.aurora-container .aurora-tb .hombre { color: var(--theme-info); }
+.aurora-container .aurora-tb .hombre:hover {
+  border-color: var(--theme-info);
+  box-shadow: 0 0 0 1px var(--theme-info-dim), 0 0 10px var(--theme-info-dim);
+}
+.aurora-container .aurora-tb .mujer { color: var(--theme-accent); }
+.aurora-container .aurora-tb .mujer:hover {
+  border-color: var(--theme-accent);
+  box-shadow: 0 0 0 1px var(--theme-accent-dim), 0 0 10px var(--theme-accent-dim);
+}
+.aurora-container .aurora-tb .vivo,
+.aurora-container .aurora-tb .estado-activo,
+.aurora-container .aurora-tb .badge-vivo { color: var(--theme-success); }
+.aurora-container .aurora-tb .fallecido,
+.aurora-container .aurora-tb .badge-mortinato { color: var(--theme-danger); }
+.aurora-container .aurora-tb .pendiente { color: var(--theme-warning); }
+
+/* action controls */
+.aurora-tb .botones-opt {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-md);
+  background: var(--theme-surface-raised);
+}
+.aurora-tb button,
+.aurora-tb .btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--theme-radius-sm);
+  background: transparent;
+  color: var(--theme-text-muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color var(--theme-transition-fast), background var(--theme-transition-fast),
+              border-color var(--theme-transition-fast), transform var(--theme-transition-fast);
+}
+.aurora-tb button > span { display: inline-flex; align-items: center; justify-content: center; }
+.aurora-tb button svg { display: block; width: 30px; height: 30px; }
+.aurora-tb button:hover,
+.aurora-tb .btn:hover,
+.aurora-tb button:focus-visible,
+.aurora-tb .btn:focus-visible {
+  outline: none;
+  color: var(--theme-primary);
+  background: var(--theme-primary-dim);
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px var(--theme-primary-dim);
+}
+.aurora-tb button:active,
+.aurora-tb .btn:active { transform: scale(0.92); }
+
+/* data-label tooltips (pointer devices only) */
+@media (hover: hover) and (min-width: 768px) {
+  .aurora-tb button[data-label]::after,
+  .aurora-tb .btn[data-label]::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--theme-border);
+    border-radius: var(--theme-radius-sm);
+    background: var(--theme-surface-raised);
+    color: var(--theme-text);
+    font-family: var(--theme-font-ui);
+    font-size: var(--theme-font-size-xs);
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: var(--theme-shadow-md);
+    transition: opacity var(--theme-transition-fast), transform var(--theme-transition-fast);
+    z-index: 30;
+  }
+  .aurora-tb button[data-label]:hover::after,
+  .aurora-tb button[data-label]:focus-visible::after,
+  .aurora-tb .btn[data-label]:hover::after,
+  .aurora-tb .btn[data-label]:focus-visible::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE — native card feed (data is NOT a table here)
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .aurora-container {
+    padding: var(--theme-space-2);
+    overflow: visible;
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+  .aurora-container::before { display: none; }
+
+  /* flatten the table into block/card primitives */
+  .aurora-container .aurora-tb,
+  .aurora-tb thead,
+  .aurora-tb tbody,
+  .aurora-tb tr,
+  .aurora-tb td,
+  .aurora-tb th {
+    display: block;
+    width: auto;
+    border-radius: 0;
+  }
+  .aurora-tb { border-spacing: 0; }
+  .aurora-tb thead { display: none; }
+
+  .aurora-tb tbody {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--theme-space-2);
+  }
+
+  /* the card */
+  .aurora-tb tbody tr {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--theme-space-1) var(--theme-space-3);
+    padding: var(--theme-space-3);
+    overflow: hidden;
+    border: 1px solid var(--theme-border);
+    border-radius: var(--theme-radius-xl);
+    background: var(--theme-gradient-surface);
+    box-shadow: var(--theme-shadow-sm);
+    transition: transform var(--theme-transition-fast), box-shadow var(--theme-transition-fast);
+  }
+  .aurora-tb tbody tr::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--theme-primary), var(--theme-primary-deep));
+  }
+  .aurora-tb tbody tr:active { transform: scale(0.99); box-shadow: var(--theme-shadow-md); }
+
+  /* field = micro-label above value */
+  .aurora-tb td {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    color: var(--theme-text);
+    font-size: var(--theme-font-size-sm);
+    overflow-wrap: anywhere;
+  }
+  .aurora-tb td::before {
+    content: attr(data-label);
+    color: var(--theme-text-muted);
+    font-family: var(--theme-font-mono);
+    font-size: var(--theme-font-size-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .aurora-tb td:not([data-label])::before { content: none; }
+
+  /* full-width fields */
+  .aurora-tb td:has(.nombre-table),
+  .aurora-tb td:has(.botones-opt),
+  .aurora-tb td:has(button),
+  .aurora-tb td[colspan] { grid-column: 1 / -1; }
+
+  /* name block emphasized as card header */
+  .aurora-tb td:has(.nombre-table) {
+    padding-bottom: var(--theme-space-2);
+    margin-bottom: var(--theme-space-1);
+    border-bottom: 1px solid var(--theme-border);
+  }
+
+  /* action bar */
+  .aurora-tb td:has(button) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--theme-space-1);
+    margin-top: var(--theme-space-1);
+    padding-top: var(--theme-space-2);
+    border-top: 1px solid var(--theme-border);
+  }
+  .aurora-tb td:has(button)::before { content: none; }
+  .aurora-tb .botones-opt { background: transparent; border: 0; padding: 0; flex-wrap: wrap; justify-content: flex-end; }
+  .aurora-tb td:has(button) button,
+  .aurora-tb .botones-opt button {
+    width: var(--theme-touch-min);
+    height: var(--theme-touch-min);
+    border-color: var(--theme-border);
+    background: var(--theme-surface-raised);
+  }
+  .aurora-tb td:has(button) button svg,
+  .aurora-tb .botones-opt button svg { width: 26px; height: 26px; }
+
+  /* show every column — no hidden data on mobile */
+  .aurora-tb .oculto,
+  .aurora-tb .opciones { display: flex; }
+
+  /* empty / loading message */
+  .aurora-tb td[colspan] {
+    padding: var(--theme-space-4) 0;
+    text-align: center;
+    color: var(--theme-text-muted);
+  }
+
+  /* deceased card */
+  .aurora-tb tr.paciente-fallecido { border-color: var(--theme-danger); }
+  .aurora-tb tr.paciente-fallecido::before { background: var(--theme-danger); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PRINT — plain, ink-friendly table
+   ═══════════════════════════════════════════════════════════════ */
+@media print {
+  .aurora-container { overflow: visible; border: 0; box-shadow: none; background: #fff; }
+  .aurora-container::before { display: none; }
+  .aurora-container .aurora-tb,
+  .aurora-tb thead, .aurora-tb tbody, .aurora-tb tr,
+  .aurora-tb td, .aurora-tb th {
+    display: revert !important;
+    color: #000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+  .aurora-tb tbody tr::before { display: none !important; }
+  .aurora-tb td::before { content: none !important; }
+  .aurora-tb thead th { border-bottom: 1px solid #000 !important; }
+  .aurora-tb .oculto, .aurora-tb .opciones { display: revert !important; }
+}
+
+/* ── Motion preference ── */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-container .aurora-tb,
+  .aurora-tb tbody tr,
+  .aurora-tb button,
+  .aurora-tb .btn { transition: none !important; }
+}

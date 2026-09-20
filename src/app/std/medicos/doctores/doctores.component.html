@@ -139,7 +139,7 @@
             </td>
             <td class="secundario">
               <div class="d-flex gap-1">
-                <button (click)="editar(data.id); $event.stopPropagation()">
+                <button (click)="editar(data.id); $event.stopPropagation()" data-label="Editar">
                   <span [innerHTML]="icons['edit']"></span>
                 </button>
               </div>

@@ -133,7 +133,7 @@
             </td>
             <td>{{ data.created_by }}</td>
             <td>
-              <button (click)="editar(data.id); $event.stopPropagation()">
+              <button (click)="editar(data.id); $event.stopPropagation()" data-label="Editar">
                 <span [innerHTML]="icons['edit']"></span>
               </button>
             </td>

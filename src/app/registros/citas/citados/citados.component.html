@@ -143,7 +143,7 @@
               >
               <strong class="cell-index">{{ i + 1 }}</strong>
               <div class="botones-opt">
-                <button (click)="editarCita(cita.id); $event.stopPropagation()">
+                <button (click)="editarCita(cita.id); $event.stopPropagation()" data-label="Editar">
                   <span [innerHTML]="editIcon"></span>
                 </button>
               </div>

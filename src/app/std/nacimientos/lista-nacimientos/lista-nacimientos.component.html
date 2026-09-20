@@ -206,8 +206,8 @@
             </td>
             @if (!sinEditar) {
               <td>
-                <button (click)="editar(n.id); $event.stopPropagation()">
-                  Editar
+                <button (click)="editar(n.id); $event.stopPropagation()" data-label="Editar">
+                  <span [innerHTML]="editIcon"></span>
                 </button>
                 <button
                   class="btn-danger"
@@ -215,8 +215,8 @@
                     eliminar(n.id, n.paciente?.nombre_completo);
                     $event.stopPropagation()
                   "
-                >
-                  Eliminar
+                 data-label="Eliminar">
+                  <span [innerHTML]="trashIcon"></span>
                 </button>
               </td>
             }

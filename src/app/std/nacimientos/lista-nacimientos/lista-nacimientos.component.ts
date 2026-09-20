@@ -13,6 +13,8 @@ import { ConstanciaNacimiento } from '../../../registros/nacimientos/constancias
 import { DatosExtraPipe } from 'app/pipes/datos-extra.pipe';
 import { LibrasOnzasPipe } from 'app/pipes/librasOnza.pipe';
 import { CapitalizePipe } from 'app/pipes/capitalize.pipe';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { editIcon, trashIcon } from '../../../shared/icons/svg-icon';
 
 @Component({
   selector: 'app-lista-nacimientos',
@@ -37,6 +39,10 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
   private authApi = inject(ApiService);
   private pacienteApi = inject(PacienteService);
   private constanciaApi = inject(ConstanciasService);
+  private sanitizer = inject(DomSanitizer);
+
+  editIcon!: SafeHtml;
+  trashIcon!: SafeHtml;
 
   get esAdmin(): boolean {
     return this.authApi.role() === 'admin';
@@ -114,6 +120,8 @@ export class ListaNacimientosComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.editIcon = this.sanitizer.bypassSecurityTrustHtml(editIcon);
+    this.trashIcon = this.sanitizer.bypassSecurityTrustHtml(trashIcon);
     this.api.nacimientos$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.nacimientos = data;
       this.cdr.markForCheck();

@@ -4,12 +4,13 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PrestamosService } from '../prestamos.service';
-import { FiltroPrestamos, Prestamo } from '../../../interface/prestamos';
+import { FiltroPrestamos, Prestamo, PrestamoUpdate } from '../../../interface/prestamos';
+import { PacienteService } from '../../patient/paciente.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {
   addIcon, arrowDown, cancelIcon, editIcon, findIcon,
   menuIcon, removeIcon, searchIcon, skipLeft, skipRight,  // ← skipRight correcto
-  tablaShanonIcon, compartirIcon
+  tablaShanonIcon, compartirIcon, prestarIcon, recibidoIcon
 } from '../../../shared/icons/svg-icon';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
@@ -27,6 +28,7 @@ import { takeUntil } from 'rxjs/operators';
 export class ListarPrestamosComponent implements OnInit, OnDestroy {
 
   private api = inject(PrestamosService);
+  private pacienteApi = inject(PacienteService);
   private location = inject(Location);
   private sanitizer = inject(DomSanitizer);
   private router = inject(Router);
@@ -40,6 +42,11 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
   visible = false;
   finPagina = false;
   rowActiva: number | null = null;
+
+  // ── Panel "Nuevo préstamo" (búsqueda por expediente) ──
+  nuevoPrestamo = false;
+  expedienteNuevo = '';
+  buscandoPaciente = false;
 
   // Exponer total y página actual para el template
   total = this.api.total;
@@ -56,6 +63,8 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
   skipRightIcon!: SafeHtml;
   skipLeftIcon!: SafeHtml;
   menuIcon!: SafeHtml;
+  prestarIcon!: SafeHtml;
+  recibidoIcon!: SafeHtml;
   compartirIcon!: SafeHtml;
 
   // Filtros — incluye los nuevos campos y paginación
@@ -99,6 +108,8 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
     this.searchIcon = this.sanitizer.bypassSecurityTrustHtml(searchIcon);
     this.arrowDown = this.sanitizer.bypassSecurityTrustHtml(arrowDown);
     this.editIcon = this.sanitizer.bypassSecurityTrustHtml(editIcon);
+    this.prestarIcon = this.sanitizer.bypassSecurityTrustHtml(prestarIcon);
+    this.recibidoIcon = this.sanitizer.bypassSecurityTrustHtml(recibidoIcon);
     this.skipLeftIcon = this.sanitizer.bypassSecurityTrustHtml(skipLeft);
     this.skipRightIcon = this.sanitizer.bypassSecurityTrustHtml(skipRight);  // ← corregido
   }
@@ -161,6 +172,64 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
 
   editar(id: number): void {
     this.router.navigate(['/editarPrestamo', id]);
+  }
+
+  // ======= NUEVO PRÉSTAMO (búsqueda por expediente) =======
+  toggleNuevo(): void {
+    this.nuevoPrestamo = !this.nuevoPrestamo;
+  }
+
+  buscarPacienteParaPrestamo(): void {
+    const exp = (this.expedienteNuevo ?? '').trim();
+    if (!exp) {
+      this.mostrarMensaje('Escribe un expediente para buscar al paciente.', 'error');
+      return;
+    }
+    this.buscandoPaciente = true;
+    this.cdr.markForCheck();
+
+    this.pacienteApi.pacienteExpediente(exp).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (p) => {
+        this.buscandoPaciente = false;
+        if (!p?.id) {
+          this.mostrarMensaje('No se encontró paciente con ese expediente.', 'error');
+          this.cdr.markForCheck();
+          return;
+        }
+        this.router.navigate(['/prestamo', p.id]);
+      },
+      error: () => {
+        this.buscandoPaciente = false;
+        this.mostrarMensaje('No se encontró paciente con ese expediente.', 'error');
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  // ======= DEVOLVER / REENTREGAR (cambio de estado) =======
+  devolver(p: Prestamo): void {
+    if (!confirm(`¿Registrar la devolución del expediente ${p.expediente ?? ''}?`)) return;
+    const payload: PrestamoUpdate = { fecha_devolucion: new Date().toISOString() };
+    this.api.actualizarPrestamo(p.id, payload).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => { this.mostrarMensaje('Préstamo devuelto correctamente.', 'success'); this.cdr.markForCheck(); },
+      error: () => { this.mostrarMensaje('Error al registrar la devolución.', 'error'); this.cdr.markForCheck(); }
+    });
+  }
+
+  reentregar(p: Prestamo): void {
+    if (!confirm(`¿Reactivar (reentregar) el expediente ${p.expediente ?? ''}?`)) return;
+    const payload: PrestamoUpdate = { fecha_devolucion: null };
+    this.api.actualizarPrestamo(p.id, payload).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => { this.mostrarMensaje('Préstamo reactivado (entregado de nuevo).', 'success'); this.cdr.markForCheck(); },
+      error: () => { this.mostrarMensaje('Error al reactivar el préstamo.', 'error'); this.cdr.markForCheck(); }
+    });
+  }
+
+  // ======= ESTADO legible =======
+  estadoPrestamo(p: Prestamo): { label: string; cls: string } {
+    if (!p.activo) return { label: 'Devuelto', cls: 'badge-devuelto' };
+    if (this.estaVencido(p)) return { label: 'Vencido', cls: 'badge-vencido' };
+    return { label: 'Vigente', cls: 'badge-vigente' };
   }
 
   volver(): void {

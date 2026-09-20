@@ -11,10 +11,17 @@
 
     <h1 class="text-white">Préstamos de Expedientes</h1>
 
-    <button type="button" (click)="toggleFiltros()">
-      <span [innerHTML]="findIcon"></span>
-      Buscar
-    </button>
+    <div class="d-flex gap-2">
+      <button type="button" (click)="toggleNuevo()">
+        <span [innerHTML]="addIcon"></span>
+        Nuevo
+      </button>
+
+      <button type="button" (click)="toggleFiltros()">
+        <span [innerHTML]="findIcon"></span>
+        Buscar
+      </button>
+    </div>
   </div>
 
   <!-- Contenedor de Búsqueda -->
@@ -103,6 +110,38 @@
     </div>
   </div>
 
+  <!-- Nuevo préstamo: búsqueda del paciente por expediente -->
+  <div class="find-form nuevo-form" [ngClass]="{ 'd-none': !nuevoPrestamo || visible }">
+    <form
+      class="form-filtros"
+      (submit)="buscarPacienteParaPrestamo(); $event.preventDefault()"
+    >
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Expediente del paciente</label>
+        <input
+          type="text"
+          class="input-filtros"
+          [(ngModel)]="expedienteNuevo"
+          name="expedienteNuevo"
+          placeholder="Ej: 1042"
+          autocomplete="off"
+        />
+      </fieldset>
+
+      <div class="botones-filtros">
+        <button type="submit" class="button-filtros" [disabled]="buscandoPaciente">
+          <span [innerHTML]="searchIcon"></span>
+          {{ buscandoPaciente ? 'Buscando…' : 'Buscar y agregar' }}
+        </button>
+
+        <button type="button" (click)="toggleNuevo()" class="button-filtros">
+          <span [innerHTML]="cancelIcon"></span>
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
   <!-- Mensaje -->
   @if (mensaje()) {
     <div class="alerta" [ngClass]="'alerta--' + mensaje()!.tipo">
@@ -175,26 +214,33 @@
             </td>
             <!-- Estado -->
             <td data-label="Estado">
-              <span
-                class="badge-estado"
-                [class.badge-activo]="p.activo"
-                [class.badge-inactivo]="!p.activo"
-              >
-                {{ p.activo ? "Activo" : "Inactivo" }}
+              <span class="badge-estado" [ngClass]="estadoPrestamo(p).cls">
+                {{ estadoPrestamo(p).label }}
               </span>
             </td>
             <!-- Acciones -->
             <td class="secundario">
               <div class="botones-opt">
-                <button (click)="editar(p.id); $event.stopPropagation()">
+                <button (click)="editar(p.id); $event.stopPropagation()" data-label="Editar">
                   <span [innerHTML]="editIcon"></span>
                 </button>
-                <!-- <button
-                *ngIf="p.activo"
-                (click)="desactivar(p.id); $event.stopPropagation()"
-                >
-                <span [innerHTML]="cancelIcon"></span>
-              </button> -->
+                @if (p.activo) {
+                  <button
+                    class="btn-devolver"
+                    (click)="devolver(p); $event.stopPropagation()"
+                    data-label="Devolver"
+                  >
+                    <span [innerHTML]="recibidoIcon"></span>
+                  </button>
+                } @else if (p.fecha_devolucion) {
+                  <button
+                    class="btn-reentregar"
+                    (click)="reentregar(p); $event.stopPropagation()"
+                    data-label="Reentregar"
+                  >
+                    <span [innerHTML]="prestarIcon"></span>
+                  </button>
+                }
               </div>
             </td>
           </tr>
