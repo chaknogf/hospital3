@@ -1,267 +1,177 @@
-<!-- ───────── HEADER HUD ───────── -->
-<div class="hud-header">
-  <div class="hud-id">
-    {{ enEdicion() ? "EDIT-MODE" : "NEW-ENTRY" }}
-  </div>
-
-  <div class="hud-title">
-    {{ enEdicion() ? "EDITAR CITA" : "AGENDAR CITA" }}
-  </div>
-
-  <div class="hud-status">
-    {{ isLoading() ? "PROCESANDO" : "LISTO" }}
-  </div>
-</div>
-
-<!-- ───────── ACTION DOCK ───────── -->
-<div class="action-dock">
-  <div class="dock-hint">acciones</div>
-
-  <button class="btn-dock btn" (click)="volver()">❌ Cancelar</button>
-
-  <button type="button" class="btn-dock btn" (click)="guardar()">
-    💾 Guardar
-  </button>
-</div>
-
-<!-- ───────── BODY ───────── -->
-<form [formGroup]="form" class="adm-body" (submit)="$event.preventDefault()">
-  <!-- ───────── BUSQUEDA PACIENTE ───────── -->
-  <div class="section-card">
-    <div class="sec-head">
-      <div class="sec-head-left">
-        <div class="sec-icon">👤</div>
-        <div class="sec-title">Paciente</div>
-      </div>
-      <div class="sec-badge">lookup</div>
+<main class="cita-shell">
+  <header class="cita-header">
+    <div>
+      <span class="cita-eyebrow">Módulo de citas</span>
+      <h1>{{ enEdicion() ? 'Editar cita' : 'Agendar cita' }}</h1>
+      <p>Registra la atención con fecha, especialidad y responsable.</p>
     </div>
-    <!-- @if (!enEdicion()) {
-    <div class="sec-body single">
-      <div class="field">
-        <label class="field-label">Buscar por expediente</label>
-        <div style="display: flex; gap: 8px">
-          <input
-            class="field-input"
-            [(ngModel)]="busquedaExpediente"
-            [ngModelOptions]="{ standalone: true }"
-            placeholder="Ej: 202400123"
-              (keydown.enter)="
-                buscarPacientePorExpediente(); $event.preventDefault()
-              "
-            (change)="buscarPacientePorExpediente()"
-            />
-          <button
-            type="button"
-            class="btn-dock btn"
-            (click)="buscarPacientePorExpediente()"
-            >
-            🔎
-            {{ buscandoPaciente ? "..." : "Buscar" }}
-          </button>
-        </div>
-      </div>
-    </div>
-    } -->
+    <span class="cita-status" [class.cita-status--loading]="isLoading()">
+      <span class="cita-status__dot"></span>
+      {{ isLoading() ? 'Guardando' : (enEdicion() ? 'Edición' : 'Nueva') }}
+    </span>
+  </header>
+
+  <div class="cita-actions">
+    <button type="button" class="cita-button cita-button--ghost" (click)="volver()">
+      <span aria-hidden="true">&#10005;</span>
+      Cancelar
+    </button>
+    <button
+      type="button"
+      class="cita-button cita-button--primary"
+      (click)="guardar()"
+      [disabled]="isLoading()"
+    >
+      @if (isLoading()) { <span class="cita-spinner"></span> }
+      @else { <span aria-hidden="true">&#10003;</span> }
+      {{ isLoading() ? 'Guardando…' : (enEdicion() ? 'Actualizar cita' : 'Agendar cita') }}
+    </button>
   </div>
 
-  <!-- ───────── PACIENTE ENCONTRADO ───────── -->
-  @if (pacienteEncontrado) {
-    <div class="paciente-banner">
-      <div class="paciente-banner-accent"></div>
-
-      <div class="paciente-avatar">
-        @if (
-          pacienteEncontrado.sexo == "F" &&
-          (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Anciano"
-          ) {
-          👵🏻
-        }
-        @if (
-          pacienteEncontrado.sexo == "M" &&
-          (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Anciano"
-          ) {
-          👴🏼
-        }
-        @if (
-          pacienteEncontrado.sexo == "F" &&
-          (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Adulto"
-          ) {
-          👩🏻‍🦱
-        }
-        @if (
-          pacienteEncontrado.sexo == "M" &&
-          (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Adulto"
-          ) {
-          🧔🏻‍♂️
-        }
-        @if (
-          pacienteEncontrado.sexo == "F" &&
-          (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Niño"
-          ) {
-          👧🏽
-        }
-        @if (
-          pacienteEncontrado.sexo == "M" &&
-          (pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Niño"
-          ) {
-          👦🏽
-        }
-        @if ((pacienteEncontrado.fecha_nacimiento | grupoEdad) === "Neonato") {
-          👶🏻
-        }
-      </div>
-      <div class="paciente-datos container">
-        <div class="paciente-nombre">
-          {{ getNombrePaciente() }}
-        </div>
-
-        <div class="paciente-chips container">
-          @if (pacienteEncontrado.sexo) {
-            <div class="p-chip p-chip-exp">
-              🚻 {{ pacienteEncontrado.sexo | datosExtra: "sexo" }}
-
-            </div>,
-            <div class="p-chip p-chip-exp">
-
-              {{ pacienteEncontrado.fecha_nacimiento | edad }}
-            </div>
-          }
-
-          @if (pacienteEncontrado.expediente) {
-            <div class="p-chip p-chip-exp">
-              📋expediente: {{ pacienteEncontrado.expediente }}
-            </div>
-          }
-
-          <div class="p-chip p-chip-tel">☎️ {{ getTelefonoPaciente() }}</div>
-        </div>
-      </div>
+  @if (mensaje()) {
+    <div
+      class="cita-message"
+      role="alert"
+      [class.cita-message--error]="mensaje()!.tipo === 'error'"
+      [class.cita-message--info]="mensaje()!.tipo === 'info'"
+      [class.cita-message--success]="mensaje()!.tipo === 'success'"
+    >
+      <span class="cita-message__icon" aria-hidden="true">
+        {{ mensaje()!.tipo === 'error' ? '!' : '&#10003;' }}
+      </span>
+      <span>{{ mensaje()!.texto }}</span>
     </div>
   }
 
-  <!-- ───────── GRID ───────── -->
-  <div class="adm-grid">
-    <!-- ───── COLUMNA 1 ───── -->
-    <div class="adm-col">
-      <!-- DATOS DE CITA -->
-      <div class="section-card">
-        <div class="sec-head">
-          <div class="sec-head-left">
-            <div class="sec-icon">📅</div>
-            <div class="sec-title">Datos de Cita</div>
+  <form [formGroup]="form" class="cita-form" (submit)="$event.preventDefault()">
+    @if (pacienteEncontrado) {
+      <section class="patient-card">
+        <div class="patient-card__avatar" aria-hidden="true">
+          {{ pacienteEncontrado.sexo === 'F' ? '👩' : '👨' }}
+        </div>
+        <div class="patient-card__content">
+          <span class="patient-card__eyebrow">Paciente seleccionado</span>
+          <h2>{{ getNombrePaciente() }}</h2>
+          <div class="patient-card__chips">
+            @if (pacienteEncontrado.expediente) {
+              <span class="patient-chip">Exp. {{ pacienteEncontrado.expediente }}</span>
+            }
+            @if (pacienteEncontrado.sexo) {
+              <span class="patient-chip">{{ pacienteEncontrado.sexo | datosExtra: 'sexo' }}</span>
+            }
+            <span class="patient-chip">{{ pacienteEncontrado.fecha_nacimiento | edad }}</span>
+            <span class="patient-chip">&#9742; {{ getTelefonoPaciente() }}</span>
           </div>
         </div>
+      </section>
+    } @else {
+      <section class="empty-patient">
+        <span class="empty-patient__icon" aria-hidden="true">&#128100;</span>
+        <div>
+          <strong>Selecciona un paciente</strong>
+          <p>La cita necesita estar vinculada a un expediente.</p>
+        </div>
+      </section>
+    }
 
-        <div class="sec-body">
-          <div class="field">
-            <label class="field-label">Fecha</label>
-            <input
-              type="date"
-              class="field-input"
-              formControlName="fecha_cita"
-              />
+    <div class="cita-grid">
+      <section class="cita-card">
+        <header class="cita-card__header">
+          <span class="cita-card__icon" aria-hidden="true">&#128197;</span>
+          <div>
+            <span class="cita-card__kicker">Agenda</span>
+            <h2>Datos de la cita</h2>
+          </div>
+        </header>
+
+        <div class="cita-card__body">
+          <div class="cita-field" [class.cita-field--error]="campoError() === 'fecha_cita'">
+            <label for="fecha-cita">Fecha de atención</label>
+            <input id="fecha-cita" type="date" formControlName="fecha_cita" />
+            <small class="cita-field__hint">Solo se permiten días hábiles y fechas habilitadas.</small>
+            @if (avisoFecha()) {
+              <small class="cita-field__error">{{ avisoFecha() }}</small>
+            }
           </div>
 
-          <div class="field">
-            <span class="field-label">Especialidad</span>
-            <select class="field-input" formControlName="especialidad">
+          <div class="cita-field" [class.cita-field--error]="campoError() === 'especialidad'">
+            <label for="especialidad">Especialidad</label>
+            <select id="especialidad" formControlName="especialidad">
+              <option value="">Seleccionar especialidad</option>
               @for (e of especialidades; track e) {
-                <option [value]="e.value">
-                  {{ e.label | titlecase }}
-                </option>
+                <option [value]="e.value">{{ e.label | titlecase }}</option>
               }
             </select>
           </div>
 
-          <div class="field">
-            <label class="field-label">Dia de la Semana</label>
-            <input class="field-input" formControlName="dia_semana" />
+          <div class="cita-field">
+            <label for="personal-atencion">Personal de atención</label>
+            <select id="personal-atencion" formControlName="personal_atencion_id">
+              <option [ngValue]="null">Sin asignar</option>
+              @for (pa of personalFiltrado; track pa.id) {
+                <option [ngValue]="pa.id">{{ pa.nombre }}</option>
+              }
+            </select>
+            @if (!personalFiltrado.length) {
+              <small class="cita-field__hint">No hay personal de esta especialidad. Puedes dejarlo sin asignar.</small>
+            } @else if (personalFiltrado.length < personal.length) {
+              <small class="cita-field__hint">{{ personalFiltrado.length }} persona(s) disponible(s) para esta especialidad.</small>
+            }
+          </div>
+
+          <div class="cita-field">
+            <label for="dia-semana">Día de la semana</label>
+            <input id="dia-semana" class="cita-readonly" formControlName="dia_semana" readonly />
           </div>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <!-- ───── COLUMNA 2 ───── -->
-    <div class="adm-col">
-      <div class="section-card">
-        <div class="sec-head">
-          <div class="sec-head-left">
-            <div class="sec-icon">📓</div>
-            <div class="sec-title">Datos Extra</div>
+      <section class="cita-card">
+        <header class="cita-card__header">
+          <span class="cita-card__icon" aria-hidden="true">&#128203;</span>
+          <div>
+            <span class="cita-card__kicker">Contexto</span>
+            <h2>Motivo y notas</h2>
           </div>
-        </div>
+        </header>
 
-        <div class="sec-body single" formGroupName="datos_extra">
-          <!-- TIPO CONSULTA -->
-          <div class="field">
-            <label class="field-label">Tipo de Consulta</label>
-
-            <div class="indicadores-grid">
+        <div class="cita-card__body" formGroupName="datos_extra">
+          <div class="cita-field">
+            <label>Tipo de consulta</label>
+            <div class="reason-grid">
               @for (t of razonConsulta; track t.ref) {
-                <div
-                  class="ind-chip"
-                  [class.active]="tipoConsultaValue === t.ref"
+                <button
+                  type="button"
+                  class="reason-option"
+                  [class.reason-option--active]="tipoConsultaValue === t.ref"
                   (click)="seleccionarRazonConsulta(t.ref)"
-                  >
-                  <div class="ind-check">
-                    <svg viewBox="0 0 16 16">
-                      <path
-                        d="M4 8l3 3 5-6"
-                        stroke="currentColor"
-                        fill="none"
-                        stroke-width="2"
-                        />
-                    </svg>
-                  </div>
-
-                  <div class="ind-label">
-                    {{ t.label }}
-                  </div>
-                </div>
+                >
+                  <span class="reason-option__check" aria-hidden="true">&#10003;</span>
+                  {{ t.label }}
+                </button>
               }
             </div>
           </div>
 
-          <!-- NOTAS -->
-          <div class="field">
-            <label class="field-label">Notas</label>
-            <textarea
-              class="field-input"
-              rows="3"
-              formControlName="notas"
-              placeholder="Observaciones clínicas..."
-            ></textarea>
+          <div class="cita-field">
+            <label for="notas-cita">Notas</label>
+            <textarea id="notas-cita" rows="5" formControlName="notas" placeholder="Añade información útil para la atención…"></textarea>
           </div>
         </div>
-      </div>
+      </section>
     </div>
 
-    <!-- ───── COLUMNA 3 ───── -->
-    <div class="adm-col">
-      <!-- Dias Disponibles -->
-      <div class="section-card">
-        <div class="sec-head">
-          <div class="sec-head-left">
-            <div class="sec-icon">📊</div>
-            <div class="sec-title">Disponibilidad</div>
-          </div>
+    <section class="cita-card cita-card--availability">
+      <header class="cita-card__header">
+        <span class="cita-card__icon" aria-hidden="true">&#128202;</span>
+        <div>
+          <span class="cita-card__kicker">Planificación</span>
+          <h2>Disponibilidad</h2>
         </div>
-
-        <div class="sec-body">
-          <app-citaConteo
-            [especialidad]="especialidadSeleccionada"
-          ></app-citaConteo>
-        </div>
+      </header>
+      <div class="cita-card__body">
+        <app-citaConteo [especialidad]="especialidadSeleccionada"></app-citaConteo>
       </div>
-    </div>
-  </div>
-
-  <!-- ───────── ERROR ───────── -->
-  @if (error()) {
-    <div class="section-card">
-      <div class="sec-body single">
-        <div style="color: #b91c1c; font-weight: 500">⚠️ {{ error() }}</div>
-      </div>
-    </div>
-  }
-</form>
+    </section>
+  </form>
+</main>

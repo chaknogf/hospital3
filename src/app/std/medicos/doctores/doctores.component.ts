@@ -121,7 +121,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
 
       next: (resultado) => {
 
-        this.medicos = resultado.medicos;
+        this.medicos = resultado.personal_atencion;
         this.totalDeRegistros = resultado.total;
         this.cdr.markForCheck();
       },
@@ -195,7 +195,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
 
 
   verDetalle(id: number): void {
-    this.router.navigate(['/medicos/detalle', id]);
+    this.router.navigate(['/doctor', id]);
   }
 
   eliminar(id: number): void {

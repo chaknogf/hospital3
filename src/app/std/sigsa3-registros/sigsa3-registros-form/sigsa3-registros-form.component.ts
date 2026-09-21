@@ -41,7 +41,7 @@ export class Sigsa3RegistrosFormComponent implements OnInit {
   form: FormGroup = this.fb.group({
     paciente_id: [null, [Validators.required, Validators.min(1)]],
     consulta_id: [null],
-    medico_id: [null],
+    personal_atencion_id: [null],
     personal_salud_id: [null],
     fecha_consulta: ['', Validators.required],
     tipo_consulta_id: [null],
@@ -82,7 +82,7 @@ export class Sigsa3RegistrosFormComponent implements OnInit {
 
   cargarMedicos(): void {
     this.apiService.getMedicos({}).subscribe({
-      next: (data) => this.medicos = data.medicos.filter(m => m.activo),
+      next: (data) => this.medicos = data.personal_atencion.filter(m => m.activo),
       error: () => {}
     });
   }
@@ -102,7 +102,7 @@ export class Sigsa3RegistrosFormComponent implements OnInit {
         this.form.patchValue({
           paciente_id: data.paciente_id,
           consulta_id: data.consulta_id,
-          medico_id: data.medico_id,
+          personal_atencion_id: data.personal_atencion_id,
           personal_salud_id: data.personal_salud_id,
           fecha_consulta: data.fecha_consulta,
           tipo_consulta_id: data.tipo_consulta_id,

@@ -74,7 +74,7 @@ export class QuirofanoFormComponent implements OnInit {
     procedencia_procedimiento_id: [null],
     rango_especialista_id: [null],
     quirofano_numero_id: [null],
-    medico_id: [null],
+    personal_atencion_id: [null],
     hora_inicio_anestesia: [''],
     hora_inicio_intervencion: [''],
     hora_finaliza_intervencion: [''],
@@ -146,7 +146,7 @@ export class QuirofanoFormComponent implements OnInit {
 
   cargarMedicos(): void {
     this.medicosApi.getMedicos({}).subscribe({
-      next: (data) => this.medicos = data.medicos.filter(m => m.activo),
+      next: (data) => this.medicos = data.personal_atencion.filter(m => m.activo),
       error: () => {}
     });
   }
@@ -205,7 +205,7 @@ export class QuirofanoFormComponent implements OnInit {
           procedencia_procedimiento_id: data.procedencia_procedimiento_id ?? null,
           rango_especialista_id: data.rango_especialista_id ?? null,
           quirofano_numero_id: data.quirofano_numero_id ?? null,
-          medico_id: data.medico_id ?? null,
+          personal_atencion_id: data.personal_atencion_id ?? null,
           hora_inicio_anestesia: (data.hora_inicio_anestesia || '').slice(0, 5),
           hora_inicio_intervencion: (data.hora_inicio_intervencion || '').slice(0, 5),
           hora_finaliza_intervencion: (data.hora_finaliza_intervencion || '').slice(0, 5),
@@ -241,7 +241,7 @@ export class QuirofanoFormComponent implements OnInit {
     const v = this.form.value;
 
     const base = {
-      medico_id: v.medico_id ?? undefined,
+      personal_atencion_id: v.personal_atencion_id ?? undefined,
       estado_cirugia_id: v.estado_cirugia_id ?? undefined,
       formato_procedimiento_id: v.formato_procedimiento_id ?? undefined,
       procedencia_procedimiento_id: v.procedencia_procedimiento_id ?? undefined,

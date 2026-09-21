@@ -1,7 +1,7 @@
 // ======= IMPORTACIONES =======
 import { municipios } from '../../../enum/departamentos';
 
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, signal, inject, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, HostListener, signal, inject, ChangeDetectorRef } from '@angular/core';
 import {
   FormBuilder, FormGroup, ReactiveFormsModule, FormsModule,
   AbstractControl, ValidatorFn, ValidationErrors,
@@ -81,6 +81,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   esRecienNacido = signal(false);
   isLoading = signal(false);
   error = signal<string | null>(null);
+  mensaje = signal<{ texto: string; tipo: 'success' | 'info' } | null>(null);
   deptoDireccion = signal<string | null>(null);
   municipios_direccion = signal<Municipio[]>([]);
   municipios_nacimiento = signal<Municipio[]>([]);
@@ -304,7 +305,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
     const filtros = { activo: true, especialidad: 'GINE', limit: 200 };
     this.medicosSrvc.getMedicos(filtros)
       .pipe(
-        map(r => r.medicos as unknown as Medico[]),
+        map(r => r.personal_atencion as unknown as Medico[]),
         takeUntil(this.destroy$)
       )
       .subscribe({
@@ -620,7 +621,6 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         finalize(() => this.isLoading.set(false)),
         catchError(error => {
-          // console.log(paciente)
           console.error('❌ Error al crear paciente:', error);
           this.error.set('Error al crear el paciente');
           this.mostrarError('crear paciente', error);
@@ -628,17 +628,16 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(response => {
-        if (response) {
-          this.location.back();
-        }
+        if (!response) return;
+        this.mensaje.set(response.queued
+          ? { texto: 'Paciente guardado localmente, se sincronizará cuando haya conexión.', tipo: 'info' }
+          : { texto: 'Paciente registrado correctamente.', tipo: 'success' });
+        setTimeout(() => this.location.back(), 1400);
       });
   }
 
   private actualizar(paciente: any): void {
     this.isLoading.set(true);
-
-    //console.log('🔵 accionExpediente:', this.accionExpediente()); // ← ¿qué imprime?
-    //console.log('🔵 paciente.id:', paciente.id);                  // ← ¿tiene ID?
 
     this.api.updatePaciente(paciente.id, paciente, this.accionExpediente())
       .pipe(
@@ -651,11 +650,21 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(response => {
-        //console.log('✅ Paciente actualizado:', response);
-        if (response) {
-          this.location.back();
-        }
+        if (!response) return;
+        this.mensaje.set(response.queued
+          ? { texto: 'Paciente guardado localmente, se sincronizará cuando haya conexión.', tipo: 'info' }
+          : { texto: 'Paciente actualizado correctamente.', tipo: 'success' });
+        setTimeout(() => this.location.back(), 1400);
       });
+  }
+
+  // Evita perder datos si el usuario recarga o cierra con cambios sin guardar.
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.form.dirty) {
+      event.preventDefault();
+      event.returnValue = true;
+    }
   }
 
   // ======= REFERENCIAS =======

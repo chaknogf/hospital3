@@ -35,7 +35,7 @@ export class Sigsa3FormComponent implements OnInit {
   form: FormGroup = this.fb.group({
     paciente_id: [null],
     consulta_id: [null],
-    medico_id: [null],
+    personal_atencion_id: [null],
     personal_salud: [''],
     fecha_consulta: [''],
     no_historia_clinica: [''],
@@ -80,7 +80,7 @@ export class Sigsa3FormComponent implements OnInit {
 
   cargarMedicos(): void {
     this.apiService.getMedicos({}).subscribe({
-      next: (data) => this.medicos = data.medicos.filter(m => m.activo),
+      next: (data) => this.medicos = data.personal_atencion.filter(m => m.activo),
       error: () => {}
     });
   }
@@ -100,7 +100,7 @@ export class Sigsa3FormComponent implements OnInit {
         this.form.patchValue({
           paciente_id: data.paciente_id,
           consulta_id: data.consulta_id,
-          medico_id: data.medico_id,
+          personal_atencion_id: data.personal_atencion_id,
           personal_salud: data.personal_salud,
           fecha_consulta: data.fecha_consulta,
           no_historia_clinica: data.no_historia_clinica,

@@ -531,3 +531,36 @@ select.field-input option { background: var(--theme-surface-raised); color: var(
   .sec-body.triple { grid-template-columns: 1fr; }
   .action-dock { flex-wrap: wrap; }
 }
+
+/* ── Mensaje flotante de resultado (éxito / offline / error) ── */
+.mensaje-flotante {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1200;
+  max-width: min(92vw, 520px);
+  padding: 0.65rem 1rem;
+  border-radius: var(--theme-radius-md);
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  box-shadow: var(--theme-shadow-lg);
+  font-weight: 600;
+  text-align: center;
+}
+.mensaje-flotante.mensaje--success {
+  border-color: var(--theme-success);
+  background: var(--theme-success-dim);
+  color: var(--theme-success);
+}
+.mensaje-flotante.mensaje--info {
+  border-color: var(--theme-info);
+  background: var(--theme-info-dim);
+  color: var(--theme-info);
+}
+.mensaje-flotante.mensaje--error {
+  border-color: var(--theme-danger);
+  background: var(--theme-danger-dim);
+  color: var(--theme-danger);
+}

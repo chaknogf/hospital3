@@ -56,8 +56,8 @@ export interface IntervencionQuirurgica {
   paciente_id: number;
   paciente_nombre?: string;
   expediente?: string;
-  medico_id?: number;
-  medico_nombre?: string;
+  personal_atencion_id?: number;
+  personal_atencion_nombre?: string;
   quirofano_numero_id?: number;
   quirofano_numero_nombre?: string;
   procedimiento_principal?: string;
@@ -88,7 +88,7 @@ export interface IntervencionQuirurgica {
 export interface IntervencionCreate {
   paciente_id: number;
   expediente?: string;
-  medico_id?: number;
+  personal_atencion_id?: number;
   quirofano_numero_id?: number;
   estado_cirugia_id?: number;
   formato_procedimiento_id?: number;
@@ -108,7 +108,7 @@ export interface IntervencionCreate {
 }
 
 export interface IntervencionUpdate {
-  medico_id?: number;
+  personal_atencion_id?: number;
   quirofano_numero_id?: number;
   estado_cirugia_id?: number;
   formato_procedimiento_id?: number;

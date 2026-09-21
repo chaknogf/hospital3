@@ -1,0 +1,53 @@
+.dias-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: flex-end;
+  padding: 0.75rem 0;
+}
+
+.dias-form input,
+.dias-form button {
+  flex: 1 1 auto;
+}
+
+.badge-estado {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--theme-radius-pill);
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface-raised);
+  color: var(--theme-text-muted);
+  font-size: var(--theme-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.badge-activo {
+  color: var(--theme-danger);
+  border-color: var(--theme-danger);
+  background: var(--theme-danger-dim);
+}
+.badge-inactivo {
+  color: var(--theme-success);
+  border-color: var(--theme-success);
+  background: var(--theme-success-dim);
+}
+
+.alerta {
+  padding: 0.6rem 0.9rem;
+  margin: 0.5rem 0;
+  border-radius: var(--theme-radius-md);
+  font-size: 0.9rem;
+}
+.alerta--success {
+  border: 1px solid var(--theme-success);
+  background: var(--theme-success-dim);
+  color: var(--theme-success);
+}
+.alerta--error {
+  border: 1px solid var(--theme-danger);
+  background: var(--theme-danger-dim);
+  color: var(--theme-danger);
+}

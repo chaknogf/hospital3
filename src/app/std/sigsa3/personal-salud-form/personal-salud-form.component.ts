@@ -35,7 +35,7 @@ export class PersonalSaludFormComponent implements OnInit {
   form: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
     especialidad_id: [null],
-    medico_id: [null],
+    personal_atencion_id: [null],
     activo: [true],
   });
 
@@ -65,7 +65,7 @@ export class PersonalSaludFormComponent implements OnInit {
         this.form.patchValue({
           nombre: data.nombre,
           especialidad_id: data.especialidad_id,
-          medico_id: data.medico_id,
+          personal_atencion_id: data.personal_atencion_id,
           activo: data.activo ?? true,
         });
         this.cargando = false;

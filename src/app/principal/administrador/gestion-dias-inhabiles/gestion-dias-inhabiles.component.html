@@ -1,0 +1,94 @@
+<div class="aurora-paciente-container">
+  <div class="botones justify-content-between">
+    <h1 class="text-white">Días Inhábiles — Citas</h1>
+  </div>
+
+  <!-- Formulario de alta -->
+  <div class="dias-form">
+    <label class="label-filtros">Fecha (feriado / asueto)</label>
+    <input
+      type="date"
+      class="input-filtros"
+      [(ngModel)]="nuevaFecha"
+      name="nuevaFecha"
+    />
+    <input
+      type="text"
+      class="input-filtros"
+      [(ngModel)]="nuevoMotivo"
+      name="nuevoMotivo"
+      placeholder="Motivo (opcional) — Ej: Feriado oficial"
+    />
+    <button
+      class="button-filtros"
+      type="button"
+      (click)="agregar()"
+      [disabled]="guardando"
+    >
+      {{ guardando ? 'Guardando…' : 'Deshabilitar fecha' }}
+    </button>
+  </div>
+
+  @if (mensaje()) {
+    <div class="alerta" [ngClass]="mensaje()!.tipo === 'success' ? 'alerta--success' : 'alerta--error'">
+      {{ mensaje()!.texto }}
+    </div>
+  }
+
+  <div class="aurora-container">
+    <table class="aurora-tb">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Motivo</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (d of dias; track d.id) {
+          <tr class="aurora-table-row">
+            <td data-label="Fecha">{{ d.fecha | date: "dd/MM/yyyy" }}</td>
+            <td data-label="Motivo">{{ d.motivo || "—" }}</td>
+            <td data-label="Estado">
+              <span class="badge-estado" [ngClass]="d.activo ? 'badge-activo' : 'badge-inactivo'">
+                {{ d.activo ? "Deshabilitado" : "Habilitado" }}
+              </span>
+            </td>
+            <td class="secundario" data-label="Acciones">
+              <div class="botones-opt">
+                <button
+                  (click)="toggle(d); $event.stopPropagation()"
+                  [attr.data-label]="d.activo ? 'Habilitar' : 'Deshabilitar'"
+                >
+                  {{ d.activo ? 'Habilitar' : 'Deshabilitar' }}
+                </button>
+                <button
+                  (click)="eliminar(d); $event.stopPropagation()"
+                  data-label="Eliminar"
+                >
+                  Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          @if (!cargando()) {
+            <tr>
+              <td colspan="4" class="text-center py-3">
+                <em>No hay fechas deshabilitadas.</em>
+              </td>
+            </tr>
+          }
+        }
+        @if (cargando()) {
+          <tr>
+            <td colspan="4" class="text-center py-3">
+              <em>Cargando fechas…</em>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

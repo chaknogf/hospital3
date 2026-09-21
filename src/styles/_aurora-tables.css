@@ -293,6 +293,16 @@
   }
   .aurora-container::before { display: none; }
 
+  /* página: lienzo limpio y minimalista — el foco es la información */
+  .aurora-paciente-container {
+    margin: 0;
+    padding: var(--theme-space-2);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
   /* flatten the table into block/card primitives */
   .aurora-container .aurora-tb,
   .aurora-tb thead,
@@ -325,7 +335,9 @@
     border-radius: var(--theme-radius-xl);
     background: var(--theme-gradient-surface);
     box-shadow: var(--theme-shadow-sm);
-    transition: transform var(--theme-transition-fast), box-shadow var(--theme-transition-fast);
+    font-family: var(--theme-font-ui);
+    transition: transform var(--theme-transition-fast), box-shadow var(--theme-transition-fast),
+                background var(--theme-transition-fast), border-color var(--theme-transition-fast);
   }
   .aurora-tb tbody tr::before {
     content: "";
@@ -335,6 +347,14 @@
     background: linear-gradient(180deg, var(--theme-primary), var(--theme-primary-deep));
   }
   .aurora-tb tbody tr:active { transform: scale(0.99); box-shadow: var(--theme-shadow-md); }
+
+  /* hover: realce elegante y sutil, sin recargar la tarjeta */
+  .aurora-tb tbody tr:hover,
+  .aurora-tb tbody tr:focus-within {
+    background: var(--theme-gradient-surface-hover);
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-shadow-md);
+  }
 
   /* field = micro-label above value */
   .aurora-tb td {

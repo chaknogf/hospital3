@@ -164,12 +164,13 @@
   line-height: 1.4;
 }
 
-.fila-par td { background: var(--theme-surface-raised); }
+/* .fila-par td { background: var(--theme-surface-raised); } */
 
 .col-num        { width: 30px;  text-align: center; }
 .col-paciente   { width: 22%; }
 .col-expediente { width: 100px; text-align: center; }
 .col-especialidad { width: 14%; }
+.col-personal    { width: 17%; }
 .col-fecha      { width: 90px; text-align: center; white-space: nowrap; }
 .hora           { font-size: 8.5pt; color: #555; }
 

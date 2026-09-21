@@ -31,7 +31,7 @@ export class PersonalSaludListComponent {
   cargando = false;
   procesando = false;
 
-  filtros = { nombre: '', especialidad_id: null as number | null, medico_id: null as number | null };
+  filtros = { nombre: '', especialidad_id: null as number | null, personal_atencion_id: null as number | null };
   especialidades: EspecialidadItem[] = [];
   medicos: MedicoOut[] = [];
 
@@ -71,10 +71,10 @@ export class PersonalSaludListComponent {
 
   cargar(): void {
     this.cargando = true;
-    const filtros: { nombre?: string; especialidad_id?: number; medico_id?: number } = {
+    const filtros: { nombre?: string; especialidad_id?: number; personal_atencion_id?: number } = {
       nombre: this.filtros.nombre?.trim() || undefined,
       especialidad_id: this.filtros.especialidad_id ?? undefined,
-      medico_id: this.filtros.medico_id ?? undefined,
+      personal_atencion_id: this.filtros.personal_atencion_id ?? undefined,
     };
     this.api.listarPersonalSalud(filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => {
@@ -92,7 +92,7 @@ export class PersonalSaludListComponent {
   volver(): void { this.router.navigate(['/sigsa3']); }
 
   limpiarFiltros(): void {
-    this.filtros = { nombre: '', especialidad_id: null, medico_id: null };
+    this.filtros = { nombre: '', especialidad_id: null, personal_atencion_id: null };
     this.cargar();
   }
 

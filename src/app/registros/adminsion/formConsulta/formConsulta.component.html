@@ -27,11 +27,19 @@
   >
     Actualizar Indicadores
   </button>
-  <button type="button" class="btn-dock btn-dock-save" (click)="guardar()">
+  <button type="button" class="btn-dock btn-dock-save" (click)="guardar()" [disabled]="guardando">
     <span [innerHTML]="saveIcon"></span>
-    {{ enEdicion ? "Actualizar" : "Registrar" }}
+    {{ guardando ? "Guardando…" : (enEdicion ? "Actualizar" : "Registrar") }}
   </button>
 </div>
+
+@if (mensaje()) {
+  <div class="mensaje-flotante" [class.mensaje--info]="mensaje()!.tipo === 'info'"
+       [class.mensaje--success]="mensaje()!.tipo === 'success'"
+       [class.mensaje--error]="mensaje()!.tipo === 'error'">
+    {{ mensaje()!.texto }}
+  </div>
+}
 
 <form [formGroup]="form" class="adm-body">
   <input type="text" name="fakeusernameremembered" style="display: none" />

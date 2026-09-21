@@ -184,13 +184,13 @@
               </td>
               <td>
                 <div class="cell-paciente">
-                  @if (r.medico_nombre) {
-                    <span>{{ r.medico_nombre }}</span>
+                  @if (r.personal_atencion_nombre) {
+                    <span>{{ r.personal_atencion_nombre }}</span>
                   }
                   @if (r.personal_salud_nombre) {
                     <small>{{ r.personal_salud_nombre }}</small>
                   }
-                  @if (!r.medico_nombre && !r.personal_salud_nombre) {
+                  @if (!r.personal_atencion_nombre && !r.personal_salud_nombre) {
                     <span>—</span>
                   }
                 </div>

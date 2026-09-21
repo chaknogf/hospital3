@@ -27,7 +27,7 @@ export interface PacienteFallecido {
   defuncion?: {
     id: number;
     fecha_defuncion?: string;
-    medico_id?: number;
+    personal_atencion_id?: number;
     causa_a?: string;
     causa_b?: string;
     causa_c?: string;
@@ -68,7 +68,7 @@ export type MadreInfo = DatosPersonaInfo;
 
 export interface DefuncionOut {
   id: number;
-  medico_id?: number | null;
+  personal_atencion_id?: number | null;
   fecha_defuncion?: string | null;
   paciente_id?: number | null;
 
@@ -130,7 +130,7 @@ export interface DefuncionOut {
 }
 
 export interface DefuncionBase {
-  medico_id?: number;
+  personal_atencion_id?: number;
   fecha_defuncion?: string;
   mujer_edad_fertil?: boolean;
   muerte_gestacion?: string;

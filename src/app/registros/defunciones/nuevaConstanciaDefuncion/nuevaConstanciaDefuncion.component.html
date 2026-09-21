@@ -113,7 +113,7 @@
             </div>
             <div class="field">
               <label class="field-label">Médico que certifica</label>
-              <select class="field-input" formControlName="medico_id">
+              <select class="field-input" formControlName="personal_atencion_id">
                 <option [ngValue]="null">Seleccione un médico</option>
                 @for (m of medicos; track m.id) {
                   <option [ngValue]="m.id">{{ m.nombre }}{{ m.especialidad_nombre ? ' — ' + m.especialidad_nombre : '' }}</option>

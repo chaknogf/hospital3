@@ -1,7 +1,7 @@
 export interface Sigsa3Out {
   id: number;
   paciente_id?: number | null;
-  medico_id?: number | null;
+  personal_atencion_id?: number | null;
   consulta_id?: number | null;
   personal_salud?: string | null;
   personal_salud_id?: number | null;
@@ -39,7 +39,7 @@ export interface Sigsa3Create {
   codigo_cie_10_id?: number;
   dx?: string;
   especialidad_id?: number;
-  medico_id?: number;
+  personal_atencion_id?: number;
   consulta_id?: number;
   paciente_id?: number;
 }
@@ -61,7 +61,7 @@ export interface Sigsa3Update {
   codigo_cie_10_id?: number;
   dx?: string;
   especialidad_id?: number;
-  medico_id?: number;
+  personal_atencion_id?: number;
   consulta_id?: number;
 }
 
@@ -157,20 +157,20 @@ export interface PersonalSalud {
   nombre: string;
   especialidad_id?: number;
   especialidad_nombre?: string;
-  medico_id?: number;
+  personal_atencion_id?: number;
   activo?: boolean;
 }
 
 export interface PersonalSaludCreate {
   nombre: string;
   especialidad_id?: number;
-  medico_id?: number;
+  personal_atencion_id?: number;
   activo?: boolean;
 }
 
 export interface PersonalSaludUpdate {
   nombre?: string;
   especialidad_id?: number;
-  medico_id?: number;
+  personal_atencion_id?: number;
   activo?: boolean;
 }

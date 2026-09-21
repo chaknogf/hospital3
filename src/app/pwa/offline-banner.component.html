@@ -10,6 +10,12 @@
 }
 @if (sync.isOnline() && sync.pendingMutations() > 0) {
   <div class="sync-banner">
+    @if (sync.pendingMutationsList().some(m => m.stalled)) {
+      <div class="stalled-warning" role="alert">
+        ⚠ Hay cambios que no se pudieron sincronizar tras varios intentos.
+        Revísalos y reintenta; no se eliminan automáticamente para evitar pérdida de datos.
+      </div>
+    }
     <div class="acciones">
       <span class="fw-semibold">{{ sync.pendingMutations() }} cambio(s) pendiente(s)</span>
       <button class="btn btn-sm btn-light" (click)="sync.syncNow()">Sincronizar ahora</button>
@@ -18,9 +24,12 @@
     </div>
     <div class="detalles">
       @for (m of sync.pendingMutationsList(); track m.id) {
-        <div>
+        <div [class.stalled]="m.stalled">
           <span class="metodo {{ m.method.toLowerCase() }}">{{ m.method }}</span>
           {{ resumenOperacion(m) }}
+          @if (m.lastError) {
+            <span class="last-error" title="{{ m.lastError }}">({{ m.lastError }})</span>
+          }
         </div>
       }
     </div>

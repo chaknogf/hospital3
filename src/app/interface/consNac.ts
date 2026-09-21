@@ -3,7 +3,7 @@
 export interface ConstanciaNacimientoOut {
   documento: string;
   paciente_id: number;
-  medico_id: number;
+  personal_atencion_id: number;
   registrador_id: number;
   nombre_madre: string;
   vecindad_madre: string;
@@ -24,7 +24,7 @@ export interface ConstanciaNacimientoOut {
 export interface ConstanciaNacimientoCreate {
   documento: string;
   paciente_id: number;
-  medico_id: number;
+  personal_atencion_id: number;
   registrador_id: number;
   nombre_madre: string;
   vecindad_madre: string;

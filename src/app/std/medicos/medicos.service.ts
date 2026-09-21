@@ -60,7 +60,7 @@ export class MedicosService extends BaseApiService {
 
   /**
    * Lista médicos (paginado)
-   * GET /medicos
+   * GET /personal-atencion
    */
   getMedicos(filtros?: FiltroMedico): Observable<MedicoListResponse> {
     this.ultimoFiltro.filtro = filtros ?? {};
@@ -68,10 +68,10 @@ export class MedicosService extends BaseApiService {
     const params = this.limpiarParametros(filtros ?? {});
 
     return this.http.get<MedicoListResponse>(
-      `${this.baseUrl}/medicos`,
+      `${this.baseUrl}/personal-atencion`,
       { params }
     ).pipe(
-      tap(response => this.medicosSubject.next(response.medicos)),
+      tap(response => this.medicosSubject.next(response.personal_atencion)),
       catchError(error => this.manejarError(error, 'obtener médicos'))
     );
   }
@@ -82,21 +82,21 @@ export class MedicosService extends BaseApiService {
   getAllMedicos(): Observable<MedicoOut[]> {
     const params = this.limpiarParametros({ skip: 0, limit: 500 });
     return this.http.get<MedicoListResponse>(
-      `${this.baseUrl}/medicos`,
+      `${this.baseUrl}/personal-atencion`,
       { params }
     ).pipe(
-      map(response => response.medicos),
+      map(response => response.personal_atencion),
       catchError(error => this.manejarError(error, 'obtener todos los médicos'))
     );
   }
 
   /**
    * Obtiene un médico por ID
-   * GET /medicos/{id}
+   * GET /personal-atencion/{id}
    */
   getMedico(id: number): Observable<MedicoOut> {
     return this.http.get<MedicoOut>(
-      `${this.baseUrl}/medicos/${id}`
+      `${this.baseUrl}/personal-atencion/${id}`
     ).pipe(
       catchError(error => this.manejarError(error, 'obtener médico'))
     );
@@ -109,10 +109,10 @@ export class MedicosService extends BaseApiService {
     const params = this.limpiarParametros(filtros);
 
     return this.http.get<MedicoListResponse>(
-      `${this.baseUrl}/medicos`,
+      `${this.baseUrl}/personal-atencion`,
       { params }
     ).pipe(
-      map(response => response.medicos?.length > 0 ? response.medicos[0] : null),
+      map(response => response.personal_atencion?.length > 0 ? response.personal_atencion[0] : null),
       catchError(error => this.manejarError(error, 'buscar médico'))
     );
   }
@@ -121,11 +121,11 @@ export class MedicosService extends BaseApiService {
 
   /**
    * Crear médico
-   * POST /medicos
+   * POST /personal-atencion
    */
   crearMedico(data: MedicoCreate): Observable<MedicoOut> {
     this.isLoading.set(true);
-    return this.offMutation('POST', `${this.baseUrl}/medicos`, data).pipe(
+    return this.offMutation('POST', `${this.baseUrl}/personal-atencion`, data).pipe(
       tap(() => this.refrescarMedicos()),
       finalize(() => this.isLoading.set(false))
     );
@@ -136,7 +136,7 @@ export class MedicosService extends BaseApiService {
     data: MedicoUpdate
   ): Observable<MedicoOut> {
     this.isLoading.set(true);
-    return this.offMutation('PUT', `${this.baseUrl}/medicos/${medicoId}`, data).pipe(
+    return this.offMutation('PUT', `${this.baseUrl}/personal-atencion/${medicoId}`, data).pipe(
       tap(() => this.refrescarMedicos()),
       finalize(() => this.isLoading.set(false))
     );
@@ -144,7 +144,7 @@ export class MedicosService extends BaseApiService {
 
   eliminarMedico(medicoId: number): Observable<void> {
     this.isLoading.set(true);
-    return this.offMutation('DELETE', `${this.baseUrl}/medicos/${medicoId}`).pipe(
+    return this.offMutation('DELETE', `${this.baseUrl}/personal-atencion/${medicoId}`).pipe(
       tap(() => this.refrescarMedicos()),
       finalize(() => this.isLoading.set(false))
     );

@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, catchError, finalize } from 'rxjs/operators';
 import { BaseApiService, PaginationState } from '../../service/base-api.service';
 import { FiltroCitas } from '../../interface/filtros.model';
-import { CitaCreate, CitaListResponse, CitaResponse, Citas, ConteoCitas } from '../../interface/citas';
+import { CitaCreate, CitaListResponse, CitaResponse, Citas, ConteoCitas, DiaInhabil } from '../../interface/citas';
 
 @Injectable({ providedIn: 'root' })
 export class CitaService extends BaseApiService {
@@ -88,6 +88,38 @@ export class CitaService extends BaseApiService {
         catchError(error => this.manejarError(error, 'obtener regsitradas'))
       ),
       5 * 60 * 1000
+    );
+  }
+
+  // =========================================================
+  // DÍAS INHÁBILES — fechas sin agendar (feriados / asuetos)
+  // =========================================================
+  getDiasInhabiles(activo?: boolean): Observable<DiaInhabil[]> {
+    const params = this.limpiarParametros({ activo });
+    const key = this.cacheKey(`${this.baseUrl}/citas/dias-inhabiles`, params);
+    return this.cacheGet(key,
+      this.http.get<DiaInhabil[]>(`${this.baseUrl}/citas/dias-inhabiles`, { params }).pipe(
+        catchError(error => this.manejarError(error, 'obtener días inhábiles'))
+      ),
+      5 * 60 * 1000
+    );
+  }
+
+  crearDiaInhabil(data: { fecha: string; motivo?: string }): Observable<DiaInhabil> {
+    return this.http.post<DiaInhabil>(`${this.baseUrl}/citas/dias-inhabiles`, data).pipe(
+      catchError(error => this.manejarError(error, 'crear día inhábil'))
+    );
+  }
+
+  actualizarDiaInhabil(id: number, data: { fecha?: string; motivo?: string; activo?: boolean }): Observable<DiaInhabil> {
+    return this.http.patch<DiaInhabil>(`${this.baseUrl}/citas/dias-inhabiles/${id}`, data).pipe(
+      catchError(error => this.manejarError(error, 'actualizar día inhábil'))
+    );
+  }
+
+  eliminarDiaInhabil(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/citas/dias-inhabiles/${id}`).pipe(
+      catchError(error => this.manejarError(error, 'eliminar día inhábil'))
     );
   }
 }

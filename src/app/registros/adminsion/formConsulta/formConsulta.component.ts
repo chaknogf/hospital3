@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -37,6 +37,8 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
   historialCiclos: CicloClinico[] = [];
   enEdicion = false;
   usuarioActual = '';
+  guardando = false;
+  mensaje = signal<{ texto: string; tipo: 'success' | 'info' | 'error' } | null>(null);
   private destroy$ = new Subject<void>();
 
   tipoConsulta: Dict[] = tipoConsulta;
@@ -197,17 +199,30 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
   // GUARDAR
   // ══════════════════════════════════════════════════════════
   guardar(): void {
+    if (this.guardando) return;
+    this.guardando = true;
+    this.mensaje.set(null);
+
     const obs$ = this.enEdicion
       ? this.actualizarConsulta()
       : this.registrarNuevaAdmision();
 
-    obs$.pipe(takeUntil(this.destroy$)).subscribe(id => {
-      if (id) this.router.navigate(['/detalleAdmision', id]);
+    obs$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      this.guardando = false;
+      // Error → permanece en el formulario (no se pierde lo escrito)
+      if (!res) return;
+      // Guardado local (offline) → aviso visible y salida
+      if (res.queued) {
+        this.mostrarExito('Guardado localmente, se sincronizará cuando haya conexión.', 'info');
+        setTimeout(() => this.volver(), 1400);
+        return;
+      }
+      if (res.id) this.router.navigate(['/detalleAdmision', res.id]);
       else this.volver();
     });
   }
 
-  private registrarNuevaAdmision(): Observable<number | null> {
+  private registrarNuevaAdmision(): Observable<{ id?: number; queued?: boolean } | null> {
     const v = this.form.getRawValue();
     return this.api.registrarAdmision({
       paciente_id: v.paciente_id,
@@ -217,13 +232,13 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
       indicadores: v.indicadores,
       ciclo: [],
     }).pipe(
-      tap(() => this.mostrarExito('Admisión registrada')),
-      map(r => r?.id ?? null),
+      tap(r => { if (!(r as any)?.queued) this.mostrarExito('Admisión registrada', 'success'); }),
+      map(r => ((r as any)?.queued ? { queued: true } : { id: r?.id ?? undefined })),
       catchError(err => { this.mostrarError('registrar', err); return of(null); })
     );
   }
 
-  private actualizarConsulta(): Observable<number | null> {
+  private actualizarConsulta(): Observable<{ id?: number; queued?: boolean } | null> {
     if (!this.consultaId) return of(null);
     const v = this.form.getRawValue();
 
@@ -259,12 +274,14 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
 
     // ── Request ────────────────────────────────────────────
     return this.api.updateConsulta(this.consultaId, payload).pipe(
-      tap(() => {
-        this.mostrarExito('Consulta actualizada');
-        this.form.patchValue({ nuevo_estado: '', nuevo_servicio: '', nuevo_comentario: '' });
-        this.cargarConsulta(this.consultaId!);
+      tap(r => {
+        if (!(r as any)?.queued) {
+          this.mostrarExito('Consulta actualizada', 'success');
+          this.form.patchValue({ nuevo_estado: '', nuevo_servicio: '', nuevo_comentario: '' });
+          this.cargarConsulta(this.consultaId!);
+        }
       }),
-      map(r => r?.id ?? this.consultaId),
+      map(r => ((r as any)?.queued ? { queued: true } : { id: r?.id ?? this.consultaId })),
       catchError(err => { this.mostrarError('actualizar', err); return of(null); })
     );
   }
@@ -274,7 +291,7 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
     this.api.updateConsulta(this.consultaId, {
       indicadores: this.form.get('indicadores')?.value as Indicador,
     }).pipe(
-      tap(() => this.mostrarExito('Indicadores actualizados')),
+      tap(() => this.mostrarExito('Indicadores actualizados', 'success')),
       catchError(err => { this.mostrarError('actualizar indicadores', err); return of(null); })
     ).subscribe();
   }
@@ -306,7 +323,24 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
   editarPaciente(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
   private mostrarError(accion: string, error: any): void {
     console.error(`❌ Error al ${accion}:`, error);
-    alert(`Error al ${accion}. ${error?.error?.detail || error?.message || 'Consulte la consola'}`);
+    this.mensaje.set({
+      texto: `Error al ${accion}. ${error?.error?.detail || error?.message || 'Consulte la consola'}`,
+      tipo: 'error'
+    });
+    setTimeout(() => this.mensaje.set(null), 6000);
   }
-  private mostrarExito(m: string): void { console.log(`✅ ${m}`); }
+  private mostrarExito(m: string, tipo: 'success' | 'info' = 'success'): void {
+    console.log(`✅ ${m}`);
+    this.mensaje.set({ texto: m, tipo });
+    setTimeout(() => this.mensaje.set(null), 4000);
+  }
+
+  // Evita perder datos si el usuario recarga o cierra con cambios sin guardar.
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.form.dirty) {
+      event.preventDefault();
+      event.returnValue = true;
+    }
+  }
 }

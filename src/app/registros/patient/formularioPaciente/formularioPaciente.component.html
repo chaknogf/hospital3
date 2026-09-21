@@ -45,6 +45,12 @@
   @if (error()) {
     <div class="alert-danger">⚠ {{ error() }}</div>
   }
+  @if (mensaje()) {
+    <div class="alert-mensaje" [class.alert-mensaje--info]="mensaje()!.tipo === 'info'"
+         [class.alert-mensaje--success]="mensaje()!.tipo === 'success'">
+      {{ mensaje()!.texto }}
+    </div>
+  }
 
   <!-- LOADING -->
   @if (isLoading()) {

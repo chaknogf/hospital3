@@ -85,7 +85,7 @@ export class NuevaConstanciaNacimientoComponent implements OnInit, OnDestroy {
     return this.fb.group({
       paciente_id: [null, [Validators.required]],   // número puro — se llena via búsqueda por expediente
       madre_id: [null, [Validators.required]],   // número puro — se llena via búsqueda por expediente
-      medico_id: [null],   // número puro — se llena via <select>
+      personal_atencion_id: [null],   // número puro — se llena via <select>
       registrador_id: [null],   // número puro — opcional, puede venir de sesión
       documento: ['', [Validators.required]],
       nombre_madre: [''],
@@ -237,7 +237,7 @@ export class NuevaConstanciaNacimientoComponent implements OnInit, OnDestroy {
     return {
       paciente_id: v.paciente_id || undefined,
       madre_id: v.madre_id || undefined,
-      medico_id: v.medico_id || undefined,
+      personal_atencion_id: v.personal_atencion_id || undefined,
       registrador_id: v.registrador_id || undefined,
       documento: v.documento || undefined,
       fecha_registro: v.fecha_registro || undefined,

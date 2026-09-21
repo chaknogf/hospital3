@@ -63,7 +63,7 @@ export class ConstanciaDefuncionComponent implements OnInit, OnDestroy {
       id: [0],
       paciente_id: [{ value: null, disabled: true }],
       madre_id: [null],
-      medico_id: [null],
+      personal_atencion_id: [null],
       fecha_defuncion: [''],
       es_fetal: [false],
       muerte_gestacion: [''],
@@ -112,7 +112,7 @@ export class ConstanciaDefuncionComponent implements OnInit, OnDestroy {
       id: d.id,
       paciente_id: d.paciente_id,
       madre_id: d.madre_id ?? null,
-      medico_id: d.medico_id ?? null,
+      personal_atencion_id: d.personal_atencion_id ?? null,
       fecha_defuncion: d.fecha_defuncion?.slice(0, 16) ?? '',
       es_fetal: d.es_fetal ?? false,
       muerte_gestacion: d.muerte_gestacion ?? '',
@@ -172,7 +172,7 @@ export class ConstanciaDefuncionComponent implements OnInit, OnDestroy {
   private construirPayload(): any {
     const v = this.form.getRawValue();
     return {
-      medico_id: v.medico_id || undefined,
+      personal_atencion_id: v.personal_atencion_id || undefined,
       fecha_defuncion: v.fecha_defuncion || undefined,
       muerte_gestacion: v.muerte_gestacion || undefined,
       causa_a: v.causa_a || undefined,
@@ -207,7 +207,7 @@ export class ConstanciaDefuncionComponent implements OnInit, OnDestroy {
     this.apis.getMedicos(filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: data => {
         this.medicos = data;
-        const ctrl = this.form.get('medico_id');
+        const ctrl = this.form.get('personal_atencion_id');
         const val = ctrl?.value;
         if (val != null && data.some(m => m.id === val)) {
           ctrl?.setValue(val, { emitEvent: false });

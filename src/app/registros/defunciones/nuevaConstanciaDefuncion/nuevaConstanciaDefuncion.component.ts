@@ -71,7 +71,7 @@ export class NuevaConstanciaDefuncionComponent implements OnInit, OnDestroy {
     return this.fb.group({
       paciente_id: [null],
       madre_id: [null],
-      medico_id: [null],
+      personal_atencion_id: [null],
       fecha_defuncion: [new Date().toISOString().slice(0, 16)],
       es_fetal: [false],
       muerte_gestacion: [''],
@@ -184,7 +184,7 @@ export class NuevaConstanciaDefuncionComponent implements OnInit, OnDestroy {
   private construirPayload(): any {
     const v = this.form.getRawValue();
     return {
-      medico_id: v.medico_id || undefined,
+      personal_atencion_id: v.personal_atencion_id || undefined,
       fecha_defuncion: v.fecha_defuncion || undefined,
       muerte_gestacion: v.muerte_gestacion || undefined,
       causa_a: v.causa_a || undefined,

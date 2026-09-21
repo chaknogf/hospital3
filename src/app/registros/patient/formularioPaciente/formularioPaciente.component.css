@@ -570,3 +570,24 @@ select.field-input {
   color: var(--theme-danger);
   border-color: var(--theme-danger);
 }
+
+/* ── Mensaje de resultado (éxito / guardado local) ── */
+.alert-mensaje {
+  padding: 0.65rem 1rem;
+  margin: 0.5rem 0;
+  border-radius: var(--theme-radius-md);
+  border: 1px solid var(--theme-success);
+  background: var(--theme-success-dim);
+  color: var(--theme-success);
+  font-weight: 600;
+}
+.alert-mensaje--info {
+  border-color: var(--theme-info);
+  background: var(--theme-info-dim);
+  color: var(--theme-info);
+}
+.alert-mensaje--success {
+  border-color: var(--theme-success);
+  background: var(--theme-success-dim);
+  color: var(--theme-success);
+}

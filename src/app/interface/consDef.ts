@@ -19,7 +19,7 @@ export interface DefuncionMedicoResumen {
 
 export interface DefuncionOut {
   id: number;
-  medico_id?: number;
+  personal_atencion_id?: number;
   fecha_defuncion?: string;
   paciente_id?: number;
   fallecido_edad_horas?: number;
@@ -64,7 +64,7 @@ export interface DefuncionOut {
 }
 
 export interface DefuncionCreate {
-  medico_id?: number;
+  personal_atencion_id?: number;
   fecha_defuncion?: string;
   paciente_id?: number;
   muerte_gestacion?: string;
@@ -95,7 +95,7 @@ export interface DefuncionCreate {
 }
 
 export interface DefuncionUpdate {
-  medico_id?: number;
+  personal_atencion_id?: number;
   fecha_defuncion?: string;
   paciente_id?: number;
   muerte_gestacion?: string;
@@ -142,7 +142,7 @@ export interface PacienteFallecidoOut {
   defuncion?: {
     id: number;
     fecha_defuncion?: string;
-    medico_id?: number;
+    personal_atencion_id?: number;
     causa_a?: string;
     causa_b?: string;
     causa_c?: string;
@@ -162,7 +162,7 @@ export interface PacientesFallecidosResponse {
 }
 
 export interface RegistrarDefuncionRequest {
-  medico_id?: number;
+  personal_atencion_id?: number;
   fecha_defuncion?: string;
   muerte_gestacion?: string;
   causa_a?: string;

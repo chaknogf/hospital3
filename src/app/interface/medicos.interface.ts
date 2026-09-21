@@ -43,7 +43,7 @@ export interface FiltroMedico {
 
 export interface MedicoListResponse {
   total: number;
-  medicos: MedicoOut[];
+  personal_atencion: MedicoOut[];
 }
 
 export interface Medico {

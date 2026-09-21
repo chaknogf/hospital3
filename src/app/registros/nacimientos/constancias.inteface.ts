@@ -6,7 +6,7 @@ export interface ConstanciaNacimiento {
   documento?: string;
   paciente_id: number;
   madre_id?: number;
-  medico_id?: number;
+  personal_atencion_id?: number;
   registrador_id?: number;
   nombre_madre?: string;
   vecindad_madre?: string;

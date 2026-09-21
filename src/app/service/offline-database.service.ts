@@ -18,6 +18,8 @@ export interface PendingMutation {
   headers?: Record<string, string>;
   timestamp: number;
   retries: number;
+  stalled?: boolean;
+  lastError?: string;
 }
 
 export interface SyncMeta {

@@ -145,13 +145,18 @@ export class OfflineSyncService {
           synced++;
         } catch (err) {
           failed++;
+          const mensaje = err instanceof Error ? err.message : String(err);
           console.warn(`[Sync] Error en ${mutation.method} ${mutation.url}:`, err);
-          if (mutation.retries >= this.MAX_RETRIES) {
-            console.warn(`[Sync] Eliminando mutación tras ${this.MAX_RETRIES} intentos: ${mutation.method} ${mutation.url}`);
-            await this.db.deleteMutation(mutation.id!);
-          } else {
-            await this.db.mutations.update(mutation.id!, { retries: mutation.retries + 1 });
+          // NUNCA eliminar la mutación: borrarla sería pérdida silenciosa de datos.
+          // Se conserva (marcada como "estancada") para reintento manual o posterior.
+          const actualizacion: Partial<PendingMutation> = {
+            retries: (mutation.retries ?? 0) + 1,
+            lastError: mensaje.slice(0, 200)
+          };
+          if ((mutation.retries ?? 0) >= this.MAX_RETRIES) {
+            actualizacion.stalled = true;
           }
+          await this.db.mutations.update(mutation.id!, actualizacion);
         }
       }
 

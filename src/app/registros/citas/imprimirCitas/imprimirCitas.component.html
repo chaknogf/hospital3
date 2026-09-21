@@ -102,6 +102,7 @@
           <th class="col-paciente">Paciente</th>
           <th class="col-expediente">Expediente</th>
           <th class="col-especialidad">Especialidad</th>
+          <th class="col-personal">Personal de atención</th>
           <th class="col-fecha">Fecha / Hora</th>
           <th class="col-motivo">Motivo de Consulta</th>
         </tr>
@@ -118,6 +119,9 @@
             <td class="col-expediente">{{ cita.paciente.expediente }}</td>
             <td class="col-especialidad">
               {{ cita.especialidad | datosExtra: "especialidad" }}
+            </td>
+            <td class="col-personal">
+              {{ cita.personal_atencion_nombre || "Sin asignar" }}
             </td>
             <td class="col-fecha">
               {{ cita.fecha_cita | date: "dd/MM/yyyy" }}<br />

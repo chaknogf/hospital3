@@ -77,6 +77,7 @@ export class AdminComponent implements OnInit {
       { nombre: 'Limpiar CUI', descripcion: 'Limpiar número de CUI de un paciente', ruta: '/limpiar-cui-paciente', icon: 'edit' },
       { nombre: 'Municipios', descripcion: 'Gestionar catálogo de municipios', ruta: '/gestion-municipios', icon: 'archivo' },
       { nombre: 'Especialidades', descripcion: 'Gestionar catálogo de especialidades (estado y SOP)', ruta: '/gestion-especialidades', icon: 'archivo' },
+      { nombre: 'Días Inhábiles', descripcion: 'Deshabilitar fechas para citas (feriados/asuetos)', ruta: '/gestion-dias-inhabiles', icon: 'calendar' },
       { nombre: 'Procedimientos Quirófano', descripcion: 'Gestionar catálogo de procedimientos quirúrgicos', ruta: '/gestion-procedimientos', icon: 'cmedic' },
       { nombre: 'Encamamiento', descripcion: 'Gestionar servicios y camas', ruta: '/gestion-encamamiento', icon: 'ingresoIcon' },
       { nombre: 'Auditoría', descripcion: 'Ver reporte de accesos y actividades', ruta: '/gestion-audit-log', icon: 'nota' },

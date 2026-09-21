@@ -78,18 +78,59 @@ export class ApiService {
   }
 
   // ======= UTILITARIOS =======
+  /** Detecta si un JWT ya expiró (payload.exp en segundos). */
+  private tokenExpirado(token: string): boolean {
+    try {
+      const parte = token.split('.')[1];
+      if (!parte) return false;
+      const base64 = parte.replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+      const payload = JSON.parse(atob(padded));
+      const exp = payload?.exp;
+      if (typeof exp === 'number' && exp > 0) {
+        return exp * 1000 < Date.now();
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }
+
+  private limpiarSesionLocal(): void {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('role');
+    localStorage.removeItem('nombreUsuario');
+    this.token.set(null);
+    this.username.set(null);
+    this.role.set(null);
+    this.nombreUsuario.set(null);
+  }
+
   private cargarTokenDelStorage(): void {
     const token = localStorage.getItem('access_token');
+
+    if (!token) {
+      // No hay token: asegurar estado limpio (evita navbar con datos de una sesión previa).
+      this.limpiarSesionLocal();
+      return;
+    }
+
+    if (this.tokenExpirado(token)) {
+      // Token presente pero caducado → cerrar sesión para que el navbar no
+      // muestre usuario/rol con una sesión muerta.
+      this.limpiarSesionLocal();
+      return;
+    }
+
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
-    const nombreUsuario = localStorage.getItem('nombreUsuario')
+    const nombreUsuario = localStorage.getItem('nombreUsuario');
 
-    if (token) {
-      this.token.set(token);
-      this.username.set(username);
-      this.role.set(role);
-      this.nombreUsuario.set(nombreUsuario)
-    }
+    this.token.set(token);
+    this.username.set(username);
+    this.role.set(role);
+    this.nombreUsuario.set(nombreUsuario);
   }
 
   private limpiarParametros(filtros: any): HttpParams {
@@ -676,11 +717,11 @@ export class ApiService {
   getMedicos(filtros: any): Observable<Medico[]> {
     this.isLoading.set(true);
     const params = this.limpiarParametros(filtros);
-    const key = this.sync.cacheKey(`${this.baseUrl}/medicos/`, params);
+    const key = this.sync.cacheKey(`${this.baseUrl}/personal-atencion/`, params);
 
     return this.sync.cacheGet(key,
-      this.http.get<{ total: number; medicos: Medico[] }>(`${this.baseUrl}/medicos/`, { params }).pipe(
-        map(r => r.medicos),
+      this.http.get<{ total: number; personal_atencion: Medico[] }>(`${this.baseUrl}/personal-atencion/`, { params }).pipe(
+        map(r => r.personal_atencion),
         finalize(() => this.isLoading.set(false)),
         catchError(error => this.manejarError(error, 'obtener datos'))
       )
