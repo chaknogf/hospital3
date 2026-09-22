@@ -237,17 +237,17 @@ export const routes: Routes = [
       {
         path: 'prestamos',
         loadComponent: () => import('./registros/prestamos/listarPrestamos/listarPrestamos.component').then(c => c.ListarPrestamosComponent),
-        canActivate: [roleGuard(['admin', 'registro'])]
+
       },
       {
         path: 'prestamo/:id',
         loadComponent: () => import('./registros/prestamos/crearPrestamo/crearPrestamo.component').then(c => c.CrearPrestamoComponent),
-        canActivate: [roleGuard(['admin', 'registro'])]
+
       },
       {
         path: 'editarPrestamo/:id',
         loadComponent: () => import('./registros/prestamos/crearPrestamo/crearPrestamo.component').then(c => c.CrearPrestamoComponent),
-        canActivate: [roleGuard(['admin', 'registro'])]
+
       },
       // Médicas
       {

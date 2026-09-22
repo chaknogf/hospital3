@@ -91,6 +91,10 @@ export class OfflineDatabaseService extends Dexie {
     await this.pacientes.bulkPut(pacientes);
   }
 
+  async deletePacienteLocal(id: number): Promise<void> {
+    await this.pacientes.delete(id);
+  }
+
   async getAllPacientes(): Promise<Paciente[]> {
     return this.pacientes.toArray();
   }

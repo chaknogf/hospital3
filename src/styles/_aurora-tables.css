@@ -114,7 +114,7 @@
 
 /* cells */
 .aurora-tb tbody td {
-  padding: var(--theme-space-2) var(--theme-space-3);
+  /* padding: var(--theme-space-2) var(--theme-space-3); */
   border-bottom: 1px solid var(--theme-border);
   vertical-align: middle;
   color: var(--theme-text);

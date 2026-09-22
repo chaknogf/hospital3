@@ -5,10 +5,11 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 
-import { BaseApiService, PaginationState } from '../../service/base-api.service';
 import { Paciente, PacienteListResponse, Hijode, PacienteJoin, MadreHijoResponse } from '../../interface/interfaces';
 import { CitaResponse } from '../../interface/citas';
+import { BaseApiService, PaginationState } from '../../service/base-api.service';
 import { OfflineDatabaseService } from '../../service/offline-database.service';
+import { PacienteUtilService } from '../../service/paciente-util.service';
 import { FullSyncService } from '../../service/full-sync.service';
 
 @Injectable({ providedIn: 'root' })
@@ -16,6 +17,7 @@ export class PacienteService extends BaseApiService {
 
   private offlineDb = inject(OfflineDatabaseService);
   private fullSync = inject(FullSyncService);
+  private pacienteUtil = inject(PacienteUtilService);
 
   // ======= BEHAVIOR SUBJECTS =======
   private pacientesSubject = new BehaviorSubject<Paciente[]>([]);
@@ -34,6 +36,27 @@ export class PacienteService extends BaseApiService {
 
   private refrescarPacientes(): void {
     this.getPacientes(this.ultimoFiltroPaciente.filtro).subscribe();
+  }
+
+  /** Devuelve el último filtro aplicado en la lista de pacientes,
+   *  para que el componente lo restaure al volver a cargarlo. */
+  obtenerUltimoFiltro(): any {
+    return this.ultimoFiltroPaciente.filtro;
+  }
+
+  /** Refresca la copia local (Dexie) del paciente editado para que la lista
+   *  no muestre datos viejos "de caché" tras guardar cambios. */
+  private persistirPacienteLocal(paciente: any): void {
+    if (!paciente?.id) return;
+    this.offlineDb.getPacienteById(paciente.id).then(actual => {
+      const nombreCompleto =
+        this.pacienteUtil.obtenerNombreCompleto(paciente.nombre) ||
+        actual?.nombre_completo ||
+        '';
+      this.offlineDb.savePacientes([
+        { ...actual, ...paciente, nombre_completo: nombreCompleto } as Paciente
+      ]);
+    });
   }
 
   private async getPacientesOffline(filtros: any): Promise<PacienteListResponse> {
@@ -165,7 +188,10 @@ export class PacienteService extends BaseApiService {
       ? `${this.baseUrl}/pacientes/?auto_expediente=true`
       : `${this.baseUrl}/pacientes`;
     return this.offMutation('POST', url, paciente).pipe(
-      tap(() => this.refrescarPacientes()),
+      tap(resp => {
+        if (resp?.id && !resp.queued) this.offlineDb.savePacientes([resp as Paciente]);
+        this.refrescarPacientes();
+      }),
       finalize(() => this.isLoading.set(false))
     );
   }
@@ -177,7 +203,10 @@ export class PacienteService extends BaseApiService {
   ): Observable<any> {
     this.isLoading.set(true);
     return this.offMutation('PATCH', `${this.baseUrl}/pacientes/${pacienteId}?accion=${accion}`, paciente).pipe(
-      tap(() => this.refrescarPacientes()),
+      tap(() => {
+        this.persistirPacienteLocal(paciente);
+        this.refrescarPacientes();
+      }),
       finalize(() => this.isLoading.set(false))
     );
   }
@@ -185,7 +214,10 @@ export class PacienteService extends BaseApiService {
   deletePaciente(pacienteId: number): Observable<any> {
     this.isLoading.set(true);
     return this.offMutation('DELETE', `${this.baseUrl}/paciente/eliminar/${pacienteId}`).pipe(
-      tap(() => this.refrescarPacientes()),
+      tap(() => {
+        this.offlineDb.deletePacienteLocal(pacienteId);
+        this.refrescarPacientes();
+      }),
       finalize(() => this.isLoading.set(false))
     );
   }

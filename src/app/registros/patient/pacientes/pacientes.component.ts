@@ -71,6 +71,13 @@ export class PacientesComponent implements OnInit, OnDestroy {
     estado: ''
   };
 
+  // Campos de búsqueda que se restauran al reentrar (no la paginación).
+  private readonly camposBusqueda = [
+    'q', 'id', 'cui', 'expediente', 'nombre',
+    'primer_nombre', 'segundo_nombre', 'primer_apellido', 'segundo_apellido',
+    'sexo', 'fecha_nac', 'estado'
+  ];
+
   // ── Modal admisión ─────────────────────────────────────────
   pacienteSeleccionado = 0;
   @ViewChild('dialogAdmision') dialog!: ElementRef<HTMLDialogElement>;
@@ -124,9 +131,32 @@ export class PacientesComponent implements OnInit, OnDestroy {
 
   // ══════════════════════════════════════════════════════════
   ngOnInit(): void {
-    this.api.pacientes$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.pacientes = data; this.cdr.markForCheck(); });
+    this.aplicarUltimoFiltro();
     this.cargarPrestamosActivos();
     this.cargarPacientes();
+    this.api.pacientes$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      if (!this.cargando) {
+        this.pacientes = data;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  /** Restaura la última búsqueda (sin la paginación) para que al volver de
+   *  editar un paciente se mantenga el filtro pero con datos frescos. */
+  private aplicarUltimoFiltro(): void {
+    const ultimo: any = this.api.obtenerUltimoFiltro();
+    if (!ultimo) return;
+    const restaurados: any = {};
+    for (const campo of this.camposBusqueda) {
+      const valor = ultimo[campo];
+      if (valor !== undefined && valor !== null && valor !== '') {
+        restaurados[campo] = valor;
+      }
+    }
+    if (Object.keys(restaurados).length > 0) {
+      this.filtros = { ...this.filtros, ...restaurados };
+    }
   }
 
   ngOnDestroy(): void {
