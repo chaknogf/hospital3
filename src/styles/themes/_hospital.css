@@ -45,6 +45,8 @@
   --danger: #dc2626;
   --info: #0e7490;
   --theme-font: var(--bs-dark);
+ --text-print-blue: #011c75;
+ --text-print-blue-mute: #ec5819d7;
 
   /* ── SUPERFICIES CLARAS (base hospital) ── */
   --deep: #f4fafc;

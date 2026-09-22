@@ -58,6 +58,8 @@
   --warning-soft:       #ffff;
   --danger:             #f95738;
   --info:               #00a6fb;
+  --text-print-blue: #011c75;
+  --text-print-blue-mute: #ec5819d7;
 
   /* ── SUPERFICIES (cool/dark) ── */
   --deep:    #000814;   /* Imperial Blue — app bg */

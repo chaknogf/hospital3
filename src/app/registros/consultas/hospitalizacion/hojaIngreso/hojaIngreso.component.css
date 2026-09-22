@@ -9,6 +9,8 @@
   --bg:        #ffffff;
   --serif:     'Source Serif 4', Georgia, serif;
   --mono:      'DM Mono', 'Courier New', monospace;
+  --text-print-blue: #011c75;
+  --text-print-blue-mute: #ec5819d7;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -16,7 +18,7 @@
 body {
   background: #d0d0d0;
   font-family: var(--serif);
-  color: var(--ink);
+  color: var(--text-print-blue);;
   margin: 0; padding: 0;
 }
 
@@ -68,7 +70,7 @@ label { letter-spacing: 0.4px; }
   box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 8px 32px rgba(0,0,0,0.16);
   font-size: 8.5pt;
   font-family: var(--serif);
-  color: var(--ink);
+  color: var(--text-print-blue);;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -79,7 +81,7 @@ label { letter-spacing: 0.4px; }
   display: grid;
   grid-template-columns: 190px 1fr 125px;
   align-items: center; gap: 6px;
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 2px solid var(--text-print-blue);;
   padding-bottom: 0px; margin-bottom: 3px;
 }
 
@@ -93,7 +95,7 @@ label { letter-spacing: 0.4px; }
 
 .h-ministerio {
   font-family: var(--serif);
-  font-size: 9.5pt; font-weight: 700; color: var(--ink);
+  font-size: 9.5pt; font-weight: 700; color: var(--text-print-blue);;
 }
 .h-hospital {
   font-family: var(--serif);
@@ -116,7 +118,7 @@ label { letter-spacing: 0.4px; }
   font-family: var(--mono);
   font-size: 9.5pt; font-weight: 500;
   text-transform: uppercase; letter-spacing: 0.5px;
-  color: var(--ink-muted);
+  color: var(--text-print-blue);
 }
 .exp-num {
   font-family: var(--mono);
@@ -191,14 +193,14 @@ label { letter-spacing: 0.4px; }
   font-family: var(--mono);
   font-size: 9.8pt; font-weight: 600;
   text-transform: uppercase; letter-spacing: 0.4px;
-  color: rgba(0, 0, 0, 0.801); margin: 0; line-height: 1.2;
+  color: rgba(84, 13, 1, 0.801); margin: 0; line-height: 1.2;
 }
 
 .f-val {
   display: block;
   font-family: var(--serif);
   font-size: 10pt; font-weight: 600;
-  color: var(--ink); letter-spacing: 0;
+  color: var(--text-print-blue);; letter-spacing: 0;
   line-height: 1.3; min-height: 12px;
   /* box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 8px 32px rgba(0,0,0,0.16); */
   /*background-color: rgba(211, 225, 242, 0);*/
@@ -272,7 +274,7 @@ label { letter-spacing: 0.4px; }
 .salida-item {
   display: flex; align-items: center; gap: 6px;
   font-family: var(--serif); font-size: 10pt;
-  font-weight: 500; color: var(--ink);
+  font-weight: 500; color: var(--text-print-blue);;
 }
 .salida-box {
   width: 13px; height: 13px; flex-shrink: 0;
@@ -300,7 +302,7 @@ label { letter-spacing: 0.4px; }
   min-height: 38px; margin-top: 2px;
 }
 .firma-linea {
-  border-top: 0.8px solid var(--ink);
+  border-top: 0.8px solid var(--text-print-blue);;
   margin-top: 22px; width: 100%;
 }
 .hoja-pie-label {
@@ -361,13 +363,13 @@ label { letter-spacing: 0.4px; }
   .h-ministerio { font-size: 7pt !important; }
   .h-hospital   { font-size: 6.5pt !important; }
   .h-titulo     { font-size: 9.5pt !important; margin-top: 2px !important; }
-  .exp-num      { font-size: 13pt !important; color: black !important; }
+  .exp-num      { font-size: 13pt !important; color: var(--text-print-blue) !important; }
   .exp-lbl      { font-size: 5pt !important; }
-  .hoja-exp     { padding: 3px 5px !important; border-color: black !important; }
+  .hoja-exp     { padding: 3px 5px !important; border-color: var(--text-print-blue) !important; }
 
   /* Barras */
   .sec-bar {
-    color: black !important; /*background: #e8e8e8 !important;*/
+    color: var(--text-print-blue) !important; /*background: #e8e8e8 !important;*/
     padding: 2px 5px !important; font-size: 5.8pt !important;
     margin-top: 0 !important;
   }
@@ -399,7 +401,7 @@ label { letter-spacing: 0.4px; }
 
   /* Sexo */
   .sexo-opt { width: 14px !important; height: 14px !important; font-size: 6.5pt !important; }
-  .sexo-on  { background: black !important; color: white !important; border-color: black !important; }
+  .sexo-on  { background: var(--text-print-blue) !important; color: white !important; border-color: var(--text-print-blue) !important; }
 
   /* Autopsia */
   .autopsia-opt { padding: 0 6px !important; font-size: 6.5pt !important; }

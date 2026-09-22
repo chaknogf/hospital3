@@ -33,6 +33,8 @@
   --info: #033c73;
   --theme-font: var(--bs-dark);
   --theme-panel: #ffffffbc;
+  --text-print-blue: #011c75;
+  --text-print-blue-mute: #ec5819d7;
 
   /* ── SUPERFICIES CLARAS ── */
   --deep: #f0f4f8;
