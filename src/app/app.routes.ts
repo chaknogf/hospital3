@@ -256,11 +256,20 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin', 'medico'])]
       },
       {
+        path: 'pacientesActivos',
+        loadComponent: () => import('./medica/pacienteActivos/pacienteActivos.component').then(c => c.PacienteActivosComponent),
+        canActivate: [roleGuard(['admin', 'medico'])]
+      },
+      {
         path: 'pacientesAtendidos',
         loadComponent: () => import('./medica/pacientesAtendidos/pacientesAtendidos.component').then(c => c.PacientesAtendidosComponent)
       },
       {
         path: 'notaMedica/:consultaId',
+        loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+      },
+      {
+        path: 'notaMedica',
         loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
       },
       {
@@ -273,7 +282,15 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin', 'medico', 'std'])]
       },
       {
-        path: 'historiaClinica/:consultaId',
+        path: 'historiaClinica/:id',
+        loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
+      },
+      {
+        path: 'verNota/:id',
+        loadComponent: () => import('./medica/verNotaMedica/verNotaMedica.component').then(c => c.VerNotaMedicaComponent)
+      },
+      {
+        path: 'historiaClinica',
         loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
       },
       // Quirófano

@@ -48,12 +48,30 @@ export class MedicaComponent implements OnInit {
   ngOnInit() {
 
     this.options = [
-      { nombre: 'Pacientes', descripcion: 'Pacientes admitidos y consultantes', ruta: '/pacientesAtendidos', icon: 'paciente' },
-      { nombre: 'Signos Vitales', descripcion: 'Registrar Signos Vitales', ruta: '/signos-vitales', icon: 'signosVitales' },
-      { nombre: 'Nota Medica', descripcion: 'Impresión Médica, evolución, procedimientos realizados', ruta: '/notas-medicas', icon: 'nota' },
-      { nombre: 'Ordenes Medicas', descripcion: 'Ordenes de Estudios y otros', ruta: '/ordenes', icon: 'ordenes' },
-      { nombre: 'Quirófano', descripcion: 'Intervenciones quirúrgicas y pacientes hospitalizados', ruta: '/quirofano', icon: 'quirofano' },
-      //{ nombre: 'Resultados', descripcion: 'Resultados del Paciente', ruta: '', icon: 'consultas' },
+      {
+        nombre: 'Pacientes activos',
+        descripcion: 'Listado por especialidad; registra nota o abre historia',
+        ruta: '/pacientesActivos',
+        icon: 'paciente',
+      },
+      {
+        nombre: 'Notas médicas',
+        descripcion: 'Selecciona una consulta y registra la evolución clínica',
+        ruta: '/notaMedica',
+        icon: 'nota',
+      },
+      {
+        nombre: 'Historia clínica',
+        descripcion: 'Consulta ciclos, antecedentes y notas del expediente',
+        ruta: '/historiaClinica',
+        icon: 'paciente',
+      },
+      {
+        nombre: 'Quirófano',
+        descripcion: 'Intervenciones quirúrgicas y pacientes hospitalizados',
+        ruta: '/quirofano',
+        icon: 'quirofano',
+      },
     ];
 
 

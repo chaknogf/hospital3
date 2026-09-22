@@ -1,0 +1,134 @@
+<div class="rep">
+  <!-- Barra superior (no se imprime) -->
+  <div class="rep-toolbar no-print">
+    <button class="rep-back" (click)="volver()">← Volver a la historia</button>
+    <div class="rep-toolbar__actions">
+      <span class="rep-readonly">🔒 Solo lectura</span>
+      <button class="rep-print" (click)="imprimir()">🖨 Imprimir</button>
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <div class="rep-state">Cargando nota médica…</div>
+  } @else if (error()) {
+    <div class="rep-state rep-state--error">{{ error() }}</div>
+  } @else if (ciclo(); as c) {
+    <article class="rep-doc">
+      <!-- Encabezado -->
+      <header class="rep-head">
+        <div>
+          <span class="rep-kicker">Nota médica · Ciclo {{ c.numero }}</span>
+          <h1>{{ nombrePaciente }}</h1>
+          <div class="rep-patient">
+            @if (c.consulta?.paciente?.sexo) { <span>{{ c.consulta.paciente.sexo | datosExtra: 'sexo' }}</span> }
+            @if (c.consulta?.paciente?.fecha_nacimiento) { <span>Nac. {{ c.consulta.paciente.fecha_nacimiento | date: 'dd/MM/yyyy' }}</span> }
+            @if (c.consulta?.expediente) { <span>Exp. {{ c.consulta.expediente }}</span> }
+          </div>
+        </div>
+        <div class="rep-meta">
+          <div><span>Fecha</span><strong>{{ c.registro | date: 'dd/MM/yyyy HH:mm' }}</strong></div>
+          <div><span>Atendió</span><strong>{{ c.usuario_nombre || c.usuario || '—' }}</strong></div>
+          <div><span>Especialidad</span><strong>{{ c.especialidad | datosExtra: 'especialidad' }}</strong></div>
+          <div><span>Servicio</span><strong>{{ c.servicio | datosExtra: 'servicio' }}</strong></div>
+          <div><span>Estado</span><strong>{{ c.activo ? 'Activo' : 'Cerrado' }}</strong></div>
+        </div>
+      </header>
+
+      <!-- Nota clínica -->
+      <section class="rep-section">
+        <h2>Nota clínica</h2>
+        <dl class="rep-dl">
+          @if (datos?.detalle_clinicos) { <dt>Motivo / evolución</dt><dd>{{ datos?.detalle_clinicos }}</dd> }
+          @if (datos?.impresion_clinica) { <dt>Impresión diagnóstica</dt><dd>{{ datos?.impresion_clinica }}</dd> }
+          @if (datos?.tratamiento) { <dt>Tratamiento</dt><dd>{{ datos?.tratamiento }}</dd> }
+          @if (datos?.ordenes) { <dt>Órdenes</dt><dd>{{ datos?.ordenes }}</dd> }
+          @if (datos?.estudios) { <dt>Estudios</dt><dd>{{ datos?.estudios }}</dd> }
+          @if (datos?.comentario) { <dt>Comentario</dt><dd>{{ datos?.comentario }}</dd> }
+          @if (datos?.contraindicado) { <dt>Contraindicado</dt><dd>{{ datos?.contraindicado }}</dd> }
+        </dl>
+      </section>
+
+      <!-- Signos vitales -->
+      @if (signosItems.length) {
+        <section class="rep-section">
+          <h2>Signos vitales</h2>
+          <div class="rep-grid">
+            @for (sv of signosItems; track sv.label) {
+              <div class="rep-cell"><span>{{ sv.label }}</span><strong>{{ sv.valor }}</strong></div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- Examen físico -->
+      @if (cuerpoItems.length) {
+        <section class="rep-section">
+          <h2>Examen físico</h2>
+          <div class="rep-exam">
+            @for (h of cuerpoItems; track h.label) {
+              <div class="rep-exam__cell">
+                <span class="rep-exam__label">{{ h.label }}</span>
+                <p class="rep-exam__valor">{{ h.valor }}</p>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- Escalas -->
+      @if (glasgow || silverman || downe || apgar || bishop) {
+        <section class="rep-section">
+          <h2>Escalas clínicas</h2>
+          <div class="rep-grid">
+            @if (glasgow) { <div class="rep-cell"><span>Glasgow</span><strong>{{ glasgow.puntuacion_total }} <em>/ 15</em></strong></div> }
+            @if (silverman) { <div class="rep-cell"><span>Silverman</span><strong>{{ silverman.puntuacion_total }}</strong></div> }
+            @if (downe) { <div class="rep-cell"><span>Downe</span><strong>{{ downe.puntuacion_total }}</strong></div> }
+            @if (apgar) { <div class="rep-cell"><span>Apgar</span><strong>{{ apgar.puntuacion_total }} <em>/ 10</em></strong></div> }
+            @if (bishop) { <div class="rep-cell"><span>Bishop</span><strong>{{ bishop.puntuacion_total }}</strong></div> }
+          </div>
+        </section>
+      }
+
+      <!-- Antecedentes -->
+      @if (antecedentesGrupos.length) {
+        <section class="rep-section">
+          <h2>Antecedentes</h2>
+          @for (g of antecedentesGrupos; track g.label) {
+            <div class="rep-ant">
+              <span class="rep-ant__label">{{ g.label }}</span>
+              <ul>
+                @for (it of g.items; track $index) { <li>{{ it.descripcion }}</li> }
+              </ul>
+            </div>
+          }
+        </section>
+      }
+
+      <!-- Egreso -->
+      @if (egreso?.condicion || diagnosticos.length) {
+        <section class="rep-section">
+          <h2>Egreso</h2>
+          <dl class="rep-dl">
+            @if (egreso?.condicion) { <dt>Condición</dt><dd>{{ egreso?.condicion }}</dd> }
+            @if (egreso?.referencia) { <dt>Referido a</dt><dd>{{ egreso?.referencia }}</dd> }
+            @if (egreso?.medico) { <dt>Médico</dt><dd>{{ egreso?.medico }}</dd> }
+          </dl>
+          @if (diagnosticos.length) {
+            <div class="rep-diag">
+              <span class="rep-diag__title">Diagnósticos (CIE-10)</span>
+              <ul>
+                @for (dx of diagnosticos; track $index) {
+                  <li><code>{{ dx.codigo }}</code> {{ dx.descripcion }}</li>
+                }
+              </ul>
+            </div>
+          }
+        </section>
+      }
+
+      <footer class="rep-foot">
+        Documento de solo lectura · Generado {{ generadoEn | date: 'dd/MM/yyyy HH:mm' }}
+      </footer>
+    </article>
+  }
+</div>

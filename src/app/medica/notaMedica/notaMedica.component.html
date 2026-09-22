@@ -1,677 +1,432 @@
-<!-- ============================================================ -->
-<!-- NOTA MÉDICA — cosmos dark UI                                -->
-<!-- ============================================================ -->
+<!-- ══════════════════════════════════════════════════════════════
+     NOTA MÉDICA — diseño mobile-first, simple y moderno
+════════════════════════════════════════════════════════════════ -->
 
-<!-- ESTADOS DE CARGA -->
-<div *ngIf="isLoading()" class="dc-loading">
-  <div class="loading-ring"></div>
-  <span>Cargando nota médica...</span>
-</div>
+@if (isLoading()) {
+  <div class="nm-loading" role="status">Cargando expediente…</div>
+}
 
-<div *ngIf="error()" class="dc-error">
-  <span>⚠️ {{ error() }}</span>
-</div>
-
-<!-- ══ PÁGINA PRINCIPAL ══════════════════════════════════════════ -->
-<div class="dc-page">
-  <!-- ══ HUD HEADER ════════════════════════════════════════════ -->
-  <div class="hud-header">
-    <button class="hud-btn btn" (click)="regresar()" title="Regresar">←</button>
-
-    <div class="hud-title">
-      <span class="hud-label">Nota Médica</span>
-      <span class="hud-id">Ciclo #{{ ciclo()?.numero }}</span>
-      <span class="hud-sep">·</span>
-      <span class="hud-doc">{{ ciclo()?.usuario }}</span>
-    </div>
-
-    <div class="hud-actions">
-      <div
-        class="status-badge"
-        [ngClass]="ciclo()?.activo ? 'status-activo' : 'status-egreso'"
-      >
-        <span class="status-dot" [class.pulse-dot]="ciclo()?.activo"></span>
-        <span class="status-text">{{
-          ciclo()?.activo ? "ACTIVO" : "CERRADO"
-        }}</span>
-      </div>
-      <button class="hud-btn btn" (click)="guardar()" title="Guardar">
-        💾
-      </button>
-    </div>
+@if (mensaje()) {
+  <div class="nm-toast" [class.nm-toast--ok]="mensaje()!.tipo === 'success'"
+       [class.nm-toast--err]="mensaje()!.tipo === 'error'" role="alert">
+    {{ mensaje()!.texto }}
   </div>
+}
 
-  <!-- ══ STATUS ROW ═════════════════════════════════════════════ -->
-  <div class="dc-status-row">
-    <div class="status-meta">
-      <span class="meta-tag">
-        <span class="meta-icon">📅</span>
-        {{ ciclo()?.registro | date: "dd/MM/yyyy HH:mm" }}
-      </span>
-      <span class="meta-tag">
-        <span class="meta-icon">👨‍⚕️</span>
-        {{ ciclo()?.especialidad | datosExtra: "especialidad" }}
-      </span>
-      <span class="meta-tag">
-        <span class="meta-icon">🏥</span>
-        {{ ciclo()?.servicio | datosExtra: "servicio" }}
-      </span>
-    </div>
+<!-- ── PASO 1 · buscar paciente por expediente ─────────────────── -->
+@if (!tieneConsulta()) {
+  <section class="nm-picker">
+    <span class="nm-eyebrow">Expediente clínico</span>
+    <h1 class="nm-picker__title">Registrar nota médica</h1>
+    <p class="nm-picker__hint">Busca al paciente por su número de expediente y elige la consulta a documentar.</p>
 
-    <!-- TABS DE SECCIONES -->
-    <div class="nm-tabs">
-      <button
-        class="nm-tab btn"
-        [class.nm-tab-active]="tabActivo === 'clinica'"
-        (click)="setTab('clinica')"
-      >
-        🩺 Clínica
-      </button>
-      <button
-        class="nm-tab btn"
-        [class.nm-tab-active]="tabActivo === 'signos'"
-        (click)="setTab('signos')"
-      >
-        📊 Signos
-      </button>
-      <button
-        class="nm-tab btn"
-        [class.nm-tab-active]="tabActivo === 'antecedentes'"
-        (click)="setTab('antecedentes')"
-      >
-        📋 Antecedentes
-      </button>
-      <button
-        class="nm-tab"
-        [class.nm-tab-active]="tabActivo === 'examen'"
-        (click)="setTab('examen')"
-      >
-        🔬 Examen Físico
-      </button>
-      <button
-        class="nm-tab"
-        [class.nm-tab-active]="tabActivo === 'escalas'"
-        (click)="setTab('escalas')"
-      >
-        📐 Escalas
-      </button>
-      <button
-        class="nm-tab"
-        [class.nm-tab-active]="tabActivo === 'egreso'"
-        (click)="setTab('egreso')"
-      >
-        🚪 Egreso
+    <div class="nm-picker__search">
+      <input
+        type="search"
+        inputmode="numeric"
+        [(ngModel)]="busquedaExpediente"
+        placeholder="Ej. 202400123"
+        (keyup.enter)="buscarPaciente()"
+      />
+      <button class="nm-btn nm-btn--primary" (click)="buscarPaciente()" [disabled]="buscandoPaciente()">
+        {{ buscandoPaciente() ? 'Buscando…' : 'Buscar' }}
       </button>
     </div>
-  </div>
 
-  <!-- ══ GRID PRINCIPAL ═════════════════════════════════════════ -->
-  <div class="dc-grid">
-    <!-- ── COL IZQUIERDA — Datos fijos ── -->
-    <div class="dc-col">
-      <!-- DATOS CLÍNICOS TEXTUALES -->
-      <div class="dc-card" [class.nm-section-active]="tabActivo === 'clinica'">
-        <div class="card-header">
-          <span class="card-icon">🩺</span>
-          <h3 class="card-title">Nota Clínica</h3>
+    @if (error()) { <p class="nm-form__error">{{ error() }}</p> }
+
+    @if (pacienteBuscado()) {
+      <div class="nm-patient">
+        <div class="nm-patient__avatar" aria-hidden="true">
+          {{ pacienteBuscado()?.sexo === 'F' ? '♀' : '♂' }}
         </div>
-
-        <div class="nm-field-stack">
-          <div class="nm-field">
-            <label class="nm-lbl">Detalle Clínico / Motivo de consulta</label>
-            <textarea
-              class="nm-textarea"
-              rows="4"
-              [(ngModel)]="datosMedicos.detalle_clinicos"
-              placeholder="Descripción detallada del cuadro clínico..."
-            >
-            </textarea>
-          </div>
-
-          <div class="nm-field">
-            <label class="nm-lbl">Impresión Clínica / Diagnóstico</label>
-            <textarea
-              class="nm-textarea"
-              rows="3"
-              [(ngModel)]="datosMedicos.impresion_clinica"
-              placeholder="Impresión diagnóstica..."
-            >
-            </textarea>
-          </div>
-
-          <div class="nm-field">
-            <label class="nm-lbl">Tratamiento indicado</label>
-            <textarea
-              class="nm-textarea"
-              rows="3"
-              [(ngModel)]="datosMedicos.tratamiento"
-              placeholder="Medicamentos, dosis, vía, frecuencia..."
-            >
-            </textarea>
-          </div>
-
-          <div class="nm-field">
-            <label class="nm-lbl">Órdenes médicas</label>
-            <textarea
-              class="nm-textarea"
-              rows="3"
-              [(ngModel)]="datosMedicos.ordenes"
-              placeholder="Laboratorios, imágenes, interconsultas..."
-            >
-            </textarea>
-          </div>
-
-          <div class="nm-field">
-            <label class="nm-lbl">Estudios solicitados</label>
-            <textarea
-              class="nm-textarea"
-              rows="2"
-              [(ngModel)]="datosMedicos.estudios"
-              placeholder="Exámenes de laboratorio, gabinete..."
-            >
-            </textarea>
-          </div>
-
-          <div class="nm-field">
-            <label class="nm-lbl">Comentario</label>
-            <textarea
-              class="nm-textarea"
-              rows="2"
-              [(ngModel)]="datosMedicos.comentario"
-              placeholder="Observaciones adicionales..."
-            >
-            </textarea>
-          </div>
-
-          <div class="nm-field">
-            <label class="nm-lbl">Contraindicado</label>
-            <input
-              class="nm-input"
-              type="text"
-              [(ngModel)]="datosMedicos.contraindicado"
-              placeholder="Medicamentos o procedimientos contraindicados"
-            />
-          </div>
+        <div>
+          <strong>{{ pacienteBuscado()?.nombre?.primer_nombre }} {{ pacienteBuscado()?.nombre?.primer_apellido }}</strong>
+          <span>Expediente {{ pacienteBuscado()?.expediente || '—' }}</span>
         </div>
       </div>
 
-      <!-- SIGNOS VITALES -->
-      <div class="dc-card" [class.nm-section-active]="tabActivo === 'signos'">
-        <div class="card-header">
-          <span class="card-icon">📊</span>
-          <h3 class="card-title">Signos Vitales</h3>
-          <span class="card-badge">{{ horaSignos }}</span>
-        </div>
-
-        <div class="sv-grid">
-          <div class="sv-item">
-            <span class="sv-icon">💓</span>
-            <label class="nm-lbl">PA (mmHg)</label>
-            <input
-              class="nm-input sv-input"
-              type="text"
-              [(ngModel)]="signosVitales.pa"
-              placeholder="120/80"
-            />
-          </div>
-          <div class="sv-item">
-            <span class="sv-icon">🫀</span>
-            <label class="nm-lbl">FC (lpm)</label>
-            <input
-              class="nm-input sv-input"
-              type="text"
-              [(ngModel)]="signosVitales.fc"
-              placeholder="72"
-            />
-          </div>
-          <div class="sv-item">
-            <span class="sv-icon">🫁</span>
-            <label class="nm-lbl">FR (rpm)</label>
-            <input
-              class="nm-input sv-input"
-              type="text"
-              [(ngModel)]="signosVitales.fr"
-              placeholder="16"
-            />
-          </div>
-          <div class="sv-item">
-            <span class="sv-icon">🌡️</span>
-            <label class="nm-lbl">Temp (°C)</label>
-            <input
-              class="nm-input sv-input"
-              type="text"
-              [(ngModel)]="signosVitales.temp"
-              placeholder="36.5"
-            />
-          </div>
-          <div class="sv-item">
-            <span class="sv-icon">🩸</span>
-            <label class="nm-lbl">SatO₂ (%)</label>
-            <input
-              class="nm-input sv-input"
-              type="text"
-              [(ngModel)]="signosVitales.sat02"
-              placeholder="98"
-            />
-          </div>
-          <div class="sv-item">
-            <span class="sv-icon">⚖️</span>
-            <label class="nm-lbl">Peso (kg)</label>
-            <input
-              class="nm-input sv-input"
-              type="text"
-              [(ngModel)]="signosVitales.peso"
-              placeholder="70"
-            />
-          </div>
-          <div class="sv-item">
-            <span class="sv-icon">📏</span>
-            <label class="nm-lbl">Talla (cm)</label>
-            <input
-              class="nm-input sv-input"
-              type="text"
-              [(ngModel)]="signosVitales.talla"
-              placeholder="170"
-            />
-          </div>
-          <div class="sv-item">
-            <span class="sv-icon">🧠</span>
-            <label class="nm-lbl">P. Cefálico</label>
-            <input
-              class="nm-input sv-input"
-              type="text"
-              [(ngModel)]="signosVitales.pt"
-              placeholder="—"
-            />
-          </div>
-          <div class="sv-item">
-            <span class="sv-icon">📐</span>
-            <label class="nm-lbl">T. Edad Gest.</label>
-            <input
-              class="nm-input sv-input"
-              type="text"
-              [(ngModel)]="signosVitales.te"
-              placeholder="—"
-            />
-          </div>
-          <div class="sv-item">
-            <span class="sv-icon">📉</span>
-            <label class="nm-lbl">P. Edad Gest.</label>
-            <input
-              class="nm-input sv-input"
-              type="text"
-              [(ngModel)]="signosVitales.pe"
-              placeholder="—"
-            />
-          </div>
-          <div class="sv-item sv-item-full">
-            <span class="sv-icon">🩺</span>
-            <label class="nm-lbl">GMT</label>
-            <input
-              class="nm-input sv-input"
-              type="text"
-              [(ngModel)]="signosVitales.gmt"
-              placeholder="—"
-            />
-          </div>
-        </div>
-
-        <!-- Mini indicadores visuales -->
-        <div class="sv-indicators">
-          <div class="sv-ind" [class.sv-ind-ok]="signosVitales.fc">
-            <span class="sv-ind-dot"></span>FC
-          </div>
-          <div class="sv-ind" [class.sv-ind-ok]="signosVitales.pa">
-            <span class="sv-ind-dot"></span>PA
-          </div>
-          <div class="sv-ind" [class.sv-ind-ok]="signosVitales.sat02">
-            <span class="sv-ind-dot"></span>SatO₂
-          </div>
-          <div class="sv-ind" [class.sv-ind-ok]="signosVitales.temp">
-            <span class="sv-ind-dot"></span>Temp
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- /col izq -->
-
-    <!-- ── COL DERECHA ── -->
-    <div class="dc-col">
-      <!-- ANTECEDENTES -->
-      <div
-        class="dc-card"
-        [class.nm-section-active]="tabActivo === 'antecedentes'"
-      >
-        <div class="card-header">
-          <span class="card-icon">📋</span>
-          <h3 class="card-title">Antecedentes</h3>
-        </div>
-
-        <div class="nm-field-stack">
-          <div class="nm-antecedente" *ngFor="let grupo of gruposAntecedentes">
-            <div class="nm-ant-header" (click)="toggleAntecedente(grupo.key)">
-              <span class="nm-ant-icon">{{ grupo.icon }}</span>
-              <span class="nm-ant-label">{{ grupo.label }}</span>
-              <span
-                class="nm-ant-count"
-                *ngIf="getAntecedentes(grupo.key).length > 0"
-              >
-                {{ getAntecedentes(grupo.key).length }}
-              </span>
-              <span
-                class="nm-ant-chevron"
-                [class.open]="antecedentesAbiertos[grupo.key]"
-                >▾</span
-              >
-            </div>
-
-            <div class="nm-ant-body" *ngIf="antecedentesAbiertos[grupo.key]">
-              <div
-                class="nm-ant-item"
-                *ngFor="let item of getAntecedentes(grupo.key); let i = index"
-              >
-                <input
-                  class="nm-input nm-ant-input"
-                  type="text"
-                  [(ngModel)]="item.descripcion"
-                  [placeholder]="'Agregar ' + grupo.label.toLowerCase() + '...'"
-                />
-                <button
-                  class="nm-remove-btn"
-                  (click)="eliminarAntecedente(grupo.key, i)"
-                >
-                  ✕
-                </button>
-              </div>
-              <button
-                class="nm-add-btn"
-                (click)="agregarAntecedente(grupo.key)"
-              >
-                + Agregar
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- EXAMEN FÍSICO -->
-      <div class="dc-card" [class.nm-section-active]="tabActivo === 'examen'">
-        <div class="card-header">
-          <span class="card-icon">🔬</span>
-          <h3 class="card-title">Examen Físico</h3>
-        </div>
-
-        <div class="nm-field-stack">
-          <div class="cuerpo-grid">
-            <div class="nm-field" *ngFor="let seg of segmentosCuerpo">
-              <label class="nm-lbl">{{ seg.label }}</label>
-              <input
-                class="nm-input"
-                type="text"
-                [(ngModel)]="cuerpo[seg.key]"
-                [placeholder]="'Hallazgos en ' + seg.label.toLowerCase()"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ESCALAS CLÍNICAS -->
-      <div class="dc-card" [class.nm-section-active]="tabActivo === 'escalas'">
-        <div class="card-header">
-          <span class="card-icon">📐</span>
-          <h3 class="card-title">Escalas Clínicas</h3>
-        </div>
-
-        <!-- SUB-TABS ESCALAS -->
-        <div class="escalas-tabs">
-          <button
-            class="escalas-tab"
-            [class.active]="escalaActiva === 'glasgow'"
-            (click)="escalaActiva = 'glasgow'"
-          >
-            Glasgow
-          </button>
-          <button
-            class="escalas-tab"
-            [class.active]="escalaActiva === 'silverman'"
-            (click)="escalaActiva = 'silverman'"
-          >
-            Silverman
-          </button>
-          <button
-            class="escalas-tab"
-            [class.active]="escalaActiva === 'downe'"
-            (click)="escalaActiva = 'downe'"
-          >
-            Downe
-          </button>
-          <button
-            class="escalas-tab"
-            [class.active]="escalaActiva === 'apgar'"
-            (click)="escalaActiva = 'apgar'"
-          >
-            Apgar
-          </button>
-          <button
-            class="escalas-tab"
-            [class.active]="escalaActiva === 'bishop'"
-            (click)="escalaActiva = 'bishop'"
-          >
-            Bishop
-          </button>
-        </div>
-
-        <!-- GLASGOW -->
-        <div *ngIf="escalaActiva === 'glasgow'" class="escala-panel">
-          <div class="escala-grid">
-            <div class="escala-field" *ngFor="let f of glasgowFields">
-              <label class="nm-lbl">{{ f.label }}</label>
-              <div class="escala-stepper">
-                <button class="step-btn">−</button>
-                <span class="step-val"></span>
-                <button class="step-btn">+</button>
-              </div>
-              <span class="escala-hint">{{ f.hint }}</span>
-            </div>
-          </div>
-          <div
-            class="escala-total"
-            [class.escala-critico]="glasgowTotal < 9"
-            [class.escala-alerta]="glasgowTotal >= 9 && glasgowTotal < 13"
-          >
-            <span class="escala-total-lbl">Total Glasgow</span>
-            <span class="escala-total-val">{{ glasgowTotal }}</span>
-            <span class="escala-total-interp">{{ interpretarGlasgow() }}</span>
-          </div>
-        </div>
-
-        <!-- SILVERMAN -->
-        <div *ngIf="escalaActiva === 'silverman'" class="escala-panel">
-          <div class="escala-grid">
-            <div class="escala-field" *ngFor="let f of silvermanFields">
-              <label class="nm-lbl">{{ f.label }}</label>
-              <div class="escala-stepper">
-                <button class="step-btn">−</button>
-                <span class="step-val"></span>
-                <button class="step-btn">+</button>
-              </div>
-            </div>
-          </div>
-          <div
-            class="escala-total"
-            [class.escala-critico]="silvermanTotal >= 7"
-            [class.escala-alerta]="silvermanTotal >= 4 && silvermanTotal < 7"
-          >
-            <span class="escala-total-lbl">Total Silverman</span>
-            <span class="escala-total-val">{{ silvermanTotal }}</span>
-            <span class="escala-total-interp">{{
-              interpretarSilverman()
-            }}</span>
-          </div>
-        </div>
-
-        <!-- DOWNE -->
-        <div *ngIf="escalaActiva === 'downe'" class="escala-panel">
-          <div class="escala-grid">
-            <div class="escala-field" *ngFor="let f of downeFields">
-              <label class="nm-lbl">{{ f.label }}</label>
-              <div class="escala-stepper">
-                <button class="step-btn">−</button>
-                <span class="step-val"></span>
-                <button class="step-btn">+</button>
-              </div>
-            </div>
-          </div>
-          <div
-            class="escala-total"
-            [class.escala-critico]="downeTotal >= 7"
-            [class.escala-alerta]="downeTotal >= 4 && downeTotal < 7"
-          >
-            <span class="escala-total-lbl">Total Downe</span>
-            <span class="escala-total-val">{{ downeTotal }}</span>
-            <span class="escala-total-interp">{{ interpretarDowne() }}</span>
-          </div>
-        </div>
-
-        <!-- APGAR -->
-        <div *ngIf="escalaActiva === 'apgar'" class="escala-panel">
-          <div class="escala-grid">
-            <div class="escala-field" *ngFor="let f of apgarFields">
-              <label class="nm-lbl">{{ f.label }}</label>
-              <div class="escala-stepper">
-                <button class="step-btn">−</button>
-                <span class="step-val"></span>
-                <button class="step-btn">+</button>
-              </div>
-            </div>
-          </div>
-          <div
-            class="escala-total"
-            [class.escala-critico]="apgarTotal < 4"
-            [class.escala-alerta]="apgarTotal >= 4 && apgarTotal < 7"
-          >
-            <span class="escala-total-lbl">Total Apgar</span>
-            <span class="escala-total-val">{{ apgarTotal }}</span>
-            <span class="escala-total-interp">{{ interpretarApgar() }}</span>
-          </div>
-        </div>
-
-        <!-- BISHOP -->
-        <div *ngIf="escalaActiva === 'bishop'" class="escala-panel">
-          <div class="escala-grid">
-            <div class="escala-field" *ngFor="let f of bishopFields">
-              <label class="nm-lbl">{{ f.label }}</label>
-              <div class="escala-stepper">
-                <button class="step-btn">−</button>
-                <span class="step-val"></span>
-                <button class="step-btn">+</button>
-              </div>
-            </div>
-          </div>
-          <div class="escala-total" [class.escala-ok]="bishopTotal >= 8">
-            <span class="escala-total-lbl">Total Bishop</span>
-            <span class="escala-total-val">{{ bishopTotal }}</span>
-            <span class="escala-total-interp">{{ interpretarBishop() }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- EGRESO -->
-      <div
-        class="dc-card dc-card-egreso"
-        [class.nm-section-active]="tabActivo === 'egreso'"
-      >
-        <div class="card-header">
-          <span class="card-icon">🚪</span>
-          <h3 class="card-title">Egreso</h3>
-          <span class="card-badge egreso-badge">Alta / Cierre</span>
-        </div>
-
-        <div class="nm-field-stack">
-          <div class="nm-field">
-            <label class="nm-lbl">Condición de Egreso</label>
-            <select class="nm-select" [(ngModel)]="egreso.condicion">
-              <option value="">— Seleccionar —</option>
-              <option value="mejorado">Mejorado</option>
-              <option value="curado">Curado</option>
-              <option value="sin_cambio">Sin Cambio</option>
-              <option value="empeorado">Empeorado</option>
-              <option value="fallecido">Fallecido</option>
-              <option value="voluntario">Alta Voluntaria</option>
-              <option value="fuga">Fuga</option>
-            </select>
-          </div>
-
-          <div class="nm-field">
-            <label class="nm-lbl">Referido a</label>
-            <input
-              class="nm-input"
-              type="text"
-              [(ngModel)]="egreso.referencia"
-              placeholder="Unidad o servicio de referencia"
-            />
-          </div>
-
-          <div class="nm-field">
-            <label class="nm-lbl">Médico responsable del egreso</label>
-            <input
-              class="nm-input"
-              type="text"
-              [(ngModel)]="egreso.medico"
-              placeholder="Nombre del médico"
-            />
-          </div>
-
-          <!-- DIAGNÓSTICOS DE EGRESO -->
-          <div class="egreso-diag-header">Diagnósticos al Egreso (CIE-10)</div>
-          <div class="egreso-diag-list">
-            <div
-              class="egreso-diag-item"
-              *ngFor="let dx of egreso.diagnosticos; let i = index"
-            >
-              <input
-                class="nm-input diag-codigo-input"
-                type="text"
-                [(ngModel)]="dx.codigo"
-                placeholder="CIE-10"
-              />
-              <input
-                class="nm-input diag-desc-input"
-                type="text"
-                [(ngModel)]="dx.descripcion"
-                placeholder="Descripción del diagnóstico..."
-              />
-              <button class="nm-remove-btn" (click)="eliminarDx(i)">✕</button>
-            </div>
-            <button class="nm-add-btn" (click)="agregarDx()">
-              + Agregar diagnóstico
+      @if (cargandoConsultas()) {
+        <p class="nm-picker__hint">Cargando consultas…</p>
+      } @else if (!consultasPaciente().length) {
+        <p class="nm-picker__hint">El paciente no tiene consultas para documentar.</p>
+      } @else {
+        <div class="nm-consultas">
+          @for (consulta of consultasPaciente(); track consulta.id) {
+            <button class="nm-consulta" (click)="seleccionarConsulta(consulta)">
+              <span class="nm-consulta__fecha">{{ consulta.fecha_consulta | date: 'dd/MM/yyyy' }}</span>
+              <span class="nm-consulta__esp">{{ consulta.especialidad || 'Consulta clínica' }}</span>
+              <span class="nm-consulta__ir">→</span>
             </button>
-          </div>
+          }
         </div>
-      </div>
-    </div>
-    <!-- /col der -->
-  </div>
-  <!-- /dc-grid -->
+      }
+    }
+  </section>
+}
 
-  <!-- ══ FOOTER ACCIONES ════════════════════════════════════════ -->
-  <div class="nm-footer">
-    <div class="nm-footer-info">
-      <span class="nm-footer-label">Ciclo #{{ ciclo()?.numero }}</span>
-      <span class="nm-footer-sep">·</span>
-      <span class="nm-footer-user">{{ ciclo()?.usuario }}</span>
-      <span class="nm-footer-sep">·</span>
-      <span class="nm-footer-date">{{
-        ciclo()?.registro | date: "dd/MM/yyyy HH:mm"
-      }}</span>
-    </div>
-    <div class="nm-footer-actions">
-      <button class="nm-btn-secondary" (click)="regresar()">Cancelar</button>
-      <button class="nm-btn-primary" (click)="guardar()">
-        <span>💾</span> Guardar Nota
+<!-- ── PASO 2 · formulario de la nota ──────────────────────────── -->
+@if (tieneConsulta()) {
+  <div class="nm-app">
+    <header class="nm-topbar">
+      <button class="nm-icon-btn" (click)="regresar()" aria-label="Regresar">←</button>
+      <div class="nm-topbar__title">
+        <span>Nota médica</span>
+        <small>Ciclo {{ ciclo()?.numero }} · {{ ciclo()?.usuario }}</small>
+      </div>
+      <span class="nm-pill" [class.nm-pill--open]="ciclo()?.activo">
+        {{ ciclo()?.activo ? 'Activo' : 'Cerrado' }}
+      </span>
+      <button class="nm-icon-btn nm-icon-btn--save" (click)="guardar()" [disabled]="guardando()" aria-label="Guardar">
+        {{ guardando() ? '…' : '✓' }}
       </button>
+    </header>
+
+    <div class="nm-meta">
+      <span>{{ ciclo()?.registro | date: 'dd/MM/yyyy HH:mm' }}</span>
+      <span>{{ ciclo()?.especialidad | datosExtra: 'especialidad' }}</span>
+      <span>{{ ciclo()?.servicio | datosExtra: 'servicio' }}</span>
     </div>
+
+    <nav class="nm-tabs" role="tablist">
+      <button role="tab" [class.is-active]="tabActivo === 'clinica'" (click)="setTab('clinica')">Clínica</button>
+      <button role="tab" [class.is-active]="tabActivo === 'signos'" (click)="setTab('signos')">Signos</button>
+      <button role="tab" [class.is-active]="tabActivo === 'antecedentes'" (click)="setTab('antecedentes')">Antecedentes</button>
+      <button role="tab" [class.is-active]="tabActivo === 'examen'" (click)="setTab('examen')">Examen</button>
+      <button role="tab" [class.is-active]="tabActivo === 'escalas'" (click)="setTab('escalas')">Escalas</button>
+      <button role="tab" [class.is-active]="tabActivo === 'egreso'" (click)="setTab('egreso')">Egreso</button>
+    </nav>
+
+    <main class="nm-content">
+      @switch (tabActivo) {
+        <!-- CLÍNICA -->
+        @case ('clinica') {
+          <div class="nm-form">
+            <label class="nm-field">
+              <span>Detalle clínico / motivo de consulta</span>
+              <textarea rows="4" [(ngModel)]="datosMedicos.detalle_clinicos" placeholder="Descripción del cuadro clínico…"></textarea>
+            </label>
+            <label class="nm-field">
+              <span>Impresión clínica / diagnóstico</span>
+              <textarea rows="3" [(ngModel)]="datosMedicos.impresion_clinica" placeholder="Impresión diagnóstica…"></textarea>
+            </label>
+            <label class="nm-field">
+              <span>Tratamiento indicado</span>
+              <textarea rows="3" [(ngModel)]="datosMedicos.tratamiento" placeholder="Medicamentos, dosis, vía, frecuencia…"></textarea>
+            </label>
+            <label class="nm-field">
+              <span>Órdenes médicas</span>
+              <textarea rows="2" [(ngModel)]="datosMedicos.ordenes" placeholder="Laboratorios, imágenes, interconsultas…"></textarea>
+            </label>
+            <label class="nm-field">
+              <span>Estudios solicitados</span>
+              <textarea rows="2" [(ngModel)]="datosMedicos.estudios" placeholder="Exámenes de laboratorio o gabinete…"></textarea>
+            </label>
+            <label class="nm-field">
+              <span>Comentario</span>
+              <textarea rows="2" [(ngModel)]="datosMedicos.comentario" placeholder="Observaciones adicionales…"></textarea>
+            </label>
+            <label class="nm-field">
+              <span>Contraindicado</span>
+              <input type="text" [(ngModel)]="datosMedicos.contraindicado" placeholder="Medicamentos o procedimientos contraindicados" />
+            </label>
+          </div>
+        }
+
+        <!-- SIGNOS VITALES -->
+        @case ('signos') {
+          <div class="nm-signos">
+            <div class="nm-signos__grid">
+              <label class="nm-sv"><span>PA (mmHg)</span><input type="text" [(ngModel)]="signosVitales.pa" placeholder="120/80" /></label>
+              <label class="nm-sv"><span>FC (lpm)</span><input type="text" inputmode="numeric" [(ngModel)]="signosVitales.fc" placeholder="72" /></label>
+              <label class="nm-sv"><span>FR (rpm)</span><input type="text" inputmode="numeric" [(ngModel)]="signosVitales.fr" placeholder="16" /></label>
+              <label class="nm-sv"><span>Temp (°C)</span><input type="text" inputmode="decimal" [(ngModel)]="signosVitales.temp" placeholder="36.5" /></label>
+              <label class="nm-sv"><span>SatO₂ (%)</span><input type="text" inputmode="numeric" [(ngModel)]="signosVitales.sat02" placeholder="98" /></label>
+              <label class="nm-sv"><span>Peso (kg)</span><input type="text" inputmode="decimal" [(ngModel)]="signosVitales.peso" placeholder="70" /></label>
+              <label class="nm-sv"><span>Talla (cm)</span><input type="text" inputmode="decimal" [(ngModel)]="signosVitales.talla" placeholder="170" /></label>
+              <label class="nm-sv"><span>Perim. cefálico</span><input type="text" [(ngModel)]="signosVitales.pt" placeholder="—" /></label>
+              <label class="nm-sv"><span>T. edad gest.</span><input type="text" [(ngModel)]="signosVitales.te" placeholder="—" /></label>
+              <label class="nm-sv"><span>P. edad gest.</span><input type="text" [(ngModel)]="signosVitales.pe" placeholder="—" /></label>
+              <label class="nm-sv nm-sv--full"><span>GMT</span><input type="text" [(ngModel)]="signosVitales.gmt" placeholder="—" /></label>
+            </div>
+          </div>
+        }
+
+        <!-- ANTECEDENTES -->
+        @case ('antecedentes') {
+          <div class="nm-ant">
+            @for (grupo of gruposAntecedentes; track grupo.key) {
+              <div class="nm-ant__group">
+                <button class="nm-ant__head" (click)="toggleAntecedente(grupo.key)">
+                  <span class="nm-ant__label">{{ grupo.icon }} {{ grupo.label }}</span>
+                  @if (getAntecedentes(grupo.key).length) {
+                    <span class="nm-ant__count">{{ getAntecedentes(grupo.key).length }}</span>
+                  }
+                  <span class="nm-ant__chev" [class.is-open]="antecedentesAbiertos[grupo.key]">▾</span>
+                </button>
+                @if (antecedentesAbiertos[grupo.key]) {
+                  <div class="nm-ant__body">
+                    @for (item of getAntecedentes(grupo.key); track $index) {
+                      <div class="nm-ant__row">
+                        <input type="text" [(ngModel)]="item.descripcion" [placeholder]="'Agregar ' + grupo.label.toLowerCase() + '…'" />
+                        <button class="nm-del" (click)="eliminarAntecedente(grupo.key, $index)" aria-label="Eliminar">✕</button>
+                      </div>
+                    }
+                    <button class="nm-add" (click)="agregarAntecedente(grupo.key)">+ Agregar</button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- EXAMEN FÍSICO -->
+        @case ('examen') {
+          <div class="nm-examen-wrap">
+            <!-- Referencia visual del cuerpo humano -->
+            <div class="nm-body">
+              <svg class="nm-body__svg" viewBox="0 0 200 340" role="img" aria-label="Mapa corporal">
+                <!-- piel (silueta base) -->
+                <g class="reg" [class.sel]="regionActiva === 'piel'" [class.hov]="regionHover === 'piel'"
+                   (click)="seleccionarRegion('piel')" (mouseenter)="regionHover = 'piel'" (mouseleave)="regionHover = null">
+                  <title>Piel</title>
+                  <circle cx="100" cy="40" r="26"/><rect x="62" y="76" width="76" height="100" rx="18"/>
+                  <rect x="70" y="172" width="60" height="28" rx="10"/>
+                  <rect x="40" y="80" width="16" height="96" rx="8"/><rect x="144" y="80" width="16" height="96" rx="8"/>
+                  <rect x="74" y="198" width="24" height="120" rx="10"/><rect x="102" y="198" width="24" height="120" rx="10"/>
+                </g>
+                <!-- extremidades -->
+                <g class="reg" [class.sel]="regionActiva === 'extremidades'" [class.hov]="regionHover === 'extremidades'"
+                   (click)="seleccionarRegion('extremidades')" (mouseenter)="regionHover = 'extremidades'" (mouseleave)="regionHover = null">
+                  <title>Extremidades</title>
+                  <rect x="40" y="80" width="16" height="96" rx="8"/><rect x="144" y="80" width="16" height="96" rx="8"/>
+                  <rect x="74" y="198" width="24" height="120" rx="10"/><rect x="102" y="198" width="24" height="120" rx="10"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'columna'" [class.hov]="regionHover === 'columna'"
+                   (click)="seleccionarRegion('columna')" (mouseenter)="regionHover = 'columna'" (mouseleave)="regionHover = null">
+                  <title>Columna</title><rect x="98" y="78" width="4" height="108"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'torax'" [class.hov]="regionHover === 'torax'"
+                   (click)="seleccionarRegion('torax')" (mouseenter)="regionHover = 'torax'" (mouseleave)="regionHover = null">
+                  <title>Tórax</title><rect x="70" y="84" width="60" height="44" rx="10"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'pulmones'" [class.hov]="regionHover === 'pulmones'"
+                   (click)="seleccionarRegion('pulmones')" (mouseenter)="regionHover = 'pulmones'" (mouseleave)="regionHover = null">
+                  <title>Pulmones</title><ellipse cx="84" cy="104" rx="11" ry="16"/><ellipse cx="116" cy="104" rx="11" ry="16"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'corazon'" [class.hov]="regionHover === 'corazon'"
+                   (click)="seleccionarRegion('corazon')" (mouseenter)="regionHover = 'corazon'" (mouseleave)="regionHover = null">
+                  <title>Corazón</title><ellipse cx="104" cy="108" rx="7" ry="8"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'abdomen'" [class.hov]="regionHover === 'abdomen'"
+                   (click)="seleccionarRegion('abdomen')" (mouseenter)="regionHover = 'abdomen'" (mouseleave)="regionHover = null">
+                  <title>Abdomen</title><rect x="72" y="132" width="56" height="38" rx="8"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'genitales'" [class.hov]="regionHover === 'genitales'"
+                   (click)="seleccionarRegion('genitales')" (mouseenter)="regionHover = 'genitales'" (mouseleave)="regionHover = null">
+                  <title>Genitales</title><rect x="80" y="172" width="40" height="24" rx="8"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'cuello'" [class.hov]="regionHover === 'cuello'"
+                   (click)="seleccionarRegion('cuello')" (mouseenter)="regionHover = 'cuello'" (mouseleave)="regionHover = null">
+                  <title>Cuello</title><rect x="90" y="62" width="20" height="14"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'cabeza'" [class.hov]="regionHover === 'cabeza'"
+                   (click)="seleccionarRegion('cabeza')" (mouseenter)="regionHover = 'cabeza'" (mouseleave)="regionHover = null">
+                  <title>Cabeza</title><circle cx="100" cy="40" r="26"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'neurologico'" [class.hov]="regionHover === 'neurologico'"
+                   (click)="seleccionarRegion('neurologico')" (mouseenter)="regionHover = 'neurologico'" (mouseleave)="regionHover = null">
+                  <title>Neurológico</title><circle cx="100" cy="22" r="9"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'oidos'" [class.hov]="regionHover === 'oidos'"
+                   (click)="seleccionarRegion('oidos')" (mouseenter)="regionHover = 'oidos'" (mouseleave)="regionHover = null">
+                  <title>Oídos</title><ellipse cx="74" cy="40" rx="3" ry="7"/><ellipse cx="126" cy="40" rx="3" ry="7"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'ojos'" [class.hov]="regionHover === 'ojos'"
+                   (click)="seleccionarRegion('ojos')" (mouseenter)="regionHover = 'ojos'" (mouseleave)="regionHover = null">
+                  <title>Ojos</title><circle cx="92" cy="38" r="3"/><circle cx="108" cy="38" r="3"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'nariz'" [class.hov]="regionHover === 'nariz'"
+                   (click)="seleccionarRegion('nariz')" (mouseenter)="regionHover = 'nariz'" (mouseleave)="regionHover = null">
+                  <title>Nariz</title><polygon points="100,40 96,47 104,47"/>
+                </g>
+                <g class="reg" [class.sel]="regionActiva === 'boca'" [class.hov]="regionHover === 'boca'"
+                   (click)="seleccionarRegion('boca')" (mouseenter)="regionHover = 'boca'" (mouseleave)="regionHover = null">
+                  <title>Boca</title><rect x="93" y="50" width="14" height="3" rx="1"/>
+                </g>
+              </svg>
+              <p class="nm-body__legend">
+                @if (regionActiva) { <b>{{ labelRegion(regionActiva) }}</b> } @else { Toca una zona para ir al campo }
+              </p>
+            </div>
+
+            <!-- Cuadrícula de campos -->
+            <div class="nm-examen">
+              @for (seg of segmentosCuerpo; track seg.key) {
+                <label class="nm-seg" [class.is-active]="regionActiva === seg.key">
+                  <span>{{ seg.label }}</span>
+                  <input
+                    [id]="'campo-' + seg.key"
+                    type="text"
+                    [(ngModel)]="cuerpo[seg.key]"
+                    (focus)="regionActiva = seg.key"
+                    [placeholder]="'Hallazgos en ' + seg.label.toLowerCase()"
+                  />
+                </label>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- ESCALAS -->
+        @case ('escalas') {
+          <div class="nm-escalas">
+            <div class="nm-escalas__tabs">
+              <button [class.is-active]="escalaActiva === 'glasgow'" (click)="escalaActiva = 'glasgow'">Glasgow</button>
+              <button [class.is-active]="escalaActiva === 'silverman'" (click)="escalaActiva = 'silverman'">Silverman</button>
+              <button [class.is-active]="escalaActiva === 'downe'" (click)="escalaActiva = 'downe'">Downe</button>
+              <button [class.is-active]="escalaActiva === 'apgar'" (click)="escalaActiva = 'apgar'">Apgar</button>
+              <button [class.is-active]="escalaActiva === 'bishop'" (click)="escalaActiva = 'bishop'">Bishop</button>
+            </div>
+
+            @if (escalaActiva === 'glasgow') {
+              <div class="nm-escala">
+                @for (f of glasgowFields; track f.key) {
+                  <div class="nm-stepper">
+                    <span>{{ f.label }}</span>
+                    <div class="nm-stepper__ctrl">
+                      <button (click)="ajustar(glasgow, f.key, -1, f.min, f.max)">−</button>
+                      <b>{{ val(glasgow, f.key) }}</b>
+                      <button (click)="ajustar(glasgow, f.key, 1, f.min, f.max)">+</button>
+                    </div>
+                  </div>
+                }
+                <div class="nm-total" [class.is-critico]="glasgowTotal < 9" [class.is-alerta]="glasgowTotal >= 9 && glasgowTotal < 13">
+                  <span>Total Glasgow</span><b>{{ glasgowTotal }}</b><em>{{ interpretarGlasgow() }}</em>
+                </div>
+              </div>
+            }
+
+            @if (escalaActiva === 'silverman') {
+              <div class="nm-escala">
+                @for (f of silvermanFields; track f.key) {
+                  <div class="nm-stepper">
+                    <span>{{ f.label }}</span>
+                    <div class="nm-stepper__ctrl">
+                      <button (click)="ajustar(silverman, f.key, -1, f.min, f.max)">−</button>
+                      <b>{{ val(silverman, f.key) }}</b>
+                      <button (click)="ajustar(silverman, f.key, 1, f.min, f.max)">+</button>
+                    </div>
+                  </div>
+                }
+                <div class="nm-total" [class.is-critico]="silvermanTotal >= 7" [class.is-alerta]="silvermanTotal >= 4 && silvermanTotal < 7">
+                  <span>Total Silverman</span><b>{{ silvermanTotal }}</b><em>{{ interpretarSilverman() }}</em>
+                </div>
+              </div>
+            }
+
+            @if (escalaActiva === 'downe') {
+              <div class="nm-escala">
+                @for (f of downeFields; track f.key) {
+                  <div class="nm-stepper">
+                    <span>{{ f.label }}</span>
+                    <div class="nm-stepper__ctrl">
+                      <button (click)="ajustar(downe, f.key, -1, f.min, f.max)">−</button>
+                      <b>{{ val(downe, f.key) }}</b>
+                      <button (click)="ajustar(downe, f.key, 1, f.min, f.max)">+</button>
+                    </div>
+                  </div>
+                }
+                <div class="nm-total" [class.is-critico]="downeTotal >= 7" [class.is-alerta]="downeTotal >= 4 && downeTotal < 7">
+                  <span>Total Downe</span><b>{{ downeTotal }}</b><em>{{ interpretarDowne() }}</em>
+                </div>
+              </div>
+            }
+
+            @if (escalaActiva === 'apgar') {
+              <div class="nm-escala">
+                @for (f of apgarFields; track f.key) {
+                  <div class="nm-stepper">
+                    <span>{{ f.label }}</span>
+                    <div class="nm-stepper__ctrl">
+                      <button (click)="ajustar(apgar, f.key, -1, f.min, f.max)">−</button>
+                      <b>{{ val(apgar, f.key) }}</b>
+                      <button (click)="ajustar(apgar, f.key, 1, f.min, f.max)">+</button>
+                    </div>
+                  </div>
+                }
+                <div class="nm-total" [class.is-critico]="apgarTotal < 4" [class.is-alerta]="apgarTotal >= 4 && apgarTotal < 7">
+                  <span>Total Apgar</span><b>{{ apgarTotal }}</b><em>{{ interpretarApgar() }}</em>
+                </div>
+              </div>
+            }
+
+            @if (escalaActiva === 'bishop') {
+              <div class="nm-escala">
+                @for (f of bishopFields; track f.key) {
+                  <div class="nm-stepper">
+                    <span>{{ f.label }}</span>
+                    <div class="nm-stepper__ctrl">
+                      <button (click)="ajustar(bishop, f.key, -1, f.min, f.max)">−</button>
+                      <b>{{ val(bishop, f.key) }}</b>
+                      <button (click)="ajustar(bishop, f.key, 1, f.min, f.max)">+</button>
+                    </div>
+                  </div>
+                }
+                <div class="nm-total" [class.is-ok]="bishopTotal >= 8">
+                  <span>Total Bishop</span><b>{{ bishopTotal }}</b><em>{{ interpretarBishop() }}</em>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- EGRESO -->
+        @case ('egreso') {
+          <div class="nm-form">
+            <label class="nm-field">
+              <span>Condición de egreso</span>
+              <select [(ngModel)]="egreso.condicion">
+                <option value="">— Seleccionar —</option>
+                <option value="mejorado">Mejorado</option>
+                <option value="curado">Curado</option>
+                <option value="sin_cambio">Sin cambio</option>
+                <option value="empeorado">Empeorado</option>
+                <option value="fallecido">Fallecido</option>
+                <option value="voluntario">Alta voluntaria</option>
+                <option value="fuga">Fuga</option>
+              </select>
+            </label>
+            <label class="nm-field">
+              <span>Referido a</span>
+              <input type="text" [(ngModel)]="egreso.referencia" placeholder="Unidad o servicio de referencia" />
+            </label>
+            <label class="nm-field">
+              <span>Médico responsable del egreso</span>
+              <input type="text" [(ngModel)]="egreso.medico" placeholder="Nombre del médico" />
+            </label>
+
+            <div class="nm-diag">
+              <span class="nm-diag__title">Diagnósticos al egreso (CIE-10)</span>
+              @for (dx of egreso.diagnosticos; track $index) {
+                <div class="nm-diag__row">
+                  <input class="nm-diag__code" type="text" [(ngModel)]="dx.codigo" placeholder="CIE-10" />
+                  <input type="text" [(ngModel)]="dx.descripcion" placeholder="Descripción del diagnóstico…" />
+                  <button class="nm-del" (click)="eliminarDx($index)" aria-label="Eliminar">✕</button>
+                </div>
+              }
+              <button class="nm-add" (click)="agregarDx()">+ Agregar diagnóstico</button>
+            </div>
+          </div>
+        }
+      }
+    </main>
+
+    <footer class="nm-bottombar">
+      <button class="nm-btn nm-btn--ghost" (click)="regresar()">Cancelar</button>
+      <button class="nm-btn nm-btn--primary" (click)="guardar()" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando…' : 'Guardar nota' }}
+      </button>
+    </footer>
   </div>
-</div>
-<!-- /dc-page -->
+}

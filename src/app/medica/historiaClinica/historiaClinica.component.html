@@ -1,3 +1,68 @@
-<p>
-  historiaClinica works!
-</p>
+<main class="historia-shell">
+  <header class="historia-header">
+    <button type="button" class="historia-back" (click)="regresar()">&#8592; Regresar</button>
+    <div>
+      <span class="historia-eyebrow">Expediente clínico electrónico</span>
+      <h1>Historia clínica</h1>
+      <p>Seguimiento cronológico de notas y ciclos de atención.</p>
+    </div>
+  </header>
+
+  @if (error()) {
+    <div class="historia-message historia-message--error" role="alert">{{ error() }}</div>
+  }
+
+  @if (!pacienteBuscado() && !ciclos().length) {
+    <section class="historia-search">
+      <span class="historia-eyebrow">Consulta por expediente</span>
+      <h2>Buscar paciente</h2>
+      <div class="historia-search__row">
+        <input type="search" [(ngModel)]="busquedaExpediente" placeholder="Número de expediente" (keyup.enter)="buscarPaciente()" />
+        <button type="button" class="historia-action" (click)="buscarPaciente()" [disabled]="buscandoPaciente()">
+          {{ buscandoPaciente() ? 'Buscando…' : 'Ver historia' }}
+        </button>
+      </div>
+    </section>
+  }
+
+  @if (pacienteBuscado()) {
+    <div class="historia-patient">
+      <strong>{{ pacienteBuscado()?.nombre?.primer_nombre }} {{ pacienteBuscado()?.nombre?.primer_apellido }}</strong>
+      <span>Expediente: {{ pacienteBuscado()?.expediente || '—' }}</span>
+    </div>
+  }
+
+  @if (cargando()) {
+    <div class="historia-loading">Cargando historia clínica…</div>
+  } @else if (pacienteBuscado() && !ciclos().length && !error()) {
+    <div class="historia-empty">No hay ciclos clínicos registrados para este paciente.</div>
+  } @else if (ciclos().length) {
+    <section class="historia-timeline" aria-label="Ciclos clínicos">
+      @for (ciclo of ciclos(); track ciclo.id) {
+        <article class="historia-card">
+          <div class="historia-card__marker">{{ ciclo.numero }}</div>
+          <div class="historia-card__body">
+            <div class="historia-card__topline">
+              <div>
+                <span class="historia-card__kicker">Ciclo clínico</span>
+                <h2>{{ ciclo.especialidad || 'Atención clínica' }}</h2>
+              </div>
+              <span class="historia-state" [class.is-closed]="!ciclo.activo">
+                {{ ciclo.activo ? 'Activo' : 'Cerrado' }}
+              </span>
+            </div>
+            <div class="historia-meta">
+              <span>{{ ciclo.registro | date: 'dd/MM/yyyy HH:mm' }}</span>
+              <span>{{ ciclo.usuario || 'Sistema' }}</span>
+              @if (ciclo.servicio) { <span>{{ ciclo.servicio }}</span> }
+            </div>
+            <p class="historia-summary">{{ resumen(ciclo) }}</p>
+            <button type="button" class="historia-action" (click)="abrirNota(ciclo)">
+              Ver nota médica &#8594;
+            </button>
+          </div>
+        </article>
+      }
+    </section>
+  }
+</main>

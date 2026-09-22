@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import {
   CicloConsulta,
   DatoMedico,
@@ -17,9 +17,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DatosExtraPipe } from '../../pipes/datos-extra.pipe';
 import { EdadPipe } from '../../pipes/edad.pipe';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IconService } from '../../service/icon.service';
 import { CicloService } from '../ciclo.service';
+import { ConsultaService } from '../../registros/consultas/consultas.service';
+import { PacienteService } from '../../registros/patient/paciente.service';
+import { PacienteJoin } from '../../interface/interfaces';
+import { ConsultasIdPaciente } from '../../interface/consultas';
+import { Subject, of } from 'rxjs';
+import { catchError, finalize, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-notaMedica',
@@ -29,16 +35,30 @@ import { CicloService } from '../ciclo.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe]
 })
-export class NotaMedicaComponent implements OnInit {
+export class NotaMedicaComponent implements OnInit, OnDestroy {
 
   private api = inject(CicloService);
+  private route = inject(ActivatedRoute);
   private router = inject(Router);
   private iconService = inject(IconService);
+  private consultasApi = inject(ConsultaService);
+  private pacientesApi = inject(PacienteService);
+  private destroy$ = new Subject<void>();
+  private consultaId: number | null = null;
+
+  busquedaExpediente = '';
+  pacienteBuscado = signal<PacienteJoin | null>(null);
+  consultasPaciente = signal<ConsultasIdPaciente[]>([]);
+  buscandoPaciente = signal(false);
+  cargandoConsultas = signal(false);
 
   /* ── Signals ─────────────────────────────────────────── */
   ciclo = signal<CicloConsulta | null>(null);
   isLoading = signal(false);
+  guardando = signal(false);
+  tieneConsulta = signal(false);
   error = signal<string | null>(null);
+  mensaje = signal<{ texto: string; tipo: 'success' | 'error' } | null>(null);
 
   /* ── UI state ─────────────────────────────────────────── */
   tabActivo: string = 'clinica';
@@ -186,27 +206,27 @@ export class NotaMedicaComponent implements OnInit {
   ];
 
   silvermanFields = [
-    { key: 'retraso_esternal', label: 'Retraso Esternal' },
-    { key: 'aleteo_nasal', label: 'Aleteo Nasal' },
-    { key: 'quejido_expiratorio', label: 'Quejido Expiratorio' },
-    { key: 'movimiento_toracico', label: 'Mov. Torácico' },
-    { key: 'retraccion_supraclavicular', label: 'Retr. Supraclavicular' },
+    { key: 'retraso_esternal', label: 'Retraso Esternal', min: 0, max: 2 },
+    { key: 'aleteo_nasal', label: 'Aleteo Nasal', min: 0, max: 2 },
+    { key: 'quejido_expiratorio', label: 'Quejido Expiratorio', min: 0, max: 2 },
+    { key: 'movimiento_toracico', label: 'Mov. Torácico', min: 0, max: 2 },
+    { key: 'retraccion_supraclavicular', label: 'Retr. Supraclavicular', min: 0, max: 2 },
   ];
 
   downeFields = [
-    { key: 'frecuencia_respiratoria', label: 'Frec. Respiratoria', max: 2 },
-    { key: 'aleteo_nasal', label: 'Aleteo Nasal', max: 2 },
-    { key: 'quejido_respiratorio', label: 'Quejido Respiratorio', max: 2 },
-    { key: 'retraccion_toracoabdominal', label: 'Retr. Toracoabdominal', max: 2 },
-    { key: 'cinoasis', label: 'Cianosis', max: 2 },
+    { key: 'frecuencia_respiratoria', label: 'Frec. Respiratoria', min: 0, max: 2 },
+    { key: 'aleteo_nasal', label: 'Aleteo Nasal', min: 0, max: 2 },
+    { key: 'quejido_respiratorio', label: 'Quejido Respiratorio', min: 0, max: 2 },
+    { key: 'retraccion_toracoabdominal', label: 'Retr. Toracoabdominal', min: 0, max: 2 },
+    { key: 'cinoasis', label: 'Cianosis', min: 0, max: 2 },
   ];
 
   apgarFields = [
-    { key: 'tono_muscular', label: 'Tono Muscular' },
-    { key: 'respuesta_refleja', label: 'Resp. Refleja' },
-    { key: 'llanto', label: 'Llanto' },
-    { key: 'respiracion', label: 'Respiración' },
-    { key: 'coloracion', label: 'Coloración' },
+    { key: 'tono_muscular', label: 'Tono Muscular', min: 0, max: 2 },
+    { key: 'respuesta_refleja', label: 'Resp. Refleja', min: 0, max: 2 },
+    { key: 'llanto', label: 'Llanto', min: 0, max: 2 },
+    { key: 'respiracion', label: 'Respiración', min: 0, max: 2 },
+    { key: 'coloracion', label: 'Coloración', min: 0, max: 2 },
   ];
 
   bishopFields = [
@@ -266,14 +286,77 @@ export class NotaMedicaComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   cargarDatos(): void {
-    // TODO: inyectar servicio y cargar ciclo por ID desde la ruta
-    // const id = this.route.snapshot.paramMap.get('id');
-    // this.isLoading.set(true);
-    // this.cicloService.getCiclo(id).subscribe({
-    //   next: (c) => { this.ciclo.set(c); this.mapearDatos(c); this.isLoading.set(false); },
-    //   error: (e) => { this.error.set(e.message); this.isLoading.set(false); }
-    // });
+    const id = Number(this.route.snapshot.paramMap.get('consultaId'));
+    if (!id) {
+      return;
+    }
+
+    this.consultaId = id;
+    this.tieneConsulta.set(true);
+    this.isLoading.set(true);
+    this.api.getCiclosDeConsulta(id).pipe(
+      takeUntil(this.destroy$),
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => {
+        this.error.set(error?.error?.detail ?? 'No se pudo cargar el expediente clínico.');
+        return of([] as CicloConsulta[]);
+      })
+    ).subscribe(ciclos => {
+      // Una nota creada es inmutable: NO se precarga. Se prepara una nota NUEVA,
+      // con continuidad de especialidad/servicio y el número siguiente.
+      const ultimo = ciclos[ciclos.length - 1];
+      this.ciclo.set({
+        consulta_id: id,
+        numero: (ultimo?.numero ?? 0) + 1,
+        activo: true,
+        registro: new Date().toISOString(),
+        usuario: '',
+        especialidad: ultimo?.especialidad,
+        especialidad_id: ultimo?.especialidad_id,
+        servicio: ultimo?.servicio,
+      });
+    });
+  }
+
+  buscarPaciente(): void {
+    const expediente = this.busquedaExpediente.trim();
+    if (!expediente) {
+      this.error.set('Escribe un expediente para buscar el paciente.');
+      return;
+    }
+
+    this.buscandoPaciente.set(true);
+    this.error.set(null);
+    this.pacientesApi.pacienteExpediente(expediente).pipe(
+      takeUntil(this.destroy$),
+      finalize(() => this.buscandoPaciente.set(false)),
+      catchError(error => {
+        this.error.set(error?.error?.detail ?? 'No se encontró el paciente.');
+        return of(null);
+      })
+    ).subscribe(paciente => {
+      if (!paciente) return;
+      this.pacienteBuscado.set(paciente);
+      this.cargandoConsultas.set(true);
+      this.consultasApi.getConsultasPorPaciente(paciente.id).pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.cargandoConsultas.set(false)),
+        catchError(() => {
+          this.error.set('No se pudieron cargar las consultas del paciente.');
+          return of([] as ConsultasIdPaciente[]);
+        })
+      ).subscribe(consultas => this.consultasPaciente.set(consultas));
+    });
+  }
+
+  seleccionarConsulta(consulta: ConsultasIdPaciente): void {
+    this.router.navigate(['/notaMedica', consulta.id]);
   }
 
   mapearDatos(ciclo: CicloConsulta): void {
@@ -319,6 +402,35 @@ export class NotaMedicaComponent implements OnInit {
   /* ── Acciones UI ───────────────────────────────────────── */
   setTab(tab: string): void {
     this.tabActivo = tab;
+  }
+
+  /** Ajusta un valor numérico de escala respetando min/max (steppers táctiles). */
+  ajustar(obj: any, campo: string, delta: number, min: number, max: number): void {
+    const actual = Number(obj[campo]) || 0;
+    obj[campo] = Math.min(max, Math.max(min, actual + delta));
+  }
+
+  /** Lee el valor numérico actual de un campo de escala. */
+  val(obj: any, campo: string): number {
+    return Number(obj[campo]) || 0;
+  }
+
+  /* ── Examen físico: selector corporal ────────────────────── */
+  regionActiva: string | null = null;
+  regionHover: string | null = null;
+
+  /** Resalta y enfoca el campo asociado a una zona del cuerpo. */
+  seleccionarRegion(key: string): void {
+    this.regionActiva = key;
+    const el = document.getElementById('campo-' + key) as HTMLInputElement | null;
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el?.focus({ preventScroll: true });
+  }
+
+  /** Etiqueta legible de una zona del cuerpo. */
+  labelRegion(key: string | null): string {
+    if (!key) return '';
+    return this.segmentosCuerpo.find(s => s.key === key)?.label ?? '';
   }
 
   toggleAntecedente(key: string): void {
@@ -389,6 +501,11 @@ export class NotaMedicaComponent implements OnInit {
 
   /* ── Guardar ────────────────────────────────────────────── */
   guardar(): void {
+    if (!this.consultaId || this.guardando()) {
+      if (!this.consultaId) this.mostrarMensaje('No se puede guardar: falta la consulta asociada.', 'error');
+      return;
+    }
+
     const ahora = new Date().toISOString();
 
     const datosMedicos: DatoMedico = {
@@ -406,12 +523,40 @@ export class NotaMedicaComponent implements OnInit {
       },
     };
 
-    console.log('[NotaMedica] Payload a guardar:', datosMedicos);
-    // TODO: this.cicloService.guardarDatos(this.ciclo()!.id!, datosMedicos).subscribe(...)
+    this.guardando.set(true);
+    this.error.set(null);
+    this.api.iniciarClico({
+      consulta_id: this.consultaId,
+      numero: 0,
+      activo: true,
+      registro: ahora,
+      usuario: '',
+      especialidad: this.ciclo()?.especialidad,
+      especialidad_id: this.ciclo()?.especialidad_id,
+      servicio: this.ciclo()?.servicio,
+      contenido: datosMedicos.impresion_clinica || datosMedicos.detalle_clinicos || 'Nota médica',
+      datos_medicos: datosMedicos,
+    } as CicloConsulta).pipe(
+      takeUntil(this.destroy$),
+      finalize(() => this.guardando.set(false)),
+      catchError(error => {
+        this.mostrarMensaje(error?.error?.detail ?? 'No se pudo guardar la nota médica.', 'error');
+        return of(null);
+      })
+    ).subscribe(ciclo => {
+      if (!ciclo) return;
+      this.ciclo.set(ciclo);
+      this.mostrarMensaje('Nota médica guardada correctamente.', 'success');
+    });
+  }
+
+  private mostrarMensaje(texto: string, tipo: 'success' | 'error'): void {
+    this.mensaje.set({ texto, tipo });
+    setTimeout(() => this.mensaje.set(null), 4500);
   }
 
   regresar(): void {
-    this.router.navigate(['/pacientesAtendidos'])
+    this.router.navigate(['/pacientesActivos'])
   }
 
   editar(id: number | undefined): void {

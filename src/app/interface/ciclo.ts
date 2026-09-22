@@ -158,7 +158,9 @@ export interface CicloConsulta {
   activo: boolean;
   registro: string;
   usuario: string;
+  usuario_nombre?: string;
   especialidad?: string;
+  especialidad_id?: number;
   servicio?: string;
   contenido?: string;
   datos_medicos?: DatoMedico;

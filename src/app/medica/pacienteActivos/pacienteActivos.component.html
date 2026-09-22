@@ -1,0 +1,90 @@
+<div class="pa-app">
+  <header class="pa-header">
+    <button class="pa-back" (click)="volver()" aria-label="Regresar">←</button>
+    <div class="pa-header__title">
+      <span class="pa-eyebrow">Módulo médico</span>
+      <h1>Pacientes activos</h1>
+    </div>
+    <span class="pa-count">{{ visibles.length }}</span>
+  </header>
+
+  <!-- Filtro por especialidad (botones) -->
+  <nav class="pa-tabs" role="tablist" aria-label="Especialidad">
+    @for (esp of especialidades; track esp.code) {
+      <button
+        role="tab"
+        class="pa-tab"
+        [class.is-active]="especialidadSeleccionada === esp.code"
+        (click)="seleccionarEspecialidad(esp.code)"
+      >
+        <span aria-hidden="true">{{ esp.icon }}</span>{{ esp.label }}
+      </button>
+    }
+  </nav>
+
+  <!-- Búsqueda rápida -->
+  <div class="pa-search">
+    <input type="search" [(ngModel)]="busqueda" (ngModelChange)="alBuscar()" placeholder="Buscar por nombre o expediente…" />
+  </div>
+
+  @if (error()) {
+    <div class="pa-alert pa-alert--error">{{ error() }}</div>
+  }
+
+  @if (cargando()) {
+    <div class="pa-state">Cargando pacientes…</div>
+  } @else if (!visibles.length) {
+    <div class="pa-state pa-state--empty">
+      <span aria-hidden="true">✅</span>
+      <p>No hay pacientes activos en {{ especialidadSeleccionada ? 'esta especialidad' : 'este momento' }}.</p>
+    </div>
+  } @else {
+    <ul class="pa-list">
+      @for (c of paginados; track c.id) {
+        <li class="pa-card">
+          <div class="pa-card__main">
+            <div class="pa-avatar" aria-hidden="true">
+              {{ c.paciente?.sexo === 'F' ? '♀' : '♂' }}
+            </div>
+            <div class="pa-card__info">
+              <strong>{{ nombre(c) }}</strong>
+              <div class="pa-card__meta">
+                @if (c.expediente) { <span>Exp. {{ c.expediente }}</span> }
+                @if (c.especialidad) { <span>{{ c.especialidad | datosExtra: 'especialidad' }}</span> }
+                @if (c.servicio) { <span>{{ c.servicio | datosExtra: 'servicio' }}</span> }
+              </div>
+              <span class="pa-card__estado">{{ ultimoEstado(c) || 'activo' }}</span>
+            </div>
+          </div>
+          <div class="pa-card__actions">
+            <button class="pa-btn pa-btn--primary" (click)="nota(c)">🩺 Nota</button>
+            <button class="pa-btn pa-btn--ghost" (click)="historia(c)">📋 Historia</button>
+          </div>
+        </li>
+      }
+    </ul>
+
+    @if (visibles.length) {
+      <nav class="pa-pager" aria-label="Paginación">
+        <button class="pa-page-btn" (click)="anterior()" [disabled]="paginaActual() === 1" aria-label="Anterior">‹</button>
+
+        @if (paginas[0] > 1) {
+          <button class="pa-page-btn" (click)="irA(1)">1</button>
+          @if (paginas[0] > 2) { <span class="pa-page-dots">…</span> }
+        }
+
+        @for (p of paginas; track p) {
+          <button class="pa-page-btn" [class.is-active]="p === paginaActual()" (click)="irA(p)">{{ p }}</button>
+        }
+
+        @if (paginas[paginas.length - 1] < totalPaginas) {
+          @if (paginas[paginas.length - 1] < totalPaginas - 1) { <span class="pa-page-dots">…</span> }
+          <button class="pa-page-btn" (click)="irA(totalPaginas)">{{ totalPaginas }}</button>
+        }
+
+        <button class="pa-page-btn" (click)="siguiente()" [disabled]="paginaActual() === totalPaginas" aria-label="Siguiente">›</button>
+      </nav>
+      <p class="pa-pager__info">Mostrando {{ desde }}–{{ hasta }} de {{ visibles.length }}</p>
+    }
+  }
+</div>
