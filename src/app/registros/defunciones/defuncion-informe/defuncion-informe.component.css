@@ -1,350 +1,325 @@
-.estado {
-  padding: 1rem;
-  text-align: center;
-  font-size: 1.1rem;
-}
-.estado.error {
-  color: #b91c1c;
-  background: #fef2f2;
+/* ── CONFIGURACIÓN DE PÁGINA E IMPRESIÓN ── */
+@page {
+  size: letter portrait; /* 8.5in x 11in (215.9mm x 279.4mm) */
+  margin: 0;
 }
 
-/* ── page ── */
-.page {
-  position: relative;
-  width: 210mm;
-  min-height: 297mm;
-  margin: 20px auto;
-  padding: 12mm 8mm 8mm;
-  background: #fff;
-  box-shadow: 0 0 8px rgba(0,0,0,.15);
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 9pt;
-  color: #222;
+:root {
+  /* Dimensiones exactas de hoja Carta */
+  --page-width: 215.9mm;
+  --page-height: 279.4mm;
+  --page-padding: 6mm 8mm 6mm 8mm;
+
+  /* Colores de impresión offset/láser */
+  --print-black: #000000;
+  --print-border: #1a1a1a;
+  --print-gray-bg: #e2e2e2;
+  --print-line: #444444;
+
+  /* Tipografía estandarizada de formularios */
+  --font-main: 'Times New Roman', Times, serif;
+  --font-sans: Arial, Helvetica, sans-serif;
+}
+
+* {
   box-sizing: border-box;
-  overflow: hidden;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
 }
 
-/* ── watermark ── */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #525659; /* Fondo gris para vista previa en pantalla */
+  font-family: var(--font-main);
+}
+
+/* Contenedor de Hoja Física */
+.page {
+  width: var(--page-width);
+  min-height: var(--page-height);
+  height: var(--page-height); /* Forzado para encajar en 1 sola página exacta */
+  margin: 10px auto;
+  padding: var(--page-padding);
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Marca de Agua "GRATUITO" */
 .watermark-bg {
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
-  transform: translate(-50%,-50%) rotate(-30deg);
-  font-size: 120pt;
-  font-weight: bold;
-  color: rgba(0,0,0,.04);
+  transform: translate(-50%, -50%) rotate(-35deg);
+  font-size: 110pt;
+  font-weight: 900;
+  font-family: var(--font-sans);
+  color: rgba(0, 0, 0, 0.04);
   pointer-events: none;
   z-index: 0;
   white-space: nowrap;
 }
 
-/* ── header ── */
-.header {
+/* ── ENCABEZADO ── */
+.header-container {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 6px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--print-black);
+  padding-bottom: 4px;
+  margin-bottom: 4px;
   position: relative;
   z-index: 1;
 }
-.header-logos {
-  flex: 0 0 55px;
-}
-.header-logos .logo-placeholder {
-  width: 55px;
-  height: 55px;
-  border: 1px dashed #999;
+
+.header-logo {
+  width: 50px;
+  height: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 7pt;
-  color: #999;
+  font-size: 8pt;
+  font-weight: bold;
 }
-.header-title {
-  flex: 1;
+
+.header-center {
   text-align: center;
+  flex: 1;
 }
-.header-title h1 {
-  font-size: 12pt;
+
+.header-center h1 {
+  font-size: 11pt;
   font-weight: bold;
   margin: 0;
   text-transform: uppercase;
 }
-.header-title h2 {
-  font-size: 14pt;
+
+.header-center h2 {
+  font-size: 13pt;
   font-weight: bold;
-  margin: 2px 0;
+  margin: 1px 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-.header-title p {
-  font-size: 8.5pt;
-  margin: 0;
-  font-style: italic;
-}
-.revision-tag {
-  flex: 0 0 auto;
+
+.header-center p {
   font-size: 7.5pt;
+  margin: 0;
   font-weight: bold;
-  border: 1px solid #222;
-  padding: 2px 6px;
-  white-space: nowrap;
 }
 
-/* ── form container ── */
-.form-container {
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.revision-badge {
+  border: 1px solid var(--print-black);
+  padding: 1px 4px;
+  font-size: 7pt;
+  font-weight: bold;
+}
+
+.notice-text {
+  font-size: 6.5pt;
+  font-style: italic;
+  margin-top: 2px;
+  text-align: right;
+  max-width: 140px;
+}
+
+/* ── MÁSCARA Y RETÍCULA DE FORMULARIO ── */
+.form-section {
+  display: flex;
+  border: 1px solid var(--print-border);
+  margin-bottom: 3px;
+  background: #ffffff;
   position: relative;
   z-index: 1;
 }
 
-/* ── form row (section) ── */
-.form-row {
+/* Banda Lateral Gris con Texto Vertical */
+.lateral-label {
+  width: 22px;
+  background-color: var(--print-gray-bg);
+  border-right: 1px solid var(--print-border);
   display: flex;
-  margin-bottom: 4px;
-  border: 1px solid #555;
-  min-height: 28px;
-}
-
-.lateral-indicator {
-  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
   writing-mode: vertical-lr;
-  text-orientation: mixed;
-  background: #e8e8e8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 7pt;
-  padding: 4px 0;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  border-right: 1px solid #555;
-}
-.lateral-indicator span {
   transform: rotate(180deg);
-}
-
-.section-content {
-  flex: 1;
-  padding: 4px 6px;
-}
-
-.sub-row {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 3px;
-  align-items: flex-start;
-}
-.sub-row:last-child {
-  margin-bottom: 0;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.field.w-25 { width: 25%; }
-.field.w-30 { width: 30%; }
-.field.w-33 { width: 33%; }
-.field.w-40 { width: 40%; }
-.field.w-50 { width: 50%; }
-.field.w-70 { width: 70%; }
-.field.w-75 { width: 75%; }
-.field.w-100 { width: 100%; }
-
-.label {
-  font-weight: bold;
-  font-size: 7.5pt;
-  line-height: 1.2;
-}
-.label-sub {
+  font-family: var(--font-sans);
   font-size: 6.5pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
   text-align: center;
-  color: #555;
-  font-style: italic;
+  padding: 2px 0;
 }
 
-/* ── input line ── */
-.input-line {
-  border-bottom: 1px dotted #333;
-  min-height: 1.4em;
-  padding: 0 4px;
-  font-size: 9pt;
-  line-height: 1.4;
-  color: #000;
-}
-.input-line.short { width: 50px; }
-.input-line.vshort { width: 35px; display: inline-block; }
-.input-line.medium { width: 100px; display: inline-block; }
-.input-line.long { }
-
-/* ── inline fields ── */
-.inline-fields {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  flex-wrap: wrap;
-  font-size: 8pt;
-}
-.inline-fields .input-line {
-  display: inline-block;
-}
-.grow-1 { flex: 1; }
-.grow-2 { flex: 2; }
-.w-80 { width: 80px; }
-.w-150 { width: 150px; }
-
-/* ── age fields ── */
-.age-fields {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  flex-wrap: wrap;
-  font-size: 8pt;
-}
-
-/* ── checkbox box ── */
-.checkbox-box {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 12px;
-  height: 12px;
-  border: 1px solid #222;
-  font-size: 8pt;
-  font-weight: bold;
-  line-height: 1;
-  margin-right: 2px;
-}
-
-/* ── code box ── */
-.code-box {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 18px;
-  border: 1px solid #222;
-  font-size: 8pt;
-  font-weight: bold;
-}
-
-/* ── options row ── */
-.options-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px 6px;
-  align-items: center;
-}
-.options-row.inline {
-  flex-wrap: nowrap;
-}
-.option-item {
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-  font-size: 7.5pt;
-  gap: 1px;
-}
-
-.options-with-code {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* ── causes table ── */
-.causes-field {
-  border-right: 1px solid #555;
-  padding-right: 6px;
-}
-.causes-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 8.5pt;
-}
-.causes-table td {
-  border: 1px solid #555;
+.section-body {
+  flex: 1;
   padding: 2px 4px;
 }
-.causes-table .letra {
-  width: 30px;
-  font-weight: bold;
-  text-align: center;
-}
-.causes-table .intervalo {
-  width: 80px;
-  font-size: 7pt;
-}
 
-.causes-interval .input-line {
+/* Filas y Campos Internos */
+.form-row-grid {
+  display: flex;
+  width: 100%;
+  gap: 4px;
+  align-items: baseline;
   margin-bottom: 2px;
 }
 
-/* ── banner alert ── */
-.banner-alert {
-  background: #fef3cd;
-  border: 1px solid #856404;
-  color: #856404;
-  padding: 4px 8px;
-  font-size: 8pt;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 4px;
+.form-row-grid:last-child {
+  margin-bottom: 0;
 }
 
-/* ── signatures ── */
-.signatures-row {
+.field-group {
   display: flex;
-  gap: 12px;
-  margin-top: 14px;
+  align-items: baseline;
+  font-size: 7.5pt;
+  white-space: nowrap;
+}
+
+.field-label {
+  font-weight: bold;
+  font-size: 7.5pt;
+  margin-right: 3px;
+}
+
+/* Líneas de llenado estilo punteado/firme */
+.fill-line {
+  border-bottom: 1px dotted var(--print-line);
+  min-height: 12pt;
+  padding: 0 3px;
+  font-family: var(--font-sans);
+  font-size: 8pt;
+  font-weight: bold;
+  color: #000000;
+  display: inline-block;
+}
+
+/* Casillas de Verificación (Checkboxes numerados) */
+.box-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--print-black);
+  font-size: 7pt;
+  font-weight: bold;
+  margin-right: 2px;
+  background: #fff;
+}
+
+.code-box-single {
+  width: 16px;
+  height: 15px;
+  border: 1px solid var(--print-black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7.5pt;
+  font-weight: bold;
+  margin-left: auto;
+}
+
+/* ── TABLA DE CAUSAS DE DEFUNCIÓN (SECCIÓN IV) ── */
+.causes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2px;
+}
+
+.causes-table td {
+  border: 1px solid var(--print-border);
+  padding: 1px 3px;
+  font-size: 7pt;
+  vertical-align: middle;
+}
+
+.causes-table .col-letter {
+  width: 25px;
+  font-weight: bold;
+  text-align: center;
+  background-color: #fafafa;
+}
+
+.causes-table .col-interval {
+  width: 110px;
+  font-size: 6pt;
+  text-align: center;
+}
+
+/* ── PIE DE HOJA Y FIRMAS ── */
+.footer-signatures {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
   position: relative;
   z-index: 1;
 }
-.signature-box {
+
+.stamp-box {
   flex: 1;
-  text-align: center;
-  font-size: 7.5pt;
-}
-.signature-box.wide {
-  flex: 2;
-}
-.signature-line {
-  border-top: 1px solid #333;
-  height: 28px;
-  margin-bottom: 4px;
-}
-.signature-box p {
-  text-align: justify;
-  margin: 0 0 6px;
-  font-size: 7.5pt;
-}
-.signature-box .inline-fields {
+  border: 1px dashed #888;
+  height: 65px;
+  display: flex;
+  align-items: flex-end;
   justify-content: center;
-  margin-bottom: 6px;
+  padding-bottom: 2px;
 }
-.signature-box .label {
+
+.stamp-label {
+  font-size: 6.5pt;
+  font-weight: bold;
+  text-align: center;
+}
+
+.legal-cert-box {
+  flex: 2.2;
   font-size: 7pt;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.escolaridad {
-  gap: 1px 4px;
+.signature-line-container {
+  border-top: 1px solid var(--print-black);
+  margin-top: 20px;
+  text-align: center;
+  padding-top: 2px;
+  font-weight: bold;
+  font-size: 7.5pt;
 }
 
-/* ── print ── */
+/* ── AJUSTES MEDIALES EXCLUSIVOS DE IMPRESIÓN ── */
 @media print {
-  .no-imprimir { display: none !important; }
+  html, body {
+    background: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .no-imprimir {
+    display: none !important;
+  }
+
   .page {
     margin: 0;
+    border: none;
     box-shadow: none;
     width: 100%;
-    min-height: 100vh;
-    padding: 10mm 6mm;
+    height: 100vh;
     page-break-after: always;
-  }
-  @page {
-    margin: 0;
-    size: letter;
+    page-break-inside: avoid;
   }
 }
