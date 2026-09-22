@@ -149,8 +149,10 @@ export class OfflineDatabaseService extends Dexie {
   }
 
   async clearOnLogout(): Promise<void> {
-    await this.mutations.clear();
-    // Keep pacientes, consultas, syncMeta y cache — persisten entre sesiones
-    // para evitar descargar todo nuevamente en cada login/refresh
+    // NO limpiar `mutations`: las creaciones/actualizaciones de pacientes hechas
+    // sin conexión son datos del usuario y deben conservarse para sincronizar
+    // al volver a iniciar sesión. Borrarlas causaría pérdida de registros.
+    // Solo se limpian caché/metadata volátil si hiciera falta (aquí se conservan
+    // para no re-descargar todo en cada login/refresh).
   }
 }

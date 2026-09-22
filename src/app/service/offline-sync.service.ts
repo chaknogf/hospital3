@@ -129,9 +129,14 @@ export class OfflineSyncService {
   }
 
   private readonly MAX_RETRIES = 5;
+  private sincronizando = false;
 
   async syncNow(): Promise<{ synced: number; failed: number }> {
     if (!this.online) return { synced: 0, failed: 0 };
+    // Guarda anti-reentrancia: dos sincronizaciones simultáneas procesarían la
+    // misma mutación y duplicarían registros (p. ej. un paciente offline).
+    if (this.sincronizando) return { synced: 0, failed: 0 };
+    this.sincronizando = true;
 
     try {
       const mutations = await this.db.getPendingMutations();
@@ -167,6 +172,8 @@ export class OfflineSyncService {
       console.error('[Sync] Error inesperado en syncNow:', err);
       await this.refreshPendingCount();
       return { synced: 0, failed: 0 };
+    } finally {
+      this.sincronizando = false;
     }
   }
 
