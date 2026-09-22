@@ -123,7 +123,8 @@ export class AgendarComponent implements OnInit, OnDestroy {
       .subscribe((fecha: string) => {
         if (!fecha) { this.avisoFecha.set(null); return; }
         const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-        this.form.get('dia_semana')?.setValue(dias[new Date(fecha).getDay()], { emitEvent: false });
+        const [y, m, d] = fecha.split('-').map(Number);
+        this.form.get('dia_semana')?.setValue(dias[new Date(y, m - 1, d).getDay()], { emitEvent: false });
         this.avisoFecha.set(this.validarFecha(fecha));
       });
   }
@@ -220,15 +221,15 @@ export class AgendarComponent implements OnInit, OnDestroy {
    * Devuelve un mensaje de error o null si es válida.
    */
   private validarFecha(fecha: string): string | null {
-    const d = new Date(fecha);
-    if (isNaN(d.getTime())) return null;
-    const diaSemana = d.getDay();
+    const [y, m, d] = fecha.split('-').map(Number);
+    const local = new Date(y, m - 1, d);
+    if (isNaN(local.getTime())) return null;
+    const diaSemana = local.getDay();
     if (diaSemana === 0 || diaSemana === 6) {
       return 'Las citas solo se agendan en días hábiles (lunes a viernes).';
     }
-    const clave = new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString().split('T')[0];
-    if (this.diasInhabiles.has(clave)) {
-      const motivo = this.diasInhabilesList.find(d => d.fecha === clave)?.motivo;
+    if (this.diasInhabiles.has(fecha)) {
+      const motivo = this.diasInhabilesList.find(di => di.fecha === fecha)?.motivo;
       return `Fecha deshabilitada para citas${motivo ? ` (${motivo})` : ''}.`;
     }
     return null;
@@ -282,8 +283,9 @@ export class AgendarComponent implements OnInit, OnDestroy {
     if (!fecha) return;
 
     const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-    const d = new Date(fecha);
-    const dia = dias[d.getDay()];
+    const [y, m, d] = fecha.split('-').map(Number);
+    const fechaLocal = new Date(y, m - 1, d);
+    const dia = dias[fechaLocal.getDay()];
 
     this.form.patchValue({ dia_semana: dia });
   }

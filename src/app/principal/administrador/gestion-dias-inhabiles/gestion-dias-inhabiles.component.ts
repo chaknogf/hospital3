@@ -49,7 +49,8 @@ export class GestionDiasInhabilesComponent implements OnInit, OnDestroy {
       this.mostrar('Selecciona una fecha.', 'error');
       return;
     }
-    const dia = new Date(this.nuevaFecha);
+    const [y, m, d] = this.nuevaFecha.split('-').map(Number);
+    const dia = new Date(y, m - 1, d);
     if (dia.getDay() === 0 || dia.getDay() === 6) {
       this.mostrar('Los fines de semana ya son inhábiles por regla; elige un día de lunes a viernes.', 'error');
       return;
