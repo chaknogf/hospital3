@@ -33,6 +33,7 @@ import { PacienteService } from '../../patient/paciente.service';
 export class AdmisionComponent implements OnInit, OnDestroy {
 
   form: FormGroup = new FormGroup({});
+  esAdmin = false;
   paciente: Paciente | null = null;
   consultaActual?: ConsultaOut;
   private consultaId?: number;
@@ -76,7 +77,13 @@ export class AdmisionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.usuarioActual = this.apis.getUsuarioActual().username;
+    const usuario = this.apis.getUsuarioActual();
+    this.usuarioActual = usuario.username;
+    this.esAdmin = usuario.role === 'admin';
+    // Deshabilitar orden si no es admin
+    if (!this.esAdmin) {
+      this.form.get('orden')?.disable();
+    }
     this.inicializarFlagsYCarga(this.route.snapshot.paramMap);
   }
 
@@ -96,7 +103,7 @@ export class AdmisionComponent implements OnInit, OnDestroy {
       documento: [{ value: '', disabled: true }],
       fecha_consulta: [''],
       hora_consulta: [''],
-      orden: [{ value: null, disabled: true }],
+      orden: [null],
       paciente_id: [0],
       tipo_consulta: [{ value: null, disabled: true }],
       especialidad: [''],
@@ -338,6 +345,11 @@ export class AdmisionComponent implements OnInit, OnDestroy {
       servicio: v.servicio || undefined,
       indicadores: v.indicadores as Indicador,
     };
+
+    // ── Orden (solo admin) ──────────────────────────────────
+    if (this.esAdmin && v.orden !== null && v.orden !== undefined) {
+      payload.orden = v.orden;
+    }
 
     // ── Egreso ──────────────────────────────────────────────
     const tieneDatosEgreso = v.condicion || v.referencia || v.medico || v.diagnosticos || v.registro;

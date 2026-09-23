@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { ConstanciaNacimientoOut } from '../../../interface/consNac';
 import { ConstanciaNacimiento } from '../constancias.inteface';
-import { ApiService } from '../../../service/api.service';
 import { ConstanciasService } from '../constancias.service';
 import { Router } from '@angular/router';
 import { IconService } from '../../../service/icon.service';
@@ -56,7 +55,6 @@ export class ListarConstanciasComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private pacienteData: ApiService,
     private api: ConstanciasService,
     private router: Router,
     private iconService: IconService

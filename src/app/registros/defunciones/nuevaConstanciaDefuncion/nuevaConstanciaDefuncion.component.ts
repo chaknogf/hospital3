@@ -72,7 +72,7 @@ export class NuevaConstanciaDefuncionComponent implements OnInit, OnDestroy {
       paciente_id: [null],
       madre_id: [null],
       personal_atencion_id: [null],
-      fecha_defuncion: [new Date().toISOString().slice(0, 16)],
+      fecha_defuncion: [`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-${String(new Date().getDate()).padStart(2,'0')}T${String(new Date().getHours()).padStart(2,'0')}:${String(new Date().getMinutes()).padStart(2,'0')}`],
       es_fetal: [false],
       muerte_gestacion: [''],
       causa_a: ['', Validators.required],

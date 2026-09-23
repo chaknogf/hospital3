@@ -4,7 +4,6 @@ import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDe
 import { FormsModule } from '@angular/forms';
 import { EdadPipe } from '../../../../pipes/edad.pipe';
 import { Paciente, Totales } from '../../../../interface/interfaces';
-import { ApiService } from '../../../../service/api.service';
 import { ConsultaService } from '../../consultas.service';
 import { Router } from '@angular/router';
 import { IconService } from '../../../../service/icon.service';
@@ -75,7 +74,6 @@ export class EmergenciasListComponent implements OnInit, OnDestroy {
   icons: { [key: string]: any } = {};
 
   constructor(
-    private pacienteData: ApiService,
     private api: ConsultaService,
     private router: Router,
     private iconService: IconService

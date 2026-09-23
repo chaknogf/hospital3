@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { throwError, of, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { OfflineSyncService } from './offline-sync.service';
+import { AuthService } from './auth.service';
 import { environment } from '@environments/environment';
 
 export interface PaginationState {
@@ -15,11 +16,9 @@ export class BaseApiService {
   public readonly baseUrl = environment.apiUrl;
 
   isLoading = signal(false);
-  token = signal<string | null>(null);
-  username = signal<string | null>(null);
-  role = signal<string | null>(null);
 
   protected sync = inject(OfflineSyncService);
+  protected auth = inject(AuthService);
 
   constructor(
     protected http: HttpClient,
@@ -71,17 +70,12 @@ export class BaseApiService {
   protected manejarError(error: any, operacion: string) {
     console.error(`❌ Error al ${operacion}:`, error);
     if (error instanceof HttpErrorResponse && error.status === 401) {
-      this.sync.clearOnLogout();
-      localStorage.clear();
-      this.token.set(null);
-      this.username.set(null);
-      this.role.set(null);
-      this.router.navigate(['/inicio']);
+      this.auth.logOut();
     }
     return throwError(() => error);
   }
 
   protected hoy(): string {
-    return new Date().toISOString().split('T')[0];
+    return new Date().toLocaleDateString('en-CA');
   }
 }

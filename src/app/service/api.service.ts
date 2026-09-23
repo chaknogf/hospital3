@@ -1,159 +1,41 @@
 // api.service.ts
-import { ConsultasIdPaciente } from './../interface/consultas';
-import { Injectable, signal, computed } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
-import { tap, catchError, finalize, map } from 'rxjs/operators';
-import { OfflineSyncService } from './offline-sync.service';
-import { Paciente, Usuarios, Municipio, Totales, PacienteListResponse, Hijode, PacienteJoin, Encamamiento } from '../interface/interfaces';
-import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHistorial, ConstanciaNacimientoUpdate } from '../interface/consNac';
-import { ConsultaBase, ConsultaCreate, ConsultaListResponse, ConsultaOut, ConsultaResponse, ConsultaUpdate, Egreso, Indicador, RegistroConsultaCreate, RegistroConsultaResponse, TotalesItem, TotalesResponse } from '../interface/consultas';
-import { CicloClinico, EstadoCiclo } from '../interface/consultas';
-import { FiltroConsulta, FiltroCitas } from '../interface/filtros.model';
-import { CitaCreate, CitaResponse, Citas, CitasBase, CitaUpdate } from '../interface/citas';
+import { BehaviorSubject, Observable, of, finalize, map } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+import { BaseApiService } from './base-api.service';
+import { AuthService } from './auth.service';
+import { EstadisticasService } from './estadisticas.service';
+import { PacienteListResponse } from '../interface/interfaces';
+import { ConsultaListResponse } from '../interface/consultas';
 import { Medico } from '../interface/medicos.interface';
 import { Usuario, UsuarioOut, UsersListResponse } from '../interface/usuarios.interface';
-import { environment } from '@environments/environment';
-
-export interface PaginationState {
-  filtro: any;
-}
 
 @Injectable({ providedIn: 'root' })
-export class ApiService {
-  public readonly baseUrl = environment.apiUrl;
-  // ======= SIGNALS =======
-  token = signal<string | null>(null);
-  username = signal<string | null>(null);
-  role = signal<string | null>(null);
-  nombreUsuario = signal<string | null>(null);
-  isLoading = signal(false);
-  /** Bandera para cancelar la precarga paginada de pacientes/consultas (ej. al hacer logout). */
+export class ApiService extends BaseApiService {
+  private estadisticas = inject(EstadisticasService);
+
+  // Signals delegados a AuthService (compatibilidad con componentes existentes)
+  get token() { return this.auth.token; }
+  get username() { return this.auth.username; }
+  get role() { return this.auth.role; }
+  get nombreUsuario() { return this.auth.nombreUsuario; }
+
   private precacheCancelado = false;
-  /** Tope máximo de registros precacheados por recurso (evita descargar catálogos completos). */
   private readonly precacheMaxRegistros = 5000;
 
   private usuariosSubject = new BehaviorSubject<UsuarioOut[]>([]);
   usuarios$ = this.usuariosSubject.asObservable();
 
-
-
-  // ======= ESTADO DE PAGINACIÓN =======
-  private hoy(): string {
-    const hoy = new Date();
-    return hoy.toISOString().split('T')[0]; // YYYY-MM-DD
-  }
-
   constructor(
-    private http: HttpClient,
-    private router: Router,
-    private sync: OfflineSyncService
+    http: HttpClient,
+    router: Router
   ) {
-    this.cargarTokenDelStorage();
+    super(http, router);
   }
 
-  private offMutation<T>(method: 'POST' | 'PUT' | 'PATCH' | 'DELETE', url: string, body?: any): Observable<any> {
-    const operacion = url.split('/').pop() || 'operación';
-    if (!this.sync.isOnline()) {
-      this.sync.enqueueMutation(method, url, body);
-      return of({ queued: true, mensaje: 'Guardado localmente, se sincronizará cuando haya conexión' });
-    }
-    let req$: Observable<any>;
-    switch (method) {
-      case 'POST': req$ = this.http.post(url, body); break;
-      case 'PUT': req$ = this.http.put(url, body); break;
-      case 'PATCH': req$ = this.http.patch(url, body); break;
-      case 'DELETE': req$ = this.http.delete(url); break;
-    }
-    return req$.pipe(
-      catchError(error => {
-        if (error.status === 0 || error.status === 502 || error.status === 503) {
-          this.sync.enqueueMutation(method, url, body);
-          return of({ queued: true, mensaje: 'Guardado localmente, se sincronizará cuando haya conexión' });
-        }
-        return this.manejarError(error, operacion);
-      })
-    );
-  }
-
-  // ======= UTILITARIOS =======
-  /** Detecta si un JWT ya expiró (payload.exp en segundos). */
-  private tokenExpirado(token: string): boolean {
-    try {
-      const parte = token.split('.')[1];
-      if (!parte) return false;
-      const base64 = parte.replace(/-/g, '+').replace(/_/g, '/');
-      const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
-      const payload = JSON.parse(atob(padded));
-      const exp = payload?.exp;
-      if (typeof exp === 'number' && exp > 0) {
-        return exp * 1000 < Date.now();
-      }
-      return false;
-    } catch {
-      return false;
-    }
-  }
-
-  private limpiarSesionLocal(): void {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('role');
-    localStorage.removeItem('nombreUsuario');
-    this.token.set(null);
-    this.username.set(null);
-    this.role.set(null);
-    this.nombreUsuario.set(null);
-  }
-
-  private cargarTokenDelStorage(): void {
-    const token = localStorage.getItem('access_token');
-
-    if (!token) {
-      // No hay token: asegurar estado limpio (evita navbar con datos de una sesión previa).
-      this.limpiarSesionLocal();
-      return;
-    }
-
-    if (this.tokenExpirado(token)) {
-      // Token presente pero caducado → cerrar sesión para que el navbar no
-      // muestre usuario/rol con una sesión muerta.
-      this.limpiarSesionLocal();
-      return;
-    }
-
-    const username = localStorage.getItem('username');
-    const role = localStorage.getItem('role');
-    const nombreUsuario = localStorage.getItem('nombreUsuario');
-
-    this.token.set(token);
-    this.username.set(username);
-    this.role.set(role);
-    this.nombreUsuario.set(nombreUsuario);
-  }
-
-  private limpiarParametros(filtros: any): HttpParams {
-    let params = new HttpParams();
-    Object.entries(filtros).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== '' && value !== 0) {
-        params = params.set(key, String(value));
-      }
-    });
-    return params;
-  }
-
-  // api.service.ts
-  private manejarError(error: any, operacion: string) {
-    console.error(`❌ Error al ${operacion}:`, error);
-
-    if (error instanceof HttpErrorResponse && error.status === 401) {
-      this.logOut();
-    }
-
-    return throwError(() => error);
-  }
-
+  // ── Precache (privado) ──────────────────────────────────
   private async cacheEstaFresco(key: string): Promise<boolean> {
     const cached = await this.sync.getCachedData<any>(key);
     return cached !== null;
@@ -168,7 +50,7 @@ export class ApiService {
     const firstKey = this.sync.cacheKey(url, new HttpParams().set('skip', '0').set('limit', String(limit)));
 
     this.cacheEstaFresco(firstKey).then(fresco => {
-      if (fresco) return; // ya está en caché, no descargar de nuevo
+      if (fresco) return;
       this.http.get<PacienteListResponse>(url, { params: new HttpParams().set('skip', '0').set('limit', String(limit)) }).pipe(
         catchError(() => of(null))
       ).subscribe(firstResponse => {
@@ -202,7 +84,7 @@ export class ApiService {
     const firstKey = this.sync.cacheKey(url, new HttpParams().set('skip', '0').set('limit', String(limit)));
 
     this.cacheEstaFresco(firstKey).then(fresco => {
-      if (fresco) return; // ya está en caché, no descargar de nuevo
+      if (fresco) return;
       this.http.get<ConsultaListResponse>(url, { params: new HttpParams().set('skip', '0').set('limit', String(limit)) }).pipe(
         catchError(() => of(null))
       ).subscribe(firstResponse => {
@@ -230,96 +112,31 @@ export class ApiService {
     setTimeout(() => this.preCacheAllConsultations(), 5000);
   }
 
-  // ======= AUTENTICACIÓN =======
+  // ── Autenticación (delegado a AuthService) ──────────────
   login(username: string, password: string): Observable<any> {
     this.isLoading.set(true);
-    const body = new HttpParams()
-      .set('username', username)
-      .set('password', password);
-
-    return this.http.post<{ access_token: string }>(
-      `${this.baseUrl}/auth/login`, body
-    ).pipe(
-      tap(response => {
-        if (!response.access_token) throw new Error('No se recibió el token.');
-
-        localStorage.setItem('access_token', response.access_token);
-        this.token.set(response.access_token);
-
-        this.preCacheReferenceData();
-
-        this.getCurrentUser().subscribe({
-          next: () => this.router.navigate(['/dash']),
-          error: () => this.router.navigate(['/dash'])
-        });
-      }),
-      catchError(error => this.manejarError(error, 'iniciar sesión')),
+    return this.auth.login(username, password).pipe(
       finalize(() => this.isLoading.set(false))
     );
   }
 
   getCurrentUser(): Observable<any> {
-    return this.http.get<{ username: string; role: string, nombre: string }>(
-      `${this.baseUrl}/auth/me`,
-      {
-        headers: {
-          usuario: this.username() || '',
-          rol: this.role() || '',
-          nombre: this.nombreUsuario() || ''
-        }
-      }
-    ).pipe(
-      tap(response => {
-        localStorage.setItem('username', response.username);
-        localStorage.setItem('role', response.role);
-        localStorage.setItem('nombreUsuario', response.nombre);
-        this.username.set(response.username);
-        this.role.set(response.role);
-        this.nombreUsuario.set(response.nombre);
-
-      }),
-      catchError(error => this.manejarError(error, 'obtener usuario actual'))
-    );
+    return this.auth.getCurrentUser();
   }
 
-  getUsuarioActual(): { username: string; role: string, nombre: string } {
-    return {
-      username:
-        this.username() ??
-        localStorage.getItem('username') ??
-        'sistema',
-
-      role:
-        this.role() ??
-        localStorage.getItem('role') ??
-        'SIN_ROL',
-
-      nombre:
-        this.nombreUsuario() ??
-        localStorage.getItem('nombreUsuario') ??
-        ''
-    };
+  getUsuarioActual(): { username: string; role: string; nombre: string } {
+    return this.auth.getUsuarioActual();
   }
 
   logOut(): void {
-    this.precacheCancelado = true;
-    this.sync.clearOnLogout();
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('role');
-    localStorage.removeItem('nombreUsuario');
-    this.token.set(null);
-    this.username.set(null);
-    this.role.set(null);
-    this.nombreUsuario.set(null);
-    this.router.navigate(['/inicio']);
+    this.auth.logOut();
   }
 
-  // ======= USUARIOS =======
+  // ── Usuarios ────────────────────────────────────────────
   getUsers(filtros: any): Observable<UsersListResponse> {
     const params = this.limpiarParametros(filtros);
-    const key = this.sync.cacheKey(`${this.baseUrl}/users/`, params);
-    return this.sync.cacheGet(key,
+    const key = this.cacheKey(`${this.baseUrl}/users/`, params);
+    return this.cacheGet(key,
       this.http.get<UsersListResponse>(`${this.baseUrl}/users/`, { params }).pipe(
         tap(response => this.usuariosSubject.next(response.usuarios)),
         catchError(error => this.manejarError(error, 'obtener usuarios'))
@@ -329,8 +146,8 @@ export class ApiService {
 
   getAuditLog(filtros: any): Observable<any> {
     const params = this.limpiarParametros(filtros);
-    const key = this.sync.cacheKey(`${this.baseUrl}/audit-log/`, params);
-    return this.sync.cacheGet(key,
+    const key = this.cacheKey(`${this.baseUrl}/audit-log/`, params);
+    return this.cacheGet(key,
       this.http.get<any>(`${this.baseUrl}/audit-log/`, { params }).pipe(
         catchError(error => this.manejarError(error, 'obtener auditoría'))
       ),
@@ -378,49 +195,7 @@ export class ApiService {
     );
   }
 
-  deleteUser(userId: number | string): Observable<any> {
-    this.isLoading.set(true);
-    return this.offMutation('DELETE', `${this.baseUrl}/user/eliminar/${userId}`).pipe(
-      finalize(() => this.isLoading.set(false))
-    );
-  }
-
-
-
-
-  // ======= CORRELATIVOS =======
-  corExpediente(): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}/correlativos/expediente`, {}
-    ).pipe(
-      catchError(error => this.manejarError(error, 'obtener correlativo de expediente'))
-    );
-  }
-
-  corEmergencia(): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}/correlativos/emergencia`, {}
-    ).pipe(
-      catchError(error => this.manejarError(error, 'obtener correlativo de emergencia'))
-    );
-  }
-
-  corConstanciaNacimiento(): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}/correlativos/constancia_nacimiento`, {}
-    ).pipe(
-      catchError(error => this.manejarError(error, 'obtener correlativo de constancia nacimiento'))
-    );
-  }
-
-  corConstanciaMedica(): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}/correlativos/constancia_medica`, {}
-    ).pipe(
-      catchError(error => this.manejarError(error, 'obtener correlativo de constancia médica'))
-    );
-  }
-
+  // ── Correlativos ────────────────────────────────────────
   corDefuncion(): Observable<any> {
     return this.http.post<any>(
       `${this.baseUrl}/correlativos/constancia_defuncion`, {}
@@ -429,38 +204,13 @@ export class ApiService {
     );
   }
 
-  // ======= MUNICIPIOS =======
-
-  getDepartamentos(): Observable<any> {
-    const key = this.sync.cacheKey(`${this.baseUrl}/municipios/departamentos`);
-    return this.sync.cacheGet(key,
-      this.http.get<any>(`${this.baseUrl}/municipios/departamentos`).pipe(
-        catchError(error => this.manejarError(error, 'obtener departamentos'))
-      ),
-      30 * 60 * 1000
-    );
-  }
-
+  // ── Municipios ──────────────────────────────────────────
   getMunicipios(filtros: any): Observable<any> {
     const params = this.limpiarParametros(filtros);
-    const key = this.sync.cacheKey(`${this.baseUrl}/municipios/`, params);
-    return this.sync.cacheGet(key,
+    const key = this.cacheKey(`${this.baseUrl}/municipios/`, params);
+    return this.cacheGet(key,
       this.http.get<any>(`${this.baseUrl}/municipios/`, { params }).pipe(
         catchError(error => this.manejarError(error, 'obtener municipios'))
-      ),
-      30 * 60 * 1000
-    );
-  }
-
-  getCodigoMunicipio(codigo: string): Observable<Municipio> {
-    const params = new HttpParams()
-      .set('codigo', codigo)
-      .set('skip', '0')
-      .set('limit', '1');
-    const key = this.sync.cacheKey(`${this.baseUrl}/municipios/`, params);
-    return this.sync.cacheGet(key,
-      this.http.get<Municipio>(`${this.baseUrl}/municipios/`, { params }).pipe(
-        catchError(error => this.manejarError(error, 'obtener municipio'))
       ),
       30 * 60 * 1000
     );
@@ -490,7 +240,7 @@ export class ApiService {
     );
   }
 
-  // ======= ENCAMAMIENTO =======
+  // ── Encamamiento ────────────────────────────────────────
   getServiciosEncamamiento(activo?: boolean | null): Observable<any> {
     this.isLoading.set(true);
     let params = new HttpParams();
@@ -527,10 +277,10 @@ export class ApiService {
     );
   }
 
-  // ======= PAÍSES ISO =======
+  // ── Países ISO ──────────────────────────────────────────
   getPaisesIso(): Observable<any> {
-    const key = this.sync.cacheKey(`${this.baseUrl}/paises/`);
-    return this.sync.cacheGet(key,
+    const key = this.cacheKey(`${this.baseUrl}/paises/`);
+    return this.cacheGet(key,
       this.http.get<any>(`${this.baseUrl}/paises/`).pipe(
         catchError(error => this.manejarError(error, 'obtener países'))
       ),
@@ -540,8 +290,8 @@ export class ApiService {
 
   getRenapITD(filtros: any): Observable<any> {
     const params = this.limpiarParametros(filtros);
-    const key = this.sync.cacheKey(`${this.baseUrl}/renap-persona`, params);
-    return this.sync.cacheGet(key,
+    const key = this.cacheKey(`${this.baseUrl}/renap-persona`, params);
+    return this.cacheGet(key,
       this.http.get<{ resultado: any }>(`${this.baseUrl}/renap-persona`, { params }).pipe(
         tap(response => response.resultado),
         catchError(error => this.manejarError(error, 'obtener datos RENAP'))
@@ -550,7 +300,7 @@ export class ApiService {
     );
   }
 
-  // ======= PACIENTES MERGE =======
+  // ── Pacientes Merge ─────────────────────────────────────
   mergePacientes(principalId: number, ids: number[]): Observable<any> {
     this.isLoading.set(true);
     let params = new HttpParams()
@@ -564,45 +314,21 @@ export class ApiService {
     );
   }
 
-  // ======= ESTADÍSTICAS / REPORTES (back_sys/modules/estadisticas/) =======
+  // ── Estadísticas / Reportes (delegado a EstadisticasService) ──
   getPacientesAtendidos(desde: string, hasta: string): Observable<any> {
-    this.isLoading.set(true);
-    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
-    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/pacientesAtendidos`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener pacientes atendidos'))
-    );
+    return this.estadisticas.getPacientesAtendidos(desde, hasta);
   }
 
   getHospitalizacionInfantil(desde: string, hasta: string): Observable<any> {
-    this.isLoading.set(true);
-    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
-    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/hospitalizacion-infantil`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener hospitalización infantil'))
-    );
+    return this.estadisticas.getHospitalizacionInfantil(desde, hasta);
   }
 
   getPromedioDiario(desde: string, hasta: string): Observable<any> {
-    this.isLoading.set(true);
-    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
-    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/promedioDiario`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener promedio diario'))
-    );
+    return this.estadisticas.getPromedioDiario(desde, hasta);
   }
 
   getPersonalHospital(desde: string, hasta: string, skip = 0, limit = 100): Observable<any> {
-    this.isLoading.set(true);
-    const params = new HttpParams()
-      .set('desde', desde)
-      .set('hasta', hasta)
-      .set('skip', skip.toString())
-      .set('limit', limit.toString());
-    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/personal-hospital`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener personal hospital'))
-    );
+    return this.estadisticas.getPersonalHospital(desde, hasta, skip, limit);
   }
 
   getPersonalHospitalPacientes(filtros: {
@@ -615,111 +341,47 @@ export class ApiService {
     primer_apellido?: string | null;
     segundo_apellido?: string | null;
   } = {}): Observable<PacienteListResponse> {
-    const { skip = 0, limit = 50, ...rest } = filtros;
-    let params = new HttpParams().set('skip', skip.toString()).set('limit', limit.toString());
-    for (const [key, value] of Object.entries(rest)) {
-      if (value != null && value !== '') {
-        params = params.set(key, value);
-      }
-    }
-    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/personal-hospital`, { params }).pipe(
-      catchError(error => this.manejarError(error, 'obtener lista personal hospital'))
-    );
+    return this.estadisticas.getPersonalHospitalPacientes(filtros);
   }
 
   getEstudiantePublico(desde: string, hasta: string): Observable<any> {
-    this.isLoading.set(true);
-    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
-    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/estudiante-publico`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener estudiante público'))
-    );
+    return this.estadisticas.getEstudiantePublico(desde, hasta);
   }
 
   getReingresos(desde: string, hasta: string): Observable<any> {
-    this.isLoading.set(true);
-    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
-    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/reingresos`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener reingresos'))
-    );
+    return this.estadisticas.getReingresos(desde, hasta);
   }
 
   getReingresosTipo3(skip = 0, limit = 50): Observable<ConsultaListResponse> {
-    this.isLoading.set(true);
-    const params = new HttpParams().set('skip', String(skip)).set('limit', String(limit));
-    return this.http.get<ConsultaListResponse>(`${this.baseUrl}/estadisticas/consultas/reingresos-tipo3`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener reingresos tipo 3'))
-    );
+    return this.estadisticas.getReingresosTipo3(skip, limit);
   }
 
   getActivosMayores7Dias(skip = 0, limit = 50): Observable<ConsultaListResponse> {
-    this.isLoading.set(true);
-    const params = new HttpParams().set('skip', String(skip)).set('limit', String(limit));
-    return this.http.get<ConsultaListResponse>(`${this.baseUrl}/estadisticas/consultas/mayores-a-7-dias`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener activos >7 días'))
-    );
+    return this.estadisticas.getActivosMayores7Dias(skip, limit);
   }
 
   getEstadisticasNacimientos(desde: string, hasta: string): Observable<any> {
-    this.isLoading.set(true);
-    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
-    return this.http.get<any>(`${this.baseUrl}/estadisticas/nacimientos`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener estadísticas de nacimientos'))
-    );
+    return this.estadisticas.getEstadisticasNacimientos(desde, hasta);
   }
 
-  // ======= PROCEDIMIENTOS / REPORTES =======
   getReporteProcedimientos(filtros: {
     desde?: string; hasta?: string; especialidad?: string;
     lugar_servicio?: string; sexo?: string;
   }): Observable<any> {
-    this.isLoading.set(true);
-    const params = this.limpiarParametros(filtros);
-    return this.http.get<any>(`${this.baseUrl}/procedimientos/reporte`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener reporte de procedimientos'))
-    );
+    return this.estadisticas.getReporteProcedimientos(filtros);
   }
 
   getResumenProcedimientos(filtros?: { anio?: number; mes?: number }): Observable<any> {
-    this.isLoading.set(true);
-    const params = this.limpiarParametros(filtros || {});
-    return this.http.get<any>(`${this.baseUrl}/procedimientos/estadisticas/resumen`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener resumen de procedimientos'))
-    );
+    return this.estadisticas.getResumenProcedimientos(filtros);
   }
 
-  //======== SIGSA-3 ESTADÍSTICAS =============
-  getSigsa3PorEspecialidad(desde: string, hasta: string): Observable<any> {
-    this.isLoading.set(true);
-    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
-    return this.http.get<any>(`${this.baseUrl}/estadisticas/sigsa3/por-especialidad`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener estadísticas SIGSA-3'))
-    );
-  }
-
-  getSigsa3DxFrecuentes(desde: string, hasta: string, top = 10): Observable<any> {
-    this.isLoading.set(true);
-    const params = new HttpParams().set('desde', desde).set('hasta', hasta).set('top', String(top));
-    return this.http.get<any>(`${this.baseUrl}/estadisticas/sigsa3/dx-frecuentes`, { params }).pipe(
-      finalize(() => this.isLoading.set(false)),
-      catchError(error => this.manejarError(error, 'obtener dx frecuentes SIGSA-3'))
-    );
-  }
-
-  //======== MEDICOS =============
+  // ── Médicos ─────────────────────────────────────────────
   getMedicos(filtros: any): Observable<Medico[]> {
     this.isLoading.set(true);
     const params = this.limpiarParametros(filtros);
-    const key = this.sync.cacheKey(`${this.baseUrl}/personal-atencion/`, params);
+    const key = this.cacheKey(`${this.baseUrl}/personal-atencion/`, params);
 
-    return this.sync.cacheGet(key,
+    return this.cacheGet(key,
       this.http.get<{ total: number; personal_atencion: Medico[] }>(`${this.baseUrl}/personal-atencion/`, { params }).pipe(
         map(r => r.personal_atencion),
         finalize(() => this.isLoading.set(false)),
@@ -727,6 +389,4 @@ export class ApiService {
       )
     );
   }
-
-
 }

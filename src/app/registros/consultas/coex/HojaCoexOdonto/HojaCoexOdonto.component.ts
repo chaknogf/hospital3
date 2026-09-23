@@ -1,6 +1,5 @@
 
 import { Component, OnInit, OnDestroy, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
-import { ApiService } from '../../../../service/api.service';
 import { ConsultaService } from '../../consultas.service';
 import { PacienteService } from '../../../patient/paciente.service';
 import { Paciente } from '../../../../interface/interfaces';

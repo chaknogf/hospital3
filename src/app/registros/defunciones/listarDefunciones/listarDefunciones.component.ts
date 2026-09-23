@@ -6,7 +6,6 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { DefuncionesService } from '../defunciones.service';
 import { Defuncion } from '../defunciones.interface';
-import { ApiService } from '../../../service/api.service';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { editIcon, printIcon } from '../../../shared/icons/svg-icon';
@@ -41,7 +40,6 @@ export class ListarDefuncionesComponent implements OnInit, OnDestroy {
 
   constructor(
     private api: DefuncionesService,
-    private apis: ApiService,
     private router: Router
   ) {}
 

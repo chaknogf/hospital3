@@ -37,6 +37,7 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
   historialCiclos: CicloClinico[] = [];
   enEdicion = false;
   usuarioActual = '';
+  esAdmin = false;
   guardando = false;
   mensaje = signal<{ texto: string; tipo: 'success' | 'info' | 'error' } | null>(null);
   private destroy$ = new Subject<void>();
@@ -73,7 +74,13 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.usuarioActual = this.apis.getUsuarioActual().username;
+    const usuario = this.apis.getUsuarioActual();
+    this.usuarioActual = usuario.username;
+    this.esAdmin = usuario.role === 'admin';
+    // Deshabilitar orden si no es admin
+    if (!this.esAdmin) {
+      this.form.get('orden')?.disable();
+    }
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
@@ -100,7 +107,7 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
       documento: [{ value: '', disabled: true }],
       fecha_consulta: [{ value: '', disabled: true }],
       hora_consulta: [{ value: '', disabled: true }],
-      orden: [{ value: null, disabled: true }],
+      orden: [null],
 
       // Editables
       paciente_id: [0],
@@ -248,6 +255,11 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
       servicio: v.servicio || undefined,
       indicadores: v.indicadores as Indicador,
     };
+
+    // ── Orden (solo admin) ──────────────────────────────────
+    if (this.esAdmin && v.orden !== null && v.orden !== undefined) {
+      payload.orden = v.orden;
+    }
 
     // ── Ciclo: solo si se eligió un nuevo estado ───────────
     if (v.nuevo_estado) {

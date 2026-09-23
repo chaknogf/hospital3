@@ -139,7 +139,7 @@
               class="field-input"
               type="number"
               formControlName="orden"
-              readonly
+              [readonly]="!esAdmin"
             />
           </div>
           <div class="field">

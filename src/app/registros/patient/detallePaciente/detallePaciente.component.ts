@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, OnDestroy, SimpleChanges, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { ApiService } from '../../../service/api.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { EdadPipe } from "../../../pipes/edad.pipe";
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
