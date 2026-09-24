@@ -169,16 +169,28 @@
 
   <!-- ═══ TAB ESTADÍSTICAS ═══ -->
   @if (tabActiva === 'estadisticas') {
+    <!-- Selector de fecha -->
+    <div class="stats-date-picker">
+      <label class="date-label">Fecha de consulta:</label>
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="fechaEstadistica"
+        (change)="cargarEstadisticasPorFecha()"
+      />
+      <span class="date-hint">El censo refleja cómo amanecieron las camas el día seleccionado</span>
+    </div>
+
     @if (cargandoEstadisticas) {
       <div class="state-box spinner"></div>
     }
     @if (!cargandoEstadisticas) {
-      <!-- HOY -->
+      <!-- DÍA SELECCIONADO -->
       <div class="stats-section">
-        <h2 class="stats-title">📅 Día Actual <span class="stats-date">{{ estadisticaHoy?.desde }}</span></h2>
+        <h2 class="stats-title">📅 Día Seleccionado <span class="stats-date">{{ estadisticaHoy?.desde }}</span></h2>
         @if (estadisticaHoy?.servicios?.length === 0) {
           <div class="state-box">
-            Sin datos para el día de hoy.
+            Sin datos para la fecha seleccionada.
           </div>
         }
         @if (estadisticaHoy && estadisticaHoy.servicios.length > 0) {

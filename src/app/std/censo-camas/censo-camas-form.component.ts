@@ -143,7 +143,72 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
   }
 
   seleccionarSexo(sexo: number): void {
-    this.form.get('sexo')?.setValue(sexo);
+    const sexoActual = this.form.get('sexo')?.value;
+    if (sexoActual === sexo) return;
+
+    // Si hay datos en el formulario actual, guardarlos antes de cambiar
+    const tieneDatos = this.formTieneDatos();
+    if (tieneDatos && !this.existeRegistro && this.form.valid) {
+      this.guardarAutomatico(() => {
+        this.form.get('sexo')?.setValue(sexo);
+      });
+    } else {
+      this.form.get('sexo')?.setValue(sexo);
+    }
+  }
+
+  /** Verifica si el formulario tiene datos ingresados (no todos en 0) */
+  private formTieneDatos(): boolean {
+    const v = this.form.value;
+    return (v.ocupados || 0) + (v.egresos || 0) + (v.fallecidos || 0) +
+           (v.referido || 0) + (v.traslado || 0) + (v.contraindicados || 0) +
+           (v.otro_ingresos || 0) + (v.ingresos || 0) + (v.huespedes || 0) +
+           (v.emergencia || 0) > 0;
+  }
+
+  /** Guarda el formulario actual sin mostrar mensajes, luego ejecuta callback */
+  private guardarAutomatico(callback: () => void): void {
+    const raw = this.form.value;
+
+    // Si ya existe registro para esta fecha/servicio/sexo, actualizar; si no, crear
+    if (this.existeRegistro && this.registroExistente) {
+      const data: CensoCamasUpdate = {
+        ocupados: raw.ocupados || 0,
+        egresos: raw.egresos || 0,
+        fallecidos: raw.fallecidos || 0,
+        referido: raw.referido || 0,
+        traslado: raw.traslado || 0,
+        contraindicados: raw.contraindicados || 0,
+        otro_ingresos: raw.otro_ingresos || 0,
+        ingresos: raw.ingresos || 0,
+        huespedes: raw.huespedes || 0,
+        emergencia: raw.emergencia || 0,
+      };
+      this.censoService.actualizar(this.registroExistente.id, data).subscribe({
+        next: () => callback(),
+        error: () => callback()
+      });
+    } else {
+      const data: CensoCamasCreate = {
+        fecha: raw.fecha,
+        servicio_id: raw.servicio_id,
+        sexo: raw.sexo,
+        ocupados: raw.ocupados || 0,
+        egresos: raw.egresos || 0,
+        fallecidos: raw.fallecidos || 0,
+        referido: raw.referido || 0,
+        traslado: raw.traslado || 0,
+        contraindicados: raw.contraindicados || 0,
+        otro_ingresos: raw.otro_ingresos || 0,
+        ingresos: raw.ingresos || 0,
+        huespedes: raw.huespedes || 0,
+        emergencia: raw.emergencia || 0,
+      };
+      this.censoService.crear(data).subscribe({
+        next: () => callback(),
+        error: () => callback()
+      });
+    }
   }
 
   verificarExistencia(): boolean {

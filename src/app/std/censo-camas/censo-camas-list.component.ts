@@ -58,6 +58,7 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   estadisticaHoy: CensoEstadisticaResponse | null = null;
   estadisticaMes: CensoEstadisticaResponse | null = null;
   cargandoEstadisticas = false;
+  fechaEstadistica: string = this.fechaAyer();
 
   hospitalizacion: HospitalizacionEspecialidadItem[] = [];
   totalHospitalizados = 0;
@@ -223,10 +224,10 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
 
   cargarHospitalizaciones(): void {
     this.cargandoHospitalizacion = true;
-    const hoy = this.fechaActual();
-    const inicioMes = this.primeroDelMes();
+    const fechaSeleccionada = this.fechaEstadistica || this.fechaAyer();
+    const inicioMes = this.primeroDelMes(fechaSeleccionada);
 
-    this.censoService.getHospitalizacionPorEspecialidad(inicioMes, hoy).pipe(takeUntil(this.destroy$)).subscribe({
+    this.censoService.getHospitalizacionPorEspecialidad(inicioMes, fechaSeleccionada).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.hospitalizacion = res.especialidades;
         this.totalHospitalizados = res.total_hospitalizados;
@@ -243,8 +244,8 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   }
 
   private cargarEstadisticasHoy(): void {
-    const hoy = this.fechaActual();
-    this.censoService.getEstadisticas(hoy, hoy).pipe(takeUntil(this.destroy$)).subscribe({
+    const fechaSeleccionada = this.fechaEstadistica || this.fechaAyer();
+    this.censoService.getEstadisticas(fechaSeleccionada, fechaSeleccionada).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => { this.estadisticaHoy = res; this.cdr.markForCheck(); },
       error: () => { this.cdr.markForCheck(); }
     });
@@ -252,10 +253,10 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
 
   cargarEstadisticas(): void {
     this.cargandoEstadisticas = true;
-    const hoy = this.fechaActual();
-    const primeroMes = this.primeroDelMes();
+    const fechaSeleccionada = this.fechaEstadistica || this.fechaAyer();
+    const primeroMes = this.primeroDelMes(fechaSeleccionada);
 
-    this.censoService.getEstadisticas(primeroMes, hoy).pipe(takeUntil(this.destroy$)).subscribe({
+    this.censoService.getEstadisticas(primeroMes, fechaSeleccionada).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.estadisticaMes = res;
         this.cargandoEstadisticas = false;
@@ -267,7 +268,7 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.censoService.getEstadisticas(hoy, hoy).pipe(takeUntil(this.destroy$)).subscribe({
+    this.censoService.getEstadisticas(fechaSeleccionada, fechaSeleccionada).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.estadisticaHoy = res;
         this.cdr.markForCheck();
@@ -276,13 +277,47 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
     });
   }
 
+  /** Carga estadísticas para una fecha específica (seleccionada por el usuario) */
+  cargarEstadisticasPorFecha(): void {
+    this.cargandoEstadisticas = true;
+    const fecha = this.fechaEstadistica || this.fechaAyer();
+    const primeroMes = this.primeroDelMes(fecha);
+
+    this.censoService.getEstadisticas(primeroMes, fecha).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.estadisticaMes = res;
+        this.cargandoEstadisticas = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.cargandoEstadisticas = false;
+        this.cdr.markForCheck();
+      }
+    });
+
+    this.censoService.getEstadisticas(fecha, fecha).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.estadisticaHoy = res;
+        this.cdr.markForCheck();
+      },
+      error: () => { this.cdr.markForCheck(); }
+    });
+  }
+
+  /** Fecha de ayer (el censo refleja cómo amaneció el día anterior) */
+  private fechaAyer(): string {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
   private fechaActual(): string {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
 
-  private primeroDelMes(): string {
-    const d = new Date();
+  private primeroDelMes(fechaBase?: string): string {
+    const d = fechaBase ? new Date(fechaBase + 'T12:00:00') : new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`;
   }
 
