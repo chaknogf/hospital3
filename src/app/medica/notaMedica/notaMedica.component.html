@@ -71,7 +71,7 @@
     <header class="nm-topbar">
       <button class="nm-icon-btn" (click)="regresar()" aria-label="Regresar">←</button>
       <div class="nm-topbar__title">
-        <span>Nota médica</span>
+        <span>{{ odontologiaActiva() ? 'Nota odontológica' : 'Nota médica' }}</span>
         <small>Ciclo {{ ciclo()?.numero }} · {{ ciclo()?.usuario }}</small>
       </div>
       <span class="nm-pill" [class.nm-pill--open]="ciclo()?.activo">
@@ -89,16 +89,54 @@
     </div>
 
     <nav class="nm-tabs" role="tablist">
-      <button role="tab" [class.is-active]="tabActivo === 'clinica'" (click)="setTab('clinica')">Clínica</button>
+      @if (odontologiaActiva()) {
+        <button role="tab" [class.is-active]="tabActivo === 'odontologia'" (click)="setTab('odontologia')">Odontología</button>
+      } @else {
+        <button role="tab" [class.is-active]="tabActivo === 'clinica'" (click)="setTab('clinica')">Clínica</button>
+      }
       <button role="tab" [class.is-active]="tabActivo === 'signos'" (click)="setTab('signos')">Signos</button>
       <button role="tab" [class.is-active]="tabActivo === 'antecedentes'" (click)="setTab('antecedentes')">Antecedentes</button>
-      <button role="tab" [class.is-active]="tabActivo === 'examen'" (click)="setTab('examen')">Examen</button>
-      <button role="tab" [class.is-active]="tabActivo === 'escalas'" (click)="setTab('escalas')">Escalas</button>
+      @if (!odontologiaActiva()) {
+        <button role="tab" [class.is-active]="tabActivo === 'examen'" (click)="setTab('examen')">Examen</button>
+        <button role="tab" [class.is-active]="tabActivo === 'escalas'" (click)="setTab('escalas')">Escalas</button>
+      }
       <button role="tab" [class.is-active]="tabActivo === 'egreso'" (click)="setTab('egreso')">Egreso</button>
     </nav>
 
     <main class="nm-content">
       @switch (tabActivo) {
+        @case ('odontologia') {
+          <div class="nm-odonto-form">
+            <app-odontograma [(value)]="odontologia.odontograma" />
+            <div class="nm-form nm-odonto-form__fields">
+              <label class="nm-field">
+                <span>Motivo de consulta</span>
+                <textarea rows="3" [(ngModel)]="odontologia.motivo_consulta" placeholder="Dolor, revisión, control u otra necesidad…"></textarea>
+              </label>
+              <label class="nm-field">
+                <span>Examen extraoral</span>
+                <textarea rows="2" [(ngModel)]="odontologia.examen_extraoral" placeholder="Simetría facial, ganglios, ATM, tejidos periorales…"></textarea>
+              </label>
+              <label class="nm-field">
+                <span>Examen intraoral</span>
+                <textarea rows="3" [(ngModel)]="odontologia.examen_intraoral" placeholder="Mucosas, encías, higiene, oclusión y hallazgos clínicos…"></textarea>
+              </label>
+              <label class="nm-field">
+                <span>Diagnóstico odontológico</span>
+                <textarea rows="3" [(ngModel)]="odontologia.diagnostico" placeholder="Diagnóstico y piezas relacionadas…"></textarea>
+              </label>
+              <label class="nm-field">
+                <span>Plan de tratamiento</span>
+                <textarea rows="3" [(ngModel)]="odontologia.plan_tratamiento" placeholder="Procedimientos indicados, secuencia y seguimiento…"></textarea>
+              </label>
+              <label class="nm-field">
+                <span>Procedimiento realizado / observaciones</span>
+                <textarea rows="3" [(ngModel)]="odontologia.procedimientos" placeholder="Procedimiento realizado, anestesia, materiales y tolerancia…"></textarea>
+              </label>
+            </div>
+          </div>
+        }
+
         <!-- CLÍNICA -->
         @case ('clinica') {
           <div class="nm-form">
@@ -425,7 +463,7 @@
     <footer class="nm-bottombar">
       <button class="nm-btn nm-btn--ghost" (click)="regresar()">Cancelar</button>
       <button class="nm-btn nm-btn--primary" (click)="guardar()" [disabled]="guardando()">
-        {{ guardando() ? 'Guardando…' : 'Guardar nota' }}
+        {{ guardando() ? 'Guardando…' : odontologiaActiva() ? 'Guardar nota odontológica' : 'Guardar nota' }}
       </button>
     </footer>
   </div>

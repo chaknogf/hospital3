@@ -28,10 +28,11 @@ describe('NotaMedicaComponent', () => {
     cicloService.getCiclosDeConsulta.and.returnValue(of([]));
     cicloService.iniciarClico.and.callFake((payload: any) => of({ ...payload, id: 9, numero: 1, usuario: 'test' }));
 
-    consultasService = jasmine.createSpyObj<ConsultaService>('ConsultaService', ['getConsultasPorPaciente']);
+    consultasService = jasmine.createSpyObj<ConsultaService>('ConsultaService', ['getConsultasPorPaciente', 'getConsultaId']);
     consultasService.getConsultasPorPaciente.and.returnValue(of([
       { id: 12, tipo_consulta: 1, especialidad: 'MEDicina Interna', servicio: 'COEX', fecha_consulta: '2026-01-01', hora_consulta: '10:00', ultimo_estado: 'recepcion' },
     ] as any));
+    consultasService.getConsultaId.and.returnValue(of({ especialidad: 'MEDI', servicio: 'COEX' } as any));
 
     pacientesService = jasmine.createSpyObj<PacienteService>('PacienteService', ['pacienteExpediente']);
     pacientesService.pacienteExpediente.and.returnValue(of({
@@ -107,5 +108,36 @@ describe('NotaMedicaComponent', () => {
       }),
     }));
     expect(component.mensaje()?.tipo).toBe('success');
+  });
+
+  it('activa odontología por especialidad y guarda odontograma junto con la nota', () => {
+    consultasService.getConsultaId.and.returnValue(of({ especialidad: 'ODON', servicio: 'COEX' } as any));
+    const { component } = crear();
+    component.odontologia.motivo_consulta = 'Dolor al masticar';
+    component.odontologia.diagnostico = 'Caries oclusal';
+    component.odontologia.odontograma.dientes['16'] = {
+      superficies: { oclusal: 'caries' },
+    };
+
+    component.guardar();
+
+    expect(component.odontologiaActiva()).toBeTrue();
+    expect(component.tabActivo).toBe('odontologia');
+    expect(cicloService.iniciarClico).toHaveBeenCalledWith(jasmine.objectContaining({
+      contenido: 'Caries oclusal',
+      especialidad: 'ODON',
+      datos_medicos: jasmine.objectContaining({
+        detalle_clinicos: 'Dolor al masticar',
+        impresion_clinica: 'Caries oclusal',
+        odontologia: jasmine.objectContaining({
+          motivo_consulta: 'Dolor al masticar',
+          odontograma: jasmine.objectContaining({
+            dientes: jasmine.objectContaining({ 16: jasmine.objectContaining({
+              superficies: jasmine.objectContaining({ oclusal: 'caries' }),
+            }) }),
+          }),
+        }),
+      }),
+    }));
   });
 });

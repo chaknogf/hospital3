@@ -9,6 +9,7 @@ import { BaseApiService, PaginationState } from './../service/base-api.service';
 import { FiltroConsulta } from './../interface/filtros.model';
 import {
   CicloConsulta,
+  HistoriaClinicaResponse,
 } from './../interface/ciclo';
 
 @Injectable({ providedIn: 'root' })
@@ -78,6 +79,18 @@ export class CicloService extends BaseApiService {
     return this.offMutation('POST', `${this.baseUrl}/ciclos/`, ciclo).pipe(
       tap(() => this.refrescarCiclos()),
       finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  /** Historia clínica completa de un paciente, agrupada por consulta */
+  getHistoriaClinica(pacienteId: number): Observable<HistoriaClinicaResponse> {
+    const url = `${this.baseUrl}/ciclos/paciente/${pacienteId}`;
+    const key = this.cacheKey(url);
+    return this.cacheGet(key,
+      this.http.get<HistoriaClinicaResponse>(url).pipe(
+        catchError(error => this.manejarError(error, 'obtener historia clínica'))
+      ),
+      5 * 60 * 1000
     );
   }
 

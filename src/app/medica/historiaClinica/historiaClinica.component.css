@@ -1,27 +1,212 @@
-:host { display: block; min-height: 100%; color: var(--theme-text); font-family: var(--theme-font-ui); }
-.historia-shell { width: min(980px, calc(100% - 2rem)); margin: 0 auto; padding: 1.25rem 0 3rem; }
-.historia-header { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 0 1.25rem; border-bottom: 1px solid var(--theme-border); }
-.historia-back { border: 1px solid var(--theme-border); border-radius: var(--theme-radius-md); background: transparent; color: var(--theme-text-muted); padding: .6rem .75rem; cursor: pointer; }
-.historia-back:hover { border-color: var(--theme-primary); color: var(--theme-primary); }
-.historia-eyebrow, .historia-card__kicker { color: var(--theme-primary); font: 700 var(--theme-font-size-xs)/1 var(--theme-font-mono); letter-spacing: .08em; text-transform: uppercase; }
-.historia-header h1 { margin: .35rem 0; font-size: clamp(1.6rem, 4vw, 2.3rem); letter-spacing: -.04em; }
-.historia-header p { margin: 0; color: var(--theme-text-muted); font-size: var(--theme-font-size-sm); }
-.historia-loading, .historia-empty, .historia-message { margin-top: 1rem; padding: 1rem; border: 1px solid var(--theme-border); border-radius: var(--theme-radius-lg); background: var(--theme-surface); color: var(--theme-text-muted); }
-.historia-message--error { border-color: var(--theme-danger); background: var(--theme-danger-dim); color: var(--theme-danger); }
-.historia-search { margin-top: 1.25rem; padding: 1rem; border: 1px solid var(--theme-border); border-radius: var(--theme-radius-lg); background: var(--theme-gradient-surface); }
-.historia-search h2 { margin: .35rem 0 .7rem; font-size: 1.1rem; }
-.historia-search__row { display: flex; gap: .55rem; }
-.historia-search input { flex: 1; min-width: 0; padding: .7rem; border: 1px solid var(--theme-border); border-radius: var(--theme-radius-md); background: var(--theme-surface); color: var(--theme-text); }
-.historia-patient { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.25rem; padding: .75rem; border-radius: var(--theme-radius-md); background: var(--theme-primary-dim); }
-.historia-timeline { display: grid; gap: .8rem; margin-top: 1.25rem; }
-.historia-card { display: grid; grid-template-columns: 2.7rem minmax(0, 1fr); gap: .75rem; }
-.historia-card__marker { display: grid; place-items: center; width: 2.7rem; height: 2.7rem; border: 1px solid var(--theme-primary); border-radius: 50%; background: var(--theme-primary-dim); color: var(--theme-primary); font-family: var(--theme-font-mono); font-weight: 800; }
-.historia-card__body { padding: 1rem; border: 1px solid var(--theme-border); border-radius: var(--theme-radius-xl); background: var(--theme-gradient-surface); box-shadow: var(--theme-shadow-sm); }
-.historia-card__topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-.historia-card h2 { margin: .3rem 0 0; font-size: 1.05rem; }
-.historia-state { padding: .2rem .5rem; border: 1px solid var(--theme-success); border-radius: var(--theme-radius-pill); background: var(--theme-success-dim); color: var(--theme-success); font-size: var(--theme-font-size-xs); font-weight: 700; }
-.historia-state.is-closed { border-color: var(--theme-border); background: var(--theme-surface-raised); color: var(--theme-text-muted); }
-.historia-meta { display: flex; flex-wrap: wrap; gap: .4rem .8rem; margin-top: .65rem; color: var(--theme-text-muted); font: var(--theme-font-size-xs) var(--theme-font-mono); }
-.historia-summary { margin: .85rem 0; color: var(--theme-text); line-height: 1.5; white-space: pre-wrap; }
-.historia-action { border: 0; background: transparent; color: var(--theme-primary); font-weight: 700; cursor: pointer; padding: 0; }
-@media (max-width: 600px) { .historia-shell { width: min(100% - 1rem, 600px); } .historia-header { flex-direction: column; } .historia-card__topline { flex-direction: column; } }
+/* ═══════════════════════════════════════════════════════════════
+   HISTORIA CLÍNICA — Usa tokens del tema para contraste automático
+   ═══════════════════════════════════════════════════════════════ */
+
+.historia-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  font-family: var(--font-ui, 'Inter', system-ui, sans-serif);
+  color: var(--text, #f1f5f9);
+  line-height: 1.4;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.historia-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.header-left h1 { margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--text, #f8fafc); }
+.paciente-info { font-size: 0.8rem; color: var(--muted, #cbd5e1); margin: 2px 0 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.badge-exp { background: var(--secondary-dim, rgba(99,102,241,0.2)); color: var(--secondary-light, #a5b4fc); padding: 1px 6px; border-radius: 3px; font-size: 0.7rem; font-weight: 700; }
+.stats-resumen { color: var(--muted, #94a3b8); font-size: 0.75rem; }
+.header-right { display: flex; align-items: center; gap: 6px; }
+
+.btn-back {
+  background: var(--surface, rgba(30,41,59,0.6));
+  border: 1px solid var(--rim, rgba(148,163,184,0.25));
+  color: var(--text, #cbd5e1);
+  padding: 5px 10px; border-radius: 6px; cursor: pointer;
+  font-size: 0.8rem; transition: background 0.15s;
+}
+.btn-back:hover { background: var(--panel, rgba(51,65,85,0.8)); }
+
+.busqueda { display: flex; gap: 3px; }
+.input-busqueda {
+  padding: 5px 10px; border-radius: 6px;
+  border: 1px solid var(--rim, rgba(148,163,184,0.25));
+  background: var(--deep, rgba(15,23,42,0.9));
+  color: var(--text, #f1f5f9);
+  font-size: 0.8rem; width: 180px;
+}
+.input-busqueda::placeholder { color: var(--muted, #64748b); }
+.input-busqueda:focus {
+  outline: none;
+  border-color: var(--accent, #3b82f6);
+  box-shadow: 0 0 0 2px var(--pulse-dim, rgba(59,130,246,0.15));
+}
+.btn-buscar {
+  padding: 5px 8px; border-radius: 6px;
+  border: 1px solid var(--rim, rgba(148,163,184,0.25));
+  background: var(--surface, rgba(30,41,59,0.7));
+  cursor: pointer; font-size: 0.8rem;
+}
+.btn-imprimir {
+  padding: 5px 12px; border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--accent, #3b82f6) 35%, transparent);
+  background: color-mix(in srgb, var(--accent, #3b82f6) 10%, transparent);
+  color: var(--accent-light, #93c5fd);
+  cursor: pointer; font-size: 0.8rem; font-weight: 600;
+  transition: background 0.15s;
+}
+.btn-imprimir:hover { background: color-mix(in srgb, var(--accent, #3b82f6) 20%, transparent); }
+
+/* ── Árbol ──────────────────────────────────────────────── */
+.arbol { display: flex; flex-direction: column; gap: 8px; }
+
+.consulta-grupo {
+  background: var(--surface, rgba(30,41,59,0.5));
+  border: 1px solid var(--rim, rgba(71,85,105,0.35));
+  border-radius: 10px;
+  overflow: hidden;
+}
+.consulta-grupo:hover { border-color: var(--rim-hot, rgba(100,116,139,0.5)); }
+
+/* ── Header de consulta ─────────────────────────────────── */
+.consulta-header {
+  width: 100%; display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: color-mix(in srgb, var(--panel, #0a1428) 60%, transparent);
+  border: none; cursor: pointer;
+  color: var(--text, #f1f5f9);
+  font-size: 0.82rem; text-align: left;
+  transition: background 0.15s;
+}
+.consulta-header:hover { background: var(--panel, rgba(30,41,59,0.9)); }
+.consulta-icon { font-size: 0.6rem; color: var(--muted, #94a3b8); width: 10px; }
+.consulta-tipo-badge {
+  padding: 1px 6px; border-radius: 3px; font-size: 0.6rem;
+  font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.consulta-fecha { font-weight: 600; color: var(--text, #e2e8f0); }
+.consulta-especialidad { color: var(--text, #cbd5e1); font-weight: 500; }
+.consulta-meta { margin-left: auto; color: var(--muted, #94a3b8); font-size: 0.72rem; }
+
+/* ── Lista de notas ─────────────────────────────────────── */
+.notas-lista { padding: 4px 12px 8px 20px; }
+
+.nota-card {
+  display: flex; gap: 8px; padding: 5px 0; cursor: pointer;
+  transition: background 0.12s; border-radius: 6px;
+}
+.nota-card:hover { background: var(--pulse-dim, rgba(59,130,246,0.06)); }
+
+/* ── Timeline ───────────────────────────────────────────── */
+.nota-timeline { display: flex; flex-direction: column; align-items: center; padding-top: 3px; }
+.timeline-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent, #3b82f6);
+  border: 2px solid var(--panel, #1e293b);
+  flex-shrink: 0;
+}
+.timeline-line {
+  width: 1.5px; flex: 1;
+  background: color-mix(in srgb, var(--accent, #3b82f6) 20%, transparent);
+  min-height: 12px;
+}
+
+/* ── Contenido de nota ──────────────────────────────────── */
+.nota-contenido { flex: 1; min-width: 0; }
+.nota-header { display: flex; align-items: center; gap: 6px; margin-bottom: 1px; }
+.nota-numero { font-weight: 700; font-size: 0.78rem; color: var(--text, #f1f5f9); }
+.nota-tipo-odonto { padding: 1px 6px; border-radius: 999px; background: color-mix(in srgb, #0f766e 18%, transparent); color: var(--accent-light, #5eead4); font-size: 0.62rem; font-weight: 700; text-transform: uppercase; }
+.nota-hora { font-size: 0.7rem; color: var(--muted, #94a3b8); }
+.nota-egreso {
+  padding: 0 5px; border-radius: 3px; font-size: 0.58rem; font-weight: 700;
+  background: var(--success-dim, rgba(34,197,94,0.18));
+  color: var(--success-soft, #86efac);
+  text-transform: uppercase;
+}
+.nota-autor { font-size: 0.72rem; color: var(--text, #cbd5e1); margin-bottom: 2px; }
+.nota-especialidad { color: var(--muted, #94a3b8); }
+.nota-signos {
+  font-size: 0.68rem;
+  color: var(--accent-light, #93c5fd);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  background: var(--pulse-dim, rgba(59,130,246,0.1));
+  padding: 1px 5px; border-radius: 3px;
+  margin-bottom: 2px; display: inline-block; letter-spacing: -0.2px;
+}
+.nota-resumen {
+  font-size: 0.75rem;
+  color: var(--text, #cbd5e1);
+  line-height: 1.3;
+  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.nota-odontologia-resumen {
+  padding: 4px 7px;
+  border-left: 2px solid #0f766e;
+  border-radius: 0 4px 4px 0;
+  background: color-mix(in srgb, #0f766e 10%, transparent);
+  color: var(--text, #cbd5e1);
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
+/* ── Estados ────────────────────────────────────────────── */
+.state-box { text-align: center; padding: 32px 16px; color: var(--muted, #94a3b8); }
+.state-box.error { color: var(--danger, #fca5a5); }
+.state-box.vacio { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.vacio-icon { font-size: 1.8rem; }
+
+.spinner { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.spinner-ring {
+  width: 28px; height: 28px;
+  border: 2.5px solid color-mix(in srgb, var(--accent, #3b82f6) 20%, transparent);
+  border-top-color: var(--accent, #3b82f6);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════════════
+   IMPRESIÓN — Papel blanco, alto contraste
+   ═══════════════════════════════════════════════════════════════ */
+.print-container { display: none; }
+
+@media print {
+  .no-print { display: none !important; }
+  .print-container { display: block !important; }
+
+  @page { margin: 1.8cm 2cm; size: letter; }
+
+  body {
+    background: #fff !important; color: #000 !important;
+    font-family: 'Times New Roman', 'Georgia', serif;
+    font-size: 11pt; line-height: 1.45;
+  }
+
+  .print-header { border-bottom: 2.5px solid #000; padding-bottom: 6px; margin-bottom: 14px; }
+  .print-header h1 { font-size: 17pt; margin: 0 0 3px; font-weight: 700; }
+  .print-paciente { font-size: 11pt; font-weight: 600; }
+  .print-fecha { font-size: 8.5pt; color: #555; margin-top: 3px; }
+
+  .print-consulta { margin-bottom: 14px; page-break-inside: avoid; }
+  .print-consulta h2 {
+    font-size: 12pt; border-bottom: 1.5px solid #999; padding-bottom: 3px;
+    margin: 10px 0 6px; color: #111; font-weight: 700;
+  }
+
+  .print-nota { margin-bottom: 10px; padding-left: 10px; border-left: 2px solid #bbb; page-break-inside: avoid; }
+  .print-nota h3 { font-size: 10.5pt; margin: 0 0 3px; color: #222; font-weight: 700; }
+  .print-signos { font-size: 8.5pt; color: #333; font-family: 'Courier New', monospace; background: #f5f5f5; padding: 1px 4px; }
+  .print-nota p { font-size: 10pt; line-height: 1.45; margin: 2px 0; color: #111; }
+
+  .print-footer { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 6px; font-size: 7.5pt; color: #888; text-align: center; }
+}

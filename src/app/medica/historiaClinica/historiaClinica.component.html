@@ -1,68 +1,175 @@
-<main class="historia-shell">
+<div class="historia-container no-print">
+  <!-- Header -->
   <header class="historia-header">
-    <button type="button" class="historia-back" (click)="regresar()">&#8592; Regresar</button>
-    <div>
-      <span class="historia-eyebrow">Expediente clínico electrónico</span>
-      <h1>Historia clínica</h1>
-      <p>Seguimiento cronológico de notas y ciclos de atención.</p>
+    <div class="header-left">
+      <button class="btn-back" (click)="router.navigate(['/pacientesActivos'])">← Volver</button>
+      <div>
+        <h1>Historia Clínica</h1>
+        @if (historia()) {
+          <p class="paciente-info">
+            {{ historia()!.paciente_nombre }}
+            @if (historia()!.paciente_expediente) {
+              <span class="badge-exp">{{ historia()!.paciente_expediente }}</span>
+            }
+            <span class="stats-resumen">
+              {{ historia()!.total_consultas }} consultas · {{ historia()!.total_ciclos }} notas
+            </span>
+          </p>
+        }
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="busqueda">
+        <input
+          type="text"
+          placeholder="Buscar por expediente..."
+          [(ngModel)]="expedienteBusqueda"
+          (keyup.enter)="buscarPorExpediente()"
+          class="input-busqueda"
+        />
+        <button class="btn-buscar" (click)="buscarPorExpediente()">🔍</button>
+      </div>
+      <button class="btn-imprimir" (click)="imprimir()">🖨️ Imprimir</button>
     </div>
   </header>
 
-  @if (error()) {
-    <div class="historia-message historia-message--error" role="alert">{{ error() }}</div>
-  }
-
-  @if (!pacienteBuscado() && !ciclos().length) {
-    <section class="historia-search">
-      <span class="historia-eyebrow">Consulta por expediente</span>
-      <h2>Buscar paciente</h2>
-      <div class="historia-search__row">
-        <input type="search" [(ngModel)]="busquedaExpediente" placeholder="Número de expediente" (keyup.enter)="buscarPaciente()" />
-        <button type="button" class="historia-action" (click)="buscarPaciente()" [disabled]="buscandoPaciente()">
-          {{ buscandoPaciente() ? 'Buscando…' : 'Ver historia' }}
-        </button>
-      </div>
-    </section>
-  }
-
-  @if (pacienteBuscado()) {
-    <div class="historia-patient">
-      <strong>{{ pacienteBuscado()?.nombre?.primer_nombre }} {{ pacienteBuscado()?.nombre?.primer_apellido }}</strong>
-      <span>Expediente: {{ pacienteBuscado()?.expediente || '—' }}</span>
+  <!-- Loading -->
+  @if (cargando()) {
+    <div class="state-box spinner">
+      <div class="spinner-ring"></div>
+      <span>Cargando historia clínica...</span>
     </div>
   }
 
-  @if (cargando()) {
-    <div class="historia-loading">Cargando historia clínica…</div>
-  } @else if (pacienteBuscado() && !ciclos().length && !error()) {
-    <div class="historia-empty">No hay ciclos clínicos registrados para este paciente.</div>
-  } @else if (ciclos().length) {
-    <section class="historia-timeline" aria-label="Ciclos clínicos">
-      @for (ciclo of ciclos(); track ciclo.id) {
-        <article class="historia-card">
-          <div class="historia-card__marker">{{ ciclo.numero }}</div>
-          <div class="historia-card__body">
-            <div class="historia-card__topline">
-              <div>
-                <span class="historia-card__kicker">Ciclo clínico</span>
-                <h2>{{ ciclo.especialidad || 'Atención clínica' }}</h2>
-              </div>
-              <span class="historia-state" [class.is-closed]="!ciclo.activo">
-                {{ ciclo.activo ? 'Activo' : 'Cerrado' }}
-              </span>
-            </div>
-            <div class="historia-meta">
-              <span>{{ ciclo.registro | date: 'dd/MM/yyyy HH:mm' }}</span>
-              <span>{{ ciclo.usuario || 'Sistema' }}</span>
-              @if (ciclo.servicio) { <span>{{ ciclo.servicio }}</span> }
-            </div>
-            <p class="historia-summary">{{ resumen(ciclo) }}</p>
-            <button type="button" class="historia-action" (click)="abrirNota(ciclo)">
-              Ver nota médica &#8594;
-            </button>
-          </div>
-        </article>
-      }
-    </section>
+  <!-- Error -->
+  @if (error()) {
+    <div class="state-box error">{{ error() }}</div>
   }
-</main>
+
+  <!-- Árbol de consultas -->
+  @if (!cargando() && historia() && historia()!.consultas.length > 0) {
+    <div class="arbol">
+      @for (ch of historia()!.consultas; track ch.consulta.id) {
+        <div class="consulta-grupo">
+          <!-- Encabezado de consulta -->
+          <button
+            class="consulta-header"
+            (click)="toggleConsulta(ch.consulta.id)"
+            [style.--tipo-color]="colorTipoConsulta(ch.consulta.tipo_consulta)"
+          >
+            <span class="consulta-icon">{{ estaColapsada(ch.consulta.id) ? '▶' : '▼' }}</span>
+            <span class="consulta-tipo-badge" [style.background]="colorTipoConsulta(ch.consulta.tipo_consulta)">
+              {{ nombreTipoConsulta(ch.consulta.tipo_consulta) }}
+            </span>
+            <span class="consulta-fecha">{{ formatearFecha(ch.consulta.fecha_consulta) }}</span>
+            <span class="consulta-especialidad">{{ ch.consulta.especialidad }}</span>
+            <span class="consulta-meta">{{ ch.total_ciclos }} notas</span>
+          </button>
+
+          <!-- Lista de notas (colapsable) -->
+          @if (!estaColapsada(ch.consulta.id)) {
+            <div class="notas-lista">
+              @for (ciclo of ch.ciclos; track ciclo.id; let idx = $index) {
+                <div class="nota-card" (click)="irANota(ciclo.id)">
+                  <div class="nota-timeline">
+                    <div class="timeline-dot"></div>
+                    @if (idx < ch.ciclos.length - 1) {
+                      <div class="timeline-line"></div>
+                    }
+                  </div>
+                  <div class="nota-contenido">
+                    <div class="nota-header">
+                      <span class="nota-numero">Nota #{{ ciclo.numero }}</span>
+                      @if (esNotaOdontologica(ciclo)) {
+                        <span class="nota-tipo-odonto">Odontología</span>
+                      }
+                      <span class="nota-hora">{{ formatearRegistro(ciclo.registro) }}</span>
+                      @if (badgeEgreso(ciclo)) {
+                        <span class="nota-egreso">{{ badgeEgreso(ciclo) }}</span>
+                      }
+                    </div>
+                    <div class="nota-autor">
+                      {{ ciclo.usuario_nombre || ciclo.usuario }}
+                      @if (ciclo.especialidad) {
+                        <span class="nota-especialidad">· {{ ciclo.especialidad }}</span>
+                      }
+                    </div>
+                    @if (signosVitalesCompactos(ciclo)) {
+                      <div class="nota-signos">{{ signosVitalesCompactos(ciclo) }}</div>
+                    }
+                    @if (esNotaOdontologica(ciclo)) {
+                      <div class="nota-odontologia-resumen">{{ resumenOdontologico(ciclo) }}</div>
+                    } @else {
+                      <div class="nota-resumen">{{ resumenCiclo(ciclo) }}</div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Sin datos -->
+  @if (!cargando() && historia() && historia()!.consultas.length === 0) {
+    <div class="state-box vacio">
+      <span class="vacio-icon">📋</span>
+      <span>No hay consultas registradas para este paciente</span>
+    </div>
+  }
+</div>
+
+<!-- ═══ VISTA DE IMPRESIÓN ═══ -->
+<div class="print-container">
+  @if (historia()) {
+    <header class="print-header">
+      <h1>Historia Clínica</h1>
+      <div class="print-paciente">
+        <strong>{{ historia()!.paciente_nombre }}</strong>
+        @if (historia()!.paciente_expediente) {
+          <span> — Exp: {{ historia()!.paciente_expediente }}</span>
+        }
+      </div>
+      <div class="print-fecha">Impreso: {{ fechaFormateada }}</div>
+    </header>
+
+    @for (ch of historia()!.consultas; track ch.consulta.id) {
+      <section class="print-consulta">
+        <h2>
+          {{ nombreTipoConsulta(ch.consulta.tipo_consulta) }} —
+          {{ formatearFecha(ch.consulta.fecha_consulta) }} —
+          {{ ch.consulta.especialidad }}
+        </h2>
+        @for (ciclo of ch.ciclos; track ciclo.id) {
+          <div class="print-nota">
+            <h3>Nota #{{ ciclo.numero }} — {{ ciclo.usuario_nombre || ciclo.usuario }}</h3>
+            @if (signosVitalesCompactos(ciclo)) {
+              <p class="print-signos"><strong>Signos:</strong> {{ signosVitalesCompactos(ciclo) }}</p>
+            }
+            @if (ciclo.impresion_clinica) {
+              <p><strong>Impresión clínica:</strong> {{ ciclo.impresion_clinica }}</p>
+            }
+            @if (esNotaOdontologica(ciclo)) {
+              <p><strong>Nota odontológica:</strong> {{ resumenOdontologico(ciclo) }}</p>
+              @if (ciclo.odontologia?.procedimientos) {
+                <p><strong>Procedimiento:</strong> {{ ciclo.odontologia?.procedimientos }}</p>
+              }
+            }
+            @if (resumenCiclo(ciclo) !== ciclo.impresion_clinica) {
+              <p>{{ resumenCiclo(ciclo) }}</p>
+            }
+            @if (ciclo.egreso?.condicion) {
+              <p><strong>Egreso:</strong> {{ ciclo.egreso.condicion }}</p>
+            }
+          </div>
+        }
+      </section>
+    }
+
+    <footer class="print-footer">
+      Documento generado automáticamente — {{ fechaFormateada }}
+    </footer>
+  }
+</div>

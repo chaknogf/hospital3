@@ -26,6 +26,8 @@ import { PacienteJoin } from '../../interface/interfaces';
 import { ConsultasIdPaciente } from '../../interface/consultas';
 import { Subject, of } from 'rxjs';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
+import { OdontogramaComponent } from './odontograma.component';
+import { NotaOdontologica } from './odontograma.model';
 
 @Component({
   selector: 'app-notaMedica',
@@ -33,7 +35,7 @@ import { catchError, finalize, takeUntil } from 'rxjs/operators';
   styleUrls: ['./notaMedica.component.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, DatosExtraPipe]
+  imports: [CommonModule, FormsModule, DatosExtraPipe, OdontogramaComponent]
 })
 export class NotaMedicaComponent implements OnInit, OnDestroy {
 
@@ -57,8 +59,19 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
   isLoading = signal(false);
   guardando = signal(false);
   tieneConsulta = signal(false);
+  odontologiaActiva = signal(false);
   error = signal<string | null>(null);
   mensaje = signal<{ texto: string; tipo: 'success' | 'error' } | null>(null);
+
+  odontologia: NotaOdontologica = {
+    motivo_consulta: '',
+    examen_extraoral: '',
+    examen_intraoral: '',
+    diagnostico: '',
+    plan_tratamiento: '',
+    procedimientos: '',
+    odontograma: { denticion: 'permanente', dientes: {} },
+  };
 
   /* ── UI state ─────────────────────────────────────────── */
   tabActivo: string = 'clinica';
@@ -311,7 +324,7 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
       // Una nota creada es inmutable: NO se precarga. Se prepara una nota NUEVA,
       // con continuidad de especialidad/servicio y el número siguiente.
       const ultimo = ciclos[ciclos.length - 1];
-      this.ciclo.set({
+    this.ciclo.set({
         consulta_id: id,
         numero: (ultimo?.numero ?? 0) + 1,
         activo: true,
@@ -321,7 +334,30 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
         especialidad_id: ultimo?.especialidad_id,
         servicio: ultimo?.servicio,
       });
+      this.aplicarEspecialidad(ultimo?.especialidad);
     });
+
+    this.consultasApi.getConsultaId(id).pipe(
+      takeUntil(this.destroy$),
+      catchError(() => of(null))
+    ).subscribe(consulta => {
+      if (!consulta) return;
+      this.ciclo.update(actual => actual ? {
+        ...actual,
+        especialidad: consulta.especialidad ?? actual.especialidad,
+        especialidad_id: (consulta as any).especialidad_id ?? actual.especialidad_id,
+        servicio: consulta.servicio ?? actual.servicio,
+      } : actual);
+      this.aplicarEspecialidad(consulta.especialidad ?? this.ciclo()?.especialidad);
+    });
+  }
+
+  private aplicarEspecialidad(especialidad?: string): void {
+    const normalizada = (especialidad ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+    const esOdontologia = normalizada === 'ODON' || normalizada.includes('ODONTO');
+    this.odontologiaActiva.set(esOdontologia);
+    if (esOdontologia && this.tabActivo === 'clinica') this.tabActivo = 'odontologia';
+    if (!esOdontologia && this.tabActivo === 'odontologia') this.tabActivo = 'clinica';
   }
 
   buscarPaciente(): void {
@@ -370,6 +406,13 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
     if (dm.estudios) this.datosMedicos.estudios = dm.estudios;
     if (dm.comentario) this.datosMedicos.comentario = dm.comentario;
     if (dm.contraindicado) this.datosMedicos.contraindicado = dm.contraindicado;
+    if (dm.odontologia) {
+      this.odontologia = {
+        ...this.odontologia,
+        ...dm.odontologia,
+        odontograma: dm.odontologia.odontograma ?? this.odontologia.odontograma,
+      };
+    }
 
     if (dm.signos_vitales) this.signosVitales = { ...dm.signos_vitales };
     if (dm.antecedentes) this.antecedentes = { ...dm.antecedentes };
@@ -508,8 +551,18 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
 
     const ahora = new Date().toISOString();
 
+    const odontologia = this.odontologiaActiva() ? {
+      ...this.odontologia,
+      odontograma: { ...this.odontologia.odontograma, dientes: { ...this.odontologia.odontograma.dientes } },
+    } : undefined;
     const datosMedicos: DatoMedico = {
       ...this.datosMedicos,
+      ...(odontologia ? {
+        detalle_clinicos: odontologia.motivo_consulta || odontologia.examen_intraoral || this.datosMedicos.detalle_clinicos,
+        impresion_clinica: odontologia.diagnostico || this.datosMedicos.impresion_clinica,
+        tratamiento: odontologia.plan_tratamiento || this.datosMedicos.tratamiento,
+        odontologia,
+      } : {}),
       signos_vitales: { ...this.signosVitales },
       antecedentes: { ...this.antecedentes },
       egreso: { ...this.egreso },
@@ -534,7 +587,7 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
       especialidad: this.ciclo()?.especialidad,
       especialidad_id: this.ciclo()?.especialidad_id,
       servicio: this.ciclo()?.servicio,
-      contenido: datosMedicos.impresion_clinica || datosMedicos.detalle_clinicos || 'Nota médica',
+      contenido: datosMedicos.impresion_clinica || datosMedicos.detalle_clinicos || (odontologia ? 'Nota odontológica' : 'Nota médica'),
       datos_medicos: datosMedicos,
     } as CicloConsulta).pipe(
       takeUntil(this.destroy$),

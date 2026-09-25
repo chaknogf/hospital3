@@ -199,6 +199,11 @@
 .nm-tabs button.is-active { border-color: var(--theme-primary); background: var(--theme-primary-dim); color: var(--theme-primary); }
 
 .nm-content { padding: 1rem 0.9rem; }
+.nm-odonto-form { display: grid; gap: 1rem; }
+.nm-odonto-form__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.nm-odonto-form__fields .nm-field:first-child,
+.nm-odonto-form__fields .nm-field:nth-child(4),
+.nm-odonto-form__fields .nm-field:nth-child(5) { grid-column: 1 / -1; }
 
 /* campos genéricos */
 .nm-form,
@@ -362,6 +367,10 @@
 /* ══ ≥ 640px ══ */
 @media (min-width: 640px) {
   .nm-signos__grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 639px) {
+  .nm-odonto-form__fields { grid-template-columns: 1fr; }
+  .nm-odonto-form__fields .nm-field { grid-column: auto !important; }
 }
 
 /* ══ ≥ 900px: barra inferior deja de ser fija ══ */

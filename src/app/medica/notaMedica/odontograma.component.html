@@ -1,0 +1,58 @@
+<section class="odonto-chart" aria-label="Odontograma dental">
+  <header class="odonto-chart__header">
+    <div>
+      <span class="odonto-chart__eyebrow">Registro por pieza y superficie</span>
+      <h2>Odontograma</h2>
+    </div>
+    <div class="odonto-chart__dentition" role="group" aria-label="Tipo de dentición">
+      <button type="button" [class.is-active]="denticion === 'permanente'" (click)="cambiarDenticion('permanente')">Permanente</button>
+      <button type="button" [class.is-active]="denticion === 'temporal'" (click)="cambiarDenticion('temporal')">Temporal</button>
+    </div>
+  </header>
+
+  <div class="odonto-tools">
+    <span class="odonto-tools__label">Marcar:</span>
+    @for (hallazgo of hallazgos; track hallazgo.value) {
+      <button type="button" class="odonto-tool" [class.is-active]="hallazgoActivo === hallazgo.value"
+        [attr.aria-pressed]="hallazgoActivo === hallazgo.value" (click)="hallazgoActivo = hallazgo.value">
+        <i [class]="'odonto-swatch swatch--' + hallazgo.color"></i>{{ hallazgo.label }}
+      </button>
+    }
+    <button type="button" class="odonto-clear" (click)="limpiar()">Limpiar odontograma</button>
+  </div>
+
+  <div class="odonto-orientation" aria-hidden="true"><span>Derecha del paciente</span><span>Izquierda del paciente</span></div>
+  <div class="odonto-arch-scroll">
+    <div class="odonto-arch">
+      @for (cuadrante of cuadrantes; track cuadrante.clase) {
+        <section [class]="'odonto-quadrant ' + cuadrante.clase" [attr.aria-label]="cuadrante.nombre">
+          <h3>{{ cuadrante.nombre }}</h3>
+          <div class="odonto-teeth">
+            @for (numero of dientesDelCuadrante(cuadrante); track numero) {
+              <div class="odonto-tooth" [class.tooth--missing]="value.dientes[numero]?.estado === 'ausente'">
+                <span class="odonto-tooth__number">{{ numero }}</span>
+                <button type="button" [ngClass]="['tooth-whole', 'mark--' + (value.dientes[numero]?.estado || 'sano')]"
+                  [attr.aria-label]="'Marcar pieza ' + numero + ' completa como ' + hallazgoActivo"
+                  [title]="'Pieza ' + numero + ': marcar toda la pieza como ' + hallazgoActivo"
+                  (click)="marcarPieza(numero)">
+                  @for (superficie of superficies; track superficie.key) {
+                    <span [ngClass]="['tooth-face', 'face--' + superficie.key, 'mark--' + estadoSuperficie(numero, superficie.key)]"
+                      [title]="superficie.label + ': ' + estadoSuperficie(numero, superficie.key)"
+                      (click)="$event.stopPropagation(); marcarSuperficie(numero, superficie.key)">
+                      {{ superficie.short }}
+                    </span>
+                  }
+                </button>
+              </div>
+            }
+          </div>
+        </section>
+      }
+    </div>
+  </div>
+
+  <footer class="odonto-legend">
+    <span>Selecciona un hallazgo y toca una superficie. Toca el número para marcar toda la pieza.</span>
+    <span>FDI · {{ denticion === 'permanente' ? 'Dentición adulta (11–48)' : 'Dentición temporal (51–85)' }}</span>
+  </footer>
+</section>

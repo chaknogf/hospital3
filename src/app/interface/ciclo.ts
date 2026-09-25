@@ -149,6 +149,7 @@ export interface DatoMedico {
   contraindicado?: string;
   presa_quirurgica?: PresaQuirurgica;
   egreso?: Egreso;
+  odontologia?: import('../medica/notaMedica/odontograma.model').NotaOdontologica;
 }
 
 export interface CicloConsulta {
@@ -166,4 +167,50 @@ export interface CicloConsulta {
   datos_medicos?: DatoMedico;
   consulta?: ConsultaPacienteResumen;
   total?: number;
+}
+
+// ===================================================================
+// Historia clínica agrupada por consulta
+// ===================================================================
+export interface CicloResumen {
+  id: number;
+  numero: number;
+  registro: string;
+  usuario: string;
+  usuario_nombre?: string;
+  especialidad?: string;
+  servicio?: string;
+  resumen?: string;
+  signos_vitales?: Record<string, string>;
+  impresion_clinica?: string;
+  egreso?: { condicion?: string; referencia?: string; medico?: string; diagnosticos?: any[] };
+  odontologia?: {
+    motivo_consulta?: string;
+    diagnostico?: string;
+    plan_tratamiento?: string;
+    procedimientos?: string;
+    piezas_afectadas?: string[];
+  };
+}
+
+export interface ConsultaHistoria {
+  consulta: {
+    id: number;
+    tipo_consulta?: number;
+    especialidad?: string;
+    fecha_consulta?: string;
+    hora_consulta?: string;
+    ultimo_estado?: string;
+  };
+  ciclos: CicloResumen[];
+  total_ciclos: number;
+}
+
+export interface HistoriaClinicaResponse {
+  paciente_id: number;
+  paciente_nombre?: string;
+  paciente_expediente?: string;
+  consultas: ConsultaHistoria[];
+  total_consultas: number;
+  total_ciclos: number;
 }

@@ -1,0 +1,67 @@
+:host { display: block; min-width: 0; }
+
+.odonto-chart {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-xl);
+  background: var(--theme-gradient-surface);
+  color: var(--theme-text);
+}
+.odonto-chart__header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.odonto-chart__eyebrow { color: var(--theme-primary); font: 700 var(--theme-font-size-xs)/1 var(--theme-font-mono); text-transform: uppercase; letter-spacing: .08em; }
+.odonto-chart h2 { margin: .35rem 0 0; font-size: 1.1rem; }
+.odonto-chart__dentition { display: flex; padding: .2rem; border: 1px solid var(--theme-border); border-radius: var(--theme-radius-pill); background: var(--theme-surface); }
+.odonto-chart__dentition button { border: 0; border-radius: var(--theme-radius-pill); padding: .5rem .75rem; background: transparent; color: var(--theme-text-muted); font: 600 var(--theme-font-size-xs)/1 var(--theme-font-ui); cursor: pointer; }
+.odonto-chart__dentition button.is-active { background: var(--theme-primary); color: var(--theme-text-on-primary); }
+
+.odonto-tools { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; padding-bottom: .8rem; border-bottom: 1px solid var(--theme-border); }
+.odonto-tools__label { margin-right: .2rem; color: var(--theme-text-muted); font-size: var(--theme-font-size-xs); font-weight: 700; }
+.odonto-tool, .odonto-clear { display: inline-flex; align-items: center; gap: .4rem; min-height: 2rem; padding: .35rem .55rem; border: 1px solid var(--theme-border); border-radius: var(--theme-radius-pill); background: var(--theme-surface); color: var(--theme-text-muted); font: 600 var(--theme-font-size-xs)/1 var(--theme-font-ui); cursor: pointer; }
+.odonto-tool.is-active { border-color: var(--theme-primary); color: var(--theme-primary); box-shadow: 0 0 0 2px var(--theme-focus-ring); }
+.odonto-clear { margin-left: auto; border-style: dashed; color: var(--theme-danger); }
+.odonto-swatch { width: .65rem; height: .65rem; border: 1px solid currentColor; border-radius: 50%; background: var(--theme-surface-raised); }
+.swatch--caries { background: #dc2626; }.swatch--resina { background: #2563eb; }.swatch--amalgama { background: #64748b; }
+.swatch--sellante { background: #16a34a; }.swatch--corona { background: #d97706; }.swatch--endodoncia { background: #9333ea; }
+.swatch--ausente { background: #dc2626; }.swatch--implante { background: #0f766e; }
+
+.odonto-orientation { display: flex; justify-content: space-between; color: var(--theme-text-faint); font: 600 .65rem/1 var(--theme-font-mono); text-transform: uppercase; }
+.odonto-arch-scroll { min-width: 0; overflow-x: auto; }
+.odonto-arch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
+.odonto-quadrant { min-width: 0; padding: .65rem .45rem; border: 1px solid var(--theme-border); border-radius: var(--theme-radius-lg); background: var(--theme-surface); }
+.odonto-quadrant h3 { margin: 0 0 .55rem; color: var(--theme-text-muted); text-align: center; font: 700 .62rem/1.2 var(--theme-font-ui); text-transform: uppercase; letter-spacing: .04em; }
+.odonto-teeth { display: flex; justify-content: center; gap: clamp(.08rem, .55vw, .35rem); }
+.odonto-tooth { display: grid; justify-items: center; gap: .25rem; min-width: 0; }
+.odonto-tooth__number { color: var(--theme-text-muted); font: 600 .58rem/1 var(--theme-font-mono); }
+.tooth-whole { position: relative; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); width: clamp(2.1rem, 5.6vw, 3.1rem); aspect-ratio: 1; padding: .14rem; border: 1px solid var(--theme-border); border-radius: 35%; background: var(--theme-surface-raised); cursor: pointer; }
+.tooth-whole:hover { border-color: var(--theme-primary); }
+.tooth-face { display: grid; place-items: center; min-width: 0; border: 1px solid color-mix(in srgb, var(--theme-border) 65%, transparent); color: var(--theme-text-faint); font: 700 .43rem/1 var(--theme-font-mono); cursor: crosshair; }
+.face--vestibular { grid-area: 3 / 2; border-radius: 0 0 35% 35%; }.face--mesial { grid-area: 2 / 1; border-radius: 35% 0 0 35%; }
+.face--oclusal { grid-area: 2 / 2; border-radius: 2px; }.face--distal { grid-area: 2 / 3; border-radius: 0 35% 35% 0; }
+.face--lingual { grid-area: 1 / 2; border-radius: 35% 35% 0 0; }
+.mark--caries { background: #fecaca; color: #991b1b; }.mark--resina { background: #bfdbfe; color: #1e40af; }
+.mark--amalgama { background: #cbd5e1; color: #334155; }.mark--sellante { background: #bbf7d0; color: #166534; }
+.mark--corona { background: #fde68a; color: #92400e; }.mark--endodoncia { background: #e9d5ff; color: #6b21a8; }
+.mark--ausente { background: #fecaca; color: #991b1b; }.mark--implante { background: #99f6e4; color: #115e59; }
+.tooth-whole.mark--caries, .tooth-whole.mark--resina, .tooth-whole.mark--amalgama, .tooth-whole.mark--sellante,
+.tooth-whole.mark--corona, .tooth-whole.mark--endodoncia, .tooth-whole.mark--implante { border-color: var(--theme-primary); }
+.tooth--missing .tooth-whole { background: repeating-linear-gradient(135deg, #fecaca 0 4px, var(--theme-surface) 4px 8px); }
+.tooth--missing .tooth-face { visibility: hidden; }
+.odonto-legend { display: flex; justify-content: space-between; gap: .5rem; color: var(--theme-text-muted); font-size: var(--theme-font-size-xs); }
+
+@media (max-width: 560px) {
+  .odonto-chart { padding: .7rem; gap: .75rem; }
+  .odonto-chart__header { align-items: flex-start; flex-direction: column; }
+  .odonto-tools { gap: .3rem; }
+  .odonto-tools__label { width: 100%; }
+  .odonto-clear { margin-left: 0; }
+  .odonto-arch { min-width: 410px; gap: .35rem; }
+  .odonto-quadrant { padding: .55rem .2rem; }
+  .odonto-tooth__number { font-size: .5rem; }
+  .tooth-whole { width: clamp(1.55rem, 8vw, 2.2rem); }
+  .tooth-face { font-size: .34rem; }
+  .odonto-legend { flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
