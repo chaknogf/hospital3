@@ -1,11 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+/** Muestra la edad calendario en años, meses y días. */
 @Pipe({
   name: 'edad',
   standalone: true
 })
 export class EdadPipe implements PipeTransform {
 
+  /** Calcula años, meses y días cumplidos para presentar la edad. */
   transform(value: any | any): any {
     if (!value) return '';
 
@@ -32,12 +34,14 @@ export class EdadPipe implements PipeTransform {
 
 }
 
+/** Devuelve únicamente los años cumplidos desde una fecha de nacimiento. */
 @Pipe({
   name: 'aedad',
   standalone: true
 })
 export class APipe implements PipeTransform {
 
+  /** Devuelve los años cumplidos a partir de la fecha de nacimiento. */
   transform(value: any | any): number {
     if (!value) return 0;
 
@@ -64,12 +68,14 @@ export class APipe implements PipeTransform {
 
 }
 
+/** Agrupa la edad en categorías usadas por las vistas de pacientes. */
 @Pipe({
   name: 'grupoEdad',
   standalone: true
 })
 export class GrupoEdadPipe implements PipeTransform {
 
+  /** Clasifica la edad en grupo neonatal, pediátrico, adolescente o adulto. */
   transform(fechaNacimiento: any): any {
     if (!fechaNacimiento) return '';
 

@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
+/** Vista de consulta de signos vitales. */
 @Component({
   selector: 'app-signosVitales',
   templateUrl: './signosVitales.component.html',

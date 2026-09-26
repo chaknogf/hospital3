@@ -11,6 +11,7 @@ import { ApiService } from '@services/api.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./personal-hospital.component.css']
 })
+/** Presenta el informe de consultas realizadas al personal hospitalario. */
 export class PersonalHospitalComponent implements OnInit {
   private api = inject(ApiService);
   data: any = null;

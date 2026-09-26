@@ -18,6 +18,7 @@ import { MedicoOut } from '../../../interface/medicos.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]
 })
+/** Lista el personal de salud asociado a los registros SIGSA-3. */
 export class PersonalSaludListComponent {
   private api = inject(Sigsa3Service);
   private medicosService = inject(MedicosService);

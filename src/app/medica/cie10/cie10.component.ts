@@ -42,6 +42,7 @@ interface Cie10ChatResponse {
   generado_en: string;
 }
 
+/** Busca diagnósticos CIE-10 y permite consultarlos mediante el chat clínico. */
 @Component({
   selector: 'app-cie10',
   templateUrl: './cie10.component.html',

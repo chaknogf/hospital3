@@ -11,6 +11,7 @@ import { ApiService } from '@services/api.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./promedio-diario.component.css']
 })
+/** Muestra el promedio diario de consultas por especialidad. */
 export class PromedioDiarioComponent implements OnInit {
   private api = inject(ApiService);
   data: any = null;

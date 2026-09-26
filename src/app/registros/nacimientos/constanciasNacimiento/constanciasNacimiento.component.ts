@@ -13,6 +13,7 @@ import { ConstanciaNacimiento } from '../constancias.inteface';
 import { VecindadPipe } from '../../../pipes/lugar.pipe';
 
 
+/** Edita los datos administrativos y neonatales de una constancia de nacimiento. */
 @Component({
   selector: 'app-constanciasNacimiento',
   templateUrl: './constanciasNacimiento.component.html',

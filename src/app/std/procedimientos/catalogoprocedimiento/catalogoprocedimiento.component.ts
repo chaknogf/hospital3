@@ -21,6 +21,7 @@ import { IconService } from '../../../service/icon.service';
     FormsModule
   ]
 })
+/** Vista de consulta del catálogo de procedimientos. */
 export class CatalogoprocedimientoComponent implements OnInit {
 
   private location = inject(Location);

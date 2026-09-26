@@ -10,10 +10,12 @@ import { Location } from '@angular/common';
 import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
 
 // ── Tipo discriminado para filas de la tabla ───────────────────────────────
+/** Fila de consulta o subtotal por especialidad en la impresión de COEX. */
 export type FilaTabla =
   | { tipo: 'consulta'; datos: ConsultaResponse; indice: number }
   | { tipo: 'subtotal'; especialidad: string; label: string; count: number };
 
+/** Reúne consultas paginadas y genera su impresión agrupada por especialidad. */
 @Component({
   selector: 'app-imprimirCoex',
   templateUrl: './imprimirCoex.component.html',
@@ -127,6 +129,7 @@ export class ImprimirCoexComponent implements OnInit {
     let skip = 0;
     let seguir = true;
 
+    // Se acumulan páginas hasta recibir un lote parcial o vacío para imprimir todo el resultado.
     while (seguir) {
       const lote = await this.obtenerPagina({ ...filtrosBase, skip });
       if (lote.length === 0) {

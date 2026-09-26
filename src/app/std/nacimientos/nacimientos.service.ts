@@ -7,6 +7,7 @@ import { BaseApiService } from '../../service/base-api.service';
 import { NacimientoOut, NacimientoCreate, NacimientoUpdate, NeonatalesPayload, NacimientoListResponse } from '../../interface/nacimientos';
 
 @Injectable({ providedIn: 'root' })
+/** Gestiona nacimientos y los datos neonatales relacionados con pacientes. */
 export class NacimientosService extends BaseApiService {
   private nacimientosSubject = new BehaviorSubject<NacimientoOut[]>([]);
   nacimientos$ = this.nacimientosSubject.asObservable();
@@ -18,6 +19,7 @@ export class NacimientosService extends BaseApiService {
   }
 
   private refrescarNacimientos(): void {
+    // Mantiene la lista en el mismo contexto de filtros usado por la última consulta.
     this.getNacimientos(this.ultimoFiltro).subscribe();
   }
 
@@ -118,6 +120,7 @@ export class NacimientosService extends BaseApiService {
   }
 
   getAllNacimientos(filtros: any): Observable<NacimientoOut[]> {
+    // La exportación solicita una página amplia y devuelve solo la colección de nacimientos.
     const params = this.limpiarParametros({ ...filtros, skip: 0, limit: 500 });
     return this.http.get<NacimientoListResponse>(`${this.baseUrl}/nacimientos/`, { params }).pipe(
       map(r => r.nacimientos),

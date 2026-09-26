@@ -13,6 +13,7 @@ import { documentoIcon } from '../../../shared/icons/svg-icon';
 
 type Modo = 'recientes' | 'mayores-1anio';
 
+/** Busca expedientes clínicos y permite revisar su actividad reciente. */
 @Component({
   selector: 'app-expedientes',
   templateUrl: './expedientes.component.html',

@@ -7,10 +7,12 @@ import { OfflineSyncService } from './offline-sync.service';
 import { AuthService } from './auth.service';
 import { environment } from '@environments/environment';
 
+/** Filtro conservado por los consumidores que gestionan paginación. */
 export interface PaginationState {
   filtro: any;
 }
 
+/** Base común para llamadas API, caché y encolado de escrituras sin conexión. */
 @Injectable({ providedIn: 'root' })
 export class BaseApiService {
   public readonly baseUrl = environment.apiUrl;
@@ -34,6 +36,8 @@ export class BaseApiService {
   }
 
   protected offMutation(method: 'POST' | 'PUT' | 'PATCH' | 'DELETE', url: string, body?: any): Observable<any> {
+    // `queued` no equivale a confirmación del servidor: la mutación queda
+    // pendiente de sincronización cuando se recupera la conexión.
     const operacion = url.split('/').pop() || 'operación';
     if (!this.sync.isOnline()) {
       this.sync.enqueueMutation(method, url, body);

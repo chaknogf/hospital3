@@ -18,6 +18,7 @@ import { Citas } from '../../../interface/citas';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+/** Presenta el expediente, antecedentes y consultas asociadas a un paciente. */
 @Component({
   selector: 'detallePaciente',
   templateUrl: './detallePaciente.component.html',

@@ -1,10 +1,12 @@
 import { DefuncionOut as ConsDefuncionOut } from '../../interface/consDef';
 import { Medico } from '../../interface/medicos.interface';
 
+/** Defunción enriquecida con el identificador requerido por las listas. */
 export interface Defuncion extends ConsDefuncionOut {
   id: number;
 }
 
+/** Resultado paginado de búsqueda de defunciones. */
 export interface DefuncionListResponse {
   total: number;
   defunciones: Defuncion[];
@@ -12,6 +14,7 @@ export interface DefuncionListResponse {
   limit: number;
 }
 
+/** Paciente candidato o relacionado con un registro de defunción. */
 export interface PacienteFallecido {
   id: number;
   expediente?: string;
@@ -41,6 +44,7 @@ export interface PacienteFallecido {
   };
 }
 
+/** Datos de identidad y residencia impresos en las constancias oficiales. */
 export interface DatosPersonaInfo {
   nombres?: string | null;
   apellidos?: string | null;
@@ -63,9 +67,12 @@ export interface DatosPersonaInfo {
   residencia_departamento?: string | null;
 }
 
+/** Datos personales asociados a la persona fallecida. */
 export type FallecidoInfo = DatosPersonaInfo;
+/** Datos personales de la madre en una defunción fetal o neonatal. */
 export type MadreInfo = DatosPersonaInfo;
 
+/** Representación completa de una defunción devuelta por el servicio. */
 export interface DefuncionOut {
   id: number;
   personal_atencion_id?: number | null;
@@ -129,6 +136,7 @@ export interface DefuncionOut {
   lugar_ocurrio_defuncion?: string | null;
 }
 
+/** Campos comunes para crear o modificar un registro de defunción. */
 export interface DefuncionBase {
   personal_atencion_id?: number;
   fecha_defuncion?: string;
@@ -173,14 +181,18 @@ export interface DefuncionBase {
   observaciones?: string;
 }
 
+/** Solicitud de creación de defunción asociada obligatoriamente a un paciente. */
 export interface DefuncionCreate extends DefuncionBase {
   paciente_id: number;
 }
 
+/** Datos de defunción enviados al registrar una nueva constancia. */
 export interface RegistrarDefuncionRequest extends DefuncionBase { }
 
+/** Campos modificables de una defunción ya registrada. */
 export type DefuncionUpdate = Partial<DefuncionBase>;
 
+/** Respuesta paginada con pacientes que tienen defunción registrada. */
 export interface PacientesFallecidosResponse {
   pacientes: PacienteFallecido[];
   total: number;

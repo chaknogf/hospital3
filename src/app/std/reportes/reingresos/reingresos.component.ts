@@ -11,6 +11,7 @@ import { ApiService } from '@services/api.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./reingresos.component.css']
 })
+/** Resume los reingresos hospitalarios detectados por el servidor. */
 export class ReingresosComponent implements OnInit {
   private api = inject(ApiService);
   data: any = null;

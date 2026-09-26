@@ -10,6 +10,7 @@ import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
 import { Hijode, HijodeItem, HijodeDatosExtra, MadreHijoResponse, Paciente } from '../../../interface/interfaces';
 import { Medico } from '../../../interface/medicos.interface';
 
+/** Gestiona la relación de hijos vinculados a un expediente materno. */
 @Component({
   selector: 'app-hijos',
   templateUrl: './hijos.component.html',

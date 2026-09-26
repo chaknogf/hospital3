@@ -5,6 +5,7 @@ import { Observable, of, from, defer, throwError } from 'rxjs';
 import { switchMap, tap, catchError, map } from 'rxjs/operators';
 import { OfflineDatabaseService, PendingMutation } from './offline-database.service';
 
+/** Coordina lecturas con caché y el envío recuperable de escrituras hechas offline. */
 @Injectable({ providedIn: 'root' })
 export class OfflineSyncService {
   isOnline = signal(true);
@@ -69,6 +70,7 @@ export class OfflineSyncService {
     await this.db.clearOnLogout();
   }
 
+  /** Precarga datos de referencia solo en línea; un error no interrumpe el flujo. */
   preCache<T>(key: string, request$: Observable<T>, ttl: number = 60 * 60 * 1000): void {
     if (!this.online) return;
     request$.pipe(
@@ -77,11 +79,16 @@ export class OfflineSyncService {
     ).subscribe();
   }
 
+  /** Genera una clave que distingue URL y parámetros para evitar mezclar filtros. */
   cacheKey(url: string, params?: HttpParams | any): string {
     const paramsStr = params ? (typeof params === 'string' ? params : params.toString()) : '';
     return `${url}|${paramsStr}`;
   }
 
+  /**
+   * Usa la copia local sin conexión y como respaldo ante fallos temporales en línea.
+   * Las respuestas de error funcional, como 401 o 4xx, no se sustituyen por caché.
+   */
   cacheGet<T>(
     cacheKey: string,
     request$: Observable<T>,
@@ -117,6 +124,7 @@ export class OfflineSyncService {
     await this.refreshPendingCount();
   }
 
+  /** Persiste una escritura pendiente y actualiza el contador observable. */
   async enqueueMutation(
     method: PendingMutation['method'],
     url: string,
@@ -131,6 +139,7 @@ export class OfflineSyncService {
   private readonly MAX_RETRIES = 5;
   private sincronizando = false;
 
+  /** Envía la cola en serie; conserva fallos para reintento y evita duplicar envíos concurrentes. */
   async syncNow(): Promise<{ synced: number; failed: number }> {
     if (!this.online) return { synced: 0, failed: 0 };
     // Guarda anti-reentrancia: dos sincronizaciones simultáneas procesarían la
@@ -184,6 +193,8 @@ export class OfflineSyncService {
     };
 
     const token = localStorage.getItem('access_token');
+    // El token se obtiene al sincronizar, no al encolar: la sesión puede haber
+    // cambiado antes de recuperar la conexión y enviar la operación pendiente.
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
     switch (mutation.method) {

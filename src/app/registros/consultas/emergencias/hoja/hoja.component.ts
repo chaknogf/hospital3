@@ -21,6 +21,7 @@ import {
 import { Location } from '@angular/common';
 import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
 
+/** Presenta la hoja de atención de emergencia con datos del paciente y acompañante. */
 @Component({
   selector: 'app-hoja',
   templateUrl: './hoja.component.html',

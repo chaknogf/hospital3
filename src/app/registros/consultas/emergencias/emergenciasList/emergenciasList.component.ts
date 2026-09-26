@@ -18,6 +18,7 @@ import { takeUntil } from 'rxjs/operators';
 
 
 
+/** Lista las consultas de emergencia y permite revisar su estado clínico. */
 @Component({
   selector: 'app-emergenciasList',
   templateUrl: './emergenciasList.component.html',

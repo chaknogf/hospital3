@@ -1,5 +1,6 @@
 import { PacienteJoin } from "./interfaces";
 
+/** Motivo y notas adicionales conservadas dentro de una cita. */
 export interface DatosExtras {
   razon_consulta: string;
   nota: string;
@@ -7,6 +8,7 @@ export interface DatosExtras {
 
 }
 
+/** Datos requeridos para agendar una cita. */
 export interface CitaCreate {
   expediente: string;
   paciente_id: number;
@@ -16,6 +18,7 @@ export interface CitaCreate {
   datos_extra: DatosExtras;
 }
 
+/** Campos compartidos por una cita antes de añadir sus metadatos de salida. */
 export interface CitasBase {
   fecha_registro: string;
   expediente: string;
@@ -27,6 +30,7 @@ export interface CitasBase {
 
 }
 
+/** Cita persistida con datos de paciente y personal relacionados. */
 export interface Citas {
   id: number;
   fecha_registro: string;
@@ -44,11 +48,13 @@ export interface Citas {
 
 }
 
+/** Respuesta de citas con total para paginación. */
 export interface CitaListResponse {
   total: number;
   citas: Citas[];
 }
 
+/** Campos enviados al actualizar o reagendar una cita. */
 export interface CitaUpdate {
   id?: number;
   expediente: string;
@@ -60,11 +66,13 @@ export interface CitaUpdate {
 
 }
 
+/** Respuesta de detalle de cita con paciente relacionado. */
 export interface CitaResponse extends Citas {
   id: number;
   paciente: PacienteJoin;
 }
 
+/** Conteo de citas agrupado por fecha y motivo. */
 export interface ConteoCitas {
   fecha_cita: string;
   dia_semana: string;
@@ -72,6 +80,7 @@ export interface ConteoCitas {
   total: number;
 }
 
+/** Día no laborable que puede bloquear la programación de citas. */
 export interface DiaInhabil {
   id: number;
   fecha: string;

@@ -19,6 +19,7 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule]
 })
+/** Lista y filtra los registros SIGSA-3 normalizados. */
 export class Sigsa3RegistrosListComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);

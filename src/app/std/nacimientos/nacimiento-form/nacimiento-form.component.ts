@@ -12,6 +12,7 @@ import { NacimientosService } from '../nacimientos.service';
   standalone: true,
   imports: [CommonModule, FormsModule]
 })
+/** Registra nacimientos y mantiene separados los datos del paciente y del neonato. */
 export class NacimientoFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -93,6 +94,7 @@ export class NacimientoFormComponent implements OnInit {
     this.guardando = true;
 
     if (this.editando && this.pacienteId && this.nacimientoId) {
+      // Los datos neonatales pertenecen al paciente; madre y mortinato pertenecen al nacimiento.
       const neonatales: NeonatalesPayload = {
         peso_nacimiento: this.modelo.peso_nacimiento,
         edad_gestacional: this.modelo.edad_gestacional,

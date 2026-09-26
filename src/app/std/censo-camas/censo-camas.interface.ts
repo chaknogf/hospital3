@@ -1,3 +1,4 @@
+/** Datos diarios reportados para un servicio y sexo determinados. */
 export interface CensoCamasCreate {
   fecha: string;
   servicio_id: number;
@@ -14,6 +15,7 @@ export interface CensoCamasCreate {
   emergencia: number;
 }
 
+/** Campos modificables de un registro de censo ya existente. */
 export interface CensoCamasUpdate {
   ocupados?: number;
   egresos?: number;
@@ -27,6 +29,7 @@ export interface CensoCamasUpdate {
   emergencia?: number;
 }
 
+/** Registro persistido con los totales calculados por el servidor. */
 export interface CensoCamasOut {
   id: number;
   fecha: string;
@@ -48,6 +51,7 @@ export interface CensoCamasOut {
   updated_at: string;
 }
 
+/** Agrega el censo masculino y femenino de un servicio en una fecha. */
 export interface ServicioResumen {
   servicio_id: number;
   servicio_nombre: string;
@@ -56,6 +60,7 @@ export interface ServicioResumen {
   femenino: CensoCamasOut | null;
 }
 
+/** Resumen de ocupación de todos los servicios para un día. */
 export interface CensoDiarioResumen {
   fecha: string;
   servicios: ServicioResumen[];
@@ -63,11 +68,13 @@ export interface CensoDiarioResumen {
   promedio: number;
 }
 
+/** Página de resultados del listado de censos. */
 export interface CensoCamasListResponse {
   total: number;
   registros: CensoCamasOut[];
 }
 
+/** Filtros opcionales del listado de censos y su paginación. */
 export interface CensoCamasFiltros {
   fecha?: string;
   fecha_desde?: string;
@@ -78,6 +85,7 @@ export interface CensoCamasFiltros {
   limit?: number;
 }
 
+/** Indicadores de ocupación y rotación calculados por servicio en un rango. */
 export interface CensoEstadisticaServicio {
   servicio_id: number;
   servicio_nombre: string;
@@ -91,6 +99,7 @@ export interface CensoEstadisticaServicio {
   rotacion: number;
 }
 
+/** Indicadores agregados de todos los servicios del rango consultado. */
 export interface CensoEstadisticaGlobal {
   camas_censables_total: number;
   dias_en_rango: number;
@@ -102,6 +111,7 @@ export interface CensoEstadisticaGlobal {
   rotacion: number;
 }
 
+/** Resultado completo de las estadísticas del censo para un período. */
 export interface CensoEstadisticaResponse {
   desde: string;
   hasta: string;
@@ -109,6 +119,7 @@ export interface CensoEstadisticaResponse {
   global: CensoEstadisticaGlobal;
 }
 
+/** Conteo de hospitalizaciones agrupado por especialidad y sexo. */
 export interface HospitalizacionEspecialidadItem {
   especialidad: string;
   masculinos: number;
@@ -118,6 +129,7 @@ export interface HospitalizacionEspecialidadItem {
   servicio_encamamiento: string | null;
 }
 
+/** Resultado agrupado de hospitalizaciones para el rango solicitado. */
 export interface HospitalizacionEspecialidadResponse {
   desde: string;
   hasta: string;
@@ -125,6 +137,7 @@ export interface HospitalizacionEspecialidadResponse {
   especialidades: HospitalizacionEspecialidadItem[];
 }
 
+/** Cantidades afectadas al replicar un censo entre dos fechas. */
 export interface CopiarDiaResponse {
   origen: string;
   destino: string;

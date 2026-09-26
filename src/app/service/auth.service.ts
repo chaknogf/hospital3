@@ -6,6 +6,7 @@ import { tap, catchError } from 'rxjs/operators';
 import { OfflineSyncService } from './offline-sync.service';
 import { environment } from '@environments/environment';
 
+/** Mantiene la sesión JWT y expone el usuario autenticado al resto de la app. */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly baseUrl = environment.apiUrl;
@@ -25,6 +26,7 @@ export class AuthService {
   }
 
   // ── Login ──────────────────────────────────────────────
+  /** Inicia sesión, guarda el token y carga los datos del usuario actual. */
   login(username: string, password: string): Observable<any> {
     const body = new HttpParams()
       .set('username', username)
@@ -48,6 +50,7 @@ export class AuthService {
   }
 
   // ── Usuario actual ─────────────────────────────────────
+  /** Consulta al backend y sincroniza identidad/rol en señales y almacenamiento local. */
   getCurrentUser(): Observable<any> {
     return this.http.get<{ username: string; role: string; nombre: string }>(
       `${this.baseUrl}/auth/me`,
@@ -71,6 +74,7 @@ export class AuthService {
     );
   }
 
+  /** Devuelve la identidad disponible, con valores locales como respaldo. */
   getUsuarioActual(): { username: string; role: string; nombre: string } {
     return {
       username: this.username() ?? localStorage.getItem('username') ?? 'sistema',
@@ -80,6 +84,7 @@ export class AuthService {
   }
 
   // ── Logout ─────────────────────────────────────────────
+  /** Cierra la sesión sin eliminar la cola offline que aún contiene cambios del usuario. */
   logOut(): void {
     this.sync.clearOnLogout();
     localStorage.removeItem('access_token');

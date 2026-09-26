@@ -17,11 +17,13 @@ import { Location } from '@angular/common';
 import { municipios } from '../../../enum/departamentos'
 
 
+/** Traduce un código municipal al nombre de vecindad para mostrarlo en la hoja. */
 function getVecindad(codigo: string | null | undefined): string {
   if (!codigo) return '';
   const match = municipios.find(m => m.codigo === codigo);
   return match ? match.vecindad : codigo;
 }
+/** Consulta los datos de admisión y el historial de estados de una consulta. */
 @Component({
   selector: 'app-detalleConsulta',
   templateUrl: './detalleConsulta.component.html',

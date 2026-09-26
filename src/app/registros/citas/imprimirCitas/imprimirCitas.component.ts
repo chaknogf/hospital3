@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+/** Filtra, presenta e imprime las citas conforme a los criterios seleccionados. */
 @Component({
   selector: 'app-imprimir-citas',
   templateUrl: './imprimirCitas.component.html',

@@ -20,6 +20,7 @@ import { CuiPipe } from '../../../pipes/cui.pipe';
 import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon, manIcon, womanIcon } from '../../../shared/icons/svg-icon';
 import { PacienteService } from '../../patient/paciente.service';
 
+/** Captura o modifica los datos base de una consulta durante la admisión. */
 @Component({
   selector: 'app-formConsulta',
   templateUrl: './formConsulta.component.html',

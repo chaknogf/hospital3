@@ -22,6 +22,7 @@ import { CuiPipe } from '../../../pipes/cui.pipe';
 import { addIcon, removeIcon, saveIcon, cancelIcon, findIcon, manIcon, womanIcon } from '../../../shared/icons/svg-icon';
 import { PacienteService } from '../../patient/paciente.service';
 
+/** Registra una admisión y mantiene el historial de estados de la consulta. */
 @Component({
   selector: 'app-admision',
   templateUrl: './admision.component.html',

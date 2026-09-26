@@ -1,8 +1,10 @@
+/** Código municipal y nombre de una comunidad del departamento. */
 export interface Keys {
   codigo: string;
   comunidad: string;
 }
 
+/** Catálogo local de comunidades utilizado para validar etiquetas territoriales. */
 export const comunidadChimaltenango: Keys[] = [
   { codigo: '0401', comunidad: 'BUENA VISTA SUR (MENONITAS)' },
   { codigo: '0401', comunidad: 'SAN MARCOS PACOC' },

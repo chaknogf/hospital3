@@ -1,6 +1,7 @@
 // =========================================================
 // RESPONSE — incluye usuarios (solo lectura, asignados por backend)
 // =========================================================
+/** Préstamo persistido de expediente o documento clínico. */
 export interface Prestamo {
   id: number;
   id_paciente: number;
@@ -24,6 +25,7 @@ export interface Prestamo {
 // =========================================================
 // CREATE — el frontend NO envía usuario_entrega (lo pone el backend)
 // =========================================================
+/** Datos de alta; el backend asigna el usuario que entrega el documento. */
 export interface PrestamoCreate {
   id_paciente: number;
   id_consulta?: number | null;
@@ -43,6 +45,7 @@ export interface PrestamoCreate {
 // UPDATE — el frontend NO envía usuario_recibe
 //          (el backend lo asigna cuando llega fecha_devolucion)
 // =========================================================
+/** Cambios de préstamo; el backend asigna quién recibe al registrar devolución. */
 export interface PrestamoUpdate {
   id_consulta?: number | null;
   expediente?: string | null;
@@ -60,6 +63,7 @@ export interface PrestamoUpdate {
 // =========================================================
 // RESPONSE PAGINADO (nuevo — coincide con PrestamoListResponse del backend)
 // =========================================================
+/** Página de préstamos devuelta por el backend. */
 export interface PrestamoListResponse {
   total: number;
   items: Prestamo[];
@@ -68,6 +72,7 @@ export interface PrestamoListResponse {
 // =========================================================
 // FILTROS — ampliados
 // =========================================================
+/** Criterios de búsqueda, periodo y paginación de préstamos. */
 export interface FiltroPrestamos {
   activo?: boolean | null;
   id_paciente?: number | null;

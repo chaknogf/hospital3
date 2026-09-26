@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { roleGuard } from './role.guard';
 
+/** Rutas de la aplicación; el guard de sesión agrupa las vistas autenticadas. */
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
   {

@@ -1,6 +1,7 @@
 import { Directive, HostListener, Input } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
+/** Filtra caracteres de texto y conserva el cursor mientras se edita el campo. */
 @Directive({
   selector: '[unaPalabra]',
   standalone: true

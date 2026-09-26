@@ -11,6 +11,7 @@ import { filter } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./update-notification.component.css']
 })
+/** Avisa cuando hay una versión nueva lista y la activa recargando la aplicación. */
 export class UpdateNotificationComponent implements OnInit {
   showUpdate = false;
 
@@ -18,6 +19,7 @@ export class UpdateNotificationComponent implements OnInit {
 
   ngOnInit() {
     if (this.swUpdate.isEnabled) {
+      // Se notifica cuando la versión nueva está lista, no al detectar cualquier cambio.
       this.swUpdate.versionUpdates
         .pipe(filter((e): e is VersionReadyEvent => e.type === 'VERSION_READY'))
         .subscribe(() => {

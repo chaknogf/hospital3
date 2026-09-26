@@ -6,6 +6,7 @@ import { finalize, catchError } from 'rxjs/operators';
 import { BaseApiService } from './base-api.service';
 import { Especialidad } from '../interface/quirofano.interface';
 
+/** Acceso al catálogo de especialidades, con caché de lecturas y mutaciones offline. */
 @Injectable({ providedIn: 'root' })
 export class EspecialidadesService extends BaseApiService {
 
@@ -13,6 +14,7 @@ export class EspecialidadesService extends BaseApiService {
     super(http, router);
   }
 
+  /** Lista especialidades filtrando por vigencia o disponibilidad en quirófano. */
   getEspecialidades(estado?: boolean, sop?: boolean): Observable<Especialidad[]> {
     this.isLoading.set(true);
     const params: any = {};
@@ -27,6 +29,7 @@ export class EspecialidadesService extends BaseApiService {
     ));
   }
 
+  /** Crea una especialidad; si no hay red, la operación queda en cola local. */
   crearEspecialidad(data: Partial<Especialidad>): Observable<Especialidad> {
     this.isLoading.set(true);
     const url = `${this.baseUrl}/especialidades/`;

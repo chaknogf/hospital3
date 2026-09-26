@@ -15,6 +15,7 @@ import { Location } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+/** Filtra consultas externas por fecha, tipo y especialidad. */
 @Component({
   selector: 'app-coexFiltrado',
   templateUrl: './coexFiltrado.component.html',

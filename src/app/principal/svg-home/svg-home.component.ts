@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./svg-home.component.css'],
   standalone: true
 })
+/** Renderiza la ilustración SVG de la pantalla de inicio. */
 export class SvgHomeComponent implements OnInit {
 
   constructor() { }

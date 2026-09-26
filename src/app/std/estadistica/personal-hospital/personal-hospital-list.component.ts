@@ -12,6 +12,7 @@ import { PacienteResumen } from '@models/interfaces';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./personal-hospital-list.component.css']
 })
+/** Muestra los registros de personal incluidos en el informe hospitalario. */
 export class PersonalHospitalListComponent implements OnInit {
   private api = inject(ApiService);
 

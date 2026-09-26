@@ -11,6 +11,7 @@ import { ApiService } from '@services/api.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./resumen-procedimientos.component.css']
 })
+/** Resume procedimientos por período para facilitar su comparación. */
 export class ResumenProcedimientosComponent implements OnInit {
   private api = inject(ApiService);
   data: any = null;

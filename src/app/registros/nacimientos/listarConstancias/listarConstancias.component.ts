@@ -11,6 +11,7 @@ import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+/** Busca constancias de nacimiento y actualiza el estado de sus informes. */
 @Component({
   selector: 'app-listarConstancias',
   templateUrl: './listarConstancias.component.html',
@@ -210,6 +211,7 @@ export class ListarConstanciasComponent implements OnInit, OnDestroy {
     if (!this.constanciaSeleccionada || !this.estadoInformeActual) return;
     const id = this.constanciaSeleccionada.id;
     const estado = this.estadoInformeActual;
+    // Se cierra el diálogo antes de guardar; ante error, se informa en la vista principal.
     this.cerrarModalEstado();
     this.api.updateEstadoInforme(id, estado)
       .pipe(takeUntil(this.destroy$))

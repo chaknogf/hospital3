@@ -13,6 +13,7 @@ import {
   CicloResumen,
 } from '../../interface/ciclo';
 
+/** Presenta el historial de consultas y ciclos clínicos de un paciente. */
 @Component({
   selector: 'app-historia-clinica',
   templateUrl: './historiaClinica.component.html',

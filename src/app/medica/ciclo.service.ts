@@ -12,6 +12,7 @@ import {
   HistoriaClinicaResponse,
 } from './../interface/ciclo';
 
+/** Consulta y crea ciclos clínicos y la historia agrupada por paciente. */
 @Injectable({ providedIn: 'root' })
 export class CicloService extends BaseApiService {
 

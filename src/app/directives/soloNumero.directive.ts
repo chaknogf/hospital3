@@ -1,6 +1,7 @@
 import { Directive, HostListener } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
+/** Limita la entrada a dígitos y un único punto decimal. */
 @Directive({
   selector: '[soloNumero]',
   standalone: true

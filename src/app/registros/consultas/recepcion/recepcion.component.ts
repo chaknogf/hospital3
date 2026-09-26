@@ -18,6 +18,7 @@ import { takeUntil } from 'rxjs/operators';
 
 const ESTADOS_INACTIVOS = new Set(['archivo', 'descartado']);
 
+/** Registra la recepción de pacientes y actualiza el ciclo de atención. */
 @Component({
   selector: 'app-recepcion',
   templateUrl: './recepcion.component.html',

@@ -1,5 +1,6 @@
 import { ConsultaPacienteResumen } from './consultas';
 
+/** Signos vitales registrados en una valoración clínica o de enfermería. */
 export interface SignosVitales {
   pa: string;
   fc: string;
@@ -14,6 +15,7 @@ export interface SignosVitales {
   gmt: string;
 }
 
+/** Grupos de antecedentes médicos capturados en la historia clínica. */
 export interface Antecedentes {
   familiares: any[];
   medicos: any[];
@@ -24,12 +26,14 @@ export interface Antecedentes {
   habitos: any[];
 }
 
+/** Nota clínica con autor y fecha de registro. */
 export interface Nota {
   usuario: string;
   nota: string;
   registro: string;
 }
 
+/** Nota de enfermería por turno, con signos registrados. */
 export interface Enfermeria {
   usuario: string;
   turno: string;
@@ -38,6 +42,7 @@ export interface Enfermeria {
   signos: { [key: string]: SignosVitales };
 }
 
+/** Puntuación clínica de dificultad respiratoria neonatal de Silverman. */
 export interface Silverman {
   retraso_esternal: number;
   aleteo_nasal: number;
@@ -47,6 +52,7 @@ export interface Silverman {
   puntuacion_total: number;
 }
 
+/** Puntuación de dificultad respiratoria neonatal según escala de Downe. */
 export interface Downe {
   frecuencia_respiratoria: number;
   aleteo_nasal: number;
@@ -56,6 +62,7 @@ export interface Downe {
   puntuacion_total: number;
 }
 
+/** Hallazgos organizados por región anatómica durante el examen físico. */
 export interface Cuerpo {
   cabeza: string;
   ojos: string;
@@ -74,6 +81,7 @@ export interface Cuerpo {
   neurologico: string;
 }
 
+/** Componentes y total de la escala neurológica de Glasgow. */
 export interface Glasgow {
   apertura_ocular: number;
   respuesta_verbal: number;
@@ -81,6 +89,7 @@ export interface Glasgow {
   puntuacion_total: number;
 }
 
+/** Componentes y total de la escala obstétrica de Bishop. */
 export interface Bishop {
   dilatacion: number;
   borramiento: number;
@@ -90,6 +99,7 @@ export interface Bishop {
   puntuacion_total: number;
 }
 
+/** Componentes, puntuación e interpretación de la escala Apgar. */
 export interface Apgar {
   tono_muscular: number;
   respuesta_refleja: number;
@@ -100,6 +110,7 @@ export interface Apgar {
   interpretacion: string;
 }
 
+/** Evaluaciones físicas agrupadas por escala o sección del examen. */
 export interface ExamenFisico {
   silverman: { [key: string]: Silverman };
   downe: { [key: string]: Downe };
@@ -109,17 +120,20 @@ export interface ExamenFisico {
   apgar: { [key: string]: Apgar };
 }
 
+/** Evento de auditoría del sistema asociado a una acción clínica. */
 export interface Sistema {
   usuario: string;
   accion: string;
   fecha: string;
 }
 
+/** Diagnóstico clínico con código y descripción. */
 export interface Dx {
   codigo: string;
   descripcion: string;
 }
 
+/** Condición clínica, referencia y diagnósticos asociados al egreso. */
 export interface Egreso {
   registro?: string;
   condicion: string;
@@ -128,6 +142,7 @@ export interface Egreso {
   medico?: string;
 }
 
+/** Estado de programación quirúrgica incorporado a la nota médica. */
 export interface PresaQuirurgica {
   programada: string;
   reprogramada: string;
@@ -136,6 +151,7 @@ export interface PresaQuirurgica {
   especialidad: string;
 }
 
+/** Secciones clínicas opcionales guardadas en un ciclo de atención. */
 export interface DatoMedico {
   detalle_clinicos?: string;
   signos_vitales?: SignosVitales;
@@ -152,6 +168,7 @@ export interface DatoMedico {
   odontologia?: import('../medica/notaMedica/odontograma.model').NotaOdontologica;
 }
 
+/** Registro secuencial de atención que compone el historial de una consulta. */
 export interface CicloConsulta {
   id?: number;
   consulta_id: number;
@@ -172,6 +189,7 @@ export interface CicloConsulta {
 // ===================================================================
 // Historia clínica agrupada por consulta
 // ===================================================================
+/** Proyección resumida de un ciclo para presentar la historia clínica. */
 export interface CicloResumen {
   id: number;
   numero: number;
@@ -193,6 +211,7 @@ export interface CicloResumen {
   };
 }
 
+/** Consulta agrupada con sus ciclos clínicos ordenados. */
 export interface ConsultaHistoria {
   consulta: {
     id: number;
@@ -206,6 +225,7 @@ export interface ConsultaHistoria {
   total_ciclos: number;
 }
 
+/** Historia clínica agrupada por consulta para un paciente. */
 export interface HistoriaClinicaResponse {
   paciente_id: number;
   paciente_nombre?: string;

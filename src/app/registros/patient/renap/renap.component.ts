@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { IconService } from '../../../service/icon.service';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 
+/** Consulta y devuelve información de identidad obtenida desde RENAP. */
 @Component({
   selector: 'app-renap',
   standalone: true,

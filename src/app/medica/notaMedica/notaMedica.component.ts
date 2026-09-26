@@ -29,6 +29,7 @@ import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { OdontogramaComponent } from './odontograma.component';
 import { NotaOdontologica } from './odontograma.model';
 
+/** Registra una nueva nota dentro de la secuencia clínica de una consulta. */
 @Component({
   selector: 'app-notaMedica',
   templateUrl: './notaMedica.component.html',

@@ -7,4 +7,5 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './reportes.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
 })
+/** Contenedor de las vistas de reportes del módulo estadístico. */
 export class ReportesComponent {}

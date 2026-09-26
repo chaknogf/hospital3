@@ -18,6 +18,7 @@ interface Mensaje {
   standalone: true,
   imports: [CommonModule, FormsModule],
 })
+/** Interfaz de consulta del agente estadístico en lenguaje natural. */
 export class AgenteComponent {
   private api = inject(StdService);
 

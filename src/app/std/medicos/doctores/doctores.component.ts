@@ -20,6 +20,7 @@ import { takeUntil } from 'rxjs/operators';
     FormsModule
   ]
 })
+/** Lista y filtra el personal médico registrado. */
 export class DoctoresComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);

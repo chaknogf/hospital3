@@ -4,11 +4,13 @@ import { departamentos, municipios } from '../enum/departamentos';
 import { idiomas, servicios } from '../enum/diccionarios';
 import { partos, gradoAcademicos, pueblos, parentescos, especialidades, tipoConsulta } from '../enum/diccionarios';
 
+/** Convierte códigos y valores clínico-demográficos a etiquetas legibles. */
 @Pipe({
   name: 'datosExtra',
   standalone: true
 })
 export class DatosExtraPipe implements PipeTransform {
+  /** Resuelve el código según su categoría y devuelve una etiqueta legible. */
   transform(valor: any, tipo: any): any {
     // Manejar valores vacíos o nulos
     if (valor === null || valor === undefined || valor === '' || valor === 0) {

@@ -20,6 +20,7 @@ import {
 import { OfflineDatabaseService } from '../../service/offline-database.service';
 import { FullSyncService } from '../../service/full-sync.service';
 
+/** Centraliza las operaciones de consulta, admisión y ciclos de atención. */
 @Injectable({ providedIn: 'root' })
 export class ConsultaService extends BaseApiService {
 

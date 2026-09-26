@@ -23,6 +23,7 @@ import { CommonModule } from '@angular/common';
     </div>
   `
 })
+/** Tarjeta de selección de tema para las preferencias visuales. */
 export class ThemeCardComponent {
   @Input() variant: 'data' | 'stat' | 'list' | 'timeline' | 'profile' = 'data';
   @Input() title = '';

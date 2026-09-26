@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CitasEspecialidadComponent } from '../../registros/citas/citasEspecialidad/citasEspecialidad.component';
 
+/** Muestra las citas correspondientes a la atención odontológica. */
 @Component({
   selector: 'app-citas-odonto',
   templateUrl: './citas-odonto.component.html',

@@ -15,6 +15,7 @@ import { Especialidades, KeyValue } from '../../../enum/especialidades';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+/** Lista las citas filtradas por especialidad y fecha. */
 @Component({
   selector: 'app-citas-especialidad',
   templateUrl: './citasEspecialidad.component.html',

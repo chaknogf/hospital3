@@ -24,6 +24,7 @@ import { takeUntil } from 'rxjs/operators';
     ReactiveFormsModule
 ]
 })
+/** Presenta y administra el catálogo de procedimientos disponibles. */
 export class CatalogoproComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);

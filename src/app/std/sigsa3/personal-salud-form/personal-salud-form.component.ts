@@ -16,6 +16,7 @@ import { IconService } from '../../../service/icon.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReactiveFormsModule]
 })
+/** Registra o actualiza al personal reportado en SIGSA-3. */
 export class PersonalSaludFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);

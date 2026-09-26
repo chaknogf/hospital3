@@ -5,6 +5,7 @@ import { menuIcon, patientIcon, ambulanceIcon, hospitalconsvg, consultasIcon, ar
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { IconService } from '../../service/icon.service';
 import { menuColor } from '../../shared/module-menu';
+/** Menú para acceder a los registros y trámites clínicos. */
 @Component({
   selector: 'app-registrosMedicos',
   templateUrl: './registrosMedicos.component.html',

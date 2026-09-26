@@ -19,6 +19,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ConsultaService } from '../../registros/consultas/consultas.service';
 
 const ESTADOS_INACTIVOS = new Set(['archivo', 'descartado', 'recepcion', 'egreso']);
+/** Gestiona pacientes atendidos y sus transiciones de recepción y archivo. */
 @Component({
   selector: 'app-pacientesAtendidos',
   templateUrl: './pacientesAtendidos.component.html',
@@ -105,6 +106,7 @@ export class PacientesAtendidosComponent implements OnInit, OnDestroy {
     this.formRecibido.guardando = true;
     this.formRecibido.error = '';
 
+    // La recepción se agrega como un ciclo nuevo; no sustituye el historial clínico.
     const ciclo: CicloClinico = {
       estado: 'recepcion' as EstadoCiclo,
       servicio: this.formRecibido.servicio || undefined,
@@ -181,6 +183,7 @@ export class PacientesAtendidosComponent implements OnInit, OnDestroy {
 
     const f = this.formArchivar;
 
+    // Se guardan juntos el resumen de egreso y el cambio del ciclo a archivo.
     const egreso: Egreso = {
       registro: new Date().toISOString(),
       condicion: f.condicion || '',

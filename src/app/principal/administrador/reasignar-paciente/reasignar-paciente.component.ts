@@ -18,6 +18,7 @@ import { Paciente } from '../../../interface/interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, CommonModule]
 })
+/** Cambia la asignación administrativa de un paciente entre responsables. */
 export class ReasignarPacienteComponent implements OnDestroy {
   private router = inject(Router);
   private consultaService = inject(ConsultaService);

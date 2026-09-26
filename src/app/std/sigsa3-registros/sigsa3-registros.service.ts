@@ -15,6 +15,7 @@ import {
 } from '../../interface/sigsa3-registros.interface';
 
 @Injectable({ providedIn: 'root' })
+/** Accede a los registros SIGSA-3 normalizados y encola cambios sin conexión. */
 export class Sigsa3RegistrosService extends BaseApiService {
 
   constructor(http: HttpClient, router: Router) {

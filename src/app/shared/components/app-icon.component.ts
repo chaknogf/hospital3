@@ -7,6 +7,7 @@ import { ICON_SVG } from '../icons/icon-map';
   standalone: true,
   template: `<span [innerHTML]="svg" style="display:inline-flex;align-items:center"></span>`
 })
+/** Renderiza un icono del mapa compartido con tamaño y color configurables. */
 export class AppIconComponent {
   @Input() name!: string;
   @Input() size: string | number = 24;
@@ -14,6 +15,7 @@ export class AppIconComponent {
 
   private sanitizer = inject(DomSanitizer);
 
+  /** Genera el SVG con dimensiones opcionales desde el catálogo estático confiable. */
   get svg(): SafeHtml {
     const raw = ICON_SVG[this.name] || '';
     if (!raw) return '';

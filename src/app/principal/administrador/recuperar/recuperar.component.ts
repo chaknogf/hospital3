@@ -16,6 +16,7 @@ import { Subject } from 'rxjs';
   imports: [ReactiveFormsModule, FormsModule]
 })
 
+/** Permite solicitar el restablecimiento de una cuenta desde la pantalla pública. */
 export class RecuperarComponent implements OnInit, OnDestroy {
 
   private route = inject(ActivatedRoute);

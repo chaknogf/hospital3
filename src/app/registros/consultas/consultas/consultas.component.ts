@@ -17,6 +17,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 
+/** Busca y administra consultas de las distintas áreas de atención. */
 @Component({
   selector: 'app-consultas',
   templateUrl: './consultas.component.html',

@@ -9,6 +9,7 @@ import { ApiService } from '../../../service/api.service';
 import { DefuncionOut } from '../../../interface/consDef';
 import { Medico } from '../../../interface/medicos.interface';
 
+/** Edita la constancia, incluyendo causas y datos específicos de muerte fetal. */
 @Component({
   selector: 'app-constanciaDefuncion',
   templateUrl: './constanciaDefuncion.component.html',
@@ -48,6 +49,7 @@ export class ConstanciaDefuncionComponent implements OnInit, OnDestroy {
       this.cargarDatos(Number(id));
     }
     this.cargarMedicos();
+    // Al activar muerte fetal se dirige el formulario a sus campos complementarios.
     this.form.get('es_fetal')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(v => {
       if (v) this.tabActivo.set('fetal');
     });
@@ -171,6 +173,7 @@ export class ConstanciaDefuncionComponent implements OnInit, OnDestroy {
 
   private construirPayload(): any {
     const v = this.form.getRawValue();
+    // Los campos opcionales vacíos se omiten para no enviar valores de presentación.
     return {
       personal_atencion_id: v.personal_atencion_id || undefined,
       fecha_defuncion: v.fecha_defuncion || undefined,

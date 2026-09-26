@@ -1,3 +1,4 @@
+/** Opciones de parentesco; `value` se normaliza sin tildes para persistencia. */
 export const Parentescos: { label: string; value: string }[] = [
   'Padre',
   'Madre',

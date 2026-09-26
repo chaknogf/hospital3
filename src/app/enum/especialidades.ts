@@ -1,9 +1,11 @@
 
+/** Opción de catálogo con código de dominio y etiqueta visible. */
 export interface KeyValue {
   value: string;
   label: string;
 }
 
+/** Códigos de especialidad compartidos con consultas y formularios. */
 export const Especialidades: KeyValue[] = [
   { value: 'MEDI', label: 'Medicina Interna' },
   { value: 'PEDI', label: 'Pediatría' },

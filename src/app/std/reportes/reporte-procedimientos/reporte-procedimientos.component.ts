@@ -11,6 +11,7 @@ import { ApiService } from '@services/api.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./reporte-procedimientos.component.css']
 })
+/** Presenta el detalle estadístico de procedimientos realizados. */
 export class ReporteProcedimientosComponent implements OnInit {
   private api = inject(ApiService);
   totales: any = null;

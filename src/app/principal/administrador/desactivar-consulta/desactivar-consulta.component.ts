@@ -15,6 +15,7 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]
 })
+/** Permite cambiar el estado de una consulta sin eliminar su historial. */
 export class DesactivarConsultaComponent implements OnDestroy {
   private router = inject(Router);
   private consultaService = inject(ConsultaService);

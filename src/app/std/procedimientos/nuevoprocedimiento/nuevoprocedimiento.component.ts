@@ -27,6 +27,7 @@ import { IconService } from '../../../service/icon.service';
     ReactiveFormsModule
 ]
 })
+/** Crea o modifica una opción del catálogo de procedimientos. */
 export class NuevoprocedimientoComponent implements OnInit {
 
   private fb = inject(FormBuilder);

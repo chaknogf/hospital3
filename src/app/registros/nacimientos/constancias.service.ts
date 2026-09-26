@@ -7,6 +7,7 @@ import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { ConstanciaNacimientoOut, ConstanciaNacimientoCreate, ConstanciaNacHistorial, ConstanciaNacimientoUpdate } from '../../interface/consNac';
 import { ConstanciaNacimiento, InformeNacimientoListResponse } from './constancias.inteface';
 
+/** Gestiona las consultas y cambios de estado de constancias de nacimiento. */
 @Injectable({ providedIn: 'root' })
 export class ConstanciasService extends BaseApiService {
   // ======= BEHAVIOR SUBJECTS =======

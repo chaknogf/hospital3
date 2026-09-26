@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Paciente, DatosExtra, Demograficos, Socioeconomicos, Neonatales, Partos, Contacto } from '../interface/interfaces';
 
 @Injectable({ providedIn: 'root' })
+/** Adapta datos de paciente entre las estructuras de formularios y del backend. */
 export class PacienteUtilService {
 
   constructor() { }

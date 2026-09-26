@@ -11,6 +11,7 @@ import { CensoCamasService } from './censo-camas.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule]
 })
+/** Importa registros de censo desde un archivo CSV. */
 export class CensoCamasImportComponent {
 
   private location = inject(Location);

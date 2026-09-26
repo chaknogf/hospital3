@@ -6,6 +6,7 @@ import { BaseApiService } from '../service/base-api.service';
 import { PacienteListResponse } from '../interface/interfaces';
 import { ConsultaListResponse } from '../interface/consultas';
 
+/** Cliente de reportes y consultas estadísticas con filtros y paginación. */
 @Injectable({ providedIn: 'root' })
 export class EstadisticasService extends BaseApiService {
 

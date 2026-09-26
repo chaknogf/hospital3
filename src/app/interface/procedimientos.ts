@@ -1,5 +1,6 @@
 // interfaces/procedimientos.interface.ts
 
+/** Procedimiento disponible en el catálogo institucional. */
 export interface Procedimiento {
   id: number;
   abreviatura?: string | null;
@@ -8,6 +9,7 @@ export interface Procedimiento {
   anestesia?: number | null;
 }
 
+/** Campos para incorporar un procedimiento al catálogo. */
 export interface ProcedimientoCreate {
   abreviatura?: string | null;
   nombre: string;
@@ -15,6 +17,7 @@ export interface ProcedimientoCreate {
   anestesia?: number | null;
 }
 
+/** Campos opcionales para modificar una entrada del catálogo. */
 export interface ProcedimientoUpdate {
   abreviatura?: string | null;
   nombre?: string | null;
@@ -22,6 +25,7 @@ export interface ProcedimientoUpdate {
   anestesia?: number | null;
 }
 
+/** Procedimiento realizado, con contexto de servicio y responsable. */
 export interface ProceMedico {
   id: number;
   fecha?: string | null;
@@ -38,6 +42,7 @@ export interface ProceMedico {
   procedimiento?: Procedimiento | null;
 }
 
+/** Datos para registrar un procedimiento realizado. */
 export interface ProceMedicoCreate {
   fecha?: string | null;
   lugar_servicio?: string | null;
@@ -50,6 +55,7 @@ export interface ProceMedicoCreate {
   created_by?: string | null;
 }
 
+/** Cambios parciales de un procedimiento realizado. */
 export interface ProceMedicoUpdate {
   fecha?: string | null;
   lugar_servicio?: string | null;
@@ -62,11 +68,13 @@ export interface ProceMedicoUpdate {
   created_by?: string | null;
 }
 
+/** Listado de procedimientos realizados con total para paginación. */
 export interface ProcedimientosListResponse {
   total: number;
   procedimientos: ProceMedico[];
 }
 
+/** Filtros temporales, de servicio y especialidad de procedimientos realizados. */
 export interface ProceMedicoFiltros {
   skip?: number;
   limit?: number;

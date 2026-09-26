@@ -19,6 +19,7 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule]
 })
+/** Lista las atenciones SIGSA-3 y permite acotar los resultados. */
 export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);

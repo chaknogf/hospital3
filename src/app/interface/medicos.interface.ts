@@ -1,3 +1,4 @@
+/** Datos de salida de un médico/personal de atención. */
 export interface MedicoOut {
   id: number;
   nombre: string;
@@ -10,6 +11,7 @@ export interface MedicoOut {
   sexo?: string;
 }
 
+/** Campos para crear un médico en el catálogo de atención. */
 export interface MedicoCreate {
   nombre: string;
   colegiado?: string;
@@ -20,6 +22,7 @@ export interface MedicoCreate {
   sexo?: string;
 }
 
+/** Campos opcionales modificables de un médico. */
 export interface MedicoUpdate {
   nombre?: string;
   colegiado?: string;
@@ -30,6 +33,7 @@ export interface MedicoUpdate {
   sexo?: string;
 }
 
+/** Criterios de búsqueda y paginación del catálogo de médicos. */
 export interface FiltroMedico {
   id?: number;
   activo?: boolean;
@@ -41,11 +45,13 @@ export interface FiltroMedico {
   limit?: number;
 }
 
+/** Respuesta paginada del catálogo de personal de atención. */
 export interface MedicoListResponse {
   total: number;
   personal_atencion: MedicoOut[];
 }
 
+/** Modelo de médico usado por formularios y listados del frontend. */
 export interface Medico {
   id?: number;
   nombre: string;

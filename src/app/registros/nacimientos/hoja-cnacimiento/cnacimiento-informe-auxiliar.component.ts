@@ -6,6 +6,7 @@ import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { LibrasOnzasPipe } from '../../../pipes/librasOnza.pipe';
 import { ApiService } from '../../../service/api.service';
 
+/** Nombre desglosado usado en el formato auxiliar de nacimiento. */
 export interface NombrePersona {
   primer_nombre?: string | null;
   segundo_nombre?: string | null;
@@ -15,6 +16,7 @@ export interface NombrePersona {
   apellido_casada?: string | null;
 }
 
+/** Datos clínicos registrados al nacimiento para el informe auxiliar. */
 export interface NeonatalesInfo {
   peso_nacimiento?: string | null;
   hora_nacimiento?: string | null;
@@ -24,12 +26,14 @@ export interface NeonatalesInfo {
   id_medico?: number | null;
 }
 
+/** Datos demográficos que se imprimen en el informe auxiliar. */
 export interface DemograficosInfo {
   vecindad?: string | null;
   lugar_nacimiento?: string | null;
   nacionalidad?: string | null;
 }
 
+/** Identificación y datos de la madre asociados al nacimiento. */
 export interface MadreInfo {
   nombre?: NombrePersona | null;
   fecha_nacimiento?: string | null;
@@ -38,6 +42,7 @@ export interface MadreInfo {
   datos_extra?: { demograficos?: DemograficosInfo | null } | null;
 }
 
+/** Información del neonato incluida en la constancia. */
 export interface PacienteInfo {
   nombre?: NombrePersona | null;
   sexo?: string | null;
@@ -45,6 +50,7 @@ export interface PacienteInfo {
   datos_extra?: { neonatales?: NeonatalesInfo | null } | null;
 }
 
+/** Estructura de salida que consume el informe auxiliar de nacimiento. */
 export interface CnacimientoOut {
   id: number;
   documento?: string | null;
@@ -58,6 +64,7 @@ export interface CnacimientoOut {
   medico?: MedicoInfo | null;
 }
 
+/** Datos del profesional que atendió el nacimiento. */
 export interface MedicoInfo {
   nombre?: string | null;
   sexo?: string | null;
@@ -86,6 +93,7 @@ function parseDateLocal(iso: string): Date | null {
   return isNaN(d.getTime()) ? null : d;
 }
 
+/** Renderiza la variante auxiliar del informe de nacimiento. */
 @Component({
   selector: 'app-cnacimiento-informe-auxiliar',
   standalone: true,

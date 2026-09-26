@@ -19,6 +19,7 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule]
 })
+/** Lista las cuentas para que el personal autorizado las administre. */
 export class UsuariosComponent implements OnInit, OnDestroy {
 
   private route = inject(ActivatedRoute);

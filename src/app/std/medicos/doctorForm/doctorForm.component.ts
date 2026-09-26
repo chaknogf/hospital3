@@ -23,6 +23,7 @@ import { IconService } from '../../../service/icon.service';
     ReactiveFormsModule
 ]
 })
+/** Formulario para registrar o actualizar datos de personal médico. */
 export class DoctorFormComponent implements OnInit {
 
   private fb = inject(FormBuilder);

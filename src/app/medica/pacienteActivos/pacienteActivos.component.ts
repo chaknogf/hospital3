@@ -11,6 +11,7 @@ import { DatosExtraPipe } from '../../pipes/datos-extra.pipe';
 /** Estados que YA no cuentan como paciente activo. */
 const ESTADOS_INACTIVOS = new Set(['egreso', 'archivo']);
 
+/** Lista pacientes activos para iniciar o continuar su atención clínica. */
 @Component({
   selector: 'app-pacienteActivos',
   templateUrl: './pacienteActivos.component.html',

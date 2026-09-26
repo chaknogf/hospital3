@@ -15,6 +15,7 @@ import { catchError, finalize, EMPTY } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule]
 })
+/** Fusiona duplicados conservando el paciente principal como registro destino. */
 export class MergePacientesComponent {
   private router = inject(Router);
   private api = inject(ApiService);
@@ -121,6 +122,7 @@ export class MergePacientesComponent {
   }
 
   todosCargados(): boolean {
+    // Solo se exige detalle para los IDs adicionales válidos que se van a fusionar.
     if (!this.principalDetail()) return false;
     const adicionales = this.adicionalesDetails();
     const idsValidos = this.adicionales().filter(id => id !== null && id !== undefined && id > 0);
@@ -140,6 +142,7 @@ export class MergePacientesComponent {
     this.success.set(null);
     this.isLoading.set(true);
 
+    // Deduplicar los IDs evita enviar dos veces el principal o un adicional repetido.
     const ids = [...new Set([principal, ...adicionalesValidos])];
 
     this.api.mergePacientes(principal, ids)

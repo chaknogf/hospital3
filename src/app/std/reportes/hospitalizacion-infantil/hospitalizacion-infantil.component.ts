@@ -18,6 +18,7 @@ interface EspRow {
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hospitalizacion-infantil.component.css']
 })
+/** Presenta hospitalizaciones infantiles conforme a los criterios del informe. */
 export class HospitalizacionInfantilComponent implements OnInit {
   private api = inject(ApiService);
   data: any = null;

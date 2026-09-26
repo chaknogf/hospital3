@@ -12,6 +12,7 @@ import { OfflineDatabaseService } from '../../service/offline-database.service';
 import { PacienteUtilService } from '../../service/paciente-util.service';
 import { FullSyncService } from '../../service/full-sync.service';
 
+/** Provee las operaciones de consulta y persistencia de pacientes y expedientes. */
 @Injectable({ providedIn: 'root' })
 export class PacienteService extends BaseApiService {
 

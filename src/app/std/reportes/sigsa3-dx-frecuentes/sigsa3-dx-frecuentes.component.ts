@@ -35,6 +35,7 @@ interface EspecialidadGrupo {
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./sigsa3-dx-frecuentes.component.css']
 })
+/** Presenta los diagnósticos más frecuentes registrados en SIGSA-3. */
 export class Sigsa3DxFrecuentesComponent implements OnInit {
 
   private api = inject(Sigsa3Service);

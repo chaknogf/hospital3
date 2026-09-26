@@ -16,6 +16,7 @@ import { MedicoOut } from '../../../interface/medicos.interface';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReactiveFormsModule]
 })
+/** Crea o edita un registro SIGSA-3 normalizado. */
 export class Sigsa3RegistrosFormComponent implements OnInit {
 
   private fb = inject(FormBuilder);

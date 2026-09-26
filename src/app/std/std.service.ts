@@ -17,6 +17,7 @@ import {
 } from '../interface/procedimientos';
 
 @Injectable({ providedIn: 'root' })
+/** Centraliza el catálogo de procedimientos y los procedimientos realizados. */
 export class StdService extends BaseApiService {
 
   private procedimientosSubject = new BehaviorSubject<ProceMedico[]>([]);

@@ -22,6 +22,7 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, CuiPipe, TimePipe, DatosExtraPipe]
 })
+/** Consulta y organiza pacientes hospitalizados por especialidad y servicio. */
 export class EncamamientoComponent implements OnInit, OnDestroy {
 
   private location = inject(Location);
@@ -217,6 +218,7 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
 
       this.api.getConsultas(filtro).pipe(takeUntil(this.destroy$)).subscribe({
         next: resultado => {
+          // Se conservan hasta diez filas para la vista rápida, pero el conteo es el total del servidor.
           this.consultasPorEspecialidad[esp.value] = resultado.consultas;
           this.conteosPorEspecialidad[esp.value] = resultado.total;
           this.cdr.markForCheck();
@@ -236,6 +238,7 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
 
   seleccionarEspecialidad(value: string): void {
     this.filtros.especialidad = value;  // ← especialidad
+    // Servicio y especialidad son filtros alternativos en esta vista.
     this.filtros.servicio = '';         // limpiar servicio al cambiar especialidad
     this.paginaActual = 1;
     this.filtros.skip = 0;
@@ -373,6 +376,7 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
     if (!ciclo) return 'activo';
     const registros = Object.values(ciclo);
     if (registros.length === 0) return 'activo';
+    // El estado vigente es el del movimiento más reciente del ciclo.
     registros.sort((a: any, b: any) =>
       new Date(b.registro).getTime() - new Date(a.registro).getTime()
     );

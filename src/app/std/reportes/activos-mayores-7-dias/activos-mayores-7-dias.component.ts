@@ -13,6 +13,7 @@ import { DatosExtraPipe } from 'app/pipes/datos-extra.pipe';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./activos-mayores-7-dias.component.css']
 })
+/** Identifica consultas activas cuya duración supera siete días. */
 export class ActivosMayores7DiasComponent implements OnInit {
   private api = inject(ApiService);
   datos: ConsultaOut[] = [];

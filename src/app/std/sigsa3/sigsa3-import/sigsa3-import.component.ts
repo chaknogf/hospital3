@@ -14,6 +14,7 @@ import { IconService } from '../../../service/icon.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule]
 })
+/** Importa una hoja de cálculo y presenta el resumen del procesamiento SIGSA-3. */
 export class Sigsa3ImportComponent {
 
   private location = inject(Location);

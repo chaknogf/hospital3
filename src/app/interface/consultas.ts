@@ -5,6 +5,7 @@ import { PacienteJoin } from './interfaces';
 // ===================================================================
 // TIPO DE ESTADOS DEL CICLO CLÍNICO
 // ===================================================================
+/** Estados admitidos para el recorrido asistencial de una consulta. */
 export type EstadoCiclo =
   | "iniciado"      // Estado inicial legacy
   | "pendiente"     // Estado inicial
@@ -30,6 +31,7 @@ export type EstadoCiclo =
   | "triage"; // Consulta contraindicada
 
 
+/** Datos de programación y ejecución de una intervención quirúrgica. */
 export interface PresaQuirurgica {
   programada: string;
   reprogramada: string;
@@ -37,6 +39,7 @@ export interface PresaQuirurgica {
   detalle: string;
   especialidad: string;
 }
+/** Registro con referencia al ciclo y fecha de persistencia. */
 export interface Datos {
   ciclo: string;
   registro: string;
@@ -44,12 +47,14 @@ export interface Datos {
 
 
 
+/** Código diagnóstico y su descripción legible. */
 export interface Dx {
   codigo: string;
   descripcion: string;
 }
 
 
+/** Condición y datos clínicos registrados al egresar al paciente. */
 export interface Egreso {
   registro?: string;
   condicion: string;
@@ -62,6 +67,7 @@ export interface Egreso {
 
 
 
+/** Indicadores epidemiológicos capturados al registrar una consulta. */
 export interface Indicador {
   estudiante_publico: boolean;
   personal_hospital: boolean;
@@ -79,6 +85,7 @@ export interface Indicador {
 // ===================================================================
 // CICLO CLÍNICO (UN REGISTRO EN EL HISTORIAL)
 // ===================================================================
+/** Evento individual del historial clínico, con estado y datos de auditoría. */
 export interface CicloClinico {
   // ✅ Campos obligatorios de auditoría
   estado: EstadoCiclo;
@@ -89,14 +96,17 @@ export interface CicloClinico {
   comentario?: string;
 }
 
+/** Campos modificables de un ciclo, excluyendo usuario y fecha de auditoría. */
 export type CicloPatch = Omit<
   CicloClinico,
   'usuario' | 'registro'
 >;
 
 // ✅ Alias para compatibilidad con código legacy
+/** Alias conservado para consumidores que usan el nombre histórico `Ciclo`. */
 export type Ciclo = CicloClinico;
 
+/** Campos compartidos por las representaciones de consulta. */
 export interface ConsultaBase {
   expediente?: string;
   paciente_id?: number;  // ✅ Opcional en base
@@ -114,6 +124,7 @@ export interface ConsultaBase {
 
 }
 
+/** Payload general para crear una consulta nueva. */
 export interface ConsultaCreate {
   // Campos obligatorios
   paciente_id: number;      // ✅ Obligatorio aquí
@@ -130,6 +141,7 @@ export interface ConsultaCreate {
   orden?: number;
 }
 
+/** Payload usado por el flujo de admisión, incluido el primer evento del ciclo. */
 export interface RegistroConsultaCreate {
   paciente_id: number;
   tipo_consulta: number;
@@ -141,6 +153,7 @@ export interface RegistroConsultaCreate {
 
 // ✅ Para REGISTRAR una nueva consulta (todos obligatorios)
 
+/** Consulta recién registrada devuelta por el backend. */
 export interface RegistroConsultaResponse {
   id: number;
   expediente: string;
@@ -158,6 +171,7 @@ export interface RegistroConsultaResponse {
 }
 
 // ✅ Para ACTUALIZAR consultas (todo opcional excepto id)
+/** Campos parciales que puede recibir la operación de actualización. */
 export interface ConsultaUpdate {
   expediente?: string;
   tipo_consulta?: number;
@@ -174,6 +188,7 @@ export interface ConsultaUpdate {
 
 
 // ✅ ConsultaOut NO incluye created_at/updated_at
+/** Consulta completa de salida; el ciclo conserva el orden de eventos clínicos. */
 export interface ConsultaOut {
   id: number;
   paciente: Paciente;
@@ -195,18 +210,21 @@ export interface ConsultaOut {
 
 }
 // Para respuestas de listas con paginación
+/** Resultado paginado de consultas. */
 export interface ConsultaListResponse {
   total: number;
   consultas: ConsultaOut[];
 }
 
 // Respuesta detallada con datos del paciente (si la usas)
+/** Respuesta de detalle que incluye los datos del paciente relacionado. */
 export interface ConsultaResponse extends ConsultaBase {
   id: number;
   expediente?: string;
   paciente: Paciente;
 }
 
+/** Resumen de consulta usado en el historial de un paciente. */
 export interface ConsultasIdPaciente {
   id: number;
   tipo_consulta: number;
@@ -219,6 +237,7 @@ export interface ConsultasIdPaciente {
 }
 
 
+/** Consulta y paciente unidos para vistas de historia clínica. */
 export interface ConsultaPacienteResumen {
   id: number;
   expediente?: string;
@@ -240,6 +259,7 @@ export interface ConsultaPacienteResumen {
 // ===================================================================
 // TOTALES Y ESTADÍSTICAS
 // ===================================================================
+/** Indicador individual del resumen estadístico del sistema. */
 export interface TotalesItem {
   entidad: string;    // Nombre del indicador
   total: number;      // Cantidad
@@ -247,17 +267,20 @@ export interface TotalesItem {
   color?: string;     // Color del card
 }
 
+/** Resumen de totales con el momento de generación del servidor. */
 export interface TotalesResponse {
   totales: TotalesItem[];
   generado_en: string;  // Timestamp ISO
 }
 
+/** Alias de un indicador estadístico individual. */
 export type Totales = TotalesItem;  // Alias para compatibilidad
 
 
 // ===================================================================
 // ENUM DE CAMPOS CLÍNICOS (PARA REFERENCIAS)
 // ===================================================================
+/** Claves estables usadas para identificar secciones del registro clínico. */
 export enum CamposClinicos {
   CICLO = 'ciclo',
   INDICADORES = 'indicadores',
@@ -280,6 +303,7 @@ export enum CamposClinicos {
 // ===================================================================
 // TIPOS DE CONSULTA
 // ===================================================================
+/** Códigos numéricos de los tipos principales de consulta. */
 export enum TipoConsulta {
   COEX = 1,
   HOSPITALIZACION = 2,
@@ -386,6 +410,7 @@ export function contarPorEstado(consulta: ConsultaOut): Record<EstadoCiclo, numb
 }
 
 
+/** Campos mínimos devueltos por la búsqueda de pacientes desde consultas. */
 export interface PacienteBuscado {
   id: number,
   cui: number,
@@ -395,6 +420,7 @@ export interface PacienteBuscado {
 
 }
 
+/** Contenedor de resultados de búsqueda usados en recepción. */
 export interface PacientesBuscado {
   pacientes: Paciente[];
 }

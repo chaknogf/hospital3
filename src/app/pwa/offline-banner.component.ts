@@ -11,6 +11,7 @@ import { PendingMutation } from '../service/offline-database.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./offline-banner.component.css']
 })
+/** Informa el estado sin conexión y permite mostrar operaciones pendientes. */
 export class OfflineBannerComponent {
   sync: OfflineSyncService;
 
@@ -24,6 +25,7 @@ export class OfflineBannerComponent {
   }
 
   resumenOperacion(m: PendingMutation): string {
+    // Se muestra solo el último segmento para no exponer la URL completa en el aviso.
     const partes = m.url.split('/');
     const recurso = partes[partes.length - 1] || partes[partes.length - 2] || m.url;
     return `${m.method} /…/${recurso}`;

@@ -7,6 +7,7 @@ import { BaseApiService, PaginationState } from '../../service/base-api.service'
 import { FiltroCitas } from '../../interface/filtros.model';
 import { CitaCreate, CitaListResponse, CitaResponse, Citas, ConteoCitas, DiaInhabil } from '../../interface/citas';
 
+/** Centraliza las solicitudes de agenda, citas y días inhábiles. */
 @Injectable({ providedIn: 'root' })
 export class CitaService extends BaseApiService {
 

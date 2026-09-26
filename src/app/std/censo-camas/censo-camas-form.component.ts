@@ -17,6 +17,7 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, ReactiveFormsModule]
 })
+/** Captura el censo diario de camas por servicio y sexo. */
 export class CensoCamasFormComponent implements OnInit, OnDestroy {
 
   private fb = inject(FormBuilder);

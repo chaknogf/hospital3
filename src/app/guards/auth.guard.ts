@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 
+/** Restringe la activación de rutas a una sesión con token y usuario vigentes. */
 @Injectable({
   providedIn: 'root'
 })
@@ -8,6 +9,7 @@ export class AuthGuard implements CanActivate {
 
   constructor(private router: Router) { }
 
+  /** Bloquea la navegación si faltan credenciales o el JWT está vencido/mal formado. */
   canActivate(): boolean {
     const token = localStorage.getItem('access_token');
     const username = localStorage.getItem('username');
@@ -16,6 +18,8 @@ export class AuthGuard implements CanActivate {
       return false;
     }
     try {
+      // Esta comprobación de expiración evita navegar con credenciales vencidas;
+      // la autorización real y la firma del token se validan en el backend.
       const payload = JSON.parse(atob(token.split('.')[1]));
       const now = Math.floor(Date.now() / 1000);
       if (payload.exp && payload.exp < now) {

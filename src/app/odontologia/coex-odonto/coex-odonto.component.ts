@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CoexFiltradoComponent } from '../../registros/consultas/coex/coexFiltrado/coexFiltrado.component';
 
+/** Muestra las consultas externas filtradas para odontología. */
 @Component({
   selector: 'app-coex-odonto',
   templateUrl: './coex-odonto.component.html',

@@ -7,6 +7,7 @@ import { Parentescos } from '../enum/parentescos';
 
 
 
+/** Catálogos territoriales y clínicos entregados juntos a formularios. */
 export interface Enumeradores {
   estadocivil: Dict[];
   gradoacademico: Dict[];

@@ -16,6 +16,7 @@ import { menuColor } from '../../shared/module-menu';
   imports: [RouterModule]
 })
 
+/** Presenta las herramientas de consulta, encamamiento y reportes de UISAU. */
 export class UisauMenuComponent implements OnInit {
 
   title = 'UISAU';

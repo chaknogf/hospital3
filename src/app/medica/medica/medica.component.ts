@@ -4,6 +4,7 @@ import { IconService } from '../../service/icon.service';
 import { menuColor } from '../../shared/module-menu';
 
 
+/** Menú de acceso a las funciones de atención médica. */
 @Component({
   selector: 'app-medica',
   templateUrl: './medica.component.html',

@@ -17,6 +17,7 @@ import { Especialidad } from '../../../interface/quirofano.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]
 })
+/** Mantiene el catálogo de especialidades utilizado en consultas y reportes. */
 export class GestionEspecialidadesComponent implements OnDestroy {
   private router = inject(Router);
   private api = inject(EspecialidadesService);

@@ -1,5 +1,6 @@
 
 
+/** Constancia de nacimiento persistida, con identificadores y auditoría. */
 export interface ConstanciaNacimientoOut {
   documento: string;
   paciente_id: number;
@@ -21,6 +22,7 @@ export interface ConstanciaNacimientoOut {
 
 
 
+/** Campos necesarios para registrar una constancia de nacimiento. */
 export interface ConstanciaNacimientoCreate {
   documento: string;
   paciente_id: number;
@@ -38,6 +40,7 @@ export interface ConstanciaNacimientoCreate {
 }
 
 
+/** Versión anterior de una constancia conservada para auditoría. */
 export interface ConstanciaNacHistorial {
   id: number;
   constancia_id: number;
@@ -49,6 +52,7 @@ export interface ConstanciaNacHistorial {
 
 
 
+/** Cambios parciales de constancia; el motivo acompaña toda actualización. */
 export interface ConstanciaNacimientoUpdate {
   nombre_madre?: string;
   vecindad_madre?: string;

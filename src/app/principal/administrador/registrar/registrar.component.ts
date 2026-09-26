@@ -21,6 +21,7 @@ import { Values } from './../../../enum/roles.enum';
   imports: [ReactiveFormsModule, FormsModule]
 })
 
+/** Formulario administrativo para crear cuentas de usuario. */
 export class RegistrarComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);

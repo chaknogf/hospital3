@@ -1,6 +1,7 @@
 import { Directive, HostListener } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator, NgControl } from '@angular/forms';
 
+/** Normaliza y valida el ingreso de un DPI de exactamente 13 dígitos. */
 @Directive({
   selector: '[validarDPI]',
   standalone: true,
@@ -26,6 +27,7 @@ export class DpiValidadorDirective implements Validator {
   }
 
   // 🔹 Validación del DPI
+  /** Requiere 13 caracteres y expone cuántos faltan en el error de validación. */
   validate(control: AbstractControl): ValidationErrors | null {
     const value = control.value || '';
     if (value.length < 13) {

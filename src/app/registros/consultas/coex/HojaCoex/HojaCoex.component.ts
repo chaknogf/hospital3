@@ -19,6 +19,7 @@ import { VecindadPipe } from '../../../../pipes/lugar.pipe';
 import { Location } from '@angular/common';
 import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
 
+/** Prepara la hoja de consulta externa con la información de atención. */
 @Component({
   selector: 'app-HojaCoex',
   templateUrl: './HojaCoex.component.html',

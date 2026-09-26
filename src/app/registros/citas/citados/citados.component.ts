@@ -16,6 +16,7 @@ import { Especialidades, KeyValue } from '../../../enum/especialidades';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+/** Presenta y administra las citas confirmadas para atención. */
 @Component({
   selector: 'app-citados',
   templateUrl: './citados.component.html',

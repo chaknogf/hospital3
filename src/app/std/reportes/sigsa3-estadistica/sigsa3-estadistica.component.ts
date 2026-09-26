@@ -17,6 +17,7 @@ interface EspecialidadRow { especialidad: string; tipos: TipoData[]; totalEspeci
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./sigsa3-estadistica.component.css']
 })
+/** Resume los registros SIGSA-3 agrupados por especialidad. */
 export class Sigsa3EstadisticaComponent implements OnInit {
 
   private api = inject(Sigsa3Service);

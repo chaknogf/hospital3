@@ -24,6 +24,7 @@ import { IconService } from '../../../service/icon.service';
 import { EspecialidadesService } from '../../../service/especialidades.service';
 import { QuirofanoService } from '../quirofano.service';
 
+/** Captura los datos de programación y realización de una intervención. */
 @Component({
   selector: 'app-quirofano-form',
   templateUrl: './quirofano-form.component.html',

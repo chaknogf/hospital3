@@ -17,6 +17,7 @@ import { environment } from '@environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]
 })
+/** Corrige o limpia el CUI asociado a registros de pacientes. */
 export class LimpiarCuiComponent implements OnDestroy {
   private router = inject(Router);
   private http = inject(HttpClient);

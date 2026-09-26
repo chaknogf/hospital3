@@ -18,6 +18,7 @@ import { Dict, especialidades } from '../../../../enum/diccionarios';
 import { VecindadPipe } from '../../../../pipes/lugar.pipe';
 import { Location } from '@angular/common';
 
+/** Presenta la hoja de consulta externa de psicología. */
 @Component({
   selector: 'app-HojaCoexPsico',
   templateUrl: './HojaCoexPsico.component.html',

@@ -12,6 +12,7 @@ import { ConsultaListResponse } from '@models/consultas';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./reingresos-tipo3.component.css']
 })
+/** Consulta el informe paginado de reingresos de tipo 3. */
 export class ReingresosTipo3Component implements OnInit {
   private api = inject(ApiService);
   datos: ConsultaListResponse['consultas'] = [];

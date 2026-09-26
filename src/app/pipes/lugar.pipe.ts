@@ -27,11 +27,13 @@ const DEPARTAMENTOS: Record<string, string> = {
   '22': 'Jutiapa',
 };
 
+/** Traduce el prefijo del código de vecindad al nombre del departamento. */
 @Pipe({
   name: 'departamento',
   standalone: true,
 })
 export class DepartamentoPipe implements PipeTransform {
+  /** Devuelve el departamento correspondiente a los dos primeros dígitos. */
   transform(value: string | null | undefined): string {
     if (!value) return '';
 
@@ -42,6 +44,7 @@ export class DepartamentoPipe implements PipeTransform {
   }
 }
 
+/** Resuelve un código municipal al nombre completo de su vecindad. */
 @Pipe({
 
   name: 'vecindad',
@@ -51,6 +54,7 @@ export class DepartamentoPipe implements PipeTransform {
 
 export class VecindadPipe implements PipeTransform {
 
+  /** Busca la etiqueta territorial y conserva el código como alternativa. */
   transform(codigo: string | null | undefined): string {
 
     if (!codigo) return '';

@@ -13,6 +13,7 @@ import { logoicon } from '../../shared/icons/svg-icon';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [LoginComponent],
 })
+/** Página pública que integra el formulario de acceso y la identidad visual. */
 export class HomeComponent implements OnInit {
   private sanitizarSvg(svg: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(svg);
@@ -41,4 +42,3 @@ export class HomeComponent implements OnInit {
   }
 
 }
-

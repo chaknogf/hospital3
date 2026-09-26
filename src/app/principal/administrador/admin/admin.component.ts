@@ -15,6 +15,7 @@ import { menuColor } from '../../../shared/module-menu';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterModule]
 })
+/** Menú de administración con accesos a las tareas de mantenimiento. */
 export class AdminComponent implements OnInit {
 
   title = 'Panel de Control';

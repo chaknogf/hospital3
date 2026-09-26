@@ -6,6 +6,7 @@ import { ConteoCitas } from '../../../interface/citas';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { Location } from '@angular/common';
 
+/** Resume los conteos de citas según los filtros recibidos. */
 @Component({
   selector: 'app-citaConteo',
   templateUrl: './citaConteo.component.html',

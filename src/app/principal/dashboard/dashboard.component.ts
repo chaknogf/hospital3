@@ -22,6 +22,7 @@ interface Modulo {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterModule]
 })
+/** Presenta los accesos a módulos y los totales generales del hospital. */
 export class DashboardComponent implements OnInit, OnDestroy {
 
   private router = inject(Router);

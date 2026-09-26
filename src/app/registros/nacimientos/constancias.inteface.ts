@@ -1,6 +1,7 @@
 import { Paciente } from "../../interface/interfaces";
 import { Medico } from "../../interface/medicos.interface";
 
+/** Datos de la constancia de nacimiento y sus relaciones de paciente y personal. */
 export interface ConstanciaNacimiento {
   id: number;
   documento?: string;
@@ -25,11 +26,13 @@ export interface ConstanciaNacimiento {
   medico?: Medico;
 }
 
+/** Respuesta paginada de constancias de nacimiento. */
 export interface InformeNacimientoListResponse {
   total: number;
   constancias: ConstanciaNacimiento[];
 }
 
+/** Constancia de nacimiento enriquecida con el expediente del paciente. */
 export interface InformeNacimiento extends ConstanciaNacimiento {
   id: number;
   expediente?: string;

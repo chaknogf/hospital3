@@ -16,6 +16,7 @@ import { ConsultaService } from '../../consultas.service';
 import { IconService } from '../../../../service/icon.service';
 import { Location } from '@angular/common';
 
+/** Lista consultas externas y distribuye los registros por especialidad. */
 @Component({
   selector: 'app-coexLista',
   templateUrl: './coexLista.component.html',

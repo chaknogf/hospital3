@@ -17,6 +17,7 @@ import { ProcedimientoQuirofano, Especialidad } from '../../../interface/quirofa
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]
 })
+/** Administra el catálogo de procedimientos disponibles para el personal. */
 export class GestionProcedimientosComponent implements OnDestroy {
   private router = inject(Router);
   private api = inject(QuirofanoService);

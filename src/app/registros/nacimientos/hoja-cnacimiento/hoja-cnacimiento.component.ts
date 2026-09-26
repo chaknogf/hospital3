@@ -8,6 +8,7 @@ import { ApiService } from '../../../service/api.service';
 import { CnAcimientoInformeComponent, CnacimientoOut, MedicoInfo } from './cnacimiento-informe.component';
 import { CnAcimientoInformeAuxiliarComponent } from './cnacimiento-informe-auxiliar.component';
 
+/** Prepara la hoja imprimible de una constancia de nacimiento. */
 @Component({
   selector: 'app-hoja-cnacimiento',
   standalone: true,

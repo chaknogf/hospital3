@@ -12,6 +12,7 @@ import { Nombre, Paciente } from '../../../interface/interfaces';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+/** Crea o actualiza préstamos vinculados a un paciente o consulta. */
 @Component({
   selector: 'app-crearPrestamo',
   templateUrl: './crearPrestamo.component.html',
@@ -249,6 +250,7 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
     if (prestamo && limite && new Date(limite) < new Date(prestamo)) {
       return 'La fecha límite no puede ser anterior a la fecha de préstamo.';
     }
+    // La devolución solo se valida en edición, cuando ese dato está disponible.
     if (this.modoEditar && this.formUpdate.fecha_devolucion) {
       const fecDevol = this.formUpdate.fecha_devolucion;
       const fecPrestamo = this.form.fecha_prestamo ?? fecDevol;

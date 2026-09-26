@@ -24,6 +24,7 @@ import { editIcon, trashIcon } from '../../../shared/icons/svg-icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe, LibrasOnzasPipe, CapitalizePipe]
 })
+/** Lista nacimientos con acciones configurables por el módulo consumidor. */
 export class ListaNacimientosComponent implements OnInit, OnDestroy {
   @Input() sinEditar = false;
   @Input() rutaVolver = '/estadistica';

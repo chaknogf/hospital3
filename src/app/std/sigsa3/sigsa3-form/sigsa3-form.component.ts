@@ -16,6 +16,7 @@ import { MedicoOut } from '../../../interface/medicos.interface';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReactiveFormsModule]
 })
+/** Crea o actualiza una ficha de atención del registro SIGSA-3. */
 export class Sigsa3FormComponent implements OnInit {
 
   private fb = inject(FormBuilder);

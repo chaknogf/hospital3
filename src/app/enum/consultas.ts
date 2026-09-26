@@ -22,6 +22,7 @@ type EstadoCiclo =
   | "reprogramado";
 
 
+/** Claves estables para referenciar secciones clínicas en el modelo. */
 // 🔹 Campos clínicos para referencias rápidas
 export enum CamposClinicos {
   CICLO = 'ciclo',

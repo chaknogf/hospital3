@@ -1,3 +1,4 @@
+/** Registro SIGSA-3 normalizado con relaciones traducidas para su visualización. */
 export interface Sigsa3Registro {
   id: number;
   paciente_id: number;
@@ -23,6 +24,7 @@ export interface Sigsa3Registro {
   especialidad_nombre?: string | null;
 }
 
+/** Datos para crear un registro SIGSA-3 normalizado. */
 export interface Sigsa3RegistroCreate {
   paciente_id: number;
   personal_atencion_id?: number | null;
@@ -36,6 +38,7 @@ export interface Sigsa3RegistroCreate {
   especialidad_id?: number | null;
 }
 
+/** Cambios parciales permitidos en un registro SIGSA-3 normalizado. */
 export interface Sigsa3RegistroUpdate {
   paciente_id?: number;
   personal_atencion_id?: number | null;
@@ -49,6 +52,7 @@ export interface Sigsa3RegistroUpdate {
   especialidad_id?: number | null;
 }
 
+/** Filtros de texto, relaciones, fechas y paginación del listado normalizado. */
 export interface FiltroSigsa3Registro {
   q?: string;
   paciente_id?: number;
@@ -66,6 +70,7 @@ export interface FiltroSigsa3Registro {
   limit?: number;
 }
 
+/** Respuesta paginada de registros SIGSA-3 normalizados. */
 export interface Sigsa3RegistroListResponse {
   total: number;
   registros: Sigsa3Registro[];

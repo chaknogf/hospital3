@@ -10,6 +10,7 @@ import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { editIcon, printIcon } from '../../../shared/icons/svg-icon';
 
+/** Busca y administra las constancias de defunción registradas. */
 @Component({
   selector: 'app-listarDefunciones',
   templateUrl: './listarDefunciones.component.html',

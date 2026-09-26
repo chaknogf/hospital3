@@ -23,6 +23,7 @@ interface Z10PivotRow {
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./dx-z-cie10.component.css']
 })
+/** Consulta diagnósticos de códigos Z del catálogo CIE-10. */
 export class DxZCie10Component implements OnInit {
 
   private api = inject(Sigsa3Service);

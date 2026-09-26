@@ -27,6 +27,7 @@ import { CatalogoproComponent } from "../catalogopro/catalogopro.component";
     CatalogoproComponent
   ]
 })
+/** Registra procedimientos realizados por personal médico. */
 export class ProcemedicoComponent implements OnInit {
 
   private fb = inject(FormBuilder);

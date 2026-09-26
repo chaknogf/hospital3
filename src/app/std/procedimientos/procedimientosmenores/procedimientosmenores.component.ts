@@ -20,6 +20,7 @@ import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
     DatosExtraPipe
   ]
 })
+/** Registra y consulta procedimientos menores realizados en el hospital. */
 export class ProcedimientosmenoresComponent implements OnInit {
 
   private location = inject(Location);

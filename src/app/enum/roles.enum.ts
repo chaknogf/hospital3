@@ -1,8 +1,10 @@
+/** Etiqueta y código de rol disponibles en la interfaz de administración. */
 export interface Values {
   label: string;
   value: string;
 }
 
+/** Catálogo para presentación; el backend sigue siendo la autoridad de permisos. */
 export const roles: Values[] = [
   { label: 'Usuario', value: 'regular' },
   { label: 'Administrador', value: 'admin' },

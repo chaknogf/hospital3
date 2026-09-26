@@ -1,3 +1,4 @@
+/** Identidad resumida de la persona fallecida o de su madre. */
 export interface DefuncionPacienteResumen {
   id: number;
   expediente?: string;
@@ -10,6 +11,7 @@ export interface DefuncionPacienteResumen {
   defuncion?: string;
 }
 
+/** Datos básicos del profesional relacionado con la defunción. */
 export interface DefuncionMedicoResumen {
   id: number;
   nombre?: string;
@@ -17,6 +19,7 @@ export interface DefuncionMedicoResumen {
   especialidad?: string;
 }
 
+/** Constancia de defunción con causas, circunstancias y relaciones resueltas. */
 export interface DefuncionOut {
   id: number;
   personal_atencion_id?: number;
@@ -63,6 +66,7 @@ export interface DefuncionOut {
   medico?: DefuncionMedicoResumen;
 }
 
+/** Datos capturados para registrar una defunción. */
 export interface DefuncionCreate {
   personal_atencion_id?: number;
   fecha_defuncion?: string;
@@ -94,6 +98,7 @@ export interface DefuncionCreate {
   observaciones?: string;
 }
 
+/** Campos opcionales editables de una constancia de defunción. */
 export interface DefuncionUpdate {
   personal_atencion_id?: number;
   fecha_defuncion?: string;
@@ -125,11 +130,13 @@ export interface DefuncionUpdate {
   observaciones?: string;
 }
 
+/** Listado de constancias de defunción con total para paginación. */
 export interface DefuncionListResponse {
   total: number;
   defunciones: DefuncionOut[];
 }
 
+/** Paciente fallecido junto con el resumen de su constancia. */
 export interface PacienteFallecidoOut {
   id: number;
   expediente?: string;
@@ -156,11 +163,13 @@ export interface PacienteFallecidoOut {
   };
 }
 
+/** Respuesta de búsqueda paginada de pacientes fallecidos. */
 export interface PacientesFallecidosResponse {
   total: number;
   pacientes: PacienteFallecidoOut[];
 }
 
+/** Payload de registro de defunción asociado al paciente seleccionado. */
 export interface RegistrarDefuncionRequest {
   personal_atencion_id?: number;
   fecha_defuncion?: string;

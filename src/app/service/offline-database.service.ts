@@ -3,6 +3,7 @@ import Dexie, { type Table } from 'dexie';
 import { Paciente } from '../interface/interfaces';
 import { ConsultaOut } from '../interface/consultas';
 
+/** Entrada persistida en IndexedDB; el TTL se evalúa al leer, no mediante temporizadores. */
 export interface CacheEntry<T = any> {
   key: string;
   data: T;
@@ -10,6 +11,7 @@ export interface CacheEntry<T = any> {
   ttl: number;
 }
 
+/** Mutación local pendiente de enviar al servidor cuando se recupere la conexión. */
 export interface PendingMutation {
   id?: number;
   method: 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -22,12 +24,14 @@ export interface PendingMutation {
   lastError?: string;
 }
 
+/** Marca temporal y cantidad asociadas a una descarga completa de datos. */
 export interface SyncMeta {
   key: string;
   timestamp: number;
   total: number;
 }
 
+/** Persistencia offline compartida para caché, sincronización y datos clínicos locales. */
 @Injectable({ providedIn: 'root' })
 export class OfflineDatabaseService extends Dexie {
   cache!: Table<CacheEntry, string>;
@@ -49,6 +53,7 @@ export class OfflineDatabaseService extends Dexie {
     });
   }
 
+  /** Lee una entrada y elimina de IndexedDB la que ya superó su TTL. */
   async getCached<T>(key: string): Promise<T | null> {
     const entry = await this.cache.get(key);
     if (!entry) return null;
@@ -59,6 +64,7 @@ export class OfflineDatabaseService extends Dexie {
     return entry.data as T;
   }
 
+  /** Guarda el valor junto con la hora de escritura y su vigencia en milisegundos. */
   async setCache(key: string, data: any, ttl: number = 5 * 60 * 1000): Promise<void> {
     await this.cache.put({ key, data, timestamp: Date.now(), ttl });
   }
@@ -67,6 +73,7 @@ export class OfflineDatabaseService extends Dexie {
     await this.cache.clear();
   }
 
+  /** Persiste una mutación antes de devolver su identificador para permitir reintentos. */
   async addMutation(mutation: Omit<PendingMutation, 'id'>): Promise<number> {
     return this.mutations.add(mutation as PendingMutation);
   }
@@ -144,6 +151,7 @@ export class OfflineDatabaseService extends Dexie {
     return this.consultas.count();
   }
 
+  /** Borra explícitamente todas las tablas locales, incluida la cola pendiente. */
   async clearAllData(): Promise<void> {
     await this.pacientes.clear();
     await this.consultas.clear();
@@ -152,6 +160,7 @@ export class OfflineDatabaseService extends Dexie {
     await this.syncMeta.clear();
   }
 
+  /** Conserva la información local al cerrar sesión para no perder trabajo offline. */
   async clearOnLogout(): Promise<void> {
     // NO limpiar `mutations`: las creaciones/actualizaciones de pacientes hechas
     // sin conexión son datos del usuario y deben conservarse para sincronizar

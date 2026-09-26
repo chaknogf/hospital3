@@ -12,6 +12,7 @@ import { ConsultaListResponse } from '../interface/consultas';
 import { Medico } from '../interface/medicos.interface';
 import { Usuario, UsuarioOut, UsersListResponse } from '../interface/usuarios.interface';
 
+/** Fachada de endpoints consumidos por los módulos; reutiliza caché y cola offline. */
 @Injectable({ providedIn: 'root' })
 export class ApiService extends BaseApiService {
   private estadisticas = inject(EstadisticasService);
@@ -113,6 +114,7 @@ export class ApiService extends BaseApiService {
   }
 
   // ── Autenticación (delegado a AuthService) ──────────────
+  /** Delega el inicio de sesión y expone el estado compartido de carga. */
   login(username: string, password: string): Observable<any> {
     this.isLoading.set(true);
     return this.auth.login(username, password).pipe(
@@ -128,6 +130,7 @@ export class ApiService extends BaseApiService {
     return this.auth.getUsuarioActual();
   }
 
+  /** Delega el cierre de sesión conservando las mutaciones offline pendientes. */
   logOut(): void {
     this.auth.logOut();
   }

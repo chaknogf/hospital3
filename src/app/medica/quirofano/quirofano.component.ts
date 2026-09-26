@@ -18,6 +18,7 @@ import { QuirofanoService } from './quirofano.service';
 const ESTADOS_INACTIVOS = new Set(['recepcion', 'archivo', 'descartado', 'egreso']);
 const TIPO_HOSPITALIZACION = 2;
 
+/** Consulta y administra pacientes e intervenciones del área quirúrgica. */
 @Component({
   selector: 'app-quirofano',
   templateUrl: './quirofano.component.html',

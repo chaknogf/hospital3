@@ -11,6 +11,7 @@ import { ApiService } from '@services/api.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./estadisticas-nacimientos.component.css']
 })
+/** Presenta indicadores agregados del registro de nacimientos. */
 export class EstadisticasNacimientosComponent implements OnInit {
   private api = inject(ApiService);
   data: any = null;

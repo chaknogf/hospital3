@@ -9,6 +9,7 @@ import { DatosExtraPipe } from '../../pipes/datos-extra.pipe';
 
 interface GrupoAnt { key: keyof NonNullable<DatoMedico['antecedentes']>; label: string; }
 
+/** Presenta el contenido y los datos asociados a una nota médica. */
 @Component({
   selector: 'app-verNotaMedica',
   templateUrl: './verNotaMedica.component.html',

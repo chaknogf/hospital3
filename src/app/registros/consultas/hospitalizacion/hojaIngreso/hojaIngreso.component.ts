@@ -17,6 +17,7 @@ import { PacienteService } from '../../../patient/paciente.service';
 import { Location } from '@angular/common';
 import { CapitalizePipe } from '../../../../pipes/capitalize.pipe';
 
+/** Presenta e imprime los datos de ingreso hospitalario de un paciente. */
 @Component({
   selector: 'app-hojaIngreso',
   templateUrl: './hojaIngreso.component.html',

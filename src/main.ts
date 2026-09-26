@@ -9,6 +9,8 @@ import { routes } from './app/app.routes';
 import { authInterceptor } from './app/service/auth.interceptor';
 import { retryInterceptor } from './app/service/retry.interceptor';
 
+// El reintento se limita a GET y el interceptor de autenticación añade el JWT;
+// ninguna escritura se repite automáticamente para evitar duplicar operaciones.
 bootstrapApplication(AppComponent, {
   providers: [
     provideZoneChangeDetection(),provideHttpClient(

@@ -21,6 +21,7 @@ import { Values } from './../../../enum/roles.enum';
   imports: [ReactiveFormsModule, FormsModule]
 })
 
+/** Consulta y actualiza los datos de una cuenta seleccionada. */
 export class UsuarioComponent implements OnInit {
 
   private route = inject(ActivatedRoute);

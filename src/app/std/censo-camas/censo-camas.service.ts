@@ -17,6 +17,7 @@ import {
 } from './censo-camas.interface';
 
 @Injectable({ providedIn: 'root' })
+/** Consulta y modifica censos diarios, resúmenes e indicadores de camas. */
 export class CensoCamasService extends BaseApiService {
 
   private registrosSubject = new BehaviorSubject<CensoCamasOut[]>([]);
@@ -60,7 +61,9 @@ export class CensoCamasService extends BaseApiService {
     );
   }
 
+  /** Guarda el censo de la combinación fecha-servicio-sexo sin duplicar el registro. */
   upsert(data: CensoCamasCreate): Observable<CensoCamasOut> {
+    // El endpoint consolida el censo por fecha, servicio y sexo en vez de crear duplicados.
     this.isLoading.set(true);
     return this.offMutation('POST', `${this.baseUrl}/censo-camas/upsert`, data).pipe(
       finalize(() => this.isLoading.set(false))
@@ -107,7 +110,9 @@ export class CensoCamasService extends BaseApiService {
     );
   }
 
+  /** Replica un día completo o un servicio específico en otra fecha. */
   copiarDiaAnterior(origen: string, destino: string, servicio_id?: number | null): Observable<CopiarDiaResponse> {
+    // Un servicio nulo solicita copiar todos los servicios del día de origen.
     this.isLoading.set(true);
     return this.offMutation('POST', `${this.baseUrl}/censo-camas/copiar-dia-anterior`, {
       origen,

@@ -18,6 +18,7 @@ import {
   IntervencionListResponse,
 } from '../../interface/quirofano.interface';
 
+/** Centraliza el acceso a las consultas de programación e intervención quirúrgica. */
 @Injectable({ providedIn: 'root' })
 export class QuirofanoService extends BaseApiService {
 

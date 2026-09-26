@@ -14,6 +14,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
+/** Gestiona el inicio de sesión y presenta los errores devueltos por la API. */
 export class LoginComponent implements OnDestroy {
   loginForm: FormGroup;
   errorMessage: string = '';
@@ -67,6 +68,7 @@ export class LoginComponent implements OnDestroy {
     });
   }
 
+  /** Convierte errores HTTP de autenticación en mensajes aptos para el formulario. */
   getErrorMessage(error: any): string {
     if (!error || error instanceof Error) {
       return error?.message ?? 'Error desconocido. Inténtalo nuevamente.';

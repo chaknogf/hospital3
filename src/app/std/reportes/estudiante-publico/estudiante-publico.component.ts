@@ -11,6 +11,7 @@ import { ApiService } from '@services/api.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./estudiante-publico.component.css']
 })
+/** Presenta el informe de consultas asociadas a estudiantes del sector público. */
 export class EstudiantePublicoComponent implements OnInit {
   private api = inject(ApiService);
   data: any = null;

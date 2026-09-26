@@ -17,6 +17,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 
+/** Lista y administra las consultas de hospitalización e ingreso. */
 @Component({
   selector: 'app-ingresos',
   templateUrl: './ingresos.component.html',

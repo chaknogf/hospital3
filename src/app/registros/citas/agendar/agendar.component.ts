@@ -23,6 +23,7 @@ import { EspecialidadItem, MedicosService } from '../../../std/medicos/medicos.s
 import { MedicoOut } from '../../../interface/medicos.interface';
 import { Location } from '@angular/common';
 
+/** Agenda o modifica citas y valida disponibilidad según especialidad y fecha. */
 @Component({
   selector: 'app-agendar',
   templateUrl: './agendar.component.html',
@@ -124,6 +125,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
         if (!fecha) { this.avisoFecha.set(null); return; }
         const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
         const [y, m, d] = fecha.split('-').map(Number);
+        // Se usa fecha local para evitar que la zona horaria desplace el día seleccionado.
         this.form.get('dia_semana')?.setValue(dias[new Date(y, m - 1, d).getDay()], { emitEvent: false });
         this.avisoFecha.set(this.validarFecha(fecha));
       });
@@ -186,6 +188,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
       limit: 500,
     }).pipe(takeUntil(this.destroy$)).subscribe({
       next: response => {
+        // Descarta respuestas anteriores si el usuario cambió de especialidad mientras cargaban.
         if (version !== this.filtroPersonalVersion) return;
         this.personalFiltrado = response.personal_atencion.filter(
           persona => persona.especialidad_id === especialidadReal.id
@@ -225,6 +228,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
     const local = new Date(y, m - 1, d);
     if (isNaN(local.getTime())) return null;
     const diaSemana = local.getDay();
+    // Además del fin de semana, se respetan los cierres configurados por administración.
     if (diaSemana === 0 || diaSemana === 6) {
       return 'Las citas solo se agendan en días hábiles (lunes a viernes).';
     }

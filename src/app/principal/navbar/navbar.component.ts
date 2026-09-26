@@ -12,6 +12,7 @@ import { ThemeService, ThemeName } from '../../service/theme.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
+/** Barra global con navegación, sesión y selección del tema visual. */
 export class NavbarComponent {
   @Input() usuario: string = 'usuario';
   @Input() rol: string = 'rol';

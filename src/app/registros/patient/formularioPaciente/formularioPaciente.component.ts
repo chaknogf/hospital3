@@ -41,6 +41,7 @@ interface Reference {
   parentesco?: string;
 }
 // ======= DECORADOR DEL COMPONENTE =======
+/** Crea o edita expedientes y coordina sus datos demográficos y referencias. */
 @Component({
   selector: 'app-formularioPaciente',
   templateUrl: './formularioPaciente.component.html',
@@ -380,6 +381,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
         try {
           this.enEdicion.set(true);
 
+          // El backend separa referencias y datos del paciente; ambos se normalizan antes del patch.
           // Convertir formato backend → form
           const pacienteParaForm = this.pacienteUtil.convertirPacienteDesdeBackend(data);
           const referenciasForm =

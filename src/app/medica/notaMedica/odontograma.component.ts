@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { CommonModule } from '@angular/common';
 import { DenticionDental, Odontograma, SuperficieDental } from './odontograma.model';
 
+/** Permite visualizar y actualizar las superficies y condiciones dentales. */
 @Component({
   selector: 'app-odontograma',
   standalone: true,

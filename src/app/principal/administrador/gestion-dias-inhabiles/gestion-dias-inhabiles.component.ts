@@ -14,6 +14,7 @@ import { DiaInhabil } from '../../../interface/citas';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, FormsModule],
 })
+/** Gestiona los días inhábiles que afectan la programación de atención. */
 export class GestionDiasInhabilesComponent implements OnInit, OnDestroy {
   private api = inject(CitaService);
   private destroy$ = new Subject<void>();

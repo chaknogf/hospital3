@@ -8,6 +8,7 @@ import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { BaseApiService, PaginationState } from '../../service/base-api.service';
 import { FiltroMedico, MedicoCreate, MedicoListResponse, MedicoOut, MedicoUpdate } from '../../interface/medicos.interface';
 
+/** Opción de especialidad utilizada en formularios de personal médico. */
 export interface EspecialidadItem {
   id: number;
   nombre: string;
@@ -20,6 +21,7 @@ export interface EspecialidadItem {
 @Injectable({
   providedIn: 'root'
 })
+/** Consulta y mantiene el personal médico y sus especialidades. */
 export class MedicosService extends BaseApiService {
 
   // ======= SUBJECTS =======
@@ -106,6 +108,7 @@ export class MedicosService extends BaseApiService {
    * Busca primer médico que coincida
    */
   buscarMedico(filtros: FiltroMedico): Observable<MedicoOut | null> {
+    // El formulario usa una coincidencia para precargar el primer resultado encontrado.
     const params = this.limpiarParametros(filtros);
 
     return this.http.get<MedicoListResponse>(

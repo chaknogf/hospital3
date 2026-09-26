@@ -16,6 +16,7 @@ import { menuColor } from '../../shared/module-menu';
   imports: [RouterModule]
 })
 
+/** Menú de Trabajo Social con accesos a consultas, nacimientos y reportes. */
 export class MenutsComponent implements OnInit {
 
   title = 'Trabajo Social';

@@ -16,6 +16,7 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]
 })
+/** Administra los servicios hospitalarios disponibles para encamamiento. */
 export class GestionEncamamientoComponent implements OnDestroy {
   private router = inject(Router);
   private api = inject(ApiService);

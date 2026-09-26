@@ -18,6 +18,7 @@ function parseDateLocal(iso: string): Date | null {
   return isNaN(d.getTime()) ? null : d;
 }
 
+/** Compone los datos de defunción en el formato de informe imprimible. */
 @Component({
   selector: 'app-defuncion-informe',
   standalone: true,

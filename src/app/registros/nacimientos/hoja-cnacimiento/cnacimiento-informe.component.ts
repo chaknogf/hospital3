@@ -5,6 +5,7 @@ import { SafeHtml } from '@angular/platform-browser';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { LibrasOnzasPipe } from '../../../pipes/librasOnza.pipe';
 
+/** Nombre desglosado que requiere el formato oficial de nacimiento. */
 export interface NombrePersona {
   primer_nombre?: string | null;
   segundo_nombre?: string | null;
@@ -14,6 +15,7 @@ export interface NombrePersona {
   apellido_casada?: string | null;
 }
 
+/** Datos clínicos del neonato mostrados en el informe oficial. */
 export interface NeonatalesInfo {
   peso_nacimiento?: string | null;
   hora_nacimiento?: string | null;
@@ -23,12 +25,14 @@ export interface NeonatalesInfo {
   id_medico?: number | null;
 }
 
+/** Datos demográficos usados para identificar al recién nacido. */
 export interface DemograficosInfo {
   vecindad?: string | null;
   lugar_nacimiento?: string | null;
   nacionalidad?: string | null;
 }
 
+/** Datos de identificación y residencia de la madre. */
 export interface MadreInfo {
   nombre?: NombrePersona | null;
   fecha_nacimiento?: string | null;
@@ -37,6 +41,7 @@ export interface MadreInfo {
   datos_extra?: { demograficos?: DemograficosInfo | null } | null;
 }
 
+/** Datos del paciente recién nacido que aparecen en el informe. */
 export interface PacienteInfo {
   nombre?: NombrePersona | null;
   sexo?: string | null;
@@ -44,6 +49,7 @@ export interface PacienteInfo {
   datos_extra?: { neonatales?: NeonatalesInfo | null } | null;
 }
 
+/** Datos del personal médico relacionados con el nacimiento. */
 export interface MedicoInfo {
   nombre?: string | null;
   sexo?: string | null;
@@ -51,6 +57,7 @@ export interface MedicoInfo {
   dpi?: string | number | bigint | null;
 }
 
+/** Modelo compuesto de datos para imprimir el informe de nacimiento. */
 export interface CnacimientoOut {
   id: number;
   documento?: string | null;
@@ -85,6 +92,7 @@ function parseDateLocal(iso: string): Date | null {
   return isNaN(d.getTime()) ? null : d;
 }
 
+/** Renderiza el informe oficial de una constancia de nacimiento. */
 @Component({
   selector: 'app-cnacimiento-informe',
   standalone: true,

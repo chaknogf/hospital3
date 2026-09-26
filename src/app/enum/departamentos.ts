@@ -1,9 +1,11 @@
 // enum/departamentos.ts
+/** Departamento guatemalteco representado por su código territorial. */
 export interface Departamento {
   value: string;
   label: string;
 }
 
+/** Catálogo de códigos departamentales usados por formularios y filtros. */
 export const departamentos: Departamento[] = [
   { value: '01', label: 'Guatemala' },
   { value: '02', label: 'El Progreso' },
@@ -30,6 +32,7 @@ export const departamentos: Departamento[] = [
 ];
 
 
+/** Municipio local con su código geográfico y vecindad legible. */
 export interface Municipio {
   vecindad: string;
   municipio: string;
@@ -37,6 +40,7 @@ export interface Municipio {
   codigo: string
 }
 
+/** Catálogo de municipios empleado para resolver códigos sin conexión. */
 export const municipios: Municipio[] = [
   {
     vecindad: "Quesada, Jutiapa",

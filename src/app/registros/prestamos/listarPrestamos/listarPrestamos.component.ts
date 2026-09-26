@@ -17,6 +17,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+/** Lista préstamos de expedientes y permite revisar su vigencia. */
 @Component({
   selector: 'app-listarPrestamos',
   templateUrl: './listarPrestamos.component.html',

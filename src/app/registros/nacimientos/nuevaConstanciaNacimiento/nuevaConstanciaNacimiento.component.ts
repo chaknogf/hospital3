@@ -11,6 +11,7 @@ import { of } from 'rxjs';
 import { ApiService } from '../../../service/api.service';
 import { Medico } from '../../../interface/medicos.interface';
 
+/** Registra una constancia de nacimiento vinculando neonato, madre y personal. */
 @Component({
   selector: 'app-nuevaConstanciaNacimiento',
   templateUrl: './nuevaConstanciaNacimiento.component.html',
@@ -215,6 +216,7 @@ export class NuevaConstanciaNacimientoComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         if (!res?.id) return;
         const id = res.id;
+        // El estado inicial forma parte del flujo del informe y se asigna tras crear la constancia.
         this.api.updateEstadoInforme(id, 'creado').pipe(
           catchError(err => {
             console.error('Error al establecer estado inicial:', err);

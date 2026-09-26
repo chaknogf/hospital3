@@ -18,6 +18,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 
+/** Busca y administra pacientes, admisiones, vínculos y citas. */
 @Component({
   selector: 'app-pacientes',
   templateUrl: './pacientes.component.html',
@@ -332,6 +333,7 @@ export class PacientesComponent implements OnInit, OnDestroy {
 
     const edad = this.calcularEdad(paciente.fecha_nacimiento || '');
 
+    // Este indicador delimita el rango usado por el formulario de admisión.
     return paciente.sexo?.toUpperCase() === 'F' && edad > 12 && edad < 54;
   }
 

@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
+/** Resalta coincidencias de búsqueda escapando texto antes de generar HTML. */
 @Pipe({
   name: 'highlight',
   standalone: true
@@ -8,6 +9,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 export class HighlightPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
 
+  /** Marca coincidencias literales del texto buscado sin interpretar HTML de entrada. */
   transform(value: string | null | undefined, search: string): SafeHtml | string {
     if (!value) return '';
     if (!search?.trim()) return value;

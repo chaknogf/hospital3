@@ -1,6 +1,7 @@
 /////////////////////////
 // Interfaces Base
 /////////////////////////
+/** Opción de catálogo; sus valores deben conservar compatibilidad con la API. */
 export interface Dict {
   label: string;
   value: any;
@@ -13,6 +14,7 @@ export interface Dict {
 // Basados en SIGSA
 /////////////////////////
 
+/** Estados civiles codificados usados en los datos demográficos. */
 export const estadoCivil: Dict[] = [
   { label: 'Casado', value: 1 },
   { label: 'Unido', value: 2 },
@@ -21,6 +23,7 @@ export const estadoCivil: Dict[] = [
 
 ]
 
+/** Códigos SIGSA y etiquetas para clasificar consultas. */
 export const tipoConsulta: Dict[] = [
   { label: 'COEX', value: 1 },
   { label: 'Hospitalización', value: 2 },
@@ -29,6 +32,7 @@ export const tipoConsulta: Dict[] = [
   { label: 'Otro', value: 99 },
 ];
 
+/** Catálogo de idiomas de uso en los formularios demográficos. */
 export const idiomas: Dict[] = [
   { label: 'Achi’', value: 1 },
   { label: 'Akateka', value: 2 },
@@ -57,6 +61,7 @@ export const idiomas: Dict[] = [
   { label: 'Otro', value: 25 }
 ];
 
+/** Pueblos y categorías de autoidentificación disponibles. */
 export const pueblos: Dict[] = [
   { label: 'Ladino', value: 1 },
   { label: 'Maya', value: 2 },
@@ -72,11 +77,13 @@ export const pueblos: Dict[] = [
 /////////////////////////
 
 
+/** Códigos de tipo de parto reconocidos por el sistema. */
 export const partos: Dict[] = [
   { label: 'Parto Vaginal', value: 'PES' },
   { label: 'Parto Cesárea', value: 'CSTP' },
 ]
 
+/** Parentescos con identificadores numéricos usados en expedientes. */
 export const parentescos: Dict[] = [
   { label: 'Madre', value: 1 },
   { label: 'Padre', value: 2 },
@@ -99,6 +106,7 @@ export const parentescos: Dict[] = [
   { label: 'Otro', value: 19 },
 ];
 
+/** Niveles educativos con los códigos usados por la API. */
 export const gradoAcademicos: Dict[] = [
 
   { label: 'Pre Primaria', value: 2 },
@@ -110,6 +118,7 @@ export const gradoAcademicos: Dict[] = [
   { label: 'No indica', value: 9 },
 ]
 
+/** Estados de ciclo y referencia de actividad para los flujos clínicos. */
 export const ciclos: Dict[] = [
   { label: 'Admisión', value: 'admision', ref: 'activo' },
   { label: 'Actualización', value: 'actualizado', ref: 'none' },
@@ -132,6 +141,7 @@ export const ciclos: Dict[] = [
   { label: 'Descartado', value: 'descartado', ref: 'none' }
 ];
 
+/** Especialidades filtrables por tipo de servicio y flujo de atención. */
 export const especialidades: Dict[] = [
   { label: 'Pediatria', value: 'PEDI', ref: 'all' },
   { label: 'Medicina Interna', value: 'MEDI', ref: 'all' }, // combinación para diferenciar
@@ -145,6 +155,7 @@ export const especialidades: Dict[] = [
   { label: 'General', value: 'GENE', ref: 'admision' }
 ];
 
+/** Especialidades que pueden asociarse a procedimientos registrados. */
 export const especialidadesProcedimientos: Dict[] = [
   { label: 'Pediatria', value: 'PEDI', ref: 'all' },
   { label: 'Medicina Interna', value: 'MEDI', ref: 'all' }, // combinación para diferenciar
@@ -157,6 +168,7 @@ export const especialidadesProcedimientos: Dict[] = [
   { label: 'Enfermeria', value: 'ENFE', ref: 'proce' }
 ];
 
+/** Lugares de servicio disponibles para la captura de procedimientos. */
 export const lugarServicios: Dict[] = [
   { label: 'Consulta Externa', value: 'COEX' },
   { label: 'Hospitalización', value: 'HOSP' },
@@ -165,6 +177,7 @@ export const lugarServicios: Dict[] = [
   { label: 'Quirofano Electivas', value: 'SOPEL' }
 ]
 
+/** Etiquetas abreviadas de especialidad usadas en selectores de consulta. */
 export const especialidadesConsulta: Dict[] = [
   { label: 'Pedia', value: 'PEDI', ref: 'all' },
   { label: 'Medi', value: 'MEDI', ref: 'all' }, // combinación para diferenciar
@@ -179,6 +192,7 @@ export const especialidadesConsulta: Dict[] = [
 ];
 
 
+/** Servicios clínicos; los códigos distinguen áreas con nombres similares. */
 export const servicios: Dict[] = [
   { label: 'Consulta Externa', value: 'COEX', ref: 'coex' },
   { label: 'Hospitalizacion', value: 'HOSP', ref: 'ingresos' },
@@ -216,11 +230,13 @@ export const servicios: Dict[] = [
 
 
 
+/** Etiqueta y propiedad de un indicador booleano presentado en admisión. */
 export interface OpcionBoolean {
   label: string;
   field: string; // nombre de la propiedad en tu modelo
 }
 
+/** Indicadores de contexto capturados durante el ingreso del paciente. */
 export const opcionesIngreso: OpcionBoolean[] = [
   { label: 'Traído por Bomberos', field: 'traidoBomberos' },
   { label: 'Accidente Tránsito', field: 'accidenteTransito' },
@@ -231,6 +247,7 @@ export const opcionesIngreso: OpcionBoolean[] = [
   { label: 'Personal de Hospital', field: 'personalHospital' },
 ];
 
+/** Opciones para clasificar el sector laboral del paciente. */
 export const Sector_Laboral: Dict[] = [
   { label: 'Sector Público', value: 'PUB' },
   { label: 'Sector Privado', value: 'PRI' },

@@ -1,3 +1,4 @@
+/** Catálogo de formatos de procedimiento quirúrgico. */
 export interface FormatoProcedimiento {
   formato_procedimiento_id: number;
   codigo: string;
@@ -5,6 +6,7 @@ export interface FormatoProcedimiento {
   activo: boolean;
 }
 
+/** Estado disponible para clasificar una intervención. */
 export interface EstadoCirugia {
   estado_cirugia_id: number;
   codigo: string;
@@ -12,6 +14,7 @@ export interface EstadoCirugia {
   activo: boolean;
 }
 
+/** Rango profesional del especialista responsable de la intervención. */
 export interface RangoEspecialista {
   rango_especialista_id: number;
   codigo: string;
@@ -19,6 +22,7 @@ export interface RangoEspecialista {
   activo: boolean;
 }
 
+/** Catálogo de procedencia del procedimiento quirúrgico. */
 export interface ProcedenciaProcedimiento {
   procedencia_procedimiento_id: number;
   codigo: string;
@@ -26,6 +30,7 @@ export interface ProcedenciaProcedimiento {
   activo: boolean;
 }
 
+/** Especialidad clínica y su disponibilidad para sala de operaciones. */
 export interface Especialidad {
   id: number;
   nombre: string;
@@ -35,6 +40,7 @@ export interface Especialidad {
   sop: boolean;
 }
 
+/** Procedimiento del catálogo quirúrgico asociado a una especialidad. */
 export interface ProcedimientoQuirofano {
   procedimiento_quirofano_id: number;
   codigo: string;
@@ -44,6 +50,7 @@ export interface ProcedimientoQuirofano {
   activo: boolean;
 }
 
+/** Sala quirúrgica identificada por número y estado de disponibilidad. */
 export interface QuirofanoNumero {
   quirofano_numero_id: number;
   numero: number;
@@ -51,6 +58,7 @@ export interface QuirofanoNumero {
   activo: boolean;
 }
 
+/** Intervención persistida con paciente, tiempos, equipo y procedimientos. */
 export interface IntervencionQuirurgica {
   intervencion_id: number;
   paciente_id: number;
@@ -85,6 +93,7 @@ export interface IntervencionQuirurgica {
   updated_at?: string;
 }
 
+/** Datos editables necesarios para crear una intervención quirúrgica. */
 export interface IntervencionCreate {
   paciente_id: number;
   expediente?: string;
@@ -107,6 +116,7 @@ export interface IntervencionCreate {
   observaciones?: string;
 }
 
+/** Campos parciales permitidos al actualizar una intervención. */
 export interface IntervencionUpdate {
   personal_atencion_id?: number;
   quirofano_numero_id?: number;
@@ -128,6 +138,7 @@ export interface IntervencionUpdate {
   activo?: boolean;
 }
 
+/** Resultado paginado de intervenciones quirúrgicas. */
 export interface IntervencionListResponse {
   total: number;
   intervenciones: IntervencionQuirurgica[];

@@ -8,4 +8,5 @@ import { ListaNacimientosComponent } from '../../std/nacimientos/lista-nacimient
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `<app-lista-nacimientos [sinEditar]="true" [rutaVolver]="'/TrabajoSocial'" />`
 })
+/** Reutiliza el listado de nacimientos en modo de solo lectura para Trabajo Social. */
 export class NacimientosTsComponent {}

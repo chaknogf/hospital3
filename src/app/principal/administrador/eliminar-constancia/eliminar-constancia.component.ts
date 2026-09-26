@@ -15,6 +15,7 @@ import { ConstanciasService } from '../../../registros/nacimientos/constancias.s
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReactiveFormsModule, FormsModule]
 })
+/** Busca y elimina constancias de nacimiento desde la administración. */
 export class EliminarConstanciaComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);

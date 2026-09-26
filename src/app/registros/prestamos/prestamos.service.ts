@@ -13,6 +13,7 @@ import {
 } from '../../interface/prestamos';
 import { signal } from '@angular/core';
 
+/** Encapsula las operaciones de consulta, creación y actualización de préstamos. */
 @Injectable({ providedIn: 'root' })
 export class PrestamosService extends BaseApiService {
 

@@ -10,6 +10,7 @@ import { ApiService } from '../../../service/api.service';
 import { PacienteService } from '../../patient/paciente.service';
 import { Medico } from '../../../interface/medicos.interface';
 
+/** Registra una defunción y sus datos asociados para el informe oficial. */
 @Component({
   selector: 'app-nuevaConstanciaDefuncion',
   templateUrl: './nuevaConstanciaDefuncion.component.html',

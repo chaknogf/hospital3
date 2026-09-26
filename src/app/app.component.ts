@@ -24,6 +24,7 @@ import localeEs from '@angular/common/locales/es';
   changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None
 })
+/** Componente raíz: conecta navegación, sesión y sincronización global. */
 export class AppComponent {
   title = 'medicalApp';
   modalActivo = false;
@@ -53,6 +54,7 @@ export class AppComponent {
     });
   }
 
+  /** Inicia la precarga y sincronización al entrar en rutas autenticadas. */
   detectarRuta() {
     this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
@@ -82,16 +84,19 @@ export class AppComponent {
     );
   }
 
+  /** Cierra la sesión activa desde la interfaz global. */
   desconectarUsuario() {
     this.api.logOut();
   }
 
+  /** Fuerza una descarga completa, omitiendo los TTL de sincronización. */
   reSync(): void {
     this.fullSync.syncAll(true).catch(err => {
       console.warn('Re-sincronización falló, se reintentará:', err);
     });
   }
 
+  /** Alterna entre pausar y reanudar la sincronización en curso. */
   toggleSyncPause(): void {
     const state = this.fullSync.syncState();
     if (state === 'syncing') {
@@ -101,6 +106,7 @@ export class AppComponent {
     }
   }
 
+  /** Cancela la sincronización y evita que el clic propague la acción del control. */
   cancelSync(event: MouseEvent): void {
     event.stopPropagation();
     this.fullSync.cancel();

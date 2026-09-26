@@ -16,6 +16,7 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, FechasPipe]
 })
+/** Consulta el registro de auditoría con filtros de tabla, usuario y fecha. */
 export class GestionAuditLogComponent implements OnInit, OnDestroy {
 
   private router = inject(Router);

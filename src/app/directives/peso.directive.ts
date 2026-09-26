@@ -1,6 +1,7 @@
 import { Directive, HostListener } from '@angular/core';
 import { NG_VALIDATORS, Validator, AbstractControl, ValidationErrors, NgControl } from '@angular/forms';
 
+/** Restringe y valida el peso en libras.onzas usado por los datos neonatales. */
 @Directive({
   selector: '[peso]',
   standalone: true,
@@ -43,6 +44,7 @@ export class PesoDirective implements Validator {
     }
   }
 
+  /** Valida el formato lb.oz y los límites admitidos por cada unidad. */
   validate(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     if (!value) return null;

@@ -14,6 +14,7 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]
 })
+/** Gestiona la eliminación administrativa de registros de consulta. */
 export class EliminarConsultaComponent implements OnDestroy {
   private router = inject(Router);
   private consultaService = inject(ConsultaService);

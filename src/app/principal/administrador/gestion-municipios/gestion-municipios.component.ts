@@ -16,6 +16,7 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]
 })
+/** Administra el catálogo de municipios y sus datos de departamento. */
 export class GestionMunicipiosComponent implements OnDestroy {
   private router = inject(Router);
   private api = inject(ApiService);

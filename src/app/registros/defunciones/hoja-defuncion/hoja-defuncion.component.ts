@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DefuncionInformeComponent } from '../defuncion-informe/defuncion-informe.component';
 
+/** Presenta la hoja oficial con la información de una defunción. */
 @Component({
   selector: 'app-hoja-defuncion',
   standalone: true,

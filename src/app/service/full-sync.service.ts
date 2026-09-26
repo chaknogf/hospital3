@@ -8,6 +8,7 @@ import { BaseApiService } from './base-api.service';
 
 const MS = { HORA: 3600000, DIA: 86400000 };
 
+/** Descarga pacientes y consultas por páginas y controla pausas/cancelación. */
 @Injectable({ providedIn: 'root' })
 export class FullSyncService {
   private db = inject(OfflineDatabaseService);
@@ -28,6 +29,7 @@ export class FullSyncService {
   private readonly CONCURRENCY = 5;
   private readonly FULL_DETAIL_THRESHOLD = 4000;
 
+  /** Pausa la descarga en el siguiente límite de lote/página comprobado. */
   pause(): void {
     if (this.syncState() === 'syncing') {
       this.syncState.set('paused');
@@ -38,6 +40,7 @@ export class FullSyncService {
     }
   }
 
+  /** Libera la espera creada por {@link pause}. */
   resume(): void {
     if (this.syncState() === 'paused') {
       this.syncState.set('syncing');
@@ -48,6 +51,7 @@ export class FullSyncService {
     }
   }
 
+  /** Solicita cancelación; la operación en curso termina antes de detenerse. */
   cancel(): void {
     this.cancelFlag = true;
     this.pauseResolve?.();
@@ -80,6 +84,7 @@ export class FullSyncService {
     return Date.now() - meta.timestamp > ttl;
   }
 
+  /** Sincroniza los conjuntos cuyo TTL venció, o todos cuando `force` es verdadero. */
   async syncAll(force: boolean = false): Promise<void> {
     if (this.isSyncing()) return;
     this.cancelFlag = false;
@@ -230,6 +235,7 @@ export class FullSyncService {
     }
   }
 
+  /** Actualiza el detalle local de un paciente; devuelve null si falla la API. */
   async syncPacienteDetail(id: number): Promise<Paciente | null> {
     try {
       const paciente = await firstValueFrom(
@@ -242,6 +248,7 @@ export class FullSyncService {
     }
   }
 
+  /** Resume conteos locales y fechas de la última sincronización completa. */
   async getSyncStatus(): Promise<{
     pacientes: { count: number; syncedAt: Date | null };
     consultas: { count: number; syncedAt: Date | null };

@@ -25,6 +25,7 @@ import { Dict, especialidades, tipoConsulta } from '../../enum/diccionarios';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe, TimePipe, CuiPipe, EdadPipe, Cie10Component]
 })
+/** Busca pacientes y consulta sus registros clínicos desde el módulo estadístico. */
 export class ConsultorComponent implements OnInit, OnDestroy {
 
   private api = inject(ConsultaService);

@@ -18,11 +18,13 @@ import { Injectable, signal, effect } from '@angular/core';
  * atributo en la raíz (y ajusta data-bs-theme de bootstrap para
  * mantener la coherencia).
  */
+/** Nombre de tema reconocido y modo de color compatible con Bootstrap. */
 export interface RegisteredTheme {
   name: string;
   bsTheme: 'dark' | 'light';
 }
 
+/** Registro fuente de temas disponibles para la interfaz. */
 export const REGISTERED_THEMES: RegisteredTheme[] = [
   { name: 'current', bsTheme: 'dark' },
   { name: 'hospital', bsTheme: 'light' },
@@ -30,9 +32,11 @@ export const REGISTERED_THEMES: RegisteredTheme[] = [
   { name: 'cyber-brutalism', bsTheme: 'dark' },
 ];
 
+/** Unión de nombres derivada del catálogo de temas registrados. */
 export type ThemeName = (typeof REGISTERED_THEMES)[number]['name'];
 
 @Injectable({ providedIn: 'root' })
+/** Aplica un tema registrado a la raíz del documento y lo conserva localmente. */
 export class ThemeService {
   private readonly STORAGE_KEY = 'medicalapp-theme';
 
@@ -46,12 +50,14 @@ export class ThemeService {
     return REGISTERED_THEMES;
   }
 
+  /** Cambia al tema solicitado solo si pertenece al catálogo registrado. */
   setTheme(name: string): void {
     if (!this.isRegistered(name)) return;
     this.theme.set(name as ThemeName);
     localStorage.setItem(this.STORAGE_KEY, name);
   }
 
+  /** Avanza al siguiente tema siguiendo el orden del catálogo. */
   toggleTheme(): void {
     const current = this.theme();
     const index = REGISTERED_THEMES.findIndex((t) => t.name === current);

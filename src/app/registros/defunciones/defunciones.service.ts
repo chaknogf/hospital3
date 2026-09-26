@@ -10,6 +10,7 @@ import {
 } from '../../interface/consDef';
 import { Defuncion } from './defunciones.interface';
 
+/** Gestiona la consulta, registro y actualización de defunciones. */
 @Injectable({ providedIn: 'root' })
 export class DefuncionesService extends BaseApiService {
   private defuncionesSubject = new BehaviorSubject<Defuncion[]>([]);

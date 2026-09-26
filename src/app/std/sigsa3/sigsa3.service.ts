@@ -21,6 +21,7 @@ import {
 } from '../../interface/sigsa3.interface';
 
 @Injectable({ providedIn: 'root' })
+/** Accede al registro SIGSA-3, su personal de salud y las importaciones. */
 export class Sigsa3Service extends BaseApiService {
 
   private registrosSubject = new BehaviorSubject<Sigsa3Out[]>([]);

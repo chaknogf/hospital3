@@ -1,3 +1,4 @@
+/** Registro SIGSA-3 con datos clínicos y relaciones resueltas para consulta. */
 export interface Sigsa3Out {
   id: number;
   paciente_id?: number | null;
@@ -22,6 +23,7 @@ export interface Sigsa3Out {
   especialidad_nombre?: string | null;
 }
 
+/** Datos recibidos para crear una fila SIGSA-3. */
 export interface Sigsa3Create {
   personal_salud?: string;
   personal_salud_id?: number;
@@ -44,6 +46,7 @@ export interface Sigsa3Create {
   paciente_id?: number;
 }
 
+/** Campos opcionales que pueden modificarse en un registro SIGSA-3. */
 export interface Sigsa3Update {
   personal_salud?: string;
   personal_salud_id?: number;
@@ -65,6 +68,7 @@ export interface Sigsa3Update {
   consulta_id?: number;
 }
 
+/** Criterios disponibles para localizar registros SIGSA-3. */
 export interface FiltroSigsa3 {
   personal_salud?: string;
   fecha_consulta?: string;
@@ -78,6 +82,7 @@ export interface FiltroSigsa3 {
   limit?: number;
 }
 
+/** Conteo estadístico SIGSA-3 para un grupo de especialidad y consulta. */
 export interface Sigsa3EspecialidadItem {
   especialidad?: string | null;
   tipo_consulta?: string | null;
@@ -85,6 +90,7 @@ export interface Sigsa3EspecialidadItem {
   total: number;
 }
 
+/** Informe agregado de registros SIGSA-3 por especialidad. */
 export interface Sigsa3EspecialidadResponse {
   titulo: string;
   desde: string;
@@ -94,6 +100,7 @@ export interface Sigsa3EspecialidadResponse {
   generado_en: string;
 }
 
+/** Frecuencia de un diagnóstico desglosada por sexo. */
 export interface Sigsa3DxItem {
   especialidad: string | null;
   tipo_consulta: string | null;
@@ -103,6 +110,7 @@ export interface Sigsa3DxItem {
   total: number;
 }
 
+/** Total de registros de un grupo usado en el informe diagnóstico. */
 export interface Sigsa3DxTotalGrupoItem {
   especialidad?: string | null;
   tipo_consulta?: string | null;
@@ -110,6 +118,7 @@ export interface Sigsa3DxTotalGrupoItem {
   total: number;
 }
 
+/** Informe de diagnósticos frecuentes con totales por agrupación. */
 export interface Sigsa3DxFrecuentesResponse {
   titulo: string;
   desde: string;
@@ -121,6 +130,7 @@ export interface Sigsa3DxFrecuentesResponse {
   generado_en: string;
 }
 
+/** Conteo de diagnósticos Z por tipo de consulta y pacientes. */
 export interface Sigsa3DxZItem {
   tipo_consulta: string;
   codigo_cie_10: string;
@@ -128,6 +138,7 @@ export interface Sigsa3DxZItem {
   pacientes: number;
 }
 
+/** Resultado del informe SIGSA-3 filtrado por códigos diagnósticos Z. */
 export interface Sigsa3DxZResponse {
   titulo: string;
   desde: string;
@@ -139,6 +150,7 @@ export interface Sigsa3DxZResponse {
   generado_en: string;
 }
 
+/** Estado de avance del proceso de normalización de registros SIGSA-3. */
 export interface ProgresoSigsa3 {
   step: string;
   message: string;
@@ -152,6 +164,7 @@ export interface ProgresoSigsa3 {
   aviso?: string;
 }
 
+/** Profesional de salud asociado a la captura de registros SIGSA-3. */
 export interface PersonalSalud {
   id: number;
   nombre: string;
@@ -161,6 +174,7 @@ export interface PersonalSalud {
   activo?: boolean;
 }
 
+/** Campos para registrar personal de salud en el catálogo. */
 export interface PersonalSaludCreate {
   nombre: string;
   especialidad_id?: number;
@@ -168,6 +182,7 @@ export interface PersonalSaludCreate {
   activo?: boolean;
 }
 
+/** Campos editables del personal de salud. */
 export interface PersonalSaludUpdate {
   nombre?: string;
   especialidad_id?: number;

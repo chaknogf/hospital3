@@ -7,6 +7,7 @@ import { IconService } from '../../service/icon.service';
 import { menuColor } from '../../shared/module-menu';
 
 
+/** Menú de acceso a citas y consultas de odontología. */
 @Component({
   selector: 'app-menu-odonto',
   templateUrl: './menu-odonto.component.html',

@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CitasEspecialidadComponent } from '../../registros/citas/citasEspecialidad/citasEspecialidad.component';
 
+/** Muestra las citas correspondientes a la atención nutricional. */
 @Component({
   selector: 'app-citas-nutri',
   templateUrl: './citas-nutri.component.html',

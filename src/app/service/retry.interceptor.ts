@@ -4,6 +4,7 @@ import { retry, timer, throwError } from 'rxjs';
 const RETRY_COUNT = 2;
 const RETRY_DELAY = 800;
 
+/** Reintenta solo lecturas GET ante fallos de red o errores temporales del servidor. */
 export const retryInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.method !== 'GET') {
     return next(req);

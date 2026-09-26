@@ -24,6 +24,7 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, RouterLink, DecimalPipe]
 })
+/** Consulta censos diarios y sus resúmenes por fecha y servicio. */
 export class CensoCamasListComponent implements OnInit, OnDestroy {
 
   private censoService = inject(CensoCamasService);

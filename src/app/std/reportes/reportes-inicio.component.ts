@@ -12,6 +12,7 @@ import { menuColor } from '../../shared/module-menu';
   styleUrls: ['./reportes-inicio.component.css'],
   changeDetection: ChangeDetectionStrategy.Eager,
 })
+/** Muestra el índice de reportes disponibles. */
 export class ReportesInicioComponent implements OnInit {
   title = 'Reportes';
   subtitle = 'Reportes y estadísticas del hospital';

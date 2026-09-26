@@ -23,6 +23,7 @@ interface EspecialidadRow {
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./pacientes-atendidos.component.css']
 })
+/** Presenta el informe de pacientes atendidos según los filtros disponibles. */
 export class PacientesAtendidosComponent implements OnInit {
   private api = inject(ApiService);
   data: any = null;

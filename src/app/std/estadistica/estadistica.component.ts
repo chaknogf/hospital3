@@ -16,6 +16,7 @@ import { menuColor } from '../../shared/module-menu';
   imports: [RouterModule]
 })
 
+/** Presenta los accesos a informes y estadísticas del módulo. */
 export class EstadisticaComponent implements OnInit {
 
   title = 'Estadística';

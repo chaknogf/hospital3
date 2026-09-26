@@ -11,12 +11,14 @@ import {
   CicloPatch
 } from '../interface/consultas';
 
+/** Normaliza consultas y construye payloads compatibles con formularios y API. */
 @Injectable({ providedIn: 'root' })
 export class ConsultaUtilService {
 
   constructor() { }
 
   // 🔹 Normalización completa para backend y formulario
+  /** Completa valores opcionales y convierte el ciclo legacy a una lista tipada. */
   normalizarConsulta(raw: any): ConsultaOut {
     return {
       id: raw.id,
@@ -53,6 +55,7 @@ export class ConsultaUtilService {
 
 
 
+  /** Extrae los campos de ciclo clínico reconocidos por el modelo actual. */
   normalizarCiclo(raw: any): Ciclo {
     return {
       estado: raw.estado,
@@ -73,6 +76,7 @@ export class ConsultaUtilService {
   }
 
   // 🔹 Calcular edad desde fecha
+  /** Calcula edad calendario a partir de la fecha de nacimiento. */
   calcularEdad(fechaStr?: string): { anios: number, meses: number, dias: number } {
     if (!fechaStr) return { anios: 0, meses: 0, dias: 0 };
 
@@ -97,6 +101,7 @@ export class ConsultaUtilService {
     return { anios, meses, dias };
   }
 
+  /** Considera recién nacido al paciente de hasta 28 días de edad. */
   validarRecienNacido(fechaStr: any): { recienNacido: boolean } {
     if (!fechaStr) return { recienNacido: false };
     const nacimiento = new Date(fechaStr);
@@ -120,6 +125,7 @@ export class ConsultaUtilService {
     return { recienNacido };
   }
 
+  /** Estima una fecha de nacimiento restando años, meses y días a hoy. */
   calcularFechaDesdeEdad(edad: { anios: number, meses: number, dias: number }): string {
     const hoy = new Date();
     const fecha = new Date(
@@ -143,6 +149,7 @@ export class ConsultaUtilService {
     return sistema;
   }
 
+  /** Prepara una consulta nueva con su primer evento de ciclo clínico. */
   construirRegistroConsulta(
     paciente_id: number,
     tipo_consulta: number,
@@ -167,6 +174,7 @@ export class ConsultaUtilService {
     };
   }
 
+  /** Construye el payload parcial para agregar/actualizar el estado del ciclo. */
   construirPatchCiclo(
     estado: EstadoCiclo,
     datos?: Partial<CicloPatch>
@@ -178,6 +186,7 @@ export class ConsultaUtilService {
       }
     };
   }
+  /** Omite campos ausentes del PATCH y normaliza el ciclo enviado. */
   construirConsultaPatch(data: Partial<ConsultaUpdate>): ConsultaUpdate {
     const patch: ConsultaUpdate = {};
 

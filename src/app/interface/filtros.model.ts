@@ -1,4 +1,5 @@
 // filtros.model.ts
+/** Criterios de búsqueda y paginación aceptados por el listado de pacientes. */
 export interface PacienteFiltros {
   q?: any;
   id?: string;
@@ -20,6 +21,7 @@ export interface PacienteFiltros {
 }
 
 
+/** Filtros opcionales para localizar consultas por paciente o datos clínicos. */
 export type FiltroConsulta = Partial<{
   paciente_id: number;
   expediente: string;
@@ -33,6 +35,7 @@ export type FiltroConsulta = Partial<{
   fecha: string;
 }> & Record<string, any>;
 
+/** Filtros opcionales para búsqueda y paginación de citas. */
 export type FiltroCitas = Partial<{
   id?: number;
   expediente?: string;

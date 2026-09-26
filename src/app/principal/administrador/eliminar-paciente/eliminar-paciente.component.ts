@@ -17,6 +17,7 @@ import { environment } from '@environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]
 })
+/** Permite localizar y eliminar pacientes según las reglas administrativas. */
 export class EliminarPacienteComponent implements OnDestroy {
   private router = inject(Router);
   private http = inject(HttpClient);
