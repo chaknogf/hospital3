@@ -1,4 +1,7 @@
-/* ── CONFIGURACIÓN DE PÁGINA E IMPRESIÓN ── */
+/* ════════════════════════════════════════════════════════════════
+   RENAP - INFORME DE DEFUNCIÓN - ESTILOS AISLADOS
+   ════════════════════════════════════════════════════════════════ */
+
 @page {
   size: 8.5in 14in;
   margin: 0;
@@ -7,10 +10,9 @@
 :root {
   --page-width: 215.9mm;
   --page-height: 355.6mm;
-  --page-padding: 5mm 7mm 5mm 7mm;
   --print-black: #000000;
   --print-border: #000000;
-  --print-gray-bg: #e6e6e6;
+  --print-gray-bg: #d9d9d9;
   --print-line: #333333;
   --font-main: 'Times New Roman', Times, serif;
   --font-sans: Arial, Helvetica, sans-serif;
@@ -29,116 +31,161 @@ body {
   font-family: var(--font-main);
 }
 
+/* ── RESET DE ETIQUETAS DENTRO DEL COMPONENTE ── */
+.df-page p,
+.df-page span,
+.df-page div,
+.df-page section,
+.df-page header,
+.df-page footer,
+.df-page strong,
+.df-page em,
+.df-page small,
+.df-page ul,
+.df-page ol,
+.df-page li {
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+  color: inherit;
+  background: transparent;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: normal;
+  font-style: normal;
+  text-align: inherit;
+  text-transform: none;
+  letter-spacing: normal;
+  list-style: none;
+}
+
+.df-page strong {
+  font-weight: bold;
+}
+
+.df-page table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  background: transparent;
+}
+
+.df-page td,
+.df-page th,
+.df-page tr {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: transparent;
+  font-weight: normal;
+}
+
+/* ── PÁGINA ── */
 .df-page {
-  width: var(--page-width);
-  height: var(--page-height);
-  min-height: var(--page-height);
-  margin: 10px auto;
-  padding: var(--page-padding);
+  width: 215.9mm;
+  min-height: 355.6mm;
+  margin: 8px auto;
+  padding: 3mm 5mm;
   background: #ffffff;
   position: relative;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   font-family: var(--font-main);
-  font-size: 7.5pt;
-  color: var(--print-black);
-  line-height: 1.05;
+  font-size: 7pt;
+  color: #000000;
+  line-height: 1.0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* ── ENCABEZADO ── */
-.df-header {
+.df-page .df-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
+  border-bottom: 1px solid #000000;
+  padding-bottom: 2px;
+  gap: 3px;
 }
 
-.df-header-logos {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 34%;
-}
-
-.df-header-logo {
-  width: 46px;
-  height: 38px;
+.df-page .df-header-logo {
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-sans);
-  font-size: 7pt;
-  font-weight: bold;
-  border: 1px dashed #999;
-  text-align: center;
-}
-
-.df-header-text {
-  flex: 1;
-  text-align: center;
-  padding: 0 4px;
-}
-
-.df-header-text .df-country {
-  font-size: 10pt;
-  font-weight: bold;
-  margin: 0;
-  line-height: 1.1;
-}
-
-.df-header-text .df-renap {
-  font-size: 8pt;
-  font-weight: bold;
-  margin: 0;
-  line-height: 1.1;
-}
-
-.df-header-text .df-title {
-  font-size: 13pt;
-  font-weight: bold;
-  text-transform: uppercase;
-  margin: 0;
-  letter-spacing: 0.3px;
-  line-height: 1.1;
-}
-
-.df-header-text .df-subtitle {
-  font-size: 8pt;
-  font-style: italic;
-  margin: 0;
-  line-height: 1.1;
-}
-
-.df-header-text .df-note {
   font-size: 6.5pt;
   font-weight: bold;
-  margin: 2px 0 0;
-  line-height: 1.05;
+  flex-shrink: 0;
 }
 
-.df-revision-badge {
-  border: 1px solid var(--print-black);
-  padding: 1px 4px;
-  font-size: 7pt;
+.df-page .df-header-center {
+  text-align: center;
+  flex: 1;
+  padding: 0 2px;
+}
+
+.df-page .df-header-center .df-country {
+  font-size: 9.5pt;
   font-weight: bold;
-  align-self: flex-start;
+  text-transform: uppercase;
+}
+
+.df-page .df-header-center .df-renap {
+  font-size: 7.5pt;
+  font-weight: bold;
+}
+
+.df-page .df-header-center .df-title {
+  font-size: 11pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.df-page .df-header-center .df-subtitle {
+  font-size: 7.5pt;
+  font-style: italic;
+  margin-bottom: 1px;
+}
+
+.df-page .df-header-center .df-note {
+  font-size: 6pt;
+  font-weight: bold;
+  line-height: 1.1;
+}
+
+.df-page .df-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.df-page .df-revision-badge {
+  border: 1px solid #000000;
+  padding: 1px 2px;
+  font-size: 6.5pt;
+  font-weight: bold;
+  text-align: center;
 }
 
 /* ── SECCIONES ── */
-.df-form-section {
+.df-page .df-form-section {
   display: flex;
-  border: 1px solid var(--print-border);
+  border: 1px solid #000000;
   margin-bottom: 1px;
   background: #ffffff;
+  flex-shrink: 0;
 }
 
-.df-lateral-label {
-  width: 20px;
-  min-width: 20px;
+.df-page .df-lateral-label {
+  width: 22px;
+  min-width: 22px;
   background-color: var(--print-gray-bg);
-  border-right: 1px solid var(--print-border);
+  border-right: 1px solid #000000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,489 +195,522 @@ body {
   font-size: 6pt;
   font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: 0.1px;
+  letter-spacing: 0.3px;
   text-align: center;
-  padding: 1px 0;
+  padding: 2px 1px;
+  line-height: 1.1;
 }
 
-.df-section-body {
+.df-page .df-section-body {
   flex: 1;
-  padding: 1px 3px;
+  padding: 0 2px;
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
 /* ── FILAS Y CAMPOS ── */
-.df-row {
+.df-page .df-row {
   display: flex;
   width: 100%;
   gap: 2px;
   align-items: baseline;
+  margin: 0;
   flex-wrap: nowrap;
-  margin-bottom: 0;
-  margin-left: 0;
-  margin-right: 0;
-  --bs-gutter-x: 0;
-  --bs-gutter-y: 0;
-}
-
-.df-row > * {
-  padding: 0;
-  width: auto;
-  max-width: none;
-  margin-top: 0;
-}
-
-.df-field {
-  display: flex;
-  align-items: baseline;
-  gap: 2px;
-  font-size: 7pt;
-  margin-bottom: 0;
-  flex-direction: row;
-  position: static;
-}
-
-.df-field.df-block {
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.df-label {
-  font-weight: bold;
-  font-size: 7pt;
-  white-space: nowrap;
-  color: var(--print-black);
-  text-transform: none;
-  letter-spacing: normal;
-}
-
-.df-label.df-wrap {
-  white-space: normal;
-}
-
-.df-fill-line {
-  border-bottom: 1px dotted var(--print-line);
-  min-height: 9pt;
-  padding: 0 2px;
-  font-family: var(--font-sans);
-  font-size: 7.5pt;
-  font-weight: bold;
-  color: var(--print-black);
-  display: inline-block;
-  text-align: center;
-}
-
-.df-fill-line.df-left {
-  text-align: left;
-}
-
-.df-sublabel {
-  font-size: 5.5pt;
-  text-align: center;
-  display: block;
   line-height: 1.0;
 }
 
-.df-code-box {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border: 1px solid var(--print-black);
-  font-family: var(--font-sans);
-  font-size: 8pt;
+.df-page .df-row > * {
+  padding: 0;
+  width: auto;
+  max-width: none;
+  margin: 0;
+}
+
+.df-page .df-field {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  font-size: 6.5pt;
+  margin: 0;
+  flex-direction: row;
+  position: static;
+  line-height: 1.0;
+}
+
+.df-page .df-field.df-block {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+
+.df-page .df-field-label {
   font-weight: bold;
-  background: #fff;
+  font-size: 7pt;
+  white-space: nowrap;
+  color: #000000;
+  line-height: 1.1;
   flex-shrink: 0;
 }
 
-.df-option-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 5px;
-  align-items: center;
-  font-size: 6pt;
-  line-height: 1.05;
-  min-width: 0;
+.df-page .df-fill-line {
+  border-bottom: 1px solid #000000;
+  min-height: 8pt;
+  padding: 0 1px;
+  font-family: var(--font-sans);
+  font-size: 6.5pt;
+  font-weight: bold;
+  color: #000000;
+  display: inline-block;
+  text-align: center;
+  line-height: 1.0;
 }
 
-.df-option-list .df-option {
-  white-space: nowrap;
-  flex: 0 0 auto;
+.df-page .df-fill-line.df-left {
+  text-align: left;
+}
+
+.df-page .df-sublabel {
+  font-size: 5.5pt;
+  text-align: center;
+  display: block;
+  line-height: 1.1;
+  font-weight: normal;
+}
+
+.df-page .df-box-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 9px;
+  height: 9px;
+  border: 1px solid #000000;
+  font-size: 6.5pt;
+  font-weight: bold;
+  background: #ffffff;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.df-page .df-code-box {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #000000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7pt;
+  font-weight: bold;
+  flex-shrink: 0;
+  line-height: 1;
+  font-family: var(--font-sans);
 }
 
 /* ── BANNER ── */
-.df-alert-banner {
-  border: 1px solid var(--print-border);
-  padding: 1px 3px;
+.df-page .df-alert-banner {
+  border: 1px solid #000000;
+  border-top: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  padding: 1px 2px;
   text-align: center;
   font-weight: bold;
-  font-size: 8pt;
+  font-size: 7pt;
   text-transform: uppercase;
-  margin-bottom: 1px;
+  margin: 1px 0;
+  background: #ffffff;
+  line-height: 1.2;
 }
 
-/* ── TABLAS AUXILIARES ── */
-.df-data-table {
+/* ── TABLAS DE DATOS ── */
+.df-page .df-data-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 7pt;
+  margin: 0;
 }
 
-.df-data-table td {
-  padding: 0 1px;
+.df-page .df-data-table td {
+  padding: 1px;
   vertical-align: bottom;
 }
 
-.df-data-table .line {
-  border-bottom: 1px dotted var(--print-line);
+.df-page .df-data-table .df-line {
+  border-bottom: 1px solid #000000;
   height: 9pt;
   text-align: center;
   font-family: var(--font-sans);
   font-weight: bold;
 }
 
-.df-edad-table .df-sexo-cell {
-  width: 26%;
+.df-page .df-edad-table .df-sexo-cell {
+  width: 25%;
   border-right: 1px solid #000;
-  padding-right: 4px;
+  padding: 1px 2px;
   vertical-align: middle;
+  line-height: 1.1;
 }
 
-.df-edad-table .df-sexo-cell .df-code-box {
-  margin: 0 4px;
-}
-
-.df-edad-table .df-edad-label-cell {
-  width: 70px;
+.df-page .df-edad-table .df-edad-label-cell {
+  width: 50px;
   text-align: center;
-  vertical-align: middle;
-  padding: 0 2px;
+  vertical-align: bottom;
+  padding: 0 1px;
 }
 
-.df-edad-table .df-edad-cols-cell {
-  width: 72%;
-  padding-left: 2px;
+.df-page .df-edad-table .df-edad-cols-cell {
+  width: 75%;
+  padding: 0 1px;
   vertical-align: bottom;
 }
 
-.df-edad-table .df-edad-cols-cell .df-sublabel {
-  font-size: 5.5pt;
-  line-height: 1.0;
+.df-page .df-edad-table .df-edad-cols-cell .df-sublabel {
+  font-size: 5pt;
+  line-height: 1.1;
 }
 
-.df-edad-table .df-edad-cols-cell .df-fill-line {
-  margin: 1px 0;
+.df-page .df-edad-table .df-edad-cols-cell .df-fill-line {
+  margin: 0;
+  min-height: 8pt;
 }
 
-/* ── SECCIÓN IV: CAUSAS ── */
-.df-causes-table {
+/* ── SECCIÓN IV: CAUSAS DE DEFUNCIÓN ── */
+.df-page .df-causes-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 6.5pt;
+  margin: 0;
 }
 
-.df-causes-table td {
-  border: 1px solid var(--print-border);
-  padding: 0 2px;
-  vertical-align: middle;
-}
-
-.df-causes-table .df-cell-letter {
-  width: 18px;
-  text-align: center;
-  font-weight: bold;
-  background: #fff;
-  font-size: 7pt;
-}
-
-.df-causes-table .df-cell-label {
-  font-size: 6.5pt;
-  line-height: 1.05;
-}
-
-.df-causes-table .df-cell-input {
-  min-width: 60px;
-  font-size: 7pt;
-}
-
-.df-causes-table .df-cell-input .df-fill-line {
-  width: 100%;
-  text-align: left;
-  min-height: 9pt;
-}
-
-.df-causes-table .df-cell-interval {
-  width: 95px;
-  text-align: center;
-  font-size: 6pt;
-  vertical-align: middle;
-}
-
-.df-causes-table .df-cell-interval-header {
-  font-weight: bold;
-  font-size: 6pt;
-  line-height: 1.05;
-}
-
-.df-causes-table .df-cell-antecedentes {
-  width: 60px;
-  border-right: 1px solid #000;
+.df-page .df-causes-table td {
+  border: 1px solid #000000;
   padding: 1px;
   vertical-align: middle;
 }
 
-.df-antecedentes-bracket {
+.df-page .df-causes-table .df-cell-letter {
+  width: 18px;
+  text-align: center;
+  font-weight: bold;
+  background: #ffffff;
+  font-size: 7pt;
+}
+
+.df-page .df-causes-table .df-cell-label {
+  font-size: 6.5pt;
+  line-height: 1.1;
+  padding: 1px;
+}
+
+.df-page .df-causes-table .df-cell-input {
+  min-width: 60px;
+  font-size: 7pt;
+  padding: 1px;
+}
+
+.df-page .df-causes-table .df-cell-interval {
+  width: 75px;
+  text-align: center;
+  font-size: 6pt;
+  vertical-align: middle;
+  padding: 1px;
+}
+
+.df-page .df-causes-table .df-cell-interval-header {
+  font-weight: bold;
+  font-size: 6pt;
+  line-height: 1.1;
+}
+
+.df-page .df-causes-table .df-cell-antecedentes {
+  width: 55px;
+  border-right: 1px solid #000;
+  padding: 1px;
+  vertical-align: middle;
+  font-size: 6pt;
+}
+
+.df-page .df-antecedentes-bracket {
   display: flex;
   align-items: center;
   gap: 1px;
-  padding-left: 2px;
+  padding: 0;
   position: relative;
 }
 
-.df-antecedentes-bracket::before {
+.df-page .df-antecedentes-bracket::before {
   content: '';
-  width: 5px;
-  height: 32px;
+  width: 4px;
+  height: 40px;
   border-left: 1px solid #000;
   border-top: 1px solid #000;
   border-bottom: 1px solid #000;
-  border-right: none;
-  border-radius: 5px 0 0 5px;
+  border-radius: 4px 0 0 4px;
   flex-shrink: 0;
 }
 
-.df-antecedentes-text {
+.df-page .df-antecedentes-text {
   font-weight: bold;
-  font-size: 6pt;
+  font-size: 5.5pt;
   writing-mode: vertical-lr;
   transform: rotate(180deg);
   text-transform: uppercase;
   white-space: nowrap;
+  line-height: 1.1;
 }
 
-.df-antecedentes-desc {
+.df-page .df-antecedentes-desc {
   font-size: 5pt;
-  line-height: 1.05;
-  max-width: 36px;
+  line-height: 1.1;
+  max-width: 45px;
+  text-align: center;
 }
 
-.df-causes-table .df-note {
+.df-page .df-causes-table .df-note {
   font-size: 5.5pt;
   font-style: italic;
-  padding: 1px 2px;
-  line-height: 1.05;
+  padding: 1px;
+  line-height: 1.1;
+}
+
+.df-page .df-causes-table .df-fill-line {
+  width: 100%;
+  text-align: left;
+  min-height: 8pt;
+  padding: 0 1px;
 }
 
 /* ── SECCIÓN V: ACCIDENTES/VIOLENTAS ── */
-.df-violentas-grid {
+.df-page .df-violentas-grid {
   display: flex;
   gap: 1px;
 }
 
-.df-violentas-left {
-  width: 110px;
-  border-right: 1px solid var(--print-border);
-  padding-right: 2px;
+.df-page .df-violentas-left {
+  width: 130px;
+  border-right: 1px solid #000000;
+  padding-right: 1px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 1px;
 }
 
-.df-presunto-title {
+.df-page .df-presunto-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.df-page .df-presunto-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1px;
+  gap: 1px;
 }
 
-.df-presunto-options {
+.df-page .df-presunto-option {
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  align-items: center;
+  gap: 1px;
   font-size: 6.5pt;
   line-height: 1.1;
 }
 
-.df-presunto-options .df-option {
+.df-page .df-violentas-right {
+  flex: 1;
   display: flex;
-  align-items: center;
-  gap: 2px;
+  flex-direction: column;
+  gap: 1px;
+  padding-left: 1px;
 }
 
-.df-legal-note {
+.df-page .df-legal-note {
   font-size: 5.5pt;
-  line-height: 1.05;
+  line-height: 1.1;
   margin-top: 1px;
 }
 
-.df-legal-note strong {
+.df-page .df-legal-note strong {
   text-transform: uppercase;
+  font-weight: bold;
 }
 
-.df-violentas-right {
-  flex: 1;
+.df-page .df-options-row {
   display: flex;
-  flex-direction: column;
-  gap: 0;
-  padding-left: 2px;
+  flex-wrap: wrap;
+  gap: 1px 4px;
+  font-size: 6.5pt;
+  line-height: 1.2;
 }
 
-.df-violentas-right .df-row {
-  align-items: baseline;
+.df-page .df-lugar-options {
+  gap: 1px 8px;
 }
 
-.df-violentas-right .df-option-list {
-  font-size: 6pt;
-  gap: 0 6px;
+.df-page .df-option {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  white-space: nowrap;
+  font-size: 6.5pt;
 }
 
-.df-violentas-right .df-lugar-options {
-  gap: 0 8px;
+.df-page .df-semanas-cell {
+  align-items: center;
+  text-align: center;
+  flex-direction: row;
+}
+
+.df-page .df-semanas-cell .df-field-label {
+  font-size: 6.5pt;
+  line-height: 1.1;
+  text-align: center;
 }
 
 /* ── SECCIÓN VI: FETAL ── */
-.df-fetal-subtitle {
+.df-page .df-fetal-subtitle {
   text-align: center;
   font-weight: bold;
   font-size: 7.5pt;
-  border-top: 1px solid var(--print-border);
-  border-bottom: 1px solid var(--print-border);
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;
   padding: 1px 0;
   margin: 1px 0;
   text-transform: uppercase;
+  background: var(--print-gray-bg);
+  line-height: 1.1;
 }
 
-.df-fetal-mother,
-.df-fetal-feto {
+.df-page .df-fetal-mother,
+.df-page .df-fetal-feto {
   display: flex;
   flex-direction: column;
   gap: 1px;
 }
 
-.df-fetal-row {
+.df-page .df-fetal-feto .df-row {
   align-items: stretch;
 }
 
-.df-fetal-col {
-  flex: 1;
-  min-width: 0;
-  border-right: 1px dotted #ccc;
-  padding: 0 2px;
+.df-page .df-fetal-feto .df-field {
+  font-size: 6pt;
+  line-height: 1.1;
   gap: 0;
+  min-width: 0;
 }
 
-.df-fetal-col:last-child {
-  border-right: none;
+.df-page .df-fetal-feto .df-field-label {
+  font-size: 6pt;
+  white-space: normal;
+  margin-bottom: 1px;
 }
 
-.df-fetal-option {
-  display: flex;
-  align-items: center;
-  gap: 1px;
-  font-size: 5.5pt;
-  line-height: 1.05;
-  white-space: nowrap;
+.df-page .df-fetal-feto .df-box-check {
+  width: 8px;
+  height: 8px;
+  font-size: 6pt;
 }
 
-.df-semanas-cell {
-  align-items: center;
-  text-align: center;
-  flex: 0.4;
-  min-width: 42px;
-}
-
-.df-semanas-cell .df-label {
-  font-size: 5.5pt;
-  line-height: 1.0;
-  text-align: center;
+.df-page .df-fetal-feto .df-fill-line {
+  min-height: 8pt;
 }
 
 /* ── SECCIÓN VII Y FIRMAS ── */
-.df-footer {
+.df-page .df-footer {
   display: flex;
-  gap: 2px;
+  gap: 1px;
   margin-top: auto;
-  padding-top: 1px;
+  padding-top: 2px;
+  border-top: 1px solid #000000;
 }
 
-.df-stamp-box {
-  width: 48mm;
-  height: 20mm;
-  border: 1px dashed #555;
+.df-page .df-stamp-box {
+  width: 50mm;
+  height: 22mm;
+  border: 1px dashed #999;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   padding-bottom: 2px;
+  flex-shrink: 0;
 }
 
-.df-stamp-label {
+.df-page .df-stamp-label {
   font-size: 6.5pt;
   font-weight: bold;
   text-align: center;
+  line-height: 1.2;
 }
 
-.df-cert-box {
+.df-page .df-cert-box {
   flex: 1;
   font-size: 6.5pt;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 1px;
 }
 
-.df-cert-text {
+.df-page .df-cert-text {
   margin: 0;
-  text-indent: 8px;
-  line-height: 1.1;
+  text-indent: 6px;
+  line-height: 1.15;
+  text-align: justify;
 }
 
-.df-cert-row {
+.df-page .df-cert-row {
   display: flex;
   align-items: baseline;
   gap: 2px;
   margin-top: 2px;
-}
-
-.df-signature-block {
-  margin-top: 2px;
-}
-
-.df-signature-name {
-  border-bottom: 1px solid var(--print-black);
-  min-height: 10pt;
-  text-align: center;
-  font-size: 7.5pt;
-  font-weight: bold;
-}
-
-.df-signature-label {
-  text-align: center;
   font-size: 6.5pt;
+}
+
+.df-page .df-signature-block {
+  margin-top: 3px;
+}
+
+.df-page .df-signature-name {
+  border-bottom: 1px solid #000000;
+  min-height: 12pt;
+  text-align: center;
+  font-size: 7pt;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.df-page .df-signature-label {
+  text-align: center;
+  font-size: 6pt;
   font-weight: bold;
   margin-top: 1px;
+  line-height: 1.1;
 }
 
 /* ── IMPRESIÓN ── */
 @media print {
   html, body {
-    background: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .no-imprimir {
-    display: none !important;
+    background: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .df-page {
-    margin: 0;
-    border: none;
-    box-shadow: none;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    page-break-after: avoid !important;
+  }
+
+  .no-print,
+  .no-imprimir,
+  nav,
+  .navbar,
+  .botones,
+  .alert,
+  .btn {
+    display: none !important;
   }
 }
