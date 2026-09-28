@@ -1,22 +1,17 @@
 /* ── CONFIGURACIÓN DE PÁGINA E IMPRESIÓN ── */
 @page {
-  size: letter portrait; /* 8.5in x 11in (215.9mm x 279.4mm) */
+  size: 8.5in 14in;
   margin: 0;
 }
 
 :root {
-  /* Dimensiones exactas de hoja Carta */
   --page-width: 215.9mm;
-  --page-height: 279.4mm;
-  --page-padding: 6mm 8mm 6mm 8mm;
-
-  /* Colores de impresión offset/láser */
+  --page-height: 355.6mm;
+  --page-padding: 5mm 7mm 5mm 7mm;
   --print-black: #000000;
-  --print-border: #1a1a1a;
-  --print-gray-bg: #e2e2e2;
-  --print-line: #444444;
-
-  /* Tipografía estandarizada de formularios */
+  --print-border: #000000;
+  --print-gray-bg: #e6e6e6;
+  --print-line: #333333;
   --font-main: 'Times New Roman', Times, serif;
   --font-sans: Arial, Helvetica, sans-serif;
 }
@@ -30,123 +25,118 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #525659; /* Fondo gris para vista previa en pantalla */
+  background-color: #666;
   font-family: var(--font-main);
 }
 
-/* Contenedor de Hoja Física */
-.page {
+.df-page {
   width: var(--page-width);
+  height: var(--page-height);
   min-height: var(--page-height);
-  height: var(--page-height); /* Forzado para encajar en 1 sola página exacta */
   margin: 10px auto;
   padding: var(--page-padding);
   background: #ffffff;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-}
-
-/* Marca de Agua "GRATUITO" */
-.watermark-bg {
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-35deg);
-  font-size: 110pt;
-  font-weight: 900;
-  font-family: var(--font-sans);
-  color: rgba(0, 0, 0, 0.04);
-  pointer-events: none;
-  z-index: 0;
-  white-space: nowrap;
+  justify-content: flex-start;
+  font-family: var(--font-main);
+  font-size: 7.5pt;
+  color: var(--print-black);
+  line-height: 1.05;
 }
 
 /* ── ENCABEZADO ── */
-.header-container {
+.df-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--print-black);
-  padding-bottom: 4px;
-  margin-bottom: 4px;
-  position: relative;
-  z-index: 1;
+  margin-bottom: 2px;
 }
 
-.header-logo {
-  width: 50px;
-  height: 45px;
+.df-header-logos {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 34%;
+}
+
+.df-header-logo {
+  width: 46px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-sans);
+  font-size: 7pt;
+  font-weight: bold;
+  border: 1px dashed #999;
+  text-align: center;
+}
+
+.df-header-text {
+  flex: 1;
+  text-align: center;
+  padding: 0 4px;
+}
+
+.df-header-text .df-country {
+  font-size: 10pt;
+  font-weight: bold;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.df-header-text .df-renap {
   font-size: 8pt;
   font-weight: bold;
-}
-
-.header-center {
-  text-align: center;
-  flex: 1;
-}
-
-.header-center h1 {
-  font-size: 11pt;
-  font-weight: bold;
   margin: 0;
-  text-transform: uppercase;
+  line-height: 1.1;
 }
 
-.header-center h2 {
+.df-header-text .df-title {
   font-size: 13pt;
   font-weight: bold;
-  margin: 1px 0;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.header-center p {
-  font-size: 7.5pt;
   margin: 0;
+  letter-spacing: 0.3px;
+  line-height: 1.1;
+}
+
+.df-header-text .df-subtitle {
+  font-size: 8pt;
+  font-style: italic;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.df-header-text .df-note {
+  font-size: 6.5pt;
   font-weight: bold;
+  margin: 2px 0 0;
+  line-height: 1.05;
 }
 
-.header-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.revision-badge {
+.df-revision-badge {
   border: 1px solid var(--print-black);
   padding: 1px 4px;
   font-size: 7pt;
   font-weight: bold;
+  align-self: flex-start;
 }
 
-.notice-text {
-  font-size: 6.5pt;
-  font-style: italic;
-  margin-top: 2px;
-  text-align: right;
-  max-width: 140px;
-}
-
-/* ── MÁSCARA Y RETÍCULA DE FORMULARIO ── */
-.form-section {
+/* ── SECCIONES ── */
+.df-form-section {
   display: flex;
   border: 1px solid var(--print-border);
-  margin-bottom: 3px;
+  margin-bottom: 1px;
   background: #ffffff;
-  position: relative;
-  z-index: 1;
 }
 
-/* Banda Lateral Gris con Texto Vertical */
-.lateral-label {
-  width: 22px;
+.df-lateral-label {
+  width: 20px;
+  min-width: 20px;
   background-color: var(--print-gray-bg);
   border-right: 1px solid var(--print-border);
   display: flex;
@@ -155,153 +145,475 @@ body {
   writing-mode: vertical-lr;
   transform: rotate(180deg);
   font-family: var(--font-sans);
-  font-size: 6.5pt;
+  font-size: 6pt;
   font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.1px;
   text-align: center;
-  padding: 2px 0;
+  padding: 1px 0;
 }
 
-.section-body {
+.df-section-body {
   flex: 1;
-  padding: 2px 4px;
+  padding: 1px 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
-/* Filas y Campos Internos */
-.form-row-grid {
+/* ── FILAS Y CAMPOS ── */
+.df-row {
   display: flex;
   width: 100%;
-  gap: 4px;
+  gap: 2px;
   align-items: baseline;
-  margin-bottom: 2px;
-}
-
-.form-row-grid:last-child {
+  flex-wrap: nowrap;
   margin-bottom: 0;
+  margin-left: 0;
+  margin-right: 0;
+  --bs-gutter-x: 0;
+  --bs-gutter-y: 0;
 }
 
-.field-group {
+.df-row > * {
+  padding: 0;
+  width: auto;
+  max-width: none;
+  margin-top: 0;
+}
+
+.df-field {
   display: flex;
   align-items: baseline;
-  font-size: 7.5pt;
-  white-space: nowrap;
+  gap: 2px;
+  font-size: 7pt;
+  margin-bottom: 0;
+  flex-direction: row;
+  position: static;
 }
 
-.field-label {
+.df-field.df-block {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.df-label {
   font-weight: bold;
-  font-size: 7.5pt;
-  margin-right: 3px;
+  font-size: 7pt;
+  white-space: nowrap;
+  color: var(--print-black);
+  text-transform: none;
+  letter-spacing: normal;
 }
 
-/* Líneas de llenado estilo punteado/firme */
-.fill-line {
+.df-label.df-wrap {
+  white-space: normal;
+}
+
+.df-fill-line {
   border-bottom: 1px dotted var(--print-line);
-  min-height: 12pt;
-  padding: 0 3px;
+  min-height: 9pt;
+  padding: 0 2px;
+  font-family: var(--font-sans);
+  font-size: 7.5pt;
+  font-weight: bold;
+  color: var(--print-black);
+  display: inline-block;
+  text-align: center;
+}
+
+.df-fill-line.df-left {
+  text-align: left;
+}
+
+.df-sublabel {
+  font-size: 5.5pt;
+  text-align: center;
+  display: block;
+  line-height: 1.0;
+}
+
+.df-code-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--print-black);
   font-family: var(--font-sans);
   font-size: 8pt;
   font-weight: bold;
-  color: #000000;
-  display: inline-block;
-}
-
-/* Casillas de Verificación (Checkboxes numerados) */
-.box-check {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 10px;
-  height: 10px;
-  border: 1px solid var(--print-black);
-  font-size: 7pt;
-  font-weight: bold;
-  margin-right: 2px;
   background: #fff;
+  flex-shrink: 0;
 }
 
-.code-box-single {
-  width: 16px;
-  height: 15px;
-  border: 1px solid var(--print-black);
-  display: inline-flex;
+.df-option-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 5px;
   align-items: center;
-  justify-content: center;
-  font-size: 7.5pt;
-  font-weight: bold;
-  margin-left: auto;
+  font-size: 6pt;
+  line-height: 1.05;
+  min-width: 0;
 }
 
-/* ── TABLA DE CAUSAS DE DEFUNCIÓN (SECCIÓN IV) ── */
-.causes-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 2px;
+.df-option-list .df-option {
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
-.causes-table td {
+/* ── BANNER ── */
+.df-alert-banner {
   border: 1px solid var(--print-border);
   padding: 1px 3px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 8pt;
+  text-transform: uppercase;
+  margin-bottom: 1px;
+}
+
+/* ── TABLAS AUXILIARES ── */
+.df-data-table {
+  width: 100%;
+  border-collapse: collapse;
   font-size: 7pt;
+}
+
+.df-data-table td {
+  padding: 0 1px;
+  vertical-align: bottom;
+}
+
+.df-data-table .line {
+  border-bottom: 1px dotted var(--print-line);
+  height: 9pt;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-weight: bold;
+}
+
+.df-edad-table .df-sexo-cell {
+  width: 26%;
+  border-right: 1px solid #000;
+  padding-right: 4px;
   vertical-align: middle;
 }
 
-.causes-table .col-letter {
-  width: 25px;
+.df-edad-table .df-sexo-cell .df-code-box {
+  margin: 0 4px;
+}
+
+.df-edad-table .df-edad-label-cell {
+  width: 70px;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0 2px;
+}
+
+.df-edad-table .df-edad-cols-cell {
+  width: 72%;
+  padding-left: 2px;
+  vertical-align: bottom;
+}
+
+.df-edad-table .df-edad-cols-cell .df-sublabel {
+  font-size: 5.5pt;
+  line-height: 1.0;
+}
+
+.df-edad-table .df-edad-cols-cell .df-fill-line {
+  margin: 1px 0;
+}
+
+/* ── SECCIÓN IV: CAUSAS ── */
+.df-causes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 6.5pt;
+}
+
+.df-causes-table td {
+  border: 1px solid var(--print-border);
+  padding: 0 2px;
+  vertical-align: middle;
+}
+
+.df-causes-table .df-cell-letter {
+  width: 18px;
+  text-align: center;
   font-weight: bold;
-  text-align: center;
-  background-color: #fafafa;
+  background: #fff;
+  font-size: 7pt;
 }
 
-.causes-table .col-interval {
-  width: 110px;
+.df-causes-table .df-cell-label {
+  font-size: 6.5pt;
+  line-height: 1.05;
+}
+
+.df-causes-table .df-cell-input {
+  min-width: 60px;
+  font-size: 7pt;
+}
+
+.df-causes-table .df-cell-input .df-fill-line {
+  width: 100%;
+  text-align: left;
+  min-height: 9pt;
+}
+
+.df-causes-table .df-cell-interval {
+  width: 95px;
+  text-align: center;
   font-size: 6pt;
+  vertical-align: middle;
+}
+
+.df-causes-table .df-cell-interval-header {
+  font-weight: bold;
+  font-size: 6pt;
+  line-height: 1.05;
+}
+
+.df-causes-table .df-cell-antecedentes {
+  width: 60px;
+  border-right: 1px solid #000;
+  padding: 1px;
+  vertical-align: middle;
+}
+
+.df-antecedentes-bracket {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding-left: 2px;
+  position: relative;
+}
+
+.df-antecedentes-bracket::before {
+  content: '';
+  width: 5px;
+  height: 32px;
+  border-left: 1px solid #000;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  border-right: none;
+  border-radius: 5px 0 0 5px;
+  flex-shrink: 0;
+}
+
+.df-antecedentes-text {
+  font-weight: bold;
+  font-size: 6pt;
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.df-antecedentes-desc {
+  font-size: 5pt;
+  line-height: 1.05;
+  max-width: 36px;
+}
+
+.df-causes-table .df-note {
+  font-size: 5.5pt;
+  font-style: italic;
+  padding: 1px 2px;
+  line-height: 1.05;
+}
+
+/* ── SECCIÓN V: ACCIDENTES/VIOLENTAS ── */
+.df-violentas-grid {
+  display: flex;
+  gap: 1px;
+}
+
+.df-violentas-left {
+  width: 110px;
+  border-right: 1px solid var(--print-border);
+  padding-right: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.df-presunto-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1px;
+}
+
+.df-presunto-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  font-size: 6.5pt;
+  line-height: 1.1;
+}
+
+.df-presunto-options .df-option {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.df-legal-note {
+  font-size: 5.5pt;
+  line-height: 1.05;
+  margin-top: 1px;
+}
+
+.df-legal-note strong {
+  text-transform: uppercase;
+}
+
+.df-violentas-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-left: 2px;
+}
+
+.df-violentas-right .df-row {
+  align-items: baseline;
+}
+
+.df-violentas-right .df-option-list {
+  font-size: 6pt;
+  gap: 0 6px;
+}
+
+.df-violentas-right .df-lugar-options {
+  gap: 0 8px;
+}
+
+/* ── SECCIÓN VI: FETAL ── */
+.df-fetal-subtitle {
+  text-align: center;
+  font-weight: bold;
+  font-size: 7.5pt;
+  border-top: 1px solid var(--print-border);
+  border-bottom: 1px solid var(--print-border);
+  padding: 1px 0;
+  margin: 1px 0;
+  text-transform: uppercase;
+}
+
+.df-fetal-mother,
+.df-fetal-feto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.df-fetal-row {
+  align-items: stretch;
+}
+
+.df-fetal-col {
+  flex: 1;
+  min-width: 0;
+  border-right: 1px dotted #ccc;
+  padding: 0 2px;
+  gap: 0;
+}
+
+.df-fetal-col:last-child {
+  border-right: none;
+}
+
+.df-fetal-option {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  font-size: 5.5pt;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
+.df-semanas-cell {
+  align-items: center;
+  text-align: center;
+  flex: 0.4;
+  min-width: 42px;
+}
+
+.df-semanas-cell .df-label {
+  font-size: 5.5pt;
+  line-height: 1.0;
   text-align: center;
 }
 
-/* ── PIE DE HOJA Y FIRMAS ── */
-.footer-signatures {
+/* ── SECCIÓN VII Y FIRMAS ── */
+.df-footer {
   display: flex;
-  gap: 8px;
-  margin-top: 4px;
-  position: relative;
-  z-index: 1;
+  gap: 2px;
+  margin-top: auto;
+  padding-top: 1px;
 }
 
-.stamp-box {
-  flex: 1;
-  border: 1px dashed #888;
-  height: 65px;
+.df-stamp-box {
+  width: 48mm;
+  height: 20mm;
+  border: 1px dashed #555;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   padding-bottom: 2px;
 }
 
-.stamp-label {
+.df-stamp-label {
   font-size: 6.5pt;
   font-weight: bold;
   text-align: center;
 }
 
-.legal-cert-box {
-  flex: 2.2;
-  font-size: 7pt;
+.df-cert-box {
+  flex: 1;
+  font-size: 6.5pt;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.signature-line-container {
-  border-top: 1px solid var(--print-black);
-  margin-top: 20px;
-  text-align: center;
-  padding-top: 2px;
-  font-weight: bold;
-  font-size: 7.5pt;
+.df-cert-text {
+  margin: 0;
+  text-indent: 8px;
+  line-height: 1.1;
 }
 
-/* ── AJUSTES MEDIALES EXCLUSIVOS DE IMPRESIÓN ── */
+.df-cert-row {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.df-signature-block {
+  margin-top: 2px;
+}
+
+.df-signature-name {
+  border-bottom: 1px solid var(--print-black);
+  min-height: 10pt;
+  text-align: center;
+  font-size: 7.5pt;
+  font-weight: bold;
+}
+
+.df-signature-label {
+  text-align: center;
+  font-size: 6.5pt;
+  font-weight: bold;
+  margin-top: 1px;
+}
+
+/* ── IMPRESIÓN ── */
 @media print {
   html, body {
     background: none;
@@ -313,13 +625,12 @@ body {
     display: none !important;
   }
 
-  .page {
+  .df-page {
     margin: 0;
     border: none;
     box-shadow: none;
     width: 100%;
     height: 100vh;
-    page-break-after: always;
-    page-break-inside: avoid;
+    overflow: hidden;
   }
 }

@@ -1,335 +1,663 @@
-<div class="page" *ngIf="defuncion as f">
-  <div class="watermark-bg">GRATUITO</div>
-
-  <!-- ENCABEZADO OFICIAL -->
-  <header class="header-container">
-    <div class="header-logo">INE</div>
-    <div class="header-center">
-      <h1>República de Guatemala</h1>
-      <h2>INFORME DE DEFUNCIÓN</h2>
-      <p>(INCLUYE DEFUNCIONES FETALES)</p>
+<div class="df-page" *ngIf="defuncion as f">
+  <!-- ENCABEZADO -->
+  <header class="df-header">
+    <div class="df-header-logos">
+      <div class="df-header-logo">INE</div>
+      <div class="df-header-logo">RENAP</div>
+      <div class="df-header-logo">MED</div>
     </div>
-    <div class="header-right">
-      <div class="header-logo">RENAP</div>
-      <div class="revision-badge">Revisión 2016</div>
+    <div class="df-header-text">
+      <p class="df-country">República de Guatemala</p>
+      <p class="df-renap">RENAP</p>
+      <p class="df-title">INFORME DE DEFUNCIÓN</p>
+      <p class="df-subtitle">(INCLUYE DEFUNCIONES FETALES)</p>
+      <p class="df-note">NOTA: Antes de llenar el presente formulario, debe leer el instructivo del reverso.</p>
     </div>
+    <div class="df-revision-badge">Revisión 2016</div>
   </header>
 
-  <div
-    class="notice-text"
-    style="width: 100%; text-align: left; margin-bottom: 2px"
-  >
-    <strong>NOTA:</strong> Antes de llenar el presente formulario, debe leer el
-    instructivo del reverso.
+  <!-- SECCIÓN I -->
+  <section class="df-form-section">
+    <div class="df-lateral-label">I. INFORMACIÓN GENERAL</div>
+    <div class="df-section-body">
+      <div class="df-row">
+        <div class="df-field" style="flex: 1.6">
+          <span class="df-label">1. El que informa (nombres y apellidos):</span>
+          <span class="df-fill-line df-left" style="flex: 1">{{ nombreCompleto(f.medico) }}</span>
+        </div>
+        <div class="df-field" style="flex: 1; justify-content: space-between">
+          <span class="df-label">3. Quién informa es:</span>
+          <span class="df-option-list">
+            <span class="df-option">1. Médico</span>
+            <span class="df-option">2. Paramédico</span>
+            <span class="df-option">3. Autoridad</span>
+          </span>
+          <span class="df-code-box">{{ f.informante_tipo }}</span>
+        </div>
+      </div>
+      <div class="df-row">
+        <div class="df-field" style="flex: 1.6">
+          <span class="df-label">2. Documento de Identificación (CUI)/ Cédula de vecindad/ Otro:</span>
+          <span class="df-fill-line df-left" style="flex: 1">{{ f.informante_documento || f.medico?.dpi }}</span>
+        </div>
+        <div class="df-field" style="flex: 1">
+          <span class="df-label">3.1 No. de colegiado:</span>
+          <span class="df-fill-line" style="flex: 1">{{ f.medico?.colegiado }}</span>
+        </div>
+      </div>
+      <div class="df-row">
+        <div class="df-field" style="width: 100%">
+          <span class="df-label">4. Fecha y hora de la defunción:</span>
+          Día: <span class="df-fill-line" style="width: 28px">{{ fecha.dia }}</span>
+          mes <span class="df-fill-line" style="width: 65px">{{ fecha.mes }}</span>
+          del año <span class="df-fill-line" style="width: 38px">{{ fecha.anio }}</span>
+          a las <span class="df-fill-line" style="width: 32px">{{ fecha.hora }}</span> horas
+        </div>
+      </div>
+      <div class="df-row">
+        <div class="df-field" style="width: 100%">
+          <span class="df-label">5. Lugar y dirección donde ocurrió la defunción:</span>
+          <span class="df-fill-line df-left" style="flex: 1">{{ f.lugar_defuncion_direccion }}</span>
+          <span class="df-fill-line" style="width: 80px">{{ f.lugar_defuncion_municipio }}</span>
+          <span class="df-fill-line" style="width: 80px">{{ f.lugar_defuncion_departamento }}</span>
+        </div>
+      </div>
+      <div class="df-row">
+        <span class="df-sublabel" style="flex: 1; text-align: center">Dirección exacta</span>
+        <span class="df-sublabel" style="width: 80px; text-align: center">Municipio</span>
+        <span class="df-sublabel" style="width: 80px; text-align: center">Departamento</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BANNER -->
+  <div class="df-alert-banner">
+    SI LA MUERTE ES FETAL, INICIE EN EL APARTADO VI. DATOS DE LA DEFUNCIÓN FETAL (MORTINATO)
   </div>
 
-  <!-- SECCIÓN I: INFORMACIÓN GENERAL -->
-  <section class="form-section">
-    <div class="lateral-label">I. INFORMACIÓN GENERAL</div>
-    <div class="section-body">
-      <div class="form-row-grid">
-        <div class="field-group" style="flex: 2">
-          <span class="field-label"
-            >1. El que informa (nombres y apellidos):</span
-          >
-          <span class="fill-line" style="flex: 1">{{
-            nombreCompleto(f.medico)
-          }}</span>
+  <!-- SECCIÓN II -->
+  <section class="df-form-section">
+    <div class="df-lateral-label">II. DATOS DEL FALLECIDO (A)</div>
+    <div class="df-section-body">
+      <div class="df-row">
+        <div class="df-field" style="width: 100%">
+          <span class="df-label">FALLECIÓ: 6. NOMBRE:</span>
+          <span class="df-fill-line df-left" style="flex: 1">{{ nombreCompleto(f.paciente) }}</span>
         </div>
-        <div class="field-group" style="flex: 1">
-          <span class="field-label">3. Quién informa es:</span>
-          <span class="box-check">{{ marcado(f.informante_tipo, "1") }}</span>
-          1. Médico
-          <span class="box-check" style="margin-left: 4px">{{
-            marcado(f.informante_tipo, "2")
-          }}</span>
-          2. Paramédico
-          <span class="box-check" style="margin-left: 4px">{{
-            marcado(f.informante_tipo, "3")
-          }}</span>
-          3. Autoridad
+      </div>
+      <div class="df-row">
+        <span class="df-sublabel" style="width: 100%; text-align: center">Nombres y apellidos completos</span>
+      </div>
+
+      <table class="df-data-table df-edad-table">
+        <tr>
+          <td class="df-sexo-cell">
+            <span class="df-label">7. SEXO:</span>
+            <span class="df-code-box">{{ f.paciente?.sexo }}</span>
+            <span class="df-option-list">
+              <span class="df-option">1. Hombre</span>
+              <span class="df-option">2. Mujer</span>
+              <span class="df-option">9. Ignorado</span>
+            </span>
+          </td>
+          <td class="df-edad-label-cell">
+            <span class="df-label">8. EDAD CUMPLIDA:</span>
+          </td>
+          <td class="df-edad-cols-cell">
+            <table class="df-data-table">
+              <tr>
+                <td>
+                  <span class="df-sublabel">Para menores de un día</span>
+                  <div class="df-fill-line">{{ edadCumplida.horas }}</div>
+                  <span class="df-sublabel">Horas</span>
+                </td>
+                <td>
+                  <span class="df-sublabel">Para menores de un mes</span>
+                  <div class="df-fill-line">{{ edadCumplida.dias }}</div>
+                  <span class="df-sublabel">Días</span>
+                </td>
+                <td>
+                  <span class="df-sublabel">Para menores de un año</span>
+                  <div class="df-fill-line">{{ edadCumplida.meses }}</div>
+                  <span class="df-sublabel">Meses</span>
+                </td>
+                <td>
+                  <span class="df-sublabel">Para mayores de un año</span>
+                  <div class="df-fill-line">{{ edadCumplida.anios }}</div>
+                  <span class="df-sublabel">Años cumplidos</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <div class="df-row">
+        <div class="df-field" style="width: 100%">
+          <span class="df-label">9. DOCUMENTO DE IDENTIFICACIÓN:</span>
+          <span class="df-fill-line" style="width: 160px"></span>
+          <span style="font-size: 7pt">Ó</span>
+          <span class="df-fill-line" style="width: 75px">{{ f.paciente?.numero_libro }}</span>
+          <span class="df-fill-line" style="width: 75px">{{ f.paciente?.numero_folio }}</span>
+          <span class="df-fill-line" style="width: 75px">{{ f.paciente?.numero_partida }}</span>
+        </div>
+      </div>
+      <div class="df-row">
+        <span class="df-sublabel" style="width: 160px; text-align: center; padding-left: 4px">Número(CUI/ Cédula de Vecindad/ Otro)</span>
+        <span class="df-sublabel" style="width: 75px; text-align: center">Número de Libro</span>
+        <span class="df-sublabel" style="width: 75px; text-align: center">Número de Folio</span>
+        <span class="df-sublabel" style="width: 75px; text-align: center">Número de Partida</span>
+      </div>
+
+      <div class="df-row">
+        <div class="df-field" style="width: 100%">
+          <span class="df-label">10. LUGAR DE NACIMIENTO:</span>
+          <span class="df-fill-line" style="width: 100px">{{ f.paciente?.lugar_nacimiento_pais }}</span>
+          <span class="df-fill-line" style="width: 110px">{{ f.paciente?.lugar_nacimiento_departamento }}</span>
+          <span class="df-fill-line" style="width: 110px">{{ f.paciente?.lugar_nacimiento_municipio }}</span>
+        </div>
+      </div>
+      <div class="df-row">
+        <span class="df-sublabel" style="width: 170px; text-align: center; padding-left: 95px">País</span>
+        <span class="df-sublabel" style="width: 115px; text-align: center">Departamento</span>
+        <span class="df-sublabel" style="width: 115px; text-align: center">Municipio</span>
+      </div>
+
+      <div class="df-row">
+        <div class="df-field" style="flex: 1">
+          <span class="df-label">11. NACIONALIDAD:</span>
+          <span class="df-fill-line" style="flex: 1">{{ f.paciente?.nacionalidad }}</span>
+        </div>
+        <div class="df-field" style="flex: 1">
+          <span class="df-label">12. OCUPACIÓN:</span>
+          <span class="df-fill-line" style="flex: 1">{{ f.paciente?.ocupacion }}</span>
         </div>
       </div>
 
-      <div class="form-row-grid">
-        <div class="field-group" style="flex: 1.2">
-          <span class="field-label"
-            >2. Documento de Identificación (CUI/Cédula/Otro):</span
-          >
-          <span class="fill-line" style="flex: 1">{{ f.medico?.dpi }}</span>
+      <div class="df-row">
+        <div class="df-field" style="flex: 1; justify-content: space-between">
+          <span class="df-label">13. ESTADO CIVIL:</span>
+          <span class="df-option-list">
+            <span class="df-option">1. Soltero (a)</span>
+            <span class="df-option">2. Casado (a)</span>
+            <span class="df-option">3. Unido (a)</span>
+            <span class="df-option">9. Ignorado</span>
+          </span>
+          <span class="df-code-box">{{ f.paciente?.estado_civil }}</span>
         </div>
-        <div class="field-group" style="flex: 0.8">
-          <span class="field-label">3.1 No. de colegiado:</span>
-          <span class="fill-line" style="flex: 1">{{
-            f.medico?.colegiado
-          }}</span>
-        </div>
-      </div>
-
-      <div class="form-row-grid">
-        <div class="field-group" style="width: 100%">
-          <span class="field-label">4. Fecha y hora de la defunción:</span>
-          Día:
-          <span class="fill-line" style="width: 30px; text-align: center">{{
-            fecha.dia
-          }}</span>
-          mes:
-          <span class="fill-line" style="width: 80px; text-align: center">{{
-            fecha.mes
-          }}</span>
-          del año:
-          <span class="fill-line" style="width: 45px; text-align: center">{{
-            fecha.anio
-          }}</span>
-          a las:
-          <span class="fill-line" style="width: 40px; text-align: center">{{
-            fecha.hora
-          }}</span>
-          horas
+        <div class="df-field" style="flex: 1; justify-content: space-between">
+          <span class="df-label">14. PUEBLO DE PERTENENCIA:</span>
+          <span class="df-option-list compact-options">
+            <span class="df-option">1. Maya</span>
+            <span class="df-option">2. Garífuna</span>
+            <span class="df-option">3. Xinka</span>
+            <span class="df-option">4. Mestizo, Ladino</span>
+            <span class="df-option">5. Ninguno</span>
+            <span class="df-option">9. Ignorado</span>
+          </span>
+          <span class="df-code-box">{{ f.paciente?.pueblo_pertenencia }}</span>
         </div>
       </div>
 
-      <div class="form-row-grid">
-        <div class="field-group" style="width: 100%">
-          <span class="field-label">5. Lugar y dirección donde ocurrió:</span>
-          <span class="fill-line" style="flex: 2">{{
-            f.lugar_defuncion_direccion
-          }}</span>
-          <span class="field-label" style="margin-left: 4px">Mun:</span>
-          <span class="fill-line" style="flex: 1">{{
-            f.lugar_defuncion_municipio
-          }}</span>
-          <span class="field-label" style="margin-left: 4px">Dept:</span>
-          <span class="fill-line" style="flex: 1">{{
-            f.lugar_defuncion_departamento
-          }}</span>
+      <div class="df-row">
+        <div class="df-field" style="width: 100%">
+          <span class="df-label">15. RESIDENCIA:</span>
+          <span class="df-fill-line df-left" style="flex: 1">{{ f.paciente?.residencia_direccion }}</span>
+          <span class="df-fill-line" style="width: 75px">{{ f.paciente?.residencia_municipio }}</span>
+          <span class="df-fill-line" style="width: 75px">{{ f.paciente?.residencia_departamento }}</span>
+        </div>
+      </div>
+      <div class="df-row">
+        <span class="df-sublabel" style="flex: 1; text-align: center">Dirección exacta</span>
+        <span class="df-sublabel" style="width: 75px; text-align: center">Municipio</span>
+        <span class="df-sublabel" style="width: 75px; text-align: center">Departamento</span>
+      </div>
+
+      <div class="df-row">
+        <div class="df-field" style="width: 100%; align-items: flex-start">
+          <span class="df-label">16. ESCOLARIDAD:</span>
+          <span class="df-code-box">{{ f.paciente?.escolaridad }}</span>
+          <span class="df-option-list" style="flex: 1">
+            <span class="df-option">0. Ninguna</span>
+            <span class="df-option">1. Primaria incompleta</span>
+            <span class="df-option">2. Primaria completa</span>
+            <span class="df-option">3. Básico incompleto</span>
+            <span class="df-option">4. Básico completo</span>
+            <span class="df-option">5. Diversificado incompleto</span>
+            <span class="df-option">6. Diversificado completo</span>
+            <span class="df-option">7. Universitario incompleto</span>
+            <span class="df-option">8. Universitario completo</span>
+            <span class="df-option">9. Ignorado</span>
+          </span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECCIÓN II: DATOS DEL FALLECIDO (A) -->
-  <section class="form-section">
-    <div class="lateral-label">II. DATOS DEL FALLECIDO (A)</div>
-    <div class="section-body">
-      <div class="form-row-grid">
-        <div class="field-group" style="width: 100%">
-          <span class="field-label">6. NOMBRE:</span>
-          <span class="fill-line" style="flex: 1">{{
-            nombreCompleto(f.paciente)
-          }}</span>
+  <!-- SECCIÓN III -->
+  <section class="df-form-section">
+    <div class="df-lateral-label">III. MUJERES EN EDAD FERTIL</div>
+    <div class="df-section-body">
+      <div class="df-row">
+        <div class="df-field" style="flex: 1; align-items: flex-start">
+          <span class="df-label df-wrap">17. SI LA DEFUNCIÓN CORRESPONDE A UNA MUJER ENTRE 10 Y 54 AÑOS, ESPECIFIQUE SI LA MUERTE OCURRIÓ DURANTE:</span>
+        </div>
+        <div class="df-field" style="flex: 0; align-items: flex-start">
+          <span class="df-code-box">{{ f.muerte_gestacion }}</span>
         </div>
       </div>
-
-      <div class="form-row-grid">
-        <div class="field-group" style="flex: 1">
-          <span class="field-label">7. SEXO:</span>
-          <span class="box-check">{{ marcado(f.paciente?.sexo, "1") }}</span> 1.
-          Hom
-          <span class="box-check" style="margin-left: 3px">{{
-            marcado(f.paciente?.sexo, "2")
-          }}</span>
-          2. Muj
-          <span class="box-check" style="margin-left: 3px">{{
-            marcado(f.paciente?.sexo, "9")
-          }}</span>
-          9. Ign
-        </div>
-        <div
-          class="field-group"
-          style="
-            flex: 2;
-            border-left: 1px solid var(--print-line);
-            padding-left: 4px;
-          "
-        >
-          <span class="field-label">8. EDAD CUMPLIDA:</span>
-          Horas:
-          <span class="fill-line" style="width: 25px">{{
-            edadCumplida.horas
-          }}</span>
-          Días:
-          <span class="fill-line" style="width: 25px">{{
-            edadCumplida.dias
-          }}</span>
-          Meses:
-          <span class="fill-line" style="width: 25px">{{
-            edadCumplida.meses
-          }}</span>
-          Años:
-          <span class="fill-line" style="width: 30px">{{
-            edadCumplida.anios
-          }}</span>
-        </div>
+      <div class="df-option-list" style="gap: 0 12px">
+        <span class="df-option">1. El embarazo</span>
+        <span class="df-option">2. El parto</span>
+        <span class="df-option">3. El puerperio (Dentro de los 42 días siguientes a la terminación del embarazo)</span>
+        <span class="df-option">4. De 43 días a 11 meses, después del parto o aborto</span>
+        <span class="df-option">5. No estuvo embarazada durante los 11 meses previos a la muerte</span>
+        <span class="df-option">9. Ignorado</span>
       </div>
+    </div>
+  </section>
 
-      <div class="form-row-grid">
-        <div class="field-group" style="width: 100%">
-          <span class="field-label">9. DOC. IDENTIFICACIÓN:</span>
-          CUI/Número:
-          <span class="fill-line" style="flex: 1.5">{{ f.paciente?.cui }}</span>
-          Libro:
-          <span class="fill-line" style="flex: 0.5">{{
-            f.paciente?.numero_libro
-          }}</span>
-          Folio:
-          <span class="fill-line" style="flex: 0.5">{{
-            f.paciente?.numero_folio
-          }}</span>
-          Partida:
-          <span class="fill-line" style="flex: 0.5">{{
-            f.paciente?.numero_partida
-          }}</span>
-        </div>
+  <!-- SECCIÓN IV -->
+  <section class="df-form-section">
+    <div class="df-lateral-label">IV. CAUSA DE DEFUNCIÓN</div>
+    <div class="df-section-body">
+      <div class="df-row">
+        <span class="df-label">18. CAUSAS DE DEFUNCIÓN</span>
       </div>
+      <table class="df-causes-table">
+        <tr>
+          <td class="df-cell-letter" rowspan="4" style="border-bottom: none">I.</td>
+          <td class="df-cell-label" colspan="2">Enfermedad o estado patológico que produjo la muerte directamente*</td>
+          <td class="df-cell-input">(a) <span class="df-fill-line">{{ f.causa_a }}</span></td>
+          <td class="df-cell-interval" rowspan="4">
+            <div class="df-cell-interval-df-header">Intervalo aproximado entre el inicio de la enfermedad y la muerte</div>
+            <div class="df-fill-line" style="margin-top: 4px">{{ f.causa_intervalo }}</div>
+          </td>
+        </tr>
+        <tr>
+          <td class="df-cell-antecedentes" rowspan="3">
+            <div class="df-antecedentes-bracket">
+              <span class="df-antecedentes-text">Causas antecedentes</span>
+              <span class="df-antecedentes-desc">Estados morbosos, si existiera alguno, que produjeron la causa consignada arriba, mencionándose en el último lugar la causa básica</span>
+            </div>
+          </td>
+          <td class="df-cell-label">debido a (o como consecuencia de)</td>
+          <td class="df-cell-input">(b) <span class="df-fill-line">{{ f.causa_b }}</span></td>
+        </tr>
+        <tr>
+          <td class="df-cell-label">debido a (o como consecuencia de)</td>
+          <td class="df-cell-input">(c) <span class="df-fill-line">{{ f.causa_c }}</span></td>
+        </tr>
+        <tr>
+          <td class="df-cell-label" style="border-bottom: 1px solid #000">debido a (o como consecuencia de)</td>
+          <td class="df-cell-input" style="border-bottom: 1px solid #000">(d) <span class="df-fill-line">{{ f.causa_d }}</span></td>
+        </tr>
+        <tr>
+          <td class="df-note" colspan="4">
+            *No quiere decirse con esto la manera o modo de morir, por ejemplo: debilidad cardíaca, astenia, etc. Significa propiamente la enfermedad, traumatismo o complicación que causó la muerte.
+          </td>
+        </tr>
+        <tr>
+          <td class="df-cell-letter">II.</td>
+          <td class="df-cell-label" colspan="3">Otros estados patológicos significativos que contribuyeron a la muerte, pero no relacionados con la enfermedad o estado morboso que la produjo:</td>
+        </tr>
+        <tr>
+          <td colspan="4"><span class="df-fill-line">{{ f.causa_otros }}</span></td>
+        </tr>
+      </table>
+    </div>
+  </section>
 
-      <div class="form-row-grid">
-        <div class="field-group" style="flex: 1">
-          <span class="field-label">13. ESTADO CIVIL:</span>
-          <span class="box-check">{{
-            marcado(f.paciente?.estado_civil, "1")
-          }}</span>
-          1.Sol
-          <span class="box-check">{{
-            marcado(f.paciente?.estado_civil, "2")
-          }}</span>
-          2.Cas
-          <span class="box-check">{{
-            marcado(f.paciente?.estado_civil, "3")
-          }}</span>
-          3.Uni
-          <span class="box-check">{{
-            marcado(f.paciente?.estado_civil, "9")
-          }}</span>
-          9.Ign
-          <div class="code-box-single">{{ f.paciente?.estado_civil }}</div>
+  <!-- SECCIÓN V -->
+  <section class="df-form-section">
+    <div class="df-lateral-label">V. DEFUNCIONES ACCIDENTALES Y VIOLENTAS</div>
+    <div class="df-section-body">
+      <div class="df-violentas-grid">
+        <div class="df-violentas-df-left">
+          <div>
+            <div class="df-presunto-df-title">
+              <span class="df-label">19. FUE UN PRESUNTO**:</span>
+              <span class="df-code-box">{{ f.fue_presunto }}</span>
+            </div>
+            <div class="df-presunto-options">
+              <div class="df-option">1. Suicidio</div>
+              <div class="df-option">2. Homicidio</div>
+              <div class="df-option">3. Accidente</div>
+              <div class="df-option">9. Ignorado</div>
+            </div>
+          </div>
+          <div class="df-legal-df-note">
+            **Estos datos no prejuzgan sobre la calificación del hecho que en definitiva hicieren los tribunales, es <strong>ÚNICAMENTE PARA FINES ESTADÍSTICOS</strong>.
+          </div>
         </div>
-        <div class="field-group" style="flex: 1">
-          <span class="field-label">14. PUEBLO:</span>
-          <span class="box-check">{{
-            marcado(f.paciente?.pueblo_pertenencia, "1")
-          }}</span>
-          1.Maya
-          <span class="box-check">{{
-            marcado(f.paciente?.pueblo_pertenencia, "4")
-          }}</span>
-          4.Ladino
-          <span class="box-check">{{
-            marcado(f.paciente?.pueblo_pertenencia, "5")
-          }}</span>
-          5.Ninguno
-          <div class="code-box-single">
-            {{ f.paciente?.pueblo_pertenencia }}
+        <div class="df-violentas-right">
+          <div class="df-row">
+            <div class="df-field" style="width: 100%; justify-content: space-between">
+              <span class="df-label">19.1 LUGAR DONDE OCURRIÓ LA LESIÓN:</span>
+              <span class="df-code-box">{{ f.lugar_lesion }}</span>
+            </div>
+          </div>
+          <div class="df-option-list df-lugar-options">
+            <span class="df-option">0. Vivienda</span>
+            <span class="df-option">1. Institución residencial</span>
+            <span class="df-option">2. Escuela u oficina pública</span>
+            <span class="df-option">3. Áreas deportivas</span>
+            <span class="df-option">4. Calle o carretera (vía pública)</span>
+          </div>
+          <div class="df-option-list df-lugar-options">
+            <span class="df-option">5. Área comercial o de servicios</span>
+            <span class="df-option">6. Área industrial</span>
+            <span class="df-option">7. Granja</span>
+            <span class="df-option">8. Otro</span>
+            <span class="df-option">9. Ignorado</span>
+          </div>
+          <div class="df-row">
+            <div class="df-field" style="flex: 1; justify-content: space-between">
+              <span class="df-label">19.2 OCURRIÓ EN EL DESEMPEÑO DE SU TRABAJO:</span>
+              <span class="df-option-list">
+                <span class="df-option">1. Sí</span>
+                <span class="df-option">2. No</span>
+                <span class="df-option">9. Ignorado</span>
+              </span>
+              <span class="df-code-box">{{ f.ocurrio_trabajo === true ? '1' : f.ocurrio_trabajo === false ? '2' : '9' }}</span>
+            </div>
+            <div class="df-field" style="flex: 1; justify-content: space-between">
+              <span class="df-label">19.3 FUE ACCIDENTE DE TRÁNSITO:</span>
+              <span class="df-option-list">
+                <span class="df-option">1. Sí</span>
+                <span class="df-option">2. No</span>
+                <span class="df-option">9. Ignorado</span>
+              </span>
+              <span class="df-code-box">{{ f.accidente_transito === true ? '1' : f.accidente_transito === false ? '2' : '9' }}</span>
+            </div>
+          </div>
+          <div class="df-row">
+            <div class="df-field" style="width: 100%">
+              <span class="df-label">19.4 SI FUERE SUICIDIO, HOMICIDIO O ACCIDENTE, INDIQUE EL ARMA QUE LO PRODUJO:</span>
+              <span class="df-fill-line df-left" style="flex: 1">{{ f.arma }}</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECCIÓN IV: CAUSA DE DEFUNCIÓN -->
-  <section class="form-section">
-    <div class="lateral-label">IV. CAUSA DE DEFUNCIÓN</div>
-    <div class="section-body">
-      <span class="field-label">18. CAUSAS DE DEFUNCIÓN</span>
-      <table class="causes-table">
-        <tr>
-          <td class="col-letter">I. (a)</td>
-          <td>
-            <span class="fill-line" style="width: 100%">{{ f.causa_a }}</span>
-          </td>
-          <td class="col-interval" rowspan="4">
-            Intervalo aprox. entre inicio y muerte:<br />
-            <strong>{{ f.causa_intervalo }}</strong>
-          </td>
-        </tr>
-        <tr>
-          <td class="col-letter">(b)</td>
-          <td>
-            <span class="fill-line" style="width: 100%">{{ f.causa_b }}</span>
-          </td>
-        </tr>
-        <tr>
-          <td class="col-letter">(c)</td>
-          <td>
-            <span class="fill-line" style="width: 100%">{{ f.causa_c }}</span>
-          </td>
-        </tr>
-        <tr>
-          <td class="col-letter">(d)</td>
-          <td>
-            <span class="fill-line" style="width: 100%">{{ f.causa_d }}</span>
-          </td>
-        </tr>
-        <tr>
-          <td class="col-letter">II.</td>
-          <td colspan="2">
-            Otros estados patológicos:
-            <span class="fill-line" style="width: 80%">{{
-              f.causa_otros
-            }}</span>
-          </td>
-        </tr>
-      </table>
-    </div>
-  </section>
-
-  <!-- SECCIÓN VII Y FIRMAS DE CERTIFICACIÓN -->
-  <section class="form-section">
-    <div class="lateral-label">VII. OTROS DATOS</div>
-    <div class="section-body">
-      <div class="form-row-grid">
-        <div class="field-group" style="flex: 1">
-          <span class="field-label">39. ¿HUBO NECROPSIA?:</span>
-          <span class="box-check">{{ marcado(f.hubo_necropsia, "1") }}</span> 1.
-          Sí
-          <span class="box-check" style="margin-left: 4px">{{
-            marcado(f.hubo_necropsia, "2")
-          }}</span>
-          2. No
+  <!-- SECCIÓN VI -->
+  <section class="df-form-section">
+    <div class="df-lateral-label">VI. DATOS DE LA DEFUNCIÓN FETAL (MORTINATO)</div>
+    <div class="df-section-body">
+      <div class="df-fetal-df-subtitle">DATOS DE LA MADRE</div>
+      <div class="df-fetal-mother">
+        <div class="df-row">
+          <div class="df-field" style="width: 100%">
+            <span class="df-label">20. NOMBRE:</span>
+            <span class="df-fill-line df-left" style="flex: 1">{{ nombreCompleto(f.madre) }}</span>
+          </div>
         </div>
-        <div class="field-group" style="flex: 2">
-          <span class="field-label">41. LUGAR OCURRENCIA:</span>
-          <span class="fill-line" style="flex: 1">{{
-            f.lugar_ocurrio_defuncion
-          }}</span>
+        <div class="df-row">
+          <span class="df-sublabel" style="width: 100%; text-align: center">Nombres y apellidos completos</span>
+        </div>
+
+        <div class="df-row">
+          <div class="df-field" style="width: 100%">
+            <span class="df-label">21. DOCUMENTO DE IDENTIFICACIÓN:</span>
+            <span class="df-fill-line" style="width: 120px">{{ f.madre?.cui }}</span>
+            <span style="font-size: 7pt">Ó</span>
+            <span class="df-label">Número de Libro:</span>
+            <span class="df-fill-line" style="width: 55px">{{ f.madre?.numero_libro }}</span>
+            <span class="df-label">Número de Folio:</span>
+            <span class="df-fill-line" style="width: 55px">{{ f.madre?.numero_folio }}</span>
+            <span class="df-label">Número de Partida:</span>
+            <span class="df-fill-line" style="width: 55px">{{ f.madre?.numero_partida }}</span>
+          </div>
+        </div>
+
+        <div class="df-row">
+          <div class="df-field" style="flex: 1.2">
+            <span class="df-label">22. LUGAR DE NACIMIENTO:</span>
+            <span class="df-label">País</span>
+            <span class="df-fill-line" style="width: 60px">{{ f.madre?.lugar_nacimiento_pais }}</span>
+            <span class="df-label">Departamento</span>
+            <span class="df-fill-line" style="width: 70px">{{ f.madre?.lugar_nacimiento_departamento }}</span>
+            <span class="df-label">Municipio</span>
+            <span class="df-fill-line" style="width: 70px">{{ f.madre?.lugar_nacimiento_municipio }}</span>
+          </div>
+          <div class="df-field" style="flex: 0.5">
+            <span class="df-label">23. EDAD:</span>
+            <span class="df-fill-line" style="width: 30px">{{ f.madre_edad }}</span>
+            <span class="df-label">Años</span>
+          </div>
+        </div>
+
+        <div class="df-row">
+          <div class="df-field" style="flex: 1; justify-content: space-between">
+            <span class="df-label">24. ESTADO CIVIL:</span>
+            <span class="df-option-list">
+              <span class="df-option">1. Soltera</span>
+              <span class="df-option">2. Casada</span>
+              <span class="df-option">3. Unida</span>
+              <span class="df-option">9. Ignorado</span>
+            </span>
+            <span class="df-code-box">{{ f.madre?.estado_civil }}</span>
+          </div>
+          <div class="df-field" style="flex: 1; justify-content: space-between">
+            <span class="df-label">25. PUEBLO DE PERTENENCIA:</span>
+            <span class="df-option-list compact-options">
+              <span class="df-option">1. Maya</span>
+              <span class="df-option">2. Garífuna</span>
+              <span class="df-option">3. Xinka</span>
+              <span class="df-option">4. Mestizo, Ladino</span>
+              <span class="df-option">5. Ninguno</span>
+              <span class="df-option">9. Ignorado</span>
+            </span>
+            <span class="df-code-box">{{ f.madre?.pueblo_pertenencia }}</span>
+          </div>
+        </div>
+
+        <div class="df-row">
+          <div class="df-field" style="width: 100%">
+            <span class="df-label">26. RESIDENCIA:</span>
+            <span class="df-fill-line df-left" style="flex: 1">{{ f.madre?.residencia_direccion }}</span>
+            <span class="df-fill-line" style="width: 70px">{{ f.madre?.residencia_municipio }}</span>
+            <span class="df-fill-line" style="width: 70px">{{ f.madre?.residencia_departamento }}</span>
+          </div>
+        </div>
+        <div class="df-row">
+          <span class="df-sublabel" style="flex: 1; text-align: center">Dirección exacta</span>
+          <span class="df-sublabel" style="width: 70px; text-align: center">Municipio</span>
+          <span class="df-sublabel" style="width: 70px; text-align: center">Departamento</span>
+        </div>
+
+        <div class="df-row">
+          <div class="df-field" style="flex: 1">
+            <span class="df-label">27. OCUPACIÓN:</span>
+            <span class="df-fill-line" style="flex: 1">{{ f.madre?.ocupacion }}</span>
+          </div>
+          <div class="df-field" style="flex: 1; justify-content: space-between">
+            <span class="df-label">28. SABE LEER Y ESCRIBIR:</span>
+            <span class="df-option-list">
+              <span class="df-option">1. Sí</span>
+              <span class="df-option">2. No</span>
+              <span class="df-option">9. Ignorado</span>
+            </span>
+            <span class="df-code-box">{{ f.madre_sabe_leer_escribir }}</span>
+          </div>
+        </div>
+
+        <div class="df-row">
+          <div class="df-field" style="width: 100%; align-items: flex-start">
+            <span class="df-label">29. ESCOLARIDAD:</span>
+            <span class="df-code-box">{{ f.madre?.escolaridad }}</span>
+            <span class="df-option-list" style="flex: 1">
+              <span class="df-option">0. Ninguna</span>
+              <span class="df-option">1. Primaria incompleta</span>
+              <span class="df-option">2. Primaria completa</span>
+              <span class="df-option">3. Básico incompleto</span>
+              <span class="df-option">4. Básico completo</span>
+              <span class="df-option">5. Diversificado incompleto</span>
+              <span class="df-option">6. Diversificado completo</span>
+              <span class="df-option">7. Universitario incompleto</span>
+              <span class="df-option">8. Universitario completo</span>
+              <span class="df-option">9. Ignorado</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="df-row">
+          <div class="df-field" style="width: 100%">
+            <span class="df-label">30. NACIONALIDAD:</span>
+            <span class="df-fill-line" style="width: 200px">{{ f.madre?.nacionalidad }}</span>
+          </div>
+        </div>
+
+        <div class="df-row">
+          <div class="df-field" style="width: 100%">
+            <span class="df-label">31. EN LOS EMBARAZOS ANTERIORES A ESTE TUVO (número):</span>
+            Nacidos vivos <span class="df-fill-line" style="width: 40px">{{ f.embarazos_previvos_vivos }}</span>
+            Nacidos muertos <span class="df-fill-line" style="width: 40px">{{ f.embarazos_previvos_muertos }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="df-fetal-df-subtitle">DATOS DEL FETO (MORTINATO)</div>
+      <div class="df-fetal-feto">
+        <div class="df-row fetal-df-row">
+          <div class="df-field df-block df-fetal-col">
+            <div style="display:flex; align-items:center; gap:2px">
+              <span class="df-label">32. SEXO:</span>
+              <span class="df-code-box">{{ f.fetal_sexo }}</span>
+            </div>
+            <span class="df-fetal-df-option">1. Hombre</span>
+            <span class="df-fetal-df-option">2. Mujer</span>
+            <span class="df-fetal-df-option">9. Ignorado</span>
+          </div>
+          <div class="df-field df-block df-fetal-col">
+            <div style="display:flex; align-items:center; gap:2px">
+              <span class="df-label">33. MURIÓ</span>
+              <span class="df-code-box">{{ f.fetal_murio_antes_parto === true ? '1' : f.fetal_murio_antes_parto === false ? '2' : '' }}</span>
+            </div>
+            <span class="df-fetal-df-option">1. Antes del Parto</span>
+            <span class="df-fetal-df-option">2. Durante el Parto</span>
+          </div>
+          <div class="df-field df-block df-fetal-col">
+            <div style="display:flex; align-items:center; gap:2px">
+              <span class="df-label">34. EL PARTO FUE:</span>
+              <span class="df-code-box">{{ f.fetal_parto_tipo }}</span>
+            </div>
+            <span class="df-fetal-df-option">1. Simple</span>
+            <span class="df-fetal-df-option">2. Doble</span>
+            <span class="df-fetal-df-option">3. Múltiple</span>
+          </div>
+          <div class="df-field df-block df-fetal-col">
+            <div style="display:flex; align-items:center; gap:2px">
+              <span class="df-label">35. CLASE DE PARTO:</span>
+              <span class="df-code-box">{{ f.fetal_clase_parto }}</span>
+            </div>
+            <span class="df-fetal-df-option">1. Eutócico</span>
+            <span class="df-fetal-df-option">2. Distócico</span>
+          </div>
+          <div class="df-field df-block df-fetal-col">
+            <div style="display:flex; align-items:center; gap:2px">
+              <span class="df-label">36. VÍA DEL PARTO:</span>
+              <span class="df-code-box">{{ f.fetal_via_parto }}</span>
+            </div>
+            <span class="df-fetal-df-option">1. Vaginal</span>
+            <span class="df-fetal-df-option">2. Cesárea</span>
+          </div>
+          <div class="df-field df-block df-semanas-cell">
+            <div style="display:flex; align-items:center; gap:2px; justify-content:center">
+              <span class="df-label">37. SEMANAS DE GESTACIÓN:</span>
+              <span class="df-code-box">{{ f.fetal_semanas_gestacion }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="df-row">
+          <div class="df-field df-block" style="width: 100%">
+            <span class="df-label">38. CAUSAS DEL MORTINATO</span>
+            <div class="df-row" style="padding-left: 8px">
+              <span class="df-label">Fetales:</span>
+              <span class="df-fill-line df-left" style="flex: 1">{{ f.fetal_causas_fetales }}</span>
+              <span class="df-label" style="margin-left: 4px">Maternas:</span>
+              <span class="df-fill-line df-left" style="flex: 1">{{ f.fetal_causas_maternas }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- BLOQUE DE FIRMAS Y TIMBRE MÉDICO -->
-  <footer class="footer-signatures">
-    <div class="stamp-box">
-      <div class="stamp-label">TIMBRE MÉDICO</div>
+  <!-- SECCIÓN VII -->
+  <section class="df-form-section">
+    <div class="df-lateral-label">VII. OTROS DATOS DE LA DEFUNCIÓN</div>
+    <div class="df-section-body">
+      <div class="df-row">
+        <div class="df-field" style="flex: 0.55; justify-content: space-between">
+          <span class="df-label">39. HUBO NECROPSIA:</span>
+          <span class="df-option-list">
+            <span class="df-option">1. Sí</span>
+            <span class="df-option">2. No</span>
+          </span>
+          <span class="df-code-box">{{ f.hubo_necropsia }}</span>
+        </div>
+        <div class="df-field" style="flex: 1.2; justify-content: space-between">
+          <span class="df-label">40. CLASE DE ASISTENCIA RECIBIDA:</span>
+          <span class="df-option-list">
+            <span class="df-option">1. Médica</span>
+            <span class="df-option">2. Paramédica</span>
+            <span class="df-option">3. Comadrona</span>
+            <span class="df-option">4. Empírica</span>
+            <span class="df-option">5. Ninguna</span>
+            <span class="df-option">9. Ignorado</span>
+          </span>
+          <span class="df-code-box">{{ f.clase_asistencia }}</span>
+        </div>
+        <div class="df-field df-block" style="flex: 1.65">
+          <div style="display:flex; align-items:center; gap:2px">
+            <span class="df-label">41. LUGAR DONDE OCURRIÓ LA DEFUNCIÓN:</span>
+            <span class="df-code-box">{{ f.lugar_ocurrio_defuncion }}</span>
+          </div>
+          <div class="df-option-list">
+            <span class="df-option">1. Hospital Público</span>
+            <span class="df-option">2. Hospital Privado</span>
+            <span class="df-option">3. Otros servicios de salud pública</span>
+            <span class="df-option">4. IGSS</span>
+            <span class="df-option">5. Vía Pública</span>
+          </div>
+          <div class="df-option-list">
+            <span class="df-option">6. Domicilio</span>
+            <span class="df-option">7. Lugar de trabajo</span>
+            <span class="df-option">8. Otro</span>
+            <span class="df-option">9. Ignorado</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="stamp-box">
-      <div class="stamp-label">SELLO INSTITUCIONAL Y/O PROFESIONAL</div>
+  </section>
+
+  <!-- FIRMAS -->
+  <footer class="df-footer">
+    <div class="df-stamp-box">
+      <div class="df-stamp-label">TIMBRE MÉDICO</div>
     </div>
-    <div class="legal-cert-box">
-      <p style="margin: 0">
-        Y para que se haga la inscripción en el Registro Nacional de las
-        Personas, se emite el presente informe en:
+    <div class="df-stamp-box">
+      <div class="df-stamp-label">SELLO INSTITUCIONAL<br>Y/O PROFESIONAL</div>
+    </div>
+    <div class="df-cert-box">
+      <p class="df-cert-text">
+        "Y para que se haga la inscripción respectiva en el Registro Nacional de las Personas, se emite el presente Informe de defunción, en:
       </p>
-      <div class="form-row-grid" style="margin-top: 2px">
-        <span class="fill-line" style="flex: 1">{{
-          f.lugar_defuncion_municipio
-        }}</span>
+      <div class="cert-df-row">
+        <span class="df-fill-line df-left" style="flex: 1">{{ f.lugar_defuncion_municipio }}</span>
         a los
-        <span class="fill-line" style="width: 25px; text-align: center">{{
-          hoy().dia
-        }}</span>
+        <span class="df-fill-line" style="width: 26px">{{ hoy().dia }}</span>
         días del mes de
-        <span class="fill-line" style="width: 70px; text-align: center">{{
-          hoy().mes
-        }}</span>
+        <span class="df-fill-line" style="width: 70px">{{ hoy().mes }}</span>
         del año
-        <span class="fill-line" style="width: 35px; text-align: center">{{
-          hoy().anio
-        }}</span>
+        <span class="df-fill-line" style="width: 36px">{{ hoy().anio }}</span>
       </div>
-      <div class="signature-line-container">
-        Firma de la persona que extiende el informe:
-        {{ nombreCompleto(f.medico) }}
+      <div class="df-signature-df-block">
+        <div class="df-signature-name">{{ nombreCompleto(f.medico) }}</div>
+        <div class="df-signature-label">Firma de la persona que extiende el informe</div>
       </div>
     </div>
   </footer>
