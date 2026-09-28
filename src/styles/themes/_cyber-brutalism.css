@@ -48,10 +48,10 @@
   --secondary-light:    #ffff;
   --secondary-deep:     #f95738;    /* Tomato */
   --secondary-dim:      rgba(238, 150, 75, 0.16);
-  --tertiary:           #f95738;    /* Tomato */
-  --tertiary-light:     #f95738;
-  --tertiary-deep:      #d94a2e;
-  --tertiary-dim:       rgba(249, 87, 56, 0.16);
+ --tertiary: #b8cbe8;
+  --tertiary-light: #a78bfa;
+  --tertiary-deep: #2892d9;
+  --tertiary-dim: rgba(124, 58, 237, 0.12);
   --success:            #39ff88;
   --success-soft:       #b9ffd2;
   --warning:            #ffff;

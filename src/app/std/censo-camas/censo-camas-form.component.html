@@ -36,15 +36,6 @@
                 }
               </select>
             </div>
-            <div class="field">
-              <label class="field-label">Sexo *</label>
-              <div class="chips-row">
-                <span class="chip" [class.on]="form.get('sexo')?.value === 0"
-                (click)="form.get('sexo')?.setValue(0)">♂ Masculino</span>
-                <span class="chip" [class.on]="form.get('sexo')?.value === 1"
-                (click)="form.get('sexo')?.setValue(1)">♀ Femenino</span>
-              </div>
-            </div>
           </div>
 
           <!-- Indicador de capacidad -->
@@ -94,9 +85,9 @@
           <!-- Aviso de duplicado -->
           @if (existeRegistro && !enEdicion) {
             <div class="aviso-duplicado">
-              ⚠ Ya existe un registro para esta fecha, servicio y sexo.
+              ⚠ Ya existe censo para esta fecha y servicio.
               <button type="button" class="btn-link" (click)="irAEditarExistente()">
-                Ver / editar el registro existente
+                Abrir y editar ambos sexos
               </button>
             </div>
           }
@@ -106,129 +97,75 @@
       <div class="section-card">
         <div class="sec-head">
           <span class="sec-title">Ocupación y Movimientos</span>
-          <span class="sec-badge">Se edita la columna del sexo seleccionado</span>
+          <span class="sec-badge">Un guardado para ambos sexos</span>
         </div>
         <div class="sec-body">
           <div class="sexo-columns">
-            <!-- Masculino -->
-            <fieldset class="sexo-col" [class.active]="sexoActivo(0)" [class.inactive]="!sexoActivo(0)" [disabled]="!sexoActivo(0)">
-              <div class="sexo-col-head masc" (click)="seleccionarSexo(0)">♂ Masculino</div>
+            <fieldset class="sexo-col masc" formGroupName="masculino">
+              <legend class="sexo-col-head">
+                <span>♂ Masculino</span>
+                <span class="sexo-status" [class.saved]="registroMasculino">
+                  {{ registroMasculino ? 'Registrado' : 'Nuevo' }}
+                </span>
+              </legend>
               <div class="form-grid">
-                <div class="field">
-                  <label class="field-label">Ocupados *</label>
-                  <input class="field-input" type="number" min="0" formControlName="ocupados" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Otros Ingresos *</label>
-                  <input class="field-input" type="number" min="0" formControlName="otro_ingresos" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Ingresos *</label>
-                  <input class="field-input" type="number" min="0" formControlName="ingresos" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Huéspedes *</label>
-                  <input class="field-input" type="number" min="0" formControlName="huespedes" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Emergencia *</label>
-                  <input class="field-input" type="number" min="0" formControlName="emergencia" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Egresos *</label>
-                  <input class="field-input" type="number" min="0" formControlName="egresos" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Fallecidos *</label>
-                  <input class="field-input" type="number" min="0" formControlName="fallecidos" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Referidos *</label>
-                  <input class="field-input" type="number" min="0" formControlName="referido" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Traslados *</label>
-                  <input class="field-input" type="number" min="0" formControlName="traslado" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Contraindicados *</label>
-                  <input class="field-input" type="number" min="0" formControlName="contraindicados" />
-                </div>
+                <div class="field"><label class="field-label">Ocupados *</label><input class="field-input" type="number" min="0" formControlName="ocupados" /></div>
+                <div class="field"><label class="field-label">Otros ingresos *</label><input class="field-input" type="number" min="0" formControlName="otro_ingresos" /></div>
+                <div class="field"><label class="field-label">Ingresos *</label><input class="field-input" type="number" min="0" formControlName="ingresos" /></div>
+                <div class="field"><label class="field-label">Huéspedes *</label><input class="field-input" type="number" min="0" formControlName="huespedes" /></div>
+                <div class="field"><label class="field-label">Emergencia *</label><input class="field-input" type="number" min="0" formControlName="emergencia" /></div>
+                <div class="field"><label class="field-label">Egresos *</label><input class="field-input" type="number" min="0" formControlName="egresos" /></div>
+                <div class="field"><label class="field-label">Fallecidos *</label><input class="field-input" type="number" min="0" formControlName="fallecidos" /></div>
+                <div class="field"><label class="field-label">Referidos *</label><input class="field-input" type="number" min="0" formControlName="referido" /></div>
+                <div class="field"><label class="field-label">Traslados *</label><input class="field-input" type="number" min="0" formControlName="traslado" /></div>
+                <div class="field"><label class="field-label">Contraindicados *</label><input class="field-input" type="number" min="0" formControlName="contraindicados" /></div>
               </div>
             </fieldset>
-            <!-- Femenino -->
-            <fieldset class="sexo-col" [class.active]="sexoActivo(1)" [class.inactive]="!sexoActivo(1)" [disabled]="!sexoActivo(1)">
-              <div class="sexo-col-head fem" (click)="seleccionarSexo(1)">♀ Femenino</div>
+            <fieldset class="sexo-col fem" formGroupName="femenino">
+              <legend class="sexo-col-head">
+                <span>♀ Femenino</span>
+                <span class="sexo-status" [class.saved]="registroFemenino">
+                  {{ registroFemenino ? 'Registrado' : 'Nuevo' }}
+                </span>
+              </legend>
               <div class="form-grid">
-                <div class="field">
-                  <label class="field-label">Ocupados *</label>
-                  <input class="field-input" type="number" min="0" formControlName="ocupados" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Otros Ingresos *</label>
-                  <input class="field-input" type="number" min="0" formControlName="otro_ingresos" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Ingresos *</label>
-                  <input class="field-input" type="number" min="0" formControlName="ingresos" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Huéspedes *</label>
-                  <input class="field-input" type="number" min="0" formControlName="huespedes" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Emergencia *</label>
-                  <input class="field-input" type="number" min="0" formControlName="emergencia" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Egresos *</label>
-                  <input class="field-input" type="number" min="0" formControlName="egresos" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Fallecidos *</label>
-                  <input class="field-input" type="number" min="0" formControlName="fallecidos" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Referidos *</label>
-                  <input class="field-input" type="number" min="0" formControlName="referido" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Traslados *</label>
-                  <input class="field-input" type="number" min="0" formControlName="traslado" />
-                </div>
-                <div class="field">
-                  <label class="field-label">Contraindicados *</label>
-                  <input class="field-input" type="number" min="0" formControlName="contraindicados" />
-                </div>
+                <div class="field"><label class="field-label">Ocupados *</label><input class="field-input" type="number" min="0" formControlName="ocupados" /></div>
+                <div class="field"><label class="field-label">Otros ingresos *</label><input class="field-input" type="number" min="0" formControlName="otro_ingresos" /></div>
+                <div class="field"><label class="field-label">Ingresos *</label><input class="field-input" type="number" min="0" formControlName="ingresos" /></div>
+                <div class="field"><label class="field-label">Huéspedes *</label><input class="field-input" type="number" min="0" formControlName="huespedes" /></div>
+                <div class="field"><label class="field-label">Emergencia *</label><input class="field-input" type="number" min="0" formControlName="emergencia" /></div>
+                <div class="field"><label class="field-label">Egresos *</label><input class="field-input" type="number" min="0" formControlName="egresos" /></div>
+                <div class="field"><label class="field-label">Fallecidos *</label><input class="field-input" type="number" min="0" formControlName="fallecidos" /></div>
+                <div class="field"><label class="field-label">Referidos *</label><input class="field-input" type="number" min="0" formControlName="referido" /></div>
+                <div class="field"><label class="field-label">Traslados *</label><input class="field-input" type="number" min="0" formControlName="traslado" /></div>
+                <div class="field"><label class="field-label">Contraindicados *</label><input class="field-input" type="number" min="0" formControlName="contraindicados" /></div>
               </div>
             </fieldset>
           </div>
         </div>
       </div>
       <!-- Info de auditoría + cálculos (solo edición) -->
-      @if (enEdicion && registroActual) {
+      @if (enEdicion) {
         <div class="section-card">
           <div class="sec-head">
             <span class="sec-title">Cálculos del Sistema</span>
-            <span class="sec-badge">Calculado automáticamente</span>
+            <span class="sec-badge">Totales calculados por sexo</span>
           </div>
           <div class="sec-body">
-            <div class="form-grid">
-              <div class="field">
-                <span class="field-label">Egresos Totales</span>
-                <div class="field-static">{{ registroActual.egresos_totales }}</div>
+            <div class="audit-columns">
+              <div class="audit-sex">
+                <strong>Masculino</strong>
+                @if (registroMasculino) {
+                  <span>{{ registroMasculino.camas_ocupadas }} camas · {{ registroMasculino.egresos_totales }} egresos</span>
+                  <small>Actualizado {{ registroExistente?.updated_at | date:'dd/MM/yyyy HH:mm' }}</small>
+                } @else { <span>Sin registro previo</span> }
               </div>
-              <div class="field">
-                <span class="field-label">Camas Ocupadas</span>
-                <div class="field-static">{{ registroActual.camas_ocupadas }}</div>
-              </div>
-              <div class="field">
-                <span class="field-label">Creado</span>
-                <div class="field-static">{{ registroActual.created_at | date:'dd/MM/yyyy HH:mm' }}</div>
-              </div>
-              <div class="field">
-                <span class="field-label">Actualizado</span>
-                <div class="field-static">{{ registroActual.updated_at | date:'dd/MM/yyyy HH:mm' }}</div>
+              <div class="audit-sex">
+                <strong>Femenino</strong>
+                @if (registroFemenino) {
+                  <span>{{ registroFemenino.camas_ocupadas }} camas · {{ registroFemenino.egresos_totales }} egresos</span>
+                  <small>Actualizado {{ registroExistente?.updated_at | date:'dd/MM/yyyy HH:mm' }}</small>
+                } @else { <span>Sin registro previo</span> }
               </div>
             </div>
           </div>

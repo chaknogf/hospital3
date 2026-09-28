@@ -2439,7 +2439,7 @@ thead th {
 .filter-row .field label,
 .filter-group label,
 .field-label {
-  color: var(--theme-text-muted) !important;
+
   font-size: 0.7rem !important;
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CensoCamasService } from './censo-camas.service';
-import { CensoCamasOut, CensoCamasCreate, CensoCamasUpdate } from './censo-camas.interface';
+import { CensoCamasOut, CensoCamasCreate, CensoCamasUpdate, CensoCamasSexoOut } from './censo-camas.interface';
 import { Encamamiento } from '../../interface/interfaces';
 import { ApiService } from '../../service/api.service';
 import { Subject } from 'rxjs';
@@ -26,6 +26,7 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
   private censoService = inject(CensoCamasService);
   private api = inject(ApiService);
   private destroy$ = new Subject<void>();
+  private revisionDuplicado = 0;
 
   registroId: number | null = null;
   servicios: Encamamiento[] = [];
@@ -35,7 +36,8 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
   mostrarAlerta = false;
   mensajeAlerta = '';
   tipoAlerta: 'exito' | 'error' = 'exito';
-  registroActual: CensoCamasOut | null = null;
+  registroMasculino: CensoCamasSexoOut | null = null;
+  registroFemenino: CensoCamasSexoOut | null = null;
   copiandoDiaAnterior = false;
   mensajeCopia = '';
   mostrarCopia = false;
@@ -43,40 +45,18 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
   registroExistente: CensoCamasOut | null = null;
 
   form: FormGroup = this.fb.group({
-    fecha: [this.hoy(), Validators.required],
+    fecha: [this.ayer(), Validators.required],
     servicio_id: [null, Validators.required],
-    sexo: [0, Validators.required],
-    ocupados: [0, [Validators.required, Validators.min(0)]],
-    egresos: [0, [Validators.required, Validators.min(0)]],
-    fallecidos: [0, [Validators.required, Validators.min(0)]],
-    referido: [0, [Validators.required, Validators.min(0)]],
-    traslado: [0, [Validators.required, Validators.min(0)]],
-    contraindicados: [0, [Validators.required, Validators.min(0)]],
-    otro_ingresos: [0, [Validators.required, Validators.min(0)]],
-    ingresos: [0, [Validators.required, Validators.min(0)]],
-    huespedes: [0, [Validators.required, Validators.min(0)]],
-    emergencia: [0, [Validators.required, Validators.min(0)]]
+    masculino: this.crearGrupoMovimientos(),
+    femenino: this.crearGrupoMovimientos(),
   });
 
   ngOnInit(): void {
     this.cargarServicios();
     this.revisarDuplicado();
 
-    this.form.get('fecha')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.existeRegistro = false;
-      this.registroExistente = null;
-      this.revisarDuplicado();
-    });
-    this.form.get('servicio_id')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.existeRegistro = false;
-      this.registroExistente = null;
-      this.revisarDuplicado();
-    });
-    this.form.get('sexo')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.existeRegistro = false;
-      this.registroExistente = null;
-      this.revisarDuplicado();
-    });
+    this.form.get('fecha')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => this.cambiarContexto());
+    this.form.get('servicio_id')?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => this.cambiarContexto());
 
     this.registroId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.registroId) {
@@ -108,18 +88,34 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
   }
 
   get camasOcupadasTotales(): number {
-    const ocupados = Number(this.form.get('ocupados')?.value ?? 0);
-    const otro = Number(this.form.get('otro_ingresos')?.value ?? 0);
-    const ingresos = Number(this.form.get('ingresos')?.value ?? 0);
-    const huespedes = Number(this.form.get('huespedes')?.value ?? 0);
-    const emergencia = Number(this.form.get('emergencia')?.value ?? 0);
-    const egresos = Number(this.form.get('egresos')?.value ?? 0);
-    const fallecidos = Number(this.form.get('fallecidos')?.value ?? 0);
-    const referido = Number(this.form.get('referido')?.value ?? 0);
-    const traslado = Number(this.form.get('traslado')?.value ?? 0);
-    const contraindicados = Number(this.form.get('contraindicados')?.value ?? 0);
-    const egresosTotales = egresos + fallecidos + referido + traslado + contraindicados;
-    return emergencia + huespedes + ingresos + otro + ocupados - egresosTotales;
+    return this.calcularCamasOcupadas(this.grupoSexo(0)) + this.calcularCamasOcupadas(this.grupoSexo(1));
+  }
+
+  private crearGrupoMovimientos(): FormGroup {
+    return this.fb.group({
+      ocupados: [0, [Validators.required, Validators.min(0)]],
+      egresos: [0, [Validators.required, Validators.min(0)]],
+      fallecidos: [0, [Validators.required, Validators.min(0)]],
+      referido: [0, [Validators.required, Validators.min(0)]],
+      traslado: [0, [Validators.required, Validators.min(0)]],
+      contraindicados: [0, [Validators.required, Validators.min(0)]],
+      otro_ingresos: [0, [Validators.required, Validators.min(0)]],
+      ingresos: [0, [Validators.required, Validators.min(0)]],
+      huespedes: [0, [Validators.required, Validators.min(0)]],
+      emergencia: [0, [Validators.required, Validators.min(0)]],
+    });
+  }
+
+  private grupoSexo(sexo: 0 | 1): FormGroup {
+    return this.form.get(sexo === 0 ? 'masculino' : 'femenino') as FormGroup;
+  }
+
+  private calcularCamasOcupadas(movimientos: FormGroup): number {
+    const v = movimientos.value;
+    const egresosTotales = Number(v.egresos ?? 0) + Number(v.fallecidos ?? 0)
+      + Number(v.referido ?? 0) + Number(v.traslado ?? 0) + Number(v.contraindicados ?? 0);
+    return Number(v.emergencia ?? 0) + Number(v.huespedes ?? 0) + Number(v.ingresos ?? 0)
+      + Number(v.otro_ingresos ?? 0) + Number(v.ocupados ?? 0) - egresosTotales;
   }
 
   get porcentajeOcupacion(): number {
@@ -139,108 +135,105 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
     return Math.max(this.camasCensables - this.camasOcupadasTotales, 0);
   }
 
-  sexoActivo(sexo: number): boolean {
-    return (this.form.get('sexo')?.value ?? 0) === sexo;
+  private resetearMovimientos(): void {
+    this.grupoSexo(0).reset(this.valoresMovimientosVacios(), { emitEvent: false });
+    this.grupoSexo(1).reset(this.valoresMovimientosVacios(), { emitEvent: false });
   }
 
-  seleccionarSexo(sexo: number): void {
-    const sexoActual = this.form.get('sexo')?.value;
-    if (sexoActual === sexo) return;
-
-    // Si hay datos en el formulario actual, guardarlos antes de cambiar
-    const tieneDatos = this.formTieneDatos();
-    if (tieneDatos && !this.existeRegistro && this.form.valid) {
-      this.guardarAutomatico(() => {
-        this.form.get('sexo')?.setValue(sexo);
-      });
-    } else {
-      this.form.get('sexo')?.setValue(sexo);
-    }
+  private valoresMovimientosVacios(): Record<string, number> {
+    return {
+      ocupados: 0,
+      egresos: 0,
+      fallecidos: 0,
+      referido: 0,
+      traslado: 0,
+      contraindicados: 0,
+      otro_ingresos: 0,
+      ingresos: 0,
+      huespedes: 0,
+      emergencia: 0,
+    };
   }
 
-  /** Verifica si el formulario tiene datos ingresados (no todos en 0) */
-  private formTieneDatos(): boolean {
-    const v = this.form.value;
-    return (v.ocupados || 0) + (v.egresos || 0) + (v.fallecidos || 0) +
-           (v.referido || 0) + (v.traslado || 0) + (v.contraindicados || 0) +
-           (v.otro_ingresos || 0) + (v.ingresos || 0) + (v.huespedes || 0) +
-           (v.emergencia || 0) > 0;
-  }
-
-  /** Guarda el formulario actual sin mostrar mensajes, luego ejecuta callback */
-  private guardarAutomatico(callback: () => void): void {
-    const raw = this.form.value;
-
-    // Si ya existe registro para esta fecha/servicio/sexo, actualizar; si no, crear
-    if (this.existeRegistro && this.registroExistente) {
-      const data: CensoCamasUpdate = {
-        ocupados: raw.ocupados || 0,
-        egresos: raw.egresos || 0,
-        fallecidos: raw.fallecidos || 0,
-        referido: raw.referido || 0,
-        traslado: raw.traslado || 0,
-        contraindicados: raw.contraindicados || 0,
-        otro_ingresos: raw.otro_ingresos || 0,
-        ingresos: raw.ingresos || 0,
-        huespedes: raw.huespedes || 0,
-        emergencia: raw.emergencia || 0,
-      };
-      this.censoService.actualizar(this.registroExistente.id, data).subscribe({
-        next: () => callback(),
-        error: () => callback()
-      });
-    } else {
-      const data: CensoCamasCreate = {
-        fecha: raw.fecha,
-        servicio_id: raw.servicio_id,
-        sexo: raw.sexo,
-        ocupados: raw.ocupados || 0,
-        egresos: raw.egresos || 0,
-        fallecidos: raw.fallecidos || 0,
-        referido: raw.referido || 0,
-        traslado: raw.traslado || 0,
-        contraindicados: raw.contraindicados || 0,
-        otro_ingresos: raw.otro_ingresos || 0,
-        ingresos: raw.ingresos || 0,
-        huespedes: raw.huespedes || 0,
-        emergencia: raw.emergencia || 0,
-      };
-      this.censoService.crear(data).subscribe({
-        next: () => callback(),
-        error: () => callback()
-      });
-    }
+  private cambiarContexto(): void {
+    if (this.enEdicion) return;
+    this.resetearMovimientos();
+    this.existeRegistro = false;
+    this.registroExistente = null;
+    this.revisarDuplicado();
   }
 
   verificarExistencia(): boolean {
     const fecha = this.form.get('fecha')?.value;
     const servicio_id = this.form.get('servicio_id')?.value;
-    const sexo = this.form.get('sexo')?.value;
-    if (!fecha || !servicio_id || sexo === null || sexo === undefined || this.enEdicion) return false;
+    if (!fecha || !servicio_id || this.enEdicion) return false;
     return true;
   }
 
   revisarDuplicado(): void {
-    if (!this.verificarExistencia()) return;
+    const revision = ++this.revisionDuplicado;
+    if (!this.verificarExistencia()) {
+      this.existeRegistro = false;
+      this.registroExistente = null;
+      this.registroMasculino = null;
+      this.registroFemenino = null;
+      return;
+    }
     const fecha = this.form.get('fecha')?.value;
     const servicioId = this.form.get('servicio_id')?.value;
-    const sexo = this.form.get('sexo')?.value;
-
-    this.censoService.getRegistros({ fecha, servicio_id: servicioId, sexo, limit: 1 }).subscribe({
+    this.censoService.getRegistros({ fecha, servicio_id: servicioId, limit: 1 }).subscribe({
       next: (res) => {
-        if (res.total > 0 && res.registros[0]) {
-          this.existeRegistro = true;
-          this.registroExistente = res.registros[0];
-        } else {
-          this.existeRegistro = false;
-          this.registroExistente = null;
-        }
+        if (revision !== this.revisionDuplicado) return;
+        this.establecerRegistro(res.registros[0] ?? null);
       },
       error: () => {
+        if (revision !== this.revisionDuplicado) return;
         this.existeRegistro = false;
         this.registroExistente = null;
+        this.registroMasculino = null;
+        this.registroFemenino = null;
       }
     });
+  }
+
+  private establecerRegistro(registro: CensoCamasOut | null): void {
+    this.registroMasculino = registro?.masculino ?? null;
+    this.registroFemenino = registro?.femenino ?? null;
+    this.existeRegistro = !!registro;
+    this.registroExistente = registro;
+  }
+
+  private cargarRegistrosDelServicio(fecha: string, servicioId: number): void {
+    this.censoService.getRegistros({ fecha, servicio_id: servicioId, skip: 0, limit: 1 }).subscribe({
+      next: (res) => {
+        const registro = res.registros[0] ?? null;
+        this.establecerRegistro(registro);
+        this.grupoSexo(0).reset(this.movimientosDe(registro?.masculino ?? null), { emitEvent: false });
+        this.grupoSexo(1).reset(this.movimientosDe(registro?.femenino ?? null), { emitEvent: false });
+      },
+      error: () => {
+        this.registroMasculino = null;
+        this.registroFemenino = null;
+      },
+      complete: () => {
+        this.cargando = false;
+      },
+    });
+  }
+
+  private movimientosDe(registro: CensoCamasSexoOut | null): Record<string, number> {
+    return {
+      ocupados: registro?.ocupados ?? 0,
+      egresos: registro?.egresos ?? 0,
+      fallecidos: registro?.fallecidos ?? 0,
+      referido: registro?.referido ?? 0,
+      traslado: registro?.traslado ?? 0,
+      contraindicados: registro?.contraindicados ?? 0,
+      otro_ingresos: registro?.otro_ingresos ?? 0,
+      ingresos: registro?.ingresos ?? 0,
+      huespedes: registro?.huespedes ?? 0,
+      emergencia: registro?.emergencia ?? 0,
+    };
   }
 
   irAEditarExistente(): void {
@@ -264,7 +257,8 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
         this.mensajeCopia = res.copiados > 0 || res.actualizados > 0
           ? `✓ Se copiaron ${res.copiados} registros y se actualizaron ${res.actualizados} desde el ${origen}`
           : `No hay registros del ${origen} para copiar.`;
-        this.revisarDuplicado();
+        if (servicioId) this.cargarRegistrosDelServicio(fecha, servicioId);
+        else this.revisarDuplicado();
         this.tipoAlerta = res.copiados > 0 || res.actualizados > 0 ? 'exito' : 'error';
         this.mostrarAlerta = true;
         setTimeout(() => this.mostrarAlerta = false, 6000);
@@ -284,25 +278,19 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
     this.cargando = true;
     this.censoService.getRegistro(id).subscribe({
       next: (data) => {
-        this.registroActual = data;
         this.form.patchValue({
           fecha: data.fecha,
           servicio_id: data.servicio_id,
-          sexo: data.sexo,
-          ocupados: data.ocupados,
-          egresos: data.egresos,
-          fallecidos: data.fallecidos,
-          referido: data.referido,
-          traslado: data.traslado,
-          contraindicados: data.contraindicados,
-          otro_ingresos: data.otro_ingresos,
-          ingresos: data.ingresos,
-          huespedes: data.huespedes,
-          emergencia: data.emergencia
-        });
+          masculino: this.movimientosDe(data.masculino),
+          femenino: this.movimientosDe(data.femenino),
+        }, { emitEvent: false });
+        this.establecerRegistro(data);
+        this.cargando = false;
       },
-      error: () => console.error('Error al cargar registro'),
-      complete: () => this.cargando = false
+      error: () => {
+        this.cargando = false;
+        console.error('Error al cargar registro');
+      },
     });
   }
 
@@ -314,57 +302,52 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
 
     if (this.existeRegistro && !this.enEdicion) {
       this.tipoAlerta = 'error';
-      this.mostrarMensaje('Ya existe un registro para esa fecha, servicio y sexo. Abra el registro existente para editarlo.', 7000);
+      this.mostrarMensaje('Ya existe un registro para esta fecha y servicio. Ábralo para editar ambos sexos.', 7000);
       return;
     }
 
     this.guardando = true;
-    const raw = this.form.value;
+    const registro = this.crearRegistro();
+    const solicitud = this.enEdicion && this.registroId
+      ? this.censoService.actualizar(this.registroId, {
+        masculino: registro.masculino,
+        femenino: registro.femenino,
+      })
+      : this.censoService.crear(registro);
 
-    if (this.enEdicion && this.registroId) {
-      const updateData: CensoCamasUpdate = {
-        ocupados: raw.ocupados,
-        egresos: raw.egresos,
-        fallecidos: raw.fallecidos,
-        referido: raw.referido,
-        traslado: raw.traslado,
-        contraindicados: raw.contraindicados,
-        otro_ingresos: raw.otro_ingresos,
-        ingresos: raw.ingresos,
-        huespedes: raw.huespedes,
-        emergencia: raw.emergencia
-      };
-      this.censoService.actualizar(this.registroId, updateData).subscribe({
-        next: () => this.router.navigate(['/censo-camas']),
-        error: () => this.guardando = false,
-        complete: () => this.guardando = false
-      });
-    } else {
-      const payload: CensoCamasCreate = {
-        fecha: raw.fecha,
-        servicio_id: raw.servicio_id,
-        sexo: raw.sexo,
-        ocupados: raw.ocupados,
-        egresos: raw.egresos,
-        fallecidos: raw.fallecidos,
-        referido: raw.referido,
-        traslado: raw.traslado,
-        contraindicados: raw.contraindicados,
-        otro_ingresos: raw.otro_ingresos,
-        ingresos: raw.ingresos,
-        huespedes: raw.huespedes,
-        emergencia: raw.emergencia
-      };
-      this.censoService.crear(payload).subscribe({
-        next: () => {
+    solicitud.subscribe({
+      next: (res) => {
+        if ((res as any)?.queued) {
+          this.tipoAlerta = 'exito';
+          this.mostrarMensaje('Censo de ambos sexos guardado localmente; se sincronizará al recuperar conexión');
+          if (this.enEdicion) this.router.navigate(['/censo-camas']);
+          else this.limpiarForm();
+          return;
+        }
+
+        if (this.enEdicion) {
+          this.router.navigate(['/censo-camas']);
+        } else {
           this.tipoAlerta = 'exito';
           this.mostrarMensaje('Registro de censo guardado correctamente');
           this.limpiarForm();
-        },
-        error: () => this.guardando = false,
-        complete: () => this.guardando = false
-      });
-    }
+        }
+      },
+      error: () => {
+        this.tipoAlerta = 'error';
+        this.mostrarMensaje('No se pudo guardar el censo de ambos sexos.');
+      },
+      complete: () => this.guardando = false,
+    });
+  }
+
+  private crearRegistro(): CensoCamasCreate {
+    return {
+      fecha: this.form.get('fecha')?.value,
+      servicio_id: Number(this.form.get('servicio_id')?.value),
+      masculino: this.grupoSexo(0).getRawValue(),
+      femenino: this.grupoSexo(1).getRawValue(),
+    };
   }
 
   volver(): void {
@@ -373,27 +356,15 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
 
   get f() { return this.form.controls; }
 
-  limpiarForm(): void {
-    this.form.reset({
-      fecha: this.hoy(),
-      servicio_id: null,
-      sexo: 0,
-      ocupados: 0,
-      egresos: 0,
-      fallecidos: 0,
-      referido: 0,
-      traslado: 0,
-      contraindicados: 0,
-      otro_ingresos: 0,
-      ingresos: 0,
-      huespedes: 0,
-      emergencia: 0
-    });
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
+  private limpiarForm(): void {
+    this.form.reset({ fecha: this.ayer(), servicio_id: null }, { emitEvent: false });
+    this.resetearMovimientos();
     this.existeRegistro = false;
     this.registroExistente = null;
+    this.registroMasculino = null;
+    this.registroFemenino = null;
     this.mostrarCopia = false;
+    this.revisionDuplicado++;
   }
 
   mostrarMensaje(mensaje: string, duracion: number = 5000): void {
@@ -402,8 +373,10 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
     setTimeout(() => this.mostrarAlerta = false, duracion);
   }
 
-  private hoy(): string {
-    return new Date().toISOString().split('T')[0];
+  private ayer(): string {
+    const fecha = new Date();
+    fecha.setDate(fecha.getDate() - 1);
+    return `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`;
   }
 
   private fechaAnterior(fecha: string): string {

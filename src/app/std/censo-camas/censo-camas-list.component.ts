@@ -10,10 +10,11 @@ import {
   CensoEstadisticaResponse,
   CensoEstadisticaServicio,
   HospitalizacionEspecialidadItem,
+  HospitalizacionDiariaItem,
 } from './censo-camas.interface';
 import { Encamamiento } from '../../interface/interfaces';
 import { ApiService } from '../../service/api.service';
-import { Subject } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -39,7 +40,6 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   cargando = false;
   error: string | null = null;
   filtrar = false;
-  rowActiva: number | null = null;
 
   readonly pageSize = 20;
   paginaActual = 1;
@@ -50,7 +50,6 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
     fecha_desde: '',
     fecha_hasta: '',
     servicio_id: null,
-    sexo: null,
     skip: 0,
     limit: this.pageSize
   };
@@ -59,6 +58,8 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   estadisticaHoy: CensoEstadisticaResponse | null = null;
   estadisticaMes: CensoEstadisticaResponse | null = null;
   cargandoEstadisticas = false;
+  cargandoTablaHospitalizacionDiaria = false;
+  hospitalizacionDiaria: HospitalizacionDiariaItem[] = [];
   fechaEstadistica: string = this.fechaAyer();
 
   hospitalizacion: HospitalizacionEspecialidadItem[] = [];
@@ -85,6 +86,31 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   get especialidadesConServicio(): HospitalizacionEspecialidadItem[] {
     return this.hospitalizacion.filter(e => !!e.servicio_encamamiento);
   }
+
+  get totalesHospitalizacionDiaria(): Omit<HospitalizacionDiariaItem, 'servicio_id' | 'servicio_nombre'> {
+    const totales = this.hospitalizacionDiaria.reduce((sum, servicio) => ({
+      camas_censables: sum.camas_censables + servicio.camas_censables,
+      camas_ocupadas: sum.camas_ocupadas + servicio.camas_ocupadas,
+      camas_disponibles: sum.camas_disponibles + servicio.camas_disponibles,
+      egresos_diarios: sum.egresos_diarios + servicio.egresos_diarios,
+      egresos_contraindicados: sum.egresos_contraindicados + servicio.egresos_contraindicados,
+      fallecidos: sum.fallecidos + servicio.fallecidos,
+    }), {
+      camas_censables: 0,
+      camas_ocupadas: 0,
+      camas_disponibles: 0,
+      egresos_diarios: 0,
+      egresos_contraindicados: 0,
+      fallecidos: 0,
+    });
+
+    return {
+      ...totales,
+      porcentaje_ocupacional: totales.camas_censables > 0
+        ? Number(((totales.camas_ocupadas / totales.camas_censables) * 100).toFixed(2))
+        : 0,
+    };
+  }
   porcentajeServicio(esp: string): number {
     const item = this.hospitalizacion.find(e => e.especialidad === esp);
     if (!item) return 0;
@@ -105,7 +131,11 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   ];
 
   val(obj: any, key: string): any {
-    return obj ? obj[key] : '';
+    if (!obj) return '';
+    if (key === 'camas_censables' && obj.camas_censables_total !== undefined) {
+      return obj.camas_censables_total;
+    }
+    return obj[key] ?? '';
   }
 
   ngOnInit(): void {
@@ -146,10 +176,6 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
     });
   }
 
-  trackById(index: number, item: any): any {
-    return item.id ?? index;
-  }
-
   buscar(): void {
     this.paginaActual = 1;
     this.cargar();
@@ -161,7 +187,6 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
       fecha_desde: '',
       fecha_hasta: '',
       servicio_id: null,
-      sexo: null,
       skip: 0,
       limit: this.pageSize
     };
@@ -171,10 +196,6 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
 
   toggleFiltrar(): void {
     this.filtrar = !this.filtrar;
-  }
-
-  activarFila(id: number): void {
-    this.rowActiva = this.rowActiva === id ? null : id;
   }
 
   nuevo(): void {
@@ -195,21 +216,42 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
     });
   }
 
-  get servicioNombre(): (id: number) => string {
-    return (id: number) => {
-      const svc = this.servicios.find(s => s.id === id);
-      return svc?.nombre_servicio || `Servicio #${id}`;
-    };
-  }
-
-  get sexoLabel(): (sexo: number) => string {
-    return (sexo: number) => sexo === 0 ? 'Masculino' : 'Femenino';
+  servicioNombre(id: number): string {
+    const servicio = this.servicios.find(item => item.id === id);
+    return servicio?.nombre_servicio || `Servicio #${id}`;
   }
 
   porcentajeOcupacional(r: CensoCamasOut): number {
     const svc = this.servicios.find(s => s.id === r.servicio_id);
     if (!svc || svc.camas_censables <= 0) return 0;
     return Math.round((r.camas_ocupadas / svc.camas_censables) * 100);
+  }
+
+  porcentajeVisual(r: CensoCamasOut): number {
+    return Math.min(100, Math.max(0, this.porcentajeOcupacional(r)));
+  }
+
+  nivelOcupacion(r: CensoCamasOut): 'bajo' | 'medio' | 'alto' | 'critico' {
+    const porcentaje = this.porcentajeOcupacional(r);
+    if (porcentaje >= 100) return 'critico';
+    if (porcentaje >= 80) return 'alto';
+    if (porcentaje >= 50) return 'medio';
+    return 'bajo';
+  }
+
+  formatearFecha(fecha: string): string {
+    return new Date(`${fecha}T12:00:00`).toLocaleDateString('es-GT', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+  }
+
+  formatearFechaCorta(fecha: string | null | undefined): string {
+    if (!fecha) return '—';
+    const [anio, mes, dia] = fecha.split('-');
+    if (!anio || !mes || !dia) return fecha;
+    return `${dia}/${mes}/${anio.slice(-2)}`;
   }
 
   // ── Tabs ──
@@ -244,11 +286,65 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
     });
   }
 
-  private cargarEstadisticasHoy(): void {
-    const fechaSeleccionada = this.fechaEstadistica || this.fechaAyer();
-    this.censoService.getEstadisticas(fechaSeleccionada, fechaSeleccionada).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res) => { this.estadisticaHoy = res; this.cdr.markForCheck(); },
-      error: () => { this.cdr.markForCheck(); }
+  private cargarEstadisticasHoy(fechaSeleccionada = this.fechaEstadistica || this.fechaAyer()): void {
+    this.cargandoTablaHospitalizacionDiaria = true;
+    forkJoin({
+      estadisticas: this.censoService.getEstadisticas(fechaSeleccionada, fechaSeleccionada),
+      registros: this.censoService.getRegistros({ fecha: fechaSeleccionada, skip: 0, limit: 500 }),
+    }).pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ estadisticas, registros }) => {
+        this.estadisticaHoy = estadisticas;
+        this.hospitalizacionDiaria = this.armarTablaHospitalizacionDiaria(estadisticas.servicios, registros.registros);
+        this.cargandoTablaHospitalizacionDiaria = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.hospitalizacionDiaria = [];
+        this.cargandoTablaHospitalizacionDiaria = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  armarTablaHospitalizacionDiaria(
+    servicios: CensoEstadisticaServicio[],
+    registros: CensoCamasOut[],
+  ): HospitalizacionDiariaItem[] {
+    const movimientos = new Map<number, Pick<HospitalizacionDiariaItem,
+      'camas_ocupadas' | 'egresos_diarios' | 'egresos_contraindicados' | 'fallecidos'>>();
+
+    for (const registro of registros) {
+      const actual = movimientos.get(registro.servicio_id) ?? {
+        camas_ocupadas: 0,
+        egresos_diarios: 0,
+        egresos_contraindicados: 0,
+        fallecidos: 0,
+      };
+      actual.camas_ocupadas += registro.camas_ocupadas;
+      actual.egresos_diarios += registro.egresos;
+      actual.egresos_contraindicados += registro.contraindicados;
+      actual.fallecidos += registro.fallecidos;
+      movimientos.set(registro.servicio_id, actual);
+    }
+
+    return servicios.map(servicio => {
+      const movimiento = movimientos.get(servicio.servicio_id);
+      const camasOcupadas = movimiento?.camas_ocupadas ?? 0;
+      const camasCensables = servicio.camas_censables;
+
+      return {
+        servicio_id: servicio.servicio_id,
+        servicio_nombre: servicio.servicio_nombre,
+        camas_censables: camasCensables,
+        camas_ocupadas: camasOcupadas,
+        camas_disponibles: Math.max(camasCensables - camasOcupadas, 0),
+        porcentaje_ocupacional: camasCensables > 0
+          ? Number(((camasOcupadas / camasCensables) * 100).toFixed(2))
+          : 0,
+        egresos_diarios: movimiento?.egresos_diarios ?? 0,
+        egresos_contraindicados: movimiento?.egresos_contraindicados ?? 0,
+        fallecidos: movimiento?.fallecidos ?? 0,
+      };
     });
   }
 
@@ -269,13 +365,7 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.censoService.getEstadisticas(fechaSeleccionada, fechaSeleccionada).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res) => {
-        this.estadisticaHoy = res;
-        this.cdr.markForCheck();
-      },
-      error: () => { this.cdr.markForCheck(); }
-    });
+    this.cargarEstadisticasHoy(fechaSeleccionada);
   }
 
   /** Carga estadísticas para una fecha específica (seleccionada por el usuario) */
@@ -296,13 +386,7 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.censoService.getEstadisticas(fecha, fecha).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res) => {
-        this.estadisticaHoy = res;
-        this.cdr.markForCheck();
-      },
-      error: () => { this.cdr.markForCheck(); }
-    });
+    this.cargarEstadisticasHoy(fecha);
   }
 
   /** Fecha de ayer (el censo refleja cómo amaneció el día anterior) */

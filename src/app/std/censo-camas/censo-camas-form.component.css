@@ -1,6 +1,6 @@
 .page-container { padding: 20px; max-width: 1000px; margin: 0 auto; }
 .page-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
-.page-header h1 { font-size: 1.4rem; font-weight: 700; color: #e2e8f0; margin: 0; flex: 1; }
+.page-header h1 { font-size: 1.4rem; font-weight: 700; color: var(--theme-text); margin: 0; flex: 1; }
 .btn-back { background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3); border-radius: 8px; color: #60a5fa; padding: 6px 14px; font-size: 0.8rem; cursor: pointer; text-decoration: none; }
 .btn-back:hover { background: rgba(59,130,246,0.2); }
 
@@ -13,41 +13,41 @@
 .section-card { background: rgba(15,23,42,0.6); border: 1px solid rgba(148,163,184,0.1); border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
 .sec-head { background: #1e293b; padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
 .sec-title { color: #94a3b8; font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-.sec-badge { font-size: 0.65rem; color: #60a5fa; background: rgba(59,130,246,0.12); padding: 2px 8px; border-radius: 10px; margin-left: auto; }
+.sec-badge { font-size: 0.65rem; color: #f8f9fb; background: rgba(59,130,246,0.12); padding: 2px 8px; border-radius: 10px; margin-left: auto; }
 .sec-body { padding: 16px; }
 
 .form-grid { display: flex; flex-wrap: wrap; gap: 12px; }
 .field { flex: 1 1 140px; min-width: 120px; }
-.field-label { display: block; font-size: 0.7rem; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.field-label { display: block; font-size: 0.7rem; color: lightcyan; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 .field-input { width: 100%; padding: 7px 10px; background: rgba(15,23,42,0.8); border: 1px solid rgba(148,163,184,0.2); border-radius: 6px; color: #e2e8f0; font-size: 0.82rem; outline: none; box-sizing: border-box; transition: border-color 0.15s; }
 .field-input:focus { border-color: #3b82f6; }
 .field-static { padding: 7px 10px; background: rgba(15,23,42,0.4); border: 1px solid rgba(148,163,184,0.1); border-radius: 6px; color: #cbd5e1; font-size: 0.82rem; }
 
-/* ── COLUMNAS POR SEXO ── */
-.sexo-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
-.sexo-col { border: 1px solid rgba(148,163,184,0.15); border-radius: 8px; padding: 12px 14px; margin: 0; min-width: 0; background: rgba(15,23,42,0.35); transition: border-color 0.15s, opacity 0.15s, box-shadow 0.15s; }
-.sexo-col.active { border-color: #3b82f6; box-shadow: 0 0 0 1px rgba(59,130,246,0.35) inset, 0 2px 8px rgba(59,130,246,0.12); }
-.sexo-col.inactive { opacity: 0.55; }
-.sexo-col.inactive .field-input { cursor: not-allowed; }
-.sexo-col-head { font-size: 0.85rem; font-weight: 700; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid rgba(148,163,184,0.15); cursor: pointer; letter-spacing: 0.3px; display: flex; align-items: center; gap: 6px; }
-.sexo-col-head.masc { color: #60a5fa; }
-.sexo-col-head.fem { color: #f472b6; }
-.sexo-col.active .sexo-col-head { cursor: pointer; }
-.sexo-col.inactive .sexo-col-head { cursor: default; }
-.sexo-col .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-@media (max-width: 640px) {
-  .sexo-columns { grid-template-columns: 1fr; }
+/* Captura ambos sexos en paralelo; cada panel es un grupo de controles distinto. */
+.sexo-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.sexo-col { min-width: 0; margin: 0; padding: 12px 14px; border: 1px solid rgba(148,163,184,0.18); border-radius: 9px; background: rgba(15,23,42,0.32); }
+.sexo-col.masc { border-top: 3px solid #60a5fa; }
+.sexo-col.fem { border-top: 3px solid #f472b6; }
+.sexo-col-head { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 0 9px; margin-bottom: 10px; border-bottom: 1px solid rgba(148,163,184,0.16); color: #e2e8f0; font-size: 0.88rem; font-weight: 700; }
+.sexo-status { padding: 3px 8px; border-radius: 999px; background: rgba(148,163,184,0.12); color: #cbd5e1; font-size: 0.66rem; font-weight: 600; }
+.sexo-status.saved { background: rgba(34,197,94,0.14); color: #86efac; }
+.sexo-col .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.sexo-col .field { min-width: 0; }
+.audit-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.audit-sex { display: grid; gap: 4px; padding: 12px; border: 1px solid rgba(148,163,184,0.14); border-radius: 8px; color: #cbd5e1; font-size: 0.78rem; }
+.audit-sex strong { color: #e2e8f0; }
+.audit-sex small { color: #94a3b8; }
+@media (max-width: 760px) {
+  .sexo-columns, .audit-columns { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .sexo-col { padding: 10px; }
   .sexo-col .form-grid { grid-template-columns: 1fr; }
 }
-.sexo-col .field { flex: none; min-width: 0; }
 
 .section-readonly { border-color: rgba(59,130,246,0.2); }
 .field-readonly { background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.2); color: #94a3b8; cursor: default; }
 .field-hint { display: block; font-size: 0.65rem; color: #60a5fa; margin-top: 3px; }
-
-.chips-row { display: flex; gap: 8px; }
-.chip { padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(148,163,184,0.2); background: rgba(15,23,42,0.5); color: #94a3b8; font-size: 0.82rem; cursor: pointer; transition: all 0.15s; }
-.chip.on { background: rgba(59,130,246,0.15); border-color: #3b82f6; color: #60a5fa; font-weight: 600; }
 
 .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding: 14px 0; border-top: 1px solid rgba(148,163,184,0.1); }
 .btn-cancel { padding: 8px 20px; border-radius: 8px; border: 1px solid rgba(148,163,184,0.2); background: rgba(148,163,184,0.1); color: #94a3b8; font-size: 0.85rem; cursor: pointer; }
@@ -76,7 +76,7 @@
 
 /* ── ACCIONES RÁPIDAS ── */
 .quick-actions { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-.btn-quick { padding: 7px 14px; border-radius: 8px; border: 1px solid rgba(59,130,246,0.35); background: rgba(59,130,246,0.12); color: #60a5fa; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.btn-quick { padding: 7px 14px; border-radius: 8px; border: 1px solid rgba(59,130,246,0.35); background: rgba(187, 252, 23, 0.757); color: #00050a; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
 .btn-quick:hover { background: rgba(59,130,246,0.22); }
 .btn-quick:disabled { opacity: 0.5; cursor: not-allowed; }
 .copia-msg { font-size: 0.78rem; color: #34d399; }

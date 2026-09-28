@@ -3,30 +3,44 @@
     <button class="btn-back" routerLink="/estadistica">← Volver</button>
     <h1>Censo de Camas</h1>
     <div class="header-actions">
-      <button class="btn-import" routerLink="/censo-camas/importar">📥 Importar CSV</button>
+      <button class="btn-import" routerLink="/censo-camas/importar">
+        📥 Importar CSV
+      </button>
       <button class="btn-new" (click)="nuevo()">+ Nuevo Registro</button>
     </div>
   </div>
 
   <!-- TABS -->
   <div class="tab-bar">
-    <button class="tab-btn" [class.tab-active]="tabActiva === 'registros'" (click)="cambiarTab('registros')">
+    <button
+      class="tab-btn"
+      [class.tab-active]="tabActiva === 'registros'"
+      (click)="cambiarTab('registros')"
+    >
       Registros
     </button>
-    <button class="tab-btn" [class.tab-active]="tabActiva === 'estadisticas'" (click)="cambiarTab('estadisticas')">
+    <button
+      class="tab-btn"
+      [class.tab-active]="tabActiva === 'estadisticas'"
+      (click)="cambiarTab('estadisticas')"
+    >
       Estadísticas
     </button>
-    <button class="tab-btn" [class.tab-active]="tabActiva === 'hospitalizacion'" (click)="cambiarTab('hospitalizacion')">
+    <button
+      class="tab-btn"
+      [class.tab-active]="tabActiva === 'hospitalizacion'"
+      (click)="cambiarTab('hospitalizacion')"
+    >
       Hospitalización
     </button>
   </div>
 
   <!-- ═══ TAB REGISTROS ═══ -->
-  @if (tabActiva === 'registros') {
+  @if (tabActiva === "registros") {
     <!-- FILTROS -->
     <div class="filter-toggle">
       <button class="btn-toggle" (click)="toggleFiltrar()">
-        {{ filtrar ? 'Ocultar filtros' : 'Mostrar filtros' }}
+        {{ filtrar ? "Ocultar filtros" : "Mostrar filtros" }}
       </button>
     </div>
     @if (filtrar) {
@@ -35,36 +49,53 @@
           <div class="filter-grid">
             <div class="field">
               <label class="field-label">Fecha</label>
-              <input class="field-input" type="date" [(ngModel)]="filtros.fecha" name="fecha" />
+              <input
+                class="field-input"
+                type="date"
+                [(ngModel)]="filtros.fecha"
+                name="fecha"
+              />
             </div>
             <div class="field">
               <label class="field-label">Desde</label>
-              <input class="field-input" type="date" [(ngModel)]="filtros.fecha_desde" name="fecha_desde" />
+              <input
+                class="field-input"
+                type="date"
+                [(ngModel)]="filtros.fecha_desde"
+                name="fecha_desde"
+              />
             </div>
             <div class="field">
               <label class="field-label">Hasta</label>
-              <input class="field-input" type="date" [(ngModel)]="filtros.fecha_hasta" name="fecha_hasta" />
+              <input
+                class="field-input"
+                type="date"
+                [(ngModel)]="filtros.fecha_hasta"
+                name="fecha_hasta"
+              />
             </div>
             <div class="field">
               <label class="field-label">Servicio</label>
-              <select class="field-input" [(ngModel)]="filtros.servicio_id" name="servicio_id">
+              <select
+                class="field-input"
+                [(ngModel)]="filtros.servicio_id"
+                name="servicio_id"
+              >
                 <option [ngValue]="null">Todos</option>
                 @for (s of servicios; track s) {
                   <option [ngValue]="s.id">{{ s.nombre_servicio }}</option>
                 }
               </select>
             </div>
-            <div class="field">
-              <label class="field-label">Sexo</label>
-              <select class="field-input" [(ngModel)]="filtros.sexo" name="sexo">
-                <option [ngValue]="null">Todos</option>
-                <option [ngValue]="0">Masculino</option>
-                <option [ngValue]="1">Femenino</option>
-              </select>
-            </div>
             <div class="field-actions">
               <button class="btn-search" type="submit">Buscar</button>
-              <button class="btn-clear" type="button" (click)="limpiarFiltros()">Limpiar</button>
+              <button
+                class="btn-clear"
+                type="button"
+                (click)="limpiarFiltros()"
+              >
+                Limpiar
+              </button>
             </div>
           </div>
         </form>
@@ -80,48 +111,76 @@
       <div>
         <div class="total-badge">Total: {{ totalDeRegistros }} registros</div>
         @if (registros.length > 0) {
-          <div class="table-wrap">
+          <div class="table-wrap" role="region" aria-label="Registros del censo de camas" tabindex="0">
             <table class="reporte-table">
+              <caption class="sr-only">Registros de censo de camas. Desplaza horizontalmente para ver todas las columnas.</caption>
               <thead>
                 <tr>
-                  <th>Fecha</th>
-                  <th>Servicio</th>
-                  <th>Sexo</th>
-                  <th>Egr. Totales</th>
-                  <th>Camas Ocup.</th>
-                  <th>% Ocupacional</th>
-                  <th>Acciones</th>
+                  <th scope="col">Fecha</th>
+                  <th scope="col" class="text-left">Servicio</th>
+                  <th scope="col">Egresos</th>
+                  <th scope="col">Camas ocupadas</th>
+                  <th scope="col">Ocupación</th>
+                  <th scope="col" class="actions-heading">Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                @for (r of registros; track trackById(i, r); let i = $index) {
-                  <tr
-                    (click)="activarFila(r.id)"
-                    [class.row-active]="rowActiva === r.id">
-                    <td>{{ r.fecha }}</td>
-                    <td class="text-left">{{ servicioNombre(r.servicio_id) }}</td>
-                    <td>
-                      <span class="badge-sexo" [class.masc]="r.sexo === 0" [class.fem]="r.sexo === 1">
-                        {{ sexoLabel(r.sexo) }}
-                      </span>
+                @for (r of registros; track r.id) {
+                  <tr>
+                    <td class="date-cell">
+                      <time [attr.datetime]="r.fecha">{{ formatearFecha(r.fecha) }}</time>
                     </td>
-                    <td>{{ r.egresos_totales }}</td>
+                    <td class="text-left">
+                      <span class="service-name">{{ servicioNombre(r.servicio_id) }}</span>
+                    </td>
+                    <td class="number-cell">{{ r.egresos_totales }}</td>
                     <td>
-                      <span class="badge-cama" [class.positivo]="r.camas_ocupadas > 0" [class.negativo]="r.camas_ocupadas < 0">
+                      <span
+                        class="badge-cama"
+                        [class.positivo]="r.camas_ocupadas > 0"
+                        [class.negativo]="r.camas_ocupadas < 0"
+                      >
                         {{ r.camas_ocupadas }}
                       </span>
                     </td>
                     <td>
-                      <span class="badge-pct" [class.alto]="porcentajeOcupacional(r) >= 80"
-                        [class.medio]="porcentajeOcupacional(r) >= 50 && porcentajeOcupacional(r) < 80"
-                        [class.bajo]="porcentajeOcupacional(r) < 50">
-                        {{ porcentajeOcupacional(r) }}%
-                      </span>
+                      <div class="occupancy-cell">
+                        <span class="badge-pct"
+                          [class.alto]="nivelOcupacion(r) === 'alto'"
+                          [class.critico]="nivelOcupacion(r) === 'critico'"
+                          [class.medio]="nivelOcupacion(r) === 'medio'"
+                          [class.bajo]="nivelOcupacion(r) === 'bajo'">
+                          {{ porcentajeOcupacional(r) }}%
+                        </span>
+                        <div class="occupancy-meter" role="progressbar"
+                          [attr.aria-label]="'Ocupación de ' + servicioNombre(r.servicio_id)"
+                          [attr.aria-valuenow]="porcentajeVisual(r)"
+                          aria-valuemin="0" aria-valuemax="100">
+                          <span [class.overflow]="porcentajeOcupacional(r) > 100"
+                            [style.width.%]="porcentajeVisual(r)"></span>
+                        </div>
+                      </div>
                     </td>
-                    <td class="secundario">
-                      <div class="d-flex gap-1">
-                        <button class="btn-icon" (click)="editar(r.id); $event.stopPropagation()" title="Editar">✏️</button>
-                        <button class="btn-icon" (click)="eliminar(r.id); $event.stopPropagation()" title="Eliminar">🗑️</button>
+                    <td class="actions-cell">
+                      <div class="table-actions">
+                        <button
+                          class="btn-icon"
+                          type="button"
+                          (click)="editar(r.id); $event.stopPropagation()"
+                          title="Editar"
+                          [attr.aria-label]="'Editar censo del ' + formatearFecha(r.fecha)"
+                        >
+                          <span aria-hidden="true">✎</span>
+                        </button>
+                        <button
+                          class="btn-icon"
+                          type="button"
+                          (click)="eliminar(r.id); $event.stopPropagation()"
+                          title="Eliminar"
+                          [attr.aria-label]="'Eliminar censo del ' + formatearFecha(r.fecha)"
+                        >
+                          <span aria-hidden="true">×</span>
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -131,22 +190,29 @@
           </div>
         }
         @if (registros.length === 0) {
-          <div class="state-box">
-            No hay registros de censo de camas.
-          </div>
+          <div class="state-box">No hay registros de censo de camas.</div>
         }
         <!-- PAGINADOR -->
         <div class="paginador">
-          <button class="pag-btn" [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">‹</button>
+          <button
+            class="pag-btn"
+            [disabled]="!hayPaginaAnterior"
+            (click)="cambiarPagina(-1)"
+          >
+            ‹
+          </button>
           @if (paginas[0] > 1) {
             <button class="pag-num" (click)="irAPagina(1)">1</button>
           }
           @if (paginas[0] > 2) {
             <span class="pag-ellipsis">…</span>
           }
-          @for (p of paginas; track trackById($index, p)) {
-            <button       class="pag-num"
-              [class.pag-num-active]="p === paginaActual" (click)="irAPagina(p)">
+          @for (p of paginas; track p) {
+            <button
+              class="pag-num"
+              [class.pag-num-active]="p === paginaActual"
+              (click)="irAPagina(p)"
+            >
               {{ p }}
             </button>
           }
@@ -154,10 +220,17 @@
             <span class="pag-ellipsis">…</span>
           }
           @if (paginas[paginas.length - 1] < totalPaginas) {
-            <button class="pag-num"
-            (click)="irAPagina(totalPaginas)">{{ totalPaginas }}</button>
+            <button class="pag-num" (click)="irAPagina(totalPaginas)">
+              {{ totalPaginas }}
+            </button>
           }
-          <button class="pag-btn" [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">›</button>
+          <button
+            class="pag-btn"
+            [disabled]="!hayPaginaSiguiente"
+            (click)="cambiarPagina(1)"
+          >
+            ›
+          </button>
           <span class="pag-info">
             Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
             {{ totalDeRegistros }} registros
@@ -168,7 +241,7 @@
   }
 
   <!-- ═══ TAB ESTADÍSTICAS ═══ -->
-  @if (tabActiva === 'estadisticas') {
+  @if (tabActiva === "estadisticas") {
     <!-- Selector de fecha -->
     <div class="stats-date-picker">
       <label class="date-label">Fecha de consulta:</label>
@@ -178,7 +251,9 @@
         [(ngModel)]="fechaEstadistica"
         (change)="cargarEstadisticasPorFecha()"
       />
-      <span class="date-hint">El censo refleja cómo amanecieron las camas el día seleccionado</span>
+      <span class="date-hint"
+        >El censo refleja cómo amanecieron las camas el día seleccionado</span
+      >
     </div>
 
     @if (cargandoEstadisticas) {
@@ -187,11 +262,12 @@
     @if (!cargandoEstadisticas) {
       <!-- DÍA SELECCIONADO -->
       <div class="stats-section">
-        <h2 class="stats-title">📅 Día Seleccionado <span class="stats-date">{{ estadisticaHoy?.desde }}</span></h2>
+        <h2 class="stats-title">
+          📅 Día Seleccionado
+          <span class="stats-date">{{ estadisticaHoy?.desde }}</span>
+        </h2>
         @if (estadisticaHoy?.servicios?.length === 0) {
-          <div class="state-box">
-            Sin datos para la fecha seleccionada.
-          </div>
+          <div class="state-box">Sin datos para la fecha seleccionada.</div>
         }
         @if (estadisticaHoy && estadisticaHoy.servicios.length > 0) {
           <div class="table-wrap">
@@ -212,9 +288,14 @@
                     @for (s of estadisticaHoy.servicios; track s) {
                       <td>
                         @if (m.isPct) {
-                          <span class="badge-pct" [class.alto]="val(s, m.key) >= 80"
-                            [class.medio]="val(s, m.key) >= 50 && val(s, m.key) < 80"
-                            [class.bajo]="val(s, m.key) < 50">
+                          <span
+                            class="badge-pct"
+                            [class.alto]="val(s, m.key) >= 80"
+                            [class.medio]="
+                              val(s, m.key) >= 50 && val(s, m.key) < 80
+                            "
+                            [class.bajo]="val(s, m.key) < 50"
+                          >
                             {{ val(s, m.key) }}%
                           </span>
                         } @else {
@@ -224,9 +305,15 @@
                     }
                     <td class="td-global">
                       @if (m.isPct) {
-                        <span class="badge-pct" [class.alto]="val(estadisticaHoy.global, m.key) >= 80"
-                          [class.medio]="val(estadisticaHoy.global, m.key) >= 50 && val(estadisticaHoy.global, m.key) < 80"
-                          [class.bajo]="val(estadisticaHoy.global, m.key) < 50">
+                        <span
+                          class="badge-pct"
+                          [class.alto]="val(estadisticaHoy.global, m.key) >= 80"
+                          [class.medio]="
+                            val(estadisticaHoy.global, m.key) >= 50 &&
+                            val(estadisticaHoy.global, m.key) < 80
+                          "
+                          [class.bajo]="val(estadisticaHoy.global, m.key) < 50"
+                        >
                           {{ val(estadisticaHoy.global, m.key) }}%
                         </span>
                       } @else {
@@ -239,14 +326,85 @@
             </table>
           </div>
         }
+
+        @if (cargandoTablaHospitalizacionDiaria) {
+          <div class="state-box spinner" role="status" aria-label="Cargando ocupación diaria"></div>
+        } @else if (hospitalizacionDiaria.length > 0) {
+          <div class="table-wrap daily-hospital-wrap" role="region" aria-label="Censo diario de hospitalización" tabindex="0">
+            <table class="stats-table daily-hospital-table">
+              <caption class="daily-hospital-caption">
+                Hospital General Tipo I de Tecpán Guatemala, {{ formatearFechaCorta(estadisticaHoy?.desde || fechaEstadistica) }}
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col" class="daily-service-col">Hospitalización</th>
+                  <th scope="col">Camas censables</th>
+                  <th scope="col">Camas ocupadas</th>
+                  <th scope="col">Camas disponibles</th>
+                  <th scope="col">Porcentaje ocupacional</th>
+                  <th scope="col">Egresos diarios</th>
+                  <th scope="col">Egresos contraindicados</th>
+                  <th scope="col">Fallecidos</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (servicio of hospitalizacionDiaria; track servicio.servicio_id) {
+                  <tr>
+                    <td class="td-label daily-service-col">{{ servicio.servicio_nombre }}</td>
+                    <td>{{ servicio.camas_censables }}</td>
+                    <td>{{ servicio.camas_ocupadas }}</td>
+                    <td>{{ servicio.camas_disponibles }}</td>
+                    <td>
+                      <span class="badge-pct"
+                        [class.bajo]="servicio.porcentaje_ocupacional < 50"
+                        [class.medio]="servicio.porcentaje_ocupacional >= 50 && servicio.porcentaje_ocupacional < 80"
+                        [class.alto]="servicio.porcentaje_ocupacional >= 80 && servicio.porcentaje_ocupacional < 100"
+                        [class.critico]="servicio.porcentaje_ocupacional >= 100">
+                        {{ servicio.porcentaje_ocupacional | number: '1.2-2' }}%
+                      </span>
+                    </td>
+                    <td>{{ servicio.egresos_diarios }}</td>
+                    <td>{{ servicio.egresos_contraindicados }}</td>
+                    <td>{{ servicio.fallecidos }}</td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr class="global-row">
+                  <td class="daily-service-col">TOTAL</td>
+                  <td>{{ totalesHospitalizacionDiaria.camas_censables }}</td>
+                  <td>{{ totalesHospitalizacionDiaria.camas_ocupadas }}</td>
+                  <td>{{ totalesHospitalizacionDiaria.camas_disponibles }}</td>
+                  <td>
+                    <span class="badge-pct"
+                      [class.bajo]="totalesHospitalizacionDiaria.porcentaje_ocupacional < 50"
+                      [class.medio]="totalesHospitalizacionDiaria.porcentaje_ocupacional >= 50 && totalesHospitalizacionDiaria.porcentaje_ocupacional < 80"
+                      [class.alto]="totalesHospitalizacionDiaria.porcentaje_ocupacional >= 80 && totalesHospitalizacionDiaria.porcentaje_ocupacional < 100"
+                      [class.critico]="totalesHospitalizacionDiaria.porcentaje_ocupacional >= 100">
+                      {{ totalesHospitalizacionDiaria.porcentaje_ocupacional | number: '1.2-2' }}%
+                    </span>
+                  </td>
+                  <td>{{ totalesHospitalizacionDiaria.egresos_diarios }}</td>
+                  <td>{{ totalesHospitalizacionDiaria.egresos_contraindicados }}</td>
+                  <td>{{ totalesHospitalizacionDiaria.fallecidos }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        } @else {
+          <div class="state-box">No hay movimientos de censo para la fecha seleccionada.</div>
+        }
       </div>
       <!-- MES ACUMULADO -->
       <div class="stats-section">
-        <h2 class="stats-title">📊 Acumulado del Mes <span class="stats-date">{{ estadisticaMes?.desde }} — {{ estadisticaMes?.hasta }}</span></h2>
+        <h2 class="stats-title">
+          📊 Acumulado del Mes
+          <span class="stats-date"
+            >{{ estadisticaMes?.desde }} — {{ estadisticaMes?.hasta }}</span
+          >
+        </h2>
         @if (estadisticaMes?.servicios?.length === 0) {
-          <div class="state-box">
-            Sin datos para el mes actual.
-          </div>
+          <div class="state-box">Sin datos para el mes actual.</div>
         }
         @if (estadisticaMes && estadisticaMes.servicios.length > 0) {
           <div class="table-wrap">
@@ -267,9 +425,14 @@
                     @for (s of estadisticaMes.servicios; track s) {
                       <td>
                         @if (m.isPct) {
-                          <span class="badge-pct" [class.alto]="val(s, m.key) >= 80"
-                            [class.medio]="val(s, m.key) >= 50 && val(s, m.key) < 80"
-                            [class.bajo]="val(s, m.key) < 50">
+                          <span
+                            class="badge-pct"
+                            [class.alto]="val(s, m.key) >= 80"
+                            [class.medio]="
+                              val(s, m.key) >= 50 && val(s, m.key) < 80
+                            "
+                            [class.bajo]="val(s, m.key) < 50"
+                          >
                             {{ val(s, m.key) }}%
                           </span>
                         } @else {
@@ -279,9 +442,15 @@
                     }
                     <td class="td-global">
                       @if (m.isPct) {
-                        <span class="badge-pct" [class.alto]="val(estadisticaMes.global, m.key) >= 80"
-                          [class.medio]="val(estadisticaMes.global, m.key) >= 50 && val(estadisticaMes.global, m.key) < 80"
-                          [class.bajo]="val(estadisticaMes.global, m.key) < 50">
+                        <span
+                          class="badge-pct"
+                          [class.alto]="val(estadisticaMes.global, m.key) >= 80"
+                          [class.medio]="
+                            val(estadisticaMes.global, m.key) >= 50 &&
+                            val(estadisticaMes.global, m.key) < 80
+                          "
+                          [class.bajo]="val(estadisticaMes.global, m.key) < 50"
+                        >
                           {{ val(estadisticaMes.global, m.key) }}%
                         </span>
                       } @else {
@@ -299,7 +468,7 @@
   }
 
   <!-- ═══ TAB HOSPITALIZACIÓN POR ESPECIALIDAD ═══ -->
-  @if (tabActiva === 'hospitalizacion') {
+  @if (tabActiva === "hospitalizacion") {
     @if (cargandoHospitalizacion) {
       <div class="state-box spinner"></div>
     }
@@ -309,7 +478,10 @@
         <div class="kpi-card">
           <span class="kpi-label">Hospitalizados Activos</span>
           <span class="kpi-value">{{ totalHospitalizados }}</span>
-          <span class="kpi-sub">tipo consulta 2 · {{ rangoHospitalizacion?.desde }} → {{ rangoHospitalizacion?.hasta }}</span>
+          <span class="kpi-sub"
+            >tipo consulta 2 · {{ rangoHospitalizacion?.desde }} →
+            {{ rangoHospitalizacion?.hasta }}</span
+          >
         </div>
         <div class="kpi-card">
           <span class="kpi-label">♂ Masculinos</span>
@@ -327,11 +499,17 @@
 
       <!-- Brecha censo vs hospitalizados -->
       <div class="hosp-brecha">
-        <span class="brecha-label">Censo reportado vs hospitalizaciones activas:</span>
+        <span class="brecha-label"
+          >Censo reportado vs hospitalizaciones activas:</span
+        >
         @if (brechaCensoHosp >= 0) {
-          <span class="brecha-val brecha-ok">± {{ brechaCensoHosp }} camas de diferencia</span>
+          <span class="brecha-val brecha-ok"
+            >± {{ brechaCensoHosp }} camas de diferencia</span
+          >
         } @else {
-          <span class="brecha-val brecha-warn">⚠ Faltan {{ absBrechaCensoHosp }} camas por reportar</span>
+          <span class="brecha-val brecha-warn"
+            >⚠ Faltan {{ absBrechaCensoHosp }} camas por reportar</span
+          >
         }
       </div>
 
@@ -353,14 +531,21 @@
               @for (e of hospitalizacion; track e.especialidad) {
                 <tr>
                   <td class="text-left font-semibold">{{ e.especialidad }}</td>
-                  <td>{{ e.servicio_encamamiento || '—' }}</td>
+                  <td>{{ e.servicio_encamamiento || "—" }}</td>
                   <td>{{ e.masculinos }}</td>
                   <td>{{ e.femeninos }}</td>
                   <td class="font-semibold">{{ e.total }}</td>
-                  <td>{{ e.dias_promedio_estancia | number:'1.0-0' }} días</td>
+                  <td>{{ e.dias_promedio_estancia | number: "1.0-0" }} días</td>
                   <td>
-                    <span class="hosp-ocup" [class.ocup-alto]="porcentajeServicio(e.especialidad) >= 80"
-                      [class.ocup-critico]="porcentajeServicio(e.especialidad) >= 100">
+                    <span
+                      class="hosp-ocup"
+                      [class.ocup-alto]="
+                        porcentajeServicio(e.especialidad) >= 80
+                      "
+                      [class.ocup-critico]="
+                        porcentajeServicio(e.especialidad) >= 100
+                      "
+                    >
                       {{ porcentajeServicio(e.especialidad) }}%
                     </span>
                   </td>
