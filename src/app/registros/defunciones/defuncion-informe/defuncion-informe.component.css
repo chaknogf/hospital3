@@ -185,7 +185,7 @@ body {
   width: 22px;
   min-width: 22px;
   background-color: var(--print-gray-bg);
-  border-right: 1px solid #000000;
+  border: 1px solid #000000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -233,9 +233,12 @@ body {
   gap: 1px;
   font-size: 6.5pt;
   margin: 0;
+  padding-right: 20px;
   flex-direction: row;
   position: static;
   line-height: 1.0;
+  justify-content: space-between;
+
 }
 
 .df-page .df-field.df-block {
@@ -244,13 +247,41 @@ body {
   gap: 1px;
 }
 
+/* ── RECUADRO "QUIÉN INFORMA ES" + "NO. DE COLEGIADO" ──
+   Los campos 3 y 3.1 viven en filas distintas pero comparten la
+   misma columna, así que el recuadro se arma con dos mitades: la
+   superior dibuja también la línea interior y la inferior la omite.
+
+   Sin `padding`: el borde se financia con márgenes negativos de 1px
+   hacia los huecos vecinos, de modo que el ancho útil del campo
+   (y su `padding-right`) queda idéntico a antes del recuadro.
+   El margen negativo superior de la mitad inicial devuelve al
+   contenido su línea base original y apoya su borde superior sobre
+   el marco de la sección, sin crecerla. */
+.df-page .df-row > .df-field-group-start,
+.df-page .df-row > .df-field-group-end {
+  border: 1px solid #000000;
+  margin-left: -1px;
+  margin-right: -1px;
+}
+
+.df-page .df-row > .df-field-group-start {
+  margin-top: -1px;
+}
+
+.df-page .df-row > .df-field-group-end {
+  border-top: 0;
+}
+
 .df-page .df-field-label {
-  font-weight: bold;
-  font-size: 7pt;
+  font-weight: 400;
+  font-size: 6.5pt;
   white-space: nowrap;
   color: #000000;
-  line-height: 1.1;
+  line-height: 1.35;
   flex-shrink: 0;
+  width: 130px 120px;
+  text-wrap: wrap;
 }
 
 .df-page .df-fill-line {

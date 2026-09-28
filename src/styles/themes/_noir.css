@@ -42,6 +42,7 @@
   --theme-font: var(--bs-dark);
   --text-print-blue: #000000;
   --text-print-blue-mute: #6b7280;
+  --theme-accent: var(--accent-dark);
 
   /* ── SUPERFICIES: gris principal, blanco elevado ── */
   --deep: #d1d5db;
@@ -66,6 +67,7 @@
   --amber-dim: rgba(75, 85, 99, 0.10);
   --text: #000000;
   --muted: #4b5563;
+  --theme-text-secondary: #202020;
 
   /* Textos derivados usados por los tokens semánticos */
   --text-faint: rgba(0, 0, 0, 0.45);
@@ -77,6 +79,7 @@
   --warning-dim: rgba(75, 85, 99, 0.08);
   --danger-dim: rgba(17, 24, 39, 0.08);
   --info-dim: rgba(107, 114, 128, 0.08);
+  --theme-panel: white;
 
   /* ── TIPOGRAFÍAS ── */
   --font-mono: 'DM Mono', 'SFMono-Regular', Consolas, monospace;
@@ -164,4 +167,94 @@
 :root[data-theme="noir"] body,
 body[data-bs-theme="light"] {
   color-scheme: light;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ICONOGRAFÍA DUOTONO (negro + blanco)
+   El catálogo heredado (src/app/shared/icons/svg-icon.ts) está
+   diseñado en color: degradados azul/cian/morado y de 2 a 3 tonos
+   planos por icono. Noir no tiene color, pero sí tiene TONO, así
+   que cada color se mapea a un extremo de la escala de grises
+   según su luminancia (corte en 0.6):
+
+     cuerpo oscuro  -> #000000      brillo claro -> #ffffff
+     degradados     -> rampas negro -> blanco (stop-color)
+
+   Así cada icono conserva su estructura interna: el diente mantiene
+   su blanco, el médico su bata blanca, etc. Sobre panel blanco las
+   zonas claras se leen como corte dentro de la silueta negra.
+
+   Las tablas siguientes están generadas sobre el catálogo: si se
+   añade un color nuevo hay que volver a generarlas o ese icono
+   conservará su color original. Quedan intactos:
+     · fill="none"        iconos de contorno
+     · fill="currentColor"  ya adaptativos al color del texto
+     · fill="url(#...)"   los degradados, resueltos por stop-color
+   ═══════════════════════════════════════════════════════════════ */
+
+/* fill -> negro (14 valores) */
+:root[data-theme="noir"] svg :is([fill="#0277bd"], [fill="#201a1a"], [fill="#232737"], [fill="#2859c5"], [fill="#29b1db"],
+                                [fill="#2f2f2f"], [fill="#2f88ff"], [fill="#619aef"], [fill="#808080"], [fill="#ab47bc"],
+                                [fill="#c52867"], [fill="#df30b8"], [fill="#e839bd"], [fill="#ff2f67"]) {
+  fill: #000000;
+}
+
+/* fill -> blanco (16 valores) */
+:root[data-theme="noir"] svg :is([fill="#66e1ff"], [fill="#7dbfb9"], [fill="#8fbffa"], [fill="#b3e5fc"], [fill="#bbd8ff"],
+                                [fill="#c2f3ff"], [fill="#c4e4f0"], [fill="#d7e0ff"], [fill="#e1bee7"], [fill="#eaeaea"],
+                                [fill="#ecf4fd"], [fill="#f1e3ff"], [fill="#f7f8ff"], [fill="#fcc21b"], [fill="#fefefe"],
+                                [fill="#fff"]) {
+  fill: #ffffff;
+}
+
+/* stroke -> negro (7 valores) */
+:root[data-theme="noir"] svg :is([stroke="#000"], [stroke="#092f63"], [stroke="#191919"], [stroke="#232737"], [stroke="#2859c5"],
+                                [stroke="#2f88ff"], [stroke="#4147d5"]) {
+  stroke: #000000;
+}
+
+/* stroke -> blanco (4 valores) */
+:root[data-theme="noir"] svg :is([stroke="#7ea0e9"], [stroke="#eaeaea"], [stroke="#fbf5f5"], [stroke="#fff"]) {
+  stroke: #ffffff;
+}
+
+/* stop-color -> negro (38 valores) */
+:root[data-theme="noir"] svg stop:is([stop-color="#0067bf"], [stop-color="#0078d4"], [stop-color="#0fafff"], [stop-color="#171155"], [stop-color="#1b44b1"],
+                                     [stop-color="#2052cb"], [stop-color="#20ac9d"], [stop-color="#2764e7"], [stop-color="#277be3"], [stop-color="#361530"],
+                                     [stop-color="#383b3d"], [stop-color="#429aff"], [stop-color="#4894fe"], [stop-color="#4a43cb"], [stop-color="#55595e"],
+                                     [stop-color="#57a1ff"], [stop-color="#63686e"], [stop-color="#6d6277"], [stop-color="#6d9bf1"], [stop-color="#6e5883"],
+                                     [stop-color="#7a41dc"], [stop-color="#7f6796"], [stop-color="#826f96"], [stop-color="#8665a3"], [stop-color="#868390"],
+                                     [stop-color="#871371"], [stop-color="#889096"], [stop-color="#8f7da5"], [stop-color="#8f8e8f"], [stop-color="#938f98"],
+                                     [stop-color="#9c6cfe"], [stop-color="#a185c2"], [stop-color="#db1e6a"], [stop-color="#dd2fb6"], [stop-color="#de30b8"],
+                                     [stop-color="#e41653"], [stop-color="#ee2fba"], [stop-color="#ff6ce8"]) {
+    stop-color: #000000;
+}
+
+/* stop-color -> blanco (28 valores) */
+:root[data-theme="noir"] svg stop:is([stop-color="#36dff1"], [stop-color="#3bd5ff"], [stop-color="#58aafe"], [stop-color="#66c0ff"], [stop-color="#6ce0ff"],
+                                     [stop-color="#7cd400"], [stop-color="#8cd0ff"], [stop-color="#9deaff"], [stop-color="#9ff0f9"], [stop-color="#b3e0ff"],
+                                     [stop-color="#b6b5bd"], [stop-color="#b9c0c7"], [stop-color="#bab5bf"], [stop-color="#bbb5c4"], [stop-color="#c8f3ff"],
+                                     [stop-color="#ceaff2"], [stop-color="#d2c6da"], [stop-color="#d4b8f6"], [stop-color="#ddc9f3"], [stop-color="#decaf4"],
+                                     [stop-color="#dfd8ee"], [stop-color="#e3caff"], [stop-color="#e8e6e8"], [stop-color="#f2e4ff"], [stop-color="#f3edf9"],
+                                     [stop-color="#f3eef8"], [stop-color="#fff"], [stop-color="#fffbff"]) {
+  stop-color: #ffffff;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ICONOS DE CHROME (SVG embebido en data-URI)
+   No son elementos <svg>, son `background-image` con el SVG dentro,
+   así que la regla anterior no los alcanza. Se redefinen los tokens
+   con la codificación URL del negro del tema (# → %23).
+
+   Los tokens se declaran sobre el propio elemento en styles.css
+   (.navbar, .btn-close), por eso el override va con el elemento y no
+   solo en :root — si no, la herencia perdería.
+   ═══════════════════════════════════════════════════════════════ */
+:root[data-theme="noir"] .navbar {
+  --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23000000' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+:root[data-theme="noir"] .btn-close {
+  --bs-btn-close-color: #000000;
+  --bs-btn-close-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000000'%3e%3cpath d='M.293.293a.5.5 0 0 1 .414 0L8 6.586l5.293-5.293a.5.5 0 0 1 .708.708L8.707 8l5.293 5.293a.5.5 0 0 1-.708.708L8 8.707 2.707 14a.5.5 0 0 1-.708-.708L7.293 8 .293 2.707a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
 }

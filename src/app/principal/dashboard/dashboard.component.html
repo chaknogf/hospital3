@@ -17,7 +17,7 @@
   <section class="stats-strip">
     @if (isLoadingTotales()) {
       <div class="stats-loading">
-        @for (i of [1,2,3,4]; track i) {
+        @for (i of [1, 2, 3, 4]; track i) {
           <div class="stat-card skeleton">
             <div class="stat-skeleton-bar"></div>
             <div class="stat-skeleton-bar short"></div>
@@ -29,10 +29,18 @@
         @for (item of totales(); track item.entidad; let idx = $index) {
           <div class="stat-card" [style.--accent]="colorForIndex(idx)">
             <div class="stat-icon">
-              <span class="stat-dot" [style.background]="colorForIndex(idx)"></span>
+              <span
+                class="stat-dot"
+                [style.background]="colorForIndex(idx)"
+              ></span>
             </div>
             <div class="stat-body">
-              <span class="stat-value">{{ item.total }}@if (item.entidad.toLowerCase().includes('censo')){%}</span>
+              <span class="stat-value"
+                >{{ item.total }}
+                @if (item.entidad.toLowerCase().includes("censo")) {
+                  %
+                }
+              </span>
               <span class="stat-label">{{ item.entidad }}</span>
             </div>
           </div>
@@ -49,7 +57,8 @@
         <button
           class="module-card"
           (click)="navegar(app.ruta)"
-          [style.--accent]="app.color || '#3b82f6'">
+          [style.--accent]="app.color || '#3b82f6'"
+        >
           <div class="module-icon">
             <span [innerHTML]="icons[app.icon]"></span>
           </div>
@@ -57,8 +66,19 @@
             <h3 class="module-name">{{ app.nombre }}</h3>
             <p class="module-desc">{{ app.descripcion }}</p>
           </div>
-          <svg class="module-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m9 18 6-6-6-6"/>
+          <svg
+            class="module-arrow"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m9 18 6-6-6-6" />
           </svg>
         </button>
       }
