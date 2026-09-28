@@ -103,7 +103,7 @@ body {
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 1px;
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid #00000000;
   padding-bottom: 2px;
   gap: 3px;
 }
@@ -221,7 +221,7 @@ body {
 }
 
 .df-page .df-row > * {
-  padding: 0;
+  padding: 2px;
   width: auto;
   max-width: none;
   margin: 0;
