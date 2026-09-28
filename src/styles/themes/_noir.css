@@ -1,0 +1,167 @@
+/* ═══════════════════════════════════════════════════════════════
+   THEME: MINIMALIST GREY (minimalista gris, blanco y negro)
+   ═══════════════════════════════════════════════════════════════
+
+   Tema claro minimalista cuya identidad principal es el GRIS.
+   El fondo de la aplicación es gris medio (#d1d5db), las superficies
+   elevadas son blanco puro (#ffffff) y el texto/acentos son negro
+   puro o grises muy oscuros. Paleta restringida: gris, blanco y negro.
+
+   Los estados semánticos se expresan mediante la misma escala de
+   grises para no romper la identidad visual.
+
+   Se activa con data-theme="noir" en el elemento raíz.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root[data-theme="noir"],
+[data-theme="noir"] {
+  color-scheme: light;
+
+  /* ── PALETA DE ACENTO (blanco, negro y grises) ── */
+  --accent: #000000;
+  --accent-light: #374151;
+  --accent-deep: #111827;
+  --accent-dark: #000000;
+  --secondary: #6b7280;
+  --secondary-light: #9ca3af;
+  --secondary-deep: #4b5563;
+  --secondary-dim: rgba(107, 114, 128, 0.14);
+  --tertiary: #9ca3af;
+  --tertiary-light: #d1d5db;
+  --tertiary-deep: #6b7280;
+  --tertiary-dim: rgba(156, 163, 175, 0.14);
+
+  /* Estados semánticos en escala de grises */
+  --success: #000000;
+  --success-soft: #374151;
+  --warning: #4b5563;
+  --warning-soft: #6b7280;
+  --danger: #111827;
+  --info: #6b7280;
+
+  --theme-font: var(--bs-dark);
+  --text-print-blue: #000000;
+  --text-print-blue-mute: #6b7280;
+
+  /* ── SUPERFICIES: gris principal, blanco elevado ── */
+  --deep: #d1d5db;
+  --panel: #ffffff;
+  --surface: #e5e7eb;
+  --overlay: rgba(0, 0, 0, 0.50);
+
+  /* ── BORDES / RIM ── */
+  --rim: #9ca3af;
+  --rim-hot: #000000;
+
+  /* ── TEXTOS / ACENTOS ── */
+  --pulse: #000000;
+  --pulse-dim: rgba(0, 0, 0, 0.10);
+  --star: #111827;
+  --star-dim: rgba(17, 24, 39, 0.08);
+  --lime: #000000;
+  --lime-dim: rgba(0, 0, 0, 0.08);
+  --red: #111827;
+  --red-dim: rgba(17, 24, 39, 0.08);
+  --amber: #4b5563;
+  --amber-dim: rgba(75, 85, 99, 0.10);
+  --text: #000000;
+  --muted: #4b5563;
+
+  /* Textos derivados usados por los tokens semánticos */
+  --text-faint: rgba(0, 0, 0, 0.45);
+  --text-inverse: #ffffff;
+  --bs-heading-color: #000000;
+
+  /* ── FONDOS SEMÁNTICOS (estados) ── */
+  --success-dim: rgba(0, 0, 0, 0.06);
+  --warning-dim: rgba(75, 85, 99, 0.08);
+  --danger-dim: rgba(17, 24, 39, 0.08);
+  --info-dim: rgba(107, 114, 128, 0.08);
+
+  /* ── TIPOGRAFÍAS ── */
+  --font-mono: 'DM Mono', 'SFMono-Regular', Consolas, monospace;
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+
+  /* ── GLASS COMPAT ── */
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(0, 0, 0, 0.10);
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.08);
+
+  /* ── ESTADOS MÉDICOS ── */
+  --urgente: #000000;
+  --moderado: #4b5563;
+  --estable: #111827;
+  --muerto: #374151;
+  --standar: #6b7280;
+
+  /* ── TOKENS SEMÁNTICOS CON VALOR PROPIO ── */
+  /* Fondo principal GRIS, el blanco queda para tarjetas/paneles */
+  --theme-background: #d1d5db;
+  --theme-background-viewport-sm: #d1d5db;
+  --theme-background-viewport-lg: #d1d5db;
+
+  /* Sombras muy sutiles en negro */
+  --theme-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --theme-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --theme-shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.10);
+
+  /* Bootstrap: capa de integración coherente con el tema minimalista */
+  --bs-body-bg: var(--deep);
+  --bs-body-color: var(--text);
+  --bs-border-color: var(--rim);
+  --bs-border-color-translucent: rgba(0, 0, 0, 0.10);
+  --bs-secondary-bg: var(--surface);
+  --bs-tertiary-bg: #c0c5cc;
+  --bs-secondary-color: #4b5563;
+  --bs-tertiary-color: #9ca3af;
+  --bs-light: #ffffff;
+  --bs-dark: #000000;
+  --bs-primary: var(--accent);
+  --bs-primary-rgb: 0, 0, 0;
+  --bs-link-color: var(--accent);
+  --bs-link-hover-color: var(--accent-light);
+  --bs-link-color-rgb: 0, 0, 0;
+  --bs-link-hover-color-rgb: 55, 65, 81;
+
+  /* Énfasis de texto / utilidades Bootstrap */
+  --bs-primary-text-emphasis: #000000;
+  --bs-secondary-text-emphasis: #374151;
+  --bs-success-text-emphasis: #000000;
+  --bs-info-text-emphasis: #4b5563;
+  --bs-warning-text-emphasis: #374151;
+  --bs-danger-text-emphasis: #111827;
+  --bs-light-text-emphasis: #ffffff;
+  --bs-dark-text-emphasis: #000000;
+
+  /* Subtles y bordes de estado */
+  --bs-primary-bg-subtle: rgba(0, 0, 0, 0.04);
+  --bs-secondary-bg-subtle: rgba(107, 114, 128, 0.06);
+  --bs-success-bg-subtle: rgba(0, 0, 0, 0.04);
+  --bs-info-bg-subtle: rgba(107, 114, 128, 0.04);
+  --bs-warning-bg-subtle: rgba(75, 85, 99, 0.04);
+  --bs-danger-bg-subtle: rgba(17, 24, 39, 0.04);
+  --bs-primary-border-subtle: rgba(0, 0, 0, 0.20);
+  --bs-secondary-border-subtle: rgba(107, 114, 128, 0.22);
+  --bs-success-border-subtle: rgba(0, 0, 0, 0.20);
+  --bs-info-border-subtle: rgba(107, 114, 128, 0.20);
+  --bs-warning-border-subtle: rgba(75, 85, 99, 0.20);
+  --bs-danger-border-subtle: rgba(17, 24, 39, 0.20);
+
+  /* Validación de formularios */
+  --bs-form-valid-color: #000000;
+  --bs-form-valid-border-color: #000000;
+  --bs-form-invalid-color: #111827;
+  --bs-form-invalid-border-color: #111827;
+
+  --bs-code-color: #374151;
+  --bs-highlight-color: #000000;
+  --bs-highlight-bg: #e5e7eb;
+}
+
+/* Fuerza esquema claro de Bootstrap */
+:root[data-theme="noir"] body,
+body[data-bs-theme="light"] {
+  color-scheme: light;
+}

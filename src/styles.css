@@ -4,20 +4,19 @@
 /* ═══════════════════════════════════════════════════════════════
    THEME SYSTEM
    ═══════════════════════════════════════════════════════════════
-   - src/styles/_tokens.css              → tokens semánticos (--theme-*)
-   - src/styles/themes/_current.css      → tema por defecto (look actual)
-   - src/styles/themes/_hospital.css     → tema claro (base hospital + paleta light)
-   - src/styles/themes/_neumorfismo.css → tema Neumorfismo (claro)
-   - src/styles/themes/_cyber-brutalism.css → tema cyber-brutalism
-   - src/styles/themes/_cerulean.css     → tema Cerulean (claro, Bootswatch)
-   - src/styles/_utilities.css           → recetas reutilizables
+   - src/styles/_tokens.css                   → tokens semánticos (--theme-*)
+   - src/styles/themes/_current.css           → tema por defecto (look actual)
+   - src/styles/themes/_noir.css              → tema claro (blanco, gris y negro)
+   - src/styles/themes/_cyber-brutalism.css   → tema cyber-brutalism
+   - src/styles/themes/_cerulean.css          → tema Cerulean (claro, Bootswatch)
+   - src/styles/_utilities.css                → recetas reutilizables
 
    Los componentes solo usan intenciones (--theme-*). El tema se
    cambia con un atributo en el elemento raíz: <html data-theme="...">.
    ═══════════════════════════════════════════════════════════════ */
 @import './styles/_tokens.css';
 @import './styles/themes/_current.css';
-@import './styles/themes/_hospital.css';
+@import './styles/themes/_noir.css';
 @import './styles/themes/_cyber-brutalism.css';
 @import './styles/themes/_cerulean.css';
 @import './styles/_utilities.css';
