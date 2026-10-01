@@ -57,6 +57,8 @@ export class ReportesInicioComponent implements OnInit {
       { nombre: 'SIGSA-3 por Especialidad', descripcion: 'Consultas por especialidad, tipo y sexo', ruta: '/reportes/sigsa3-estadistica', icon: 'consultas' },
       { nombre: 'SIGSA-3 Dx Frecuentes', descripcion: 'Top 10 diagnósticos más frecuentes', ruta: '/reportes/sigsa3-dx-frecuentes', icon: 'datos' },
       { nombre: 'Diagnósticos CIE-10 Z', descripcion: 'Filtrar por códigos Z:34 y Z:10', ruta: '/reportes/dx-z-cie10', icon: 'archivo' },
+      { nombre: 'Indicadores Consultas', descripcion: 'Banderas del jsonb indicadores por período', ruta: '/reportes/indicadores-consultas', icon: 'datos' },
+      { nombre: 'Referencias Consultas', descripcion: 'Viene referido de / va referido a', ruta: '/reportes/referencias-consultas', icon: 'compartir' },
     ];
   }
 

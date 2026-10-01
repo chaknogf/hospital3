@@ -363,6 +363,31 @@ export class ApiService extends BaseApiService {
     return this.estadisticas.getActivosMayores7Dias(skip, limit);
   }
 
+  getIndicadoresConsultas(filtros: {
+    desde: string;
+    hasta: string;
+    tipo_consulta?: number | null;
+    especialidad?: string | null;
+    top_referencias?: number | null;
+  }): Observable<any> {
+    return this.estadisticas.getIndicadoresConsultas(filtros);
+  }
+
+  sincronizarIndicadores(desde: string, hasta: string): Observable<any> {
+    return this.estadisticas.sincronizarIndicadores(desde, hasta);
+  }
+
+  getReferenciasConsultas(filtros: {
+    desde: string;
+    hasta: string;
+    tipo_consulta?: number | null;
+    especialidad?: string | null;
+    skip?: number;
+    limit?: number;
+  }): Observable<any> {
+    return this.estadisticas.getReferenciasConsultas(filtros);
+  }
+
   getEstadisticasNacimientos(desde: string, hasta: string): Observable<any> {
     return this.estadisticas.getEstadisticasNacimientos(desde, hasta);
   }
@@ -374,7 +399,7 @@ export class ApiService extends BaseApiService {
     return this.estadisticas.getReporteProcedimientos(filtros);
   }
 
-  getResumenProcedimientos(filtros?: { anio?: number; mes?: number }): Observable<any> {
+  getResumenProcedimientos(filtros?: { anio?: number; mes?: number; nombre?: string | null }): Observable<any> {
     return this.estadisticas.getResumenProcedimientos(filtros);
   }
 

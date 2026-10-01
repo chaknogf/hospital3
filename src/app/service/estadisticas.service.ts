@@ -116,6 +116,52 @@ export class EstadisticasService extends BaseApiService {
     );
   }
 
+  // ── Indicadores de consultas (jsonb consultas.indicadores) ──
+  getIndicadoresConsultas(filtros: {
+    desde: string;
+    hasta: string;
+    tipo_consulta?: number | null;
+    especialidad?: string | null;
+    top_referencias?: number | null;
+  }): Observable<any> {
+    this.isLoading.set(true);
+    const params = this.limpiarParametros(filtros);
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/indicadores`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener indicadores de consultas'))
+    );
+  }
+
+  /**
+   * Proyecta el indicador `personal_hospital` del paciente a las consultas del
+   * periodo y funde el alias histórico `empleado_publico`.
+   */
+  sincronizarIndicadores(desde: string, hasta: string): Observable<any> {
+    this.isLoading.set(true);
+    const params = new HttpParams().set('desde', desde).set('hasta', hasta);
+    return this.http.patch<any>(`${this.baseUrl}/consultas/sincronizar-indicadores`, null, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'sincronizar indicadores'))
+    );
+  }
+
+  // ── Referencias de consultas (viene_referido_de / va_referido_a) ──
+  getReferenciasConsultas(filtros: {
+    desde: string;
+    hasta: string;
+    tipo_consulta?: number | null;
+    especialidad?: string | null;
+    skip?: number;
+    limit?: number;
+  }): Observable<any> {
+    this.isLoading.set(true);
+    const params = this.limpiarParametros(filtros);
+    return this.http.get<any>(`${this.baseUrl}/estadisticas/consultas/referencias`, { params }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener referencias de consultas'))
+    );
+  }
+
   // ── Estadísticas nacimientos ────────────────────────────
   getEstadisticasNacimientos(desde: string, hasta: string): Observable<any> {
     this.isLoading.set(true);
@@ -139,7 +185,7 @@ export class EstadisticasService extends BaseApiService {
     );
   }
 
-  getResumenProcedimientos(filtros?: { anio?: number; mes?: number }): Observable<any> {
+  getResumenProcedimientos(filtros?: { anio?: number; mes?: number; nombre?: string | null }): Observable<any> {
     this.isLoading.set(true);
     const params = this.limpiarParametros(filtros || {});
     return this.http.get<any>(`${this.baseUrl}/procedimientos/estadisticas/resumen`, { params }).pipe(

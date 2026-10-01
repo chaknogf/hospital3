@@ -1,0 +1,90 @@
+@import '../_reportes-skeuo.css';
+
+.text-left { text-align: left; }
+.muted { color: var(--theme-text-muted); }
+
+.resumen-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.resumen-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px;
+  background: var(--theme-surface);
+  border: var(--theme-border-width) solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+}
+.resumen-val {
+  font-family: var(--theme-font-mono);
+  font-size: 1.7rem;
+  font-weight: var(--theme-font-weight-heavy);
+  color: var(--theme-primary);
+}
+.resumen-lbl {
+  font-size: var(--theme-font-size-xs);
+  font-weight: var(--theme-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--theme-text-muted);
+  text-align: center;
+}
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.section-head .section-title { border-bottom: none; margin-bottom: 0; }
+.section-head .paginador { margin-top: 0; }
+
+.btn-page.activo {
+  color: var(--theme-primary);
+  border-color: color-mix(in srgb, var(--theme-primary) 45%, transparent);
+  background: color-mix(in srgb, var(--theme-primary) 10%, transparent);
+}
+
+.btn-excel {
+  background: var(--theme-success);
+  color: var(--theme-text-on-primary);
+}
+.btn-excel:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--theme-success) 85%, black);
+}
+.btn-excel:disabled { opacity: 0.5; cursor: default; }
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--theme-radius-pill);
+  font-size: var(--theme-font-size-xs);
+  font-weight: var(--theme-font-weight-bold);
+  background: var(--theme-primary-dim);
+  color: var(--theme-text-muted);
+  white-space: nowrap;
+}
+
+.reporte-table td.dx {
+  max-width: 260px;
+  white-space: normal;
+  text-align: left;
+  font-size: var(--theme-font-size-xs);
+  color: var(--theme-text-muted);
+}
+
+.variante {
+  font-size: var(--theme-font-size-xs);
+  color: var(--theme-text-muted);
+  white-space: nowrap;
+}
+.variante b { color: var(--theme-primary); }
+
+@media (max-width: 600px) {
+  .resumen-cards { grid-template-columns: 1fr 1fr; }
+}

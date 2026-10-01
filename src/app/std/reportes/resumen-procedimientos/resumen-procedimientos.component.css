@@ -56,6 +56,11 @@
   font-size: var(--theme-font-size-sm);
   color: var(--theme-text);
 }
+.ranking-sub {
+  display: block;
+  font-size: var(--theme-font-size-xs);
+  color: var(--theme-text-muted);
+}
 .ranking-total {
   font-family: var(--theme-font-mono);
   font-size: var(--theme-font-size-md);

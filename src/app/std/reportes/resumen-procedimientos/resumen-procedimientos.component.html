@@ -13,7 +13,17 @@
         }
       </select>
     </label>
+    <label
+      >Nombre:
+      <input
+        type="text"
+        [(ngModel)]="nombre"
+        (keyup.enter)="cargar()"
+        placeholder="Filtra por nombre"
+      />
+    </label>
     <button class="btn-primary" (click)="cargar()">Actualizar</button>
+    <button class="btn-back" (click)="limpiar()">Limpiar</button>
   </div>
 
   @if (cargando) {
@@ -26,25 +36,28 @@
   @if (!cargando && data) {
     <div>
       <div class="resumen-cards">
+        <div class="resumen-card"><span class="resumen-val">{{ data.total_cantidad_procedimientos }}</span><span class="resumen-lbl">Cantidad total</span></div>
         <div class="resumen-card"><span class="resumen-val">{{ data.total_registros }}</span><span class="resumen-lbl">Registros</span></div>
-        <div class="resumen-card"><span class="resumen-val">{{ data.total_cantidad_procedimientos }}</span><span class="resumen-lbl">Cantidad</span></div>
         @if (data.usg_gine) {
           <div class="resumen-card usg-card">
-            <span class="resumen-val usg-val">{{ data.usg_gine.total_registros }}</span>
+            <span class="resumen-val usg-val">{{ data.usg_gine.total_cantidad }}</span>
             <span class="resumen-lbl">Ultrasonidos</span>
-            <span class="usg-sub">{{ data.usg_gine.total_cantidad }} estudios</span>
+            <span class="usg-sub">{{ data.usg_gine.total_registros }} registros</span>
           </div>
         }
       </div>
       @if (data.top_procedimientos?.length) {
         <div class="section-card">
-          <h3 class="section-title">Top Procedimientos</h3>
+          <h3 class="section-title">Top Procedimientos por cantidad</h3>
           <div class="ranking">
             @for (p of data.top_procedimientos; track p; let i = $index) {
               <div class="ranking-item">
                 <span class="ranking-pos">#{{ i + 1 }}</span>
-                <span class="ranking-nombre">{{ p.nombre }}</span>
-                <span class="ranking-total">{{ p.total }}</span>
+                <span class="ranking-nombre">
+                  {{ p.nombre }}
+                  <span class="ranking-sub">{{ p.total }} registro{{ p.total === 1 ? "" : "s" }}</span>
+                </span>
+                <span class="ranking-total">{{ p.total_cantidad ?? p.total }}</span>
               </div>
             }
           </div>

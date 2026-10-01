@@ -68,6 +68,7 @@
   --text: #000000;
   --muted: #4b5563;
   --theme-text-secondary: #202020;
+  --text-relative: rgb(146, 13, 13);
 
   /* Textos derivados usados por los tokens semánticos */
   --text-faint: rgba(0, 0, 0, 0.45);

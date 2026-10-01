@@ -111,9 +111,17 @@
       <div>
         <div class="total-badge">Total: {{ totalDeRegistros }} registros</div>
         @if (registros.length > 0) {
-          <div class="table-wrap" role="region" aria-label="Registros del censo de camas" tabindex="0">
+          <div
+            class="table-wrap"
+            role="region"
+            aria-label="Registros del censo de camas"
+            tabindex="0"
+          >
             <table class="reporte-table">
-              <caption class="sr-only">Registros de censo de camas. Desplaza horizontalmente para ver todas las columnas.</caption>
+              <caption class="sr-only">
+                Registros de censo de camas. Desplaza horizontalmente para ver
+                todas las columnas.
+              </caption>
               <thead>
                 <tr>
                   <th scope="col">Fecha</th>
@@ -128,10 +136,14 @@
                 @for (r of registros; track r.id) {
                   <tr>
                     <td class="date-cell">
-                      <time [attr.datetime]="r.fecha">{{ formatearFecha(r.fecha) }}</time>
+                      <time [attr.datetime]="r.fecha">{{
+                        formatearFecha(r.fecha)
+                      }}</time>
                     </td>
                     <td class="text-left">
-                      <span class="service-name">{{ servicioNombre(r.servicio_id) }}</span>
+                      <span class="service-name">{{
+                        servicioNombre(r.servicio_id)
+                      }}</span>
                     </td>
                     <td class="number-cell">{{ r.egresos_totales }}</td>
                     <td>
@@ -145,19 +157,29 @@
                     </td>
                     <td>
                       <div class="occupancy-cell">
-                        <span class="badge-pct"
+                        <span
+                          class="badge-pct"
                           [class.alto]="nivelOcupacion(r) === 'alto'"
                           [class.critico]="nivelOcupacion(r) === 'critico'"
                           [class.medio]="nivelOcupacion(r) === 'medio'"
-                          [class.bajo]="nivelOcupacion(r) === 'bajo'">
+                          [class.bajo]="nivelOcupacion(r) === 'bajo'"
+                        >
                           {{ porcentajeOcupacional(r) }}%
                         </span>
-                        <div class="occupancy-meter" role="progressbar"
-                          [attr.aria-label]="'Ocupación de ' + servicioNombre(r.servicio_id)"
+                        <div
+                          class="occupancy-meter"
+                          role="progressbar"
+                          [attr.aria-label]="
+                            'Ocupación de ' + servicioNombre(r.servicio_id)
+                          "
                           [attr.aria-valuenow]="porcentajeVisual(r)"
-                          aria-valuemin="0" aria-valuemax="100">
-                          <span [class.overflow]="porcentajeOcupacional(r) > 100"
-                            [style.width.%]="porcentajeVisual(r)"></span>
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        >
+                          <span
+                            [class.overflow]="porcentajeOcupacional(r) > 100"
+                            [style.width.%]="porcentajeVisual(r)"
+                          ></span>
                         </div>
                       </div>
                     </td>
@@ -168,7 +190,9 @@
                           type="button"
                           (click)="editar(r.id); $event.stopPropagation()"
                           title="Editar"
-                          [attr.aria-label]="'Editar censo del ' + formatearFecha(r.fecha)"
+                          [attr.aria-label]="
+                            'Editar censo del ' + formatearFecha(r.fecha)
+                          "
                         >
                           <span aria-hidden="true">✎</span>
                         </button>
@@ -177,7 +201,9 @@
                           type="button"
                           (click)="eliminar(r.id); $event.stopPropagation()"
                           title="Eliminar"
-                          [attr.aria-label]="'Eliminar censo del ' + formatearFecha(r.fecha)"
+                          [attr.aria-label]="
+                            'Eliminar censo del ' + formatearFecha(r.fecha)
+                          "
                         >
                           <span aria-hidden="true">×</span>
                         </button>
@@ -328,12 +354,25 @@
         }
 
         @if (cargandoTablaHospitalizacionDiaria) {
-          <div class="state-box spinner" role="status" aria-label="Cargando ocupación diaria"></div>
+          <div
+            class="state-box spinner"
+            role="status"
+            aria-label="Cargando ocupación diaria"
+          ></div>
         } @else if (hospitalizacionDiaria.length > 0) {
-          <div class="table-wrap daily-hospital-wrap" role="region" aria-label="Censo diario de hospitalización" tabindex="0">
+          <div
+            class="table-wrap daily-hospital-wrap"
+            role="region"
+            aria-label="Censo diario de hospitalización"
+            tabindex="0"
+          >
             <table class="stats-table daily-hospital-table">
               <caption class="daily-hospital-caption">
-                Hospital General Tipo I de Tecpán Guatemala, {{ formatearFechaCorta(estadisticaHoy?.desde || fechaEstadistica) }}
+                Hospital General Tipo I de Tecpán Guatemala, censo de camas
+                amanecido el día
+                {{
+                  formatearFechaCorta(fechaHoy || fechaEstadistica)
+                }}
               </caption>
               <thead>
                 <tr>
@@ -348,19 +387,32 @@
                 </tr>
               </thead>
               <tbody>
-                @for (servicio of hospitalizacionDiaria; track servicio.servicio_id) {
+                @for (
+                  servicio of hospitalizacionDiaria;
+                  track servicio.servicio_id
+                ) {
                   <tr>
-                    <td class="td-label daily-service-col">{{ servicio.servicio_nombre }}</td>
+                    <td class="td-label daily-service-col">
+                      {{ servicio.servicio_nombre }}
+                    </td>
                     <td>{{ servicio.camas_censables }}</td>
                     <td>{{ servicio.camas_ocupadas }}</td>
                     <td>{{ servicio.camas_disponibles }}</td>
                     <td>
-                      <span class="badge-pct"
+                      <span
+                        class="badge-pct"
                         [class.bajo]="servicio.porcentaje_ocupacional < 50"
-                        [class.medio]="servicio.porcentaje_ocupacional >= 50 && servicio.porcentaje_ocupacional < 80"
-                        [class.alto]="servicio.porcentaje_ocupacional >= 80 && servicio.porcentaje_ocupacional < 100"
-                        [class.critico]="servicio.porcentaje_ocupacional >= 100">
-                        {{ servicio.porcentaje_ocupacional | number: '1.2-2' }}%
+                        [class.medio]="
+                          servicio.porcentaje_ocupacional >= 50 &&
+                          servicio.porcentaje_ocupacional < 80
+                        "
+                        [class.alto]="
+                          servicio.porcentaje_ocupacional >= 80 &&
+                          servicio.porcentaje_ocupacional < 100
+                        "
+                        [class.critico]="servicio.porcentaje_ocupacional >= 100"
+                      >
+                        {{ servicio.porcentaje_ocupacional | number: "1.2-2" }}%
                       </span>
                     </td>
                     <td>{{ servicio.egresos_diarios }}</td>
@@ -376,23 +428,46 @@
                   <td>{{ totalesHospitalizacionDiaria.camas_ocupadas }}</td>
                   <td>{{ totalesHospitalizacionDiaria.camas_disponibles }}</td>
                   <td>
-                    <span class="badge-pct"
-                      [class.bajo]="totalesHospitalizacionDiaria.porcentaje_ocupacional < 50"
-                      [class.medio]="totalesHospitalizacionDiaria.porcentaje_ocupacional >= 50 && totalesHospitalizacionDiaria.porcentaje_ocupacional < 80"
-                      [class.alto]="totalesHospitalizacionDiaria.porcentaje_ocupacional >= 80 && totalesHospitalizacionDiaria.porcentaje_ocupacional < 100"
-                      [class.critico]="totalesHospitalizacionDiaria.porcentaje_ocupacional >= 100">
-                      {{ totalesHospitalizacionDiaria.porcentaje_ocupacional | number: '1.2-2' }}%
+                    <span
+                      class="badge-pct"
+                      [class.bajo]="
+                        totalesHospitalizacionDiaria.porcentaje_ocupacional < 50
+                      "
+                      [class.medio]="
+                        totalesHospitalizacionDiaria.porcentaje_ocupacional >=
+                          50 &&
+                        totalesHospitalizacionDiaria.porcentaje_ocupacional < 80
+                      "
+                      [class.alto]="
+                        totalesHospitalizacionDiaria.porcentaje_ocupacional >=
+                          80 &&
+                        totalesHospitalizacionDiaria.porcentaje_ocupacional <
+                          100
+                      "
+                      [class.critico]="
+                        totalesHospitalizacionDiaria.porcentaje_ocupacional >=
+                        100
+                      "
+                    >
+                      {{
+                        totalesHospitalizacionDiaria.porcentaje_ocupacional
+                          | number: "1.2-2"
+                      }}%
                     </span>
                   </td>
                   <td>{{ totalesHospitalizacionDiaria.egresos_diarios }}</td>
-                  <td>{{ totalesHospitalizacionDiaria.egresos_contraindicados }}</td>
+                  <td>
+                    {{ totalesHospitalizacionDiaria.egresos_contraindicados }}
+                  </td>
                   <td>{{ totalesHospitalizacionDiaria.fallecidos }}</td>
                 </tr>
               </tfoot>
             </table>
           </div>
         } @else {
-          <div class="state-box">No hay movimientos de censo para la fecha seleccionada.</div>
+          <div class="state-box">
+            No hay movimientos de censo para la fecha seleccionada.
+          </div>
         }
       </div>
       <!-- MES ACUMULADO -->

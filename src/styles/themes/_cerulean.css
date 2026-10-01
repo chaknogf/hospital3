@@ -59,6 +59,7 @@
   --amber-dim: rgba(221, 86, 0, 0.10);
   --text: #29354a;
   --muted: #6c7a8d;
+  --text-relative: var(--text-print-blue);
 
   /* Textos derivados usados por los tokens semánticos */
   --text-faint: rgba(41, 53, 74, 0.50);

@@ -103,22 +103,22 @@
 
 .stats-table { width: max-content; min-width: 100%; border-collapse: collapse; background: var(--theme-surface); border-radius: 10px; overflow: hidden; }
 .stats-table th { background: var(--theme-surface-raised); color: var(--theme-text); padding: 10px 6px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
-.stats-table td { padding: 8px 14px; color: var(--theme-text); border-bottom: 1px solid var(--theme-border); font-size: 0.85rem; text-align: center; }
+.stats-table td { padding: 6px 4px; color: var(--theme-text); border-bottom: 1px solid var(--theme-border); font-size: 0.85rem; text-align: center; }
 .stats-table tbody tr { transition: background 0.15s; }
 .stats-table tbody tr:hover { background: var(--theme-primary-dim); }
 .daily-hospital-wrap { margin-top: 18px; }
-.daily-hospital-table { min-width: 850px; }
+/*.daily-hospital-table { min-width: 850px; } */
 .daily-hospital-caption { caption-side: top; padding: 9px 12px; border-bottom: 1px solid var(--theme-border); color: var(--theme-text); font-size: 0.82rem; font-weight: 700; text-align: left; }
 .daily-hospital-table th { padding: 8px 7px; font-size: 0.65rem; line-height: 1.2; white-space: normal; overflow-wrap: anywhere; hyphens: auto; }
-.daily-hospital-table th:not(.daily-service-col) { min-width: 78px; max-width: 116px; }
-.daily-hospital-table .daily-service-col { width: 26%; min-width: 220px; text-align: left; }
-.daily-hospital-table td { padding: 7px 8px; font-size: 0.77rem; font-variant-numeric: tabular-nums; }
+.daily-hospital-table th:not(.daily-service-col) { text-align: end; }
+.daily-hospital-table .daily-service-col {  text-align: left; }
+.daily-hospital-table td { padding: 4px 8px; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
 .daily-hospital-table td:not(.daily-service-col) { white-space: nowrap; }
 
 .stats-table tfoot .global-row { background: var(--theme-primary-dim); border-top: 2px solid var(--theme-border-strong); }
 .stats-table tfoot .global-row td { font-weight: 700; color: var(--theme-text); padding: 12px 14px; }
 
-.badge-pct { display: inline-block; padding: 3px 9px; border: 1px solid transparent; border-radius: 999px; font-size: 0.75rem; font-weight: 750; font-variant-numeric: tabular-nums; }
+.badge-pct { display: inline-block; padding: 3px 8px; border: 1px solid transparent; border-radius: 999px; font-size: 0.75rem; font-weight: 750; font-variant-numeric: tabular-nums; }
 .badge-pct.alto, .badge-pct.critico { background: var(--theme-danger-dim); border-color: var(--theme-danger); color: var(--theme-text); }
 .badge-pct.medio { background: var(--theme-warning-dim); border-color: var(--theme-warning); color: var(--theme-text); }
 .badge-pct.bajo { background: var(--theme-success-dim); border-color: var(--theme-success); color: var(--theme-text); }

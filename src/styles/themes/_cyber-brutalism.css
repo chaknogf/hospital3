@@ -86,6 +86,7 @@
   --muted:      #8a9bb5;   /* Desaturated lemon for secondary text */
   --text-faint: rgba(250, 240, 202, 0.50);
   --text-inverse: #000814;
+  --text-relative: #fff;
 
   /* ── SEMANTIC BG (states) ── */
   --success-dim: rgba(57, 255, 136, 0.14);

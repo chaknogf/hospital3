@@ -654,6 +654,14 @@ export const routes: Routes = [
             path: 'dx-z-cie10',
             loadComponent: () => import('./std/reportes/dx-z-cie10/dx-z-cie10.component').then(c => c.DxZCie10Component)
           },
+          {
+            path: 'indicadores-consultas',
+            loadComponent: () => import('./std/reportes/indicadores-consultas/indicadores-consultas.component').then(c => c.IndicadoresConsultasComponent)
+          },
+          {
+            path: 'referencias-consultas',
+            loadComponent: () => import('./std/reportes/referencias-consultas/referencias-consultas.component').then(c => c.ReferenciasConsultasComponent)
+          },
         ]
       },
     ]

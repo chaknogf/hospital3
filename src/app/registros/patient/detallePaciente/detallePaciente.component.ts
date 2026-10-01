@@ -321,7 +321,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges, OnDestroy {
       ocupacion: 'Ocupación',
       educacion: 'Nivel educativo',
       estudiante_publico: 'Estudiante público',
-      empleado_publico: 'Empleado público',
+      empleado_publico: 'Personal del hospital',
       discapacidad: 'Discapacidad',
 
       // Neonatales

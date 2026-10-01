@@ -19,6 +19,7 @@ export class ResumenProcedimientosComponent implements OnInit {
   error: string | null = null;
   anio = new Date().getFullYear();
   mes: number | undefined = undefined;
+  nombre = '';
 
   meses = [
     { value: undefined, label: 'Todos' },
@@ -34,9 +35,16 @@ export class ResumenProcedimientosComponent implements OnInit {
 
   cargar(): void {
     this.cargando = true; this.error = null;
-    this.api.getResumenProcedimientos({ anio: this.anio, mes: this.mes }).subscribe({
+    this.api.getResumenProcedimientos({ anio: this.anio, mes: this.mes, nombre: this.nombre || null }).subscribe({
       next: (res) => { this.data = res; this.cargando = false; },
       error: () => { this.error = 'Error al cargar datos'; this.cargando = false; }
     });
+  }
+
+  limpiar(): void {
+    this.anio = new Date().getFullYear();
+    this.mes = undefined;
+    this.nombre = '';
+    this.cargar();
   }
 }

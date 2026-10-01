@@ -1,0 +1,228 @@
+<div class="page-container">
+  <div class="page-header">
+    <button class="btn-back" routerLink="/reportes">← Volver</button>
+    <h1>{{ data?.titulo || "Indicadores de Consultas" }}</h1>
+  </div>
+
+  <div class="filtros-bar">
+    <label>Desde: <input type="date" [(ngModel)]="desde" (change)="cargar()" /></label>
+    <label>Hasta: <input type="date" [(ngModel)]="hasta" (change)="cargar()" /></label>
+    <label
+      >Tipo:
+      <select [(ngModel)]="tipoConsulta" (change)="cargar()">
+        @for (t of tiposConsulta; track t.label) {
+          <option [ngValue]="t.value">{{ t.label }}</option>
+        }
+      </select>
+    </label>
+    <label
+      >Especialidad:
+      <select [(ngModel)]="especialidad" (change)="cargar()">
+        <option value="">Todas</option>
+        @for (e of especialidades; track e.value) {
+          <option [value]="e.value">{{ e.label }}</option>
+        }
+      </select>
+    </label>
+    <button class="btn-primary" (click)="cargar()">Actualizar</button>
+    <button class="btn-back" (click)="limpiar()">Limpiar</button>
+    <button
+      class="btn-secondary"
+      (click)="sincronizar()"
+      [disabled]="sincronizando"
+      title="Toma personal_hospital del paciente y lo escribe en las consultas del periodo"
+    >
+      {{ sincronizando ? "Sincronizando..." : "Sincronizar desde paciente" }}
+    </button>
+  </div>
+
+  @if (sync) {
+    <div class="sync-box" [class.ok]="!sync.error">
+      @if (sync.error) {
+        <strong>No se pudo sincronizar:</strong> {{ sync.error }}
+      } @else {
+        <strong>Periodo {{ sync.desde }} → {{ sync.hasta }}</strong> · clave canónica
+        <code>{{ sync.clave_canonica }}</code>
+        <ul class="sync-lista">
+          <li>Consultas revisadas: {{ sync.total_consultas_en_rango }}</li>
+          <li>Actualizadas: {{ sync.actualizados }} (sin cambio: {{ sync.saltados }})</li>
+          <li>Marcadas S: {{ sync.resultado_marcado_s }} · No marcadas N: {{ sync.resultado_no_marcado_n }}</li>
+          <li>Pacientes sin dato (la consulta queda sin la clave): {{ sync.pacientes_sin_dato }}</li>
+          <li>Alias duplicados eliminados: {{ sync.alias_eliminados_total }}</li>
+        </ul>
+      }
+    </div>
+  }
+
+  @if (cargando) {
+    <div class="state-box spinner"></div>
+  }
+  @if (error) {
+    <div class="state-box error">{{ error }}</div>
+  }
+
+  @if (!cargando && !error && data) {
+    <div>
+      <div class="resumen-cards">
+        <div class="resumen-card">
+          <span class="resumen-val">{{ data.total_consultas }}</span>
+          <span class="resumen-lbl">Consultas</span>
+        </div>
+        <div class="resumen-card">
+          <span class="resumen-val">{{ data.pacientes_distintos }}</span>
+          <span class="resumen-lbl">Pacientes distintos</span>
+        </div>
+        <div class="resumen-card">
+          <span class="resumen-val">{{ data.dias_con_registros }}</span>
+          <span class="resumen-lbl">Días con registros</span>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h3 class="section-title">Cobertura del jsonb indicadores</h3>
+        <div class="metric-grid">
+          <div class="metric">
+            <span class="metric-val">{{ data.cobertura?.consultas_sin_columna }}</span>
+            <span class="metric-lbl">Indicadores IS NULL</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">{{ data.cobertura?.consultas_sin_claves }}</span>
+            <span class="metric-lbl">jsonb vacío</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">{{ data.cobertura?.claves_distintas }}</span>
+            <span class="metric-lbl">Claves distintas</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">{{ data.cobertura?.promedio_claves_por_consulta }}</span>
+            <span class="metric-lbl">Claves / consulta</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h3 class="section-title">Indicadores de Sí/No</h3>
+        <p class="leyenda">
+          <b>Marcados</b> = consultas con el indicador en verdadero. <b>Sin valor</b> =
+          clave presente pero vacía o nula, que <u>no es lo mismo</u> que estar en
+          negativo. <b>Sin la clave</b> = el jsonb de esa consulta ni siquiera trae
+          el campo.
+        </p>
+        @if (booleanos.length) {
+          <div class="table-wrap">
+            <table class="reporte-table">
+              <thead>
+                <tr>
+                  <th class="text-left">Indicador</th>
+                  <th>Marcados</th>
+                  <th class="col-bar">% de consultas</th>
+                  <th>Pacientes</th>
+                  <th>% pacientes</th>
+                  <th>En negativo</th>
+                  <th>Sin valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (d of booleanos; track d.indicador) {
+                  <tr>
+                    <td class="text-left esp-label">
+                      {{ d.etiqueta }}
+                      <span class="ind-nota"
+                        >sin la clave: {{ d.clave_ausente }}
+                        @if (d.por_tipo_consulta?.length) {
+                          <span class="ind-tipos">
+                            @for (t of d.por_tipo_consulta; track t.tipo_consulta) {
+                              <span>{{ t.tipo_consulta_nombre }} {{ t.total }}</span>
+                            }
+                          </span>
+                        }
+                      </span>
+                    </td>
+                    <td class="num total-row">{{ d.verdadero }}</td>
+                    <td class="col-bar">
+                      <div class="bar">
+                        <div
+                          class="bar-fill"
+                          [style.width.%]="pct(d, 'porcentaje_consultas')"
+                        ></div>
+                        <span class="bar-val">{{ pct(d, "porcentaje_consultas") }}%</span>
+                      </div>
+                    </td>
+                    <td class="num">{{ d.pacientes }}</td>
+                    <td class="num">{{ d.porcentaje_pacientes }}%</td>
+                    <td class="num muted">{{ d.falso }}</td>
+                    <td class="num muted">{{ d.sin_valor }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="state-box">El período no tiene indicadores de Sí/No.</div>
+        }
+      </div>
+
+      <div class="section-card">
+        <h3 class="section-title">Indicadores de texto</h3>
+        <p class="leyenda">
+          Estos campos guardan texto libre, no un sí/no. <b>Con texto</b> cuenta las
+          consultas con un valor no vacío.
+        </p>
+        @if (textos.length) {
+          <div class="table-wrap">
+            <table class="reporte-table">
+              <thead>
+                <tr>
+                  <th class="text-left">Indicador</th>
+                  <th>Con texto</th>
+                  <th class="col-bar">% de consultas</th>
+                  <th>Pacientes</th>
+                  <th>Valores distintos</th>
+                  <th>Sin valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (d of textos; track d.indicador) {
+                  <tr>
+                    <td class="text-left esp-label">
+                      {{ d.etiqueta }}
+                      <span class="ind-nota"
+                        >sin la clave: {{ d.clave_ausente }}
+                        @if (d.por_tipo_consulta?.length) {
+                          <span class="ind-tipos">
+                            @for (t of d.por_tipo_consulta; track t.tipo_consulta) {
+                              <span>{{ t.tipo_consulta_nombre }} {{ t.total }}</span>
+                            }
+                          </span>
+                        }
+                      </span>
+                    </td>
+                    <td class="num total-row">{{ d.con_texto }}</td>
+                    <td class="col-bar">
+                      <div class="bar">
+                        <div
+                          class="bar-fill"
+                          [style.width.%]="pct(d, 'porcentaje_consultas')"
+                        ></div>
+                        <span class="bar-val">{{ pct(d, "porcentaje_consultas") }}%</span>
+                      </div>
+                    </td>
+                    <td class="num">{{ d.pacientes }}</td>
+                    <td class="num muted">{{ d.valores_distintos }}</td>
+                    <td class="num muted">{{ d.sin_valor }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="state-box">El período no tiene indicadores de texto.</div>
+        }
+      </div>
+
+      @if (!datos.length) {
+        <div class="state-box">Sin datos para el rango seleccionado.</div>
+      }
+    </div>
+  }
+</div>

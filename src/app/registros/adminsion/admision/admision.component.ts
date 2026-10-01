@@ -111,7 +111,7 @@ export class AdmisionComponent implements OnInit, OnDestroy {
       servicio: [''],
       indicadores: this.fb.group({
         estudiante_publico: [false],
-        empleado_publico: [false],
+        personal_hospital: [false],
         accidente_laboral: [false],
         discapacidad: [false],
         accidente_transito: [false],

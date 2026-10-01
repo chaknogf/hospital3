@@ -118,7 +118,7 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
 
       // Indicadores
       indicadores: this.fb.group({
-        estudiante_publico: [false], empleado_publico: [false],
+        estudiante_publico: [false], personal_hospital: [false],
         accidente_laboral: [false], discapacidad: [false],
         accidente_transito: [false], arma_fuego: [false],
         arma_blanca: [false], ambulancia: [false],

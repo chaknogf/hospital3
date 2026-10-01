@@ -61,6 +61,7 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   cargandoTablaHospitalizacionDiaria = false;
   hospitalizacionDiaria: HospitalizacionDiariaItem[] = [];
   fechaEstadistica: string = this.fechaAyer();
+  fechaHoy: string = this.fechaActual();
 
   hospitalizacion: HospitalizacionEspecialidadItem[] = [];
   totalHospitalizados = 0;

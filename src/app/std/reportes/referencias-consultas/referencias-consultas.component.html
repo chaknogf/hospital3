@@ -1,0 +1,198 @@
+<div class="page-container">
+  <div class="page-header">
+    <button class="btn-back" routerLink="/reportes">← Volver</button>
+    <h1>{{ data?.titulo || "Referencias de Consultas" }}</h1>
+  </div>
+
+  <div class="filtros-bar">
+    <label>Desde: <input type="date" [(ngModel)]="desde" (change)="aplicarFiltros()" /></label>
+    <label>Hasta: <input type="date" [(ngModel)]="hasta" (change)="aplicarFiltros()" /></label>
+    <label
+      >Tipo:
+      <select [(ngModel)]="tipoConsulta" (change)="aplicarFiltros()">
+        @for (t of tiposConsulta; track t.label) {
+          <option [ngValue]="t.value">{{ t.label }}</option>
+        }
+      </select>
+    </label>
+    <label
+      >Especialidad:
+      <select [(ngModel)]="especialidad" (change)="aplicarFiltros()">
+        <option value="">Todas</option>
+        @for (e of especialidades; track e.value) {
+          <option [value]="e.value">{{ e.label }}</option>
+        }
+      </select>
+    </label>
+    <button class="btn-primary" (click)="aplicarFiltros()">Actualizar</button>
+    <button class="btn-back" (click)="limpiar()">Limpiar</button>
+  </div>
+
+  @if (cargando) {
+    <div class="state-box spinner"></div>
+  }
+  @if (error) {
+    <div class="state-box error">{{ error }}</div>
+  }
+
+  @if (!cargando && !error && data) {
+    <div>
+      <div class="resumen-cards">
+        <div class="resumen-card">
+          <span class="resumen-val">{{ data.total_consultas }}</span>
+          <span class="resumen-lbl">Consultas del período</span>
+        </div>
+        <div class="resumen-card">
+          <span class="resumen-val">{{ data.cobertura?.consultas_con_referencia }}</span>
+          <span class="resumen-lbl">Con referencia</span>
+        </div>
+        <div class="resumen-card">
+          <span class="resumen-val">{{ data.cobertura?.porcentaje_con_referencia }}%</span>
+          <span class="resumen-lbl">Cobertura</span>
+        </div>
+        <div class="resumen-card">
+          <span class="resumen-val">{{ data.cobertura?.con_origen }}</span>
+          <span class="resumen-lbl">Con origen</span>
+        </div>
+        <div class="resumen-card">
+          <span class="resumen-val">{{ data.cobertura?.con_destino }}</span>
+          <span class="resumen-lbl">Con destino</span>
+        </div>
+        <div class="resumen-card">
+          <span class="resumen-val">{{ data.cobertura?.ambos_sentidos }}</span>
+          <span class="resumen-lbl">Ambos sentidos</span>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <h3 class="section-title">Resumen por institución</h3>
+          <div class="paginador">
+            <button
+              class="btn-page"
+              [class.activo]="direccion === ''"
+              (click)="direccion = ''"
+            >
+              Todas
+            </button>
+            <button
+              class="btn-page"
+              [class.activo]="direccion === 'viene'"
+              (click)="direccion = 'viene'"
+            >
+              Viene referido de
+            </button>
+            <button
+              class="btn-page"
+              [class.activo]="direccion === 'va'"
+              (click)="direccion = 'va'"
+            >
+              Va referido a
+            </button>
+          </div>
+        </div>
+        @if (resumenFiltrado.length) {
+          <div class="table-wrap">
+            <table class="reporte-table">
+              <thead>
+                <tr>
+                  <th class="text-left">Dirección</th>
+                  <th class="text-left">Institución (normalizada)</th>
+                  <th>Consultas</th>
+                  <th>Distintas</th>
+                  <th>Pacientes</th>
+                  <th class="text-left">Variantes capturadas</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (r of resumenFiltrado; track r.direccion + r.referencia) {
+                  <tr>
+                    <td class="text-left"><span class="tag">{{ r.direccion_nombre }}</span></td>
+                    <td class="text-left esp-label">{{ r.referencia }}</td>
+                    <td class="num total-row">{{ r.total_consultas }}</td>
+                    <td class="num">{{ r.consultas_distintas }}</td>
+                    <td class="num">{{ r.pacientes_distintos }}</td>
+                    <td class="text-left">
+                      @for (v of r.variantes; track v.valor) {
+                        <div class="variante">{{ v.valor }} <b>{{ v.total }}</b></div>
+                      } @empty {
+                        <span class="muted">—</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="state-box">Sin referencias para el rango seleccionado.</div>
+        }
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <h3 class="section-title">Detalle de consultas</h3>
+          <button
+            class="btn-primary btn-excel"
+            (click)="descargarExcel()"
+            [disabled]="descargando || !lista.length"
+          >
+            {{ descargando ? "Generando..." : "Descargar Excel" }}
+          </button>
+        </div>
+        <div class="total-badge">Total: {{ totalLista }} registros con referencia</div>
+        @if (lista.length) {
+          <div class="table-wrap">
+            <table class="reporte-table">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Expediente</th>
+                  <th>Fecha</th>
+                  <th>Tipo</th>
+                  <th>Especialidad</th>
+                  <th>Sexo</th>
+                  <th>Edad</th>
+                  <th class="text-left">Diagnóstico</th>
+                  <th class="text-left">Viene referido de</th>
+                  <th class="text-left">Va referido a</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (c of lista; track c.id) {
+                  <tr>
+                    <td>{{ c.id }}</td>
+                    <td>{{ c.expediente || "—" }}</td>
+                    <td>{{ c.fecha_consulta || "—" }}</td>
+                    <td>{{ c.tipo_consulta_nombre || "—" }}</td>
+                    <td>{{ c.especialidad || "—" }}</td>
+                    <td>{{ sexoLabel(c.sexo) }}</td>
+                    <td>{{ c.edad ?? "—" }}</td>
+                    <td class="text-left dx">{{ c.diagnostico || "—" }}</td>
+                    <td class="text-left">{{ origen(c) }}</td>
+                    <td class="text-left">{{ destino(c) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <div class="paginador">
+            <button class="btn-page" (click)="paginaAnterior()" [disabled]="skip === 0">
+              ← Anterior
+            </button>
+            <span class="page-info">Página {{ paginaActual }} de {{ totalPaginas }}</span>
+            <button
+              class="btn-page"
+              (click)="paginaSiguiente()"
+              [disabled]="skip + limit >= totalLista"
+            >
+              Siguiente →
+            </button>
+          </div>
+        } @else {
+          <div class="state-box">Sin registros en esta página.</div>
+        }
+      </div>
+    </div>
+  }
+</div>
