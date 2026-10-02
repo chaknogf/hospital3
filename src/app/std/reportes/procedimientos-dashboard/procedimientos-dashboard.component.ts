@@ -16,7 +16,7 @@ export class ProcedimientosDashboardComponent implements OnInit {
   private api = inject(ApiService);
   private stdService = inject(StdService);
 
-  filtros = { desde: '', hasta: '', especialidad: '', lugar_servicio: '', sexo: '', nombre: '' };
+  filtros: { desde: string; hasta: string; especialidad: string; lugar_servicio: string; sexo: string; nombre: string };
 
   cargando = false;
   error: string | null = null;
@@ -32,11 +32,20 @@ export class ProcedimientosDashboardComponent implements OnInit {
   top5: Array<{ nombre: string; total_cantidad: number; total_anestesia: number; total?: number }> = [];
   registrosPorServicio: Array<{ lugar_servicio: string; total_registros: number }> = [];
 
-  ngOnInit(): void {
+  constructor() {
     const hoy = new Date();
     const inicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-    this.filtros.desde = inicio.toISOString().split('T')[0];
-    this.filtros.hasta = hoy.toISOString().split('T')[0];
+    this.filtros = {
+      desde: inicio.toISOString().split('T')[0],
+      hasta: hoy.toISOString().split('T')[0],
+      especialidad: '',
+      lugar_servicio: '',
+      sexo: '',
+      nombre: ''
+    };
+  }
+
+  ngOnInit(): void {
     this.cargar();
   }
 
