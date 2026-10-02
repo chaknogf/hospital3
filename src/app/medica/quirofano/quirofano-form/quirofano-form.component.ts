@@ -124,7 +124,7 @@ export class QuirofanoFormComponent implements OnInit {
     this.api.getRangosEspecialista().subscribe({ next: d => this.rangos = d, error: () => {} });
     this.api.getProcedencias().subscribe({ next: d => this.procedencias = d, error: () => {} });
     this.api.getQuirofanosNumero().subscribe({ next: d => this.quirofanosNumero = d, error: () => {} });
-    this.especialidadesApi.getEspecialidades(true, true).subscribe({ next: d => this.especialidades = d, error: () => {} });
+    this.especialidadesApi.getEspecialidades(true, true).subscribe({ next: d => this.especialidades = d.filter(e => ['CIRU', 'TRAU', 'GIN'].includes(e.codigo ?? '')), error: () => {} });
     this.api.getProcedimientosQuirofano().subscribe({ next: d => this.procedimientosQuirofano = d, error: () => {} });
   }
 

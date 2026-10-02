@@ -96,6 +96,7 @@ export class PacientesComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private cdr = inject(ChangeDetectorRef);
+  private conservarBusquedaAlSalir = false;
 
   // ── Icons ──────────────────────────────────────────────────
   icons: { [key: string]: any } = {};
@@ -161,6 +162,16 @@ export class PacientesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (!this.conservarBusquedaAlSalir) {
+      const ultimo = this.api.obtenerUltimoFiltro();
+      if (ultimo && typeof ultimo === 'object') {
+        const limpio: any = { ...ultimo, q: '' };
+        this.api.guardarUltimoFiltro(limpio);
+      } else {
+        const limpio: any = { ...this.filtros, q: '' };
+        this.api.guardarUltimoFiltro(limpio as any);
+      }
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -245,6 +256,16 @@ export class PacientesComponent implements OnInit, OnDestroy {
 
   toggleFiltrar(): void { this.filtrar = !this.filtrar; }
 
+  limpiarBusquedaRapidaAlFocalizar(): void {
+    if (this.filtros.q !== '') {
+      this.filtros.q = '';
+      this.paginaActual = 1;
+      this.filtros.skip = 0;
+      this.filtros.limit = this.pageSize;
+      this.cdr.markForCheck();
+    }
+  }
+
   nombreCompleto(p: any): string {
     if (!p?.nombre) return '';
     const n = p.nombre;
@@ -290,10 +311,22 @@ export class PacientesComponent implements OnInit, OnDestroy {
   // ══════════════════════════════════════════════════════════
   // ACCIONES DE PACIENTE
   // ══════════════════════════════════════════════════════════
-  editarPaciente(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
-  agregar(): void { this.router.navigate(['/paciente']); }
-  agregarConExpediente(): void { this.router.navigate(['/paciente', true]); }
-  verDetallesPaciente(id: number): void { this.router.navigate(['/detallePaciente', id]); }
+  editarPaciente(id: number): void {
+    this.conservarBusquedaAlSalir = true;
+    this.router.navigate(['/pacienteEdit', id]);
+  }
+  agregar(): void {
+    this.conservarBusquedaAlSalir = true;
+    this.router.navigate(['/paciente']);
+  }
+  agregarConExpediente(): void {
+    this.conservarBusquedaAlSalir = true;
+    this.router.navigate(['/paciente', true]);
+  }
+  verDetallesPaciente(id: number): void {
+    this.conservarBusquedaAlSalir = true;
+    this.router.navigate(['/detallePaciente', id]);
+  }
   volver(): void { this.router.navigate(['/registros']); }
 
   eliminarPaciente(id: number): void {

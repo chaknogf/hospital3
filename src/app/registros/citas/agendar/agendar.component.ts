@@ -123,7 +123,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$), debounceTime(100), distinctUntilChanged())
       .subscribe((fecha: string) => {
         if (!fecha) { this.avisoFecha.set(null); return; }
-        const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
         const [y, m, d] = fecha.split('-').map(Number);
         // Se usa fecha local para evitar que la zona horaria desplace el día seleccionado.
         this.form.get('dia_semana')?.setValue(dias[new Date(y, m - 1, d).getDay()], { emitEvent: false });
@@ -215,7 +215,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
         this.diasInhabilesList = lista;
         this.diasInhabiles = new Set(lista.filter(d => d.activo).map(d => d.fecha));
       },
-      error: () => {}
+      error: () => { }
     });
   }
 

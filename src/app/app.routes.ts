@@ -636,11 +636,15 @@ export const routes: Routes = [
           },
           {
             path: 'reporte-procedimientos',
-            loadComponent: () => import('./std/reportes/reporte-procedimientos/reporte-procedimientos.component').then(c => c.ReporteProcedimientosComponent)
+            loadComponent: () => import('./std/reportes/procedimientos-dashboard/procedimientos-dashboard.component').then(c => c.ProcedimientosDashboardComponent)
           },
           {
             path: 'resumen-procedimientos',
-            loadComponent: () => import('./std/reportes/resumen-procedimientos/resumen-procedimientos.component').then(c => c.ResumenProcedimientosComponent)
+            loadComponent: () => import('./std/reportes/procedimientos-dashboard/procedimientos-dashboard.component').then(c => c.ProcedimientosDashboardComponent)
+          },
+          {
+            path: 'procedimientos',
+            loadComponent: () => import('./std/reportes/procedimientos-dashboard/procedimientos-dashboard.component').then(c => c.ProcedimientosDashboardComponent)
           },
           {
             path: 'sigsa3-estadistica',

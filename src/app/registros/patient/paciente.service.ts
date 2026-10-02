@@ -45,6 +45,13 @@ export class PacienteService extends BaseApiService {
     return this.ultimoFiltroPaciente.filtro;
   }
 
+  guardarUltimoFiltro(filtros: any): void {
+    this.ultimoFiltroPaciente = {
+      ...this.ultimoFiltroPaciente,
+      filtro: { ...this.ultimoFiltroPaciente.filtro, ...filtros }
+    };
+  }
+
   /** Refresca la copia local (Dexie) del paciente editado para que la lista
    *  no muestre datos viejos "de caché" tras guardar cambios. */
   private persistirPacienteLocal(paciente: any): void {

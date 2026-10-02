@@ -2,20 +2,33 @@
 
 <!-- HUD -->
 <div class="hud-header">
-  <span class="hud-id">{{ enEdicion ? 'QRO-EDIT : ' + intervencionId : 'QRO-NUEVO' }}</span>
-  <span class="hud-title">{{ enEdicion ? 'ACTUALIZAR INTERVENCIÓN' : 'NUEVA INTERVENCIÓN QUIRÚRGICA' }}</span>
-  <span class="hud-status">{{ enEdicion ? 'Modo edición' : (pacienteLabel || 'Sin paciente') }}</span>
+  <span class="hud-id">{{
+    enEdicion ? "QRO-EDIT : " + intervencionId : "QRO-NUEVO"
+  }}</span>
+  <span class="hud-title">{{
+    enEdicion ? "ACTUALIZAR INTERVENCIÓN" : "NUEVA INTERVENCIÓN QUIRÚRGICA"
+  }}</span>
+  <span class="hud-status">{{
+    enEdicion ? "Modo edición" : pacienteLabel || "Sin paciente"
+  }}</span>
 </div>
 
 <!-- ACTION DOCK -->
 <div class="action-dock">
-  <span class="dock-hint">{{ enEdicion ? 'Edición de intervención' : 'Registro de intervención' }}</span>
+  <span class="dock-hint">{{
+    enEdicion ? "Edición de intervención" : "Registro de intervención"
+  }}</span>
   <button type="button" class="btn-dock btn-dock-cancel" (click)="volver()">
     <span [innerHTML]="cancelIcon"></span> Cancelar
   </button>
-  <button type="button" class="btn-dock btn-dock-save" [disabled]="guardando" (click)="guardar()">
+  <button
+    type="button"
+    class="btn-dock btn-dock-save"
+    [disabled]="guardando"
+    (click)="guardar()"
+  >
     <span [innerHTML]="saveIcon"></span>
-    {{ guardando ? 'Guardando...' : enEdicion ? 'Actualizar' : 'Registrar' }}
+    {{ guardando ? "Guardando..." : enEdicion ? "Actualizar" : "Registrar" }}
   </button>
 </div>
 
@@ -27,15 +40,21 @@
 
 @if (!cargando) {
   <form [formGroup]="form" class="adm-body">
-
     <!-- PACIENTE -->
     <div class="section-card">
       <div class="sec-head">
         <div class="sec-head-left">
           <div class="sec-icon">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="8" cy="4.5" r="2"/>
-              <path d="M3.5 13v-1.5a2.5 2.5 0 0 1 2.5-2.5h4a2.5 2.5 0 0 1 2.5 2.5V13"/>
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <circle cx="8" cy="4.5" r="2" />
+              <path
+                d="M3.5 13v-1.5a2.5 2.5 0 0 1 2.5-2.5h4a2.5 2.5 0 0 1 2.5 2.5V13"
+              />
             </svg>
           </div>
           <span class="sec-title">Paciente</span>
@@ -62,13 +81,19 @@
                 [disabled]="buscandoPaciente || enEdicion"
                 (click)="buscarPaciente()"
               >
-                {{ buscandoPaciente ? 'Buscando…' : 'Buscar' }}
+                {{ buscandoPaciente ? "Buscando…" : "Buscar" }}
               </button>
               @if (pacienteInfo) {
-                <button type="button" class="btn-inline ghost" (click)="limpiarPaciente()">✕</button>
+                <button
+                  type="button"
+                  class="btn-inline ghost"
+                  (click)="limpiarPaciente()"
+                >
+                  ✕
+                </button>
               }
             </div>
-            @if (f['expediente'].touched && f['expediente'].errors) {
+            @if (f["expediente"].touched && f["expediente"].errors) {
               <small class="field-error">El expediente es obligatorio</small>
             }
             @if (errorPaciente) {
@@ -82,7 +107,9 @@
                 <strong>{{ pacienteLabel }}</strong>
                 <small>ID: {{ pacienteId }}</small>
               } @else {
-                <span class="placeholder-text">Busque el expediente para vincular</span>
+                <span class="placeholder-text"
+                  >Busque el expediente para vincular</span
+                >
               }
             </div>
           </div>
@@ -95,8 +122,13 @@
       <div class="sec-head">
         <div class="sec-head-left">
           <div class="sec-icon">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M2 8h4M10 8h4M8 2v4M8 10v4"/>
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M2 8h4M10 8h4M8 2v4M8 10v4" />
             </svg>
           </div>
           <span class="sec-title">Procedimientos realizados</span>
@@ -105,17 +137,35 @@
       <div class="sec-body">
         <div class="field-row">
           <div class="field">
+            <span class="field-label">Nº de quirófano</span>
+            <select class="field-input" formControlName="quirofano_numero_id">
+              <option [ngValue]="null">Seleccionar</option>
+              @for (qn of quirofanosNumero; track qn.quirofano_numero_id) {
+                <option [ngValue]="qn.quirofano_numero_id">
+                  {{ qn.nombre }}
+                </option>
+              }
+            </select>
+          </div>
+          <div class="field">
             <span class="field-label">Especialidad *</span>
-            <select class="field-input" formControlName="especialidad_id" (change)="onEspecialidadChange()">
+            <select
+              class="field-input"
+              formControlName="especialidad_id"
+              (change)="onEspecialidadChange()"
+            >
               <option [ngValue]="null">Seleccionar especialidad</option>
               @for (e of especialidades; track e.id) {
                 <option [ngValue]="e.id">{{ e.nombre }}</option>
               }
             </select>
-            @if (f['especialidad_id'].touched && f['especialidad_id'].errors) {
+            @if (f["especialidad_id"].touched && f["especialidad_id"].errors) {
               <small class="field-error">La especialidad es obligatoria</small>
             }
-            <small class="field-hint">Filtra las sugerencias de procedimientos (incluye "Todas").</small>
+            <small class="field-hint"
+              >Filtra las sugerencias de procedimientos (incluye
+              "Todas").</small
+            >
           </div>
           <div class="field">
             <span class="field-label">Área del cuerpo intervenida</span>
@@ -138,8 +188,13 @@
               placeholder="Escriba para buscar en el catálogo"
               autocomplete="off"
             />
-            @if (f['procedimiento_principal'].touched && f['procedimiento_principal'].errors) {
-              <small class="field-error">El procedimiento principal es obligatorio</small>
+            @if (
+              f["procedimiento_principal"].touched &&
+              f["procedimiento_principal"].errors
+            ) {
+              <small class="field-error"
+                >El procedimiento principal es obligatorio</small
+              >
             }
           </div>
           <div class="field">
@@ -204,9 +259,14 @@
       <div class="sec-head">
         <div class="sec-head-left">
           <div class="sec-icon">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="2" y="3" width="12" height="10" rx="1.5"/>
-              <path d="M2 6h12"/>
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <rect x="2" y="3" width="12" height="10" rx="1.5" />
+              <path d="M2 6h12" />
             </svg>
           </div>
           <span class="sec-title">Datos del procedimiento</span>
@@ -214,15 +274,6 @@
       </div>
       <div class="sec-body">
         <div class="field-row">
-          <div class="field">
-            <span class="field-label">Nº de quirófano</span>
-            <select class="field-input" formControlName="quirofano_numero_id">
-              <option [ngValue]="null">Seleccionar</option>
-              @for (qn of quirofanosNumero; track qn.quirofano_numero_id) {
-                <option [ngValue]="qn.quirofano_numero_id">{{ qn.nombre }}</option>
-              }
-            </select>
-          </div>
           <div class="field">
             <span class="field-label">Estado de cirugía</span>
             <select class="field-input" formControlName="estado_cirugia_id">
@@ -236,10 +287,15 @@
         <div class="field-row">
           <div class="field">
             <span class="field-label">Formato</span>
-            <select class="field-input" formControlName="formato_procedimiento_id">
+            <select
+              class="field-input"
+              formControlName="formato_procedimiento_id"
+            >
               <option [ngValue]="null">Seleccionar</option>
               @for (fo of formatos; track fo.formato_procedimiento_id) {
-                <option [ngValue]="fo.formato_procedimiento_id">{{ fo.nombre }}</option>
+                <option [ngValue]="fo.formato_procedimiento_id">
+                  {{ fo.nombre }}
+                </option>
               }
             </select>
           </div>
@@ -247,19 +303,26 @@
         <div class="field-row">
           <div class="field">
             <span class="field-label">Procedencia</span>
-            <select class="field-input" formControlName="procedencia_procedimiento_id">
+            <select
+              class="field-input"
+              formControlName="procedencia_procedimiento_id"
+            >
               <option [ngValue]="null">Seleccionar</option>
               @for (p of procedencias; track p.procedencia_procedimiento_id) {
-                <option [ngValue]="p.procedencia_procedimiento_id">{{ p.nombre }}</option>
+                <option [ngValue]="p.procedencia_procedimiento_id">
+                  {{ p.nombre }}
+                </option>
               }
             </select>
           </div>
           <div class="field">
             <span class="field-label">Rango de especialista</span>
             <select class="field-input" formControlName="rango_especialista_id">
-              <option [ngValue]="null">Seleccionar</option>
+              <option [ngValue]="1">Seleccionar</option>
               @for (r of rangos; track r.rango_especialista_id) {
-                <option [ngValue]="r.rango_especialista_id">{{ r.nombre }}</option>
+                <option [ngValue]="r.rango_especialista_id">
+                  {{ r.nombre }}
+                </option>
               }
             </select>
           </div>
@@ -272,9 +335,14 @@
       <div class="sec-head">
         <div class="sec-head-left">
           <div class="sec-icon">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="2" y="3" width="12" height="10" rx="1.5"/>
-              <path d="M2 6h12M5 1.5V4M11 1.5V4"/>
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <rect x="2" y="3" width="12" height="10" rx="1.5" />
+              <path d="M2 6h12M5 1.5V4M11 1.5V4" />
             </svg>
           </div>
           <span class="sec-title">Planificación</span>
@@ -288,7 +356,10 @@
               <option [ngValue]="null">Seleccionar</option>
               @for (m of medicos; track m.id) {
                 <option [ngValue]="m.id">
-                  {{ m.nombre }}{{ m.especialidad_nombre ? ' — ' + m.especialidad_nombre : '' }}
+                  {{ m.nombre
+                  }}{{
+                    m.especialidad_nombre ? " — " + m.especialidad_nombre : ""
+                  }}
                 </option>
               }
             </select>
@@ -297,21 +368,39 @@
         <div class="field-row">
           <div class="field">
             <span class="field-label">Hora inicio de anestesia</span>
-            <input class="field-input" type="time" formControlName="hora_inicio_anestesia" />
+            <input
+              class="field-input"
+              type="time"
+              formControlName="hora_inicio_anestesia"
+            />
           </div>
           <div class="field">
             <span class="field-label">Hora inicio intervención</span>
-            <input class="field-input" type="time" formControlName="hora_inicio_intervencion" />
+            <input
+              class="field-input"
+              type="time"
+              formControlName="hora_inicio_intervencion"
+            />
           </div>
         </div>
         <div class="field-row">
           <div class="field">
             <span class="field-label">Hora finaliza intervención</span>
-            <input class="field-input" type="time" formControlName="hora_finaliza_intervencion" />
+            <input
+              class="field-input"
+              type="time"
+              formControlName="hora_finaliza_intervencion"
+            />
           </div>
           <div class="field">
-            <span class="field-label">Hora finaliza limpieza / prep. quirófano</span>
-            <input class="field-input" type="time" formControlName="hora_finaliza_limpieza_prepara_quirofano" />
+            <span class="field-label"
+              >Hora finaliza limpieza / prep. quirófano</span
+            >
+            <input
+              class="field-input"
+              type="time"
+              formControlName="hora_finaliza_limpieza_prepara_quirofano"
+            />
           </div>
         </div>
         <div class="field-row">
@@ -327,6 +416,5 @@
         </div>
       </div>
     </div>
-
   </form>
 }
