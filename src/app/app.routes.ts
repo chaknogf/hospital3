@@ -650,6 +650,10 @@ export const routes: Routes = [
             loadComponent: () => import('./std/reportes/procedimientos-dashboard/procedimientos-dashboard.component').then(c => c.ProcedimientosDashboardComponent)
           },
           {
+            path: 'captura-procedimientos',
+            loadComponent: () => import('./std/reportes/captura-procedimientos/captura-procedimientos.component').then(c => c.CapturaProcedimientosComponent)
+          },
+          {
             path: 'sigsa3-estadistica',
             loadComponent: () => import('./std/reportes/sigsa3-estadistica/sigsa3-estadistica.component').then(c => c.Sigsa3EstadisticaComponent)
           },

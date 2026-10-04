@@ -117,6 +117,20 @@ export interface ProceMedicoUpdate {
   created_by?: string | null;
 }
 
+/** Procedimiento más usado dentro de una especialidad, para la hoja de captura. */
+export interface ProcedimientoMasUsado {
+  especialidad_id: number | null;
+  especialidad: string | null;
+  especialidad_nombre: string | null;
+  id_catalogo_procedimiento: number;
+  abreviatura?: string | null;
+  nombre: string;
+  total_cantidad: number;
+  total_registros: number;
+  total_anestesia: number;
+  posicion: number;
+}
+
 /** Listado de procedimientos realizados con total para paginación. */
 export interface ProcedimientosListResponse {
   total: number;

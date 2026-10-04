@@ -31,8 +31,8 @@
   position: relative;
   width: 100%;
   max-width: 100%;
-  margin: 0 0 var(--theme-space-3);
-  padding: var(--theme-space-2);
+  margin: 0 0 var(--theme-space-1);
+  padding: var(--theme-space-1);
   overflow-x: hidden;
   overscroll-behavior-inline: contain;
   -webkit-overflow-scrolling: touch;

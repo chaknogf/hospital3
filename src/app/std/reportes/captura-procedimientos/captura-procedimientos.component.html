@@ -1,0 +1,216 @@
+<div class="page">
+  <!-- ═══ PANTALLA (no se imprime) ═══ -->
+  <div class="no-print">
+    <div class="theme-card">
+      <div class="theme-card__header">
+        <span class="theme-card__title">Hoja de procedimientos más usados</span>
+        <div class="theme-card__actions">
+          <a
+            class="theme-btn theme-btn--ghost"
+            routerLink="/procedimientosmenores"
+            >Volver al reporte</a
+          >
+        </div>
+      </div>
+
+      <div class="theme-card__body">
+        <p class="hint">
+          Elige una especialidad para traer sus procedimientos más usados y
+          generar la hoja en tamaño carta horizontal. La hoja se imprime
+          <strong>en blanco</strong> para llenarla a mano.
+        </p>
+
+        <div class="filtros">
+          <div class="theme-card__field">
+            <label class="theme-label" for="especialidad">Especialidad *</label>
+            <select
+              id="especialidad"
+              class="theme-input"
+              [(ngModel)]="especialidadId"
+            >
+              <option [ngValue]="null">Selecciona</option>
+              <option *ngFor="let e of especialidades" [ngValue]="e.id">
+                {{ e.nombre }}
+              </option>
+            </select>
+          </div>
+
+          <div class="theme-card__field">
+            <label class="theme-label" for="desde">Desde</label>
+            <input
+              id="desde"
+              class="theme-input"
+              type="date"
+              [(ngModel)]="desde"
+            />
+          </div>
+
+          <div class="theme-card__field">
+            <label class="theme-label" for="hasta">Hasta</label>
+            <input
+              id="hasta"
+              class="theme-input"
+              type="date"
+              [(ngModel)]="hasta"
+            />
+          </div>
+
+          <div class="theme-card__field">
+            <label class="theme-label" for="limite">Cantidad</label>
+            <input
+              id="limite"
+              class="theme-input"
+              type="number"
+              min="1"
+              max="100"
+              [(ngModel)]="limite"
+            />
+          </div>
+        </div>
+
+        <div class="acciones">
+          <button
+            class="theme-btn theme-btn--primary"
+            (click)="cargar()"
+            [disabled]="cargando"
+          >
+            {{ cargando ? "Cargando…" : "Cargar" }}
+          </button>
+          <button
+            class="theme-btn theme-btn--primary"
+            (click)="imprimir()"
+            [disabled]="!cargado"
+          >
+            Imprimir hoja en blanco
+          </button>
+        </div>
+
+        @if (error) {
+          <p class="proc-error">{{ error }}</p>
+        }
+        @if (aviso) {
+          <p class="proc-aviso">{{ aviso }}</p>
+        }
+      </div>
+    </div>
+
+    @if (cargado) {
+      <div class="theme-card">
+        <div class="theme-card__header">
+          <span class="theme-card__title">
+            Vista previa · {{ filasConDatos }} más usados +
+            {{ FILAS_VACIAS }} filas en blanco
+          </span>
+        </div>
+        <div class="theme-card__body">
+          <div class="table-responsive-wrapper">
+            <table class="theme-table previa">
+              <thead>
+                <tr>
+                  <th class="c-pos">#</th>
+                  <th class="c-proc">Procedimiento</th>
+                  @for (g of gruposEdad; track g.codigo) {
+                    <th class="c-edad">
+                      <span class="c-edad-nombre">{{ g.nombre }}</span>
+                      <span class="c-edad-cod">M / F</span>
+                    </th>
+                  }
+                  <th class="c-total">Tot</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (f of filas; track $index) {
+                  <tr [class.c-sombreada]="f.vacia">
+                    <td class="c-pos">{{ f.posicion }}</td>
+                    <td class="c-proc">
+                      @if (f.vacia) {
+                        <span class="c-linea"></span>
+                      } @else {
+                        <strong>{{ f.nombre }}</strong>
+                        @if (f.abreviatura) {
+                          <small>{{ f.abreviatura }}</small>
+                        }
+                      }
+                    </td>
+                    @for (g of gruposEdad; track g.codigo) {
+                      <td class="c-vacia"></td>
+                    }
+                    <td class="c-vacia"></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <p class="hint">
+            Las casillas se imprimen vacías para llenar a mano.
+          </p>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- ═══ HOJA IMPRESA: carta horizontal, en blanco ═══ -->
+  @if (impreso) {
+    <div class="solo-impresion">
+      <div class="h-encabezado">
+        <div class="h-titulos">
+          <span class="h-titulo">Procedimientos más usados</span>
+          <span class="h-subtitulo">Censo de Procedimientos</span>
+          <span class="h-hospital"
+            >Hospital General Tipo I de Tecpán Guatemala</span
+          >
+        </div>
+        <div class="h-contexto">
+          <span class="h-especialidad">{{ impreso.especialidad }}</span>
+          <span class="h-rango"
+            >{{ impreso.desde || "—" }} al {{ impreso.hasta || "—" }}</span
+          >
+        </div>
+      </div>
+
+      <table class="hoja">
+        <thead>
+          <tr>
+            <th class="h-pos">#</th>
+            <th class="h-proc">Procedimiento</th>
+            @for (g of gruposEdad; track g.codigo) {
+              <th class="h-edad">
+                <span class="h-edad-nombre">{{ g.nombre }}</span>
+                <span class="h-edad-sexos"><span>M</span><span>F</span></span>
+              </th>
+            }
+            <th class="h-total">Tot</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (f of impreso.filas; track $index) {
+            <tr>
+              <td class="h-pos">{{ f.posicion }}</td>
+              <td class="h-proc">{{ f.nombre }}</td>
+              @for (g of gruposEdad; track g.codigo) {
+                <td class="h-celda"><span></span><span></span></td>
+              }
+              <td class="h-total"></td>
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="h-pos"></td>
+            <td class="h-proc">TOTAL</td>
+            @for (g of gruposEdad; track g.codigo) {
+              <td class="h-celda"><span></span><span></span></td>
+            }
+            <td class="h-total"></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="h-pie">
+        <span class="h-firma">Llena por: ______________________</span>
+        <span class="h-firma">Fecha: ____ / ____ / ______</span>
+        <span class="h-firma">Hoja ____ de ____</span>
+      </div>
+    </div>
+  }
+</div>

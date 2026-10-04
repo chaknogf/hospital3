@@ -1,23 +1,34 @@
 <div class="aurora-paciente-container">
   <div
-    class="botones justify-content-between"
+    class="botones justify-content-between barra-acciones"
     [ngClass]="{ 'd-none': filtrar }"
-    >
-    <button type="button" (click)="volver()">
+  >
+    <button type="button" class="btn-menu" (click)="volver()">
       <span [innerHTML]="icons['menu']"></span>
-      Menu
+      <span class="btn-texto">Menu</span>
     </button>
 
-    <h1 class="text-white">Procedimientos Menores</h1>
+    <h1 class="text-white barra-titulo">Procedimientos Menores</h1>
 
-    <button type="button" (click)="toggleFiltrar()">
-      <span [innerHTML]="icons['find']"></span>
-      Buscar
-    </button>
-    <button type="button" (click)="agregar()">
-      <span [innerHTML]="icons['create']"></span>
-      Agregar
-    </button>
+    <div class="barra-grupo">
+      <button type="button" class="btn-accion" (click)="toggleFiltrar()">
+        <span [innerHTML]="icons['find']"></span>
+        <span class="btn-texto">Buscar</span>
+      </button>
+      <button type="button" class="btn-accion btn-principal" (click)="agregar()">
+        <span [innerHTML]="icons['create']"></span>
+        <span class="btn-texto">Agregar</span>
+      </button>
+      <button
+        type="button"
+        class="btn-accion btn-secundario"
+        (click)="irACaptura()"
+        title="Llenar a mano los procedimientos más usados de una especialidad e imprimir la hoja"
+      >
+        <span [innerHTML]="icons['print']"></span>
+        <span class="btn-texto">Hoja de Censo</span>
+      </button>
+    </div>
   </div>
 
   <!-- Contenedor de Búsqueda -->
@@ -32,7 +43,7 @@
             name="lugarServicio"
             [(ngModel)]="filtros.lugar_servicio"
             class="input-filtros"
-            >
+          >
             <option value="">Todos</option>
             @for (ls of lugarServicios; track ls) {
               <option [value]="ls.value">
@@ -48,12 +59,10 @@
             name="lugarServicio"
             [(ngModel)]="filtros.especialidad"
             class="input-filtros"
-            >
+          >
             <option value="">Todos</option>
             @for (ep of especialidadesfiltradas; track ep) {
-              <option
-                [value]="ep.value"
-                >
+              <option [value]="ep.value">
                 {{ ep.label }}
               </option>
             }
@@ -62,11 +71,7 @@
 
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Sexo</label>
-          <select
-            name="sexo"
-            [(ngModel)]="filtros.sexo"
-            class="input-filtros"
-            >
+          <select name="sexo" [(ngModel)]="filtros.sexo" class="input-filtros">
             <option value="">Todos</option>
             <option value="M">Masculino</option>
             <option value="F">Femenino</option>
@@ -79,7 +84,7 @@
             name="grupoEdad"
             [(ngModel)]="filtros.grupo_edad"
             class="input-filtros"
-            >
+          >
             <option value="">Todos</option>
             @for (g of gruposEdad; track g.codigo) {
               <option [value]="g.codigo">{{ g.nombre }}</option>
@@ -94,7 +99,7 @@
             class="input-filtros"
             [(ngModel)]="filtros.fecha"
             name="fechaConsulta"
-            />
+          />
         </fieldset>
       </div>
 
@@ -141,11 +146,13 @@
           <tr
             [class.touch-active]="rowActiva === data.id"
             (click)="activarFila(data.id)"
-            >
+          >
             <td>
               {{ data.catalogo?.nombre || data.procedimiento?.nombre }}
               <br />
-              <small class="text-white-50">{{ data.catalogo?.abreviatura || data.procedimiento?.abreviatura }}</small>
+              <small class="text-white-50">{{
+                data.catalogo?.abreviatura || data.procedimiento?.abreviatura
+              }}</small>
               <br />
               <span style="font-size: xx-small">{{ data.id }}</span>
             </td>
@@ -153,21 +160,25 @@
               @if (data.area_cuerpo) {
                 {{ data.area_cuerpo.nombre }}
                 <br />
-                <small class="text-white-50">{{ data.area_cuerpo.region }}</small>
+                <small class="text-white-50">{{
+                  data.area_cuerpo.region
+                }}</small>
               } @else {
                 <span class="text-white-50">—</span>
               }
             </td>
             <td>
               @if (data.sexo) {
-                {{ data.sexo === 'M' ? '♂' : '♀' }}
+                {{ data.sexo === "M" ? "♂" : "♀" }}
               } @else {
                 <span class="text-white-50">—</span>
               }
               @if (detalleEdad(data).length) {
                 @for (g of detalleEdad(data); track g.codigo) {
                   <br />
-                  <small class="text-white-50">{{ g.nombre }}: {{ g.m }}M / {{ g.f }}F</small>
+                  <small class="text-white-50"
+                    >{{ g.nombre }}: {{ g.m }}M / {{ g.f }}F</small
+                  >
                 }
               }
             </td>
@@ -186,7 +197,10 @@
             </td>
             <td>{{ data.created_by }}</td>
             <td>
-              <button (click)="editar(data.id); $event.stopPropagation()" data-label="Editar">
+              <button
+                (click)="editar(data.id); $event.stopPropagation()"
+                data-label="Editar"
+              >
                 <span [innerHTML]="icons['edit']"></span>
               </button>
             </td>
@@ -214,7 +228,7 @@
     class="pag-btn"
     [disabled]="!hayPaginaAnterior"
     (click)="cambiarPagina(-1)"
-    >
+  >
     <span [innerHTML]="icons['skipLeft']"></span>
   </button>
 
@@ -231,7 +245,7 @@
       class="pag-num"
       [class.pag-num-active]="p === paginaActual"
       (click)="irAPagina(p)"
-      >
+    >
       {{ p }}
     </button>
   }
@@ -250,7 +264,7 @@
     class="pag-btn"
     [disabled]="!hayPaginaSiguiente"
     (click)="cambiarPagina(1)"
-    >
+  >
     <span [innerHTML]="icons['skipRight']"></span>
   </button>
 

@@ -1,0 +1,197 @@
+/* ═══════════════════════════════════════════════════════════
+   PROCEDIMIENTOS MENORES — barra de acciones
+   Estilos con alcance del componente: la clase global `.botones`
+   la comparten otros componentes y aquí no se modifica.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Distribución: menú · título · acciones ── */
+.barra-acciones {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--theme-space-2);
+  margin: var(--theme-space-2) var(--theme-space-3);
+  padding: var(--theme-space-2);
+  border: var(--theme-border-width) solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+  background: var(--theme-gradient-surface);
+  box-shadow: var(--theme-shadow-md);
+}
+
+.barra-acciones button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--theme-space-1);
+  padding: var(--theme-space-2) var(--theme-space-3);
+  border: var(--theme-border-width) solid var(--theme-border);
+  border-radius: var(--theme-radius-md);
+  background: transparent;
+  color: var(--theme-text);
+  font-family: var(--theme-font-ui);
+  font-size: var(--theme-font-size-sm);
+  font-weight: var(--theme-font-weight-bold);
+  white-space: nowrap;
+  box-shadow: none;
+  transition: background var(--theme-transition-fast),
+    border-color var(--theme-transition-fast),
+    color var(--theme-transition-fast),
+    transform var(--theme-transition-fast);
+}
+
+/* El ícono siempre del mismo tamaño, para que los botones no bailen */
+.barra-acciones button span[innerHTML] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+}
+
+.barra-acciones button span[innerHTML] svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.barra-acciones button:hover:not(:disabled) {
+  background: var(--theme-gradient-surface-hover);
+  border-color: var(--theme-border-strong);
+  color: var(--theme-text);
+  transform: translateY(-1px);
+}
+
+.barra-acciones button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.barra-acciones button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.barra-acciones button:focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+}
+
+/* Acciones agrupadas a la derecha */
+.barra-grupo {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-space-2);
+  margin-left: auto;
+}
+
+/* ── Jerarquía visual ── */
+.btn-menu {
+  color: var(--theme-text-muted) !important;
+}
+
+.btn-menu:hover:not(:disabled) {
+  color: var(--theme-text) !important;
+}
+
+.btn-principal {
+  background: var(--theme-gradient-primary) !important;
+  border-color: var(--theme-primary-deep) !important;
+  color: var(--theme-text-on-primary) !important;
+}
+
+.btn-principal:hover:not(:disabled) {
+  background: var(--theme-gradient-primary-hover) !important;
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-text-on-primary) !important;
+}
+
+.btn-secundario {
+  background: var(--theme-primary-dim) !important;
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-primary-light) !important;
+}
+
+.btn-secundario:hover:not(:disabled) {
+  background: var(--theme-accent-dim) !important;
+  border-color: var(--theme-accent) !important;
+  color: var(--theme-accent-light) !important;
+}
+
+/* ── Título ── */
+.barra-titulo {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--theme-font-ui);
+  font-size: clamp(0.95rem, 2.6vw, 1.35rem);
+  font-weight: var(--theme-font-weight-heavy);
+  letter-spacing: 0.01em;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Pantallas pequeñas: título arriba, botones en una fila ── */
+@media (max-width: 700px) {
+  .barra-acciones {
+    flex-wrap: wrap;
+    gap: var(--theme-space-2);
+    margin: var(--theme-space-2) 0;
+  }
+
+  .barra-titulo {
+    order: -1;
+    flex: 1 1 100%;
+    text-align: center;
+    font-size: var(--theme-font-size-lg);
+  }
+
+  .barra-grupo {
+    flex: 1 1 auto;
+    margin-left: 0;
+    min-width: 0;
+  }
+
+  .barra-acciones button {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    padding: var(--theme-space-2);
+  }
+}
+
+/* ── Muy angosto: rejilla de dos columnas bajo el título ──
+   Se usa grid en vez de anidar flex porque el reparto de la
+   fila es predecible y no depende de negotiate anchos. */
+@media (max-width: 440px) {
+  .barra-acciones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--theme-space-2);
+    align-items: stretch;
+  }
+
+  .barra-titulo {
+    grid-column: 1 / -1;
+    margin-bottom: var(--theme-space-1);
+  }
+
+  /* El grupo deja de ser una caja: sus botones ocupan celdas de la rejilla */
+  .barra-grupo {
+    display: contents;
+  }
+
+  .barra-acciones button {
+    width: 100%;
+    justify-content: center;
+    padding: var(--theme-space-2) var(--theme-space-1);
+  }
+
+  .barra-acciones .btn-texto {
+    font-size: 0.68rem;
+    line-height: 1.1;
+    text-align: center;
+  }
+}

@@ -14,7 +14,8 @@ import {
   ProceMedicoCreate,
   ProceMedicoUpdate,
   ProcedimientosListResponse,
-  GrupoEdadItem
+  GrupoEdadItem,
+  ProcedimientoMasUsado
 } from '../interface/procedimientos';
 
 @Injectable({ providedIn: 'root' })
@@ -155,6 +156,25 @@ export class StdService extends BaseApiService {
         this.manejarError(error, 'obtener grupos de edad')
       )
     );
+  }
+
+  /** Procedimientos más usados por especialidad, para la hoja de captura manual. */
+  getMasUsados(params: {
+    especialidad_id?: number;
+    desde?: string;
+    hasta?: string;
+    limite?: number;
+  }): Observable<{ procedimientos: ProcedimientoMasUsado[]; total: number }> {
+    return this.http
+      .get<{ procedimientos: ProcedimientoMasUsado[]; total: number }>(
+        `${this.baseUrl}/procedimientos/mas-usados`,
+        { params }
+      )
+      .pipe(
+        catchError(error =>
+          this.manejarError(error, 'obtener procedimientos más usados')
+        )
+      );
   }
 
   createProcedimientoMedico(

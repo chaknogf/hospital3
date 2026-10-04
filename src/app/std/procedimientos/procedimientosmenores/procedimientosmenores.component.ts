@@ -36,7 +36,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
   filtrar = false;
   modalActivo = false;
   rowActiva: number | null = null;
-  pageSize = 20;
+  pageSize = 10;
   paginaActual = 1;
   totalDeRegistros = 0;
 
@@ -79,6 +79,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
       delete: this.iconService.getIcon('deletInput'),
       create: this.iconService.getIcon('createIcon'),
       edit: this.iconService.getIcon('editIcon'),
+      print: this.iconService.getIcon('printIcon'),
       find: this.iconService.getIcon('findIcon'),
       menu: this.iconService.getIcon('menuIcon'),
       arrowDown: this.iconService.getIcon('arrowDown'),
@@ -158,6 +159,10 @@ export class ProcedimientosmenoresComponent implements OnInit {
 
   agregar(): void {
     this.router.navigate(['/procemedic']);
+  }
+
+  irACaptura(): void {
+    this.router.navigate(['/reportes/captura-procedimientos']);
   }
 
   editar(id: number): void {

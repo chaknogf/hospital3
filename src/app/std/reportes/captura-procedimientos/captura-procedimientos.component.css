@@ -1,0 +1,276 @@
+/* ═══════════════════════════════════════════════════════════
+   HOJA DE PROCEDIMIENTOS MÁS USADOS — carta horizontal en blanco
+   ═══════════════════════════════════════════════════════════ */
+
+.page {
+  padding: var(--theme-space-3);
+}
+
+.hint {
+  margin: var(--theme-space-2) 0 0;
+  font-size: var(--theme-font-size-sm);
+  color: var(--theme-text-muted);
+}
+
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: var(--theme-space-3);
+  margin-bottom: var(--theme-space-3);
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--theme-space-2);
+}
+
+.proc-error {
+  margin-top: var(--theme-space-2);
+  font-size: var(--theme-font-size-sm);
+  font-weight: var(--theme-font-weight-bold);
+  color: var(--theme-danger);
+}
+
+.proc-aviso {
+  margin-top: var(--theme-space-2);
+  font-size: var(--theme-font-size-sm);
+  color: var(--theme-warning);
+}
+
+/* ── Vista previa ── */
+.theme-table.previa {
+  table-layout: fixed;
+}
+
+.c-pos {
+  width: 2.4rem;
+}
+
+.c-proc {
+  width: 22rem;
+  text-align: left;
+}
+
+.c-edad {
+  width: 8rem;
+}
+
+.c-total {
+  width: 3.5rem;
+}
+
+.c-edad-nombre {
+  display: block;
+  font-size: var(--theme-font-size-xs);
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+
+.c-edad-cod {
+  display: block;
+  font-size: 0.6rem;
+  opacity: 0.7;
+}
+
+.theme-table.previa td.c-proc strong {
+  display: block;
+  font-size: var(--theme-font-size-sm);
+  line-height: 1.2;
+}
+
+.theme-table.previa td.c-proc small {
+  display: block;
+  font-size: 0.62rem;
+  color: var(--theme-text-muted);
+}
+
+.c-uso {
+  font-style: italic;
+}
+
+/* Las casillas se ven vacías a propósito */
+.c-vacia {
+  background: transparent;
+}
+
+/* Filas en blanco: se insinúa dónde escribir el nombre */
+.c-sombreada {
+  opacity: 0.75;
+}
+
+.c-linea {
+  display: block;
+  height: 1px;
+  background: var(--theme-border);
+}
+
+/* Por defecto la hoja impresa está oculta */
+.solo-impresion {
+  display: none;
+}
+
+/* ═══════════════ IMPRESIÓN ═══════════════
+   Carta (8.5 × 11 in) en horizontal. */
+@page {
+  size: letter landscape;
+  margin: 8mm;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .solo-impresion {
+    display: block;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  .page {
+    padding: 0 !important;
+  }
+
+  /* Todo en blanco y negro: se imprime igual en impresoras b/n */
+  .h-encabezado {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6mm;
+    margin-bottom: 2mm;
+    font-family: var(--theme-font-mono);
+    color: #000;
+  }
+
+  .h-titulos {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  .h-titulo {
+    font-size: 11pt;
+    font-weight: bold;
+  }
+
+  .h-subtitulo {
+    font-size: 8.6pt;
+    margin-top: 0.8mm;
+  }
+
+  .h-hospital {
+    font-size: 7.6pt;
+  }
+
+  .h-contexto {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.2;
+  }
+
+  .h-especialidad {
+    font-size: 10pt;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .h-rango {
+    font-size: 7.6pt;
+  }
+
+  .hoja {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-family: var(--theme-font-mono);
+    color: #000;
+    background: #fff;
+  }
+
+  .hoja th,
+  .hoja td {
+    border: 0.4pt solid #000;
+    padding: 1.9mm 0.8mm;
+    font-size: 9.4pt;
+    line-height: 1.05;
+    text-align: center;
+  }
+
+  .hoja thead th {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .h-pos {
+    width: 8mm;
+  }
+
+  .h-proc {
+    width: 64mm;
+    text-align: left;
+  }
+
+  .h-edad {
+    width: 19.6mm;
+  }
+
+  .h-edad-nombre {
+    display: block;
+    font-size: 7pt;
+    text-transform: none;
+    line-height: 1.05;
+  }
+
+  .h-edad-sexos {
+    display: flex;
+    justify-content: center;
+    gap: 6mm;
+    font-size: 6.6pt;
+  }
+
+  /* Cada celda lleva las dos casillas M y F lado a lado, vacías */
+  .h-celda span {
+    display: inline-block;
+    width: 8.4mm;
+    text-align: center;
+  }
+
+  .h-total {
+    width: 11mm;
+    font-weight: bold;
+  }
+
+  .hoja tfoot td {
+    font-weight: bold;
+  }
+
+  .hoja tbody tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .hoja thead {
+    display: table-header-group;
+  }
+
+  .h-pie {
+    display: flex;
+    justify-content: space-between;
+    gap: 6mm;
+    margin-top: 4mm;
+    font-family: var(--theme-font-mono);
+    font-size: 7.6pt;
+    color: #000;
+  }
+
+  .h-firma {
+    white-space: nowrap;
+  }
+}
