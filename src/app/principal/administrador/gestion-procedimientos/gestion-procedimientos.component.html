@@ -1,17 +1,10 @@
 <div class="hud-header">
-  <div class="hud-title">Gesti&oacute;n de Procedimientos (Tipos)</div>
+  <div class="hud-title">Cat&aacute;logo Maestro de Procedimientos</div>
 </div>
 
 <div class="action-dock">
-  <span class="dock-hint">Cat&aacute;logo de procedimientos de quir&oacute;fano</span>
-  <button class="btn" (click)="abrirNuevo()">+ Nuevo</button>
-  <label class="btn button-file" [class.disabled]="importando()">
-    {{ importando() ? 'Importando...' : 'Importar CSV' }}
-    <input type="file" accept=".csv" (change)="onArchivoSeleccionado($event)" [disabled]="importando()" />
-  </label>
-  <button class="btn btn-danger" (click)="truncar()" [disabled]="loading()">
-    {{ confirmarTruncar ? 'Confirmar vaciar?' : 'Vaciar tabla' }}
-  </button>
+  <span class="dock-hint">Administraci&oacute;n del cat&aacute;logo maestro unificado</span>
+  <button class="btn" (click)="abrirNuevo()">+ Nuevo procedimiento</button>
   <button class="btn" (click)="volver()">Volver</button>
 </div>
 
@@ -21,24 +14,6 @@
   }
   @if (success(); as msg) {
     <div class="alert alert-success">{{ msg }}</div>
-  }
-  @if (resultadoImport(); as r) {
-    <div class="alert alert-info">
-      <strong>Resultado de importaci&oacute;n:</strong> {{ r.creados }} creados, {{ r.omitidos }} omitidos.
-      @if (r.errores.length > 0) {
-        <div>
-          <span>{{ r.errores.length }} errores.</span>
-          <ul class="import-errors">
-            @for (e of r.errores.slice(0, 5); track $index) {
-              <li>Fila {{ e.fila }}: {{ e.error }}</li>
-            }
-            @if (r.errores.length > 5) {
-              <li>... y {{ r.errores.length - 5 }} m&aacute;s.</li>
-            }
-          </ul>
-        </div>
-      }
-    </div>
   }
 
   <div class="adm-grid">
@@ -51,11 +26,16 @@
           <div class="filter-row">
             <div class="field">
               <label class="field-label">Buscar</label>
-              <input class="field-input" type="text" [ngModel]="filtro()" (ngModelChange)="filtro.set($event); cargar()" placeholder="Nombre del procedimiento" />
+              <input class="field-input" type="text"
+                [ngModel]="filtro()"
+                (ngModelChange)="filtro.set($event); cargar()"
+                placeholder="Nombre o abreviatura" />
             </div>
             <div class="field">
               <label class="field-label">Especialidad</label>
-              <select class="field-input" [ngModel]="especialidadFiltro()" (ngModelChange)="especialidadFiltro.set($event); cargar()">
+              <select class="field-input"
+                [ngModel]="especialidadFiltro()"
+                (ngModelChange)="especialidadFiltro.set($event); cargar()">
                 <option [ngValue]="null">Todas</option>
                 @for (e of especialidades(); track e.id) {
                   <option [ngValue]="e.id">{{ e.nombre }}</option>
@@ -68,12 +48,12 @@
 
       <div class="section-card">
         <div class="sec-head">
-          <span class="sec-title">Procedimientos ({{ procedimientosQuirofano().length }})</span>
+          <span class="sec-title">Procedimientos ({{ catalogoProcedimientos().length }})</span>
         </div>
         <div class="sec-body">
           @if (loading()) {
             <div class="table-status">Cargando...</div>
-          } @else if (procedimientosQuirofano().length === 0) {
+          } @else if (catalogoProcedimientos().length === 0) {
             <div class="table-status">No se encontraron procedimientos</div>
           } @else {
             <div class="table-wrap">
@@ -81,31 +61,40 @@
                 <thead>
                   <tr>
                     <th>Procedimiento</th>
+                    <th>Abreviatura</th>
                     <th>Especialidad</th>
-                    <th>C&oacute;digo</th>
+                    <th>Anestesia</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  @for (t of procedimientosQuirofano(); track t.procedimiento_quirofano_id) {
+                  @for (c of catalogoProcedimientos(); track c.id) {
                     <tr>
-                      <td>{{ t.nombre }}</td>
-                      <td>{{ nombreEspecialidad(t.especialidad_id) }}</td>
-                      <td><code>{{ t.codigo }}</code></td>
                       <td>
-                        <span class="badge" [class.badge-active]="t.activo" [class.badge-inactive]="!t.activo">{{ t.activo ? 'Activo' : 'Inactivo' }}</span>
+                        <strong>{{ c.nombre }}</strong>
+                        @if (c.descripcion) {
+                          <br><small>{{ c.descripcion }}</small>
+                        }
+                      </td>
+                      <td><code>{{ c.abreviatura || '—' }}</code></td>
+                      <td>{{ nombreEspecialidad(c.especialidad_ref) }}</td>
+                      <td class="text-center">{{ c.anestesia ? 'Sí' : 'No' }}</td>
+                      <td>
+                        <span class="badge" [class.badge-active]="c.activo" [class.badge-inactive]="!c.activo">
+                          {{ c.activo ? 'Activo' : 'Inactivo' }}
+                        </span>
                       </td>
                       <td class="cell-actions">
-                        <button class="btn-sm" (click)="abrirEditar(t)" title="Editar">Editar</button>
-                        @if (confirmarEliminar() === t.procedimiento_quirofano_id) {
+                        <button class="btn-sm" (click)="abrirEditar(c)" title="Editar">Editar</button>
+                        @if (confirmarEliminar() === c.id) {
                           <span class="confirm-group">
-                            <span class="confirm-msg">¿Eliminar?</span>
-                            <button class="btn-sm btn-danger" (click)="eliminar(t.procedimiento_quirofano_id)">S&iacute;</button>
+                            <span class="confirm-msg">¿Desactivar?</span>
+                            <button class="btn-sm btn-danger" (click)="eliminar(c.id)">S&iacute;</button>
                             <button class="btn-sm" (click)="cancelarEliminacion()">No</button>
                           </span>
                         } @else {
-                          <button class="btn-sm btn-danger" (click)="confirmarEliminacion(t.procedimiento_quirofano_id)" title="Eliminar">Eliminar</button>
+                          <button class="btn-sm btn-danger" (click)="confirmarEliminacion(c.id)" title="Desactivar">Eliminar</button>
                         }
                       </td>
                     </tr>
@@ -133,31 +122,54 @@
         }
 
         <div class="field">
-          <label class="field-label">Especialidad *</label>
-          <select class="field-input" [ngModel]="formEspecialidadId()" (ngModelChange)="formEspecialidadId.set($event); onEspecialidadChange()">
-            <option [ngValue]="null">Seleccionar especialidad</option>
-            <option [ngValue]="MIXTA_VAL">Todas (mixta)</option>
+          <label class="field-label">Nombre del procedimiento *</label>
+          <input class="field-input" type="text"
+            [ngModel]="formProcedimiento()"
+            (ngModelChange)="formProcedimiento.set($event)"
+            placeholder="Ej: Apendicectomía" />
+        </div>
+
+        <div class="field">
+          <label class="field-label">Abreviatura (opcional)</label>
+          <input class="field-input" type="text" maxlength="10"
+            [ngModel]="formCodigo()"
+            (ngModelChange)="formCodigo.set($event)"
+            placeholder="Ej: APEN" />
+        </div>
+
+        <div class="field">
+          <label class="field-label">Descripción</label>
+          <textarea class="field-input" rows="2"
+            [ngModel]="formDescripcion()"
+            (ngModelChange)="formDescripcion.set($event)"
+            placeholder="Notas o descripción opcional"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Especialidad (opcional)</label>
+          <select class="field-input"
+            [ngModel]="formEspecialidadRef()"
+            (ngModelChange)="formEspecialidadRef.set($event)">
+            <option [ngValue]="null">Sin especialidad específica</option>
             @for (e of especialidades(); track e.id) {
               <option [ngValue]="e.id">{{ e.nombre }}</option>
             }
           </select>
-          @if (formEspecialidadId() === MIXTA_VAL) {
-            <small class="field-hint">Aplica a todas las especialidades (sin especialidad).</small>
-          }
         </div>
 
         <div class="field">
-          <label class="field-label">Procedimiento *</label>
-          <input class="field-input" type="text" [ngModel]="formProcedimiento()" (ngModelChange)="formProcedimiento.set($event)" placeholder="Ej: Apendicectom&iacute;a" />
-        </div>
-
-        <div class="field">
-          <label class="field-label">C&oacute;digo</label>
-          <input class="field-input" type="text" maxlength="10" [ngModel]="formCodigo()" (ngModelChange)="formCodigo.set($event)" placeholder="Opcional (auto)" />
+          <label class="field-label">
+            <input type="checkbox"
+              [ngModel]="!!formAnestesia()"
+              (ngModelChange)="formAnestesia.set($event ? 1 : 0)" />
+            Requiere anestesia
+          </label>
         </div>
 
         <div class="form-actions">
-          <button class="btn" (click)="guardar()" [disabled]="guardando()">{{ guardando() ? 'Guardando...' : 'Guardar' }}</button>
+          <button class="btn" (click)="guardar()" [disabled]="guardando()">
+            {{ guardando() ? 'Guardando...' : 'Guardar' }}
+          </button>
           <button class="btn" (click)="cerrarFormulario()">Cancelar</button>
         </div>
       </div>

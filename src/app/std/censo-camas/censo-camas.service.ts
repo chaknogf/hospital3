@@ -94,7 +94,7 @@ export class CensoCamasService extends BaseApiService {
   importarCSV(archivo: File): Observable<any> {
     this.isLoading.set(true);
     const formData = new FormData();
-    formData.append('archivo', archivo);
+    formData.append('file', archivo);
     return this.http.post<any>(`${this.baseUrl}/censo-camas/importar-csv`, formData).pipe(
       catchError(error => this.manejarError(error, 'importar CSV de censo')),
       finalize(() => this.isLoading.set(false))

@@ -172,9 +172,16 @@
             <input
               class="field-input"
               type="text"
+              list="areasCuerpoList"
               formControlName="area_cuerpo_intervenida"
-              placeholder="Ej. Abdomen"
+              placeholder="Escriba para buscar"
+              autocomplete="off"
             />
+            <datalist id="areasCuerpoList">
+              @for (a of areasCuerpo; track a.id) {
+                <option [value]="a.nombre"></option>
+              }
+            </datalist>
           </div>
         </div>
         <div class="field-row">
@@ -183,7 +190,7 @@
             <input
               class="field-input"
               type="text"
-              list="procedimientosQuirofanoList"
+              list="procedimientosCatalogoList"
               formControlName="procedimiento_principal"
               placeholder="Escriba para buscar en el catálogo"
               autocomplete="off"
@@ -202,7 +209,7 @@
             <input
               class="field-input"
               type="text"
-              list="procedimientosQuirofanoList"
+              list="procedimientosCatalogoList"
               formControlName="procedimiento_2"
               placeholder="Opcional"
               autocomplete="off"
@@ -215,7 +222,7 @@
             <input
               class="field-input"
               type="text"
-              list="procedimientosQuirofanoList"
+              list="procedimientosCatalogoList"
               formControlName="procedimiento_3"
               placeholder="Opcional"
               autocomplete="off"
@@ -226,7 +233,7 @@
             <input
               class="field-input"
               type="text"
-              list="procedimientosQuirofanoList"
+              list="procedimientosCatalogoList"
               formControlName="procedimiento_4"
               placeholder="Opcional"
               autocomplete="off"
@@ -239,15 +246,15 @@
             <input
               class="field-input"
               type="text"
-              list="procedimientosQuirofanoList"
+              list="procedimientosCatalogoList"
               formControlName="procedimiento_5"
               placeholder="Opcional"
               autocomplete="off"
             />
           </div>
         </div>
-        <datalist id="procedimientosQuirofanoList">
-          @for (p of procedimientos; track p.procedimiento_quirofano_id) {
+        <datalist id="procedimientosCatalogoList">
+          @for (p of catalogoFiltrado; track p.id) {
             <option [value]="p.nombre"></option>
           }
         </datalist>
@@ -276,55 +283,71 @@
         <div class="field-row">
           <div class="field">
             <span class="field-label">Estado de cirugía</span>
-            <select class="field-input" formControlName="estado_cirugia_id">
-              <option [ngValue]="null">Seleccionar</option>
+            <div class="field-group">
               @for (e of estados; track e.estado_cirugia_id) {
-                <option [ngValue]="e.estado_cirugia_id">{{ e.nombre }}</option>
+                <label class="field-radio">
+                  <input
+                    type="radio"
+                    [value]="e.estado_cirugia_id"
+                    formControlName="estado_cirugia_id"
+                    (change)="form.patchValue({ estado_cirugia_id: e.estado_cirugia_id })"
+                  />
+                  <span>{{ e.nombre }}</span>
+                </label>
               }
-            </select>
+            </div>
           </div>
         </div>
         <div class="field-row">
           <div class="field">
             <span class="field-label">Formato</span>
-            <select
-              class="field-input"
-              formControlName="formato_procedimiento_id"
-            >
-              <option [ngValue]="null">Seleccionar</option>
+            <div class="field-group">
               @for (fo of formatos; track fo.formato_procedimiento_id) {
-                <option [ngValue]="fo.formato_procedimiento_id">
-                  {{ fo.nombre }}
-                </option>
+                <label class="field-radio">
+                  <input
+                    type="radio"
+                    [value]="fo.formato_procedimiento_id"
+                    formControlName="formato_procedimiento_id"
+                    (change)="form.patchValue({ formato_procedimiento_id: fo.formato_procedimiento_id })"
+                  />
+                  <span>{{ fo.nombre }}</span>
+                </label>
               }
-            </select>
+            </div>
           </div>
         </div>
         <div class="field-row">
           <div class="field">
             <span class="field-label">Procedencia</span>
-            <select
-              class="field-input"
-              formControlName="procedencia_procedimiento_id"
-            >
-              <option [ngValue]="null">Seleccionar</option>
+            <div class="field-group">
               @for (p of procedencias; track p.procedencia_procedimiento_id) {
-                <option [ngValue]="p.procedencia_procedimiento_id">
-                  {{ p.nombre }}
-                </option>
+                <label class="field-radio">
+                  <input
+                    type="radio"
+                    [value]="p.procedencia_procedimiento_id"
+                    formControlName="procedencia_procedimiento_id"
+                    (change)="form.patchValue({ procedencia_procedimiento_id: p.procedencia_procedimiento_id })"
+                  />
+                  <span>{{ p.nombre }}</span>
+                </label>
               }
-            </select>
+            </div>
           </div>
           <div class="field">
             <span class="field-label">Rango de especialista</span>
-            <select class="field-input" formControlName="rango_especialista_id">
-              <option [ngValue]="1">Seleccionar</option>
+            <div class="field-group">
               @for (r of rangos; track r.rango_especialista_id) {
-                <option [ngValue]="r.rango_especialista_id">
-                  {{ r.nombre }}
-                </option>
+                <label class="field-radio">
+                  <input
+                    type="radio"
+                    [value]="r.rango_especialista_id"
+                    formControlName="rango_especialista_id"
+                    (change)="form.patchValue({ rango_especialista_id: r.rango_especialista_id })"
+                  />
+                  <span>{{ r.nombre }}</span>
+                </label>
               }
-            </select>
+            </div>
           </div>
         </div>
       </div>

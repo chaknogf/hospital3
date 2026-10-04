@@ -12,16 +12,17 @@ import {
   ProcedenciaProcedimiento,
   QuirofanoNumero,
   Especialidad,
-  ProcedimientoQuirofano,
   IntervencionCreate,
   IntervencionUpdate,
 } from '../../../interface/quirofano.interface';
+import { CatalogoProcedimiento } from '../../../interface/procedimientos';
 import { PacienteJoin } from '../../../interface/interfaces';
 import { MedicoOut } from '../../../interface/medicos.interface';
 import { PacienteService } from '../../../registros/patient/paciente.service';
 import { MedicosService } from '../../../std/medicos/medicos.service';
 import { IconService } from '../../../service/icon.service';
 import { EspecialidadesService } from '../../../service/especialidades.service';
+import { CatalogoService } from '../../../service/catalogo.service';
 import { QuirofanoService } from '../quirofano.service';
 
 /** Captura los datos de programación y realización de una intervención. */
@@ -58,7 +59,8 @@ export class QuirofanoFormComponent implements OnInit {
   procedencias: ProcedenciaProcedimiento[] = [];
   quirofanosNumero: QuirofanoNumero[] = [];
   especialidades: Especialidad[] = [];
-  procedimientosQuirofano: ProcedimientoQuirofano[] = [];
+  catalogoProcedimientos: CatalogoProcedimiento[] = [];
+  areasCuerpo: import('../../../interface/procedimientos').AreaCuerpoIntervenida[] = [];
   medicos: MedicoOut[] = [];
 
   form: FormGroup = this.fb.group({
@@ -88,6 +90,7 @@ export class QuirofanoFormComponent implements OnInit {
 
   constructor(
     private api: QuirofanoService,
+    private catalogoApi: CatalogoService,
     private especialidadesApi: EspecialidadesService,
     private pacientesApi: PacienteService,
     private medicosApi: MedicosService,
@@ -102,6 +105,17 @@ export class QuirofanoFormComponent implements OnInit {
   ngOnInit(): void {
     this.cargarCatalogos();
     this.cargarMedicos();
+
+    // Preseleccionar "Especialista" por defecto si existe en catálogo
+    this.api.getRangosEspecialista(true).subscribe({
+      next: rangos => {
+        const def = rangos.find(r => (r.codigo || '').toUpperCase() === 'ESP' || (r.nombre || '').toLowerCase().includes('especialista'));
+        if (def) {
+          this.form.patchValue({ rango_especialista_id: def.rango_especialista_id });
+        }
+      },
+      error: () => {}
+    });
 
     const editarId = Number(this.route.snapshot.paramMap.get('id'));
     if (editarId) {
@@ -120,29 +134,54 @@ export class QuirofanoFormComponent implements OnInit {
 
   cargarCatalogos(): void {
     this.api.getFormatos().subscribe({ next: d => this.formatos = d, error: () => {} });
-    this.api.getEstadosCirugia().subscribe({ next: d => this.estados = d, error: () => {} });
-    this.api.getRangosEspecialista().subscribe({ next: d => this.rangos = d, error: () => {} });
-    this.api.getProcedencias().subscribe({ next: d => this.procedencias = d, error: () => {} });
+    this.api.getEstadosCirugia().subscribe({ next: d => this.estados = d.filter(e => ['FIN', 'CAN'].includes((e.codigo||'').toUpperCase())), error: () => {} });
+    this.api.getRangosEspecialista().subscribe({ next: d => this.rangos = d.filter(r => ['ESP'].includes((r.codigo||'').toUpperCase())), error: () => {} });
+    this.api.getProcedencias().subscribe({ next: d => this.procedencias = d.filter(p => ['ELE', 'EMG'].includes((p.codigo||'').toUpperCase())), error: () => {} });
     this.api.getQuirofanosNumero().subscribe({ next: d => this.quirofanosNumero = d, error: () => {} });
-    this.especialidadesApi.getEspecialidades(true, true).subscribe({ next: d => this.especialidades = d.filter(e => ['CIRU', 'TRAU', 'GIN'].includes(e.codigo ?? '')), error: () => {} });
-    this.api.getProcedimientosQuirofano().subscribe({ next: d => this.procedimientosQuirofano = d, error: () => {} });
+    this.especialidadesApi.getEspecialidades(true, true).subscribe({
+      next: d => {
+        this.especialidades = d.filter(e => {
+          const c = (e.codigo ?? '').toUpperCase();
+          const n = (e.nombre ?? '').toLowerCase();
+          return c === 'CIRU' || c === 'TRAU' || c === 'GIN' || c === 'GINE' || n.includes('ginec') || n.includes('cirug') || n.includes('traum');
+        });
+      },
+      error: () => {}
+    });
+
+    // Catálogo maestro de procedimientos
+    this.catalogoApi.getCatalogoProcedimientos({ activo: true, limit: 5000 }).subscribe({
+      next: d => this.catalogoProcedimientos = d,
+      error: () => {}
+    });
+    // Catálogo de áreas del cuerpo intervenida
+    this.catalogoApi.getAreasCuerpo(true).subscribe({
+      next: d => this.areasCuerpo = d,
+      error: () => {}
+    });
   }
 
-  // Sugerencias del autocompletado: si hay especialidad, sus procedimientos
-  // más los de "Todas (mixta)"; si no, todo el catálogo.
-  get procedimientos(): ProcedimientoQuirofano[] {
+  // Catálogo maestro filtrado por la especialidad seleccionada (mantener comportamiento previo).
+  get catalogoFiltrado(): CatalogoProcedimiento[] {
     const esp = this.form.value.especialidad_id;
-    if (!esp) return this.procedimientosQuirofano;
-    return this.procedimientosQuirofano.filter(
-      p => p.especialidad_id === esp || p.especialidad_id == null
+    if (!esp) return this.catalogoProcedimientos;
+    // Si no hay especialidad_ref, mostrar también (genéricas)
+    return this.catalogoProcedimientos.filter(
+      p => p.especialidad_ref === esp || p.especialidad_ref == null
     );
   }
 
   onEspecialidadChange(): void {
-    const campos = ['procedimiento_principal', 'procedimiento_2', 'procedimiento_3', 'procedimiento_4', 'procedimiento_5'];
-    for (const c of campos) {
-      this.form.patchValue({ [c]: '' });
-    }
+    const campos = [
+      'procedimiento_principal',
+      'procedimiento_2',
+      'procedimiento_3',
+      'procedimiento_4',
+      'procedimiento_5'
+    ];
+    const reset: any = {};
+    for (const c of campos) reset[c] = '';
+    this.form.patchValue(reset);
   }
 
   cargarMedicos(): void {
@@ -195,16 +234,16 @@ export class QuirofanoFormComponent implements OnInit {
         this.pacienteLabel = data.paciente_nombre || '';
         this.form.patchValue({
           expediente: data.expediente || data.paciente_id?.toString() || '',
-          procedimiento_principal: data.procedimiento_principal || '',
-          procedimiento_2: data.procedimiento_2 || '',
-          procedimiento_3: data.procedimiento_3 || '',
-          procedimiento_4: data.procedimiento_4 || '',
-          procedimiento_5: data.procedimiento_5 || '',
+          procedimiento_principal: data.procedimiento_principal || data.procedimiento_principal_catalogo_nombre || '',
+          procedimiento_2: data.procedimiento_2 || data.procedimiento_2_catalogo_nombre || '',
+          procedimiento_3: data.procedimiento_3 || data.procedimiento_3_catalogo_nombre || '',
+          procedimiento_4: data.procedimiento_4 || data.procedimiento_4_catalogo_nombre || '',
+          procedimiento_5: data.procedimiento_5 || data.procedimiento_5_catalogo_nombre || '',
           area_cuerpo_intervenida: data.area_cuerpo_intervenida || '',
           estado_cirugia_id: data.estado_cirugia_id ?? null,
           formato_procedimiento_id: data.formato_procedimiento_id ?? null,
           procedencia_procedimiento_id: data.procedencia_procedimiento_id ?? null,
-          rango_especialista_id: data.rango_especialista_id ?? null,
+          rango_especialista_id: data.rango_especialista_id ?? (this.form.value.rango_especialista_id ?? null),
           quirofano_numero_id: data.quirofano_numero_id ?? null,
           personal_atencion_id: data.personal_atencion_id ?? null,
           hora_inicio_anestesia: (data.hora_inicio_anestesia || '').slice(0, 5),

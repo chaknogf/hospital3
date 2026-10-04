@@ -99,6 +99,7 @@
       <thead>
         <tr>
           <th>Procedimiento</th>
+          <th>Área intervenida</th>
           <th>Fecha</th>
           <th>Especialidad</th>
           <th>Cantidades</th>
@@ -114,9 +115,20 @@
             (click)="activarFila(data.id)"
             >
             <td>
-              {{ data.procedimiento?.nombre }}
+              {{ data.catalogo?.nombre || data.procedimiento?.nombre }}
+              <br />
+              <small class="text-white-50">{{ data.catalogo?.abreviatura || data.procedimiento?.abreviatura }}</small>
               <br />
               <span style="font-size: xx-small">{{ data.id }}</span>
+            </td>
+            <td>
+              @if (data.area_cuerpo) {
+                {{ data.area_cuerpo.nombre }}
+                <br />
+                <small class="text-white-50">{{ data.area_cuerpo.region }}</small>
+              } @else {
+                <span class="text-white-50">—</span>
+              }
             </td>
             <td>
               {{ data.fecha | date: "dd-MM-yyyy" }}
@@ -142,13 +154,13 @@
 
         @if (!cargando && procedimientos.length === 0) {
           <tr>
-            <td colspan="5" class="text-center">No hay registros.</td>
+            <td colspan="6" class="text-center">No hay registros.</td>
           </tr>
         }
 
         @if (cargando) {
           <tr>
-            <td colspan="5" class="text-center">Cargando procedimientos...</td>
+            <td colspan="6" class="text-center">Cargando procedimientos...</td>
           </tr>
         }
       </tbody>

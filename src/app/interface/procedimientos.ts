@@ -1,12 +1,33 @@
 // interfaces/procedimientos.interface.ts
 
-/** Procedimiento disponible en el catálogo institucional. */
+/** Procedimiento disponible en el catálogo institucional (legacy). */
 export interface Procedimiento {
   id: number;
   abreviatura?: string | null;
   nombre: string;
   descripcion?: string | null;
   anestesia?: number | null;
+}
+
+/** Procedimiento estandarizado (catálogo maestro unificado). */
+export interface CatalogoProcedimiento {
+  id: number;
+  abreviatura?: string | null;
+  nombre: string;
+  descripcion?: string | null;
+  anestesia?: number | null;
+  especialidad_ref?: number | null;
+  activo?: boolean;
+}
+
+/** Área del cuerpo donde se interviene (FK). */
+export interface AreaCuerpoIntervenida {
+  id: number;
+  codigo: string;
+  nombre: string;
+  region?: string | null;
+  descripcion?: string | null;
+  activo?: boolean;
 }
 
 /** Campos para incorporar un procedimiento al catálogo. */
@@ -32,7 +53,10 @@ export interface ProceMedico {
   lugar_servicio?: string | null;
   sexo?: 'M' | 'F' | null;
   id_procedimiento?: number | null;
+  id_catalogo_procedimiento?: number | null;
+  id_area_cuerpo_intervenida?: number | null;
   especialidad?: string | null;
+  especialidad_id?: number | null;
   cantidad: number;
   responsable?: string | null;
   anestesia?: number | null;
@@ -40,6 +64,8 @@ export interface ProceMedico {
   created_at?: string;
   updated_at?: string;
   procedimiento?: Procedimiento | null;
+  catalogo?: CatalogoProcedimiento | null;
+  area_cuerpo?: AreaCuerpoIntervenida | null;
 }
 
 /** Datos para registrar un procedimiento realizado. */
@@ -48,6 +74,8 @@ export interface ProceMedicoCreate {
   lugar_servicio?: string | null;
   sexo?: 'M' | 'F' | null;
   id_procedimiento?: number | null;
+  id_catalogo_procedimiento?: number | null;
+  id_area_cuerpo_intervenida?: number | null;
   especialidad?: string | null;
   cantidad: number;
   responsable?: string | null;
@@ -61,6 +89,8 @@ export interface ProceMedicoUpdate {
   lugar_servicio?: string | null;
   sexo?: 'M' | 'F' | null;
   id_procedimiento?: number | null;
+  id_catalogo_procedimiento?: number | null;
+  id_area_cuerpo_intervenida?: number | null;
   especialidad?: string | null;
   cantidad?: number | null;
   responsable?: string | null;
@@ -81,6 +111,8 @@ export interface ProceMedicoFiltros {
   especialidad?: string;
   lugar_servicio?: string;
   id_procedimiento?: number;
+  id_catalogo_procedimiento?: number;
+  id_area_cuerpo_intervenida?: number;
   mes?: number;
   anio?: number;
   fecha_inicio?: string;

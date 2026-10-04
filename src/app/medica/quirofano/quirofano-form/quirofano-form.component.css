@@ -11,8 +11,8 @@
   backdrop-filter: blur(20px);
 }
 .hud-id { font-family: var(--theme-font-mono); font-size: 10px; color: var(--theme-primary); letter-spacing: 2px; opacity: 0.7; }
-.hud-title { font-family: var(--theme-font-mono); font-size: 14px; font-weight: 500; color: var(--theme-text); letter-spacing: 1.5px; }
-.hud-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--theme-success); font-family: var(--theme-font-mono); letter-spacing: 1px; }
+.hud-title { font-family: var(--theme-font-mono); font-size: 14px; font-weight: 500; color: var(--theme-text); letter-spacing: 2px; }
+.hud-status { display: flex; align-items: center; gap: 6px; font-size: 18px; color: var( --text-inverse); font-family: var(--theme-font-mono); letter-spacing: 2px; }
 .hud-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--theme-success); animation: blink 2s infinite; }
 @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
@@ -84,7 +84,7 @@
 /* ── Fields ── */
 .field-row { display: flex; gap: 16px; flex-wrap: wrap; }
 .field-row .field { flex: 1; min-width: 160px; }
-.field { display: flex; flex-direction: column; gap: 4px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
 .field-label { font-family: var(--theme-font-mono); font-size: 10px; letter-spacing: 2px; color: #2c4a7a; text-transform: uppercase; }
 .field-input {
   background: rgba(255,255,255,0.9);
@@ -98,6 +98,54 @@
 .field-input.ng-invalid.ng-touched { border-color: var(--theme-danger-soft); }
 .field-input:disabled { opacity: 0.6; cursor: not-allowed; background: rgba(226,232,240,0.7); }
 select.field-input { cursor: pointer; }
+
+/* ── Radio / Button-like group ── */
+.field-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: rgba(255,255,255,0.9);
+  border: 0.5px solid rgba(59,130,246,0.2);
+  border-radius: 10px;
+  padding: 4px;
+}
+.field-radio {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--theme-font-ui);
+  font-size: 0.9rem;
+  color: #1e293b;
+  user-select: none;
+  transition: all 0.15s;
+  border: 0.5px solid transparent;
+}
+.field-radio input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.field-radio span {
+  pointer-events: none;
+  line-height: 1;
+}
+.field-radio:hover {
+  background: rgba(59,130,246,0.08);
+}
+.field-radio:has(input:checked) {
+  background: var(--theme-primary-dim);
+  border-color: rgba(59,130,246,0.35);
+  color: var(--theme-primary-light);
+  font-weight: 600;
+}
+.field-radio:has(input:focus-visible) {
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+}
 .textarea { resize: vertical; font-family: var(--theme-font-ui); }
 .field-error { font-size: 11px; color: var(--theme-danger-soft); }
 .field-hint { font-size: 11px; color: #64748b; }
