@@ -1,214 +1,219 @@
-<!-- procemedico.component.html -->
-
-<!-- HUD -->
-<div class="hud-header">
-  <span class="hud-id">
-    {{ enEdicion ? "PROC-EDIT" : "PROC-NUEVO" }}
-  </span>
-  <span class="hud-title">
-    {{
-      enEdicion
-        ? "ACTUALIZAR PROCEDIMIENTO MÉDICO"
-        : "NUEVO PROCEDIMIENTO MÉDICO"
-    }}
-  </span>
-  <span class="hud-status"> {{ form.get("cantidad")?.value || 0 }} REG. </span>
-</div>
-
-<!-- ACTION DOCK -->
-<div class="action-dock">
-  <span class="dock-hint">
-    {{ enEdicion ? "Modo edición" : "Nuevo registro" }}
-  </span>
-  <button type="button" class="btn-dock btn-dock-cancel" (click)="volver()">
-    <span [innerHTML]="cancelIcon"></span>
-    Cancelar
-  </button>
-  <button
-    type="button"
-    class="btn-dock btn-dock-save"
-    [disabled]="guardando"
-    (click)="guardar()"
-  >
-    <span [innerHTML]="saveIcon"></span>
-    {{ guardando ? "Guardando..." : enEdicion ? "Actualizar" : "Registrar" }}
-  </button>
-</div>
-
-<div *ngIf="mostrarAlerta" class="alerta-exito">
-  {{ mensajeAlerta }}
-</div>
-
-<!-- LAYOUT EN DOS COLUMNAS: FORM | CATÁLOGO -->
-<div class="adm-grid adm-grid--2col">
-  <!-- ══ COLUMNA IZQUIERDA: FORMULARIO ══════════════ -->
-  <div class="adm-col">
-    <form [formGroup]="form" class="adm-body">
-      <div class="section-card">
-        <div class="sec-head">
-          <div class="sec-head-left">
-            <div class="sec-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-              >
-                <path d="M12 5v14" />
-                <path d="M5 12h14" />
-              </svg>
-            </div>
-            <span class="sec-title">Información del Procedimiento</span>
-          </div>
-        </div>
-
-        <div class="sec-body single">
-          <!-- 1. ESPECIALIDAD -->
-          <div class="field">
-            <span class="field-label">Especialidad</span>
-            <select class="field-input" formControlName="especialidad">
-              <option value="">Selecciona</option>
-              <option
-                *ngFor="let ep of especialidadesfiltradas"
-                [value]="ep.value"
-              >
-                {{ ep.label }}
-              </option>
-            </select>
-          </div>
-
-          <!-- 2. LUGAR -->
-          <div class="field">
-            <span class="field-label">Lugar de Servicio</span>
-            <select class="field-input" formControlName="lugar_servicio">
-              <option value="">Selecciona</option>
-              <option *ngFor="let ls of lugarServicios" [value]="ls.value">
-                {{ ls.label }}
-              </option>
-            </select>
-          </div>
-
-          <!-- 3. FECHA -->
-          <div class="field">
-            <span class="field-label">Fecha</span>
-            <input class="field-input" type="date" formControlName="fecha" />
-          </div>
-
-          <!-- 4. BÚSQUEDA POR ABREVIATURA -->
-          <div class="field">
-            <span class="field-label">Buscar por abreviatura</span>
-            <input
-              class="field-input"
-              type="text"
-              placeholder="Ej: LAP, CIR..."
-              [ngModel]="busquedaAbreviatura"
-              [ngModelOptions]="{ standalone: true }"
-              (ngModelChange)="filtrarPorAbreviatura($event)"
-            />
-          </div>
-
-          <!-- 5. PROCEDIMIENTO -->
-          <div class="field">
-            <span class="field-label">Procedimiento *</span>
-            <select class="field-input" formControlName="id_procedimiento">
-              <option [ngValue]="null">Seleccione un procedimiento</option>
-              <option *ngFor="let item of catalogoFiltrado" [ngValue]="item.id">
-                {{ item.nombre }} {{ item.abreviatura }}
-              </option>
-            </select>
-            <small
-              class="text-danger"
-              *ngIf="
-                f['id_procedimiento'].invalid && f['id_procedimiento'].touched
-              "
-            >
-              Debe seleccionar un procedimiento
-            </small>
-          </div>
-
-          <!-- 6. SEXO -->
-          <div class="field">
-            <span class="field-label">Sexo</span>
-            <div class="chips-row">
-              <span
-                class="chip chip-lg"
-                [class.on]="form.get('sexo')?.value === 'M'"
-                (click)="form.get('sexo')?.setValue('M')"
-              >
-                ♂ Masculino
-              </span>
-              <span
-                class="chip chip-lg"
-                [class.on]="form.get('sexo')?.value === 'F'"
-                (click)="form.get('sexo')?.setValue('F')"
-              >
-                ♀ Femenino
-              </span>
-              <span
-                class="chip chip-lg"
-                [class.on]="form.get('sexo')?.value === null"
-                (click)="form.get('sexo')?.setValue(null)"
-              >
-                none
-              </span>
-            </div>
-          </div>
-
-          <!-- 7. CANTIDAD -->
-          <div class="field">
-            <span class="field-label">Cantidad *</span>
-            <input
-              class="field-input"
-              type="number"
-              min="1"
-              formControlName="cantidad"
-            />
-            <small
-              class="text-danger"
-              *ngIf="f['cantidad'].invalid && f['cantidad'].touched"
-            >
-              La cantidad es obligatoria
-            </small>
-          </div>
-
-          <button
-            type="button"
-            class="btn-dock btn-dock-save"
-            [disabled]="guardando"
-            (click)="guardar()"
-          >
-            <span [innerHTML]="saveIcon"></span>
-            {{
-              guardando
-                ? "Guardando..."
-                : enEdicion
-                  ? "Actualizar"
-                  : "Registrar"
-            }}
-          </button>
-
-          <!-- INFO DE AUDITORÍA -->
-          @if (enEdicion && procedimientoActual) {
-            <div class="field">
-              <span class="field-label">Creado</span>
-              <div class="field-static">
-                {{ procedimientoActual.created_at | date: "dd/MM/yyyy HH:mm" }}
-              </div>
-            </div>
-            <div class="field">
-              <span class="field-label">Actualizado</span>
-              <div class="field-static">
-                {{ procedimientoActual.updated_at | date: "dd/MM/yyyy HH:mm" }}
-              </div>
-            </div>
-          }
-        </div>
+<div class="page">
+  <!-- Encabezado -->
+  <div class="theme-card proc-card">
+    <div class="theme-card__header">
+      <span class="theme-card__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18">
+          <path d="M12 5v14" />
+          <path d="M5 12h14" />
+        </svg>
+      </span>
+      <span class="theme-card__title">
+        {{ enEdicion ? 'Actualizar procedimiento médico' : 'Nuevo procedimiento médico' }}
+      </span>
+      <div class="theme-card__actions">
+        <span class="theme-badge theme-badge--info">{{ enEdicion ? 'Edición' : 'Nuevo' }}</span>
+        <span class="theme-badge theme-badge--primary">Total {{ totalGeneral }}</span>
       </div>
-    </form>
-  </div>
+    </div>
 
-  <!-- ══ COLUMNA DERECHA: CATÁLOGO ══════════════════ -->
-  <div class="adm-col">
-    <app-catalogopro></app-catalogopro>
+    <div class="theme-card__body">
+      <div *ngIf="mostrarAlerta" class="proc-alert" role="status">{{ mensajeAlerta }}</div>
+
+      <form [formGroup]="form" class="form-grid">
+        <!-- Contexto -->
+        <div class="theme-card__field">
+          <label class="theme-label" for="especialidad">Especialidad</label>
+          <select
+            id="especialidad"
+            class="theme-input"
+            formControlName="especialidad_id"
+            (change)="onEspecialidadChange(f['especialidad_id'].value)"
+            >
+            <option [ngValue]="null">Todas</option>
+            <option *ngFor="let ep of especialidades" [ngValue]="ep.id">{{ ep.nombre }}</option>
+          </select>
+        </div>
+
+        <div class="theme-card__field">
+          <label class="theme-label" for="lugar">Lugar de servicio</label>
+          <select id="lugar" class="theme-input" formControlName="lugar_servicio">
+            <option value="">Selecciona</option>
+            <option *ngFor="let ls of lugarServicios" [value]="ls.value">{{ ls.label }}</option>
+          </select>
+        </div>
+
+        <div class="theme-card__field">
+          <label class="theme-label" for="fecha">Fecha *</label>
+          <input id="fecha" class="theme-input" type="date" formControlName="fecha" />
+          <small class="proc-error" *ngIf="f['fecha'].invalid && f['fecha'].touched">
+            La fecha es obligatoria
+          </small>
+        </div>
+
+        <!-- Procedimiento -->
+        <div class="theme-card__field proc-field-full">
+          <label class="theme-label" for="busqueda">Buscar procedimiento</label>
+          <input
+            id="busqueda"
+            class="theme-input"
+            type="search"
+            [(ngModel)]="busqueda"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="Nombre o abreviatura…"
+          />
+
+          <label class="theme-label" for="procedimiento">Procedimiento *</label>
+          <select
+            id="procedimiento"
+            class="theme-input"
+            formControlName="id_catalogo_procedimiento"
+            (change)="onProcedimientoChange(f['id_catalogo_procedimiento'].value)"
+            >
+            <option [ngValue]="null">Seleccione un procedimiento</option>
+            <option *ngFor="let item of catalogoVisible" [ngValue]="item.id">
+              {{ item.abreviatura ? '[' + item.abreviatura + '] ' : '' }}{{ item.nombre }}
+            </option>
+          </select>
+          <small class="proc-hint" *ngIf="!catalogoVisible.length">
+            Ningún procedimiento coincide con la búsqueda o la especialidad.
+          </small>
+          <small class="proc-error" *ngIf="f['id_catalogo_procedimiento'].invalid && f['id_catalogo_procedimiento'].touched">
+            Debe seleccionar un procedimiento
+          </small>
+        </div>
+
+        <!-- Zona de intervención -->
+        <div class="theme-card__field proc-field-full">
+          <label class="theme-label" for="zona">Zona de intervención</label>
+          <select id="zona" class="theme-input" formControlName="id_area_cuerpo_intervenida">
+            <option [ngValue]="null">Selecciona</option>
+            <option *ngFor="let a of areasCuerpo" [ngValue]="a.id">
+              {{ a.codigo }} · {{ a.nombre }}{{ a.region ? ' (' + a.region + ')' : '' }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Cantidades por grupo de edad y sexo -->
+        <div class="theme-card__field proc-field-full">
+          <span class="theme-label">Cantidades por grupo de edad y sexo *</span>
+          <p class="proc-hint">
+            Solo se guardan los grupos con cantidad distinta de cero.
+          </p>
+
+          <div class="table-responsive-wrapper">
+            <table class="theme-table">
+              <thead>
+                <tr>
+                  <th class="proc-col-grupo">Grupo de edad</th>
+                  <th>Masculino</th>
+                  <th>Femenino</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let g of gruposEdad"
+                  [class.proc-row-on]="tieneCantidad(g.codigo)"
+                  >
+                  <td class="proc-col-grupo">
+                    {{ g.nombre }}
+                    <span class="theme-badge theme-badge--info proc-code">{{ g.codigo }}</span>
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      class="theme-input proc-input"
+                      [formControl]="$any(controlesEdad.get(g.codigo + '.m'))"
+                      [attr.aria-label]="'Masculinos en ' + g.nombre"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      class="theme-input proc-input"
+                      [formControl]="$any(controlesEdad.get(g.codigo + '.f'))"
+                      [attr.aria-label]="'Femeninos en ' + g.nombre"
+                    />
+                  </td>
+                  <td class="proc-total">
+                    {{ (controlesEdad.get(g.codigo + '.m')?.value || 0) + (controlesEdad.get(g.codigo + '.f')?.value || 0) }}
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Total general</th>
+                  <th>{{ totalMasculino }}</th>
+                  <th>{{ totalFemenino }}</th>
+                  <th>{{ totalGeneral }}</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <small class="proc-error" *ngIf="totalGeneral === 0 && controlesEdad.touched">
+            Debe registrar al menos un grupo de edad con cantidad.
+          </small>
+        </div>
+
+        <!-- Resumen -->
+        <div class="theme-card__field proc-field-full" *ngIf="gruposConCantidad.length">
+          <span class="theme-label">Resumen del registro</span>
+          <div class="proc-resumen">
+            <span class="theme-badge" *ngFor="let g of gruposConCantidad; let last = last">
+              {{ g.nombre }}: {{ g.m }}M / {{ g.f }}F
+            </span>
+            <span class="theme-badge theme-badge--primary">Total {{ totalGeneral }}</span>
+          </div>
+        </div>
+
+        <!-- Responsable y anestesia -->
+        <div class="theme-card__field">
+          <label class="theme-label" for="responsable">Responsable</label>
+          <input id="responsable" class="theme-input" type="text" formControlName="responsable" placeholder="Nombre del responsable" />
+        </div>
+
+        <div class="theme-card__field">
+          <span class="theme-label">Anestesia (calculada)</span>
+          <div class="proc-calculado">{{ anestesiaCalculada }}</div>
+          <small class="proc-hint">
+            Catálogo {{ procedimientoSeleccionado?.anestesia ?? 0 }} × {{ totalGeneral }}
+          </small>
+        </div>
+
+        <!-- Auditoría -->
+        <ng-container *ngIf="enEdicion && procedimientoActual">
+          <div class="theme-card__field">
+            <span class="theme-label">Creado</span>
+            <div class="proc-calculado">{{ procedimientoActual.created_at | date: 'dd/MM/yyyy HH:mm' }}</div>
+          </div>
+          <div class="theme-card__field">
+            <span class="theme-label">Actualizado</span>
+            <div class="proc-calculado">{{ procedimientoActual.updated_at | date: 'dd/MM/yyyy HH:mm' }}</div>
+          </div>
+        </ng-container>
+      </form>
+    </div>
+
+    <!-- Acciones -->
+    <div class="theme-card__footer proc-actions">
+      <span class="theme-card__footer-meta">
+        {{ totalMasculino }} M · {{ totalFemenino }} F · {{ totalGeneral }} en total
+      </span>
+      <button type="button" class="theme-btn theme-btn--ghost" (click)="volver()">Cancelar</button>
+      <button
+        type="button"
+        class="theme-btn theme-btn--primary"
+        [disabled]="guardando || totalGeneral === 0 || form.invalid"
+        (click)="guardar()"
+        >
+        {{ guardando ? 'Guardando…' : (enEdicion ? 'Actualizar' : 'Registrar') }}
+      </button>
+    </div>
   </div>
 </div>

@@ -426,15 +426,18 @@ export const routes: Routes = [
       },
       {
         path: 'catalogoProcedimientos',
-        loadComponent: () => import('./std/procedimientos/catalogoprocedimiento/catalogoprocedimiento.component').then(c => c.CatalogoprocedimientoComponent)
+        redirectTo: 'gestion-procedimientos',
+        pathMatch: 'full'
       },
       {
         path: 'nuevoProce',
-        loadComponent: () => import('./std/procedimientos/nuevoprocedimiento/nuevoprocedimiento.component').then(c => c.NuevoprocedimientoComponent)
+        redirectTo: 'gestion-procedimientos',
+        pathMatch: 'full'
       },
       {
         path: 'editProce/:id',
-        loadComponent: () => import('./std/procedimientos/nuevoprocedimiento/nuevoprocedimiento.component').then(c => c.NuevoprocedimientoComponent)
+        redirectTo: 'gestion-procedimientos',
+        pathMatch: 'full'
       },
 
       // Nutricion

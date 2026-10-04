@@ -13,7 +13,8 @@ import {
   ProceMedico,
   ProceMedicoCreate,
   ProceMedicoUpdate,
-  ProcedimientosListResponse
+  ProcedimientosListResponse,
+  GrupoEdadItem
 } from '../interface/procedimientos';
 
 @Injectable({ providedIn: 'root' })
@@ -141,6 +142,17 @@ export class StdService extends BaseApiService {
     ).pipe(
       catchError(error =>
         this.manejarError(error, 'obtener procedimiento médico')
+      )
+    );
+  }
+
+  /** Grupos de edad (IMCI/OMS) admitidos en los registros de procedimiento. */
+  getGruposEdad(): Observable<GrupoEdadItem[]> {
+    return this.http.get<GrupoEdadItem[]>(
+      `${this.baseUrl}/procedimientos/grupos-edad`
+    ).pipe(
+      catchError(error =>
+        this.manejarError(error, 'obtener grupos de edad')
       )
     );
   }

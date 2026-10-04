@@ -37,8 +37,8 @@
         placeholder="Buscar por nombre..."
     /></label>
     <button class="btn-primary" (click)="cargar()">Actualizar</button>
-    <button class="btn-secondary" (click)="descargarExcel()">
-      Descargar Excel
+    <button class="btn-secondary" (click)="descargarExcel()" [disabled]="descargando">
+      {{ descargando ? 'Generando…' : 'Descargar Excel' }}
     </button>
   </div>
 

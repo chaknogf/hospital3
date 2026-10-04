@@ -157,6 +157,19 @@ export class DatosExtraPipe implements PipeTransform {
         return especialidad ? especialidad.label : valorStr;
       }
 
+      case 'grupoEdad': {
+        const grupos: { [key: string]: string } = {
+          'NEO': 'Neonato (0 a 28 días)',
+          'LAC': 'Lactante (>28 días a 12 meses)',
+          'PRI': 'Primera infancia (1 a <5 años)',
+          'SEG': 'Segunda infancia (>5 a 11 años)',
+          'ADO': 'Adolescente (12 a <18 años)',
+          'ADU': 'Adulto (18 a 59 años)',
+          'ADM': 'Adulto mayor (60 años o más)'
+        };
+        return grupos[valorStr] || valorStr;
+      }
+
       case 'tipo_consulta': {
         const consulta = tipoConsulta.find(c => c.value == valor);
         return consulta ? consulta.label : valorStr;

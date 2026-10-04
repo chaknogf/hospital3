@@ -61,6 +61,33 @@
         </fieldset>
 
         <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Sexo</label>
+          <select
+            name="sexo"
+            [(ngModel)]="filtros.sexo"
+            class="input-filtros"
+            >
+            <option value="">Todos</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+          </select>
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
+          <label class="label-filtros">Grupo de edad</label>
+          <select
+            name="grupoEdad"
+            [(ngModel)]="filtros.grupo_edad"
+            class="input-filtros"
+            >
+            <option value="">Todos</option>
+            @for (g of gruposEdad; track g.codigo) {
+              <option [value]="g.codigo">{{ g.nombre }}</option>
+            }
+          </select>
+        </fieldset>
+
+        <fieldset class="fieldset-filtros">
           <label class="label-filtros">Fecha</label>
           <input
             type="date"
@@ -100,6 +127,7 @@
         <tr>
           <th>Procedimiento</th>
           <th>Área intervenida</th>
+          <th>Paciente</th>
           <th>Fecha</th>
           <th>Especialidad</th>
           <th>Cantidades</th>
@@ -128,6 +156,19 @@
                 <small class="text-white-50">{{ data.area_cuerpo.region }}</small>
               } @else {
                 <span class="text-white-50">—</span>
+              }
+            </td>
+            <td>
+              @if (data.sexo) {
+                {{ data.sexo === 'M' ? '♂' : '♀' }}
+              } @else {
+                <span class="text-white-50">—</span>
+              }
+              @if (detalleEdad(data).length) {
+                @for (g of detalleEdad(data); track g.codigo) {
+                  <br />
+                  <small class="text-white-50">{{ g.nombre }}: {{ g.m }}M / {{ g.f }}F</small>
+                }
               }
             </td>
             <td>

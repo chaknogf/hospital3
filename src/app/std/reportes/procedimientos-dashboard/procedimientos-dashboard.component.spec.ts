@@ -149,18 +149,39 @@ describe('ProcedimientosDashboardComponent', () => {
     req.flush(mockProcedimientosList);
   });
 
-  it('descargarExcel() no debería exportar si no hay datos', () => {
+  it('descargarExcel() no debería exportar si no hay datos', async () => {
     spyOn(window, 'alert');
-    component.descargarExcel();
+    const promesa = component.descargarExcel();
     httpMock.expectOne(isListado).flush({ total: 0, procedimientos: [] });
+    await promesa;
     expect(window.alert).toHaveBeenCalled();
   });
 
-  it('descargarExcel() maneja error', () => {
+  it('descargarExcel() maneja error', async () => {
     spyOn(window, 'alert');
-    component.descargarExcel();
+    const promesa = component.descargarExcel();
     httpMock.expectOne(isListado).error(new ProgressEvent('error'), { status: 500, statusText: 'Server Error' });
+    await promesa;
     expect(window.alert).toHaveBeenCalled();
+  });
+
+  it('el desglose por edad y sexo debe cuadrar con la cantidad del registro', () => {
+    const nuevo = {
+      id: 1,
+      fecha: '2026-12-01',
+      cantidad: 6,
+      sexo: null,
+      grupo_edad_detalle: { NEO: { m: 2, f: 1 }, ADO: { m: 0, f: 3 } }
+    };
+    const historico = { id: 2, fecha: '2026-12-01', cantidad: 3, sexo: 'M', grupo_edad_detalle: null };
+
+    const total = (p: any, clave: 'm' | 'f') =>
+      (component as any).totalSexo(p, clave);
+
+    expect(total(nuevo, 'm') + total(nuevo, 'f')).toBe(nuevo.cantidad);
+    // El registro histórico atribuye su cantidad al sexo con que se capturó
+    expect(total(historico, 'm')).toBe(3);
+    expect(total(historico, 'f')).toBe(0);
   });
 
   it('ngOnInit llama cargar()', () => {

@@ -4,7 +4,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';;
-import { ProceMedico } from '../../../interface/procedimientos';
+import { GrupoEdadItem, ProceMedico } from '../../../interface/procedimientos';
 import { StdService } from '../../std.service';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 
@@ -31,6 +31,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
   procedimientos: ProceMedico[] = [];
   especialidadesfiltradas: Dict[] = especialidadesProcedimientos;
   lugarServicios: Dict[] = lugarServicios;
+  gruposEdad: GrupoEdadItem[] = [];
   cargando = false;
   filtrar = false;
   modalActivo = false;
@@ -42,11 +43,30 @@ export class ProcedimientosmenoresComponent implements OnInit {
   filtros: any = {
     especialidad: '',
     lugar_servicio: '',
+    grupo_edad: '',
+    sexo: '',
     fecha_inicio: '',
     fecha_fin: '',
     skip: 0,
     limit: this.pageSize
   };
+
+  /** Grupos con cantidad de un registro, en el orden IMCI/OMS y con su etiqueta. */
+  detalleEdad(data: ProceMedico): { codigo: string; nombre: string; m: number; f: number }[] {
+    const detalle = data.grupo_edad_detalle;
+    if (!detalle) {
+      return [];
+    }
+    return this.gruposEdad
+      .filter((g: GrupoEdadItem) => {
+        const v = detalle[g.codigo];
+        return v && (v.m > 0 || v.f > 0);
+      })
+      .map((g: GrupoEdadItem) => {
+        const v = detalle[g.codigo]!;
+        return { codigo: g.codigo, nombre: g.nombre, m: v.m || 0, f: v.f || 0 };
+      });
+  }
 
   icons: { [key: string]: any } = {};
 
@@ -71,6 +91,11 @@ export class ProcedimientosmenoresComponent implements OnInit {
 
     this.api.procedimientos$.subscribe(data => {
       this.procedimientos = data;
+    });
+
+    this.api.getGruposEdad().subscribe({
+      next: d => this.gruposEdad = d,
+      error: err => console.error(err)
     });
 
     this.cargarProcedimientos();
@@ -111,6 +136,8 @@ export class ProcedimientosmenoresComponent implements OnInit {
       especialidad: '',
       lugar_servicio: '',
       id_procedimiento: '',
+      grupo_edad: '',
+      sexo: '',
       fecha_inicio: '',
       fecha_fin: ''
     };
@@ -138,7 +165,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
   }
 
   catalogo(): void {
-    this.router.navigate(['/catalogoProcedimientos']);
+    this.router.navigate(['/gestion-procedimientos']);
   }
 
   trackById(index: number, item: any): any {
