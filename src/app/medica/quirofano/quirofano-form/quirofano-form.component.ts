@@ -42,6 +42,7 @@ export class QuirofanoFormComponent implements OnInit {
   private location = inject(Location);
 
   intervencionId: number | null = null;
+  consultaId: number | null = null;
   enEdicion = false;
   cargando = false;
   guardando = false;
@@ -124,6 +125,11 @@ export class QuirofanoFormComponent implements OnInit {
       this.intervencionId = editarId;
       this.cargarIntervencion(editarId);
       return;
+    }
+
+    const consultaId = Number(this.route.snapshot.queryParamMap.get('consulta_id'));
+    if (consultaId) {
+      this.consultaId = consultaId;
     }
 
     const expediente = this.route.snapshot.queryParamMap.get('expediente');
@@ -240,6 +246,7 @@ export class QuirofanoFormComponent implements OnInit {
       next: (data) => {
         this.pacienteId = data.paciente_id;
         this.pacienteLabel = data.paciente_nombre || '';
+        this.consultaId = data.consulta_id ?? this.consultaId;
         this.form.patchValue({
           expediente: data.expediente || data.paciente_id?.toString() || '',
           procedimiento_principal: data.procedimiento_principal || data.procedimiento_principal_catalogo_nombre || '',
@@ -292,6 +299,7 @@ export class QuirofanoFormComponent implements OnInit {
     const areaSel = this.areasCuerpo.find(a => a.id === v.id_area_cuerpo_intervenida);
 
     const base = {
+      consulta_id: this.consultaId ?? undefined,
       personal_atencion_id: v.personal_atencion_id ?? undefined,
       estado_cirugia_id: v.estado_cirugia_id ?? undefined,
       formato_procedimiento_id: v.formato_procedimiento_id ?? undefined,

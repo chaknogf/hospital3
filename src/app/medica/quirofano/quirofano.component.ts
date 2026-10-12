@@ -61,6 +61,9 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
   readonly intPageSize = 10;
   intPagina = 1;
 
+  // Consultas de hospitalización que ya tienen una intervención registrada
+  consultasConIntervencion = new Set<number>();
+
   filtroInt = { expediente: '', fecha_desde: '', fecha_hasta: '' };
 
   // ── Iconos ──
@@ -78,6 +81,7 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
       edit: this.iconService.getIcon('editIcon'),
       arrowDown: this.iconService.getIcon('arrowDown'),
       addPerson: this.iconService.getIcon('addPerson'),
+      ciru: this.iconService.getIcon('ciruIcon'),
     };
   }
 
@@ -105,11 +109,13 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
       next: res => {
         this.consultasTotal = res.total;
         this.consultas = res.consultas.filter(c => this.esConsultaActiva(c));
+        this.cargarMarcasIntervencion();
         this.cdr.markForCheck();
       },
       error: () => {
         this.consultas = [];
         this.consultasTotal = 0;
+        this.consultasConIntervencion = new Set<number>();
         this.cdr.markForCheck();
       },
       complete: () => { this.consultasCargando = false; }
@@ -119,6 +125,35 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
   private esConsultaActiva(c: ConsultaOut): boolean {
     if (!c.ultimo_estado) return true;
     return !ESTADOS_INACTIVOS.has(c.ultimo_estado);
+  }
+
+  /** Marca las consultas visibles que ya tienen alguna intervención registrada. */
+  private cargarMarcasIntervencion(): void {
+    const ids = this.consultas
+      .map(c => c.id)
+      .filter((id): id is number => id != null);
+    if (ids.length === 0) {
+      this.consultasConIntervencion = new Set<number>();
+      this.cdr.markForCheck();
+      return;
+    }
+    this.api.getIntervenciones({ consulta_ids: ids.join(','), limit: 500, activos: true })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: res => {
+          this.consultasConIntervencion = new Set(
+            res.intervenciones
+              .map(i => i.consulta_id)
+              .filter((id): id is number => id != null)
+          );
+          this.cdr.markForCheck();
+        },
+        error: () => { this.consultasConIntervencion = new Set<number>(); this.cdr.markForCheck(); }
+      });
+  }
+
+  tieneIntervencion(c: ConsultaOut): boolean {
+    return c.id != null && this.consultasConIntervencion.has(c.id);
   }
 
   // ══════════════════════════════════════════════════════════
@@ -188,7 +223,9 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
 
   registrarIntervencion(c: ConsultaOut): void {
     const expediente = c.expediente || c.paciente?.expediente || '';
-    this.router.navigate(['/quirofano/nueva'], { queryParams: { expediente } });
+    this.router.navigate(['/quirofano/nueva'], {
+      queryParams: { expediente, consulta_id: c.id ?? undefined }
+    });
   }
 
   buscarExpedienteParaIntervencion(): void {

@@ -211,12 +211,12 @@
   --bs-navbar-bg:                  #000814;
 
   /* Bootstrap no-radius + hard shadows */
-  --bs-border-radius:              0;
-  --bs-border-radius-sm:           0;
-  --bs-border-radius-lg:           0;
-  --bs-border-radius-xl:           0;
-  --bs-border-radius-xxl:          0;
-  --bs-border-radius-pill:         0;
+  --bs-border-radius:              4px;
+  --bs-border-radius-sm:           2px;
+  --bs-border-radius-lg:           6px;
+  --bs-border-radius-xl:           10px;
+  --bs-border-radius-xxl:          12px;
+  --bs-border-radius-pill:         24px;
   --bs-box-shadow:                 5px 5px 0 #0d3b66;
   --bs-box-shadow-sm:              3px 3px 0 #0d3b66;
   --bs-box-shadow-lg:              7px 7px 0 #0d3b66;

@@ -130,6 +130,7 @@ export const ciclos: Dict[] = [
   { label: 'Observación', value: 'observacion', ref: 'activo' },
   { label: 'Evolución', value: 'evolucion', ref: 'activo' },
   { label: 'Seguimiento', value: 'seguimiento', ref: 'activo' },
+  { label: 'Quirófano', value: 'quirofano', ref: 'activo' },
   { label: 'Procedimiento', value: 'procedimiento', ref: 'activo' },
   { label: 'Recuperación', value: 'recuperacion', ref: 'activo' },
   { label: 'Traslado', value: 'traslado', ref: 'activo' },

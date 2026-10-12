@@ -62,6 +62,7 @@ export interface QuirofanoNumero {
 export interface IntervencionQuirurgica {
   intervencion_id: number;
   paciente_id: number;
+  consulta_id?: number;
   paciente_nombre?: string;
   expediente?: string;
   personal_atencion_id?: number;
@@ -110,6 +111,7 @@ export interface IntervencionQuirurgica {
 /** Datos editables necesarios para crear una intervención quirúrgica. */
 export interface IntervencionCreate {
   paciente_id: number;
+  consulta_id?: number;
   expediente?: string;
   personal_atencion_id?: number;
   quirofano_numero_id?: number;
@@ -139,6 +141,7 @@ export interface IntervencionCreate {
 
 /** Campos parciales permitidos al actualizar una intervención. */
 export interface IntervencionUpdate {
+  consulta_id?: number;
   personal_atencion_id?: number;
   quirofano_numero_id?: number;
   estado_cirugia_id?: number;

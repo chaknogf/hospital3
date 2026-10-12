@@ -132,7 +132,14 @@
                   <td>{{ experienciaPaciente(c) }}</td>
                   <td>
                     <div class="cell-paciente">
-                      <strong>{{ nombrePaciente(c) }}</strong>
+                      <span class="nombre-linea" [class.con-intervencion]="tieneIntervencion(c)">
+                        <strong>{{ nombrePaciente(c) }}</strong>
+                        @if (tieneIntervencion(c)) {
+                          <span class="mark-intervenido"
+                                [innerHTML]="icons['ciru']"
+                                title="Ya tiene intervención quirúrgica"></span>
+                        }
+                      </span>
                     </div>
                   </td>
                   <td>{{ c.especialidad || '—' }}</td>
