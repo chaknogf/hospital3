@@ -332,7 +332,7 @@
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: #8a9bb5;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   border-bottom: 3px solid transparent;
   padding-bottom: 0.3rem;
   transition: color 0.12s, border-color 0.12s, background 0.12s;
@@ -366,7 +366,7 @@
 [data-theme="cyber-brutalism"] .card {
   background: #001d3d;
   border: 4px solid #0d3b66 !important;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   box-shadow: 5px 5px 0 #0d3b66;
   color: #faf0ca;
   transition: box-shadow 0.12s, transform 0.12s;
@@ -386,13 +386,13 @@
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: #ffff;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
 }
 
 [data-theme="cyber-brutalism"] .card-footer {
   background: #00509d;
   border-top: 4px solid #0d3b66;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
 }
 
 [data-theme="cyber-brutalism"] .card-title {
@@ -415,7 +415,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 [data-theme="cyber-brutalism"] .btn {
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   font-family: 'DM Mono', monospace;
   font-size: 0.72rem;
   text-transform: uppercase;
@@ -526,7 +526,7 @@
 [data-theme="cyber-brutalism"] .form-select {
   background: #000814;
   border: 4px solid #0d3b66;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   color: #faf0ca;
   font-family: 'DM Mono', monospace;
   font-size: 0.875rem;
@@ -565,7 +565,7 @@
 [data-theme="cyber-brutalism"] .input-group-text {
   background: #00509d;
   border: 4px solid #0d3b66;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   color: #ffff;
   font-family: 'DM Mono', monospace;
   font-size: 0.75rem;
@@ -580,7 +580,7 @@
 [data-theme="cyber-brutalism"] .form-check-input {
   background-color: #000814;
   border: 4px solid #0d3b66;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
 }
 [data-theme="cyber-brutalism"] .form-check-input:checked {
   background-color: #ffff;
@@ -593,7 +593,7 @@
 [data-theme="cyber-brutalism"] .form-switch .form-check-input {
   background-color: rgba(13, 59, 102, 0.60);
   border: 4px solid #0d3b66;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
 }
 [data-theme="cyber-brutalism"] .form-switch .form-check-input:checked {
   background-color: #ffff;
@@ -608,7 +608,7 @@
 [data-theme="cyber-brutalism"] .accordion-item {
   background: #001d3d;
   border: 4px solid #0d3b66 !important;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   box-shadow: 4px 4px 0 #0d3b66;
   color: #faf0ca;
 }
@@ -619,7 +619,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   box-shadow: none;
   border-bottom: 4px solid #0d3b66;
 }
@@ -646,7 +646,7 @@
   background: #001d3d;
   border: 4px solid #0d3b66;
   color: #faf0ca;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   font-family: 'Space Grotesk', sans-serif;
 }
 [data-theme="cyber-brutalism"] .list-group-item:hover {
@@ -672,7 +672,7 @@
 [data-theme="cyber-brutalism"] .nav-tabs .nav-link {
   background: transparent;
   border: 4px solid transparent;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   color: #8a9bb5;
   font-family: 'DM Mono', monospace;
   font-size: 0.72rem;
@@ -727,7 +727,7 @@
 
 [data-theme="cyber-brutalism"] .theme-table {
   border: 4px solid #0d3b66;
-  border-radius: 0;
+  border-radius: 4px;
   box-shadow: 5px 5px 0 #0d3b66;
 }
 
@@ -739,14 +739,14 @@
 [data-theme="cyber-brutalism"] .modal-content {
   background: #001d3d;
   border: 4px solid #0d3b66;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   box-shadow: 8px 8px 0 #0d3b66, 0 0 0 4px #ffff;
   color: #faf0ca;
 }
 [data-theme="cyber-brutalism"] .modal-header {
   background: #00509d;
   border-bottom: 4px solid #ffff;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
 }
 [data-theme="cyber-brutalism"] .modal-title {
   font-family: 'Space Grotesk', sans-serif;
@@ -758,7 +758,7 @@
 [data-theme="cyber-brutalism"] .modal-footer {
   border-top: 4px solid #0d3b66;
   background: #00509d;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
 }
 
 
@@ -792,7 +792,7 @@
 [data-theme="cyber-brutalism"] .dropdown-menu {
   background: #001d3d;
   border: 4px solid #0d3b66;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   box-shadow: 5px 5px 0 #0d3b66;
   color: #faf0ca;
 }
@@ -800,7 +800,7 @@
   color: #faf0ca;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 0.875rem;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   transition: background 0.10s, color 0.10s;
 }
 [data-theme="cyber-brutalism"] .dropdown-item:hover {
@@ -828,7 +828,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 [data-theme="cyber-brutalism"] .badge {
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   font-family: 'DM Mono', monospace;
   font-size: 0.60rem;
   letter-spacing: 0.10em;
@@ -851,7 +851,7 @@
 
 /* Custom theme-badge */
 [data-theme="cyber-brutalism"] .theme-badge {
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   font-family: 'DM Mono', monospace;
   font-size: 0.60rem;
   letter-spacing: 0.10em;
@@ -871,13 +871,13 @@
 [data-theme="cyber-brutalism"] .progress {
   background: #000814;
   border: 4px solid #0d3b66;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   box-shadow: inset 3px 3px 0 #0d3b66;
   height: 1rem;
 }
 [data-theme="cyber-brutalism"] .progress-bar {
   background: #ffff;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   box-shadow: none;
   font-family: 'DM Mono', monospace;
   font-size: 0.65rem;
@@ -891,7 +891,7 @@
 [data-theme="cyber-brutalism"] .toast {
   background: #001d3d;
   border: 4px solid #0d3b66;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   box-shadow: 5px 5px 0 #0d3b66;
   color: #faf0ca;
 }
@@ -903,7 +903,7 @@
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
 }
 
 
@@ -914,7 +914,7 @@
 [data-theme="cyber-brutalism"] .popover {
   background: #001d3d;
   border: 4px solid #0d3b66;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   box-shadow: 5px 5px 0 #0d3b66;
   color: #faf0ca;
 }
@@ -925,7 +925,7 @@
   font-family: 'DM Mono', monospace;
   font-size: 0.72rem;
   text-transform: uppercase;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
 }
 [data-theme="cyber-brutalism"] .popover-body {
   color: #faf0ca;
@@ -939,7 +939,7 @@
 [data-theme="cyber-brutalism"] .tooltip-inner {
   background: #00509d;
   border: 4px solid #ffff;
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   box-shadow: 4px 4px 0 #0d3b66;
   color: #faf0ca;
   font-family: 'DM Mono', monospace;
@@ -953,7 +953,7 @@
 
 [data-theme="cyber-brutalism"] ::-webkit-scrollbar       { width: 6px; height: 6px; }
 [data-theme="cyber-brutalism"] ::-webkit-scrollbar-track { background: #000814; }
-[data-theme="cyber-brutalism"] ::-webkit-scrollbar-thumb { background: #ffff; border-radius: 0; }
+[data-theme="cyber-brutalism"] ::-webkit-scrollbar-thumb { background: #ffff; border-radius: 4px; }
 [data-theme="cyber-brutalism"] ::-webkit-scrollbar-thumb:hover { background: #ffff; }
 
 
@@ -1001,7 +1001,7 @@
 [data-theme="cyber-brutalism"] *,
 [data-theme="cyber-brutalism"] *::before,
 [data-theme="cyber-brutalism"] *::after {
-  border-radius: 0 !important;
+  border-radius: 4px !important;
 }
 
 /* 2. Cards: 4px border + hard shadow */
@@ -1049,7 +1049,7 @@
 /* 6. Avatars: square with gold border */
 [data-theme="cyber-brutalism"] .rounded-circle,
 [data-theme="cyber-brutalism"] [class*="avatar"] {
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   border: 4px solid #ffffff!important;
   box-shadow: 4px 4px 0 #0d3b66 !important;
 }
@@ -1058,7 +1058,7 @@
 [data-theme="cyber-brutalism"] .badge,
 [data-theme="cyber-brutalism"] [class*="badge"],
 [data-theme="cyber-brutalism"] .rounded-pill {
-  border-radius: 0 !important;
+  border-radius: 4px !important;
   box-shadow: 3px 3px 0 #0d3b66 !important;
   font-family: 'DM Mono', monospace !important;
   letter-spacing: 0.08em !important;
