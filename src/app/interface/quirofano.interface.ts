@@ -84,6 +84,8 @@ export interface IntervencionQuirurgica {
   procedimiento_5_id?: number;
   procedimiento_5_catalogo_nombre?: string;
   area_cuerpo_intervenida?: string;
+  id_area_cuerpo_intervenida?: number;
+  area_cuerpo_intervenida_nombre?: string;
   estado_cirugia_id?: number;
   estado_cirugia_nombre?: string;
   formato_procedimiento_id?: number;
@@ -92,6 +94,8 @@ export interface IntervencionQuirurgica {
   procedencia_procedimiento_nombre?: string;
   rango_especialista_id?: number;
   rango_especialista_nombre?: string;
+  especialidad_id?: number;
+  especialidad_nombre?: string;
   fecha: string;
   hora_inicio_anestesia?: string;
   hora_inicio_intervencion?: string;
@@ -113,6 +117,7 @@ export interface IntervencionCreate {
   formato_procedimiento_id?: number;
   procedencia_procedimiento_id?: number;
   rango_especialista_id?: number;
+  especialidad_id?: number;
   procedimiento_principal?: string;
   procedimiento_principal_id?: number;
   procedimiento_2?: string;
@@ -124,6 +129,7 @@ export interface IntervencionCreate {
   procedimiento_5?: string;
   procedimiento_5_id?: number;
   area_cuerpo_intervenida?: string;
+  id_area_cuerpo_intervenida?: number;
   hora_inicio_anestesia?: string;
   hora_inicio_intervencion?: string;
   hora_finaliza_intervencion?: string;
@@ -139,6 +145,7 @@ export interface IntervencionUpdate {
   formato_procedimiento_id?: number;
   procedencia_procedimiento_id?: number;
   rango_especialista_id?: number;
+  especialidad_id?: number;
   procedimiento_principal?: string;
   procedimiento_principal_id?: number;
   procedimiento_2?: string;
@@ -150,6 +157,7 @@ export interface IntervencionUpdate {
   procedimiento_5?: string;
   procedimiento_5_id?: number;
   area_cuerpo_intervenida?: string;
+  id_area_cuerpo_intervenida?: number;
   hora_inicio_anestesia?: string;
   hora_inicio_intervencion?: string;
   hora_finaliza_intervencion?: string;

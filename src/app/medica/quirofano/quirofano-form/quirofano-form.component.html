@@ -169,19 +169,12 @@
           </div>
           <div class="field">
             <span class="field-label">Área del cuerpo intervenida</span>
-            <input
-              class="field-input"
-              type="text"
-              list="areasCuerpoList"
-              formControlName="area_cuerpo_intervenida"
-              placeholder="Escriba para buscar"
-              autocomplete="off"
-            />
-            <datalist id="areasCuerpoList">
+            <select class="field-input" formControlName="id_area_cuerpo_intervenida">
+              <option [ngValue]="null">{{ areaLegacyTexto || "Seleccionar" }}</option>
               @for (a of areasCuerpo; track a.id) {
-                <option [value]="a.nombre"></option>
+                <option [ngValue]="a.id">{{ a.nombre }}</option>
               }
-            </datalist>
+            </select>
           </div>
         </div>
         <div class="field-row">

@@ -194,6 +194,7 @@
                 <th>Quirófano</th>
                 <th>Paciente</th>
                 <th>Procedimiento</th>
+                <th>Especialidad</th>
                 <th>Estado</th>
                 <th>Formato</th>
                 <th>Médico</th>
@@ -222,6 +223,7 @@
                       }
                     </div>
                   </td>
+                  <td>{{ i.especialidad_nombre || '—' }}</td>
                   <td>
                     <span class="qro-chip">{{ i.estado_cirugia_nombre || '—' }}</span>
                   </td>
@@ -241,7 +243,7 @@
               }
               @if (!intervencionesCargando && intervenciones.length === 0) {
                 <tr>
-                  <td colspan="9" class="text-center py-3">
+                  <td colspan="10" class="text-center py-3">
                     <em>No se encontraron intervenciones.</em>
                   </td>
                 </tr>

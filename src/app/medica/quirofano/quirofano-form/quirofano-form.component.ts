@@ -72,6 +72,7 @@ export class QuirofanoFormComponent implements OnInit {
     procedimiento_4: [''],
     procedimiento_5: [''],
     area_cuerpo_intervenida: [''],
+    id_area_cuerpo_intervenida: [null],
     estado_cirugia_id: [null],
     formato_procedimiento_id: [null],
     procedencia_procedimiento_id: [null],
@@ -171,6 +172,13 @@ export class QuirofanoFormComponent implements OnInit {
     );
   }
 
+  // Texto histórico del área cuando el registro es anterior al catálogo normalizado.
+  get areaLegacyTexto(): string {
+    const id = this.form.value.id_area_cuerpo_intervenida;
+    const txt = this.form.value.area_cuerpo_intervenida;
+    return id == null && txt ? txt : '';
+  }
+
   onEspecialidadChange(): void {
     const campos = [
       'procedimiento_principal',
@@ -240,10 +248,12 @@ export class QuirofanoFormComponent implements OnInit {
           procedimiento_4: data.procedimiento_4 || data.procedimiento_4_catalogo_nombre || '',
           procedimiento_5: data.procedimiento_5 || data.procedimiento_5_catalogo_nombre || '',
           area_cuerpo_intervenida: data.area_cuerpo_intervenida || '',
+          id_area_cuerpo_intervenida: data.id_area_cuerpo_intervenida ?? null,
           estado_cirugia_id: data.estado_cirugia_id ?? null,
           formato_procedimiento_id: data.formato_procedimiento_id ?? null,
           procedencia_procedimiento_id: data.procedencia_procedimiento_id ?? null,
           rango_especialista_id: data.rango_especialista_id ?? (this.form.value.rango_especialista_id ?? null),
+          especialidad_id: data.especialidad_id ?? null,
           quirofano_numero_id: data.quirofano_numero_id ?? null,
           personal_atencion_id: data.personal_atencion_id ?? null,
           hora_inicio_anestesia: (data.hora_inicio_anestesia || '').slice(0, 5),
@@ -279,6 +289,7 @@ export class QuirofanoFormComponent implements OnInit {
 
     this.guardando = true;
     const v = this.form.value;
+    const areaSel = this.areasCuerpo.find(a => a.id === v.id_area_cuerpo_intervenida);
 
     const base = {
       personal_atencion_id: v.personal_atencion_id ?? undefined,
@@ -286,13 +297,15 @@ export class QuirofanoFormComponent implements OnInit {
       formato_procedimiento_id: v.formato_procedimiento_id ?? undefined,
       procedencia_procedimiento_id: v.procedencia_procedimiento_id ?? undefined,
       rango_especialista_id: v.rango_especialista_id ?? undefined,
+      especialidad_id: v.especialidad_id ?? undefined,
       quirofano_numero_id: v.quirofano_numero_id ?? undefined,
       procedimiento_principal: v.procedimiento_principal || undefined,
       procedimiento_2: v.procedimiento_2 || undefined,
       procedimiento_3: v.procedimiento_3 || undefined,
       procedimiento_4: v.procedimiento_4 || undefined,
       procedimiento_5: v.procedimiento_5 || undefined,
-      area_cuerpo_intervenida: v.area_cuerpo_intervenida || undefined,
+      area_cuerpo_intervenida: areaSel?.nombre || v.area_cuerpo_intervenida || undefined,
+      id_area_cuerpo_intervenida: v.id_area_cuerpo_intervenida ?? undefined,
       hora_inicio_anestesia: v.hora_inicio_anestesia || undefined,
       hora_inicio_intervencion: v.hora_inicio_intervencion || undefined,
       hora_finaliza_intervencion: v.hora_finaliza_intervencion || undefined,
