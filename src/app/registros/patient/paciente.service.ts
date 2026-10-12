@@ -179,7 +179,7 @@ export class PacienteService extends BaseApiService {
     return this.http.get<Paciente>(url).pipe(
       tap(paciente => {
         this.offlineDb.savePacientes([paciente]);
-        this.offlineDb.pacientes_consultados.add(paciente).catch(err => {
+        this.offlineDb.pacientes_consultados.add(paciente).catch((err: any) => {
           console.warn('Error guardando paciente consultado offline', err);
         });
       }),

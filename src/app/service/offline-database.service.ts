@@ -39,15 +39,23 @@ export class OfflineDatabaseService extends Dexie {
   syncMeta!: Table<SyncMeta, string>;
   pacientes!: Table<Paciente, number>;
   consultas!: Table<ConsultaOut, number>;
+  pacientes_recentes!: Table<Paciente, number>;
+  consultas_recentes!: Table<ConsultaOut, number>;
+  pacientes_consultados!: Table<Paciente, number>;
+  consultas_consultados!: Table<ConsultaOut, number>;
 
   constructor() {
     super('Hospital3OfflineDB');
-    this.version(2).stores({
+    this.version(3).stores({
       cache: 'key',
       mutations: '++id',
       syncMeta: 'key',
       pacientes: 'id, nombre_completo, expediente, sexo',
-      consultas: 'id, paciente_id, especialidad, servicio, fecha_consulta, ultimo_estado'
+      consultas: 'id, paciente_id, especialidad, servicio, fecha_consulta, ultimo_estado',
+      pacientes_recentes: 'id, nombre_completo, expediente, sexo',
+      consultas_recentes: 'id, paciente_id, especialidad, servicio, fecha_consulta, ultimo_estado',
+      pacientes_consultados: 'id, nombre_completo, expediente, sexo',
+      consultas_consultados: 'id, paciente_id, especialidad, servicio, fecha_consulta, ultimo_estado'
     }).upgrade(tx => {
       tx.table('cache').clear();
     });
@@ -149,6 +157,24 @@ export class OfflineDatabaseService extends Dexie {
 
   async countConsultas(): Promise<number> {
     return this.consultas.count();
+  }
+
+  /** Guarda un paciente en la tabla de consultados (para offline + límite 500). */
+  async guardarPacienteConsultado(paciente: Paciente): Promise<void> {
+    await this.pacientes_consultados.add(paciente);
+    // Mantener solo los últimos 500
+    const count = await this.pacientes_consultados.count();
+    if (count > 500) {
+      const all = await this.pacientes_consultados.toArray();
+      // Eliminar los más antiguos (menor id)
+      const toDelete = all.slice(0, count - 500);
+      await Promise.all(toDelete.map(p => this.pacientes_consultados.delete(p.id)));
+    }
+  }
+
+  /** Guarda una consulta en la tabla de consultados (para offline + límite 500). */
+  async guardarConsultaConsultada(consulta: ConsultaOut): Promise<number> {
+    return this.consultas_consultados.add(consulta);
   }
 
   /** Borra explícitamente todas las tablas locales, incluida la cola pendiente. */

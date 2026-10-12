@@ -204,10 +204,10 @@ export interface ConsultaOut {
   ciclo?: CicloClinico[];
   orden?: number;
   ultimo_estado?: string;
-  activo?: boolean;
+activo?: boolean;
   egreso?: Egreso;
   dias_acumulados?: number;
-
+  _fuente?: string;
 }
 // Para respuestas de listas con paginación
 /** Resultado paginado de consultas. */
