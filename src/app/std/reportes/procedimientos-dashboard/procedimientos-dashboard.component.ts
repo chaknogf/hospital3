@@ -17,15 +17,11 @@ export class ProcedimientosDashboardComponent implements OnInit {
   private api = inject(ApiService);
   private stdService = inject(StdService);
 
-  /** Grupos etarios IMCI/OMS en orden, con las etiquetas de columna del Excel. */
-  private readonly GRUPOS_EDAD_REPORTE = [
-    { codigo: 'NEO', nombre: 'Neonato (0 a 28 días)', etiquetaM: 'NEO M', etiquetaF: 'NEO F' },
-    { codigo: 'LAC', nombre: 'Lactante (>28 días a 12 meses)', etiquetaM: 'LAC M', etiquetaF: 'LAC F' },
-    { codigo: 'PRI', nombre: 'Primera infancia (1 a <5 años)', etiquetaM: 'PRI M', etiquetaF: 'PRI F' },
-    { codigo: 'SEG', nombre: 'Segunda infancia (>5 a 11 años)', etiquetaM: 'SEG M', etiquetaF: 'SEG F' },
-    { codigo: 'ADO', nombre: 'Adolescente (12 a <18 años)', etiquetaM: 'ADO M', etiquetaF: 'ADO F' },
-    { codigo: 'ADU', nombre: 'Adulto (18 a 59 años)', etiquetaM: 'ADU M', etiquetaF: 'ADU F' },
-    { codigo: 'ADM', nombre: 'Adulto mayor (60 años o más)', etiquetaM: 'ADM M', etiquetaF: 'ADM F' }
+  /** Categorías etarias del reporte, con las etiquetas de columna del Excel. */
+  private readonly CATEGORIAS_REPORTE = [
+    { codigo: 'nino', nombre: 'PEDIA', etiquetaM: 'PEDIA M', etiquetaF: 'PEDIA F' },
+    { codigo: 'adulto', nombre: 'ADULTO', etiquetaM: 'ADULTO M', etiquetaF: 'ADULTO F' },
+    { codigo: 'sin_edad', nombre: 'Sin edad (histórico)', etiquetaM: 'Sin edad M', etiquetaF: 'Sin edad F' }
   ];
 
   filtros: { desde: string; hasta: string; especialidad: string; lugar_servicio: string; sexo: string; nombre: string };
@@ -189,12 +185,11 @@ export class ProcedimientosDashboardComponent implements OnInit {
 
       // ── Hoja 1: un renglón por registro, con el desglose en columnas ──
       const columnasEdad: string[] = [];
-      for (const g of this.GRUPOS_EDAD_REPORTE) {
-        columnasEdad.push(g.etiquetaM, g.etiquetaF);
+      for (const c of this.CATEGORIAS_REPORTE) {
+        columnasEdad.push(c.etiquetaM, c.etiquetaF);
       }
 
       const rowsDetalle = registros.map((p: any) => {
-        const detalle = p.grupo_edad_detalle || {};
         const fila: Record<string, any> = {
           'Id': p.id,
           'Fecha': p.fecha || '',
@@ -205,16 +200,14 @@ export class ProcedimientosDashboardComponent implements OnInit {
           'Zona de intervención': p.area_cuerpo?.nombre || '',
           'Región': p.area_cuerpo?.region || ''
         };
-        for (const g of this.GRUPOS_EDAD_REPORTE) {
-          const v = detalle[g.codigo];
-          fila[g.etiquetaM] = v?.m ?? 0;
-          fila[g.etiquetaF] = v?.f ?? 0;
+        for (const c of this.CATEGORIAS_REPORTE) {
+          fila[c.etiquetaM] = p[`${c.codigo}_m`] ?? 0;
+          fila[c.etiquetaF] = p[`${c.codigo}_f`] ?? 0;
         }
         fila['Total M'] = this.totalSexo(p, 'm');
         fila['Total F'] = this.totalSexo(p, 'f');
         fila['Total'] = p.cantidad ?? 0;
         fila['Anestesia'] = p.anestesia ?? 0;
-        fila['Sexo histórico'] = p.sexo || '';
         fila['Responsable'] = p.responsable || '';
         fila['Registrado por'] = p.created_by || '';
         return fila;
@@ -228,44 +221,25 @@ export class ProcedimientosDashboardComponent implements OnInit {
       wsRegistros.addRows(rowsDetalle);
       this.estilizarHoja(wsRegistros, columnasEdad);
 
-      // ── Hoja 2: totales por grupo de edad y sexo ──
-      const rowsResumen: Record<string, any>[] = this.GRUPOS_EDAD_REPORTE.map((g: any) => {
+      // ── Hoja 2: totales por categoría de edad y sexo ──
+      const rowsResumen: Record<string, any>[] = this.CATEGORIAS_REPORTE.map((c) => {
         let m = 0;
         let f = 0;
         for (const p of registros) {
-          const v = p.grupo_edad_detalle?.[g.codigo];
-          m += v?.m ?? 0;
-          f += v?.f ?? 0;
+          m += p[`${c.codigo}_m`] ?? 0;
+          f += p[`${c.codigo}_f`] ?? 0;
         }
         return {
-          'Grupo de edad': g.nombre,
-          'Código': g.codigo,
+          'Categoría de edad': c.nombre,
+          'Código': c.codigo,
           'Masculino': m,
           'Femenino': f,
           'Total': m + f
         };
       });
 
-      // Los registros históricos nunca recibieron grupo etario: se agrupan aparte
-      let legacyM = 0;
-      let legacyF = 0;
-      for (const p of registros) {
-        if (p.grupo_edad_detalle) continue;
-        if (p.sexo === 'M') legacyM += p.cantidad ?? 0;
-        else if (p.sexo === 'F') legacyF += p.cantidad ?? 0;
-      }
-      if (legacyM || legacyF) {
-        rowsResumen.push({
-          'Grupo de edad': 'Sin grupo de edad (registro histórico)',
-          'Código': 'LEG',
-          'Masculino': legacyM,
-          'Femenino': legacyF,
-          'Total': legacyM + legacyF
-        });
-      }
-
       rowsResumen.push({
-        'Grupo de edad': 'TOTAL',
+        'Categoría de edad': 'TOTAL',
         'Código': '',
         'Masculino': rowsResumen.reduce((s: number, r: any) => s + r.Masculino, 0),
         'Femenino': rowsResumen.reduce((s: number, r: any) => s + r.Femenino, 0),
@@ -305,20 +279,14 @@ export class ProcedimientosDashboardComponent implements OnInit {
   }
 
   /**
-   * Suma de uno de los sexos en todos los grupos etarios de un registro.
-   * Los registros históricos no tienen desglose: su cantidad se atribuye al
-   * sexo con que se capturó, para que Total M + Total F siempre iguale Total.
+   * Suma de uno de los sexos en todas las categorías etarias de un registro.
+   * Incluye el bucket histórico sin edad para que Total M + Total F siempre
+   * iguale Total.
    */
   private totalSexo(p: any, clave: 'm' | 'f'): number {
-    const detalle = p.grupo_edad_detalle;
-    if (!detalle) {
-      return p.sexo === (clave === 'm' ? 'M' : 'F') ? p.cantidad ?? 0 : 0;
-    }
-    let total = 0;
-    for (const valores of Object.values(detalle)) {
-      total += (valores as any)?.[clave] ?? 0;
-    }
-    return total;
+    return (p[`nino_${clave}`] ?? 0)
+      + (p[`adulto_${clave}`] ?? 0)
+      + (p[`sin_edad_${clave}`] ?? 0);
   }
 
   /** Encabezado en negrita, filtros congelados y anchos por tipo de dato. */

@@ -79,10 +79,10 @@
         </fieldset>
 
         <fieldset class="fieldset-filtros">
-          <label class="label-filtros">Grupo de edad</label>
+          <label class="label-filtros">Categoría de edad</label>
           <select
-            name="grupoEdad"
-            [(ngModel)]="filtros.grupo_edad"
+            name="categoria"
+            [(ngModel)]="filtros.categoria"
             class="input-filtros"
           >
             <option value="">Todos</option>
@@ -148,10 +148,10 @@
             (click)="activarFila(data.id)"
           >
             <td>
-              {{ data.catalogo?.nombre || data.procedimiento?.nombre }}
+              {{ data.catalogo?.nombre }}
               <br />
               <small class="text-white-50">{{
-                data.catalogo?.abreviatura || data.procedimiento?.abreviatura
+                data.catalogo?.abreviatura
               }}</small>
               <br />
               <span style="font-size: xx-small">{{ data.id }}</span>
@@ -168,18 +168,17 @@
               }
             </td>
             <td>
-              @if (data.sexo) {
-                {{ data.sexo === "M" ? "♂" : "♀" }}
-              } @else {
-                <span class="text-white-50">—</span>
-              }
               @if (detalleEdad(data).length) {
                 @for (g of detalleEdad(data); track g.codigo) {
-                  <br />
-                  <small class="text-white-50"
-                    >{{ g.nombre }}: {{ g.m }}M / {{ g.f }}F</small
-                  >
+                  <div>
+                    {{ g.nombre }}
+                    <small class="text-white-50"
+                      >: {{ g.m }}M / {{ g.f }}F</small
+                    >
+                  </div>
                 }
+              } @else {
+                <span class="text-white-50">—</span>
               }
             </td>
             <td>

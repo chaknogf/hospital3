@@ -4,7 +4,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';;
-import { GrupoEdadItem, ProceMedico } from '../../../interface/procedimientos';
+import { CategoriaEdadItem, ProceMedico } from '../../../interface/procedimientos';
 import { StdService } from '../../std.service';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 
@@ -31,7 +31,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
   procedimientos: ProceMedico[] = [];
   especialidadesfiltradas: Dict[] = especialidadesProcedimientos;
   lugarServicios: Dict[] = lugarServicios;
-  gruposEdad: GrupoEdadItem[] = [];
+  gruposEdad: CategoriaEdadItem[] = [];
   cargando = false;
   filtrar = false;
   modalActivo = false;
@@ -43,7 +43,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
   filtros: any = {
     especialidad: '',
     lugar_servicio: '',
-    grupo_edad: '',
+    categoria: '',
     sexo: '',
     fecha_inicio: '',
     fecha_fin: '',
@@ -51,21 +51,20 @@ export class ProcedimientosmenoresComponent implements OnInit {
     limit: this.pageSize
   };
 
-  /** Grupos con cantidad de un registro, en el orden IMCI/OMS y con su etiqueta. */
+  /** Etiqueta legible de una categoría etaria (o de los históricos sin edad). */
+  nombreCategoria(codigo: string): string {
+    return this.gruposEdad.find(g => g.codigo === codigo)?.nombre
+      ?? (codigo === 'sin_edad' ? 'Sin edad (histórico)' : codigo);
+  }
+
+  /** Categorías (niño/adulto) con cantidad de un registro, con su etiqueta. */
   detalleEdad(data: ProceMedico): { codigo: string; nombre: string; m: number; f: number }[] {
-    const detalle = data.grupo_edad_detalle;
-    if (!detalle) {
-      return [];
-    }
-    return this.gruposEdad
-      .filter((g: GrupoEdadItem) => {
-        const v = detalle[g.codigo];
-        return v && (v.m > 0 || v.f > 0);
-      })
-      .map((g: GrupoEdadItem) => {
-        const v = detalle[g.codigo]!;
-        return { codigo: g.codigo, nombre: g.nombre, m: v.m || 0, f: v.f || 0 };
-      });
+    const items = [
+      { codigo: 'nino', nombre: this.nombreCategoria('nino'), m: data.nino_m || 0, f: data.nino_f || 0 },
+      { codigo: 'adulto', nombre: this.nombreCategoria('adulto'), m: data.adulto_m || 0, f: data.adulto_f || 0 },
+      { codigo: 'sin_edad', nombre: this.nombreCategoria('sin_edad'), m: data.sin_edad_m || 0, f: data.sin_edad_f || 0 }
+    ];
+    return items.filter(i => i.m > 0 || i.f > 0);
   }
 
   icons: { [key: string]: any } = {};
@@ -136,8 +135,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
       limit: this.pageSize,
       especialidad: '',
       lugar_servicio: '',
-      id_procedimiento: '',
-      grupo_edad: '',
+      categoria: '',
       sexo: '',
       fecha_inicio: '',
       fecha_fin: ''

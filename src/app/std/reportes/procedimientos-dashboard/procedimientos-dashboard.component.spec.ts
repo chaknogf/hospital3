@@ -170,16 +170,30 @@ describe('ProcedimientosDashboardComponent', () => {
       id: 1,
       fecha: '2026-12-01',
       cantidad: 6,
-      sexo: null,
-      grupo_edad_detalle: { NEO: { m: 2, f: 1 }, ADO: { m: 0, f: 3 } }
+      nino_m: 2,
+      nino_f: 1,
+      adulto_m: 0,
+      adulto_f: 3,
+      sin_edad_m: 0,
+      sin_edad_f: 0
     };
-    const historico = { id: 2, fecha: '2026-12-01', cantidad: 3, sexo: 'M', grupo_edad_detalle: null };
+    const historico = {
+      id: 2,
+      fecha: '2026-12-01',
+      cantidad: 3,
+      nino_m: 0,
+      nino_f: 0,
+      adulto_m: 0,
+      adulto_f: 0,
+      sin_edad_m: 3,
+      sin_edad_f: 0
+    };
 
     const total = (p: any, clave: 'm' | 'f') =>
       (component as any).totalSexo(p, clave);
 
     expect(total(nuevo, 'm') + total(nuevo, 'f')).toBe(nuevo.cantidad);
-    // El registro histórico atribuye su cantidad al sexo con que se capturó
+    // El registro histórico aporta su cantidad al sexo con que se capturó (bucket sin edad)
     expect(total(historico, 'm')).toBe(3);
     expect(total(historico, 'f')).toBe(0);
   });

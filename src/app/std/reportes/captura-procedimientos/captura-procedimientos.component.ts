@@ -6,8 +6,7 @@ import { RouterLink } from '@angular/router';
 import { StdService } from '../../std.service';
 import { EspecialidadesService } from '../../../service/especialidades.service';
 import {
-  GrupoEdad,
-  GrupoEdadItem,
+  CategoriaEdadItem,
   ProcedimientoMasUsado
 } from '../../../interface/procedimientos';
 
@@ -37,11 +36,10 @@ export class CapturaProcedimientosComponent implements OnInit {
   private stdService = inject(StdService);
   private especialidadesApi = inject(EspecialidadesService);
 
-  readonly GRUPOS: GrupoEdad[] = ['NEO', 'LAC', 'PRI', 'SEG', 'ADO', 'ADU', 'ADM'];
   /** Renglones en blanco al final de la hoja. */
   readonly FILAS_VACIAS = 10;
 
-  gruposEdad: GrupoEdadItem[] = [];
+  gruposEdad: CategoriaEdadItem[] = [];
   especialidades: any[] = [];
 
   cargando = false;

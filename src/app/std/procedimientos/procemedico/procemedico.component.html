@@ -94,18 +94,19 @@
           </select>
         </div>
 
-        <!-- Cantidades por grupo de edad y sexo -->
+        <!-- Cantidades por categoría de edad y sexo -->
         <div class="theme-card__field proc-field-full">
-          <span class="theme-label">Cantidades por grupo de edad y sexo *</span>
+          <span class="theme-label">Cantidades por categoría de edad y sexo *</span>
           <p class="proc-hint">
-            Solo se guardan los grupos con cantidad distinta de cero.
+            PEDIA (menor de 18 años) y ADULTO (18 años o más). Solo se guardan
+            las categorías con cantidad distinta de cero.
           </p>
 
           <div class="table-responsive-wrapper">
             <table class="theme-table">
               <thead>
                 <tr>
-                  <th class="proc-col-grupo">Grupo de edad</th>
+                  <th class="proc-col-grupo">Categoría de edad</th>
                   <th>Masculino</th>
                   <th>Femenino</th>
                   <th>Total</th>
@@ -118,7 +119,9 @@
                   >
                   <td class="proc-col-grupo">
                     {{ g.nombre }}
-                    <span class="theme-badge theme-badge--info proc-code">{{ g.codigo }}</span>
+                    <span class="theme-badge theme-badge--info proc-code">{{
+                      g.codigo === 'nino' ? 'PEDIA' : 'ADULTO'
+                    }}</span>
                   </td>
                   <td>
                     <input
@@ -157,7 +160,11 @@
           </div>
 
           <small class="proc-error" *ngIf="totalGeneral === 0 && controlesEdad.touched">
-            Debe registrar al menos un grupo de edad con cantidad.
+            Debe registrar al menos una categoría de edad con cantidad.
+          </small>
+
+          <small class="proc-hint" *ngIf="enEdicion && (sinEdadM > 0 || sinEdadF > 0)">
+            Registros históricos sin edad: {{ sinEdadM }}M / {{ sinEdadF }}F. Se conservan al actualizar.
           </small>
         </div>
 

@@ -1,6 +1,6 @@
 // interfaces/procedimientos.interface.ts
 
-/** Procedimiento disponible en el catálogo institucional (legacy). */
+/** Procedimiento disponible en el catálogo institucional (alias del catálogo maestro). */
 export interface Procedimiento {
   id: number;
   abreviatura?: string | null;
@@ -20,21 +20,18 @@ export interface CatalogoProcedimiento {
   activo?: boolean;
 }
 
-/** Cantidades de un grupo de edad separadas por sexo. */
+/** Cantidades de una categoría etaria separadas por sexo. */
 export interface GrupoEdadCantidades {
   m: number;
   f: number;
 }
 
-/** Desglose de un registro: {"NEO": { m: 2, f: 1 }, "ADO": { m: 0, f: 3 }}. */
-export type GrupoEdadDetalle = Partial<Record<GrupoEdad, GrupoEdadCantidades>>;
+/** Categoría etaria admitida en un registro de procedimiento (corte a los 18 años). */
+export type CategoriaEdad = 'nino' | 'adulto';
 
-/** Grupo de edad (IMCI/OMS) admitido en un registro de procedimiento. */
-export type GrupoEdad = 'NEO' | 'LAC' | 'PRI' | 'SEG' | 'ADO' | 'ADU' | 'ADM';
-
-/** Grupo de edad con su etiqueta descriptiva. */
-export interface GrupoEdadItem {
-  codigo: GrupoEdad;
+/** Categoría etaria con su etiqueta descriptiva. */
+export interface CategoriaEdadItem {
+  codigo: CategoriaEdad;
   nombre: string;
 }
 
@@ -64,13 +61,11 @@ export interface ProcedimientoUpdate {
   anestesia?: number | null;
 }
 
-/** Procedimiento realizado, con contexto de servicio y responsable. */
+/** Procedimiento realizado, con su desglose niño/adulto × sexo y contexto de servicio. */
 export interface ProceMedico {
   id: number;
   fecha?: string | null;
   lugar_servicio?: string | null;
-  sexo?: 'M' | 'F' | null;
-  id_procedimiento?: number | null;
   id_catalogo_procedimiento?: number | null;
   id_area_cuerpo_intervenida?: number | null;
   especialidad?: string | null;
@@ -78,11 +73,15 @@ export interface ProceMedico {
   cantidad: number;
   responsable?: string | null;
   anestesia?: number | null;
-  grupo_edad_detalle?: GrupoEdadDetalle | null;
+  nino_m: number;
+  nino_f: number;
+  adulto_m: number;
+  adulto_f: number;
+  sin_edad_m: number;
+  sin_edad_f: number;
   created_by?: string | null;
   created_at?: string;
   updated_at?: string;
-  procedimiento?: Procedimiento | null;
   catalogo?: CatalogoProcedimiento | null;
   area_cuerpo?: AreaCuerpoIntervenida | null;
 }
@@ -91,14 +90,16 @@ export interface ProceMedico {
 export interface ProceMedicoCreate {
   fecha?: string | null;
   lugar_servicio?: string | null;
-  id_procedimiento?: number | null;
   id_catalogo_procedimiento?: number | null;
   id_area_cuerpo_intervenida?: number | null;
   especialidad?: string | null;
   especialidad_id?: number | null;
   responsable?: string | null;
   anestesia?: number | null;
-  grupo_edad_detalle: GrupoEdadDetalle;
+  nino_m?: number;
+  nino_f?: number;
+  adulto_m?: number;
+  adulto_f?: number;
   created_by?: string | null;
 }
 
@@ -106,14 +107,16 @@ export interface ProceMedicoCreate {
 export interface ProceMedicoUpdate {
   fecha?: string | null;
   lugar_servicio?: string | null;
-  id_procedimiento?: number | null;
   id_catalogo_procedimiento?: number | null;
   id_area_cuerpo_intervenida?: number | null;
   especialidad?: string | null;
   especialidad_id?: number | null;
   responsable?: string | null;
   anestesia?: number | null;
-  grupo_edad_detalle?: GrupoEdadDetalle | null;
+  nino_m?: number;
+  nino_f?: number;
+  adulto_m?: number;
+  adulto_f?: number;
   created_by?: string | null;
 }
 
@@ -143,9 +146,9 @@ export interface ProceMedicoFiltros {
   limit?: number;
   especialidad?: string;
   lugar_servicio?: string;
-  id_procedimiento?: number;
   id_catalogo_procedimiento?: number;
   id_area_cuerpo_intervenida?: number;
+  categoria?: CategoriaEdad;
   mes?: number;
   anio?: number;
   fecha_inicio?: string;

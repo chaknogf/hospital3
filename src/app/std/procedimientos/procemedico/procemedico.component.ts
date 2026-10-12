@@ -13,9 +13,8 @@ import { EspecialidadesService } from '../../../service/especialidades.service';
 import {
   AreaCuerpoIntervenida,
   CatalogoProcedimiento,
-  GrupoEdad,
-  GrupoEdadDetalle,
-  GrupoEdadItem,
+  CategoriaEdad,
+  CategoriaEdadItem,
   ProceMedico,
   ProceMedicoCreate,
   ProceMedicoUpdate
@@ -53,7 +52,11 @@ export class ProcemedicoComponent implements OnInit {
   catalogo: CatalogoProcedimiento[] = [];
   areasCuerpo: AreaCuerpoIntervenida[] = [];
   especialidades: any[] = [];
-  gruposEdad: GrupoEdadItem[] = [];
+  gruposEdad: CategoriaEdadItem[] = [];
+
+  /** Valores de registros históricos (sin edad) que se conservan al editar. */
+  sinEdadM = 0;
+  sinEdadF = 0;
 
   cargando = false;
   guardando = false;
@@ -127,13 +130,13 @@ export class ProcemedicoComponent implements OnInit {
     return total;
   }
 
-  /** Un grupo tiene cantidad capturada en M o en F. */
+  /** Una categoría tiene cantidad capturada en M o en F. */
   tieneCantidad(codigo: string): boolean {
     const c = this.controlesEdad.get(codigo)?.value;
     return (Number(c?.m) || 0) > 0 || (Number(c?.f) || 0) > 0;
   }
 
-  /** Grupos con cantidad, en el orden IMCI/OMS, para el resumen. */
+  /** Categorías con cantidad, en el orden niño/adulto, para el resumen. */
   get gruposConCantidad(): { codigo: string; nombre: string; m: number; f: number }[] {
     return this.gruposEdad
       .filter(g => this.tieneCantidad(g.codigo))
@@ -146,6 +149,12 @@ export class ProcemedicoComponent implements OnInit {
           f: Number(c?.f) || 0
         };
       });
+  }
+
+  /** Etiqueta legible de una categoría etaria (o de los históricos sin edad). */
+  nombreCategoria(codigo: string): string {
+    return this.gruposEdad.find(g => g.codigo === codigo)?.nombre
+      ?? (codigo === 'sin_edad' ? 'Sin edad (histórico)' : codigo);
   }
 
   constructor(
@@ -167,7 +176,7 @@ export class ProcemedicoComponent implements OnInit {
   }
 
   private inicializarControlesEdad(): void {
-    const orden: GrupoEdad[] = ['NEO', 'LAC', 'PRI', 'SEG', 'ADO', 'ADU', 'ADM'];
+    const orden: CategoriaEdad[] = ['nino', 'adulto'];
     const grupo = this.fb.group({}) as FormGroup;
     for (const codigo of orden) {
       grupo.addControl(codigo, this.fb.group({
@@ -209,22 +218,25 @@ export class ProcemedicoComponent implements OnInit {
           fecha: data.fecha,
           lugar_servicio: data.lugar_servicio,
           especialidad_id: data.especialidad_id ?? null,
-          id_catalogo_procedimiento: data.id_catalogo_procedimiento ?? data.id_procedimiento ?? null,
-          procedimiento: data.catalogo?.nombre ?? data.procedimiento?.nombre ?? '',
+          id_catalogo_procedimiento: data.id_catalogo_procedimiento ?? null,
+          procedimiento: data.catalogo?.nombre ?? '',
           id_area_cuerpo_intervenida: data.id_area_cuerpo_intervenida ?? null,
           responsable: data.responsable ?? ''
         });
 
-        // Carga el desglose existente
-        const orden: GrupoEdad[] = ['NEO', 'LAC', 'PRI', 'SEG', 'ADO', 'ADU', 'ADM'];
+        // Carga el desglose existente (niño/adulto)
+        const orden: CategoriaEdad[] = ['nino', 'adulto'];
         for (const codigo of orden) {
-          const valores = data.grupo_edad_detalle?.[codigo] || { m: 0, f: 0 };
           const ctrl = this.controlesEdad.get(codigo);
           if (ctrl) {
-            ctrl.get('m')?.setValue(valores.m || 0);
-            ctrl.get('f')?.setValue(valores.f || 0);
+            ctrl.get('m')?.setValue(codigo === 'nino' ? (data.nino_m || 0) : (data.adulto_m || 0));
+            ctrl.get('f')?.setValue(codigo === 'nino' ? (data.nino_f || 0) : (data.adulto_f || 0));
           }
         }
+
+        // Los históricos sin edad se conservan tal cual al editar
+        this.sinEdadM = data.sin_edad_m || 0;
+        this.sinEdadF = data.sin_edad_f || 0;
       },
       error: err => console.error(err),
       complete: () => { this.cargando = false; }
@@ -262,7 +274,7 @@ export class ProcemedicoComponent implements OnInit {
       this.form.markAllAsTouched();
       this.controlesEdad.markAllAsTouched();
       if (!detalle) {
-        this.mostrarMensaje('Debe registrar al menos un grupo de edad con cantidad.');
+        this.mostrarMensaje('Debe registrar al menos una categoría de edad con cantidad.');
       }
       return;
     }
@@ -277,10 +289,16 @@ export class ProcemedicoComponent implements OnInit {
       id_catalogo_procedimiento: v.id_catalogo_procedimiento,
       id_area_cuerpo_intervenida: v.id_area_cuerpo_intervenida ?? null,
       responsable: v.responsable || null,
-      grupo_edad_detalle: detalle
+      nino_m: detalle.nino_m,
+      nino_f: detalle.nino_f,
+      adulto_m: detalle.adulto_m,
+      adulto_f: detalle.adulto_f
     };
 
+    // Al editar se conserva el desglose histórico sin edad que trae el registro
     if (this.enEdicion && this.procedimientoId) {
+      base.sin_edad_m = this.sinEdadM;
+      base.sin_edad_f = this.sinEdadF;
       this.api.updateProcedimientoMedico(this.procedimientoId, base as ProceMedicoUpdate).subscribe({
         next: () => {
           this.mostrarMensaje('Procedimiento actualizado correctamente');
@@ -291,6 +309,8 @@ export class ProcemedicoComponent implements OnInit {
       return;
     }
 
+    this.sinEdadM = 0;
+    this.sinEdadF = 0;
     this.api.createProcedimientoMedico(base as ProceMedicoCreate).subscribe({
       next: () => {
         this.guardando = false;
@@ -301,19 +321,19 @@ export class ProcemedicoComponent implements OnInit {
     });
   }
 
-  /** Agrupa M/F de los 7 grupos, omitiendo los que no tienen cantidad. */
-  private construirDetalle(): GrupoEdadDetalle | null {
-    const detalle: GrupoEdadDetalle = {};
-    const orden: GrupoEdad[] = ['NEO', 'LAC', 'PRI', 'SEG', 'ADO', 'ADU', 'ADM'];
-    for (const codigo of orden) {
-      const c = this.controlesEdad.get(codigo)?.value;
-      const m = Number(c?.m) || 0;
-      const f = Number(c?.f) || 0;
-      if (m > 0 || f > 0) {
-        detalle[codigo] = { m, f };
-      }
-    }
-    return Object.keys(detalle).length ? detalle : null;
+  /** Cantidades por categoría (niño/adulto) y sexo, omitiendo los ceros. */
+  private construirDetalle(): { nino_m: number; nino_f: number; adulto_m: number; adulto_f: number } | null {
+    const nino = this.controlesEdad.get('nino')?.value;
+    const adulto = this.controlesEdad.get('adulto')?.value;
+    const detalle = {
+      nino_m: Number(nino?.m) || 0,
+      nino_f: Number(nino?.f) || 0,
+      adulto_m: Number(adulto?.m) || 0,
+      adulto_f: Number(adulto?.f) || 0
+    };
+    return detalle.nino_m + detalle.nino_f + detalle.adulto_m + detalle.adulto_f > 0
+      ? detalle
+      : null;
   }
 
   /** Muestra el detalle que devuelve el backend, o un mensaje genérico. */
@@ -348,7 +368,7 @@ export class ProcemedicoComponent implements OnInit {
       responsable: ''
     });
     this.busqueda = '';
-    const orden: GrupoEdad[] = ['NEO', 'LAC', 'PRI', 'SEG', 'ADO', 'ADU', 'ADM'];
+    const orden: CategoriaEdad[] = ['nino', 'adulto'];
     for (const codigo of orden) {
       const ctrl = this.controlesEdad.get(codigo);
       if (ctrl) {
@@ -356,6 +376,8 @@ export class ProcemedicoComponent implements OnInit {
         ctrl.get('f')?.setValue(0);
       }
     }
+    this.sinEdadM = 0;
+    this.sinEdadF = 0;
     this.form.markAsPristine();
     this.form.markAsUntouched();
     this.controlesEdad.markAsPristine();
