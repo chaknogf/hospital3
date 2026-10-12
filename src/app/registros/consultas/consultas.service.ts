@@ -79,6 +79,11 @@ export class ConsultaService extends BaseApiService {
       tap(response => {
         this.consultasSubject.next(response.consultas);
         this.offlineDb.saveConsultas(response.consultas);
+        for (const c of response.consultas) {
+          this.offlineDb.guardarConsultaConsultada(c).catch(err =>
+            console.warn('Error guardando consulta consultada offline', err)
+          );
+        }
       }),
       catchError(error => {
         if (error.status === 0 || error.status === 502 || error.status === 503) {
@@ -105,6 +110,11 @@ export class ConsultaService extends BaseApiService {
       tap(response => {
         this.consultasSubject.next(response.consultas);
         this.offlineDb.saveConsultas(response.consultas);
+        for (const c of response.consultas) {
+          this.offlineDb.guardarConsultaConsultada(c).catch(err =>
+            console.warn('Error guardando consulta consultada offline', err)
+          );
+        }
       }),
       catchError(error => {
         if (error.status === 0 || error.status === 502 || error.status === 503) {
@@ -255,5 +265,37 @@ export class ConsultaService extends BaseApiService {
         catchError(error => this.manejarError(error, 'obtener consultas'))
       )
     );
+  }
+
+  /** Guarda una consulta en la tabla de consultados (para offline + límite 500). */
+  async guardarConsultaConsultada(consulta: ConsultaOut): Promise<void> {
+    await this.offlineDb.consultas_consultados.add(consulta);
+    // Mantener solo los últimos 500
+    const count = await this.offlineDb.consultas_consultados.count();
+    if (count > 500) {
+      const all = await this.offlineDb.consultas_consultados.toArray();
+      // Eliminar los más antiguos (menor id)
+      const toDelete = all.slice(0, count - 500);
+      await Promise.all(toDelete.map(c => this.offlineDb.consultas_consultados.delete(c.id)));
+    }
+  }
+
+  /** Carga los primeros 500 consultas desde el API y los guarda en caché reciente. */
+  async loadInitialConsultas(limit: number = 500): Promise<ConsultaListResponse> {
+    const response = await this.http.get<ConsultaListResponse>(
+      `${this.baseUrl}/consultas/ultimos?limit=${limit}`
+    ).toPromise();
+    if (response && response.consultas) {
+      // Guardar en tabla de consultas (cache general)
+      await this.offlineDb.saveConsultas(response.consultas);
+      // Guardar en tabla de consultados (historial de consultas usuario)
+      for (const c of response.consultas) {
+        c._fuente = 'initial_load' as const;
+        await this.offlineDb.guardarConsultaConsultada(c).catch(err =>
+          console.warn('Error guardando consulta consultada offline', err)
+        );
+      }
+    }
+    return response || { total: 0, consultas: [] };
   }
 }

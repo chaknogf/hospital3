@@ -80,6 +80,37 @@ export class PacienteService extends BaseApiService {
     return { total, pacientes: paginados };
   }
 
+  /** Guarda un paciente en la tabla de consultados (para offline + límite 500). */
+  async guardarPacienteConsultado(paciente: Paciente): Promise<void> {
+    await this.offlineDb.pacientes_consultados.add(paciente);
+    // Mantener solo los últimos 500
+    const count = await this.offlineDb.pacientes_consultados.count();
+    if (count > 500) {
+      const all = await this.offlineDb.pacientes_consultados.toArray();
+      // Eliminar los más antiguos (menor id)
+      const toDelete = all.slice(0, count - 500);
+      await Promise.all(toDelete.map(p => this.offlineDb.pacientes_consultados.delete(p.id)));
+    }
+  }
+
+  /** Carga los primeros 500 pacientes desde el API y los guarda en caché reciente. */
+  async loadInitialPacientes(limit: number = 500): Promise<PacienteListResponse> {
+    const response = await this.http.get<PacienteListResponse>(
+      `${this.baseUrl}/pacientes/ultimos?limit=${limit}`
+    ).toPromise();
+    if (response && response.pacientes) {
+      await this.offlineDb.savePacientes(response.pacientes);
+      // También guardar en la tabla de recientes
+      await this.offlineDb.savePacientes(response.pacientes);
+      // Guardar en la tabla de consultados (marcados como iniciales)
+      for (const p of response.pacientes) {
+        p._fuente = 'initial_load' as const;
+        await this.offlineDb.pacientes_consultados.add(p);
+      }
+    }
+    return response || { total: 0, pacientes: [] };
+  }
+
   // ======= CRUD PACIENTES =======
 
   getPacientes(filtros: any): Observable<PacienteListResponse> {
@@ -146,7 +177,12 @@ export class PacienteService extends BaseApiService {
     }
 
     return this.http.get<Paciente>(url).pipe(
-      tap(paciente => this.offlineDb.savePacientes([paciente])),
+      tap(paciente => {
+        this.offlineDb.savePacientes([paciente]);
+        this.offlineDb.pacientes_consultados.add(paciente).catch(err => {
+          console.warn('Error guardando paciente consultado offline', err);
+        });
+      }),
       catchError(error => {
         if (error.status === 0 || error.status === 502 || error.status === 503) {
           return from(this.offlineDb.getPacienteById(id)).pipe(

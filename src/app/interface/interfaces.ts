@@ -143,6 +143,7 @@ export interface Paciente {
   actualizado_en?: string | null;
   defuncion?: string;
   personal_hospital?: 'S' | 'N' | null;
+  _fuente?: string;
 }
 
 /** Proyección liviana de paciente usada en listados y búsquedas. */
@@ -158,6 +159,7 @@ export interface PacienteResumen {
   estado?: 'V' | 'F' | 'I'; // V = Vivo, F = Fallecido, I = Inactivo
   defuncion?: string;
   ultima_consulta?: string | null;
+  _fuente?: string;
 }
 
 /** Resultado paginado de búsqueda de pacientes. */
