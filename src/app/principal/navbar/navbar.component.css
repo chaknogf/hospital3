@@ -149,6 +149,7 @@
   outline: none;
 }
 
+
 /* navbar toggler (si usas) */
 .navbar-toggler {
   border-color: var(--theme-border-strong);
@@ -218,7 +219,7 @@
 }
 
 /* ---------- PEQUEÑOS AJUSTES VISUALES ---------- */
-.aurora-navbar:hover { background-color: color-mix(in srgb, var(--theme-primary) 6%, transparent); }
+.aurora-navbar:hover { background-color: color-mix(in srgb, white 6%, transparent); }
 
 .aurora-navbar .nav-item { list-style: none; }
 

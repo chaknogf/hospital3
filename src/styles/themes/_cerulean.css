@@ -35,6 +35,9 @@
   --theme-panel: #ffffffbc;
   --text-print-blue: #011c75;
   --text-print-blue-mute: #ec5819d7;
+  --theme-primary: white;
+  --theme-text-secondary: #011c75;
+  --theme-text-muted: #011c75c8;
 
   /* ── SUPERFICIES CLARAS ── */
   --deep: #f0f4f8;
@@ -112,7 +115,7 @@ body[data-bs-theme="light"] {
     linear-gradient(
       to bottom,
       #fff 0%,
-      #fff 40%,
+      #048793 80%,
       rgba(255, 255, 255, 0) 100%
     ),
     linear-gradient(to right, #0ed2da, #5f29c7);
