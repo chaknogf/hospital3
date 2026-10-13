@@ -33,4 +33,30 @@ describe('OdontogramaComponent', () => {
     component.marcarPieza(26);
     expect(resultado?.dientes[26]).toBeUndefined();
   });
+
+  it('sincroniza la dentición cuando cambia la entrada (precarga del último odontograma)', () => {
+    const component = crear();
+    expect(component.denticion).toBe('permanente');
+    component.value = { denticion: 'temporal', dientes: {} };
+    component.ngOnChanges({ value: { currentValue: component.value } } as any);
+    expect(component.denticion).toBe('temporal');
+  });
+
+  it('aplica el código clínico: letra de referencia por superficie y símbolo por pieza', () => {
+    const component = crear();
+    component.value = {
+      denticion: 'permanente',
+      dientes: {
+        '16': { superficies: { oclusal: 'caries' } },
+        '26': { estado: 'corona' },
+        '36': { estado: 'ausente' },
+      },
+    };
+    expect(component.textoSuperficie(16, { key: 'oclusal', short: 'O' })).toBe('C');
+    expect(component.textoSuperficie(16, { key: 'vestibular', short: 'V' })).toBe('V');
+    expect(component.esSimboloPieza(16)).toBeFalse();
+    expect(component.esSimboloPieza(26)).toBeTrue();
+    expect(component.letraPieza(26)).toBe('CR');
+    expect(component.letraPieza(36)).toBe('A');
+  });
 });

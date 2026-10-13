@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil, forkJoin } from 'rxjs';
@@ -29,6 +29,7 @@ export class HistoriaClinicaComponent implements OnInit, OnDestroy {
   private consultaService = inject(ConsultaService);
   private route = inject(ActivatedRoute);
   router = inject(Router);
+  private location = inject(Location);
   private destroy$ = new Subject<void>();
 
   historia = signal<HistoriaClinicaResponse | null>(null);
@@ -42,6 +43,10 @@ export class HistoriaClinicaComponent implements OnInit, OnDestroy {
       day: '2-digit', month: 'long', year: 'numeric',
       hour: '2-digit', minute: '2-digit'
     });
+  }
+
+  regresar(): void {
+    this.location.back();
   }
 
   ngOnInit(): void {

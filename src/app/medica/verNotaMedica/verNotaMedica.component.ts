@@ -6,6 +6,8 @@ import { catchError, takeUntil } from 'rxjs/operators';
 import { CicloService } from '../ciclo.service';
 import { CicloConsulta, DatoMedico, SignosVitales, ExamenFisico, Cuerpo, Glasgow, Silverman, Downe, Apgar, Bishop, Egreso, Dx } from '../../interface/ciclo';
 import { DatosExtraPipe } from '../../pipes/datos-extra.pipe';
+import { OdontogramaComponent } from '../notaMedica/odontograma.component';
+import { NotaOdontologica } from '../notaMedica/odontograma.model';
 
 interface GrupoAnt { key: keyof NonNullable<DatoMedico['antecedentes']>; label: string; }
 
@@ -16,7 +18,7 @@ interface GrupoAnt { key: keyof NonNullable<DatoMedico['antecedentes']>; label: 
   styleUrls: ['./verNotaMedica.component.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, DatosExtraPipe],
+  imports: [CommonModule, DatosExtraPipe, OdontogramaComponent],
 })
 export class VerNotaMedicaComponent implements OnInit, OnDestroy {
   private api = inject(CicloService);
@@ -77,6 +79,7 @@ export class VerNotaMedicaComponent implements OnInit, OnDestroy {
   get signos(): SignosVitales | null { return this.datos?.signos_vitales ?? null; }
   get examen(): ExamenFisico | null { return this.datos?.examen_fisico ?? null; }
   get egreso(): Egreso | null { return this.datos?.egreso ?? null; }
+  get odontologia(): NotaOdontologica | null { return this.datos?.odontologia ?? null; }
 
   /** Última entrada de un mapa indexado por timestamp. */
   ultimo<T>(mapa?: Record<string, T>): T | null {

@@ -98,3 +98,9 @@
   .rep-exam__cell { break-inside: avoid; border-left-color: #000; }
   .rep-exam__label { color: #000; }
 }
+
+/* ── Odontología: odontograma de solo lectura ── */
+.rep-odonto { margin-top: 1rem; }
+@media print {
+  .rep-odonto { break-inside: avoid; }
+}

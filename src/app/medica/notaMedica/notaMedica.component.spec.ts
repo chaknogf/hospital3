@@ -24,8 +24,9 @@ describe('NotaMedicaComponent', () => {
   beforeEach(async () => {
     paramValue = '12';
 
-    cicloService = jasmine.createSpyObj<CicloService>('CicloService', ['getCiclosDeConsulta', 'iniciarClico']);
+    cicloService = jasmine.createSpyObj<CicloService>('CicloService', ['getCiclosDeConsulta', 'iniciarClico', 'getUltimoOdontograma']);
     cicloService.getCiclosDeConsulta.and.returnValue(of([]));
+    cicloService.getUltimoOdontograma.and.returnValue(of(null));
     cicloService.iniciarClico.and.callFake((payload: any) => of({ ...payload, id: 9, numero: 1, usuario: 'test' }));
 
     consultasService = jasmine.createSpyObj<ConsultaService>('ConsultaService', ['getConsultasPorPaciente', 'getConsultaId']);
@@ -139,5 +140,28 @@ describe('NotaMedicaComponent', () => {
         }),
       }),
     }));
+  });
+
+  it('precarga el último odontograma del paciente en una nueva nota odontológica (solo el odontograma)', () => {
+    consultasService.getConsultaId.and.returnValue(of({ especialidad: 'ODON', servicio: 'COEX', paciente_id: 77 } as any));
+    cicloService.getUltimoOdontograma.and.returnValue(of({
+      denticion: 'temporal',
+      dientes: { '55': { estado: 'caries' } },
+    } as any));
+
+    const { component } = crear();
+
+    expect(cicloService.getUltimoOdontograma).toHaveBeenCalledWith(77);
+    expect(component.odontologia.odontograma.denticion).toBe('temporal');
+    expect(component.odontologia.odontograma.dientes['55']).toEqual({ estado: 'caries' });
+    // No arrastra el resto de la nota anterior
+    expect(component.odontologia.motivo_consulta).toBe('');
+    expect(component.odontologia.diagnostico).toBe('');
+  });
+
+  it('no pide el último odontograma cuando la especialidad no es odontología', () => {
+    consultasService.getConsultaId.and.returnValue(of({ especialidad: 'MEDI', servicio: 'COEX', paciente_id: 77 } as any));
+    crear();
+    expect(cicloService.getUltimoOdontograma).not.toHaveBeenCalled();
   });
 });

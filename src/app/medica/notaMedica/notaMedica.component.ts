@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import {
   CicloConsulta,
   DatoMedico,
@@ -13,7 +13,7 @@ import {
   Egreso,
   Dx,
 } from '../../interface/ciclo';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DatosExtraPipe } from '../../pipes/datos-extra.pipe';
 import { EdadPipe } from '../../pipes/edad.pipe';
@@ -43,11 +43,15 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
   private api = inject(CicloService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private location = inject(Location);
   private iconService = inject(IconService);
   private consultasApi = inject(ConsultaService);
   private pacientesApi = inject(PacienteService);
+  private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
   private consultaId: number | null = null;
+  private pacienteId: number | null = null;
+  private odontogramaPrecargado = false;
 
   busquedaExpediente = '';
   pacienteBuscado = signal<PacienteJoin | null>(null);
@@ -336,6 +340,7 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
         servicio: ultimo?.servicio,
       });
       this.aplicarEspecialidad(ultimo?.especialidad);
+      this.precargarUltimoOdontograma();
     });
 
     this.consultasApi.getConsultaId(id).pipe(
@@ -343,6 +348,7 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
       catchError(() => of(null))
     ).subscribe(consulta => {
       if (!consulta) return;
+      this.pacienteId = (consulta as any).paciente_id ?? null;
       this.ciclo.update(actual => actual ? {
         ...actual,
         especialidad: consulta.especialidad ?? actual.especialidad,
@@ -350,6 +356,28 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
         servicio: consulta.servicio ?? actual.servicio,
       } : actual);
       this.aplicarEspecialidad(consulta.especialidad ?? this.ciclo()?.especialidad);
+      this.precargarUltimoOdontograma();
+    });
+  }
+
+  /**
+   * Al abrir una nota odontológica nueva, trae el ÚLTIMO odontograma del
+   * paciente (solo el odontograma, no el resto de la nota) para no volver a
+   * capturarlo desde cero. Es idempotente: se dispara una sola vez.
+   */
+  private precargarUltimoOdontograma(): void {
+    if (this.odontogramaPrecargado) return;
+    if (!this.odontologiaActiva() || !this.pacienteId) return;
+    this.odontogramaPrecargado = true;
+
+    const pacienteId = this.pacienteId;
+    this.api.getUltimoOdontograma(pacienteId).pipe(
+      takeUntil(this.destroy$),
+      catchError(() => of(null))
+    ).subscribe(odontograma => {
+      if (!odontograma) return;
+      this.odontologia = { ...this.odontologia, odontograma };
+      this.cdr.markForCheck();
     });
   }
 
@@ -610,7 +638,7 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
   }
 
   regresar(): void {
-    this.router.navigate(['/pacientesActivos'])
+    this.location.back();
   }
 
   editar(id: number | undefined): void {

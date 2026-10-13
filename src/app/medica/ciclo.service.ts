@@ -11,6 +11,7 @@ import {
   CicloConsulta,
   HistoriaClinicaResponse,
 } from './../interface/ciclo';
+import { Odontograma } from './notaMedica/odontograma.model';
 
 /** Consulta y crea ciclos clínicos y la historia agrupada por paciente. */
 @Injectable({ providedIn: 'root' })
@@ -92,6 +93,18 @@ export class CicloService extends BaseApiService {
         catchError(error => this.manejarError(error, 'obtener historia clínica'))
       ),
       5 * 60 * 1000
+    );
+  }
+
+  /**
+   * Odontograma más reciente del paciente (o null) para que una nueva nota
+   * odontológica continúe el registro anterior sin empezar de cero.
+   */
+  getUltimoOdontograma(pacienteId: number): Observable<Odontograma | null> {
+    const url = `${this.baseUrl}/ciclos/paciente/${pacienteId}/ultimo-odontograma`;
+    return this.http.get<{ odontograma: Odontograma | null }>(url).pipe(
+      map(respuesta => respuesta?.odontograma ?? null),
+      catchError(error => this.manejarError(error, 'obtener último odontograma'))
     );
   }
 

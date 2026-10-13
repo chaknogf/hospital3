@@ -1,25 +1,31 @@
-<section class="odonto-chart" aria-label="Odontograma dental">
+<section class="odonto-chart" [class.odonto-chart--readonly]="soloLectura" aria-label="Odontograma dental">
   <header class="odonto-chart__header">
     <div>
       <span class="odonto-chart__eyebrow">Registro por pieza y superficie</span>
       <h2>Odontograma</h2>
     </div>
-    <div class="odonto-chart__dentition" role="group" aria-label="Tipo de dentición">
-      <button type="button" [class.is-active]="denticion === 'permanente'" (click)="cambiarDenticion('permanente')">Permanente</button>
-      <button type="button" [class.is-active]="denticion === 'temporal'" (click)="cambiarDenticion('temporal')">Temporal</button>
-    </div>
+    @if (!soloLectura) {
+      <div class="odonto-chart__dentition" role="group" aria-label="Tipo de dentición">
+        <button type="button" [class.is-active]="denticion === 'permanente'" (click)="cambiarDenticion('permanente')">Permanente</button>
+        <button type="button" [class.is-active]="denticion === 'temporal'" (click)="cambiarDenticion('temporal')">Temporal</button>
+      </div>
+    } @else {
+      <span class="odonto-chart__dentition-label">{{ denticion === 'permanente' ? 'Dentición permanente' : 'Dentición temporal' }}</span>
+    }
   </header>
 
-  <div class="odonto-tools">
-    <span class="odonto-tools__label">Marcar:</span>
-    @for (hallazgo of hallazgos; track hallazgo.value) {
-      <button type="button" class="odonto-tool" [class.is-active]="hallazgoActivo === hallazgo.value"
-        [attr.aria-pressed]="hallazgoActivo === hallazgo.value" (click)="hallazgoActivo = hallazgo.value">
-        <i [class]="'odonto-swatch swatch--' + hallazgo.color"></i>{{ hallazgo.label }}
-      </button>
-    }
-    <button type="button" class="odonto-clear" (click)="limpiar()">Limpiar odontograma</button>
-  </div>
+  @if (!soloLectura) {
+    <div class="odonto-tools">
+      <span class="odonto-tools__label">Marcar:</span>
+      @for (hallazgo of hallazgos; track hallazgo.value) {
+        <button type="button" class="odonto-tool" [ngClass]="'tool--' + hallazgo.value" [class.is-active]="hallazgoActivo === hallazgo.value"
+          [attr.aria-pressed]="hallazgoActivo === hallazgo.value" (click)="hallazgoActivo = hallazgo.value">
+          <i [class]="'odonto-swatch swatch--' + hallazgo.color"></i>{{ hallazgo.label }}
+        </button>
+      }
+      <button type="button" class="odonto-clear" (click)="limpiar()">Limpiar odontograma</button>
+    </div>
+  }
 
   <div class="odonto-orientation" aria-hidden="true"><span>Derecha del paciente</span><span>Izquierda del paciente</span></div>
   <div class="odonto-arch-scroll">
@@ -29,18 +35,22 @@
           <h3>{{ cuadrante.nombre }}</h3>
           <div class="odonto-teeth">
             @for (numero of dientesDelCuadrante(cuadrante); track numero) {
-              <div class="odonto-tooth" [class.tooth--missing]="value.dientes[numero]?.estado === 'ausente'">
+              <div class="odonto-tooth" [class.tooth--missing]="value.dientes[numero]?.estado === 'ausente'"
+                [class.tooth--symbol]="esSimboloPieza(numero)">
                 <span class="odonto-tooth__number">{{ numero }}</span>
-                <button type="button" [ngClass]="['tooth-whole', 'mark--' + (value.dientes[numero]?.estado || 'sano')]"
-                  [attr.aria-label]="'Marcar pieza ' + numero + ' completa como ' + hallazgoActivo"
-                  [title]="'Pieza ' + numero + ': marcar toda la pieza como ' + hallazgoActivo"
+                <button type="button" [disabled]="soloLectura" [ngClass]="['tooth-whole', 'mark--' + (value.dientes[numero]?.estado || 'sano')]"
+                  [attr.aria-label]="soloLectura ? 'Pieza ' + numero : 'Marcar pieza ' + numero + ' completa como ' + hallazgoActivo"
+                  [title]="'Pieza ' + numero + ': ' + (value.dientes[numero]?.estado || 'sano')"
                   (click)="marcarPieza(numero)">
                   @for (superficie of superficies; track superficie.key) {
                     <span [ngClass]="['tooth-face', 'face--' + superficie.key, 'mark--' + estadoSuperficie(numero, superficie.key)]"
                       [title]="superficie.label + ': ' + estadoSuperficie(numero, superficie.key)"
                       (click)="$event.stopPropagation(); marcarSuperficie(numero, superficie.key)">
-                      {{ superficie.short }}
+                      {{ textoSuperficie(numero, superficie) }}
                     </span>
+                  }
+                  @if (letraPieza(numero); as letra) {
+                    <span class="tooth-badge"><span>{{ letra }}</span></span>
                   }
                 </button>
               </div>
@@ -52,7 +62,48 @@
   </div>
 
   <footer class="odonto-legend">
-    <span>Selecciona un hallazgo y toca una superficie. Toca el número para marcar toda la pieza.</span>
+    @if (soloLectura) {
+      <span>Odontograma de solo lectura. Las piezas resaltadas indican hallazgos registrados.</span>
+    } @else {
+      <span>Selecciona un hallazgo y toca una superficie. Toca el número para marcar toda la pieza.</span>
+    }
     <span>FDI · {{ denticion === 'permanente' ? 'Dentición adulta (11–48)' : 'Dentición temporal (51–85)' }}</span>
   </footer>
+
+  @if (soloLectura) {
+    <div class="odonto-glossary">
+      <span class="odonto-glossary__title">Glosario</span>
+
+      <p class="odonto-glossary__caption">Código de colores</p>
+      <ul class="odonto-glossary__items">
+        <li><i class="odonto-swatch swatch--caries"></i>Rojo: patología activa, caries o tratamiento pendiente</li>
+        <li><i class="odonto-swatch swatch--resina"></i>Azul: tratamiento realizado, diente sano o restauración definitiva</li>
+        <li><i class="odonto-swatch swatch--sellante"></i>Verde: lesión incipiente, sellante o restauración provisional</li>
+        <li><i class="odonto-swatch swatch--ausente"></i>Negro: diente ausente, extracción o base preexistente</li>
+      </ul>
+
+      <p class="odonto-glossary__caption">Hallazgos y letras</p>
+      <ul class="odonto-glossary__items">
+        @for (hallazgo of hallazgos; track hallazgo.value) {
+          <li><i [class]="'odonto-swatch swatch--' + hallazgo.color"></i>{{ hallazgo.label }}@if (hallazgo.letra) {&nbsp;<strong class="odonto-glossary__letter">{{ hallazgo.letra }}</strong>}</li>
+        }
+      </ul>
+
+      <p class="odonto-glossary__caption">Símbolos</p>
+      <ul class="odonto-glossary__items">
+        <li><i class="odonto-swatch swatch--caries"></i>Superficie rellena con su letra (C, O, S)</li>
+        <li><i class="odonto-swatch swatch--corona"></i>Corona: anillo alrededor de la pieza (CR)</li>
+        <li><i class="odonto-swatch swatch--endodoncia"></i>Endodoncia: línea vertical en la pieza (EN)</li>
+        <li><i class="odonto-swatch swatch--ausente"></i>Ausente / extracción: X sobre la pieza (A)</li>
+        <li><i class="odonto-swatch swatch--implante"></i>Implante: rayado de la pieza (IM)</li>
+      </ul>
+
+      <p class="odonto-glossary__caption">Ubicación de la superficie</p>
+      <ul class="odonto-glossary__surfaces">
+        @for (superficie of superficies; track superficie.key) {
+          <li><strong>{{ superficie.short }}</strong> {{ superficie.label }}</li>
+        }
+      </ul>
+    </div>
+  }
 </section>

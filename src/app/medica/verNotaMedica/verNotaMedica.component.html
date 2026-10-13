@@ -75,6 +75,26 @@
         </section>
       }
 
+      <!-- Odontología -->
+      @if (odontologia) {
+        <section class="rep-section">
+          <h2>Odontología</h2>
+          <dl class="rep-dl">
+            @if (odontologia.motivo_consulta) { <dt>Motivo de consulta</dt><dd>{{ odontologia.motivo_consulta }}</dd> }
+            @if (odontologia.examen_extraoral) { <dt>Examen extraoral</dt><dd>{{ odontologia.examen_extraoral }}</dd> }
+            @if (odontologia.examen_intraoral) { <dt>Examen intraoral</dt><dd>{{ odontologia.examen_intraoral }}</dd> }
+            @if (odontologia.diagnostico) { <dt>Diagnóstico</dt><dd>{{ odontologia.diagnostico }}</dd> }
+            @if (odontologia.plan_tratamiento) { <dt>Plan de tratamiento</dt><dd>{{ odontologia.plan_tratamiento }}</dd> }
+            @if (odontologia.procedimientos) { <dt>Procedimientos</dt><dd>{{ odontologia.procedimientos }}</dd> }
+          </dl>
+          <div class="rep-odonto">
+            @if (odontologia.odontograma) {
+              <app-odontograma [value]="odontologia.odontograma" [soloLectura]="true" />
+            }
+          </div>
+        </section>
+      }
+
       <!-- Escalas -->
       @if (glasgow || silverman || downe || apgar || bishop) {
         <section class="rep-section">

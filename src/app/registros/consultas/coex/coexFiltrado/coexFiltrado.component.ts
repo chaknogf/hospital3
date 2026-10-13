@@ -83,6 +83,7 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
       skipRight: this.iconService.getIcon('skipRight'),
       print: this.iconService.getIcon('printIcon'),
       calendar: this.iconService.getIcon('calendarIcon'),
+      history: this.iconService.getIcon('documentoIcon'),
     };
 
     // ======= EFFECT =======
@@ -206,6 +207,17 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
 
   cita(id: number): void {
     this.router.navigate(['/agendar/paciente', id]);
+  }
+
+  notaMedica(consultaId: number): void {
+    this.router.navigate(['/notaMedica', consultaId]);
+  }
+
+  verHistoria(pacienteId: number): void {
+    this.router.navigate(
+      ['/historiaClinica', pacienteId],
+      { queryParams: { by: 'paciente' } }
+    );
   }
 
   // ======= NAVEGACIÓN =======

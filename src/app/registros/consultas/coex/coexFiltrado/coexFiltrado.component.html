@@ -198,8 +198,11 @@
             </td>
             <td class="secundario">
               <div class="d-flex gap-1">
-                <button data-label="Nota de Consulta">
+                <button (click)="notaMedica(data.id)" data-label="Nota de Consulta">
                   <span [innerHTML]="icons['medical']"></span>
+                </button>
+                <button (click)="verHistoria(data.paciente.id)" data-label="Historias Médicas">
+                  <span [innerHTML]="icons['history']"></span>
                 </button>
                 <button (click)="cita(data.paciente.id)" data-label="Cita">
                   <span [innerHTML]="icons['calendar']"></span>

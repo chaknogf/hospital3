@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DenticionDental, Odontograma, SuperficieDental } from './odontograma.model';
 
@@ -11,8 +11,10 @@ import { DenticionDental, Odontograma, SuperficieDental } from './odontograma.mo
   styleUrl: './odontograma.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OdontogramaComponent {
+export class OdontogramaComponent implements OnInit, OnChanges {
   @Input({ required: true }) value!: Odontograma;
+  /** Cuando es true solo muestra el odontograma, sin permitir edición. */
+  @Input() soloLectura = false;
   @Output() valueChange = new EventEmitter<Odontograma>();
 
   readonly superficies: { key: SuperficieDental; label: string; short: string }[] = [
@@ -24,16 +26,28 @@ export class OdontogramaComponent {
   ];
 
   readonly hallazgos = [
-    { value: 'sano', label: 'Limpiar', color: 'neutral' },
-    { value: 'caries', label: 'Caries', color: 'caries' },
-    { value: 'resina', label: 'Resina', color: 'resina' },
-    { value: 'amalgama', label: 'Amalgama', color: 'amalgama' },
-    { value: 'sellante', label: 'Sellante', color: 'sellante' },
-    { value: 'corona', label: 'Corona', color: 'corona' },
-    { value: 'endodoncia', label: 'Endodoncia', color: 'endodoncia' },
-    { value: 'ausente', label: 'Ausente / extracción', color: 'ausente' },
-    { value: 'implante', label: 'Implante', color: 'implante' },
+    { value: 'sano', label: 'Limpiar', color: 'neutral', letra: 'Ø' },
+    { value: 'caries', label: 'Caries', color: 'caries', letra: 'C' },
+    { value: 'resina', label: 'Resina', color: 'resina', letra: 'O' },
+    { value: 'amalgama', label: 'Amalgama', color: 'amalgama', letra: 'O' },
+    { value: 'sellante', label: 'Sellante', color: 'sellante', letra: 'S' },
+    { value: 'corona', label: 'Corona', color: 'corona', letra: 'CR' },
+    { value: 'endodoncia', label: 'Endodoncia', color: 'endodoncia', letra: 'EN' },
+    { value: 'ausente', label: 'Ausente / extracción', color: 'ausente', letra: 'A' },
+    { value: 'implante', label: 'Implante', color: 'implante', letra: 'IM' },
   ];
+
+  /** Letra de referencia clínica por hallazgo. */
+  private readonly letras: Record<string, string> = {
+    caries: 'C', resina: 'O', amalgama: 'O', sellante: 'S',
+    corona: 'CR', endodoncia: 'EN', ausente: 'A', implante: 'IM',
+  };
+  /** Hallazgos que rellenan la superficie afectada. */
+  private readonly rellenos = ['caries', 'resina', 'amalgama', 'sellante'];
+  /** Hallazgos que se dibujan con un símbolo sobre toda la pieza. */
+  private readonly simbolosPieza: Record<string, string> = {
+    corona: 'CR', endodoncia: 'EN', ausente: 'A', implante: 'IM',
+  };
 
   readonly cuadrantes = [
     { nombre: 'Superior derecho', clase: 'superior-derecho', dientesPermanentes: this.rango(18, 11), dientesTemporales: this.rango(55, 51) },
@@ -45,7 +59,20 @@ export class OdontogramaComponent {
   denticion: DenticionDental = 'permanente';
   hallazgoActivo = 'caries';
 
+  ngOnInit(): void {
+    if (this.value?.denticion) this.denticion = this.value.denticion;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Refleja la dentición cuando el odontograma se carga/actualiza desde fuera
+    // (p. ej. al precargar el último odontograma del paciente).
+    if (changes['value'] && this.value?.denticion) {
+      this.denticion = this.value.denticion;
+    }
+  }
+
   cambiarDenticion(denticion: DenticionDental): void {
+    if (this.soloLectura) return;
     this.denticion = denticion;
     this.emitir({ ...this.value, denticion });
   }
@@ -55,6 +82,7 @@ export class OdontogramaComponent {
   }
 
   marcarPieza(numero: number): void {
+    if (this.soloLectura) return;
     const dientes = { ...this.value.dientes };
     if (this.hallazgoActivo === 'sano') {
       delete dientes[numero];
@@ -67,6 +95,7 @@ export class OdontogramaComponent {
   }
 
   marcarSuperficie(numero: number, superficie: SuperficieDental): void {
+    if (this.soloLectura) return;
     const dientes = { ...this.value.dientes };
     const pieza = { ...dientes[numero], superficies: { ...dientes[numero]?.superficies } };
     if (this.hallazgoActivo === 'sano') {
@@ -82,12 +111,36 @@ export class OdontogramaComponent {
   }
 
   estadoSuperficie(numero: number, superficie: SuperficieDental): string {
-    return this.value.dientes[numero]?.superficies?.[superficie]
-      ?? this.value.dientes[numero]?.estado
-      ?? 'sano';
+    const pieza = this.value.dientes[numero];
+    const marcada = pieza?.superficies?.[superficie];
+    if (marcada) return marcada;
+    return this.estaRelleno(pieza?.estado) ? pieza!.estado! : 'sano';
+  }
+
+  /** Texto de la cara: la letra del hallazgo si está marcada, si no la superficie. */
+  textoSuperficie(numero: number, superficie: { key: SuperficieDental; short: string }): string {
+    const estado = this.estadoSuperficie(numero, superficie.key);
+    return estado === 'sano' ? superficie.short : (this.letras[estado] ?? superficie.short);
+  }
+
+  /** Indica si la pieza completa se representa con un símbolo (no relleno). */
+  esSimboloPieza(numero: number): boolean {
+    const estado = this.value.dientes[numero]?.estado;
+    return !!estado && estado in this.simbolosPieza;
+  }
+
+  /** Letra de referencia para una marca de pieza completa con símbolo. */
+  letraPieza(numero: number): string {
+    const estado = this.value.dientes[numero]?.estado;
+    return estado ? (this.simbolosPieza[estado] ?? '') : '';
+  }
+
+  private estaRelleno(estado?: string): boolean {
+    return !!estado && this.rellenos.includes(estado);
   }
 
   limpiar(): void {
+    if (this.soloLectura) return;
     this.emitir({ ...this.value, dientes: {} });
   }
 
