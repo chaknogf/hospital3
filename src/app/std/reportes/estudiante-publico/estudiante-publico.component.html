@@ -20,6 +20,20 @@
   }
   @if (!cargando && datos.length > 0) {
     <div>
+      @if (porSexo.length > 0) {
+        <div class="section-card sexo-section">
+          <h2 class="section-title">Cantidad por sexo</h2>
+          <div class="sexo-grid">
+            @for (s of porSexo; track s.sexo) {
+              <div class="sexo-card">
+                <span class="sexo-label">{{ s.etiqueta }}</span>
+                <span class="sexo-total">{{ s.total }}</span>
+                <span class="sexo-pct">{{ s.porcentaje }}%</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
       <div class="total-badge">Total: {{ data?.total_general }} registros</div>
       <div class="table-wrap">
         <table class="reporte-table">

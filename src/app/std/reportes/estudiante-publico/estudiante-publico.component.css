@@ -1,3 +1,40 @@
 @import '../_reportes-skeuo.css';
 
 .text-right { text-align: right; font-weight: 600; }
+
+/* ── CANTIDAD POR SEXO ── */
+.sexo-section { padding-bottom: 14px; }
+.sexo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+.sexo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 12px;
+  background: var(--theme-surface-raised);
+  border: var(--theme-border-width) solid var(--theme-border);
+  border-radius: var(--theme-radius-md);
+}
+.sexo-label {
+  font-size: var(--theme-font-size-xs);
+  font-weight: var(--theme-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--theme-text-muted);
+}
+.sexo-total {
+  font-family: var(--theme-font-mono);
+  font-size: 1.8rem;
+  font-weight: var(--theme-font-weight-heavy);
+  color: var(--theme-primary);
+  line-height: 1;
+}
+.sexo-pct {
+  font-size: var(--theme-font-size-xs);
+  color: var(--theme-text-muted);
+}
+

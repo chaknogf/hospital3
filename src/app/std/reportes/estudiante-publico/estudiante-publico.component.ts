@@ -36,4 +36,27 @@ export class EstudiantePublicoComponent implements OnInit {
       error: () => { this.error = 'Error al cargar datos'; this.cargando = false; }
     });
   }
+
+  /** Desglose de cantidades por sexo con etiqueta legible y porcentaje. */
+  get porSexo(): { sexo: string; etiqueta: string; total: number; porcentaje: number }[] {
+    const lista: any[] = this.data?.por_sexo || [];
+    const total = lista.reduce((acc, s) => acc + (s.total || 0), 0);
+    return lista.map(s => ({
+      sexo: s.sexo,
+      etiqueta: this.etiquetaSexo(s.sexo),
+      total: s.total ?? 0,
+      porcentaje: total > 0 ? Math.round(((s.total || 0) / total) * 100) : 0,
+    }));
+  }
+
+  private etiquetaSexo(sexo: string): string {
+    switch ((sexo || '').toUpperCase()) {
+      case 'M':
+      case 'MASCULINO': return 'Masculino';
+      case 'F':
+      case 'FEMENINO': return 'Femenino';
+      case 'N/D': return 'No especificado';
+      default: return sexo || 'No especificado';
+    }
+  }
 }
