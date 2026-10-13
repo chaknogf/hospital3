@@ -144,6 +144,8 @@ export class FullSyncService {
     let skip = 0;
     let total = 0;
 
+    // `GET /pacientes/` ordena por id descendente: skip=0 es el último paciente
+    // creado, de modo que se descarga de lo más nuevo hasta llegar a MAX_RECORDS.
     do {
       await this.checkPauseCancel();
 
@@ -214,6 +216,8 @@ export class FullSyncService {
     let skip = 0;
     let total = 0;
 
+    // `GET /consultas/` ordena por id descendente: skip=0 es la última consulta
+    // creada, de modo que se descarga de lo más nuevo hasta llegar a MAX_RECORDS.
     do {
       await this.checkPauseCancel();
 

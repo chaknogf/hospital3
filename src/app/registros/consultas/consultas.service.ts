@@ -36,8 +36,10 @@ export class ConsultaService extends BaseApiService {
   private ordenesSubject = new BehaviorSubject<any>({});
   ordenes$ = this.ordenesSubject.asObservable();
 
+  private readonly pageSize = 8;
+
   private ultimoFiltroConsulta: PaginationState = {
-    filtro: { skip: 0, limit: 8 }
+    filtro: { skip: 0, limit: this.pageSize }
   };
 
   constructor(http: HttpClient, router: Router) {
@@ -66,16 +68,19 @@ export class ConsultaService extends BaseApiService {
   }
 
   getConsultas(filtros: any): Observable<ConsultaListResponse> {
-    let { skip = 0, limit = 500 } = filtros.filtro || {};
-    skip = Math.max(0, skip);
-    limit = Math.min(Math.max(1, limit), 500);
-    const filteredFiltros = { ...filtros, filtro: { skip, limit, ...(filtros.filtro || {}) } };
-    this.ultimoFiltroConsulta.filtro = filteredFiltros.filtro;
+    // Los componentes envían filtros planos; también se acepta el formato anidado
+    // { filtro: {...} } por compatibilidad.
+    const base = filtros?.filtro ?? filtros ?? {};
+    const skip = Math.max(0, base.skip ?? 0);
+    // El backend limita `limit` a 200 (Query(le=200)); enviar más provoca 422.
+    const limit = Math.min(Math.max(1, base.limit ?? this.pageSize), 200);
+    const filtro = { ...base, skip, limit };
+    this.ultimoFiltroConsulta.filtro = filtro;
 
-    const params = this.limpiarParametros(filteredFiltros.filtro);
+    const params = this.limpiarParametros(filtro);
 
     if (!this.sync.isOnline()) {
-      return from(this.getConsultasOffline(filteredFiltros.filtro)).pipe(
+      return from(this.getConsultasOffline(filtro)).pipe(
         tap(response => this.consultasSubject.next(response.consultas))
       );
     }
@@ -92,7 +97,7 @@ export class ConsultaService extends BaseApiService {
       }),
       catchError(error => {
         if (error.status === 0 || error.status === 502 || error.status === 503) {
-return from(this.getConsultasOffline(filteredFiltros.filtro)).pipe(
+          return from(this.getConsultasOffline(filtro)).pipe(
             tap(response => this.consultasSubject.next(response.consultas))
           );
         }
