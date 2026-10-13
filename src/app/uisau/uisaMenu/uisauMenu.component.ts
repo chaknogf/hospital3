@@ -47,7 +47,9 @@ export class UisauMenuComponent implements OnInit {
       compartir: this.iconService.getIcon("compartirIcon"),
       calendar: this.iconService.getIcon("calendarIcon"),
       baby: this.iconService.getIcon("babyIcon"),
-      persons: this.iconService.getIcon("persons2")
+      persons: this.iconService.getIcon("persons2"),
+      notaUisau: this.iconService.getIcon("documentoIcon"),
+      historiaUisau: this.iconService.getIcon("historiaMedicaIcon")
 
     }
 
@@ -61,6 +63,8 @@ export class UisauMenuComponent implements OnInit {
     this.options = [
 
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
+      { nombre: 'Nota UISAU', descripcion: 'Registrar nota de información al usuario', ruta: '/notaUisau', icon: 'notaUisau' },
+      { nombre: 'Historia UISAU', descripcion: 'Consultar registros UISAU por paciente', ruta: '/historiaUisau', icon: 'historiaUisau' },
       { nombre: 'Encamamiento', descripcion: 'Listado de Pacientes Hospitalizados', ruta: '/encamamiento', icon: '' },
       { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: '/reportes', icon: 'archivo' },
       // { nombre: 'Informados', descripcion: 'Gestión de usuarios informados', ruta: '/informados', icon: '' },

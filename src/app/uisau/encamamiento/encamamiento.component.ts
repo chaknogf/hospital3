@@ -58,6 +58,13 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
 
   serviciosIngreso: Dict[] = servicios.filter(s => s.ref === 'ingreso');
 
+  /** Criterio con el que se agrupan y filtran los pacientes. */
+  agruparPor: 'especialidad' | 'servicio' = 'especialidad';
+  opcionesAgrupacion: { value: 'especialidad' | 'servicio'; label: string }[] = [
+    { value: 'especialidad', label: 'Especialidad' },
+    { value: 'servicio', label: 'Servicio' },
+  ];
+
   // ── Mapa de consultas y conteos por servicio ──────────────────
   consultasPorServicio: Record<string, ConsultaResponse[]> = {};
   conteosPorServicio: Record<any, any> = {};
@@ -123,13 +130,15 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
       skipLeft: this.iconService.getIcon("skipLeft"),
       skipRight: this.iconService.getIcon("skipRight"),
       print: this.iconService.getIcon("printIcon"),
+      notaUisau: this.iconService.getIcon("notaMedica"),
+      historiaUisau: this.iconService.getIcon("historiaMedicaIcon"),
     };
   }
 
   ngOnInit(): void {
     this.api.consultas$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.consultas = data; this.cdr.markForCheck(); });
     this.cargarConsultas();
-    // this.cargarTodosPorServicio();
+    this.cargarTodosPorServicio();
     this.cargarTodosPorEspecialidad();
   }
 
@@ -257,6 +266,8 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
 
   seleccionarServicio(value: string): void {
     this.filtros.servicio = value;
+    // Servicio y especialidad son filtros alternativos en esta vista.
+    this.filtros.especialidad = '';
     this.paginaActual = 1;
     this.filtros.skip = 0;
 
@@ -268,6 +279,22 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
       this.consultas = this.consultasPorServicio[value] ?? [];
       this.totalDeRegistros = this.conteosPorServicio[value] ?? 0;
     }
+  }
+
+  /** Cambia entre agrupar por especialidad o por servicio. */
+  cambiarAgrupacion(modo: 'especialidad' | 'servicio'): void {
+    if (this.agruparPor === modo) return;
+    this.agruparPor = modo;
+    this.seleccionarTodos();
+  }
+
+  /** Quita cualquier filtro de agrupación y muestra todos los ingresos. */
+  seleccionarTodos(): void {
+    this.filtros.especialidad = '';
+    this.filtros.servicio = '';
+    this.paginaActual = 1;
+    this.filtros.skip = 0;
+    this.cargarConsultas();
   }
 
   // ══════════════════════════════════════════════════════════
@@ -347,7 +374,7 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
     };
     this.paginaActual = 1;
     this.cargarConsultas();
-    // this.cargarTodosPorServicio();
+    this.cargarTodosPorServicio();
     this.cargarTodosPorEspecialidad();
   }
 
@@ -363,6 +390,17 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
   imprimir(consultaId: number): void { this.router.navigate(['/ingreso', consultaId]); }
   volver(): void { this.router.navigate(['/uisau']); }
   mostrar(): void { this.visible = !this.visible; }
+
+  /** Abre el registro de la nota UISAU para la consulta seleccionada. */
+  agregarNotaUisau(consultaId: number): void {
+    this.router.navigate(['/notaUisau', consultaId]);
+  }
+
+  /** Abre la historia UISAU del paciente. */
+  verHistoriaUisau(pacienteId?: number | null): void {
+    if (!pacienteId) return;
+    this.router.navigate(['/historiaUisau', pacienteId]);
+  }
 
   // ══════════════════════════════════════════════════════════
   // HELPERS

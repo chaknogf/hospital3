@@ -107,6 +107,10 @@ export class QuirofanoFormComponent implements OnInit {
   ngOnInit(): void {
     this.cargarCatalogos();
     this.cargarMedicos();
+    this.configurarEstadoAutomatico();
+
+
+
 
     // Preseleccionar "Especialista" por defecto si existe en catálogo
     this.api.getRangosEspecialista(true).subscribe({
@@ -116,7 +120,7 @@ export class QuirofanoFormComponent implements OnInit {
           this.form.patchValue({ rango_especialista_id: def.rango_especialista_id });
         }
       },
-      error: () => {}
+      error: () => { }
     });
 
     const editarId = Number(this.route.snapshot.paramMap.get('id'));
@@ -140,11 +144,11 @@ export class QuirofanoFormComponent implements OnInit {
   }
 
   cargarCatalogos(): void {
-    this.api.getFormatos().subscribe({ next: d => this.formatos = d, error: () => {} });
-    this.api.getEstadosCirugia().subscribe({ next: d => this.estados = d.filter(e => ['FIN', 'CAN'].includes((e.codigo||'').toUpperCase())), error: () => {} });
-    this.api.getRangosEspecialista().subscribe({ next: d => this.rangos = d.filter(r => ['ESP'].includes((r.codigo||'').toUpperCase())), error: () => {} });
-    this.api.getProcedencias().subscribe({ next: d => this.procedencias = d.filter(p => ['ELE', 'EMG'].includes((p.codigo||'').toUpperCase())), error: () => {} });
-    this.api.getQuirofanosNumero().subscribe({ next: d => this.quirofanosNumero = d, error: () => {} });
+    this.api.getFormatos().subscribe({ next: d => this.formatos = d, error: () => { } });
+    this.api.getEstadosCirugia().subscribe({ next: d => this.estados = d.filter(e => ['FIN', 'CAN'].includes((e.codigo || '').toUpperCase())), error: () => { } });
+    this.api.getRangosEspecialista().subscribe({ next: d => this.rangos = d.filter(r => ['ESP'].includes((r.codigo || '').toUpperCase())), error: () => { } });
+    this.api.getProcedencias().subscribe({ next: d => this.procedencias = d.filter(p => ['ELE', 'EMG'].includes((p.codigo || '').toUpperCase())), error: () => { } });
+    this.api.getQuirofanosNumero().subscribe({ next: d => this.quirofanosNumero = d, error: () => { } });
     this.especialidadesApi.getEspecialidades(true, true).subscribe({
       next: d => {
         this.especialidades = d.filter(e => {
@@ -153,18 +157,18 @@ export class QuirofanoFormComponent implements OnInit {
           return c === 'CIRU' || c === 'TRAU' || c === 'GIN' || c === 'GINE' || n.includes('ginec') || n.includes('cirug') || n.includes('traum');
         });
       },
-      error: () => {}
+      error: () => { }
     });
 
     // Catálogo maestro de procedimientos
     this.catalogoApi.getCatalogoProcedimientos({ activo: true, limit: 5000 }).subscribe({
       next: d => this.catalogoProcedimientos = d,
-      error: () => {}
+      error: () => { }
     });
     // Catálogo de áreas del cuerpo intervenida
     this.catalogoApi.getAreasCuerpo(true).subscribe({
       next: d => this.areasCuerpo = d,
-      error: () => {}
+      error: () => { }
     });
   }
 
@@ -201,7 +205,7 @@ export class QuirofanoFormComponent implements OnInit {
   cargarMedicos(): void {
     this.medicosApi.getMedicos({}).subscribe({
       next: (data) => this.medicos = data.personal_atencion.filter(m => m.activo),
-      error: () => {}
+      error: () => { }
     });
   }
 
@@ -270,7 +274,7 @@ export class QuirofanoFormComponent implements OnInit {
           observaciones: data.observaciones || '',
         });
       },
-      error: () => {},
+      error: () => { },
       complete: () => { this.cargando = false; }
     });
   }
@@ -343,4 +347,31 @@ export class QuirofanoFormComponent implements OnInit {
   }
 
   volver(): void { this.location.back(); }
+
+  onAreaCuerpoInput(event: Event): void {
+    const texto = (event.target as HTMLInputElement).value;
+    const textoNormalizado = texto.trim().toLocaleLowerCase();
+    const area = this.areasCuerpo.find(
+      a => a.nombre.trim().toLocaleLowerCase() === textoNormalizado
+    );
+    this.form.patchValue({
+      id_area_cuerpo_intervenida: area?.id ?? null
+    }, { emitEvent: false });
+  }
+
+  private configurarEstadoAutomatico(): void {
+    this.form.get('hora_finaliza_intervencion')?.valueChanges.subscribe(hora => {
+      if (hora) {
+        const estadoFinalizado = this.estados.find(
+          e => (e.codigo || '').toUpperCase() === 'FIN'
+        );
+        if (estadoFinalizado) {
+          this.form.patchValue({
+            estado_cirugia_id: estadoFinalizado.estado_cirugia_id
+          }, { emitEvent: false });
+        }
+      }
+    });
+  }
+
 }

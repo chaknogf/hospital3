@@ -1,0 +1,218 @@
+<div class="historia-container no-print">
+  <!-- Header -->
+  <header class="historia-header">
+    <div class="header-left">
+      <button class="btn-back" (click)="regresar()">← Volver</button>
+      <div>
+        <h1>Historia UISAU</h1>
+        @if (historia(); as h) {
+          <p class="paciente-info">
+            {{ h.paciente_nombre || 'Paciente' }}
+            @if (h.paciente_expediente) {
+              <span class="badge-exp">{{ h.paciente_expediente }}</span>
+            }
+            <span class="stats-resumen">
+              {{ consultasConUisau().length }} consultas con registro UISAU
+            </span>
+          </p>
+        }
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="busqueda">
+        <input
+          type="text"
+          placeholder="Buscar por expediente..."
+          [(ngModel)]="expedienteBusqueda"
+          (keyup.enter)="buscarPorExpediente()"
+          class="input-busqueda"
+        />
+        <button class="btn-buscar" (click)="buscarPorExpediente()">🔍</button>
+      </div>
+      <button class="btn-imprimir" (click)="imprimir()">🖨️ Imprimir</button>
+    </div>
+  </header>
+
+  <!-- Loading -->
+  @if (cargando()) {
+    <div class="state-box spinner">
+      <div class="spinner-ring"></div>
+      <span>Cargando historia UISAU...</span>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div class="state-box error">{{ error() }}</div>
+  }
+
+  <!-- Árbol de consultas -->
+  @if (!cargando() && historia()) {
+    @if (consultasConUisau().length === 0) {
+      <div class="state-box vacio">
+        <span class="vacio-icon">📋</span>
+        <span>No hay registros UISAU para este paciente</span>
+      </div>
+    } @else {
+      <div class="arbol">
+        @for (item of consultasConUisau(); track item.consulta.id) {
+          <div class="consulta-grupo">
+            <button class="consulta-header" (click)="toggleConsulta(item.consulta.id)">
+              <span class="consulta-icon">{{ estaColapsada(item.consulta.id) ? '▶' : '▼' }}</span>
+              <span class="consulta-fecha">{{ formatearFecha(item.consulta.fecha_consulta) }}</span>
+              <span class="consulta-especialidad">{{ item.consulta.especialidad || 'Consulta' }}</span>
+              <span class="consulta-meta">{{ item.ciclos.length }} notas</span>
+            </button>
+
+            @if (!estaColapsada(item.consulta.id)) {
+              <div class="notas-lista">
+                @for (ciclo of item.ciclos; track ciclo.id; let idx = $index) {
+                  <div class="nota-card">
+                    <div class="nota-timeline">
+                      <div class="timeline-dot"></div>
+                      @if (idx < item.ciclos.length - 1) {
+                        <div class="timeline-line"></div>
+                      }
+                    </div>
+                    <div class="nota-contenido">
+                      <div class="nota-header">
+                        <span class="nota-numero">Nota #{{ ciclo.numero }}</span>
+                        <span class="nota-hora">{{ formatearRegistro(ciclo.registro) }}</span>
+                      </div>
+                      <div class="nota-autor">
+                        {{ ciclo.usuario_nombre || ciclo.usuario || 'usuario' }}
+                        @if (ciclo.especialidad) {
+                          <span class="nota-especialidad">· {{ ciclo.especialidad }}</span>
+                        }
+                      </div>
+
+                      @if (ciclo.uisau; as u) {
+                        <div class="uisau-detalle">
+                          <!-- Estado del paciente -->
+                          <div class="uisau-block">
+                            <h4>Estado del paciente</h4>
+                            <dl class="uisau-dl">
+                              <div><dt>Fecha</dt><dd>{{ formatearFecha(u.estado_paciente?.fecha) }}</dd></div>
+                              <div><dt>Hora</dt><dd>{{ u.estado_paciente?.hora || '—' }}</dd></div>
+                              <div><dt>Estado</dt><dd>{{ etiquetaEstado(u.estado_paciente?.estado) }}</dd></div>
+                              <div><dt>Situación</dt><dd>{{ etiquetaSituacion(u.estado_paciente?.situacion) }}</dd></div>
+                              <div><dt>Especialidad</dt><dd>{{ u.estado_paciente?.especialidad || '—' }}</dd></div>
+                              <div><dt>Servicio</dt><dd>{{ u.estado_paciente?.servicio || '—' }}</dd></div>
+                              <div><dt>Estadía</dt><dd>{{ u.estado_paciente?.estadia ?? '—' }}</dd></div>
+                              <div><dt>Cama</dt><dd>{{ u.estado_paciente?.cama ?? '—' }}</dd></div>
+                              <div><dt>Lugar referencia</dt><dd>{{ etiquetaLugar(u.estado_paciente?.lugar_referencia) }}</dd></div>
+                              <div><dt>Fecha referencia</dt><dd>{{ formatearFecha(u.estado_paciente?.fecha_referencia) }}</dd></div>
+                            </dl>
+                          </div>
+
+                          <!-- Información y contacto -->
+                          <div class="uisau-block">
+                            <h4>Información y contacto</h4>
+                            <dl class="uisau-dl">
+                              <div class="wide"><dt>Información</dt><dd>{{ u.informacion_contacto?.informacion || '—' }}</dd></div>
+                              <div><dt>Contacto</dt><dd>{{ u.informacion_contacto?.contacto || '—' }}</dd></div>
+                              <div><dt>Parentesco</dt><dd>{{ etiquetaParentesco(u.informacion_contacto?.parentesco) }}</dd></div>
+                              <div><dt>Teléfono</dt><dd>{{ u.informacion_contacto?.telefono || '—' }}</dd></div>
+                              <div><dt>Fecha contacto</dt><dd>{{ formatearFecha(u.informacion_contacto?.fecha_contacto) }}</dd></div>
+                              <div><dt>Hora contacto</dt><dd>{{ u.informacion_contacto?.hora_contacto || '—' }}</dd></div>
+                            </dl>
+                          </div>
+
+                          <!-- Nota clínica -->
+                          <div class="uisau-block uisau-block--full">
+                            <h4>Nota clínica</h4>
+                            <dl class="uisau-dl">
+                              <div class="wide"><dt>Nota</dt><dd>{{ u.nota_clinica?.nota || '—' }}</dd></div>
+                              <div class="wide"><dt>Evolución</dt><dd>{{ u.nota_clinica?.evolucion || '—' }}</dd></div>
+                              <div><dt>Estudios</dt><dd>{{ u.nota_clinica?.estudios || '—' }}</dd></div>
+                              <div><dt>Receta</dt><dd>{{ u.nota_clinica?.receta || '—' }}</dd></div>
+                              <div><dt>Receta por</dt><dd>{{ u.nota_clinica?.receta_por || '—' }}</dd></div>
+                            </dl>
+
+                            @if (u.nota_clinica?.diagnosticos?.length) {
+                              <div class="uisau-lista">
+                                <span class="uisau-lista__label">Diagnósticos</span>
+                                <ul>
+                                  @for (d of u.nota_clinica?.diagnosticos; track $index) {
+                                    <li>
+                                      @if (d.codigo) { <span class="code">{{ d.codigo }}</span> }
+                                      {{ d.descripcion }}
+                                    </li>
+                                  }
+                                </ul>
+                              </div>
+                            }
+
+                            @if (u.nota_clinica?.articulos?.length) {
+                              <div class="uisau-lista">
+                                <span class="uisau-lista__label">Artículos</span>
+                                <ul>
+                                  @for (a of u.nota_clinica?.articulos; track $index) {
+                                    <li>
+                                      {{ a.descripcion }}
+                                      @if (a.cantidad) { <span class="code">×{{ a.cantidad }}</span> }
+                                    </li>
+                                  }
+                                </ul>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
+
+<!-- ═══ VISTA DE IMPRESIÓN ═══ -->
+<div class="print-container">
+  @if (historia()) {
+    <header class="print-header">
+      <h1>Historia UISAU</h1>
+      <div class="print-paciente">
+        <strong>{{ historia()!.paciente_nombre || 'Paciente' }}</strong>
+        @if (historia()!.paciente_expediente) {
+          <span> — Exp: {{ historia()!.paciente_expediente }}</span>
+        }
+      </div>
+      <div class="print-fecha">Impreso: {{ fechaFormateada }}</div>
+    </header>
+
+    @for (item of consultasConUisau(); track item.consulta.id) {
+      <section class="print-consulta">
+        <h2>
+          {{ formatearFecha(item.consulta.fecha_consulta) }} —
+          {{ item.consulta.especialidad || 'Consulta' }}
+        </h2>
+        @for (ciclo of item.ciclos; track ciclo.id) {
+          <div class="print-nota">
+            <h3>Nota #{{ ciclo.numero }} — {{ ciclo.usuario_nombre || ciclo.usuario || 'usuario' }}</h3>
+            @if (ciclo.uisau; as u) {
+              <p><strong>Estado:</strong> {{ etiquetaEstado(u.estado_paciente?.estado) }} · {{ etiquetaSituacion(u.estado_paciente?.situacion) }}</p>
+              @if (u.informacion_contacto?.informacion) {
+                <p><strong>Información:</strong> {{ u.informacion_contacto?.informacion }}</p>
+              }
+              @if (u.nota_clinica?.nota) {
+                <p><strong>Nota:</strong> {{ u.nota_clinica?.nota }}</p>
+              }
+              @if (u.nota_clinica?.evolucion) {
+                <p><strong>Evolución:</strong> {{ u.nota_clinica?.evolucion }}</p>
+              }
+            }
+          </div>
+        }
+      </section>
+    }
+
+    <footer class="print-footer">
+      Documento generado automáticamente — {{ fechaFormateada }}
+    </footer>
+  }
+</div>

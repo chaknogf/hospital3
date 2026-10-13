@@ -1,4 +1,5 @@
 import { ConsultaPacienteResumen } from './consultas';
+import { DatosUisau } from '../uisau/uisau.model';
 
 /** Signos vitales registrados en una valoración clínica o de enfermería. */
 export interface SignosVitales {
@@ -182,6 +183,7 @@ export interface CicloConsulta {
   servicio?: string;
   contenido?: string;
   datos_medicos?: DatoMedico;
+  uisau?: DatosUisau;
   consulta?: ConsultaPacienteResumen;
   total?: number;
 }
@@ -209,6 +211,7 @@ export interface CicloResumen {
     procedimientos?: string;
     piezas_afectadas?: string[];
   };
+  uisau?: DatosUisau;
 }
 
 /** Consulta agrupada con sus ciclos clínicos ordenados. */
@@ -217,6 +220,7 @@ export interface ConsultaHistoria {
     id: number;
     tipo_consulta?: number;
     especialidad?: string;
+    servicio?: string;
     fecha_consulta?: string;
     hora_consulta?: string;
     ultimo_estado?: string;

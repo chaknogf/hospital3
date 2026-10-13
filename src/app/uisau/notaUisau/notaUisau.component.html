@@ -1,0 +1,223 @@
+<!-- ══════════════════════════════════════════════════════════════
+     NOTA UISAU — mismo diseño que la nota médica (mobile-first)
+════════════════════════════════════════════════════════════════ -->
+
+@if (cargando() && tieneConsulta()) {
+  <div class="nm-loading" role="status">Cargando consulta…</div>
+}
+
+@if (mensaje()) {
+  <div class="nm-toast" [class.nm-toast--ok]="mensaje()!.tipo === 'success'"
+       [class.nm-toast--err]="mensaje()!.tipo === 'error'" role="alert">
+    {{ mensaje()!.texto }}
+  </div>
+}
+
+<!-- ── PASO 1 · buscar paciente por expediente ─────────────────── -->
+@if (!tieneConsulta()) {
+  <section class="nm-picker">
+    <span class="nm-eyebrow">UISAU · Registro clínico</span>
+    <h1 class="nm-picker__title">Registrar nota UISAU</h1>
+    <p class="nm-picker__hint">Busca al paciente por su número de expediente y elige la consulta a documentar.</p>
+
+    <div class="nm-picker__search">
+      <input
+        type="search"
+        [(ngModel)]="busquedaExpediente"
+        placeholder="Ej. EXP-2026-000123"
+        (keyup.enter)="buscarPaciente()"
+      />
+      <button class="nm-btn nm-btn--primary" (click)="buscarPaciente()" [disabled]="buscandoPaciente()">
+        {{ buscandoPaciente() ? 'Buscando…' : 'Buscar' }}
+      </button>
+    </div>
+
+    @if (error()) { <p class="nm-form__error">{{ error() }}</p> }
+
+    @if (pacienteBuscado()) {
+      <div class="nm-patient">
+        <div class="nm-patient__avatar" aria-hidden="true">
+          {{ pacienteBuscado()?.sexo === 'F' ? '♀' : '♂' }}
+        </div>
+        <div>
+          <strong>{{ nombreCompleto(pacienteBuscado()) }}</strong>
+          <span>Expediente {{ pacienteBuscado()?.expediente || '—' }}</span>
+        </div>
+      </div>
+
+      @if (cargandoConsultas()) {
+        <p class="nm-picker__hint">Cargando consultas…</p>
+      } @else if (!consultasPaciente().length) {
+        <p class="nm-picker__hint">El paciente no tiene consultas no archivadas para documentar.</p>
+      } @else {
+        <div class="nm-consultas">
+          @for (consulta of consultasPaciente(); track consulta.id) {
+            <button class="nm-consulta" (click)="seleccionarConsulta(consulta)">
+              <span class="nm-consulta__fecha">{{ consulta.fecha_consulta | date: 'dd/MM/yyyy' }}</span>
+              <span class="nm-consulta__esp">{{ consulta.especialidad || 'Consulta clínica' }}</span>
+              <span class="nm-consulta__ir">→</span>
+            </button>
+          }
+        </div>
+      }
+    }
+  </section>
+}
+
+<!-- ── PASO 2 · formulario del registro ────────────────────────── -->
+@if (tieneConsulta()) {
+  <div class="nm-app">
+    <header class="nm-topbar">
+      <button class="nm-icon-btn" (click)="regresar()" aria-label="Regresar">←</button>
+      <div class="nm-topbar__title">
+        <span>Nota UISAU</span>
+        <small>{{ nombreCompleto(pacienteBuscado()) || 'Paciente' }} · Exp. {{ pacienteBuscado()?.expediente || '—' }}</small>
+      </div>
+      <span class="nm-pill">{{ pacienteBuscado()?.sexo === 'F' ? 'Femenino' : 'Masculino' }}</span>
+      <button class="nm-icon-btn nm-icon-btn--save" (click)="guardar()" [disabled]="guardando()" aria-label="Guardar">
+        {{ guardando() ? '…' : '✓' }}
+      </button>
+    </header>
+
+    <div class="nm-meta">
+      <span>{{ ep.fecha || 'Sin fecha' }}</span>
+      <span>{{ ep.especialidad || 'Sin especialidad' }}</span>
+      <span>{{ ep.servicio || 'Sin servicio' }}</span>
+    </div>
+
+    <nav class="nm-tabs" role="tablist">
+      <button role="tab" [class.is-active]="tabActivo === 'estado'" (click)="setTab('estado')">Estado</button>
+      <button role="tab" [class.is-active]="tabActivo === 'contacto'" (click)="setTab('contacto')">Contacto</button>
+      <button role="tab" [class.is-active]="tabActivo === 'nota'" (click)="setTab('nota')">Nota clínica</button>
+    </nav>
+
+    <main class="nm-content">
+      @if (error()) { <p class="nm-form__error">{{ error() }}</p> }
+      @switch (tabActivo) {
+        <!-- ESTADO DEL PACIENTE -->
+        @case ('estado') {
+          <div class="nm-signos">
+            <div class="nm-signos__grid">
+              <label class="nm-sv"><span>Fecha</span><input type="date" [(ngModel)]="ep.fecha" name="fecha" /></label>
+              <label class="nm-sv"><span>Hora</span><input type="time" [(ngModel)]="ep.hora" name="hora" /></label>
+              <label class="nm-sv">
+                <span>Estado</span>
+                <select [(ngModel)]="ep.estado" name="estado">
+                  <option [ngValue]="null">Seleccione…</option>
+                  @for (o of estados; track o.value) { <option [ngValue]="o.value">{{ o.label }}</option> }
+                </select>
+              </label>
+              <label class="nm-sv">
+                <span>Situación</span>
+                <select [(ngModel)]="ep.situacion" name="situacion">
+                  <option [ngValue]="null">Seleccione…</option>
+                  @for (o of situaciones; track o.value) { <option [ngValue]="o.value">{{ o.label }}</option> }
+                </select>
+              </label>
+              <label class="nm-sv">
+                <span>Especialidad</span>
+                <select [(ngModel)]="ep.especialidad" name="especialidad">
+                  <option value="">Seleccione…</option>
+                  @for (o of especialidades; track o.value) { <option [value]="o.value">{{ o.label }}</option> }
+                </select>
+              </label>
+              <label class="nm-sv">
+                <span>Servicio</span>
+                <select [(ngModel)]="ep.servicio" name="servicio">
+                  <option value="">Seleccione…</option>
+                  @for (o of servicios; track o.value) { <option [value]="o.value">{{ o.label }}</option> }
+                </select>
+              </label>
+              <label class="nm-sv"><span>Estadía (días)</span><input type="number" min="0" inputmode="numeric" [(ngModel)]="ep.estadia" name="estadia" placeholder="—" /></label>
+              <label class="nm-sv"><span>Cama</span><input type="number" min="0" inputmode="numeric" [(ngModel)]="ep.cama" name="cama" placeholder="—" /></label>
+              <label class="nm-sv">
+                <span>Lugar de referencia</span>
+                <select [(ngModel)]="ep.lugar_referencia" name="lugar_referencia">
+                  <option [ngValue]="null">Seleccione…</option>
+                  @for (o of lugaresReferencia; track o.value) { <option [ngValue]="o.value">{{ o.label }}</option> }
+                </select>
+              </label>
+              <label class="nm-sv"><span>Fecha de referencia</span><input type="date" [(ngModel)]="ep.fecha_referencia" name="fecha_referencia" /></label>
+            </div>
+          </div>
+        }
+
+        <!-- INFORMACIÓN Y CONTACTO -->
+        @case ('contacto') {
+          <div class="nm-form">
+            <label class="nm-field">
+              <span>Información brindada</span>
+              <textarea rows="3" [(ngModel)]="ic.informacion" name="informacion" placeholder="Información brindada al usuario o familiar…"></textarea>
+              <button type="button" class="nm-mic" (click)="dictar('informacion')" title="Dictar información">🎤 Dictar</button>
+            </label>
+            <div class="nm-signos__grid">
+              <label class="nm-sv"><span>Persona de contacto</span><input type="text" [(ngModel)]="ic.contacto" name="contacto" placeholder="Nombre completo" /></label>
+              <label class="nm-sv">
+                <span>Parentesco</span>
+                <select [(ngModel)]="ic.parentesco" name="parentesco">
+                  <option [ngValue]="null">Seleccione…</option>
+                  @for (o of parentescos; track o.value) { <option [ngValue]="o.value">{{ o.label }}</option> }
+                </select>
+              </label>
+              <label class="nm-sv"><span>Teléfono</span><input type="tel" inputmode="tel" [(ngModel)]="ic.telefono" name="telefono" placeholder="—" /></label>
+              <label class="nm-sv"><span>Fecha de contacto</span><input type="date" [(ngModel)]="ic.fecha_contacto" name="fecha_contacto" /></label>
+              <label class="nm-sv"><span>Hora de contacto</span><input type="time" [(ngModel)]="ic.hora_contacto" name="hora_contacto" /></label>
+            </div>
+          </div>
+        }
+
+        <!-- NOTA CLÍNICA -->
+        @case ('nota') {
+          <div class="nm-form">
+            <label class="nm-field">
+              <span>Nota</span>
+              <textarea rows="4" [(ngModel)]="nc.nota" name="nota" placeholder="Nota de la atención…"></textarea>
+              <button type="button" class="nm-mic" (click)="dictar('nota')" title="Dictar nota">🎤 Dictar</button>
+            </label>
+            <label class="nm-field">
+              <span>Evolución</span>
+              <textarea rows="4" [(ngModel)]="nc.evolucion" name="evolucion" placeholder="Evolución clínica del paciente…"></textarea>
+              <button type="button" class="nm-mic" (click)="dictar('evolucion')" title="Dictar evolución">🎤 Dictar</button>
+            </label>
+            <div class="nm-signos__grid">
+              <label class="nm-sv"><span>Estudios</span><input type="text" maxlength="255" [(ngModel)]="nc.estudios" name="estudios" placeholder="Exámenes o gabinete" /></label>
+              <label class="nm-sv"><span>Receta</span><input type="text" maxlength="100" [(ngModel)]="nc.receta" name="receta" placeholder="Medicamentos" /></label>
+              <label class="nm-sv"><span>Receta por</span><input type="text" maxlength="2" [(ngModel)]="nc.receta_por" name="receta_por" placeholder="—" /></label>
+            </div>
+
+            <div class="nm-diag">
+              <span class="nm-diag__title">Diagnósticos</span>
+              @for (d of nc.diagnosticos; track $index) {
+                <div class="nm-diag__row">
+                  <input class="nm-diag__code" type="text" placeholder="Código" [(ngModel)]="d.codigo" [name]="'dx_cod_' + $index" />
+                  <input type="text" placeholder="Descripción del diagnóstico…" [(ngModel)]="d.descripcion" [name]="'dx_desc_' + $index" />
+                  <button class="nm-del" (click)="eliminarDiagnostico($index)" aria-label="Eliminar">✕</button>
+                </div>
+              }
+              <button class="nm-add" (click)="agregarDiagnostico()">+ Agregar diagnóstico</button>
+            </div>
+
+            <div class="nm-diag">
+              <span class="nm-diag__title">Artículos</span>
+              @for (a of nc.articulos; track $index) {
+                <div class="nm-diag__row nm-diag__row--art">
+                  <input type="text" placeholder="Descripción del artículo…" [(ngModel)]="a.descripcion" [name]="'art_desc_' + $index" />
+                  <input class="nm-diag__code" type="number" min="0" placeholder="Cant." [(ngModel)]="a.cantidad" [name]="'art_cant_' + $index" />
+                  <button class="nm-del" (click)="eliminarArticulo($index)" aria-label="Eliminar">✕</button>
+                </div>
+              }
+              <button class="nm-add" (click)="agregarArticulo()">+ Agregar artículo</button>
+            </div>
+          </div>
+        }
+      }
+    </main>
+
+    <footer class="nm-bottombar">
+      <button class="nm-btn nm-btn--ghost" (click)="regresar()">Cancelar</button>
+      <button class="nm-btn nm-btn--primary" (click)="guardar()" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando…' : 'Guardar nota UISAU' }}
+      </button>
+    </footer>
+  </div>
+}

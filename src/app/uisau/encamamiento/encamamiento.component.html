@@ -121,22 +121,48 @@
     </button>
   </div>
 </div>
-<!-- Especialidades con conteo -->
+<!-- Agrupación (especialidad / servicio) -->
+<div class="agrupar-toggle">
+  <span class="agrupar-toggle__label">Agrupar por</span>
+  @for (op of opcionesAgrupacion; track op.value) {
+    <button
+      type="button"
+      [class.activo]="agruparPor === op.value"
+      (click)="cambiarAgrupacion(op.value)"
+      >
+      {{ op.label }}
+    </button>
+  }
+</div>
+
+<!-- Grupos con conteo -->
 <div class="filtro-grupo">
   <button
-    [class.activo]="filtros.especialidad === ''"
-    (click)="seleccionarEspecialidad('')"
+    [class.activo]="agruparPor === 'especialidad' ? filtros.especialidad === '' : filtros.servicio === ''"
+    (click)="seleccionarTodos()"
     >
     Todas <span class="badge">{{ totalDeRegistros }}</span>
   </button>
-  @for (e of especialidadesIngreso; track trackById($index, e)) {
-    <button
-      [class.activo]="filtros.especialidad === e.value"
-      (click)="seleccionarEspecialidad(e.value)"
-      >
-      {{ e.label }}
-      <span class="badge">{{ conteosPorEspecialidad[e.value] ?? 0 }}</span>
-    </button>
+  @if (agruparPor === 'especialidad') {
+    @for (e of especialidadesIngreso; track trackById($index, e)) {
+      <button
+        [class.activo]="filtros.especialidad === e.value"
+        (click)="seleccionarEspecialidad(e.value)"
+        >
+        {{ e.label }}
+        <span class="badge">{{ conteosPorEspecialidad[e.value] ?? 0 }}</span>
+      </button>
+    }
+  } @else {
+    @for (s of serviciosIngreso; track trackById($index, s)) {
+      <button
+        [class.activo]="filtros.servicio === s.value"
+        (click)="seleccionarServicio(s.value)"
+        >
+        {{ s.label }}
+        <span class="badge">{{ conteosPorServicio[s.value] ?? 0 }}</span>
+      </button>
+    }
   }
 </div>
 <!-- Tabla principal (desktop) -->

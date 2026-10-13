@@ -167,14 +167,23 @@
               "Todas").</small
             >
           </div>
+
           <div class="field">
             <span class="field-label">Área del cuerpo intervenida</span>
-            <select class="field-input" formControlName="id_area_cuerpo_intervenida">
-              <option [ngValue]="null">{{ areaLegacyTexto || "Seleccionar" }}</option>
+            <input
+              class="field-input"
+              type="text"
+              list="areasCuerpoCatalogoList"
+              formControlName="area_cuerpo_intervenida"
+              (input)="onAreaCuerpoInput($event)"
+              placeholder="Seleccionar"
+              autocomplete="off"
+            />
+            <datalist id="areasCuerpoCatalogoList">
               @for (a of areasCuerpo; track a.id) {
-                <option [ngValue]="a.id">{{ a.nombre }}</option>
+                <option [value]="a.nombre"></option>
               }
-            </select>
+            </datalist>
           </div>
         </div>
         <div class="field-row">
@@ -283,7 +292,11 @@
                     type="radio"
                     [value]="e.estado_cirugia_id"
                     formControlName="estado_cirugia_id"
-                    (change)="form.patchValue({ estado_cirugia_id: e.estado_cirugia_id })"
+                    (change)="
+                      form.patchValue({
+                        estado_cirugia_id: e.estado_cirugia_id,
+                      })
+                    "
                   />
                   <span>{{ e.nombre }}</span>
                 </label>
@@ -301,7 +314,11 @@
                     type="radio"
                     [value]="fo.formato_procedimiento_id"
                     formControlName="formato_procedimiento_id"
-                    (change)="form.patchValue({ formato_procedimiento_id: fo.formato_procedimiento_id })"
+                    (change)="
+                      form.patchValue({
+                        formato_procedimiento_id: fo.formato_procedimiento_id,
+                      })
+                    "
                   />
                   <span>{{ fo.nombre }}</span>
                 </label>
@@ -319,7 +336,12 @@
                     type="radio"
                     [value]="p.procedencia_procedimiento_id"
                     formControlName="procedencia_procedimiento_id"
-                    (change)="form.patchValue({ procedencia_procedimiento_id: p.procedencia_procedimiento_id })"
+                    (change)="
+                      form.patchValue({
+                        procedencia_procedimiento_id:
+                          p.procedencia_procedimiento_id,
+                      })
+                    "
                   />
                   <span>{{ p.nombre }}</span>
                 </label>
@@ -335,7 +357,11 @@
                     type="radio"
                     [value]="r.rango_especialista_id"
                     formControlName="rango_especialista_id"
-                    (change)="form.patchValue({ rango_especialista_id: r.rango_especialista_id })"
+                    (change)="
+                      form.patchValue({
+                        rango_especialista_id: r.rango_especialista_id,
+                      })
+                    "
                   />
                   <span>{{ r.nombre }}</span>
                 </label>

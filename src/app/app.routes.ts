@@ -497,6 +497,26 @@ export const routes: Routes = [
         loadComponent: () => import('./uisau/encamamiento/encamamiento.component').then(c => c.EncamamientoComponent),
         canActivate: [roleGuard(['admin', 'uisau'])]
       },
+      {
+        path: 'notaUisau/:consultaId',
+        loadComponent: () => import('./uisau/notaUisau/notaUisau.component').then(c => c.NotaUisauComponent),
+        canActivate: [roleGuard(['admin', 'uisau'])]
+      },
+      {
+        path: 'notaUisau',
+        loadComponent: () => import('./uisau/notaUisau/notaUisau.component').then(c => c.NotaUisauComponent),
+        canActivate: [roleGuard(['admin', 'uisau'])]
+      },
+      {
+        path: 'historiaUisau/:id',
+        loadComponent: () => import('./uisau/historiaUisau/historiaUisau.component').then(c => c.HistoriaUisauComponent),
+        canActivate: [roleGuard(['admin', 'uisau'])]
+      },
+      {
+        path: 'historiaUisau',
+        loadComponent: () => import('./uisau/historiaUisau/historiaUisau.component').then(c => c.HistoriaUisauComponent),
+        canActivate: [roleGuard(['admin', 'uisau'])]
+      },
 
       // Nacimientos (std)
       {
