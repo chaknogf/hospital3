@@ -34,6 +34,13 @@ describe('CensoCamasListComponent', () => {
     expect(component.formatearFechaCorta('2026-09-26')).toBe('26/09/26');
   });
 
+  it('el título amanece un día después de la fecha seleccionada (incluye cambio de mes/año)', () => {
+    component.fechaEstadistica = '2026-10-13';
+    expect(component.fechaAmanecida).toBe('2026-10-14');
+    component.fechaEstadistica = '2026-12-31';
+    expect(component.fechaAmanecida).toBe('2027-01-01');
+  });
+
   it('combina los dos sexos y calcula ocupación, disponibilidad y movimientos del día', () => {
     component.hospitalizacionDiaria = component.armarTablaHospitalizacionDiaria([
       {

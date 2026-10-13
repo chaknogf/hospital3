@@ -61,7 +61,6 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   cargandoTablaHospitalizacionDiaria = false;
   hospitalizacionDiaria: HospitalizacionDiariaItem[] = [];
   fechaEstadistica: string = this.fechaAyer();
-  fechaHoy: string = this.fechaActual();
 
   hospitalizacion: HospitalizacionEspecialidadItem[] = [];
   totalHospitalizados = 0;
@@ -397,8 +396,14 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
 
-  private fechaActual(): string {
-    const d = new Date();
+  /**
+   * Día en que amaneció el censo reportado: un día después de la fecha
+   * seleccionada. El censo de la fecha D corresponde a cómo amaneció D+1.
+   */
+  get fechaAmanecida(): string {
+    const base = this.fechaEstadistica || this.fechaAyer();
+    const d = new Date(`${base}T12:00:00`);
+    d.setDate(d.getDate() + 1);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
 

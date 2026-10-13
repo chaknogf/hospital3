@@ -75,7 +75,7 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
       delete: this.iconService.getIcon('deletInput'),
       edit: this.iconService.getIcon('editIcon'),
       trash: this.iconService.getIcon('trashIcon'),
-      medical: this.iconService.getIcon('medicalServiceIcon'),
+      medical: this.iconService.getIcon('documentoIcon'),
       find: this.iconService.getIcon('findIcon'),
       menu: this.iconService.getIcon('menuIcon'),
       arrowDown: this.iconService.getIcon('arrowDown'),
@@ -83,7 +83,7 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
       skipRight: this.iconService.getIcon('skipRight'),
       print: this.iconService.getIcon('printIcon'),
       calendar: this.iconService.getIcon('calendarIcon'),
-      history: this.iconService.getIcon('documentoIcon'),
+      history: this.iconService.getIcon('historiaMedicaIcon'),
     };
 
     // ======= EFFECT =======
