@@ -66,11 +66,16 @@ export class ConsultaService extends BaseApiService {
   }
 
   getConsultas(filtros: any): Observable<ConsultaListResponse> {
-    this.ultimoFiltroConsulta.filtro = filtros;
-    const params = this.limpiarParametros(filtros);
+    let { skip = 0, limit = 500 } = filtros.filtro || {};
+    skip = Math.max(0, skip);
+    limit = Math.min(Math.max(1, limit), 500);
+    const filteredFiltros = { ...filtros, filtro: { skip, limit, ...(filtros.filtro || {}) } };
+    this.ultimoFiltroConsulta.filtro = filteredFiltros.filtro;
+
+    const params = this.limpiarParametros(filteredFiltros.filtro);
 
     if (!this.sync.isOnline()) {
-      return from(this.getConsultasOffline(filtros)).pipe(
+      return from(this.getConsultasOffline(filteredFiltros.filtro)).pipe(
         tap(response => this.consultasSubject.next(response.consultas))
       );
     }
@@ -87,7 +92,7 @@ export class ConsultaService extends BaseApiService {
       }),
       catchError(error => {
         if (error.status === 0 || error.status === 502 || error.status === 503) {
-          return from(this.getConsultasOffline(filtros)).pipe(
+return from(this.getConsultasOffline(filteredFiltros.filtro)).pipe(
             tap(response => this.consultasSubject.next(response.consultas))
           );
         }

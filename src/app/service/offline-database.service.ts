@@ -104,6 +104,14 @@ export class OfflineDatabaseService extends Dexie {
 
   async savePacientes(pacientes: Paciente[]): Promise<void> {
     await this.pacientes.bulkPut(pacientes);
+    // Mantener solo los últimos 500 en la tabla general de pacientes
+    const count = await this.pacientes.count();
+    if (count > 500) {
+      const all = await this.pacientes.toArray();
+      // Eliminar los más antiguos (menor id)
+      const toDelete = all.slice(0, count - 500);
+      await Promise.all(toDelete.map(p => this.pacientes.delete(p.id)));
+    }
   }
 
   async deletePacienteLocal(id: number): Promise<void> {
@@ -129,6 +137,14 @@ export class OfflineDatabaseService extends Dexie {
 
   async saveConsultas(consultas: ConsultaOut[]): Promise<void> {
     await this.consultas.bulkPut(consultas);
+    // Mantener solo los últimos 500 en la tabla general de consultas
+    const count = await this.consultas.count();
+    if (count > 500) {
+      const all = await this.consultas.toArray();
+      // Eliminar los más antiguos (menor id)
+      const toDelete = all.slice(0, count - 500);
+      await Promise.all(toDelete.map(c => this.consultas.delete(c.id)));
+    }
   }
 
   async getAllConsultas(): Promise<ConsultaOut[]> {
@@ -173,8 +189,16 @@ export class OfflineDatabaseService extends Dexie {
   }
 
   /** Guarda una consulta en la tabla de consultados (para offline + límite 500). */
-  async guardarConsultaConsultada(consulta: ConsultaOut): Promise<number> {
-    return this.consultas_consultados.add(consulta);
+  async guardarConsultaConsultada(consulta: ConsultaOut): Promise<void> {
+    await this.consultas_consultados.add(consulta);
+    // Mantener solo los últimos 500
+    const count = await this.consultas_consultados.count();
+    if (count > 500) {
+      const all = await this.consultas_consultados.toArray();
+      // Eliminar los más antiguos (menor id)
+      const toDelete = all.slice(0, count - 500);
+      await Promise.all(toDelete.map(c => this.consultas_consultados.delete(c.id)));
+    }
   }
 
   /** Borra explícitamente todas las tablas locales, incluida la cola pendiente. */

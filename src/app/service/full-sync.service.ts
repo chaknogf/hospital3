@@ -27,7 +27,8 @@ export class FullSyncService {
 
   private readonly PAGE_SIZE = 100;
   private readonly CONCURRENCY = 5;
-  private readonly FULL_DETAIL_THRESHOLD = 4000;
+  private readonly FULL_DETAIL_THRESHOLD = 500;
+  private readonly MAX_RECORDS = 500;
 
   /** Pausa la descarga en el siguiente límite de lote/página comprobado. */
   pause(): void {
@@ -146,9 +147,10 @@ export class FullSyncService {
     do {
       await this.checkPauseCancel();
 
+      const limite = Math.min(this.PAGE_SIZE, this.MAX_RECORDS - todos.length);
       const params = new HttpParams()
         .set('skip', skip.toString())
-        .set('limit', this.PAGE_SIZE.toString());
+        .set('limit', limite.toString());
 
       const res = await firstValueFrom(
         this.http.get<PacienteListResponse>(`${this.api.baseUrl}/pacientes/`, { params })
@@ -156,8 +158,8 @@ export class FullSyncService {
 
       if (total === 0) total = res.total;
       todos.push(...res.pacientes as any);
-      skip += this.PAGE_SIZE;
-    } while (skip < total && !this.cancelFlag);
+      skip += limite;
+    } while (skip < total && todos.length < this.MAX_RECORDS && !this.cancelFlag);
 
     if (todos.length > 0) {
       await this.db.savePacientes(todos);
@@ -215,9 +217,10 @@ export class FullSyncService {
     do {
       await this.checkPauseCancel();
 
+      const limite = Math.min(this.PAGE_SIZE, this.MAX_RECORDS - todas.length);
       const params = new HttpParams()
         .set('skip', skip.toString())
-        .set('limit', this.PAGE_SIZE.toString());
+        .set('limit', limite.toString());
 
       const res = await firstValueFrom(
         this.http.get<ConsultaListResponse>(`${this.api.baseUrl}/consultas/`, { params })
@@ -225,8 +228,8 @@ export class FullSyncService {
 
       if (total === 0) total = res.total;
       todas.push(...res.consultas);
-      skip += this.PAGE_SIZE;
-    } while (skip < total && !this.cancelFlag);
+      skip += limite;
+    } while (skip < total && todas.length < this.MAX_RECORDS && !this.cancelFlag);
 
     if (todas.length > 0) {
       await this.db.saveConsultas(todas);
