@@ -1,8 +1,8 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, catchError, finalize } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 import { BaseApiService } from '../../service/base-api.service';
 import {
   FormatoProcedimiento,
@@ -16,6 +16,10 @@ import {
   IntervencionCreate,
   IntervencionUpdate,
   IntervencionListResponse,
+  QuirofanoConfigPeriodo,
+  QuirofanoConfigPeriodoUpdate,
+  ResumenReporteResponse,
+  ReporteQuirofanoParams,
 } from '../../interface/quirofano.interface';
 
 /** Centraliza el acceso a las consultas de programación e intervención quirúrgica. */
@@ -198,6 +202,52 @@ export class QuirofanoService extends BaseApiService {
     const url = `${this.baseUrl}/quirofano/intervenciones/${id}`;
     return this.offMutation('DELETE', url).pipe(
       finalize(() => this.isLoading.set(false))
+    );
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // REPORTES / RESUMEN
+  // ══════════════════════════════════════════════════════════
+  getConfigPeriodo(): Observable<QuirofanoConfigPeriodo[]> {
+    this.isLoading.set(true);
+    const url = `${this.baseUrl}/quirofano/config-periodo`;
+    return this.http.get<QuirofanoConfigPeriodo[]>(url).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener configuración de jornada'))
+    );
+  }
+
+  actualizarConfigPeriodo(
+    quirofanoNumeroId: number,
+    data: QuirofanoConfigPeriodoUpdate
+  ): Observable<QuirofanoConfigPeriodo> {
+    this.isLoading.set(true);
+    const url = `${this.baseUrl}/quirofano/config-periodo/${quirofanoNumeroId}`;
+    return this.http.put<QuirofanoConfigPeriodo>(url, data).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'actualizar configuración de jornada'))
+    );
+  }
+
+  getResumenReporte(params: ReporteQuirofanoParams): Observable<ResumenReporteResponse> {
+    this.isLoading.set(true);
+    const url = `${this.baseUrl}/quirofano/reportes/resumen`;
+    return this.http.get<ResumenReporteResponse>(url, { params: this.limpiarParametros(params) }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'obtener resumen de quirófanos'))
+    );
+  }
+
+  descargarExcelReporte(params: ReporteQuirofanoParams): Observable<HttpResponse<Blob>> {
+    this.isLoading.set(true);
+    const url = `${this.baseUrl}/quirofano/reportes/excel`;
+    return this.http.get(url, {
+      params: this.limpiarParametros(params),
+      observe: 'response',
+      responseType: 'blob',
+    }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      catchError(error => this.manejarError(error, 'generar Excel de quirófanos'))
     );
   }
 }

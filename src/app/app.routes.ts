@@ -310,6 +310,11 @@ export const routes: Routes = [
         loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
         canActivate: [roleGuard(['admin', 'medico'])]
       },
+      {
+        path: 'quirofano/resumen',
+        loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent),
+        canActivate: [roleGuard(['admin', 'medico'])]
+      },
 
       //Citas
       {

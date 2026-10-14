@@ -58,16 +58,12 @@ export interface QuirofanoNumero {
   activo: boolean;
 }
 
-/** Roles del equipo quirúrgico que apoyan la intervención. */
+/** Roles del equipo quirúrgico que apoyan la intervención (texto libre). */
 export interface EquipoQuirurgico {
-  circulante_id?: number | null;
-  instrumentista_id?: number | null;
-  pediatra_id?: number | null;
-  medico_apoyo_id?: number | null;
-  circulante_nombre?: string | null;
-  instrumentista_nombre?: string | null;
-  pediatra_nombre?: string | null;
-  medico_apoyo_nombre?: string | null;
+  circulante?: string | null;
+  instrumentista?: string | null;
+  pediatra?: string | null;
+  medico_apoyo?: string | null;
 }
 
 /** Datos adicionales (columna JSONB `datos_extra`) de una intervención. */
@@ -194,4 +190,126 @@ export interface IntervencionUpdate {
 export interface IntervencionListResponse {
   total: number;
   intervenciones: IntervencionQuirurgica[];
+}
+
+// ══════════════════════════════════════════════════════════
+// REPORTES / RESUMEN DE QUIRÓFANOS
+// ══════════════════════════════════════════════════════════
+
+/** Configuración de jornada (apertura/cierre/días) por quirófano. */
+export interface QuirofanoConfigPeriodo {
+  config_periodo_id: number;
+  quirofano_numero_id: number;
+  quirofano_numero_nombre?: string | null;
+  hora_apertura: string;
+  hora_cierre: string;
+  dias_habiles: number;
+  activo: boolean;
+}
+
+/** Campos editables de la configuración de jornada. */
+export interface QuirofanoConfigPeriodoUpdate {
+  hora_apertura?: string | null;
+  hora_cierre?: string | null;
+  dias_habiles?: number | null;
+  activo?: boolean | null;
+}
+
+/** Fila del detalle del reporte (columnas A..W de la hoja Q + ayudantes). */
+export interface IntervencionReporteFila {
+  no: number;
+  intervencion_id: number;
+  quirofano_numero_id?: number | null;
+  fecha: string;
+  paciente_nombre?: string | null;
+  rango_medico?: string | null;
+  especialidad?: string | null;
+  medico?: string | null;
+  procedencia?: string | null;
+  formato?: string | null;
+  procedimiento_1?: string | null;
+  procedimiento_2?: string | null;
+  procedimiento_3?: string | null;
+  procedimiento_4?: string | null;
+  procedimiento_5?: string | null;
+  procedimientos?: string | null;
+  area_cuerpo?: string | null;
+  observaciones?: string | null;
+  hora_inicio_anestesia?: string | null;
+  hora_inicio_intervencion?: string | null;
+  hora_finaliza_intervencion?: string | null;
+  hora_finaliza_limpieza?: string | null;
+  tiempo_intervencion_seg?: number | null;
+  tiempo_uso_quirofano_seg?: number | null;
+  tiempo_limpieza_seg?: number | null;
+  estado?: string | null;
+}
+
+/** Indicadores agregados de un quirófano (o del total global). */
+export interface KpiQuirofano {
+  quirofano_numero_id?: number | null;
+  numero?: number | null;
+  nombre: string;
+  hora_apertura?: string | null;
+  hora_cierre?: string | null;
+  es_fallback: boolean;
+  dias_abiertos: number;
+  tiempo_disponible_seg: number;
+  horas_activo_seg: number;
+  total_intervenciones: number;
+  finalizadas: number;
+  canceladas: number;
+  reprogramadas: number;
+  procedimientos_total: number;
+  intervalos_dias_promedio?: number | null;
+  tiempo_promedio_intervencion_seg?: number | null;
+  tiempo_promedio_uso_quirofano_seg?: number | null;
+  tiempo_promedio_limpieza_seg?: number | null;
+  porcentaje_uso: number;
+  tasa_cancelacion: number;
+  tasa_cancelacion_con_reprogramadas: number;
+}
+
+/** Resumen agregado por procedimiento. */
+export interface ProcedimientoResumenFila {
+  procedimiento: string;
+  cantidad: number;
+  tiempo_promedio_seg?: number | null;
+  porcentaje_uso: number;
+  intervalo_dias_promedio?: number | null;
+}
+
+/** Detalle de un quirófano: sus KPIs y sus intervenciones. */
+export interface QuirofanoReporteDetalle {
+  kpi: KpiQuirofano;
+  intervenciones: IntervencionReporteFila[];
+}
+
+/** Respuesta completa de `/quirofano/reportes/resumen`. */
+export interface ResumenReporteResponse {
+  fecha_desde: string;
+  fecha_hasta: string;
+  generado_en: string;
+  filtros: {
+    especialidad_id?: number | null;
+    quirofano_numero_id?: number | null;
+    hora_apertura?: string | null;
+    hora_cierre?: string | null;
+    dias_abiertos?: number | null;
+  };
+  kpi_global: KpiQuirofano;
+  por_quirofano: QuirofanoReporteDetalle[];
+  procedimientos: ProcedimientoResumenFila[];
+  advertencias: string[];
+}
+
+/** Parámetros de consulta de los reportes de quirófano. */
+export interface ReporteQuirofanoParams {
+  fecha_desde: string;
+  fecha_hasta: string;
+  especialidad_id?: number;
+  quirofano_numero_id?: number;
+  hora_apertura?: string;
+  hora_cierre?: string;
+  dias_abiertos?: number;
 }

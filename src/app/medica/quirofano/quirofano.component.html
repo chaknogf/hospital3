@@ -11,10 +11,16 @@
       Menú
     </button>
     <h1 class="text-white">Quirófano</h1>
-    <button type="button" (click)="toggleFiltrar()">
-      <span [innerHTML]="icons['find']"></span>
-      Buscar
-    </button>
+    <div class="d-flex gap-1">
+      <button type="button" (click)="irAResumen()">
+        <span [innerHTML]="icons['tabla']"></span>
+        Resumen
+      </button>
+      <button type="button" (click)="toggleFiltrar()">
+        <span [innerHTML]="icons['find']"></span>
+        Buscar
+      </button>
+    </div>
   </div>
 
   <!-- FILTROS -->

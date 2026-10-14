@@ -82,6 +82,7 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
       arrowDown: this.iconService.getIcon('arrowDown'),
       addPerson: this.iconService.getIcon('addPerson'),
       ciru: this.iconService.getIcon('ciruIcon'),
+      tabla: this.iconService.getIcon('tablaShanonIcon'),
     };
   }
 
@@ -211,6 +212,8 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
   // NAVEGACIÓN / ACCIONES
   // ══════════════════════════════════════════════════════════
   nuevaIntervencion(): void { this.router.navigate(['/quirofano/nueva']); }
+
+  irAResumen(): void { this.router.navigate(['/quirofano/resumen']); }
 
   editarIntervencion(id: number): void { this.router.navigate(['/quirofano/editar', id]); }
 

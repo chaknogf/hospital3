@@ -87,11 +87,11 @@ export class QuirofanoFormComponent implements OnInit {
     hora_finaliza_intervencion: [''],
     hora_finaliza_limpieza_prepara_quirofano: [''],
     observaciones: [''],
-    // Equipo quirúrgico (se persiste dentro de datos_extra JSONB)
-    circulante_id: [null],
-    instrumentista_id: [null],
-    pediatra_id: [null],
-    medico_apoyo_id: [null],
+    // Equipo quirúrgico (texto libre; se persiste dentro de datos_extra JSONB)
+    circulante: [''],
+    instrumentista: [''],
+    pediatra: [''],
+    medico_apoyo: [''],
   });
 
   saveIcon: any;
@@ -340,10 +340,10 @@ export class QuirofanoFormComponent implements OnInit {
           hora_finaliza_intervencion: (data.hora_finaliza_intervencion || '').slice(0, 5),
           hora_finaliza_limpieza_prepara_quirofano: (data.hora_finaliza_limpieza_prepara_quirofano || '').slice(0, 5),
           observaciones: data.observaciones || '',
-          circulante_id: data.datos_extra?.equipo?.circulante_id ?? null,
-          instrumentista_id: data.datos_extra?.equipo?.instrumentista_id ?? null,
-          pediatra_id: data.datos_extra?.equipo?.pediatra_id ?? null,
-          medico_apoyo_id: data.datos_extra?.equipo?.medico_apoyo_id ?? null,
+          circulante: data.datos_extra?.equipo?.circulante ?? '',
+          instrumentista: data.datos_extra?.equipo?.instrumentista ?? '',
+          pediatra: data.datos_extra?.equipo?.pediatra ?? '',
+          medico_apoyo: data.datos_extra?.equipo?.medico_apoyo ?? '',
         });
       },
       error: () => { },
@@ -360,31 +360,13 @@ export class QuirofanoFormComponent implements OnInit {
     return limpio;
   }
 
-  /** Nombre del médico a partir de su id (para guardarlo junto al id en el JSONB). */
-  private nombreMedico(id: number | null | undefined): string | null {
-    if (id == null) return null;
-    return this.medicos.find(m => m.id === id)?.nombre ?? null;
-  }
-
-  /** Empaqueta el equipo quirúrgico en la estructura JSONB `datos_extra`. */
+  /** Empaqueta el equipo quirúrgico (texto libre) en la estructura JSONB `datos_extra`. */
   private construirDatosExtra(v: any): DatosExtraIntervencion | undefined {
     const equipo: EquipoQuirurgico = {};
-    if (v.circulante_id != null) {
-      equipo.circulante_id = v.circulante_id;
-      equipo.circulante_nombre = this.nombreMedico(v.circulante_id);
-    }
-    if (v.instrumentista_id != null) {
-      equipo.instrumentista_id = v.instrumentista_id;
-      equipo.instrumentista_nombre = this.nombreMedico(v.instrumentista_id);
-    }
-    if (v.pediatra_id != null) {
-      equipo.pediatra_id = v.pediatra_id;
-      equipo.pediatra_nombre = this.nombreMedico(v.pediatra_id);
-    }
-    if (v.medico_apoyo_id != null) {
-      equipo.medico_apoyo_id = v.medico_apoyo_id;
-      equipo.medico_apoyo_nombre = this.nombreMedico(v.medico_apoyo_id);
-    }
+    if (v.circulante?.trim()) equipo.circulante = v.circulante.trim();
+    if (v.instrumentista?.trim()) equipo.instrumentista = v.instrumentista.trim();
+    if (v.pediatra?.trim()) equipo.pediatra = v.pediatra.trim();
+    if (v.medico_apoyo?.trim()) equipo.medico_apoyo = v.medico_apoyo.trim();
     return Object.keys(equipo).length ? { equipo } : undefined;
   }
 

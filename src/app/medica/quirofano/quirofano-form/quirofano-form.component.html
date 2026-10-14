@@ -62,6 +62,7 @@
     <div class="section-card">
       <div class="sec-head">
         <div class="sec-head-left">
+          <span class="sec-step" aria-hidden="true">1</span>
           <div class="sec-icon">
             <svg
               viewBox="0 0 16 16"
@@ -84,7 +85,9 @@
       <div class="sec-body">
         <div class="field-row">
           <div class="field">
-            <span class="field-label">Expediente *</span>
+            <span class="field-label"
+              >Expediente<span class="req" aria-hidden="true">*</span></span
+            >
             <div class="field-inline">
               <input
                 class="field-input"
@@ -126,7 +129,9 @@
             }
           </div>
           <div class="field">
-            <span class="field-label">Paciente</span>
+            <span class="field-label"
+              >Paciente<span class="req" aria-hidden="true">*</span></span
+            >
             <div class="patient-chip">
               @if (pacienteLabel) {
                 <strong>{{ pacienteLabel }}</strong>
@@ -146,6 +151,7 @@
     <div class="section-card">
       <div class="sec-head">
         <div class="sec-head-left">
+          <span class="sec-step" aria-hidden="true">2</span>
           <div class="sec-icon">
             <svg
               viewBox="0 0 16 16"
@@ -183,7 +189,9 @@
             </div>
           </div>
           <div class="field">
-            <span class="field-label">Especialidad *</span>
+            <span class="field-label"
+              >Especialidad<span class="req" aria-hidden="true">*</span></span
+            >
             <div
               class="field-group"
               role="radiogroup"
@@ -231,7 +239,11 @@
         </div>
         <div class="field-row">
           <div class="field">
-            <span class="field-label">Procedimiento principal #1 *</span>
+            <span class="field-label"
+              >Procedimiento principal #1<span class="req" aria-hidden="true"
+                >*</span
+              ></span
+            >
             <input
               class="field-input"
               type="text"
@@ -310,6 +322,7 @@
     <div class="section-card">
       <div class="sec-head">
         <div class="sec-head-left">
+          <span class="sec-step" aria-hidden="true">3</span>
           <div class="sec-icon">
             <svg
               viewBox="0 0 16 16"
@@ -415,10 +428,11 @@
       </div>
     </div>
 
-    <!-- PLANIFICACIÓN -->
+    <!-- EQUIPO QUIRÚRGICO -->
     <div class="section-card">
       <div class="sec-head">
         <div class="sec-head-left">
+          <span class="sec-step" aria-hidden="true">4</span>
           <div class="sec-icon">
             <svg
               viewBox="0 0 16 16"
@@ -426,11 +440,12 @@
               stroke="currentColor"
               stroke-width="1.5"
             >
-              <rect x="2" y="3" width="12" height="10" rx="1.5" />
-              <path d="M2 6h12M5 1.5V4M11 1.5V4" />
+              <circle cx="5.5" cy="5" r="2" />
+              <path d="M1.5 13v-1.2A2.3 2.3 0 0 1 3.8 9.5h3.4a2.3 2.3 0 0 1 2.3 2.3V13" />
+              <path d="M10 3.2a2 2 0 0 1 0 3.6M11.5 9.7a2.3 2.3 0 0 1 3 2.1V13" />
             </svg>
           </div>
-          <span class="sec-title">Planificación</span>
+          <span class="sec-title">Equipo quirúrgico</span>
         </div>
       </div>
       <div class="sec-body">
@@ -458,57 +473,74 @@
           </div>
         </div>
 
-        <!-- Equipo quirúrgico (se guarda en datos_extra) -->
+        <!-- Roles de apoyo (texto libre, se guardan en datos_extra) -->
         <div class="field-row">
           <div class="field">
             <span class="field-label">Circulante</span>
-            <select class="field-input" formControlName="circulante_id">
-              <option [ngValue]="null">Seleccionar</option>
-              @for (m of medicos; track m.id) {
-                <option [ngValue]="m.id">{{ m.nombre }}</option>
-              }
-            </select>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="circulante"
+              placeholder="Nombre completo"
+              autocomplete="off"
+            />
           </div>
           <div class="field">
             <span class="field-label">Instrumentista</span>
-            <select class="field-input" formControlName="instrumentista_id">
-              <option [ngValue]="null">Seleccionar</option>
-              @for (m of medicos; track m.id) {
-                <option [ngValue]="m.id">{{ m.nombre }}</option>
-              }
-            </select>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="instrumentista"
+              placeholder="Nombre completo"
+              autocomplete="off"
+            />
           </div>
         </div>
         <div class="field-row">
           <div class="field">
             <span class="field-label">Pediatra</span>
-            <select class="field-input" formControlName="pediatra_id">
-              <option [ngValue]="null">Seleccionar</option>
-              @for (m of medicos; track m.id) {
-                <option [ngValue]="m.id">
-                  {{ m.nombre
-                  }}{{
-                    m.especialidad_nombre ? " — " + m.especialidad_nombre : ""
-                  }}
-                </option>
-              }
-            </select>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="pediatra"
+              placeholder="Nombre completo"
+              autocomplete="off"
+            />
           </div>
           <div class="field">
             <span class="field-label">Médico de apoyo</span>
-            <select class="field-input" formControlName="medico_apoyo_id">
-              <option [ngValue]="null">Seleccionar</option>
-              @for (m of medicos; track m.id) {
-                <option [ngValue]="m.id">
-                  {{ m.nombre
-                  }}{{
-                    m.especialidad_nombre ? " — " + m.especialidad_nombre : ""
-                  }}
-                </option>
-              }
-            </select>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="medico_apoyo"
+              placeholder="Nombre completo"
+              autocomplete="off"
+            />
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- TIEMPOS Y OBSERVACIONES -->
+    <div class="section-card">
+      <div class="sec-head">
+        <div class="sec-head-left">
+          <span class="sec-step" aria-hidden="true">5</span>
+          <div class="sec-icon">
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <circle cx="8" cy="8" r="6" />
+              <path d="M8 4.5V8l2.5 1.5" />
+            </svg>
+          </div>
+          <span class="sec-title">Tiempos y observaciones</span>
+        </div>
+      </div>
+      <div class="sec-body">
         <div class="field-row">
           <div class="field">
             <span class="field-label">Hora inicio de anestesia</span>
@@ -559,6 +591,28 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- ACCIONES (visibles al final del flujo) -->
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn-action btn-action-cancel"
+        [disabled]="guardando"
+        (click)="volver()"
+      >
+        <span class="dock-icon" [innerHTML]="cancelIcon"></span>
+        {{ textoCancelar }}
+      </button>
+      <button
+        type="button"
+        class="btn-action btn-action-save"
+        [disabled]="guardando || cargando"
+        (click)="guardar()"
+      >
+        <span class="dock-icon" [innerHTML]="saveIcon"></span>
+        {{ textoGuardar }}
+      </button>
     </div>
   </form>
 }

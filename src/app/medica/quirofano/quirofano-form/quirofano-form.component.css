@@ -89,6 +89,15 @@
   background: var(--theme-gradient-surface-hover);
 }
 .sec-head-left { display: flex; align-items: center; gap: var(--theme-space-2); }
+.sec-step {
+  width: 22px; height: 22px; flex-shrink: 0;
+  border-radius: var(--theme-radius-pill);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--theme-font-mono); font-size: var(--theme-font-size-xs); font-weight: var(--theme-font-weight-bold);
+  color: var(--theme-text-on-primary);
+  background: var(--theme-gradient-primary);
+  box-shadow: var(--theme-shadow-sm);
+}
 .sec-icon {
   width: 30px; height: 30px; border-radius: var(--theme-radius-sm);
   background: var(--theme-primary-dim);
@@ -99,13 +108,14 @@
 .sec-icon svg { width: 14px; height: 14px; }
 .sec-title { font-family: var(--theme-font-mono); font-size: var(--theme-font-size-xs); letter-spacing: 2px; color: var(--theme-text); text-transform: uppercase; }
 .sec-ok { font-size: var(--theme-font-size-xs); color: var(--theme-success); font-weight: var(--theme-font-weight-bold); }
-.sec-body { padding: var(--theme-space-3); display: flex; flex-direction: column; gap: var(--theme-space-3); }
+.sec-body { padding: var(--theme-space-4); display: flex; flex-direction: column; gap: var(--theme-space-4); }
 
 /* ── Fields ── */
 .field-row { display: flex; gap: var(--theme-space-3); flex-wrap: wrap; }
 .field-row .field { flex: 1; min-width: 160px; }
 .field { display: flex; flex-direction: column; gap: var(--theme-space-1); }
 .field-label { font-family: var(--theme-font-mono) !important; font-size: var(--theme-font-size-xs) !important; letter-spacing: 2px !important; color: var(--theme-text-muted); font-weight: var(--theme-font-weight-bold) !important; text-transform: uppercase !important; }
+.field-label .req { color: var(--theme-danger); margin-left: 3px; font-size: 1.1em; }
 .field-input {
   min-height: var(--theme-touch-min) !important;
   background: var(--theme-surface-raised) !important;
@@ -155,8 +165,22 @@ select.field-input option { background: var(--theme-surface); color: var(--theme
 }
 .field-radio:has(input:focus-visible) { box-shadow: 0 0 0 2px var(--theme-focus-ring); }
 .textarea { resize: vertical; font-family: var(--theme-font-ui); }
-.field-error { font-size: var(--theme-font-size-xs); color: var(--theme-danger); }
+.field-error { font-size: var(--theme-font-size-xs); color: var(--theme-danger); font-weight: var(--theme-font-weight-medium); }
+.field-error::before { content: "⚠ "; }
 .field-hint { font-size: var(--theme-font-size-xs); color: var(--theme-text-muted); }
+
+/* ── Feedback inline (estado válido) ── */
+.field-input.ng-valid.ng-dirty:not(select) {
+  border-color: color-mix(in srgb, var(--theme-success) 55%, var(--theme-border)) !important;
+}
+.field-input.ng-valid.ng-dirty:not(select):focus {
+  border-color: var(--theme-primary) !important;
+}
+.field:has(> .field-input.ng-valid.ng-dirty) > .field-label::after,
+.field:has(> .field-inline .field-input.ng-valid.ng-dirty) > .field-label::after {
+  content: " ✓";
+  color: var(--theme-success);
+}
 
 /* ── Expediente + botón ── */
 .field-inline { display: flex; gap: var(--theme-space-1); }
@@ -189,10 +213,35 @@ select.field-input option { background: var(--theme-surface); color: var(--theme
 
 button:disabled { opacity: 0.6; cursor: not-allowed; }
 
+/* ── Acciones al final del flujo (sticky) ── */
+.form-actions {
+  position: sticky; bottom: 0; z-index: 40;
+  display: flex; justify-content: flex-end; gap: var(--theme-space-2);
+  padding: var(--theme-space-3) 0 var(--theme-space-2);
+  margin-top: var(--theme-space-1);
+  background: linear-gradient(to top, var(--theme-background) 70%, transparent);
+}
+.btn-action {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--theme-space-1);
+  min-height: var(--theme-touch-comfortable);
+  padding: var(--theme-space-2) var(--theme-space-5);
+  border-radius: var(--theme-radius-md);
+  font-family: var(--theme-font-ui); font-size: var(--theme-font-size-sm); font-weight: var(--theme-font-weight-bold);
+  cursor: pointer; border: var(--theme-border-width) solid transparent;
+  transition: background var(--theme-transition-fast), border-color var(--theme-transition-fast), color var(--theme-transition-fast), transform var(--theme-transition-fast);
+}
+.btn-action-cancel { background: transparent; border-color: var(--theme-border-strong); color: var(--theme-text-muted); }
+.btn-action-cancel:hover:not(:disabled) { background: var(--theme-surface-raised); color: var(--theme-text); }
+.btn-action-save { background: var(--theme-gradient-primary); color: var(--theme-text-on-primary); box-shadow: var(--theme-shadow-md); }
+.btn-action-save:hover:not(:disabled) { background: var(--theme-gradient-primary-hover); transform: translateY(-1px); }
+.btn-action:disabled { opacity: 0.6; cursor: not-allowed; }
+
 @media (max-width: 768px) {
   .field-row { flex-direction: column; }
   .action-dock { justify-content: center; }
   .dock-hint { margin-right: 0; width: 100%; text-align: center; margin-bottom: var(--theme-space-1); }
   .field-inline { flex-wrap: wrap; }
   .btn-inline { flex: 1; }
+  .form-actions { justify-content: stretch; }
+  .btn-action { flex: 1; }
 }
