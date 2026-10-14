@@ -7,11 +7,53 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
+/* ── Selector de agrupación (especialidad / servicio) ── */
+.agrupar-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 14px 0 10px;
+}
+
+.agrupar-toggle__label {
+  color: var(--theme-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 2px;
+}
+
+.agrupar-toggle button {
+  padding: 4px 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.agrupar-toggle button:hover {
+  transform: translateY(-1px);
+}
+
+.agrupar-toggle button.activo {
+  background: var(--theme-primary);
+  border-color: var(--theme-primary);
+  color: #fff;
+}
+
 .filtro-grupo {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   justify-content: center;
+  margin-top: 8px;
 }
 
 .filtro-grupo button {

@@ -39,6 +39,20 @@
 .btn-dock-cancel:hover { background: var(--theme-danger); color: var(--theme-text-inverse); }
 .btn-dock-save { background: var(--theme-success-dim); border-color: var(--theme-success); color: var(--theme-success); font-weight: var(--theme-font-weight-bold); }
 .btn-dock-save:hover { background: var(--theme-success); color: var(--theme-text-on-primary); }
+.btn-dock:hover:disabled { background: inherit; color: inherit; }
+.dock-icon { display: inline-flex; align-items: center; }
+.dock-icon svg { display: block; width: 16px; height: 16px; }
+
+/* Aviso de validación del dock */
+.dock-alert {
+  flex-basis: 100%; width: 100%; margin: 0;
+  padding: var(--theme-space-1) var(--theme-space-2);
+  border-radius: var(--theme-radius-sm);
+  border: var(--theme-border-width) solid var(--theme-danger);
+  background: var(--theme-danger-dim);
+  color: var(--theme-danger);
+  font-family: var(--theme-font-ui); font-size: var(--theme-font-size-sm); font-weight: var(--theme-font-weight-bold);
+}
 
 /* ── Body ── */
 .adm-body {
@@ -116,6 +130,8 @@ select.field-input option { background: var(--theme-surface); color: var(--theme
 .field-group {
   display: flex; flex-wrap: wrap; gap: var(--theme-space-1);
   background: var(--theme-surface-raised);
+  justify-content: space-evenly;
+  align-items: center;
   border: var(--theme-border-width) solid var(--theme-border);
   border-radius: var(--theme-radius-md);
   padding: 4px;

@@ -240,9 +240,15 @@
             <small>{{ data.servicio | datosExtra: "servicio" }}</small>
           </td>
           <td class="secundario">
-            <div class="d-flex gap-1">
-              <button (click)="verDetalle(data.id)" data-label="Detalle">
+            <div class="d-flex gap-1 flex-wrap">
+              <button (click)="verDetalle(data.id)" data-label="Detalle" title="Ver detalle">
                 <span [innerHTML]="icons['tabla']"></span>
+              </button>
+              <button (click)="agregarNotaUisau(data.id)" data-label="Nota UISAU" title="Agregar nota UISAU">
+                <span [innerHTML]="icons['notaUisau']"></span>
+              </button>
+              <button (click)="verHistoriaUisau(data.paciente?.id)" data-label="Historia UISAU" title="Ver historia UISAU">
+                <span [innerHTML]="icons['historiaUisau']"></span>
               </button>
             </div>
           </td>

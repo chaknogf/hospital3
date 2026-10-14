@@ -58,6 +58,24 @@ export interface QuirofanoNumero {
   activo: boolean;
 }
 
+/** Roles del equipo quirúrgico que apoyan la intervención. */
+export interface EquipoQuirurgico {
+  circulante_id?: number | null;
+  instrumentista_id?: number | null;
+  pediatra_id?: number | null;
+  medico_apoyo_id?: number | null;
+  circulante_nombre?: string | null;
+  instrumentista_nombre?: string | null;
+  pediatra_nombre?: string | null;
+  medico_apoyo_nombre?: string | null;
+}
+
+/** Datos adicionales (columna JSONB `datos_extra`) de una intervención. */
+export interface DatosExtraIntervencion {
+  equipo?: EquipoQuirurgico;
+  [key: string]: unknown;
+}
+
 /** Intervención persistida con paciente, tiempos, equipo y procedimientos. */
 export interface IntervencionQuirurgica {
   intervencion_id: number;
@@ -103,6 +121,7 @@ export interface IntervencionQuirurgica {
   hora_finaliza_intervencion?: string;
   hora_finaliza_limpieza_prepara_quirofano?: string;
   observaciones?: string;
+  datos_extra?: DatosExtraIntervencion | null;
   activo: boolean;
   created_at?: string;
   updated_at?: string;
@@ -137,6 +156,7 @@ export interface IntervencionCreate {
   hora_finaliza_intervencion?: string;
   hora_finaliza_limpieza_prepara_quirofano?: string;
   observaciones?: string;
+  datos_extra?: DatosExtraIntervencion | null;
 }
 
 /** Campos parciales permitidos al actualizar una intervención. */
@@ -166,6 +186,7 @@ export interface IntervencionUpdate {
   hora_finaliza_intervencion?: string;
   hora_finaliza_limpieza_prepara_quirofano?: string;
   observaciones?: string;
+  datos_extra?: DatosExtraIntervencion | null;
   activo?: boolean;
 }
 

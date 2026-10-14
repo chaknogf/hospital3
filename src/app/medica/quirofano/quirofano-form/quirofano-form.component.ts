@@ -14,6 +14,8 @@ import {
   Especialidad,
   IntervencionCreate,
   IntervencionUpdate,
+  EquipoQuirurgico,
+  DatosExtraIntervencion,
 } from '../../../interface/quirofano.interface';
 import { CatalogoProcedimiento } from '../../../interface/procedimientos';
 import { PacienteJoin } from '../../../interface/interfaces';
@@ -85,10 +87,21 @@ export class QuirofanoFormComponent implements OnInit {
     hora_finaliza_intervencion: [''],
     hora_finaliza_limpieza_prepara_quirofano: [''],
     observaciones: [''],
+    // Equipo quirúrgico (se persiste dentro de datos_extra JSONB)
+    circulante_id: [null],
+    instrumentista_id: [null],
+    pediatra_id: [null],
+    medico_apoyo_id: [null],
   });
 
   saveIcon: any;
   cancelIcon: any;
+
+  /** Mensaje de validación visible después de intentar guardar. */
+  mensajeFormulario = '';
+
+  /** Especialidades tal cual las devuelve el catálogo (incluye la seleccionada al editar). */
+  private especialidadesCargadas: Especialidad[] = [];
 
   constructor(
     private api: QuirofanoService,
@@ -104,10 +117,62 @@ export class QuirofanoFormComponent implements OnInit {
 
   get f() { return this.form.controls; }
 
+  /** Etiqueta clara del botón principal. */
+  get textoGuardar(): string {
+    if (this.guardando) return 'Guardando…';
+    return this.enEdicion ? 'Guardar cambios' : 'Registrar intervención';
+  }
+
+  /** Etiqueta clara del botón secundario. */
+  get textoCancelar(): string {
+    return this.guardando ? 'Un momento…' : 'Cancelar';
+  }
+
+  /** Campos obligatorios aún incompletos (para orientar al usuario). */
+  get faltantes(): string[] {
+    const pendientes: string[] = [];
+    if (this.form.get('expediente')?.invalid) pendientes.push('Expediente');
+    if (this.form.get('especialidad_id')?.invalid) pendientes.push('Especialidad');
+    if (this.form.get('procedimiento_principal')?.invalid) pendientes.push('Procedimiento principal');
+    if (!this.pacienteId) pendientes.push('Paciente vinculado');
+    return pendientes;
+  }
+
+  /** Especialidades para el grupo de botones (siempre incluye la seleccionada al editar). */
+  get especialidadesBotones(): Especialidad[] {
+    const lista = this.especialidades;
+    const sel = this.form.value.especialidad_id;
+    if (sel == null || lista.some(e => e.id === sel)) return lista;
+    const extra = this.especialidadesCargadas.find(e => e.id === sel);
+    return extra ? [...lista, extra] : lista;
+  }
+
+  /** Médicos de la especialidad seleccionada (si hay filtro); si no, toda la plantilla. */
+  get medicosFiltrados(): MedicoOut[] {
+    const esp = this.form.value.especialidad_id;
+    const sel = this.form.value.personal_atencion_id;
+    let lista = this.medicos;
+    if (esp) {
+      const filtrados = this.medicos.filter(m => m.especialidad_id === esp);
+      if (filtrados.length) lista = filtrados;
+    }
+    // Conserva el cirujano ya elegido aunque no pertenezca a la especialidad filtrada.
+    if (sel != null && !lista.some(m => m.id === sel)) {
+      const actual = this.medicos.find(m => m.id === sel);
+      if (actual) lista = [...lista, actual];
+    }
+    return lista;
+  }
+
   ngOnInit(): void {
     this.cargarCatalogos();
     this.cargarMedicos();
     this.configurarEstadoAutomatico();
+
+    // Al corregir cualquier dato se oculta el aviso de validación.
+    this.form.valueChanges.subscribe(() => {
+      if (this.mensajeFormulario && this.faltantes.length === 0) this.mensajeFormulario = '';
+    });
 
 
 
@@ -151,6 +216,7 @@ export class QuirofanoFormComponent implements OnInit {
     this.api.getQuirofanosNumero().subscribe({ next: d => this.quirofanosNumero = d, error: () => { } });
     this.especialidadesApi.getEspecialidades(true, true).subscribe({
       next: d => {
+        this.especialidadesCargadas = d;
         this.especialidades = d.filter(e => {
           const c = (e.codigo ?? '').toUpperCase();
           const n = (e.nombre ?? '').toLowerCase();
@@ -203,13 +269,14 @@ export class QuirofanoFormComponent implements OnInit {
   }
 
   cargarMedicos(): void {
-    this.medicosApi.getMedicos({}).subscribe({
-      next: (data) => this.medicos = data.personal_atencion.filter(m => m.activo),
+    this.medicosApi.getAllMedicos().subscribe({
+      next: (data) => this.medicos = data.filter(m => m.activo),
       error: () => { }
     });
   }
 
   buscarPaciente(): void {
+    if (this.enEdicion || this.buscandoPaciente) return;
     const expediente = (this.form.value.expediente ?? '').trim();
     if (!expediente) { this.errorPaciente = 'Ingrese un expediente'; return; }
 
@@ -226,6 +293,7 @@ export class QuirofanoFormComponent implements OnInit {
           p.nombre.segundo_apellido,
         ].filter(Boolean).join(' ');
         this.buscandoPaciente = false;
+        this.mensajeFormulario = '';
       },
       error: () => {
         this.buscandoPaciente = false;
@@ -272,6 +340,10 @@ export class QuirofanoFormComponent implements OnInit {
           hora_finaliza_intervencion: (data.hora_finaliza_intervencion || '').slice(0, 5),
           hora_finaliza_limpieza_prepara_quirofano: (data.hora_finaliza_limpieza_prepara_quirofano || '').slice(0, 5),
           observaciones: data.observaciones || '',
+          circulante_id: data.datos_extra?.equipo?.circulante_id ?? null,
+          instrumentista_id: data.datos_extra?.equipo?.instrumentista_id ?? null,
+          pediatra_id: data.datos_extra?.equipo?.pediatra_id ?? null,
+          medico_apoyo_id: data.datos_extra?.equipo?.medico_apoyo_id ?? null,
         });
       },
       error: () => { },
@@ -288,16 +360,42 @@ export class QuirofanoFormComponent implements OnInit {
     return limpio;
   }
 
-  guardar(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    if (!this.pacienteId) {
-      this.errorPaciente = 'Debe seleccionar un paciente';
-      return;
-    }
+  /** Nombre del médico a partir de su id (para guardarlo junto al id en el JSONB). */
+  private nombreMedico(id: number | null | undefined): string | null {
+    if (id == null) return null;
+    return this.medicos.find(m => m.id === id)?.nombre ?? null;
+  }
 
+  /** Empaqueta el equipo quirúrgico en la estructura JSONB `datos_extra`. */
+  private construirDatosExtra(v: any): DatosExtraIntervencion | undefined {
+    const equipo: EquipoQuirurgico = {};
+    if (v.circulante_id != null) {
+      equipo.circulante_id = v.circulante_id;
+      equipo.circulante_nombre = this.nombreMedico(v.circulante_id);
+    }
+    if (v.instrumentista_id != null) {
+      equipo.instrumentista_id = v.instrumentista_id;
+      equipo.instrumentista_nombre = this.nombreMedico(v.instrumentista_id);
+    }
+    if (v.pediatra_id != null) {
+      equipo.pediatra_id = v.pediatra_id;
+      equipo.pediatra_nombre = this.nombreMedico(v.pediatra_id);
+    }
+    if (v.medico_apoyo_id != null) {
+      equipo.medico_apoyo_id = v.medico_apoyo_id;
+      equipo.medico_apoyo_nombre = this.nombreMedico(v.medico_apoyo_id);
+    }
+    return Object.keys(equipo).length ? { equipo } : undefined;
+  }
+
+  guardar(): void {
+    if (this.guardando) return;
+    if (this.form.invalid || !this.pacienteId) {
+      this.form.markAllAsTouched();
+      this.mensajeFormulario = 'Faltan datos: ' + this.faltantes.join(', ');
+      return;
+    }
+    this.mensajeFormulario = '';
     this.guardando = true;
     const v = this.form.value;
     const areaSel = this.areasCuerpo.find(a => a.id === v.id_area_cuerpo_intervenida);
@@ -323,6 +421,7 @@ export class QuirofanoFormComponent implements OnInit {
       hora_finaliza_intervencion: v.hora_finaliza_intervencion || undefined,
       hora_finaliza_limpieza_prepara_quirofano: v.hora_finaliza_limpieza_prepara_quirofano || undefined,
       observaciones: v.observaciones || undefined,
+      datos_extra: this.construirDatosExtra(v),
     };
 
     if (this.enEdicion && this.intervencionId) {
