@@ -1,14 +1,14 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Location } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { ApiService } from '@services/api.service';
 import { ConsultaOut } from '@models/consultas';
 import { DatosExtraPipe } from 'app/pipes/datos-extra.pipe';
 
 @Component({
   selector: 'app-activos-mayores-7-dias',
-  imports: [FormsModule, RouterLink, DatosExtraPipe],
+  imports: [FormsModule, DatosExtraPipe],
   templateUrl: './activos-mayores-7-dias.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./activos-mayores-7-dias.component.css']
@@ -16,6 +16,7 @@ import { DatosExtraPipe } from 'app/pipes/datos-extra.pipe';
 /** Identifica consultas activas cuya duración supera siete días. */
 export class ActivosMayores7DiasComponent implements OnInit {
   private api = inject(ApiService);
+  private location = inject(Location);
   datos: ConsultaOut[] = [];
   cargando = false;
   cargandoMas = false;
@@ -27,6 +28,10 @@ export class ActivosMayores7DiasComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargar();
+  }
+
+  volver(): void {
+    this.location.back();
   }
 
   cargar(): void {

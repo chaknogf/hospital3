@@ -1,6 +1,6 @@
 <div class="page-container">
   <div class="page-header">
-    <button class="btn-back" routerLink="/reportes">← Volver</button>
+    <button class="btn-back" (click)="volver()">← Volver</button>
     <h1>Activos Mayores a 7 Días</h1>
   </div>
   @if (cargando) {

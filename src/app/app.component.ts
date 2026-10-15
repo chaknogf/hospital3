@@ -6,6 +6,7 @@ import { NavbarComponent } from './principal/navbar/navbar.component';
 import { ApiService } from './service/api.service';
 import { OfflineSyncService } from './service/offline-sync.service';
 import { FullSyncService } from './service/full-sync.service';
+import { DictadoService } from './service/dictado.service';
 import { filter } from 'rxjs/operators';
 import { ViewEncapsulation } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
@@ -40,9 +41,11 @@ export class AppComponent {
     private api: ApiService,
     private sync: OfflineSyncService,
     public fullSync: FullSyncService,
-    private http: HttpClient
+    private http: HttpClient,
+    private dictado: DictadoService
   ) {
     registerLocaleData(localeEs);
+    this.dictado.init();
     this.detectarRuta();
   }
 
