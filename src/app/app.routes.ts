@@ -313,7 +313,7 @@ export const routes: Routes = [
       {
         path: 'quirofano/resumen',
         loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent),
-        canActivate: [roleGuard(['admin', 'medico'])]
+        canActivate: [roleGuard(['admin', 'medico', 'std'])]
       },
 
       //Citas

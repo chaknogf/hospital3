@@ -1,6 +1,6 @@
 // quirofano-resumen.component.ts
 
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,7 +10,6 @@ import {
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
 import {
   Especialidad,
@@ -61,7 +60,7 @@ export class QuirofanoResumenComponent implements OnInit {
   private api = inject(QuirofanoService);
   private especialidadesApi = inject(EspecialidadesService);
   private fb = inject(FormBuilder);
-  private router = inject(Router);
+  private location = inject(Location);
   private iconService = inject(IconService);
 
   readonly icons = {
@@ -234,7 +233,7 @@ export class QuirofanoResumenComponent implements OnInit {
   // NAVEGACIÓN
   // ══════════════════════════════════════════════════════════
   volver(): void {
-    this.router.navigate(['/quirofano']);
+    this.location.back();
   }
 
   seleccionarDetalle(index: number): void {

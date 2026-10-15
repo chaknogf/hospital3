@@ -13,28 +13,59 @@
     </button>
   </header>
 
-  <main class="menu-grid">
-    @for (opt of options; track opt.ruta + opt.nombre) {
-      <button
-        class="menu-card"
-        [class.danger]="opt.danger"
-        [style.--card-accent]="menuColor($index)"
-        (click)="opt.accion ? opt.accion() : navegar(opt.ruta)">
-        <span class="menu-card-icon">
-          @if (icons[opt.icon]) {
-            <span [innerHTML]="icons[opt.icon]"></span>
-          } @else {
-            <span class="menu-card-dot"></span>
-          }
-        </span>
-        <span class="menu-card-body">
-          <span class="menu-card-name">{{ opt.nombre }}</span>
-          <span class="menu-card-desc">{{ opt.descripcion }}</span>
-        </span>
-        <svg class="menu-card-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m9 18 6-6-6-6"/>
-        </svg>
-      </button>
+  <main class="menu-groups">
+    @for (grupo of grupos; track grupo.titulo) {
+      <section class="menu-group">
+        <button
+          type="button"
+          class="menu-group-header"
+          [class.open]="abiertos()[grupo.titulo]"
+          [attr.aria-expanded]="abiertos()[grupo.titulo] ? 'true' : 'false'"
+          (click)="toggleGrupo(grupo.titulo)">
+          <span class="menu-group-icon">
+            @if (icons[grupo.icon]) {
+              <span [innerHTML]="icons[grupo.icon]"></span>
+            }
+          </span>
+          <span class="menu-group-text">
+            <span class="menu-group-title">{{ grupo.titulo }}</span>
+            <span class="menu-group-desc">{{ grupo.descripcion }}</span>
+          </span>
+          <span class="menu-group-count">{{ grupo.opciones.length }}</span>
+          <svg class="menu-group-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </button>
+
+        @if (abiertos()[grupo.titulo]) {
+          <div class="menu-group-body">
+            <div class="menu-grid">
+              @for (opt of grupo.opciones; track opt.nombre) {
+                <button
+                  class="menu-card"
+                  [class.danger]="opt.danger"
+                  [style.--card-accent]="menuColor($index)"
+                  (click)="opt.accion ? opt.accion() : navegar(opt.ruta)">
+                  <span class="menu-card-icon">
+                    @if (icons[opt.icon]) {
+                      <span [innerHTML]="icons[opt.icon]"></span>
+                    } @else {
+                      <span class="menu-card-dot"></span>
+                    }
+                  </span>
+                  <span class="menu-card-body">
+                    <span class="menu-card-name">{{ opt.nombre }}</span>
+                    <span class="menu-card-desc">{{ opt.descripcion }}</span>
+                  </span>
+                  <svg class="menu-card-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </section>
     }
   </main>
 </div>

@@ -48,7 +48,8 @@ export class EstadisticaComponent implements OnInit {
       calendar: this.iconService.getIcon("calendarIcon"),
       baby: this.iconService.getIcon("babyIcon"),
       persons: this.iconService.getIcon("persons2"),
-      doctor: this.iconService.getIcon("doctorIcon")
+      doctor: this.iconService.getIcon("doctorIcon"),
+      cama: this.iconService.getIcon("censoCamasIcon")
 
     }
 
@@ -64,8 +65,9 @@ export class EstadisticaComponent implements OnInit {
       { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
       { nombre: 'Prestamo', descripcion: 'Gestor de expedientes prestados', ruta: '/prestamos', icon: 'compartir' },
       { nombre: 'Procedimientos', descripcion: 'Registro de procedimientos menores y mayores', ruta: '/procedimientosmenores', icon: '' },
-      { nombre: 'Censo de Camas', descripcion: 'Gestión y registro del censo diario de camas', ruta: '/censo-camas', icon: 'consultas' },
+      { nombre: 'Censo de Camas', descripcion: 'Gestión y registro del censo diario de camas', ruta: '/censo-camas', icon: 'cama' },
       { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: '/reportes', icon: 'archivo' },
+      { nombre: 'Resumen Quirófano', descripcion: 'Estadísticas del área quirúrgica', ruta: '/quirofano/resumen', icon: 'doctor' },
       { nombre: 'Personal Hospital', descripcion: 'Personal del hospital registrado', ruta: '/personal-hospital', icon: 'doctor' },
       { nombre: 'Nacimientos', descripcion: 'Registro de Nacimientos', ruta: '/nacimientos-std', icon: 'baby' },
       { nombre: 'Medicos', descripcion: 'Medicos Registrados', ruta: '/doctores', icon: 'doctor' },
