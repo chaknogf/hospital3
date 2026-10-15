@@ -1,5 +1,5 @@
 import { logoicon2, logoicon } from './../../shared/icons/svg-icon';
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Signal, signal, inject, ElementRef, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { ThemeService, ThemeName } from '../../service/theme.service';
@@ -26,6 +26,9 @@ export class NavbarComponent {
 
   readonly currentTheme: Signal<ThemeName>;
 
+  readonly menuMovilAbierto = signal(false);
+  private readonly host = inject(ElementRef<HTMLElement>);
+
   private readonly THEME_LABELS: Record<string, string> = {
     current: 'Predeterminado',
     hospital: 'Hospital',
@@ -51,7 +54,28 @@ export class NavbarComponent {
   }
 
   logout() {
+    this.cerrarMenuMovil();
     this.cerrarSesion.emit();
+  }
+
+  toggleMenuMovil() {
+    this.menuMovilAbierto.update((abierto) => !abierto);
+  }
+
+  cerrarMenuMovil() {
+    this.menuMovilAbierto.set(false);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (this.menuMovilAbierto() && !this.host.nativeElement.contains(event.target as Node)) {
+      this.cerrarMenuMovil();
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    this.cerrarMenuMovil();
   }
 
   menu() {

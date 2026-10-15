@@ -17,6 +17,7 @@
           <thead>
             <tr>
               <th>Paciente</th>
+              <th>Expediente</th>
               <th>Especialidad</th>
               <th>Fecha</th>
               <th>Días</th>
@@ -27,6 +28,7 @@
             @for (d of datos; track d) {
               <tr>
                 <td class="td-left">{{ d.paciente.nombre_completo }}</td>
+                <td>{{ d.expediente || "—" }}</td>
                 <td>{{ d.especialidad }}</td>
                 <td>{{ d.fecha_consulta }}</td>
                 <td>
