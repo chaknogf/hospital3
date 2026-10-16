@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { of } from 'rxjs';
 
@@ -46,12 +45,12 @@ describe('HistoriaUisauComponent', () => {
         { provide: CicloService, useValue: cicloService },
         { provide: PacienteService, useValue: jasmine.createSpyObj<PacienteService>('PacienteService', ['pacienteExpediente']) },
         { provide: Location, useValue: { back: () => {} } },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '7' } } } },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HistoriaUisauComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('pacienteId', 7);
     fixture.detectChanges();
   });
 
@@ -75,5 +74,12 @@ describe('HistoriaUisauComponent', () => {
     expect(component.estaColapsada(12)).toBeFalse();
     component.toggleConsulta(12);
     expect(component.estaColapsada(12)).toBeTrue();
+  });
+
+  it('oculta el buscador propio cuando mostrarBusqueda es false', () => {
+    expect(fixture.nativeElement.querySelector('.input-busqueda')).not.toBeNull();
+    fixture.componentRef.setInput('mostrarBusqueda', false);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.input-busqueda')).toBeNull();
   });
 });

@@ -16,6 +16,7 @@ import {
   TotalesResponse,
   ConsultaListResponse,
   PacienteBuscado,
+  ServicioConteo,
 } from '../../interface/consultas';
 import { OfflineDatabaseService } from '../../service/offline-database.service';
 import { FullSyncService } from '../../service/full-sync.service';
@@ -103,6 +104,20 @@ export class ConsultaService extends BaseApiService {
         }
         return this.manejarError(error, 'obtener consultas');
       })
+    );
+  }
+
+  /**
+   * Servicios distintos de las consultas con su total, para armar pestañas por
+   * servicio (p. ej. `/encamamiento`). No usa caché offline: el catálogo de
+   * servicios se resuelve mejor online; si falla, el componente usa un fallback.
+   */
+  getServiciosPorTipo(
+    filtros: { tipo_consulta?: number; archivo?: boolean; excluir_estados?: string } = {}
+  ): Observable<ServicioConteo[]> {
+    const params = this.limpiarParametros(filtros);
+    return this.http.get<ServicioConteo[]>(`${this.baseUrl}/consultas/servicios`, { params }).pipe(
+      catchError(error => this.manejarError(error, 'obtener servicios por tipo'))
     );
   }
 

@@ -1,6 +1,7 @@
 
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { Location } from '@angular/common';
 import { menuIcon, patientIcon, ambulanceIcon, enfermoIcon, hospitalconsvg, consultasIcon, archivoIcon, compartirIcon, calendarIcon } from '../../shared/icons/svg-icon';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { IconService } from '../../service/icon.service';
@@ -28,6 +29,8 @@ export class EstadisticaComponent implements OnInit {
 
   // iconos
   icons: { [key: string]: any } = {};
+
+  private location = inject(Location);
 
 
 
@@ -83,6 +86,11 @@ export class EstadisticaComponent implements OnInit {
 
   navegar(ruta: string) {
     this.router.navigate([ruta]);
+  }
+
+  /** Regresa a la página anterior del historial. */
+  regresar(): void {
+    this.location.back();
   }
 
 

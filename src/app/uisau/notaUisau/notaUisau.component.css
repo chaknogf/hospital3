@@ -61,9 +61,9 @@
 }
 .nm-picker__title { margin: 0.4rem 0 0.2rem; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; }
 .nm-picker__hint { margin: 0; color: var(--theme-text-muted); font-size: var(--theme-font-size-sm); }
-.nm-picker__search { display: flex; gap: 0.5rem; margin-top: 1rem; }
+.nm-picker__search { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
 .nm-picker__search input {
-  flex: 1;
+  flex: 1 1 12rem;
   min-width: 0;
   padding: 0.7rem 0.8rem;
   border: 1px solid var(--theme-border);
@@ -170,6 +170,13 @@
   color: var(--theme-text-muted);
   font: 500 var(--theme-font-size-xs)/1.4 var(--theme-font-mono);
   border-bottom: 1px solid var(--theme-border);
+}
+
+/* ── Bloque agregar nota ── */
+.nm-agregar {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--theme-border);
 }
 
 .nm-tabs {

@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, Input, inject, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { Subject, of } from 'rxjs';
 import { catchError, takeUntil } from 'rxjs/operators';
 
@@ -18,6 +17,10 @@ import { parentescos } from '../../enum/diccionarios';
 /**
  * Historia de los registros UISAU de un paciente. Reutiliza el endpoint de
  * historia clínica agrupada y filtra los ciclos que traen datos `uisau`.
+ *
+ * Es un componente presentacional embebido en la pestaña "Historia" de
+ * `NotaUisauComponent`: recibe el `pacienteId` por `@Input` y, si no lo recibe,
+ * permite buscarlo por expediente.
  */
 @Component({
   selector: 'app-historiaUisau',
@@ -27,27 +30,33 @@ import { parentescos } from '../../enum/diccionarios';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule],
 })
-export class HistoriaUisauComponent implements OnInit, OnDestroy {
+export class HistoriaUisauComponent implements OnDestroy {
 
   private cicloService = inject(CicloService);
   private pacienteService = inject(PacienteService);
-  private route = inject(ActivatedRoute);
   private location = inject(Location);
   private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
 
   historia = signal<HistoriaClinicaResponse | null>(null);
-  cargando = signal(true);
+  cargando = signal(false);
   error = signal<string | null>(null);
   consultasColapsadas = signal<Set<number>>(new Set());
   expedienteBusqueda = '';
 
-  ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+  /** Muestra el buscador por expediente propio (se oculta cuando el padre ya busca). */
+  @Input() mostrarBusqueda = true;
+
+  /** Paciente cuya historia se muestra. Si es nulo se ofrece búsqueda por expediente. */
+  @Input()
+  set pacienteId(id: number | null | undefined) {
     if (id) {
       this.cargar(id);
     } else {
+      this.historia.set(null);
       this.cargando.set(false);
+      this.error.set(null);
+      this.cdr.markForCheck();
     }
   }
 

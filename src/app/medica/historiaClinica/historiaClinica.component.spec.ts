@@ -11,6 +11,7 @@ describe('HistoriaClinicaComponent', () => {
   let fixture: ComponentFixture<HistoriaClinicaComponent>;
   let component: HistoriaClinicaComponent;
   let cicloService: jasmine.SpyObj<CicloService>;
+  let consultaService: jasmine.SpyObj<ConsultaService>;
   let paramValue: string | null;
   let byValue: string | null;
 
@@ -49,12 +50,14 @@ describe('HistoriaClinicaComponent', () => {
       total_ciclos: 1,
     } as any));
     cicloService.getCiclosDeConsulta.and.returnValue(of([]));
+    consultaService = jasmine.createSpyObj<ConsultaService>('ConsultaService', ['getConsultasPorPaciente', 'getConsultaId']);
+    consultaService.getConsultaId.and.returnValue(of({ id: 7, paciente_id: 7 } as any));
 
     await TestBed.configureTestingModule({
       imports: [HistoriaClinicaComponent],
       providers: [
         { provide: CicloService, useValue: cicloService },
-        { provide: ConsultaService, useValue: jasmine.createSpyObj<ConsultaService>('ConsultaService', ['getConsultasPorPaciente']) },
+        { provide: ConsultaService, useValue: consultaService },
         { provide: PacienteService, useValue: jasmine.createSpyObj<PacienteService>('PacienteService', ['pacienteExpediente']) },
         { provide: ActivatedRoute, useValue: { snapshot: {
           paramMap: { get: () => paramValue },
@@ -80,5 +83,18 @@ describe('HistoriaClinicaComponent', () => {
   it('prepara el resumen odontológico para la tarjeta y la impresión', () => {
     expect(component.esNotaOdontologica(ciclo as any)).toBeTrue();
     expect(component.resumenOdontologico(ciclo as any)).toBe('Caries oclusal · Dolor al masticar · Restauración · Piezas: 16');
+  });
+
+  it('resuelve la consulta a su paciente y carga la historia completa directamente', () => {
+    byValue = null;
+    paramValue = '233430';
+    consultaService.getConsultaId.and.returnValue(of({ id: 233430, paciente_id: 8794 } as any));
+
+    fixture = TestBed.createComponent(HistoriaClinicaComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(consultaService.getConsultaId).toHaveBeenCalledWith(233430);
+    expect(cicloService.getHistoriaClinica).toHaveBeenCalledWith(8794);
   });
 });

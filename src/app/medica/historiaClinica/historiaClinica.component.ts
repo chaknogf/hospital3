@@ -2,14 +2,13 @@ import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy }
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil, forkJoin } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { CicloService } from '../ciclo.service';
 import { PacienteService } from '../../registros/patient/paciente.service';
 import { ConsultaService } from '../../registros/consultas/consultas.service';
 import {
   HistoriaClinicaResponse,
-  ConsultaHistoria,
   CicloResumen,
 } from '../../interface/ciclo';
 
@@ -84,51 +83,25 @@ export class HistoriaClinicaComponent implements OnInit, OnDestroy {
       });
   }
 
-  // ── Carga por consulta (modo legacy) ──────────────────────
+  // ── Carga por consulta: resuelve el paciente y muestra su historia completa ──
   private cargarHistoriaPorConsulta(consultaId: number): void {
     this.cargando.set(true);
     this.error.set(null);
 
-    this.cicloService.getCiclosDeConsulta(consultaId)
+    this.consultaService.getConsultaId(consultaId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (ciclos) => {
-          if (ciclos.length > 0 && ciclos[0].consulta) {
-            const c = ciclos[0].consulta as any;
-            this.historia.set({
-              paciente_id: c.paciente?.id || 0,
-              paciente_nombre: c.paciente?.nombre_completo,
-              paciente_expediente: c.paciente?.expediente,
-              consultas: [{
-                consulta: {
-                  id: consultaId,
-                  tipo_consulta: c.tipo_consulta,
-                  especialidad: c.especialidad,
-                  fecha_consulta: c.fecha_consulta,
-                  hora_consulta: c.hora_consulta,
-                  ultimo_estado: c.ultimo_estado,
-                },
-                ciclos: ciclos.map(ciclo => this.mapearCiclo({
-                  ...ciclo,
-                  especialidad: ciclo.especialidad ?? c.especialidad,
-                })),
-                total_ciclos: ciclos.length,
-              }],
-              total_consultas: 1,
-              total_ciclos: ciclos.length,
-            });
+        next: (consulta) => {
+          const pacienteId = consulta?.paciente_id ?? (consulta?.paciente as any)?.id;
+          if (pacienteId) {
+            this.cargarHistoriaPorPaciente(pacienteId);
           } else {
-            this.historia.set({
-              paciente_id: 0,
-              consultas: [],
-              total_consultas: 0,
-              total_ciclos: 0,
-            });
+            this.error.set('No se pudo resolver el paciente de la consulta');
+            this.cargando.set(false);
           }
-          this.cargando.set(false);
         },
         error: () => {
-          this.error.set('Error al cargar ciclos');
+          this.error.set('Error al cargar la consulta');
           this.cargando.set(false);
         }
       });
@@ -235,39 +208,6 @@ export class HistoriaClinicaComponent implements OnInit, OnDestroy {
     window.print();
   }
 
-  private mapearCiclo(ciclo: any): CicloResumen {
-    const dm = ciclo.datos_medicos || {};
-    const odonto = dm.odontologia ?? (this.esEspecialidadOdontologica(ciclo.especialidad) ? {
-      motivo_consulta: dm.detalle_clinicos,
-      diagnostico: dm.impresion_clinica,
-      plan_tratamiento: dm.tratamiento,
-      procedimientos: dm.ordenes,
-    } : undefined);
-    const dientes = odonto?.odontograma?.dientes ?? {};
-    return {
-      id: ciclo.id,
-      numero: ciclo.numero,
-      registro: ciclo.registro,
-      usuario: ciclo.usuario,
-      usuario_nombre: ciclo.usuario_nombre,
-      especialidad: ciclo.especialidad,
-      servicio: ciclo.servicio,
-      resumen: dm.impresion_clinica || dm.detalle_clinicos || dm.tratamiento || ciclo.contenido,
-      signos_vitales: dm.signos_vitales,
-      impresion_clinica: dm.impresion_clinica,
-      egreso: dm.egreso,
-      odontologia: odonto ? {
-        motivo_consulta: odonto.motivo_consulta,
-        diagnostico: odonto.diagnostico,
-        plan_tratamiento: odonto.plan_tratamiento,
-        procedimientos: odonto.procedimientos,
-        piezas_afectadas: Object.entries(dientes)
-          .filter(([, pieza]: [string, any]) => pieza?.estado || Object.keys(pieza?.superficies ?? {}).length)
-          .map(([numero]) => numero),
-      } : undefined,
-    };
-  }
-
   esNotaOdontologica(ciclo: CicloResumen): boolean {
     return !!ciclo.odontologia;
   }
@@ -279,10 +219,5 @@ export class HistoriaClinicaComponent implements OnInit, OnDestroy {
       .filter((parte): parte is string => !!parte?.trim());
     if (odonto.piezas_afectadas?.length) partes.push(`Piezas: ${odonto.piezas_afectadas.join(', ')}`);
     return partes.join(' · ') || 'Nota odontológica registrada';
-  }
-
-  private esEspecialidadOdontologica(especialidad?: string): boolean {
-    const normalizada = (especialidad ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
-    return normalizada === 'ODON' || normalizada.includes('ODONTO');
   }
 }

@@ -9,7 +9,7 @@
       Menu
     </button>
 
-    <h1 class="text-white">Encamamiento</h1>
+    <h1 class="text-white">Lista de Pacientes</h1>
 
     <button type="button" (click)="toggleFiltrar()">
       <span [innerHTML]="icons['find']"></span>
@@ -88,20 +88,6 @@
           />
       </fieldset>
 
-      <!-- <fieldset class="fieldset-filtros">
-      <label class="label-filtros">Ciclo</label>
-      <select
-        name="ciclo"
-        [(ngModel)]="filtros.ciclo"
-        id="cilo"
-        class="input-filtros"
-        >
-        <option *ngFor="let ciclo of ciclos" [value]="ciclo.value">
-          {{ ciclo.label }}
-        </option>
-      </select>
-    </fieldset> -->
-
     <!-- Botones -->
     <div class="botones-filtros">
       <button class="button-filtros" type="submit">
@@ -121,50 +107,20 @@
     </button>
   </div>
 </div>
-<!-- Agrupación (especialidad / servicio) -->
-<div class="agrupar-toggle">
-  <span class="agrupar-toggle__label">Agrupar por</span>
-  @for (op of opcionesAgrupacion; track op.value) {
+
+<!-- Servicios (COEX, Emergencia y cada servicio de hospitalización) -->
+<div class="filtro-grupo">
+  @for (s of serviciosLista; track s.key) {
     <button
-      type="button"
-      [class.activo]="agruparPor === op.value"
-      (click)="cambiarAgrupacion(op.value)"
+      [class.activo]="seleccionado === s.key"
+      (click)="seleccionarServicio(s.key)"
       >
-      {{ op.label }}
+      {{ s.label }}
+      <span class="badge">{{ conteosPorKey[s.key] ?? 0 }}</span>
     </button>
   }
 </div>
 
-<!-- Grupos con conteo -->
-<div class="filtro-grupo">
-  <button
-    [class.activo]="agruparPor === 'especialidad' ? filtros.especialidad === '' : filtros.servicio === ''"
-    (click)="seleccionarTodos()"
-    >
-    Todas <span class="badge">{{ totalDeRegistros }}</span>
-  </button>
-  @if (agruparPor === 'especialidad') {
-    @for (e of especialidadesIngreso; track trackById($index, e)) {
-      <button
-        [class.activo]="filtros.especialidad === e.value"
-        (click)="seleccionarEspecialidad(e.value)"
-        >
-        {{ e.label }}
-        <span class="badge">{{ conteosPorEspecialidad[e.value] ?? 0 }}</span>
-      </button>
-    }
-  } @else {
-    @for (s of serviciosIngreso; track trackById($index, s)) {
-      <button
-        [class.activo]="filtros.servicio === s.value"
-        (click)="seleccionarServicio(s.value)"
-        >
-        {{ s.label }}
-        <span class="badge">{{ conteosPorServicio[s.value] ?? 0 }}</span>
-      </button>
-    }
-  }
-</div>
 <!-- Tabla principal (desktop) -->
 <div class="aurora-container">
   <table class="aurora-tb">
@@ -175,6 +131,7 @@
         <th>Fecha</th>
         <th>Ultimo Ciclo</th>
         <th>Servicio</th>
+        <th>Nota UISAU</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -239,6 +196,13 @@
           <td class="" data-label="Servicio:">
             <small>{{ data.servicio | datosExtra: "servicio" }}</small>
           </td>
+          <td data-label="Nota UISAU:">
+            @if (data.tiene_uisau) {
+              <span class="chip-uisau" title="Este paciente tiene nota UISAU registrada">Nota ✓</span>
+            } @else {
+              <small class="text-muted">—</small>
+            }
+          </td>
           <td class="secundario">
             <div class="d-flex gap-1 flex-wrap">
               <button (click)="verDetalle(data.id)" data-label="Detalle" title="Ver detalle">
@@ -257,7 +221,7 @@
       <!-- Sin resultados -->
       @if (!cargando && consultas.length === 0) {
         <tr>
-          <td colspan="5" class="text-center py-3">
+          <td colspan="7" class="text-center py-3">
             <em>No se encontraron coincidencias.</em>
           </td>
         </tr>
@@ -266,7 +230,7 @@
       <!-- Cargando -->
       @if (cargando) {
         <tr>
-          <td colspan="5" class="text-center py-3">
+          <td colspan="7" class="text-center py-3">
             <em>Cargando...</em>
           </td>
         </tr>

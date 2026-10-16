@@ -2,17 +2,23 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { Dict, ciclos, especialidadesConsulta, servicios } from '../../enum/diccionarios';
 import { ConsultaResponse } from '../../interface/consultas';
-import { Totales, Paciente } from '../../interface/interfaces';
 import { CuiPipe } from '../../pipes/cui.pipe';
 import { TimePipe } from '../../pipes/time.pipe';
 import { IconService } from '../../service/icon.service';
 import { ConsultaService } from '../../registros/consultas/consultas.service';
+import { CicloService } from '../../medica/ciclo.service';
 import { DatosExtraPipe } from '../../pipes/datos-extra.pipe';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+/** Pestaña de la lista: tipo de consulta y, opcionalmente, un servicio concreto. */
+interface ServicioLista {
+  key: string;
+  label: string;
+  tipo: number;
+  servicio: string | null;
+}
 
 @Component({
   selector: 'app-encamamiento',
@@ -22,90 +28,66 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, CuiPipe, TimePipe, DatosExtraPipe]
 })
-/** Consulta y organiza pacientes hospitalizados por especialidad y servicio. */
+/** Lista de pacientes activos por COEX, Emergencia y cada servicio de hospitalización. */
 export class EncamamientoComponent implements OnInit, OnDestroy {
 
-  private location = inject(Location);
   private api = inject(ConsultaService);
+  private cicloApi = inject(CicloService);
   private router = inject(Router);
   private iconService = inject(IconService);
   private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
-  esEmergencia = true;
+  /** Pestañas fijas: Consulta Externa (tipo 1) y Emergencia (tipo 3). */
+  private readonly serviciosBase: ServicioLista[] = [
+    { key: 'coex', label: 'COEX', tipo: 1, servicio: null },
+    { key: 'emer', label: 'Emergencia', tipo: 3, servicio: null },
+  ];
+
+  /** Servicios de tipo 2 sin área hospitalaria real: no generan pestaña. */
+  private readonly serviciosOmitidos = ['SOPR', 'AROJ', 'OTRO', 'HOSPITALIZACION', 'EMER'];
+
+  /** Servicios conocidos de tipo 2, usados si el backend no responde. */
+  private readonly serviciosFallback = [
+    'NEON', 'MATE', 'PEDA', 'GINI', 'CIHO', 'MEDI',
+    'CIMU', 'MEMU', 'TRHO', 'MEHO', 'TRMU', 'UCIN', 'CRN_', 'UCIA',
+  ];
+
+  /**
+   * Pestañas de la lista. Se arman con COEX, Emergencia y una por cada servicio
+   * real de hospitalización (`tipo_consulta=2`) presente en las consultas.
+   */
+  serviciosLista: ServicioLista[] = [...this.serviciosBase];
+
+  seleccionado = 'coex';
+  conteosPorKey: Record<string, number> = {};
+
   consultas: ConsultaResponse[] = [];
-  totales: Totales[] = [];
-
-  estadosValidos = [
-    { label: 'Admisión', value: 'admision' },
-    { label: 'Signos', value: 'signos' },
-    { label: 'Consulta', value: 'consulta' },
-    { label: 'Estudios', value: 'estudios' },
-    { label: 'Tratamiento', value: 'tratamiento' },
-    { label: 'Observación', value: 'observacion' },
-    { label: 'Evolución', value: 'evolucion' },
-    { label: 'Procedimiento', value: 'procedimiento' },
-    { label: 'Recuperación', value: 'recuperacion' },
-    { label: 'Referido', value: 'referido' },
-    { label: 'Traslado', value: 'traslado' },
-    { label: 'Préstamo', value: 'prestamo' },
-    { label: 'Actualizado', value: 'actualizado' },
-    { label: 'Descartado', value: 'descartado' },
-    { label: 'Reprogramado', value: 'reprogramado' },
-    // excluidos: archivo, recepcion, egreso
-  ];
-
-  serviciosIngreso: Dict[] = servicios.filter(s => s.ref === 'ingreso');
-
-  /** Criterio con el que se agrupan y filtran los pacientes. */
-  agruparPor: 'especialidad' | 'servicio' = 'especialidad';
-  opcionesAgrupacion: { value: 'especialidad' | 'servicio'; label: string }[] = [
-    { value: 'especialidad', label: 'Especialidad' },
-    { value: 'servicio', label: 'Servicio' },
-  ];
-
-  // ── Mapa de consultas y conteos por servicio ──────────────────
-  consultasPorServicio: Record<string, ConsultaResponse[]> = {};
-  conteosPorServicio: Record<any, any> = {};
-
-  // ✅ después
-  especialidadesIngreso: Dict[] = especialidadesConsulta; // todas, sin filtrar
-  consultasPorEspecialidad: Record<string, ConsultaResponse[]> = {};
-  conteosPorEspecialidad: Record<any, any> = {};
-
-  paciente: Paciente | null = null;
-  public status: 'activo' | 'inactivo' | 'none' = 'none';
   cargando = false;
-  cargandoConteos = false;
   filtrar = false;
-  visible = false;
   modalActivo = false;
-  espacio: string = ' ';
-  pageSize: number = 8;
-  skip: number = 0;
-  tipoConsultas: number = 2;
-  paginaActual: number = 1;
-  finPagina: boolean = false;
+  pageSize = 8;
+  paginaActual = 1;
   totalDeRegistros = 0;
-  porcentajeDeCarga = 0;
-  ciclos: Dict[] = ciclos;
+  rowActiva: number | null = null;
+
+  /** Estados no encamados: salidas (egreso/archivo/referido/fallecido) y aún-en-recepción. */
+  private readonly estadosExcluidos = 'egreso,archivo,referido,fallecido,recepcion';
 
   filtros: any = {
     skip: 0,
     limit: this.pageSize,
-    tipo_consulta: 2,
+    expediente: '',
     primer_nombre: '',
     segundo_nombre: '',
     primer_apellido: '',
     segundo_apellido: '',
     fecha: '',
-    ciclo: '',
-    archivo: false,
     ultimo_estado: '',
-    especialidad: '',
-    servicio: '',
+    archivo: false,
     identificador: '',
+    excluir_estados: this.estadosExcluidos,
   };
 
   icons: { [key: string]: any } = {};
@@ -136,10 +118,7 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.api.consultas$.pipe(takeUntil(this.destroy$)).subscribe(data => { this.consultas = data; this.cdr.markForCheck(); });
-    this.cargarConsultas();
-    this.cargarTodosPorServicio();
-    this.cargarTodosPorEspecialidad();
+    this.cargarServicios();
   }
 
   ngOnDestroy(): void {
@@ -148,18 +127,89 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
   }
 
   // ══════════════════════════════════════════════════════════
-  // CARGA PRINCIPAL
+  // CARGA
   // ══════════════════════════════════════════════════════════
+
+  /** Pestaña activa; nunca es nula (arranca en COEX mientras se resuelven los servicios). */
+  get servicioActual(): ServicioLista {
+    return (
+      this.serviciosLista.find(s => s.key === this.seleccionado) ??
+      this.serviciosLista[0] ?? { key: 'coex', label: 'COEX', tipo: 1, servicio: null }
+    );
+  }
+
+  /** Arma las pestañas: COEX, Emergencia y los servicios reales de hospitalización. */
+  private cargarServicios(): void {
+    this.api
+      .getServiciosPorTipo({ tipo_consulta: 2, archivo: false, excluir_estados: this.estadosExcluidos })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: filas => {
+          this.construirPestanas(filas.map(f => f.servicio));
+          this.iniciarLista();
+        },
+        error: () => {
+          this.construirPestanas(this.serviciosFallback);
+          this.iniciarLista();
+        }
+      });
+  }
+
+  /** Construye `serviciosLista` a partir de los servicios de tipo 2 reportados. */
+  private construirPestanas(servicios: (string | null)[]): void {
+    const pestañas: ServicioLista[] = [...this.serviciosBase];
+    const vistos = new Set(pestañas.map(p => p.key));
+
+    for (const raw of servicios) {
+      const code = (raw ?? '').trim();
+      if (!code || this.serviciosOmitidos.includes(this.normalizar(code))) continue;
+      const key = `svc:${code}`;
+      if (vistos.has(key)) continue;
+      vistos.add(key);
+      pestañas.push({ key, label: code, tipo: 2, servicio: code });
+    }
+
+    // Sin servicios de hospitalización (o error): cae al catálogo conocido.
+    if (pestañas.length === this.serviciosBase.length) {
+      for (const code of this.serviciosFallback) {
+        const key = `svc:${code}`;
+        if (vistos.has(key)) continue;
+        vistos.add(key);
+        pestañas.push({ key, label: code, tipo: 2, servicio: code });
+      }
+    }
+
+    this.serviciosLista = pestañas;
+  }
+
+  /** Selecciona el primer servicio de hospitalización y hace la carga inicial. */
+  private iniciarLista(): void {
+    const primero =
+      this.serviciosLista.find(s => s.tipo === 2) ?? this.serviciosLista[0];
+    this.seleccionado = primero.key;
+    this.cargarConsultas();
+    this.cargarConteos();
+  }
+
+  private normalizar(valor: string): string {
+    return valor
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toUpperCase();
+  }
 
   cargarConsultas(): void {
     this.cargando = true;
-    this.api.getConsultas(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
+    const sel = this.servicioActual;
+    const params: any = { ...this.filtros, tipo_consulta: sel.tipo };
+    if (sel.servicio) params.servicio = sel.servicio;
+
+    this.api.getConsultas(params).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => {
         this.totalDeRegistros = resultado.total;
         this.consultas = resultado.consultas;
-        if (this.paginaActual > this.totalPaginas) {
-          this.paginaActual = this.totalPaginas;
-        }
+        this.cargarEstadosUisau(resultado.consultas);
         this.cdr.markForCheck();
       },
       error: err => {
@@ -172,136 +222,107 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ══════════════════════════════════════════════════════════
-  // CARGA POR SERVICIO (una vez al init)
-  // ══════════════════════════════════════════════════════════
+  /** Totales por pestaña de servicio (una petición ligera por pestaña). */
+  cargarConteos(): void {
+    const conteos: Record<string, number> = {};
+    const pendientesIniciales = this.serviciosLista.length;
+    if (pendientesIniciales === 0) {
+      this.conteosPorKey = conteos;
+      return;
+    }
+    let pendientes = pendientesIniciales;
 
-  cargarTodosPorServicio(): void {
-    this.cargandoConteos = true;
-    let pendientes = this.serviciosIngreso.length;
-
-    this.serviciosIngreso.forEach(servicio => {
-      const filtro = {
-        tipo_consulta: 2,
-        servicio: servicio.value,
-        archivo: false,
+    this.serviciosLista.forEach(({ key, tipo, servicio }) => {
+      const params: any = {
         skip: 0,
-        limit: 200
+        limit: 1,
+        archivo: false,
+        excluir_estados: this.estadosExcluidos,
+        tipo_consulta: tipo,
       };
+      if (servicio) params.servicio = servicio;
 
-      this.api.getConsultas(filtro).pipe(takeUntil(this.destroy$)).subscribe({
-        next: resultado => {
-          this.consultasPorServicio[servicio.value] = resultado.consultas;
-          this.conteosPorServicio[servicio.value] = resultado.total;
-          this.cdr.markForCheck();
-        },
-        error: () => {
-          this.consultasPorServicio[servicio.value] = [];
-          this.conteosPorServicio[servicio.value] = 0;
-          this.cdr.markForCheck();
-        },
+      this.api.getConsultas(params).pipe(takeUntil(this.destroy$)).subscribe({
+        next: r => { conteos[key] = r.total; this.cdr.markForCheck(); },
+        error: () => { conteos[key] = 0; },
         complete: () => {
           pendientes--;
-          if (pendientes === 0) this.cargandoConteos = false;
+          if (pendientes === 0) {
+            this.conteosPorKey = conteos;
+            this.cdr.markForCheck();
+          }
         }
       });
     });
   }
 
-  // ══════════════════════════════════════════════════════════
-  // CARGA POR ESPECIALIDAD (una vez al init)
-  // ══════════════════════════════════════════════════════════
+  /**
+   * Completa el indicador de nota UISAU en cada fila.
+   * El backend ya lo envía en `tiene_uisau`; si el campo no llega (servicio desactualizado),
+   * se resuelve con una consulta de ciclos por consulta.
+   */
+  private cargarEstadosUisau(filas: ConsultaResponse[]): void {
+    const sinFlag = filas.filter(f => f.tiene_uisau === undefined || f.tiene_uisau === null);
+    if (sinFlag.length === 0) return;
 
-  cargarTodosPorEspecialidad(): void {
-    this.cargandoConteos = true;
-    let pendientes = this.especialidadesIngreso.length;
-
-    this.especialidadesIngreso.forEach(esp => {
-      const filtro = {
-        tipo_consulta: 2,
-        especialidad: esp.value,  // ← especialidad, no servicio
-        archivo: false,
-        skip: 0,
-        limit: 10
-      };
-
-      this.api.getConsultas(filtro).pipe(takeUntil(this.destroy$)).subscribe({
-        next: resultado => {
-          // Se conservan hasta diez filas para la vista rápida, pero el conteo es el total del servidor.
-          this.consultasPorEspecialidad[esp.value] = resultado.consultas;
-          this.conteosPorEspecialidad[esp.value] = resultado.total;
+    sinFlag.forEach(fila => {
+      this.cicloApi.getCiclosDeConsulta(fila.id).pipe(takeUntil(this.destroy$)).subscribe({
+        next: ciclos => {
+          fila.tiene_uisau = Array.isArray(ciclos) && ciclos.some(c => c?.uisau);
           this.cdr.markForCheck();
         },
-        error: () => {
-          this.consultasPorEspecialidad[esp.value] = [];
-          this.conteosPorEspecialidad[esp.value] = 0;
-          this.cdr.markForCheck();
-        },
-        complete: () => {
-          pendientes--;
-          if (pendientes === 0) this.cargandoConteos = false;
-        }
+        error: () => { /* sin indicador */ }
       });
     });
   }
 
-  seleccionarEspecialidad(value: string): void {
-    this.filtros.especialidad = value;  // ← especialidad
-    // Servicio y especialidad son filtros alternativos en esta vista.
-    this.filtros.servicio = '';         // limpiar servicio al cambiar especialidad
-    this.paginaActual = 1;
-    this.filtros.skip = 0;
-
-    if (value === '') {
-      this.cargarConsultas();
-    } else {
-      this.consultas = this.consultasPorEspecialidad[value] ?? [];
-      this.totalDeRegistros = this.conteosPorEspecialidad[value] ?? 0;
-    }
-  }
-
   // ══════════════════════════════════════════════════════════
-  // SELECCIÓN DE SERVICIO
+  // SERVICIOS / FILTROS
   // ══════════════════════════════════════════════════════════
 
-  seleccionarServicio(value: string): void {
-    this.filtros.servicio = value;
-    // Servicio y especialidad son filtros alternativos en esta vista.
-    this.filtros.especialidad = '';
-    this.paginaActual = 1;
-    this.filtros.skip = 0;
-
-    if (value === '') {
-      // Todos → llamada normal al backend con filtros actuales
-      this.cargarConsultas();
-    } else {
-      // Servicio específico → usar datos ya en memoria
-      this.consultas = this.consultasPorServicio[value] ?? [];
-      this.totalDeRegistros = this.conteosPorServicio[value] ?? 0;
-    }
-  }
-
-  /** Cambia entre agrupar por especialidad o por servicio. */
-  cambiarAgrupacion(modo: 'especialidad' | 'servicio'): void {
-    if (this.agruparPor === modo) return;
-    this.agruparPor = modo;
-    this.seleccionarTodos();
-  }
-
-  /** Quita cualquier filtro de agrupación y muestra todos los ingresos. */
-  seleccionarTodos(): void {
-    this.filtros.especialidad = '';
-    this.filtros.servicio = '';
+  /** Cambia la pestaña de servicio (por tipo de consulta y/o servicio concreto). */
+  seleccionarServicio(key: string): void {
+    if (this.seleccionado === key) return;
+    this.seleccionado = key;
     this.paginaActual = 1;
     this.filtros.skip = 0;
     this.cargarConsultas();
+  }
+
+  buscar(): void {
+    this.filtros.skip = 0;
+    this.paginaActual = 1;
+    this.cargarConsultas();
+  }
+
+  toggleFiltrar(): void {
+    this.filtrar = !this.filtrar;
+  }
+
+  limpiarFiltros(): void {
+    this.filtros = {
+      skip: 0,
+      limit: this.pageSize,
+      expediente: '',
+      primer_nombre: '',
+      segundo_nombre: '',
+      primer_apellido: '',
+      segundo_apellido: '',
+      fecha: '',
+      ultimo_estado: '',
+      archivo: false,
+      identificador: '',
+      excluir_estados: this.estadosExcluidos,
+    };
+    this.paginaActual = 1;
+    this.cargarConsultas();
+    this.cargarConteos();
   }
 
   // ══════════════════════════════════════════════════════════
   // PAGINACIÓN
   // ══════════════════════════════════════════════════════════
 
-  rowActiva: number | null = null;
   activarFila(id: number): void {
     this.rowActiva = this.rowActiva === id ? null : id;
   }
@@ -342,43 +363,6 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
   }
 
   // ══════════════════════════════════════════════════════════
-  // FILTROS
-  // ══════════════════════════════════════════════════════════
-
-  buscar(): void {
-    this.filtros.skip = 0;
-    this.paginaActual = 1;
-    this.cargarConsultas();
-  }
-
-  toggleFiltrar(): void {
-    this.filtrar = !this.filtrar;
-  }
-
-  limpiarFiltros(): void {
-    this.filtros = {
-      skip: 0,
-      limit: this.pageSize,
-      tipo_consulta: 2,
-      primer_nombre: '',
-      segundo_nombre: '',
-      primer_apellido: '',
-      segundo_apellido: '',
-      fecha: '',
-      ciclo: '',
-      ultimo_estado: '',
-      servicio: '',
-      especialidad: '',
-      archivo: false,
-      identificador: ''
-    };
-    this.paginaActual = 1;
-    this.cargarConsultas();
-    this.cargarTodosPorServicio();
-    this.cargarTodosPorEspecialidad();
-  }
-
-  // ══════════════════════════════════════════════════════════
   // NAVEGACIÓN
   // ══════════════════════════════════════════════════════════
 
@@ -389,17 +373,16 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
   }
   imprimir(consultaId: number): void { this.router.navigate(['/ingreso', consultaId]); }
   volver(): void { this.router.navigate(['/uisau']); }
-  mostrar(): void { this.visible = !this.visible; }
 
   /** Abre el registro de la nota UISAU para la consulta seleccionada. */
   agregarNotaUisau(consultaId: number): void {
     this.router.navigate(['/notaUisau', consultaId]);
   }
 
-  /** Abre la historia UISAU del paciente. */
+  /** Abre la historia UISAU del paciente (pestaña "Historia" de la página unificada). */
   verHistoriaUisau(pacienteId?: number | null): void {
     if (!pacienteId) return;
-    this.router.navigate(['/historiaUisau', pacienteId]);
+    this.router.navigate(['/notaUisau/paciente', pacienteId]);
   }
 
   // ══════════════════════════════════════════════════════════
@@ -408,18 +391,5 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
 
   trackById(index: number, item: any): any {
     return item.id ?? index;
-  }
-
-  getCicloStatus(ciclo: Record<string, any>): 'activo' | 'inactivo' {
-    if (!ciclo) return 'activo';
-    const registros = Object.values(ciclo);
-    if (registros.length === 0) return 'activo';
-    // El estado vigente es el del movimiento más reciente del ciclo.
-    registros.sort((a: any, b: any) =>
-      new Date(b.registro).getTime() - new Date(a.registro).getTime()
-    );
-    const ultimo = registros[0];
-    const encontrado = ciclos.find(c => c.value === ultimo.estado);
-    return encontrado?.ref === 'inactivo' ? 'inactivo' : 'activo';
   }
 }

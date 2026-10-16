@@ -216,12 +216,19 @@ export interface ConsultaListResponse {
   consultas: ConsultaOut[];
 }
 
+/** Conteo de consultas por servicio (pestañas de listas por servicio). */
+export interface ServicioConteo {
+  servicio: string | null;
+  total: number;
+}
+
 // Respuesta detallada con datos del paciente (si la usas)
 /** Respuesta de detalle que incluye los datos del paciente relacionado. */
 export interface ConsultaResponse extends ConsultaBase {
   id: number;
   expediente?: string;
   paciente: Paciente;
+  tiene_uisau?: boolean | null;
 }
 
 /** Resumen de consulta usado en el historial de un paciente. */
@@ -234,6 +241,7 @@ export interface ConsultasIdPaciente {
   fecha_consulta: string;
   hora_consulta: string;
   ultimo_estado?: string;
+  tiene_uisau?: boolean | null;
 }
 
 

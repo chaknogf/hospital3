@@ -152,6 +152,27 @@ export interface PresaQuirurgica {
   especialidad: string;
 }
 
+/** Datos de la intervención quirúrgica guardados en JSONB al registrarla. */
+export interface DatosQuirurgicos {
+  intervencion_id?: number;
+  fecha?: string | null;
+  expediente?: string | null;
+  procedimientos?: string[];
+  area_cuerpo_intervenida?: string | null;
+  estado_cirugia?: { id?: number | null; nombre?: string | null };
+  quirofano_numero?: { id?: number | null; nombre?: string | null };
+  especialidad_id?: number | null;
+  personal_atencion_id?: number | null;
+  horas?: {
+    inicio_anestesia?: string | null;
+    inicio_intervencion?: string | null;
+    finaliza_intervencion?: string | null;
+    finaliza_limpieza_prepara_quirofano?: string | null;
+  };
+  observaciones?: string | null;
+  datos_extra?: Record<string, unknown> | null;
+}
+
 /** Secciones clínicas opcionales guardadas en un ciclo de atención. */
 export interface DatoMedico {
   detalle_clinicos?: string;
@@ -184,6 +205,7 @@ export interface CicloConsulta {
   contenido?: string;
   datos_medicos?: DatoMedico;
   uisau?: DatosUisau;
+  quirofano?: DatosQuirurgicos;
   consulta?: ConsultaPacienteResumen;
   total?: number;
 }
@@ -212,6 +234,7 @@ export interface CicloResumen {
     piezas_afectadas?: string[];
   };
   uisau?: DatosUisau;
+  quirofano?: DatosQuirurgicos;
 }
 
 /** Consulta agrupada con sus ciclos clínicos ordenados. */

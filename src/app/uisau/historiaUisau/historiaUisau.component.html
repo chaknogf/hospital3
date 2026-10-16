@@ -19,16 +19,18 @@
       </div>
     </div>
     <div class="header-right">
-      <div class="busqueda">
-        <input
-          type="text"
-          placeholder="Buscar por expediente..."
-          [(ngModel)]="expedienteBusqueda"
-          (keyup.enter)="buscarPorExpediente()"
-          class="input-busqueda"
-        />
-        <button class="btn-buscar" (click)="buscarPorExpediente()">🔍</button>
-      </div>
+      @if (mostrarBusqueda) {
+        <div class="busqueda">
+          <input
+            type="text"
+            placeholder="Buscar por expediente..."
+            [(ngModel)]="expedienteBusqueda"
+            (keyup.enter)="buscarPorExpediente()"
+            class="input-busqueda"
+          />
+          <button class="btn-buscar" (click)="buscarPorExpediente()">🔍</button>
+        </div>
+      }
       <button class="btn-imprimir" (click)="imprimir()">🖨️ Imprimir</button>
     </div>
   </header>

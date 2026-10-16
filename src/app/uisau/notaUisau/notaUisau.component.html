@@ -1,5 +1,6 @@
 <!-- ══════════════════════════════════════════════════════════════
-     NOTA UISAU — mismo diseño que la nota médica (mobile-first)
+     UISAU — un solo buscador: resuelve el paciente, muestra su
+     historia UISAU y permite agregar una nota.
 ════════════════════════════════════════════════════════════════ -->
 
 @if (cargando() && tieneConsulta()) {
@@ -13,26 +14,50 @@
   </div>
 }
 
-<!-- ── PASO 1 · buscar paciente por expediente ─────────────────── -->
+<!-- ── PASO 1 · buscar paciente (expediente o nombre) ──────────── -->
 @if (!tieneConsulta()) {
   <section class="nm-picker">
     <span class="nm-eyebrow">UISAU · Registro clínico</span>
     <h1 class="nm-picker__title">Registrar nota UISAU</h1>
-    <p class="nm-picker__hint">Busca al paciente por su número de expediente y elige la consulta a documentar.</p>
+    <p class="nm-picker__hint">
+      Busca al paciente por expediente o por nombre. Verás su historia UISAU y, si lo deseas, podrás agregar una nota.
+    </p>
 
     <div class="nm-picker__search">
       <input
         type="search"
         [(ngModel)]="busquedaExpediente"
-        placeholder="Ej. EXP-2026-000123"
+        placeholder="Expediente (Ej. E26-003)"
+        (keyup.enter)="buscarPaciente()"
+      />
+      <input
+        type="search"
+        [(ngModel)]="busquedaNombre"
+        placeholder="Nombre del paciente"
         (keyup.enter)="buscarPaciente()"
       />
       <button class="nm-btn nm-btn--primary" (click)="buscarPaciente()" [disabled]="buscandoPaciente()">
         {{ buscandoPaciente() ? 'Buscando…' : 'Buscar' }}
       </button>
+      @if (pacienteBuscado() || pacientesEncontrados().length) {
+        <button class="nm-btn nm-btn--ghost" type="button" (click)="limpiarBusqueda()">Limpiar</button>
+      }
     </div>
 
     @if (error()) { <p class="nm-form__error">{{ error() }}</p> }
+
+    <!-- Coincidencias por nombre -->
+    @if (!pacienteBuscado() && pacientesEncontrados().length) {
+      <div class="nm-consultas">
+        @for (p of pacientesEncontrados(); track p.id) {
+          <button class="nm-consulta" (click)="seleccionarPaciente(p)">
+            <span class="nm-consulta__fecha">{{ p.expediente || '—' }}</span>
+            <span class="nm-consulta__esp">{{ nombreCompleto(p) }}</span>
+            <span class="nm-consulta__ir">→</span>
+          </button>
+        }
+      </div>
+    }
 
     @if (pacienteBuscado()) {
       <div class="nm-patient">
@@ -45,21 +70,28 @@
         </div>
       </div>
 
-      @if (cargandoConsultas()) {
-        <p class="nm-picker__hint">Cargando consultas…</p>
-      } @else if (!consultasPaciente().length) {
-        <p class="nm-picker__hint">El paciente no tiene consultas no archivadas para documentar.</p>
-      } @else {
-        <div class="nm-consultas">
-          @for (consulta of consultasPaciente(); track consulta.id) {
-            <button class="nm-consulta" (click)="seleccionarConsulta(consulta)">
-              <span class="nm-consulta__fecha">{{ consulta.fecha_consulta | date: 'dd/MM/yyyy' }}</span>
-              <span class="nm-consulta__esp">{{ consulta.especialidad || 'Consulta clínica' }}</span>
-              <span class="nm-consulta__ir">→</span>
-            </button>
-          }
-        </div>
-      }
+      <!-- Agregar nota: consultas no archivadas del paciente -->
+      <div class="nm-agregar">
+        <span class="nm-eyebrow">Agregar nota UISAU</span>
+        @if (cargandoConsultas()) {
+          <p class="nm-picker__hint">Cargando consultas…</p>
+        } @else if (!consultasPaciente().length) {
+          <p class="nm-picker__hint">El paciente no tiene consultas no archivadas para documentar.</p>
+        } @else {
+          <div class="nm-consultas">
+            @for (consulta of consultasPaciente(); track consulta.id) {
+              <button class="nm-consulta" (click)="seleccionarConsulta(consulta)">
+                <span class="nm-consulta__fecha">{{ consulta.fecha_consulta | date: 'dd/MM/yyyy' }}</span>
+                <span class="nm-consulta__esp">{{ consulta.especialidad || 'Consulta clínica' }}</span>
+                <span class="nm-consulta__ir">+ Nota</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Historia UISAU del paciente -->
+      <app-historiaUisau [pacienteId]="pacienteId()" [mostrarBusqueda]="false"></app-historiaUisau>
     }
   </section>
 }

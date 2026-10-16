@@ -238,16 +238,21 @@
                   <tbody>
                     @for (p of resultados; track trackById($index, p)) {
                       <tr>
-                        <td>{{ p.id }}</td>
+                        <td data-label="ID:">{{ p.id }}</td>
                         <td
-                          [ngClass]="p.expediente ? 'text-normal' : 'text-muted'"
+                          data-label="Expediente:"
+                          [ngClass]="
+                            p.expediente ? 'text-normal' : 'text-muted'
+                          "
                         >
                           {{ p.expediente || "—" }}
                         </td>
-                        <td>{{ p.nombre_completo }}</td>
-                        <td>{{ p.cui | cui }}</td>
-                        <td>{{ p.fecha_nacimiento | date: "dd/MM/yyyy" }}</td>
-                        <td>
+                        <td data-label="Nombre:">{{ p.nombre_completo }}</td>
+                        <td data-label="CUI:">{{ p.cui | cui }}</td>
+                        <td data-label="Nacimiento:">
+                          {{ p.fecha_nacimiento | date: "dd/MM/yyyy" }}
+                        </td>
+                        <td data-label="Acción:">
                           <button
                             class="btn-select"
                             (click)="seleccionarPaciente(p)"
@@ -284,27 +289,29 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @for (c of resultadosConsultas; track trackById($index, c)) {
+                    @for (
+                      c of resultadosConsultas;
+                      track trackById($index, c)
+                    ) {
                       <tr>
-                        <td>{{ c.id }}</td>
-                        <td>
+                        <td data-label="ID:">{{ c.id }}</td>
+                        <td data-label="Fecha:">
                           {{ c.fecha_consulta | date: "dd/MM/yyyy" }}
                           <br />
-                          <small>{{
-                            c.hora_consulta | time
-                          }}</small>
+                          <small>{{ c.hora_consulta | time }}</small>
                         </td>
-                        <td>
+                        <td data-label="Paciente:">
                           {{ nombrePacienteDe(c) }}
                         </td>
                         <td
+                          data-label="Expediente:"
                           [ngClass]="
                             c.expediente ? 'text-normal' : 'text-muted'
                           "
                         >
                           {{ c.expediente || "—" }}
                         </td>
-                        <td>
+                        <td data-label="Especialidad:">
                           {{ c.especialidad | datosExtra: "especialidad" }}
                           @if (c.servicio) {
                             <br />
@@ -313,19 +320,19 @@
                             }}</small>
                           }
                         </td>
-                        <td>
+                        <td data-label="Tipo:">
                           {{ c.tipo_consulta | datosExtra: "tipo_consulta" }}
                           @if (c.documento) {
                             <br />
                             <small class="doc-badge">{{ c.documento }}</small>
                           }
                         </td>
-                        <td>
+                        <td data-label="Estado:">
                           <span class="doc-badge">{{
                             c.ultimo_estado || "—"
                           }}</span>
                         </td>
-                        <td>
+                        <td data-label="Acción:">
                           <button
                             class="btn-select"
                             (click)="seleccionarConsulta(c)"
@@ -401,16 +408,11 @@
         <div class="dc-grid">
           <!-- PERFIL -->
           <div class="dc-card">
-            @if (rol === "admin") {
-              <div class="card-header">
-                <button
-                  class="card-badge"
-                  (click)="editarPaciente(paciente.id)"
-                >
-                  Editar
-                </button>
-              </div>
-            }
+            <div class="card-header">
+              <button class="card-badge" (click)="editarPaciente(paciente.id)">
+                Actualizar Paciente
+              </button>
+            </div>
 
             <div class="patient-hero">
               <div class="patient-avatar">
@@ -611,7 +613,7 @@
               </div>
             </div>
           }
-          <!-- CONSULTAS -->
+          <!-- CONSULTAS — timeline tipo historia clínica + acciones -->
           @if (cargandoConsultas) {
             <div class="dc-card">
               <div
@@ -629,64 +631,99 @@
           @if (consultasPorPaciente.length > 0) {
             <div class="dc-card-cc consultas-card">
               <div class="card-header">
-                <span class="card-icon">📂</span>
+                <span
+                  class="card-icon-svg"
+                  [innerHTML]="icons['consultas']"
+                ></span>
                 <h3 class="card-title">Consultas</h3>
                 <span class="card-badge">{{
                   consultasPorPaciente.length
                 }}</span>
               </div>
-              <div class="table-container">
-                <table class="dc-table">
-                  <thead>
-                    <tr class="text-center" style="border-bottom: 2px dotted">
-                      <th>Fecha y Hora</th>
-                      <th>Especialidad</th>
-                      <th>Tipo Consulta</th>
-                      <th>Detalle</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @for (c of consultasPorPaciente; track c) {
-                      <tr>
-                        <td>
-                          {{ c.fecha_consulta | date: "dd-MM-yyyy" }}
-                          <br />
-                          {{ c.hora_consulta | time }}
-                        </td>
-                        <td>
-                          <span>{{
-                            c.especialidad | datosExtra: "especialidad"
+              <div class="timeline-list">
+                @for (c of consultasPorPaciente; track c.id) {
+                  <article
+                    class="tl-item"
+                    [style.--tipo-color]="colorTipoConsulta(c.tipo_consulta)"
+                  >
+                    <div class="tl-rail">
+                      <span class="tl-dot"></span>
+                      <span class="tl-line"></span>
+                    </div>
+                    <div class="tl-body">
+                      <div class="tl-top">
+                        <span class="tl-tipo" data-label="Tipo:">{{
+                          nombreTipoConsulta(c.tipo_consulta)
+                        }}</span>
+                        <span class="tl-fecha" data-label="Fecha:">
+                          {{ c.fecha_consulta | date: "dd MMM yyyy" }}
+                          · {{ c.hora_consulta | time }}
+                        </span>
+                        <span class="tl-estado" data-label="Estado:">{{
+                          c.ultimo_estado || "—"
+                        }}</span>
+                      </div>
+                      <div class="tl-meta">
+                        <span data-label="Especialidad:">{{
+                          c.especialidad | datosExtra: "especialidad"
+                        }}</span>
+                        <span class="doc-badge" data-label="Servicio:">{{
+                          c.servicio | datosExtra: "servicio"
+                        }}</span>
+                        @if (c.documento) {
+                          <span class="doc-badge" data-label="Documento:">{{
+                            c.documento
                           }}</span>
-                          <br />
-                          <span class="doc-badge">{{
-                            c.servicio | datosExtra: "servicio"
-                          }}</span>
-                        </td>
-                        <td>
-                          {{ c.tipo_consulta | datosExtra: "tipo_consulta" }}
-                          @if (c.documento) {
-                            <br />
-                            <span class="doc-badge">{{ c.documento }}</span>
-                          }
-                        </td>
-                        <td class="text-center">
-                          <span class="doc-badge">
-                            {{ c.ultimo_estado }}
-                          </span>
-                          <button
-                            [class.estado-pendiente]="
-                              c.ultimo_estado !== 'archivo'
-                            "
-                            class="btn-small"
-                            (click)="verDetalle(c.id)"
+                        }
+                        @if (c.tiene_uisau) {
+                          <span
+                            class="chip-uisau"
+                            data-label="Nota UISAU:"
+                            title="Este paciente tiene nota UISAU registrada"
+                            >Nota UISAU ✓</span
                           >
-                            📁
-                          </button>
-                        </td>
-                      </tr>
-                    }
-                  </tbody>
-                </table>
+                        }
+                      </div>
+                    </div>
+                    <div class="tl-actions">
+                      <button
+                        class="icon-btn"
+                        data-label="Nota médica"
+                        title="Ver nota médica de la consulta"
+                        (click)="verNotaMedica(c)"
+                      >
+                        <span [innerHTML]="icons['notaMedica']"></span>
+                      </button>
+                      <button
+                        class="icon-btn"
+                        data-label="Historia médica"
+                        title="Ver historia médica de la consulta"
+                        (click)="verHistoria(c.id)"
+                      >
+                        <span [innerHTML]="icons['historia']"></span>
+                      </button>
+                      @if (puedeGestionarUisau) {
+                        <button
+                          class="icon-btn"
+                          data-label="Nota UISAU"
+                          title="Agregar nota UISAU"
+                          (click)="agregarNotaUisau(c.id)"
+                        >
+                          <span [innerHTML]="icons['notaUisau']"></span>
+                        </button>
+                      }
+                      <button
+                        class="icon-btn"
+                        [class.estado-pendiente]="c.ultimo_estado !== 'archivo'"
+                        data-label="Detalle admisión"
+                        title="Ver detalle de la admisión"
+                        (click)="verDetalle(c.id)"
+                      >
+                        <span [innerHTML]="icons['detalle']"></span>
+                      </button>
+                    </div>
+                  </article>
+                }
               </div>
             </div>
           }
@@ -694,38 +731,46 @@
           @if (citasPorPaciente.length > 0) {
             <div class="dc-card-cc consultas-card">
               <div class="card-header">
-                <span class="card-icon">🗓️</span>
+                <span
+                  class="card-icon-svg"
+                  [innerHTML]="icons['calendar']"
+                ></span>
                 <h3 class="card-title">Citas</h3>
+                <span class="card-badge">{{ citasPorPaciente.length }}</span>
               </div>
               <div class="table-container">
                 <table class="dc-table">
                   <thead>
-                    <tr class="text-center" style="border-bottom: 2px dotted">
+                    <tr>
                       <th>Fecha</th>
                       <th>Especialidad</th>
-                      <th>razon</th>
+                      <th>Razón</th>
                       <th>Editar</th>
                     </tr>
                   </thead>
                   <tbody>
                     @for (c of citasPorPaciente; track c) {
                       <tr>
-                        <td>
+                        <td data-label="Fecha:">
                           {{ c.fecha_cita | date: "dd-MM-yyyy" }}
                         </td>
-                        <td>
+                        <td data-label="Especialidad:">
                           {{ c.especialidad | datosExtra: "especialidad" }}
                         </td>
-                        <td>{{ c.datos_extra.razon_consulta }}</td>
-                        <td class="">
+                        <td data-label="Razón:">
+                          {{ c.datos_extra.razon_consulta }}
+                        </td>
+                        <td data-label="Editar:">
                           @if (rol != "std") {
                             <button
-                              class="btn-small"
+                              class="icon-btn"
+                              data-label="Reagendar"
+                              title="Reagendar cita"
                               (click)="
                                 editarCita(c.id); $event.stopPropagation()
                               "
                             >
-                              <span>✏️</span>
+                              <span [innerHTML]="icons['edit']"></span>
                             </button>
                           }
                         </td>

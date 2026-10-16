@@ -158,7 +158,7 @@ export const routes: Routes = [
       {
         path: 'paciente',
         loadComponent: () => import('./registros/patient/formularioPaciente/formularioPaciente.component').then(c => c.FormularioPacienteComponent),
-        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+        canActivate: [roleGuard(['admin', 'registro', 'std', 'uisau'])]
       },
       {
         path: 'paciente/:modo',
@@ -503,6 +503,11 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin', 'uisau'])]
       },
       {
+        path: 'notaUisau/paciente/:pacienteId',
+        loadComponent: () => import('./uisau/notaUisau/notaUisau.component').then(c => c.NotaUisauComponent),
+        canActivate: [roleGuard(['admin', 'uisau'])]
+      },
+      {
         path: 'notaUisau/:consultaId',
         loadComponent: () => import('./uisau/notaUisau/notaUisau.component').then(c => c.NotaUisauComponent),
         canActivate: [roleGuard(['admin', 'uisau'])]
@@ -510,16 +515,6 @@ export const routes: Routes = [
       {
         path: 'notaUisau',
         loadComponent: () => import('./uisau/notaUisau/notaUisau.component').then(c => c.NotaUisauComponent),
-        canActivate: [roleGuard(['admin', 'uisau'])]
-      },
-      {
-        path: 'historiaUisau/:id',
-        loadComponent: () => import('./uisau/historiaUisau/historiaUisau.component').then(c => c.HistoriaUisauComponent),
-        canActivate: [roleGuard(['admin', 'uisau'])]
-      },
-      {
-        path: 'historiaUisau',
-        loadComponent: () => import('./uisau/historiaUisau/historiaUisau.component').then(c => c.HistoriaUisauComponent),
         canActivate: [roleGuard(['admin', 'uisau'])]
       },
 

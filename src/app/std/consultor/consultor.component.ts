@@ -15,7 +15,9 @@ import { Citas } from '../../interface/citas';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Cie10Component } from '../../medica/cie10/cie10.component';
+import { CicloService } from '../../medica/ciclo.service';
 import { Dict, especialidades, tipoConsulta } from '../../enum/diccionarios';
+import { IconService } from '../../service/icon.service';
 
 @Component({
   selector: 'app-consultor',
@@ -30,9 +32,22 @@ export class ConsultorComponent implements OnInit, OnDestroy {
 
   private api = inject(ConsultaService);
   private apip = inject(PacienteService);
+  private cicloService = inject(CicloService);
   private router = inject(Router);
   private location = inject(Location);
   private cdr = inject(ChangeDetectorRef);
+  private iconService = inject(IconService);
+
+  /** SVG por acción: cada botón usa el ícono que representa su destino. */
+  icons = {
+    historia: this.iconService.getIcon('historiaMedicaIcon'),
+    notaUisau: this.iconService.getIcon('notaIcon'),
+    notaMedica: this.iconService.getIcon('notaMedica'),
+    detalle: this.iconService.getIcon('documentoIcon'),
+    edit: this.iconService.getIcon('editIcon'),
+    calendar: this.iconService.getIcon('calendarIcon'),
+    consultas: this.iconService.getIcon('consultaMedica'),
+  };
 
   private destroy$ = new Subject<void>();
 
@@ -412,6 +427,26 @@ export class ConsultorComponent implements OnInit, OnDestroy {
   }
 
   // ── Helpers de vista ────────────────────────────────────
+  /** Solo uisau y admin gestionan notas UISAU. */
+  get puedeGestionarUisau(): boolean {
+    return this.rol === 'uisau' || this.rol === 'admin';
+  }
+
+  nombreTipoConsulta(tipo: number | undefined): string {
+    const mapa: Record<number, string> = {
+      1: 'COEX', 2: 'Hospitalización', 3: 'Emergencia',
+      4: 'Interconsulta', 99: 'Otro'
+    };
+    return mapa[tipo || 0] || 'Consulta';
+  }
+
+  colorTipoConsulta(tipo: number | undefined): string {
+    const mapa: Record<number, string> = {
+      1: '#22d3ee', 2: '#f97316', 3: '#ef4444', 4: '#a78bfa'
+    };
+    return mapa[tipo || 0] || '#64748b';
+  }
+
   get estadoPaciente(): string {
     const mapa: Record<string, string> = { V: 'Vivo', F: 'Fallecido', I: 'Inactivo', A: 'Activo' };
     const e = this.paciente?.estado?.trim().toUpperCase() ?? '';
@@ -462,6 +497,37 @@ export class ConsultorComponent implements OnInit, OnDestroy {
   getIdPersona(ref: any): string { return ref?.idpersona || '—'; }
 
   verDetalle(id: number): void { this.router.navigate(['/detalleAdmision', id]); }
+  verHistoria(id: number): void { this.router.navigate(['/historiaClinica', id]); }
+
+  /** Abre directamente la nota médica más reciente de la consulta.
+   *  Usa GET /ciclos/consulta/{consulta_id} para leer las notas de la consulta y
+   *  cae a la historia del paciente (GET /ciclos/paciente/{paciente_id}) cuando
+   *  todavía no hay nota registrada. */
+  verNotaMedica(c: ConsultasIdPaciente): void {
+    this.cicloService.getCiclosDeConsulta(c.id).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (ciclos) => {
+        const nota = ciclos?.[ciclos.length - 1];
+        if (nota?.id) {
+          this.router.navigate(['/verNota', nota.id]);
+        } else {
+          this.irAHistoriaDelPaciente(c);
+        }
+        this.cdr.markForCheck();
+      },
+      error: () => this.irAHistoriaDelPaciente(c)
+    });
+  }
+
+  /** Respaldo: historia completa del paciente; si no se conoce el paciente, cae al id de consulta. */
+  private irAHistoriaDelPaciente(c: ConsultasIdPaciente): void {
+    if (this.pacienteId) {
+      this.router.navigate(['/historiaClinica', this.pacienteId], { queryParams: { by: 'paciente' } });
+    } else {
+      this.router.navigate(['/historiaClinica', c.id]);
+    }
+  }
+
+  agregarNotaUisau(id: number): void { this.router.navigate(['/notaUisau', id]); }
   editar(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
   regresar(): void { this.location.back(); }
 

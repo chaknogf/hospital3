@@ -48,8 +48,7 @@ export class UisauMenuComponent implements OnInit {
       calendar: this.iconService.getIcon("calendarIcon"),
       baby: this.iconService.getIcon("babyIcon"),
       persons: this.iconService.getIcon("persons2"),
-      notaUisau: this.iconService.getIcon("documentoIcon"),
-      historiaUisau: this.iconService.getIcon("historiaMedicaIcon")
+      notaUisau: this.iconService.getIcon("documentoIcon")
 
     }
 
@@ -62,11 +61,10 @@ export class UisauMenuComponent implements OnInit {
 
     this.options = [
 
-      { nombre: 'Pacientes', descripcion: 'Pacientes y Consultas', ruta: '/consultar', icon: 'persons' },
-      { nombre: 'Nota UISAU', descripcion: 'Registrar nota de información al usuario', ruta: '/notaUisau', icon: 'notaUisau' },
-      { nombre: 'Historia UISAU', descripcion: 'Consultar registros UISAU por paciente', ruta: '/historiaUisau', icon: 'historiaUisau' },
-      { nombre: 'Encamamiento', descripcion: 'Listado de Pacientes Hospitalizados', ruta: '/encamamiento', icon: '' },
-      { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: '/reportes', icon: 'archivo' },
+      { nombre: 'Pacientes', descripcion: 'Buscar pacientes y gestionar notas', ruta: '/consultar', icon: 'persons' },
+      { nombre: 'Lista', descripcion: 'Pacientes por servicio: COEX, Hospitalización y Emergencia', ruta: '/encamamiento', icon: 'ambulance' },
+      { nombre: 'Nota', descripcion: 'Registrar nota y consultar la historia UISAU', ruta: '/notaUisau', icon: 'notaUisau' },
+      { nombre: 'Estadisticas de Hospital', descripcion: 'Reportes y estadísticas detalladas', ruta: '/reportes', icon: 'archivo' },
       // { nombre: 'Informados', descripcion: 'Gestión de usuarios informados', ruta: '/informados', icon: '' },
     ];
 

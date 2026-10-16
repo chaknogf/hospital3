@@ -846,6 +846,146 @@
   max-height: clamp(220px, 40vh, 420px);
 }
 
+/* ── ICONOS SVG EN TARJETAS Y BOTONES ──────────────────── */
+.card-icon-svg {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.card-icon-svg svg { width: 100%; height: 100%; }
+
+.icon-btn {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--theme-border);
+  border-top-color: var(--theme-border-strong);
+  border-radius: 8px;
+  background: var(--theme-surface-raised);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.icon-btn svg { width: 16px; height: 16px; }
+.icon-btn:hover {
+  border-color: var(--theme-border-strong);
+  background: var(--theme-gradient-surface-hover);
+  box-shadow: 0 2px 10px var(--theme-primary-dim);
+}
+
+/* ── TIMELINE DE CONSULTAS (diseño historia clínica) ──── */
+.timeline-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.tl-item {
+  display: grid;
+  grid-template-columns: 16px 1fr auto;
+  gap: 10px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--theme-border);
+}
+.tl-item:last-child { border-bottom: none; }
+
+.tl-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tl-dot {
+  width: 10px;
+  height: 10px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--theme-surface), var(--tipo-color, #64748b));
+  box-shadow: 0 0 8px var(--tipo-color, transparent);
+  flex-shrink: 0;
+}
+.tl-line {
+  flex: 1;
+  width: 2px;
+  min-height: 8px;
+  background: linear-gradient(180deg, var(--tipo-color, var(--theme-border)) 0%, transparent 100%);
+  opacity: 0.45;
+}
+
+.tl-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.tl-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tl-tipo {
+  font-family: var(--theme-font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--tipo-color, #64748b);
+  background: var(--theme-surface-deep);
+  border: 1px solid var(--tipo-color, #64748b);
+  border-radius: 8px;
+  padding: 1px 8px;
+}
+.tl-fecha {
+  font-family: var(--theme-font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--theme-text);
+}
+.tl-estado {
+  font-family: var(--theme-font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--theme-text-muted);
+  background: var(--theme-surface-deep);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  padding: 1px 8px;
+}
+.tl-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-family: var(--theme-font-ui);
+  font-size: 11px;
+  color: var(--theme-text-muted);
+}
+
+.chip-uisau {
+  font-family: var(--theme-font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--theme-success);
+  background: var(--theme-success-dim);
+  border: 1px solid var(--theme-success);
+  border-radius: 8px;
+  padding: 2px 8px;
+  letter-spacing: 0.3px;
+}
+
+.tl-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
 /* ── SCROLLBAR ─────────────────────────────────────────── */
 .sidebar::-webkit-scrollbar,
 .patient-scroll::-webkit-scrollbar,
@@ -910,6 +1050,77 @@
   .consultas-card { max-height: none; }
   .dc-table { font-size: 10px; }
   .dc-table th, .dc-table td { padding: 6px 8px; }
+
+  /* ── data-label: las tablas se apilan en tarjetas ────── */
+  .results-table thead { display: none; }
+  .results-table,
+  .results-table tbody,
+  .results-table tr,
+  .results-table td { display: block; width: 100%; }
+  .results-table tr {
+    border: 1px solid var(--theme-border);
+    border-radius: 10px;
+    margin: 0 0 8px;
+    padding: 4px 8px;
+    background: var(--theme-surface-raised);
+  }
+  .results-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    text-align: left;
+    border-bottom: 1px dashed var(--theme-border);
+    padding: 6px 4px;
+  }
+  .results-table td:last-child { border-bottom: none; }
+  .results-table td::before {
+    content: attr(data-label);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--theme-text-muted);
+    flex-shrink: 0;
+  }
+  .results-table td:not([data-label])::before { content: none; }
+
+  .dc-table thead { display: none; }
+  .dc-table,
+  .dc-table tbody,
+  .dc-table tr,
+  .dc-table td { display: block; width: 100%; }
+  .dc-table tr {
+    border: 1px solid var(--theme-border);
+    border-radius: 10px;
+    margin: 0 0 8px;
+    padding: 4px 8px;
+    background: var(--theme-surface-raised);
+  }
+  .dc-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    text-align: left;
+    border-bottom: 1px dashed var(--theme-border);
+    padding: 6px 4px;
+  }
+  .dc-table td:last-child { border-bottom: none; }
+  .dc-table td::before {
+    content: attr(data-label);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--theme-text-muted);
+    flex-shrink: 0;
+  }
+  .dc-table td:not([data-label])::before { content: none; }
+
+  /* Timeline de consultas en mobile */
+  .tl-item { grid-template-columns: 14px 1fr; }
+  .tl-actions { grid-column: 2; justify-content: flex-end; }
 }
 
 /* ══ CIE-10 MODAL ════════════════════════════════════════════ */

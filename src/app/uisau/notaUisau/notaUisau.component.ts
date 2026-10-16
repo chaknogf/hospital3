@@ -10,8 +10,9 @@ import { ConsultaService } from '../../registros/consultas/consultas.service';
 import { PacienteService } from '../../registros/patient/paciente.service';
 import { CicloConsulta } from '../../interface/ciclo';
 import { ConsultasIdPaciente } from '../../interface/consultas';
-import { PacienteJoin } from '../../interface/interfaces';
+import { PacienteJoin, PacienteResumen } from '../../interface/interfaces';
 import { parentescos, especialidadesConsulta, servicios, Dict } from '../../enum/diccionarios';
+import { HistoriaUisauComponent } from '../historiaUisau/historiaUisau.component';
 import {
   DatosUisau,
   UisauArticulo,
@@ -26,9 +27,10 @@ import {
 } from '../uisau.model';
 
 /**
- * Registro de la nota UISAU para las consultas no archivadas de un paciente.
- * Reutiliza el servicio de ciclos (mismo POST /ciclos/) y persiste los datos
- * exclusivos del rol en el campo `uisau` (JSONB).
+ * Página UISAU unificada. Un único buscador (expediente o nombre) resuelve al
+ * paciente, muestra su historia UISAU y siempre permite agregar una nota. La
+ * nota (formulario) se abre en `/notaUisau/:consultaId` y persiste los datos
+ * exclusivos del rol en el campo `uisau` (JSONB) vía el servicio de ciclos.
  */
 @Component({
   selector: 'app-notaUisau',
@@ -36,7 +38,7 @@ import {
   styleUrls: ['./notaUisau.component.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HistoriaUisauComponent],
 })
 export class NotaUisauComponent implements OnInit, OnDestroy {
 
@@ -51,7 +53,7 @@ export class NotaUisauComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   private consultaId: number | null = null;
-  private pacienteId: number | null = null;
+  pacienteId = signal<number | null>(null);
 
   /* ── Catálogos ─────────────────────────────────────────── */
   estados = ESTADOS_UISAU;
@@ -63,7 +65,9 @@ export class NotaUisauComponent implements OnInit, OnDestroy {
 
   /* ── Búsqueda de paciente ──────────────────────────────── */
   busquedaExpediente = '';
+  busquedaNombre = '';
   pacienteBuscado = signal<PacienteJoin | null>(null);
+  pacientesEncontrados = signal<PacienteResumen[]>([]);
   consultasPaciente = signal<ConsultasIdPaciente[]>([]);
   buscandoPaciente = signal(false);
   cargandoConsultas = signal(false);
@@ -89,10 +93,14 @@ export class NotaUisauComponent implements OnInit, OnDestroy {
   get nc(): UisauNotaClinica { return this.datosUisau.nota_clinica!; }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('consultaId'));
-    if (id) {
+    const consultaId = Number(this.route.snapshot.paramMap.get('consultaId'));
+    const pacienteId = Number(this.route.snapshot.paramMap.get('pacienteId'));
+    if (consultaId) {
       this.tieneConsulta.set(true);
-      this.cargarConsulta(id);
+      this.cargarConsulta(consultaId);
+    } else if (pacienteId) {
+      this.pacienteId.set(pacienteId);
+      this.cargarPacientePorId(pacienteId);
     }
   }
 
@@ -115,7 +123,8 @@ export class NotaUisauComponent implements OnInit, OnDestroy {
       })
     ).subscribe(consulta => {
       if (!consulta) return;
-      this.pacienteId = (consulta as any).paciente_id ?? null;
+      const pacienteId = (consulta as any).paciente_id ?? null;
+      this.pacienteId.set(pacienteId);
       const expediente = (consulta as any).expediente;
       if (expediente) {
         this.pacientesApi.pacienteExpediente(expediente).pipe(
@@ -125,8 +134,8 @@ export class NotaUisauComponent implements OnInit, OnDestroy {
           if (paciente) { this.pacienteBuscado.set(paciente); this.cdr.markForCheck(); }
         });
       }
-      if (this.pacienteId) {
-        this.cargarConsultasNoArchivadas(this.pacienteId);
+      if (pacienteId) {
+        this.cargarConsultasNoArchivadas(pacienteId);
       }
       this.datosUisau.estado_paciente!.especialidad = consulta.especialidad ?? '';
       this.datosUisau.estado_paciente!.servicio = consulta.servicio ?? '';
@@ -134,28 +143,87 @@ export class NotaUisauComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* ── Búsqueda por expediente ───────────────────────────── */
+  /* ── Búsqueda por expediente o nombre ──────────────────── */
   buscarPaciente(): void {
     const expediente = this.busquedaExpediente.trim();
-    if (!expediente) {
-      this.error.set('Escribe un expediente para buscar el paciente.');
+    const nombre = this.busquedaNombre.trim();
+    if (!expediente && !nombre) {
+      this.error.set('Escribe un expediente o un nombre para buscar.');
       return;
     }
 
-    this.buscandoPaciente.set(true);
     this.error.set(null);
-    this.pacientesApi.pacienteExpediente(expediente).pipe(
+    this.pacienteBuscado.set(null);
+    this.pacientesEncontrados.set([]);
+    this.consultasPaciente.set([]);
+    this.pacienteId.set(null);
+    this.buscandoPaciente.set(true);
+
+    if (expediente) {
+      this.pacientesApi.pacienteExpediente(expediente).pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.buscandoPaciente.set(false)),
+        catchError(() => {
+          this.error.set('No se encontró el paciente.');
+          return of(null);
+        })
+      ).subscribe(paciente => {
+        if (!paciente) return;
+        this.pacienteBuscado.set(paciente);
+        const id = (paciente as any).id ?? null;
+        this.pacienteId.set(id);
+        if (id) this.cargarConsultasNoArchivadas(id);
+      });
+      return;
+    }
+
+    // Filtro por nombre: lista de coincidencias para elegir.
+    this.pacientesApi.getPacientes({ nombre, limit: 20 }).pipe(
       takeUntil(this.destroy$),
       finalize(() => this.buscandoPaciente.set(false)),
       catchError(() => {
-        this.error.set('No se encontró el paciente.');
-        return of(null);
+        this.error.set('No se pudo buscar por nombre.');
+        return of({ total: 0, pacientes: [] });
       })
-    ).subscribe(paciente => {
-      if (!paciente) return;
-      this.pacienteBuscado.set(paciente);
-      this.cargarConsultasNoArchivadas((paciente as any).id);
+    ).subscribe(resp => {
+      const lista = (resp as any)?.pacientes ?? [];
+      this.pacientesEncontrados.set(lista);
+      if (!lista.length) this.error.set('No se encontraron pacientes con ese nombre.');
+      this.cdr.markForCheck();
     });
+  }
+
+  /** Selecciona un paciente de la lista de resultados por nombre. */
+  seleccionarPaciente(p: PacienteResumen): void {
+    this.pacienteBuscado.set(p as unknown as PacienteJoin);
+    this.pacienteId.set(p.id);
+    this.pacientesEncontrados.set([]);
+    this.busquedaExpediente = p.expediente ?? '';
+    this.error.set(null);
+    this.cargarConsultasNoArchivadas(p.id);
+  }
+
+  /** Carga el paciente por id (ruta directa `/notaUisau/paciente/:id`). */
+  private cargarPacientePorId(id: number): void {
+    this.pacientesApi.getPaciente(id).pipe(
+      takeUntil(this.destroy$),
+      catchError(() => of(null))
+    ).subscribe(p => {
+      if (p) this.pacienteBuscado.set(p as unknown as PacienteJoin);
+      this.cargarConsultasNoArchivadas(id);
+      this.cdr.markForCheck();
+    });
+  }
+
+  limpiarBusqueda(): void {
+    this.busquedaExpediente = '';
+    this.busquedaNombre = '';
+    this.pacienteBuscado.set(null);
+    this.pacientesEncontrados.set([]);
+    this.consultasPaciente.set([]);
+    this.pacienteId.set(null);
+    this.error.set(null);
+    this.cdr.markForCheck();
   }
 
   private cargarConsultasNoArchivadas(pacienteId: number): void {
@@ -284,7 +352,7 @@ export class NotaUisauComponent implements OnInit, OnDestroy {
   }
 
   /* ── Helpers ───────────────────────────────────────────── */
-  nombreCompleto(paciente: PacienteJoin | null): string {
+  nombreCompleto(paciente: PacienteJoin | PacienteResumen | null): string {
     if (!paciente?.nombre) return '';
     const n = paciente.nombre;
     return [n.primer_nombre, n.segundo_nombre, n.primer_apellido, n.segundo_apellido]
