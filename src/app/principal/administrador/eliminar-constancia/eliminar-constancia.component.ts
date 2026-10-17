@@ -10,7 +10,7 @@ import { ConstanciasService } from '../../../registros/nacimientos/constancias.s
 @Component({
   selector: 'app-eliminar-constancia',
   templateUrl: './eliminar-constancia.component.html',
-  styleUrls: ['../admin.css'],
+  host: { class: 'admin-ui' },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReactiveFormsModule, FormsModule]

@@ -22,7 +22,7 @@ import { IconService } from '../../service/icon.service';
 @Component({
   selector: 'app-consultor',
   templateUrl: './consultor.component.html',
-  styleUrls: ['./consultor.component.css'],
+  host: { class: 'consultor-ui' },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, DatosExtraPipe, TimePipe, CuiPipe, EdadPipe, Cie10Component]

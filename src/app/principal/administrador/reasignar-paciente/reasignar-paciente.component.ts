@@ -13,7 +13,7 @@ import { Paciente } from '../../../interface/interfaces';
 @Component({
   selector: 'app-reasignar-paciente',
   templateUrl: './reasignar-paciente.component.html',
-  styleUrls: ['../admin.css'],
+  host: { class: 'admin-ui' },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, CommonModule]

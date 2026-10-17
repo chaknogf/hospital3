@@ -22,6 +22,9 @@
 @import './styles/_utilities.css';
 @import './styles/_layout-mobile-first.css';
 @import './styles/_aurora-tables.css';
+@import './styles/_admin.css';
+@import './styles/_consultor.css';
+@import './styles/_detalle-consulta.css';
 
 :root {
   /* ── GRAYS (escala neutra, independiente del tema) ── */

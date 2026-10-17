@@ -18,7 +18,7 @@ interface Especialidad {
 @Component({
   selector: 'app-gestion-procedimientos',
   templateUrl: './gestion-procedimientos.component.html',
-  styleUrls: ['../admin.css'],
+  host: { class: 'admin-ui' },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]

@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-gestion-encamamiento',
   templateUrl: './gestion-encamamiento.component.html',
-  styleUrls: ['../admin.css'],
+  host: { class: 'admin-ui' },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]

@@ -12,7 +12,7 @@ import { Especialidad } from '../../../interface/quirofano.interface';
 @Component({
   selector: 'app-gestion-especialidades',
   templateUrl: './gestion-especialidades.component.html',
-  styleUrls: ['../admin.css'],
+  host: { class: 'admin-ui' },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]

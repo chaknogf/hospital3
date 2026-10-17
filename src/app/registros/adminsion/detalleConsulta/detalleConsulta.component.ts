@@ -27,7 +27,7 @@ function getVecindad(codigo: string | null | undefined): string {
 @Component({
   selector: 'app-detalleConsulta',
   templateUrl: './detalleConsulta.component.html',
-  styleUrls: ['./detalleConsulta.component.css'],
+  host: { class: 'detalle-consulta-ui' },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DatosExtraPipe, EdadPipe, DatePipe, CuiPipe, CommonModule, TimePipe],

@@ -12,7 +12,7 @@ import { environment } from '@environments/environment';
 @Component({
   selector: 'app-eliminar-paciente',
   templateUrl: './eliminar-paciente.component.html',
-  styleUrls: ['../admin.css'],
+  host: { class: 'admin-ui' },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule]

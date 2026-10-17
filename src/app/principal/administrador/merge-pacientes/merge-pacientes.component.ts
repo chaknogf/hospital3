@@ -10,7 +10,7 @@ import { catchError, finalize, EMPTY } from 'rxjs';
 @Component({
   selector: 'app-merge-pacientes',
   templateUrl: './merge-pacientes.component.html',
-  styleUrls: ['../admin.css'],
+  host: { class: 'admin-ui' },
   standalone: true,
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule]
