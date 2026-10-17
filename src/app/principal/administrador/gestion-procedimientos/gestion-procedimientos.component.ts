@@ -45,7 +45,7 @@ export class GestionProcedimientosComponent implements OnDestroy {
   editando = signal<boolean>(false);
   guardando = signal(false);
 
-  formEspecialidadRef = signal<number | null>(null);
+  formEspecialidades = signal<number[]>([]);
   formProcedimiento = signal('');
   formCodigo = signal('');
   formDescripcion = signal('');
@@ -98,7 +98,7 @@ export class GestionProcedimientosComponent implements OnDestroy {
   abrirNuevo(): void {
     this.editando.set(false);
     this.idOriginal.set(null);
-    this.formEspecialidadRef.set(null);
+    this.formEspecialidades.set([]);
     this.formProcedimiento.set('');
     this.formCodigo.set('');
     this.formDescripcion.set('');
@@ -110,13 +110,29 @@ export class GestionProcedimientosComponent implements OnDestroy {
   abrirEditar(c: CatalogoProcedimiento): void {
     this.editando.set(true);
     this.idOriginal.set(c.id);
-    this.formEspecialidadRef.set(c.especialidad_ref ?? null);
+    this.formEspecialidades.set(
+      c.especialidades_ids?.length
+        ? [...c.especialidades_ids]
+        : (c.especialidad_ref != null ? [c.especialidad_ref] : [])
+    );
     this.formProcedimiento.set(c.nombre);
     this.formCodigo.set(c.abreviatura ?? '');
     this.formDescripcion.set(c.descripcion ?? '');
     this.formAnestesia.set(c.anestesia ?? 0);
     this.error.set(null);
     this.mostrarFormulario.set(true);
+  }
+
+  /** Marca/desmarca una especialidad en el formulario. */
+  toggleEspecialidad(id: number): void {
+    this.formEspecialidades.update(lista =>
+      lista.includes(id) ? lista.filter(x => x !== id) : [...lista, id]
+    );
+  }
+
+  /** Indica si una especialidad está seleccionada en el formulario. */
+  especialidadSeleccionada(id: number): boolean {
+    return this.formEspecialidades().includes(id);
   }
 
   cerrarFormulario(): void {
@@ -140,7 +156,7 @@ export class GestionProcedimientosComponent implements OnDestroy {
       abreviatura: this.formCodigo().trim() || undefined,
       descripcion: this.formDescripcion().trim() || undefined,
       anestesia: this.formAnestesia(),
-      especialidad_ref: this.formEspecialidadRef() || undefined,
+      especialidades_ids: this.formEspecialidades(),
       activo: true
     };
 
@@ -189,9 +205,15 @@ export class GestionProcedimientosComponent implements OnDestroy {
     });
   }
 
-  nombreEspecialidad(id: number | null | undefined): string {
-    if (id == null) return 'Sin especialidad';
-    return this.especialidades().find(c => c.id === id)?.nombre ?? '—';
+  /** Nombres de todas las especialidades habilitadas para un procedimiento. */
+  nombresEspecialidades(c: CatalogoProcedimiento): string {
+    const ids = c.especialidades_ids?.length
+      ? c.especialidades_ids
+      : (c.especialidad_ref != null ? [c.especialidad_ref] : []);
+    if (!ids.length) return 'Sin especialidad';
+    return ids
+      .map(id => this.especialidades().find(e => e.id === id)?.nombre ?? `#${id}`)
+      .join(', ');
   }
 
   volver(): void {

@@ -56,14 +56,14 @@
         <fieldset class="fieldset-filtros">
           <label class="label-filtros">Especialidad</label>
           <select
-            name="lugarServicio"
-            [(ngModel)]="filtros.especialidad"
+            name="especialidad"
+            [(ngModel)]="filtros.especialidad_id"
             class="input-filtros"
           >
-            <option value="">Todos</option>
-            @for (ep of especialidadesfiltradas; track ep) {
-              <option [value]="ep.value">
-                {{ ep.label }}
+            <option [ngValue]="null">Todos</option>
+            @for (ep of especialidades; track ep.id) {
+              <option [ngValue]="ep.id">
+                {{ ep.nombre }}
               </option>
             }
           </select>
@@ -97,7 +97,7 @@
           <input
             type="date"
             class="input-filtros"
-            [(ngModel)]="filtros.fecha"
+            [(ngModel)]="filtros.fecha_inicio"
             name="fechaConsulta"
           />
         </fieldset>

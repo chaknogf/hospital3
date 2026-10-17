@@ -17,6 +17,7 @@ export interface CatalogoProcedimiento {
   descripcion?: string | null;
   anestesia?: number | null;
   especialidad_ref?: number | null;
+  especialidades_ids?: number[];
   activo?: boolean;
 }
 
@@ -132,6 +133,7 @@ export interface ProcedimientoMasUsado {
   total_registros: number;
   total_anestesia: number;
   posicion: number;
+  lugar_servicio: string | null;
 }
 
 /** Listado de procedimientos realizados con total para paginación. */

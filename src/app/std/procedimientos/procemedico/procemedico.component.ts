@@ -81,13 +81,9 @@ export class ProcemedicoComponent implements OnInit {
     return this.catalogo.find(c => c.id === id) ?? null;
   }
 
-  /** El catálogo se acota a la especialidad elegida, si la tiene. */
+  /** Catálogo maestro completo: cualquier especialidad puede seleccionar cualquier procedimiento. */
   get catalogoFiltrado(): CatalogoProcedimiento[] {
-    const espId = this.form.value.especialidad_id;
-    if (espId == null) {
-      return this.catalogo;
-    }
-    return this.catalogo.filter(c => c.especialidad_ref === espId);
+    return this.catalogo;
   }
 
   /** Procedimientos del catálogo que casi no se usan, para localizarlos rápido. */
@@ -257,16 +253,6 @@ export class ProcemedicoComponent implements OnInit {
     }
   }
 
-  onEspecialidadChange(id: number | null): void {
-    // Si el procedimiento elegido no pertenece a la especialidad, se limpia
-    const procId = this.form.value.id_catalogo_procedimiento;
-    if (id == null || procId == null) return;
-    const proc = this.catalogo.find(p => p.id === procId);
-    if (proc?.especialidad_ref != null && proc.especialidad_ref !== id) {
-      this.form.patchValue({ id_catalogo_procedimiento: null, procedimiento: '' });
-    }
-  }
-
   guardar(): void {
     const detalle = this.construirDetalle();
 
@@ -315,7 +301,13 @@ export class ProcemedicoComponent implements OnInit {
       next: () => {
         this.guardando = false;
         this.mostrarMensaje('Procedimiento guardado correctamente');
-        this.limpiarForm();
+        // Conservar especialidad, lugar y fecha para encadenar el siguiente registro
+        const preservar = {
+          especialidad_id: this.form.value.especialidad_id,
+          lugar_servicio: this.form.value.lugar_servicio,
+          fecha: this.form.value.fecha
+        };
+        this.limpiarForm(preservar);
       },
       error: err => { this.guardando = false; this.mostrarError(err); }
     });
@@ -338,11 +330,27 @@ export class ProcemedicoComponent implements OnInit {
 
   /** Muestra el detalle que devuelve el backend, o un mensaje genérico. */
   private mostrarError(err: any): void {
+    const httpStatus = err?.status;
     const detalle = err?.error?.detail;
+    // Validación del lado del servidor (422)
+    if (httpStatus === 422 && Array.isArray(detalle)) {
+      const mensajes = detalle.map((d: any) => d.msg ?? d.path?.join(' ') ?? '').filter(Boolean);
+      this.mostrarMensaje(mensajes.length ? mensajes.join(' · ') : 'Error de validación');
+      return;
+    }
+    // Conflicto de integridad (409): unique constraint, check constraint, etc.
+    if (httpStatus === 409 && typeof detalle === 'string') {
+      this.mostrarMensaje(detalle);
+      return;
+    }
+    // Error de longitud de campo (PostgreSQL DataError suele venir con "length")
+    if (typeof detalle === 'string' && detalle.toLowerCase().includes('length')) {
+      this.mostrarMensaje('El valor supera la longitud permitida para ese campo (máx. 10 caracteres en Especialidad/Lugar/Responsable).');
+      return;
+    }
+    // Cualquier otro error: mostramos el detail o un mensaje genérico
     if (typeof detalle === 'string') {
       this.mostrarMensaje(detalle);
-    } else if (Array.isArray(detalle) && detalle.length) {
-      this.mostrarMensaje(detalle.map((d: any) => d.msg ?? d).join(' · '));
     } else {
       console.error(err);
       this.mostrarMensaje('No se pudo guardar el procedimiento.');
@@ -357,11 +365,11 @@ export class ProcemedicoComponent implements OnInit {
     return this.form.controls;
   }
 
-  limpiarForm(): void {
+  limpiarForm(deshacer?: { especialidad_id?: number; lugar_servicio?: string; fecha?: string }): void {
     this.form.reset({
-      fecha: '',
-      lugar_servicio: '',
-      especialidad_id: null,
+      fecha: deshacer?.fecha ?? '',
+      lugar_servicio: deshacer?.lugar_servicio ?? '',
+      especialidad_id: deshacer?.especialidad_id ?? null,
       id_catalogo_procedimiento: null,
       procedimiento: '',
       id_area_cuerpo_intervenida: null,

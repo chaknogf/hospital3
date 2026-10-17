@@ -23,12 +23,11 @@
       <form [formGroup]="form" class="form-grid">
         <!-- Contexto -->
         <div class="theme-card__field">
-          <label class="theme-label" for="especialidad">Especialidad</label>
+          <label class="theme-label" for="especialidad">Especialidad *</label>
           <select
             id="especialidad"
             class="theme-input"
             formControlName="especialidad_id"
-            (change)="onEspecialidadChange(f['especialidad_id'].value)"
             >
             <option [ngValue]="null">Todas</option>
             <option *ngFor="let ep of especialidades" [ngValue]="ep.id">{{ ep.nombre }}</option>
@@ -36,7 +35,7 @@
         </div>
 
         <div class="theme-card__field">
-          <label class="theme-label" for="lugar">Lugar de servicio</label>
+          <label class="theme-label" for="lugar">Lugar de servicio *</label>
           <select id="lugar" class="theme-input" formControlName="lugar_servicio">
             <option value="">Selecciona</option>
             <option *ngFor="let ls of lugarServicios" [value]="ls.value">{{ ls.label }}</option>
@@ -98,8 +97,7 @@
         <div class="theme-card__field proc-field-full">
           <span class="theme-label">Cantidades por categoría de edad y sexo *</span>
           <p class="proc-hint">
-            PEDIA (menor de 18 años) y ADULTO (18 años o más). Solo se guardan
-            las categorías con cantidad distinta de cero.
+            PEDIA (menor de 18 años) y ADULTO (18 años o más). Ingrese al menos un valor en Masculino o Femenino para la categoría correspondiente. Las categorías con cantidad 0 no se guardan.
           </p>
 
           <div class="table-responsive-wrapper">

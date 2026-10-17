@@ -1,10 +1,12 @@
-import { Dict, especialidadesProcedimientos, lugarServicios } from './../../../enum/diccionarios';
+import { Dict, lugarServicios } from './../../../enum/diccionarios';
 import { IconService } from './../../../service/icon.service';
 import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';;
 import { CategoriaEdadItem, ProceMedico } from '../../../interface/procedimientos';
+import { Especialidad } from '../../../interface/quirofano.interface';
+import { EspecialidadesService } from '../../../service/especialidades.service';
 import { StdService } from '../../std.service';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 
@@ -25,11 +27,12 @@ export class ProcedimientosmenoresComponent implements OnInit {
 
   private location = inject(Location);
   private api = inject(StdService);
+  private especialidadesApi = inject(EspecialidadesService);
   private router = inject(Router);
   private iconService = inject(IconService);
 
   procedimientos: ProceMedico[] = [];
-  especialidadesfiltradas: Dict[] = especialidadesProcedimientos;
+  especialidades: Especialidad[] = [];
   lugarServicios: Dict[] = lugarServicios;
   gruposEdad: CategoriaEdadItem[] = [];
   cargando = false;
@@ -41,7 +44,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
   totalDeRegistros = 0;
 
   filtros: any = {
-    especialidad: '',
+    especialidad_id: null,
     lugar_servicio: '',
     categoria: '',
     sexo: '',
@@ -98,6 +101,13 @@ export class ProcedimientosmenoresComponent implements OnInit {
       error: err => console.error(err)
     });
 
+    // Mismas especialidades que ofrece la captura (procemedico) para que el
+    // filtro coincida con el especialidad_id con el que se guardan los registros.
+    this.especialidadesApi.getEspecialidades(true, true).subscribe({
+      next: d => this.especialidades = d,
+      error: err => console.error(err)
+    });
+
     this.cargarProcedimientos();
   }
 
@@ -125,6 +135,8 @@ export class ProcedimientosmenoresComponent implements OnInit {
   buscar(): void {
     this.paginaActual = 1;
     this.filtros.skip = 0;
+    // El backend filtra por rango; con una sola fecha se consulta ese día.
+    this.filtros.fecha_fin = this.filtros.fecha_inicio;
     this.cargarProcedimientos();
   }
 
@@ -133,7 +145,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
     this.filtros = {
       skip: 0,
       limit: this.pageSize,
-      especialidad: '',
+      especialidad_id: null,
       lugar_servicio: '',
       categoria: '',
       sexo: '',

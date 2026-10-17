@@ -17,7 +17,8 @@
         <p class="hint">
           Elige una especialidad para traer sus procedimientos más usados y
           generar la hoja en tamaño carta horizontal. La hoja se imprime
-          <strong>en blanco</strong> para llenarla a mano.
+          <strong>en blanco</strong> para llenarla a mano: cada procedimiento
+          usa dos filas (masculino / femenino) y una columna por servicio.
         </p>
 
         <div class="filtros">
@@ -105,24 +106,35 @@
         <div class="theme-card__body">
           <div class="table-responsive-wrapper">
             <table class="theme-table previa">
+              <colgroup>
+                <col class="c-col-proc" />
+                <col class="c-col-sexo" />
+                @for (s of servicios; track s.codigo) {
+                  @for (e of edades; track e.codigo) {
+                    <col class="c-col-edad" />
+                  }
+                }
+              </colgroup>
               <thead>
                 <tr>
-                  <th class="c-pos">#</th>
-                  <th class="c-proc">Procedimiento</th>
-                  @for (g of gruposEdad; track g.codigo) {
-                    <th class="c-edad">
-                      <span class="c-edad-nombre">{{ g.nombre }}</span>
-                      <span class="c-edad-cod">M / F</span>
-                    </th>
+                  <th class="c-proc" rowspan="2">Procedimientos</th>
+                  <th class="c-sexo" rowspan="2">Sexo</th>
+                  @for (s of servicios; track s.codigo) {
+                    <th class="c-serv-grupo" colspan="2">{{ s.nombre }}</th>
                   }
-                  <th class="c-total">Tot</th>
+                </tr>
+                <tr>
+                  @for (s of servicios; track s.codigo) {
+                    @for (e of edades; track e.codigo) {
+                      <th class="c-edad">{{ e.nombre }}</th>
+                    }
+                  }
                 </tr>
               </thead>
               <tbody>
                 @for (f of filas; track $index) {
                   <tr [class.c-sombreada]="f.vacia">
-                    <td class="c-pos">{{ f.posicion }}</td>
-                    <td class="c-proc">
+                    <td class="c-proc" rowspan="2">
                       @if (f.vacia) {
                         <span class="c-linea"></span>
                       } @else {
@@ -132,10 +144,20 @@
                         }
                       }
                     </td>
-                    @for (g of gruposEdad; track g.codigo) {
-                      <td class="c-vacia"></td>
+                    <td class="c-sexo">Masculino</td>
+                    @for (s of servicios; track s.codigo) {
+                      @for (e of edades; track e.codigo) {
+                        <td class="c-vacia"></td>
+                      }
                     }
-                    <td class="c-vacia"></td>
+                  </tr>
+                  <tr [class.c-sombreada]="f.vacia">
+                    <td class="c-sexo">Femenino</td>
+                    @for (s of servicios; track s.codigo) {
+                      @for (e of edades; track e.codigo) {
+                        <td class="c-vacia"></td>
+                      }
+                    }
                   </tr>
                 }
               </tbody>
@@ -154,54 +176,82 @@
     <div class="solo-impresion">
       <div class="h-encabezado">
         <div class="h-titulos">
-          <span class="h-titulo">Procedimientos más usados</span>
-          <span class="h-subtitulo">Censo de Procedimientos</span>
+          <span class="h-titulo">Hoja de Censo de Procedimientos</span>
           <span class="h-hospital"
             >Hospital General Tipo I de Tecpán Guatemala</span
           >
         </div>
-        <div class="h-contexto">
-          <span class="h-especialidad">{{ impreso.especialidad }}</span>
-          <span class="h-rango"
-            >{{ impreso.desde || "—" }} al {{ impreso.hasta || "—" }}</span
-          >
-        </div>
+      </div>
+      <div class="h-campos">
+        <span class="h-campo">
+          <span class="h-campo-etiqueta">Especialidad:</span>
+          <span class="h-campo-valor">{{ impreso.especialidad || "—" }}</span>
+        </span>
+        <span class="h-campo">
+          <span class="h-campo-etiqueta">Fecha:</span>
+          <span class="h-campo-valor">{{ rangoImpreso() }}</span>
+        </span>
+        <span class="h-campo">
+          <span class="h-campo-etiqueta">Responsable:</span>
+          <span class="h-campo-valor h-campo-linea"></span>
+        </span>
       </div>
 
       <table class="hoja">
+        <colgroup>
+          <col class="h-col-proc" />
+          <col class="h-col-sexo" />
+          @for (s of servicios; track s.codigo) {
+            @for (e of edades; track e.codigo) {
+              <col class="h-col-edad" />
+            }
+          }
+        </colgroup>
         <thead>
           <tr>
-            <th class="h-pos">#</th>
-            <th class="h-proc">Procedimiento</th>
-            @for (g of gruposEdad; track g.codigo) {
-              <th class="h-edad">
-                <span class="h-edad-nombre">{{ g.nombre }}</span>
-                <span class="h-edad-sexos"><span>M</span><span>F</span></span>
-              </th>
+            <th class="h-proc" rowspan="2">Procedimientos</th>
+            <th class="h-sexo" rowspan="2">Sexo</th>
+            @for (s of servicios; track s.codigo) {
+              <th class="h-serv-grupo" colspan="2">{{ s.nombre }}</th>
             }
-            <th class="h-total">Tot</th>
+          </tr>
+          <tr>
+            @for (s of servicios; track s.codigo) {
+              @for (e of edades; track e.codigo) {
+                <th class="h-edad">{{ e.nombre }}</th>
+              }
+            }
           </tr>
         </thead>
         <tbody>
           @for (f of impreso.filas; track $index) {
             <tr>
-              <td class="h-pos">{{ f.posicion }}</td>
-              <td class="h-proc">{{ f.nombre }}</td>
-              @for (g of gruposEdad; track g.codigo) {
-                <td class="h-celda"><span></span><span></span></td>
+              <td class="h-proc" rowspan="2">{{ f.nombre }}</td>
+              <td class="h-sexo">Masculino</td>
+              @for (s of servicios; track s.codigo) {
+                @for (e of edades; track e.codigo) {
+                  <td class="h-celda"></td>
+                }
               }
-              <td class="h-total"></td>
+            </tr>
+            <tr>
+              <td class="h-sexo">Femenino</td>
+              @for (s of servicios; track s.codigo) {
+                @for (e of edades; track e.codigo) {
+                  <td class="h-celda"></td>
+                }
+              }
             </tr>
           }
         </tbody>
         <tfoot>
           <tr>
-            <td class="h-pos"></td>
-            <td class="h-proc">TOTAL</td>
-            @for (g of gruposEdad; track g.codigo) {
-              <td class="h-celda"><span></span><span></span></td>
+            <td class="h-proc" colspan="2">TOTAL</td>
+            @for (s of servicios; track s.codigo) {
+              @for (e of edades; track e.codigo) {
+                <td class="h-celda"></td>
+              }
             }
-            <td class="h-total"></td>
           </tr>
         </tfoot>
       </table>

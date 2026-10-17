@@ -1,5 +1,8 @@
 /* ═══════════════════════════════════════════════════════════
    HOJA DE PROCEDIMIENTOS MÁS USADOS — carta horizontal en blanco
+   Encabezado a dos niveles: servicio (COEX, EMERGENCIA, …) y
+   debajo las subcolumnas ADULTO / PEDIA. Cada procedimiento ocupa
+   dos renglones (masculino / femenino).
    ═══════════════════════════════════════════════════════════ */
 
 .page {
@@ -43,35 +46,34 @@
   table-layout: fixed;
 }
 
-.c-pos {
-  width: 2.4rem;
+.c-col-proc {
+  width: 20rem;
+}
+
+.c-col-sexo {
+  width: 6.5rem;
+}
+
+.c-col-edad {
+  width: 4.6rem;
 }
 
 .c-proc {
-  width: 22rem;
   text-align: left;
 }
 
-.c-edad {
-  width: 8rem;
-}
-
-.c-total {
-  width: 3.5rem;
-}
-
-.c-edad-nombre {
-  display: block;
+.c-sexo {
   font-size: var(--theme-font-size-xs);
-  text-transform: none;
-  letter-spacing: 0;
-  line-height: 1.15;
 }
 
-.c-edad-cod {
-  display: block;
-  font-size: 0.6rem;
-  opacity: 0.7;
+.c-serv-grupo {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.c-edad {
+  font-size: var(--theme-font-size-xs);
+  text-transform: uppercase;
 }
 
 .theme-table.previa td.c-proc strong {
@@ -84,10 +86,6 @@
   display: block;
   font-size: 0.62rem;
   color: var(--theme-text-muted);
-}
-
-.c-uso {
-  font-style: italic;
 }
 
 /* Las casillas se ven vacías a propósito */
@@ -142,7 +140,7 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 6mm;
-    margin-bottom: 2mm;
+    margin-bottom: 1.5mm;
     font-family: var(--theme-font-mono);
     color: #000;
   }
@@ -154,34 +152,47 @@
   }
 
   .h-titulo {
-    font-size: 11pt;
+    font-size: 12pt;
     font-weight: bold;
-  }
-
-  .h-subtitulo {
-    font-size: 8.6pt;
-    margin-top: 0.8mm;
   }
 
   .h-hospital {
     font-size: 7.6pt;
+    margin-top: 0.6mm;
   }
 
-  .h-contexto {
+  /* Fila de campos: Especialidad / Fecha / Responsable */
+  .h-campos {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: flex-end;
-    line-height: 1.2;
+    gap: 6mm;
+    margin-bottom: 2.4mm;
+    font-family: var(--theme-font-mono);
+    font-size: 8.6pt;
+    color: #000;
   }
 
-  .h-especialidad {
-    font-size: 10pt;
+  .h-campo {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 1.5mm;
+  }
+
+  .h-campo-etiqueta {
+    font-weight: bold;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.02em;
   }
 
-  .h-rango {
-    font-size: 7.6pt;
+  .h-campo-valor {
+    text-transform: uppercase;
+  }
+
+  .h-campo-linea {
+    display: inline-block;
+    min-width: 42mm;
+    border-bottom: 0.4pt solid #000;
   }
 
   .hoja {
@@ -193,58 +204,44 @@
     background: #fff;
   }
 
+  .h-col-proc {
+    width: 70mm;
+  }
+
+  .h-col-sexo {
+    width: 18mm;
+  }
+
+  .h-col-edad {
+    width: 17mm;
+  }
+
   .hoja th,
   .hoja td {
     border: 0.4pt solid #000;
-    padding: 1.9mm 0.8mm;
-    font-size: 9.4pt;
+    padding: 1.6mm 0.6mm;
+    font-size: 8.4pt;
     line-height: 1.05;
     text-align: center;
   }
 
   .hoja thead th {
-    font-size: 8pt;
+    font-size: 7.6pt;
     text-transform: uppercase;
     letter-spacing: 0.02em;
   }
 
-  .h-pos {
-    width: 8mm;
-  }
-
   .h-proc {
-    width: 64mm;
     text-align: left;
   }
 
-  .h-edad {
-    width: 19.6mm;
+  .h-sexo {
+    font-size: 7.4pt;
   }
 
-  .h-edad-nombre {
-    display: block;
-    font-size: 7pt;
-    text-transform: none;
-    line-height: 1.05;
-  }
-
-  .h-edad-sexos {
-    display: flex;
-    justify-content: center;
-    gap: 6mm;
-    font-size: 6.6pt;
-  }
-
-  /* Cada celda lleva las dos casillas M y F lado a lado, vacías */
-  .h-celda span {
-    display: inline-block;
-    width: 8.4mm;
-    text-align: center;
-  }
-
-  .h-total {
-    width: 11mm;
-    font-weight: bold;
+  /* Cada celda de captura queda en blanco para escribir a mano */
+  .h-celda {
+    height: 6.4mm;
   }
 
   .hoja tfoot td {

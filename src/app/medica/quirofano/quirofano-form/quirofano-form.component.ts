@@ -238,14 +238,9 @@ export class QuirofanoFormComponent implements OnInit {
     });
   }
 
-  // Catálogo maestro filtrado por la especialidad seleccionada (mantener comportamiento previo).
+  // Catálogo maestro completo: cualquier especialidad puede seleccionar cualquier procedimiento.
   get catalogoFiltrado(): CatalogoProcedimiento[] {
-    const esp = this.form.value.especialidad_id;
-    if (!esp) return this.catalogoProcedimientos;
-    // Si no hay especialidad_ref, mostrar también (genéricas)
-    return this.catalogoProcedimientos.filter(
-      p => p.especialidad_ref === esp || p.especialidad_ref == null
-    );
+    return this.catalogoProcedimientos;
   }
 
   // Texto histórico del área cuando el registro es anterior al catálogo normalizado.
@@ -253,19 +248,6 @@ export class QuirofanoFormComponent implements OnInit {
     const id = this.form.value.id_area_cuerpo_intervenida;
     const txt = this.form.value.area_cuerpo_intervenida;
     return id == null && txt ? txt : '';
-  }
-
-  onEspecialidadChange(): void {
-    const campos = [
-      'procedimiento_principal',
-      'procedimiento_2',
-      'procedimiento_3',
-      'procedimiento_4',
-      'procedimiento_5'
-    ];
-    const reset: any = {};
-    for (const c of campos) reset[c] = '';
-    this.form.patchValue(reset);
   }
 
   cargarMedicos(): void {

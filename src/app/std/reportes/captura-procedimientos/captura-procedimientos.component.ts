@@ -5,10 +5,7 @@ import { RouterLink } from '@angular/router';
 
 import { StdService } from '../../std.service';
 import { EspecialidadesService } from '../../../service/especialidades.service';
-import {
-  CategoriaEdadItem,
-  ProcedimientoMasUsado
-} from '../../../interface/procedimientos';
+import { ProcedimientoMasUsado } from '../../../interface/procedimientos';
 
 interface FilaHoja {
   posicion: number;
@@ -39,7 +36,21 @@ export class CapturaProcedimientosComponent implements OnInit {
   /** Renglones en blanco al final de la hoja. */
   readonly FILAS_VACIAS = 10;
 
-  gruposEdad: CategoriaEdadItem[] = [];
+  /** Servicios de la hoja, en el orden de las columnas del censo. */
+  readonly servicios = [
+    { codigo: 'COEX', nombre: 'COEX' },
+    { codigo: 'EMER', nombre: 'EMERGENCIA' },
+    { codigo: 'HOSP', nombre: 'HOSPITALIZACION' },
+    { codigo: 'SOPEL', nombre: 'SOP ELECTIVA' },
+    { codigo: 'SOPEM', nombre: 'SOP EMERGENCIA' }
+  ];
+
+  /** Categorías etarias (subcolumnas dentro de cada servicio). */
+  readonly edades = [
+    { codigo: 'adulto', nombre: 'ADULTO' },
+    { codigo: 'nino', nombre: 'PEDIA' }
+  ];
+
   especialidades: any[] = [];
 
   cargando = false;
@@ -75,11 +86,6 @@ export class CapturaProcedimientosComponent implements OnInit {
         console.error(err);
         this.error = 'No se pudieron cargar las especialidades.';
       }
-    });
-
-    this.stdService.getGruposEdad().subscribe({
-      next: d => this.gruposEdad = d,
-      error: err => console.error(err)
     });
   }
 
@@ -163,6 +169,16 @@ export class CapturaProcedimientosComponent implements OnInit {
     if (this.desde && this.hasta) return `${this.desde} al ${this.hasta}`;
     if (this.desde) return `desde ${this.desde}`;
     if (this.hasta) return `hasta ${this.hasta}`;
+    return 'todo el histórico';
+  }
+
+  /** Rango legible congelado en el encabezado de la hoja impresa. */
+  rangoImpreso(): string {
+    const i = this.impreso;
+    if (!i) return '';
+    if (i.desde && i.hasta) return `${i.desde} al ${i.hasta}`;
+    if (i.desde) return `desde ${i.desde}`;
+    if (i.hasta) return `hasta ${i.hasta}`;
     return 'todo el histórico';
   }
 

@@ -78,7 +78,7 @@
                         }
                       </td>
                       <td><code>{{ c.abreviatura || '—' }}</code></td>
-                      <td>{{ nombreEspecialidad(c.especialidad_ref) }}</td>
+                      <td>{{ nombresEspecialidades(c) }}</td>
                       <td class="text-center">{{ c.anestesia ? 'Sí' : 'No' }}</td>
                       <td>
                         <span class="badge" [class.badge-active]="c.activo" [class.badge-inactive]="!c.activo">
@@ -146,15 +146,21 @@
         </div>
 
         <div class="field">
-          <label class="field-label">Especialidad (opcional)</label>
-          <select class="field-input"
-            [ngModel]="formEspecialidadRef()"
-            (ngModelChange)="formEspecialidadRef.set($event)">
-            <option [ngValue]="null">Sin especialidad específica</option>
+          <label class="field-label">Especialidades habilitadas</label>
+          <div class="esp-checks">
             @for (e of especialidades(); track e.id) {
-              <option [ngValue]="e.id">{{ e.nombre }}</option>
+              <label class="esp-check">
+                <input type="checkbox"
+                  [checked]="especialidadSeleccionada(e.id)"
+                  (change)="toggleEspecialidad(e.id)" />
+                {{ e.nombre }}
+              </label>
             }
-          </select>
+            @if (especialidades().length === 0) {
+              <span class="table-status">Sin especialidades disponibles</span>
+            }
+          </div>
+          <small class="field-hint">Sin marcar = disponible para todas (sin especialidad específica).</small>
         </div>
 
         <div class="field">
