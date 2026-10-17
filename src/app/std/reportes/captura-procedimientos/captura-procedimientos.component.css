@@ -60,10 +60,13 @@
 
 .c-proc {
   text-align: left;
+  padding:  0 0 0 6px;
+
 }
 
 .c-sexo {
   font-size: var(--theme-font-size-xs);
+  padding: 0;
 }
 
 .c-serv-grupo {
@@ -242,6 +245,11 @@
   /* Cada celda de captura queda en blanco para escribir a mano */
   .h-celda {
     height: 6.4mm;
+  }
+
+  /* Línea más gruesa que separa un procedimiento del siguiente */
+  .hoja tbody tr.h-proc-fila > td {
+    border-top-width: 1.3pt;
   }
 
   .hoja tfoot td {

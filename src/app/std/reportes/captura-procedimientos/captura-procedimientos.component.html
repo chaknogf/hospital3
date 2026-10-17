@@ -225,7 +225,7 @@
         </thead>
         <tbody>
           @for (f of impreso.filas; track $index) {
-            <tr>
+            <tr class="h-proc-fila">
               <td class="h-proc" rowspan="2">{{ f.nombre }}</td>
               <td class="h-sexo">Masculino</td>
               @for (s of servicios; track s.codigo) {

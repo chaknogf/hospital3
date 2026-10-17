@@ -7,6 +7,24 @@ import { StdService } from '../../std.service';
 import { EspecialidadesService } from '../../../service/especialidades.service';
 import { ProcedimientoMasUsado } from '../../../interface/procedimientos';
 
+/** Fecha de hoy en formato YYYY-MM-DD (hora local). */
+function isoHoy(): string {
+  return isoDia(new Date());
+}
+
+/** Fecha de hace un año en formato YYYY-MM-DD (hora local). */
+function isoHaceUnAnio(): string {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() - 1);
+  return isoDia(d);
+}
+
+function isoDia(d: Date): string {
+  const mes = String(d.getMonth() + 1).padStart(2, '0');
+  const dia = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${mes}-${dia}`;
+}
+
 interface FilaHoja {
   posicion: number;
   nombre: string;
@@ -34,7 +52,7 @@ export class CapturaProcedimientosComponent implements OnInit {
   private especialidadesApi = inject(EspecialidadesService);
 
   /** Renglones en blanco al final de la hoja. */
-  readonly FILAS_VACIAS = 10;
+  readonly FILAS_VACIAS = 5;
 
   /** Servicios de la hoja, en el orden de las columnas del censo. */
   readonly servicios = [
@@ -60,8 +78,9 @@ export class CapturaProcedimientosComponent implements OnInit {
   aviso: string | null = null;
 
   especialidadId: number | null = null;
-  desde = '';
-  hasta = '';
+  /** Periodo por defecto: los últimos 12 meses. */
+  desde = isoHaceUnAnio();
+  hasta = isoHoy();
   limite = 10;
 
   filas: FilaHoja[] = [];
