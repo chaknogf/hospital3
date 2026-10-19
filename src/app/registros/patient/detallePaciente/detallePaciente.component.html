@@ -121,8 +121,20 @@
         </div>
         <div class="dc-field">
           <span class="dc-lbl">Expediente</span>
-          <span class="dc-val">{{ paciente.expediente }}</span>
+          <span class="dc-val">{{ paciente.expediente || "—" }}</span>
         </div>
+        @if (paciente.datos_extra?.['expedientes_anteriores']?.length) {
+          <div class="dc-field dc-field-full">
+            <span class="dc-lbl">Expedientes anteriores</span>
+            <span class="dc-val">{{ paciente.datos_extra?.['expedientes_anteriores']?.join(', ') }}</span>
+          </div>
+        }
+        @if (paciente.datos_extra?.['merge']?.['expediente']?.length) {
+          <div class="dc-field dc-field-full">
+            <span class="dc-lbl">Expedientes fusionados</span>
+            <span class="dc-val">{{ paciente.datos_extra?.['merge']?.['expediente']?.join(', ') }}</span>
+          </div>
+        }
       </div>
     </div>
 

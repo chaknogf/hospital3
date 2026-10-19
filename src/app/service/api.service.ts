@@ -303,6 +303,25 @@ export class ApiService extends BaseApiService {
     );
   }
 
+  // ── Pacientes Duplicados (nombres similares) ───────────
+  getPacientesDuplicadosNombresSimilares(params: {
+    similitud_minima?: number;
+    metodo?: string;
+    incluir_fecha_nacimiento?: boolean;
+    limit?: number;
+    offset?: number;
+  } = {}): Observable<any> {
+    let httpParams = new HttpParams();
+    if (params.similitud_minima !== undefined) httpParams = httpParams.set('similitud_minima', String(params.similitud_minima));
+    if (params.metodo) httpParams = httpParams.set('metodo', params.metodo);
+    if (params.incluir_fecha_nacimiento !== undefined) httpParams = httpParams.set('incluir_fecha_nacimiento', String(params.incluir_fecha_nacimiento));
+    if (params.limit !== undefined) httpParams = httpParams.set('limit', String(params.limit));
+    if (params.offset !== undefined) httpParams = httpParams.set('offset', String(params.offset));
+    return this.http.get<any>(`${this.baseUrl}/pacientes/duplicados/nombres-similares`, { params: httpParams }).pipe(
+      catchError(error => this.manejarError(error, 'obtener duplicados'))
+    );
+  }
+
   // ── Pacientes Merge ─────────────────────────────────────
   mergePacientes(principalId: number, ids: number[]): Observable<any> {
     this.isLoading.set(true);

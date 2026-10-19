@@ -48,6 +48,11 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin'])]
       },
       {
+        path: 'duplicados-pacientes',
+        loadComponent: () => import('./principal/administrador/duplicados-pacientes/duplicados-pacientes.component').then(c => c.DuplicadosPacientesComponent),
+        canActivate: [roleGuard(['admin'])]
+      },
+      {
         path: 'gestion-municipios',
         loadComponent: () => import('./principal/administrador/gestion-municipios/gestion-municipios.component').then(c => c.GestionMunicipiosComponent),
         canActivate: [roleGuard(['admin'])]

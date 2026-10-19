@@ -88,6 +88,7 @@ export class AdminComponent implements OnInit {
         icon: 'paciente',
         opciones: [
           { nombre: 'Fusionar Pacientes', descripcion: 'Unir registros duplicados', ruta: '/merge-pacientes', icon: 'find' },
+          { nombre: 'Duplicados Pacientes', descripcion: 'Listar y fusionar duplicados por nombre', ruta: '/duplicados-pacientes', icon: 'find' },
           { nombre: 'Eliminar Paciente', descripcion: 'Eliminar paciente permanentemente', ruta: '/eliminar-paciente', icon: 'remove' },
           { nombre: 'Limpiar CUI', descripcion: 'Limpiar número de CUI de un paciente', ruta: '/limpiar-cui-paciente', icon: 'edit' },
         ]
