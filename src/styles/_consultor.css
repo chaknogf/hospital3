@@ -20,6 +20,7 @@
   display: grid;
   grid-template-columns: 260px 1fr;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   background: var(--theme-background);
 }
@@ -94,7 +95,7 @@
 .consultor-ui .fab-search {
   display: none;
   position: fixed;
-  bottom: 24px;
+  bottom: calc(24px + env(safe-area-inset-bottom));
   right: 20px;
   z-index: 198;
   width: 52px;
@@ -305,6 +306,7 @@
   position: relative;
   overflow: hidden;
   height: 100vh;
+  height: 100dvh;
   background:
     radial-gradient(circle at 20% 85%, var(--theme-primary-dim) 0%, transparent 55%),
     radial-gradient(circle at 80% 15%, var(--theme-accent-dim) 0%, transparent 55%),
@@ -1014,13 +1016,21 @@
   .consultor-ui .consultor-layout { grid-template-columns: 1fr; }
 
   .consultor-ui .sidebar {
-    position: sticky;
-    top: 0; left: 0; bottom: 0;
-    width: min(300px, 85vw);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    height: 100dvh;
+    width: min(320px, 88vw);
+    max-width: 320px;
     z-index: 200;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    height: 80vh;
+    transform: translateX(-105%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-right: 1px solid var(--theme-border-strong);
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.5);
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
   .consultor-ui .sidebar.sidebar--open { transform: translateX(0); }
   .consultor-ui .sidebar-handle { display: flex; }
@@ -1204,8 +1214,11 @@
 @media (max-width: 480px) {
   .consultor-ui .hud-header { flex-direction: column; align-items: flex-start; gap: 6px; padding: 8px 12px; }
   .consultor-ui .hud-actions { width: 100%; justify-content: flex-start; }
-  .consultor-ui .sidebar { width: 100vw; }
+  .consultor-ui .sidebar { width: 100vw; max-width: 100vw; }
   .consultor-ui .field-grid { grid-template-columns: 1fr; }
   .consultor-ui .dc-field-full { grid-column: 1; }
+  .consultor-ui .dc-field { flex-wrap: wrap; gap: 2px; }
+  .consultor-ui .dc-lbl { min-width: 0; }
+  .consultor-ui .dc-val { word-break: break-word; overflow-wrap: anywhere; }
 }
 
