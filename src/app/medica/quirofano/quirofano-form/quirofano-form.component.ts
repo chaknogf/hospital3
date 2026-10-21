@@ -227,7 +227,7 @@ export class QuirofanoFormComponent implements OnInit {
     });
 
     // Catálogo maestro de procedimientos
-    this.catalogoApi.getCatalogoProcedimientos({ activo: true, limit: 5000 }).subscribe({
+    this.catalogoApi.getCatalogoProcedimientos({ activo: true, limit: 500 }).subscribe({
       next: d => this.catalogoProcedimientos = d,
       error: () => { }
     });
@@ -414,6 +414,10 @@ export class QuirofanoFormComponent implements OnInit {
   onAreaCuerpoInput(event: Event): void {
     const texto = (event.target as HTMLInputElement).value;
     const textoNormalizado = texto.trim().toLocaleLowerCase();
+    if (textoNormalizado === 'no especificada') {
+      this.form.patchValue({ id_area_cuerpo_intervenida: null }, { emitEvent: false });
+      return;
+    }
     const area = this.areasCuerpo.find(
       a => a.nombre.trim().toLocaleLowerCase() === textoNormalizado
     );
@@ -421,6 +425,7 @@ export class QuirofanoFormComponent implements OnInit {
       id_area_cuerpo_intervenida: area?.id ?? null
     }, { emitEvent: false });
   }
+
 
   private configurarEstadoAutomatico(): void {
     this.form.get('hora_finaliza_intervencion')?.valueChanges.subscribe(hora => {

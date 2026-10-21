@@ -28,14 +28,14 @@
               <label class="field-label">Buscar</label>
               <input class="field-input" type="text"
                 [ngModel]="filtro()"
-                (ngModelChange)="filtro.set($event); cargar()"
+                (ngModelChange)="filtro.set($event); pagina.set(0); cargar()"
                 placeholder="Nombre o abreviatura" />
             </div>
             <div class="field">
               <label class="field-label">Especialidad</label>
               <select class="field-input"
                 [ngModel]="especialidadFiltro()"
-                (ngModelChange)="especialidadFiltro.set($event); cargar()">
+                 (ngModelChange)="especialidadFiltro.set($event); pagina.set(0); cargar()">
                 <option [ngValue]="null">Todas</option>
                 @for (e of especialidades(); track e.id) {
                   <option [ngValue]="e.id">{{ e.nombre }}</option>
@@ -48,7 +48,7 @@
 
       <div class="section-card">
         <div class="sec-head">
-          <span class="sec-title">Procedimientos ({{ catalogoProcedimientos().length }})</span>
+            <span class="sec-title">Procedimientos ({{ totalProcedimientos() }})</span>
         </div>
         <div class="sec-body">
           @if (loading()) {
@@ -101,6 +101,13 @@
                   }
                 </tbody>
               </table>
+            </div>
+          }
+          @if (totalProcedimientos() > pageSize) {
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <button class="btn-sm" (click)="cambiarPagina(-1)" [disabled]="pagina() === 0">Anterior</button>
+              <span>Página {{ pagina() + 1 }} de {{ numeroPaginas() }}</span>
+              <button class="btn-sm" (click)="cambiarPagina(1)" [disabled]="(pagina() + 1) * pageSize >= totalProcedimientos()">Siguiente</button>
             </div>
           }
         </div>

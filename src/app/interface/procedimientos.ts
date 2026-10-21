@@ -28,7 +28,7 @@ export interface GrupoEdadCantidades {
 }
 
 /** Categoría etaria admitida en un registro de procedimiento (corte a los 18 años). */
-export type CategoriaEdad = 'nino' | 'adulto';
+export type CategoriaEdad = 'nino' | 'adulto' | 'sin_edad';
 
 /** Categoría etaria con su etiqueta descriptiva. */
 export interface CategoriaEdadItem {

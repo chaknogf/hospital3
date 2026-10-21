@@ -4,7 +4,7 @@
   "dataGroups": [
     {
       "name": "api-pacientes",
-      "urls": ["/fah/pacientes/"],
+      "urls": ["/fah/pacientes/buscar"],
       "cacheConfig": {
         "maxSize": 100,
         "maxAge": "1h",
@@ -22,7 +22,7 @@
     },
     {
       "name": "api-catalogos",
-      "urls": ["/fah/municipios/", "/fah/paises/", "/fah/medicos/", "/fah/procedimientos/catalogo"],
+      "urls": ["/fah/municipios/", "/fah/paises/", "/fah/medicos/", "/fah/catalogo-procedimientos/"],
       "cacheConfig": {
         "maxSize": 50,
         "maxAge": "6h",

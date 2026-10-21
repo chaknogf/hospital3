@@ -27,11 +27,15 @@ describe('GestionProcedimientosComponent', () => {
     httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
     // Responde las peticiones iniciales del constructor (catálogo + especialidades).
-    httpMock.match(() => true).forEach(req => req.flush([]));
+    httpMock.match(() => true).forEach(req =>
+      req.flush(req.request.url.includes('/catalogo-procedimientos/') ? { total: 0, items: [] } : [])
+    );
   });
 
   afterEach(() => {
-    httpMock.match(() => true).forEach(req => req.flush([]));
+    httpMock.match(() => true).forEach(req =>
+      req.flush(req.request.url.includes('/catalogo-procedimientos/') ? { total: 0, items: [] } : [])
+    );
     httpMock.verify();
   });
 

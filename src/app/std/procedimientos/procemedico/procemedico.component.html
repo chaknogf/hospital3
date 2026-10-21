@@ -86,7 +86,7 @@
         <div class="theme-card__field proc-field-full">
           <label class="theme-label" for="zona">Zona de intervención</label>
           <select id="zona" class="theme-input" formControlName="id_area_cuerpo_intervenida">
-            <option [ngValue]="null">Selecciona</option>
+            <option [ngValue]="null">No especificado</option>
             <option *ngFor="let a of areasCuerpo" [ngValue]="a.id">
               {{ a.codigo }} · {{ a.nombre }}{{ a.region ? ' (' + a.region + ')' : '' }}
             </option>
@@ -97,7 +97,7 @@
         <div class="theme-card__field proc-field-full">
           <span class="theme-label">Cantidades por categoría de edad y sexo *</span>
           <p class="proc-hint">
-            PEDIA (menor de 18 años) y ADULTO (18 años o más). Ingrese al menos un valor en Masculino o Femenino para la categoría correspondiente. Las categorías con cantidad 0 no se guardan.
+            PEDIA (menor de 18 años) y ADULTO (18 años o más). Si no se conoce la edad, use la fila No especificado. Ingrese al menos un valor en Masculino o Femenino para la categoría correspondiente. Las categorías con cantidad 0 no se guardan.
           </p>
 
           <div class="table-responsive-wrapper">
@@ -145,6 +145,38 @@
                     {{ (controlesEdad.get(g.codigo + '.m')?.value || 0) + (controlesEdad.get(g.codigo + '.f')?.value || 0) }}
                   </td>
                 </tr>
+
+                <tr
+                  [class.proc-row-on]="tieneCantidad('sin_edad')"
+                  >
+                  <td class="proc-col-grupo">
+                    No especificado
+                    <span class="theme-badge theme-badge--info proc-code">N/E</span>
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      class="theme-input proc-input"
+                      [formControl]="$any(controlesEdad.get('sin_edad.m'))"
+                      aria-label="Masculinos no especificados"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      class="theme-input proc-input"
+                      [formControl]="$any(controlesEdad.get('sin_edad.f'))"
+                      aria-label="Femeninos no especificados"
+                    />
+                  </td>
+                  <td class="proc-total">
+                    {{ (controlesEdad.get('sin_edad.m')?.value || 0) + (controlesEdad.get('sin_edad.f')?.value || 0) }}
+                  </td>
+                </tr>
               </tbody>
               <tfoot>
                 <tr>
@@ -159,10 +191,6 @@
 
           <small class="proc-error" *ngIf="totalGeneral === 0 && controlesEdad.touched">
             Debe registrar al menos una categoría de edad con cantidad.
-          </small>
-
-          <small class="proc-hint" *ngIf="enEdicion && (sinEdadM > 0 || sinEdadF > 0)">
-            Registros históricos sin edad: {{ sinEdadM }}M / {{ sinEdadF }}F. Se conservan al actualizar.
           </small>
         </div>
 
@@ -205,7 +233,6 @@
       </form>
     </div>
 
-    <!-- Acciones -->
     <div class="theme-card__footer proc-actions">
       <span class="theme-card__footer-meta">
         {{ totalMasculino }} M · {{ totalFemenino }} F · {{ totalGeneral }} en total

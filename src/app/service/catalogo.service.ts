@@ -1,9 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { CatalogoProcedimiento, AreaCuerpoIntervenida } from '../interface/procedimientos';
+
+export interface CatalogoProcedimientosPage {
+  total: number;
+  items: CatalogoProcedimiento[];
+}
 
 /** Acceso al catálogo maestro de procedimientos y áreas intervenidas. */
 @Injectable({ providedIn: 'root' })
@@ -19,13 +24,24 @@ export class CatalogoService {
     skip?: number;
     limit?: number;
   } = {}): Observable<CatalogoProcedimiento[]> {
+    return this.getCatalogoProcedimientosPage({ ...filtros, skip: filtros.skip ?? 0, limit: filtros.limit ?? 500 })
+      .pipe(map(page => page.items));
+  }
+
+  getCatalogoProcedimientosPage(filtros: {
+    q?: string;
+    especialidad_ref?: number;
+    activo?: boolean;
+    skip?: number;
+    limit?: number;
+  } = {}): Observable<CatalogoProcedimientosPage> {
     let params = new HttpParams();
     if (filtros.q) params = params.set('q', filtros.q);
     if (filtros.especialidad_ref != null) params = params.set('especialidad_ref', String(filtros.especialidad_ref));
     if (filtros.activo != null) params = params.set('activo', String(filtros.activo));
     if (filtros.skip != null) params = params.set('skip', String(filtros.skip));
     if (filtros.limit != null) params = params.set('limit', String(filtros.limit));
-    return this.http.get<CatalogoProcedimiento[]>(`${this.baseUrl}/catalogo-procedimientos/`, { params })
+    return this.http.get<CatalogoProcedimientosPage>(`${this.baseUrl}/catalogo-procedimientos/`, { params })
       .pipe(catchError(err => { throw err; }));
   }
 
@@ -47,7 +63,8 @@ export class CatalogoService {
 
   /** Lista el catálogo de áreas del cuerpo intervenidas. */
   getAreasCuerpo(activo: boolean = true): Observable<AreaCuerpoIntervenida[]> {
-    const params = new HttpParams().set('activo', String(activo));
-    return this.http.get<AreaCuerpoIntervenida[]>(`${this.baseUrl}/areas-cuerpo/`, { params });
+    const params = new HttpParams().set('activo', String(activo)).set('limit', '500');
+    return this.http.get<{ total: number; items: AreaCuerpoIntervenida[] }>(`${this.baseUrl}/areas-cuerpo/`, { params })
+      .pipe(map(page => page.items));
   }
 }

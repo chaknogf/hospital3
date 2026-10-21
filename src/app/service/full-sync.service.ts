@@ -144,7 +144,7 @@ export class FullSyncService {
     let skip = 0;
     let total = 0;
 
-    // `GET /pacientes/` ordena por id descendente: skip=0 es el último paciente
+    // `/pacientes/buscar` ordena por id descendente: skip=0 es el último paciente
     // creado, de modo que se descarga de lo más nuevo hasta llegar a MAX_RECORDS.
     do {
       await this.checkPauseCancel();
@@ -155,7 +155,7 @@ export class FullSyncService {
         .set('limit', limite.toString());
 
       const res = await firstValueFrom(
-        this.http.get<PacienteListResponse>(`${this.api.baseUrl}/pacientes/`, { params })
+        this.http.get<PacienteListResponse>(`${this.api.baseUrl}/pacientes/buscar`, { params })
       );
 
       if (total === 0) total = res.total;

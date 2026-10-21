@@ -82,7 +82,7 @@ export class CitaService extends BaseApiService {
 
   conteoCitas(filtros: any): Observable<ConteoCitas[]> {
     this.ultimoFiltroCitas.filtro = filtros;
-    const params = this.limpiarParametros(filtros);
+    const params = this.limpiarParametros({ skip: 0, limit: 500, ...filtros });
     const key = this.cacheKey(`${this.baseUrl}/citas/disponibles`, params);
     return this.cacheGet(key,
       this.http.get<ConteoCitas[]>(`${this.baseUrl}/citas/disponibles`, { params }).pipe(

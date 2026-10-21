@@ -78,7 +78,7 @@ back_sys/
 │   ├── dependencies.py        # FastAPI DI re-exports
 │   ├── exceptions.py          # Global error handlers (422, 409, 500)
 │   └── mail.py                # FastAPI-Mail config
-├── modules/                   # 28 domain modules
+├── modules/                   # 36 domain packages (34 routers, 2 models-only)
 │   ├── auth/                  # POST /auth/login, GET /auth/me
 │   ├── users/                 # Full user CRUD
 │   ├── pacientes/             # Patient CRUD, duplicates (trigram/soundex), merge, neonates
@@ -131,7 +131,7 @@ Each module in `modules/` contains:
 | Users | PUT | `/users/{user_id}` | admin/self | Update |
 | Users | PATCH | `/users/recuperar` | public | Reset password |
 | Users | DELETE | `/users/{user_id}` | admin | Soft delete |
-| Pacientes | GET | `/pacientes/` | auth | Search (15+ filtros: q, id, cui, expediente, nombre, sexo, estado, etc.) |
+| Pacientes | GET | `/pacientes/buscar` | auth | Search paginado compartido con recepción (incluye filtro por documento de consulta) |
 | Pacientes | GET | `/pacientes/neonatales` | auth | Neonatales |
 | Pacientes | GET | `/pacientes/{paciente_id}` | auth | By ID |
 | Pacientes | POST | `/pacientes/` | auth | Create (201) |
@@ -143,7 +143,7 @@ Each module in `modules/` contains:
 | Pacientes | POST | `/pacientes/merge` | admin | Merge duplicados |
 | Pacientes | POST | `/pacientes/madre-hijo/{madre_id}` | auth | Crear desde madre (201) |
 | Consultas | GET | `/consultas/` | auth | List (15+ filtros) |
-| Consultas | GET | `/consultas/buscarpaciente` | auth | Buscar pacientes |
+| Consultas | GET | `/pacientes/buscar` | auth | Búsqueda compartida de pacientes para recepción |
 | Consultas | GET | `/consultas/{consulta_id}` | auth | By ID |
 | Consultas | PATCH | `/consultas/sincronizar-indicadores` | auth | Sync indicadores |
 | Consultas | PATCH | `/consultas/{consulta_id}` | auth | Update |
@@ -194,11 +194,11 @@ Each module in `modules/` contains:
 | Prestamos | GET | `/prestamos/{prestamo_id}` | auth | By ID |
 | Prestamos | PUT | `/prestamos/{prestamo_id}` | auth | Update (devuelve si fecha_devolucion) |
 | Prestamos | DELETE | `/prestamos/{prestamo_id}` | auth | Desactivar |
-| Procedimientos | GET | `/procedimientos/catalogo` | auth | Catálogo (filtros: abreviatura, nombre) |
-| Procedimientos | GET | `/procedimientos/catalogo/{id}` | auth | Catálogo by ID |
-| Procedimientos | POST | `/procedimientos/catalogo` | admin | Crear en catálogo |
-| Procedimientos | PUT | `/procedimientos/catalogo/{id}` | admin | Update catálogo |
-| Procedimientos | DELETE | `/procedimientos/catalogo/{id}` | admin | Delete (si sin registros) |
+| Procedimientos | GET | `/catalogo-procedimientos/` | auth | Catálogo paginado (filtros: q, especialidad_ref, activo) |
+| Procedimientos | GET | `/catalogo-procedimientos/{id}` | auth | Catálogo by ID |
+| Procedimientos | POST | `/catalogo-procedimientos/` | admin | Crear en catálogo |
+| Procedimientos | PATCH | `/catalogo-procedimientos/{id}` | admin | Update catálogo |
+| Procedimientos | DELETE | `/catalogo-procedimientos/{id}` | admin | Desactivar catálogo |
 | Procedimientos | GET | `/procedimientos/` | auth | List realizados (5 filtros) |
 | Procedimientos | GET | `/procedimientos/reporte` | auth | Reporte agregado |
 | Procedimientos | GET | `/procedimientos/{id}` | auth | Realizado by ID |
@@ -293,12 +293,12 @@ All API calls go through `ApiService` (`service/api.service.ts`) to `http://loca
 
 | Component | Route | ApiService / Service Method | Backend Endpoint |
 |-----------|-------|-----------------------------|------------------|
-| `PacientesComponent` | `/pacientes` | `ApiService` (via `BaseApiService`) | `GET /pacientes/` |
-| `FormularioPacienteComponent` | `/paciente`, `/paciente/:modo`, `/pacienteEdit/:id` | `ApiService` | `GET/POST /pacientes/`, `PATCH /pacientes/{id}` |
+| `PacientesComponent` | `/pacientes` | `PacienteService` | `GET /pacientes/buscar` |
+| `FormularioPacienteComponent` | `/paciente`, `/paciente/:modo`, `/pacienteEdit/:id` | `ApiService` | `GET /pacientes/buscar`, `POST /pacientes/`, `PATCH /pacientes/{id}` |
 | `DetallePacienteComponent` | `/detallePaciente/:id` | `PacienteService.getPaciente()` | `GET /pacientes/{id}` |
 | `AdmisionComponent` | `/admision*`, `/editarAdmision*` | `ConsultaService` | `POST /consultas/registro`, `PATCH /consultas/{id}` |
 | `ConsultasComponent` | `/consultas` | `ConsultaService` | `GET /consultas/` |
-| `RecepcionComponent` | `/recepcion` | `ConsultaService.getPacientesBuscados()` | `GET /consultas/buscarpaciente` |
+| `RecepcionComponent` | `/recepcion` | `ConsultaService.getPacientesBuscados()` | `GET /pacientes/buscar` |
 | `EmergenciasListComponent` | `/emergencias` | `ConsultaService` | `GET /consultas/` (especialidad=emergencia) |
 | `HojaComponent` | `/hojaEmergencia/:id` | `ConsultaService` | `GET /consultas/{id}` |
 | `CoexListaComponent` | `/coex` | `ConsultaService` | `GET /consultas/` (especialidad=coex) |
@@ -347,7 +347,7 @@ All API calls go through `ApiService` (`service/api.service.ts`) to `http://loca
 | `ResumenProcedimientosComponent` | `/reportes/resumen-procedimientos` | `getResumenProcedimientos()` | `GET /procedimientos/estadisticas/resumen` |
 | `DxZCIe10Component` | `/reportes/dx-z-cie10` | *(via Sigsa3Service, Z34/Z10)* | `GET /sigsa3/?codigo_dx=Z34\|Z10` |
 | `EstadisticaComponent` | `/estadistica` | `ApiService` | `GET /estadisticas/consultas/*` |
-| `ConsultorComponent` | `/consultar` | `ConsultaService` / `PacienteService` | `GET /consultas/buscarpaciente`, `GET /pacientes/` |
+| `ConsultorComponent` | `/consultar` | `ConsultaService` / `PacienteService` | `GET /pacientes/buscar` |
 
 ### Doctors & Procedures Components
 
@@ -355,7 +355,7 @@ All API calls go through `ApiService` (`service/api.service.ts`) to `http://loca
 |-----------|-------|--------------------|------------------|
 | `DoctoresComponent` | `/doctores` | `ApiService` | `GET /medicos/` |
 | `DoctorFormComponent` | `/doctor*` | `ApiService` | `GET/POST/PUT /medicos/`, `DELETE /medicos/{id}` |
-| `CatalogoprocedimientoComponent` | `/catalogoProcedimientos` | `ApiService` | `GET/POST /procedimientos/catalogo`, `PUT/DELETE /procedimientos/catalogo/{id}` |
+| `CatalogoprocedimientoComponent` | `/catalogoProcedimientos` | `CatalogoService` | `GET/POST /catalogo-procedimientos/`, `PATCH/DELETE /catalogo-procedimientos/{id}` |
 | `ProcedimientosmenoresComponent` | `/procedimientosmenores` | `ApiService` | `GET /procedimientos/` |
 | `ProcemedicoComponent` | `/procemedic*` | `ApiService` | `GET/POST/PUT /procedimientos/` |
 

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, from } from 'rxjs';
+import { BehaviorSubject, Observable, from, firstValueFrom } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { BaseApiService, PaginationState } from '../../service/base-api.service';
 import { FiltroConsulta } from '../../interface/filtros.model';
@@ -20,6 +20,7 @@ import {
 } from '../../interface/consultas';
 import { OfflineDatabaseService } from '../../service/offline-database.service';
 import { FullSyncService } from '../../service/full-sync.service';
+import { PacienteListResponse } from '../../interface/interfaces';
 
 /** Centraliza las operaciones de consulta, admisión y ciclos de atención. */
 @Injectable({ providedIn: 'root' })
@@ -283,9 +284,18 @@ export class ConsultaService extends BaseApiService {
   getPacientesBuscados(filtros: any): Observable<PacienteBuscado[]> {
     this.ultimoFiltroConsulta.filtro = filtros;
     const params = this.limpiarParametros(filtros);
-    const key = this.cacheKey(`${this.baseUrl}/consultas/buscarpaciente`, params);
+    const url = `${this.baseUrl}/pacientes/buscar`;
+    const key = this.cacheKey(url, params);
     return this.cacheGet(key,
-      this.http.get<PacienteBuscado[]>(`${this.baseUrl}/consultas/buscarpaciente`, { params }).pipe(
+      this.http.get<PacienteListResponse>(url, { params }).pipe(
+        map(response => response.pacientes.map(p => ({
+          id: p.id,
+          cui: p.cui ?? 0,
+          expediente: p.expediente ?? '',
+          nombre_completo: p.nombre_completo
+            ?? `${p.nombre.primer_nombre} ${p.nombre.primer_apellido}`.trim(),
+          fecha_nacimiento: p.fecha_nacimiento ?? '',
+        }))),
         tap(pacientes => this.pacienteBuscadoSubject.next(pacientes)),
         catchError(error => this.manejarError(error, 'obtener consultas'))
       )
@@ -307,20 +317,28 @@ export class ConsultaService extends BaseApiService {
 
   /** Carga los primeros 500 consultas desde el API y los guarda en caché reciente. */
   async loadInitialConsultas(limit: number = 500): Promise<ConsultaListResponse> {
-    const response = await this.http.get<ConsultaListResponse>(
-      `${this.baseUrl}/consultas/ultimos?limit=${limit}`
-    ).toPromise();
-    if (response && response.consultas) {
-      // Guardar en tabla de consultas (cache general)
-      await this.offlineDb.saveConsultas(response.consultas);
-      // Guardar en tabla de consultados (historial de consultas usuario)
-      for (const c of response.consultas) {
-        c._fuente = 'initial_load' as const;
-        await this.offlineDb.guardarConsultaConsultada(c).catch(err =>
+    const pageSize = 200;
+    const cantidad = Math.min(Math.max(limit, 0), 500);
+    const consultas: ConsultaOut[] = [];
+    let total = 0;
+    for (let skip = 0; skip < cantidad; skip += pageSize) {
+      const page = await firstValueFrom(this.http.get<ConsultaListResponse>(
+        `${this.baseUrl}/consultas/ultimos`,
+        { params: this.limpiarParametros({ skip, limit: Math.min(pageSize, cantidad - skip) }) }
+      ));
+      total = page.total;
+      consultas.push(...page.consultas);
+      if (page.consultas.length < pageSize) break;
+    }
+    if (consultas.length) {
+      await this.offlineDb.saveConsultas(consultas);
+      for (const consulta of consultas) {
+        consulta._fuente = 'initial_load' as const;
+        await this.offlineDb.guardarConsultaConsultada(consulta).catch(err =>
           console.warn('Error guardando consulta consultada offline', err)
         );
       }
     }
-    return response || { total: 0, consultas: [] };
+    return { total, consultas };
   }
 }

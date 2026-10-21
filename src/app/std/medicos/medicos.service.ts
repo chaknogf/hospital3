@@ -52,7 +52,7 @@ export class MedicosService extends BaseApiService {
 
   getEspecialidades(): Observable<EspecialidadItem[]> {
     return this.http.get<EspecialidadItem[]>(
-      `${this.baseUrl}/especialidades`
+      `${this.baseUrl}/especialidades/`
     ).pipe(
       catchError(error => this.manejarError(error, 'obtener especialidades'))
     );

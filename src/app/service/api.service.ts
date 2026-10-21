@@ -46,7 +46,7 @@ export class ApiService extends BaseApiService {
     this.precacheCancelado = false;
     if (!this.sync.isOnline()) return;
     const limit = 100;
-    const url = `${this.baseUrl}/pacientes/`;
+    const url = `${this.baseUrl}/pacientes/buscar`;
     const ttl = 30 * 60 * 1000;
     const firstKey = this.sync.cacheKey(url, new HttpParams().set('skip', '0').set('limit', String(limit)));
 

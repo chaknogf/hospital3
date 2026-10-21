@@ -35,7 +35,7 @@ export class QuirofanoService extends BaseApiService {
   // ══════════════════════════════════════════════════════════
   getFormatos(activos = true): Observable<FormatoProcedimiento[]> {
     this.isLoading.set(true);
-    const url = `${this.baseUrl}/quirofano/formatos/?activos=${activos}`;
+    const url = `${this.baseUrl}/quirofano/formatos?activos=${activos}`;
     const key = this.cacheKey(url);
     return this.cacheGet(key, this.http.get<FormatoProcedimiento[]>(url).pipe(
       finalize(() => this.isLoading.set(false)),
@@ -45,7 +45,7 @@ export class QuirofanoService extends BaseApiService {
 
   getEstadosCirugia(activos = true): Observable<EstadoCirugia[]> {
     this.isLoading.set(true);
-    const url = `${this.baseUrl}/quirofano/estados-cirugia/?activos=${activos}`;
+    const url = `${this.baseUrl}/quirofano/estados-cirugia?activos=${activos}`;
     const key = this.cacheKey(url);
     return this.cacheGet(key, this.http.get<EstadoCirugia[]>(url).pipe(
       finalize(() => this.isLoading.set(false)),
@@ -55,7 +55,7 @@ export class QuirofanoService extends BaseApiService {
 
   getRangosEspecialista(activos = true): Observable<RangoEspecialista[]> {
     this.isLoading.set(true);
-    const url = `${this.baseUrl}/quirofano/rangos-especialista/?activos=${activos}`;
+    const url = `${this.baseUrl}/quirofano/rangos-especialista?activos=${activos}`;
     const key = this.cacheKey(url);
     return this.cacheGet(key, this.http.get<RangoEspecialista[]>(url).pipe(
       finalize(() => this.isLoading.set(false)),
@@ -65,7 +65,7 @@ export class QuirofanoService extends BaseApiService {
 
   getProcedencias(activos = true): Observable<ProcedenciaProcedimiento[]> {
     this.isLoading.set(true);
-    const url = `${this.baseUrl}/quirofano/procedencias/?activos=${activos}`;
+    const url = `${this.baseUrl}/quirofano/procedencias?activos=${activos}`;
     const key = this.cacheKey(url);
     return this.cacheGet(key, this.http.get<ProcedenciaProcedimiento[]>(url).pipe(
       finalize(() => this.isLoading.set(false)),
@@ -75,7 +75,7 @@ export class QuirofanoService extends BaseApiService {
 
   getQuirofanosNumero(activos = true): Observable<QuirofanoNumero[]> {
     this.isLoading.set(true);
-    const url = `${this.baseUrl}/quirofano/quirofanos-numero/?activos=${activos}`;
+    const url = `${this.baseUrl}/quirofano/quirofanos-numero?activos=${activos}`;
     const key = this.cacheKey(url);
     return this.cacheGet(key, this.http.get<QuirofanoNumero[]>(url).pipe(
       finalize(() => this.isLoading.set(false)),
@@ -95,10 +95,10 @@ export class QuirofanoService extends BaseApiService {
 
   getProcedimientosQuirofano(especialidadId?: number, q?: string, activos = true): Observable<ProcedimientoQuirofano[]> {
     this.isLoading.set(true);
-    const params: any = { activos };
+    const params: any = { activos, skip: 0, limit: 500 };
     if (especialidadId) params.especialidad_id = especialidadId;
     if (q) params.q = q;
-    const url = `${this.baseUrl}/quirofano/procedimientos-quirofano/?${new URLSearchParams(params).toString()}`;
+    const url = `${this.baseUrl}/quirofano/procedimientos-quirofano?${new URLSearchParams(params).toString()}`;
     const key = this.cacheKey(url);
     return this.cacheGet(key, this.http.get<ProcedimientoQuirofano[]>(url).pipe(
       finalize(() => this.isLoading.set(false)),
@@ -108,7 +108,7 @@ export class QuirofanoService extends BaseApiService {
 
   crearProcedimientoQuirofano(data: any): Observable<ProcedimientoQuirofano> {
     this.isLoading.set(true);
-    const url = `${this.baseUrl}/quirofano/procedimientos-quirofano/`;
+    const url = `${this.baseUrl}/quirofano/procedimientos-quirofano`;
     return this.offMutation('POST', url, data).pipe(
       finalize(() => this.isLoading.set(false))
     ) as Observable<ProcedimientoQuirofano>;
@@ -183,7 +183,7 @@ export class QuirofanoService extends BaseApiService {
 
   crearIntervencion(data: IntervencionCreate): Observable<IntervencionQuirurgica> {
     this.isLoading.set(true);
-    const url = `${this.baseUrl}/quirofano/intervenciones/`;
+    const url = `${this.baseUrl}/quirofano/intervenciones`;
     return this.offMutation('POST', url, data).pipe(
       finalize(() => this.isLoading.set(false))
     ) as Observable<IntervencionQuirurgica>;

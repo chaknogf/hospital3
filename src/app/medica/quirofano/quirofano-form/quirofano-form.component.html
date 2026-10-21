@@ -230,6 +230,7 @@
               autocomplete="off"
             />
             <datalist id="areasCuerpoCatalogoList">
+              <option value="No especificada"></option>
               @for (a of areasCuerpo; track a.id) {
                 <option [value]="a.nombre"></option>
               }

@@ -202,6 +202,12 @@
               >
                 <span [innerHTML]="icons['edit']"></span>
               </button>
+              <button
+                (click)="eliminar(data.id); $event.stopPropagation()"
+                data-label="Eliminar"
+              >
+                <span [innerHTML]="icons['delete']"></span>
+              </button>
             </td>
           </tr>
         }

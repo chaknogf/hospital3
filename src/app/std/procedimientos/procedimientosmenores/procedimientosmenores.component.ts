@@ -179,6 +179,15 @@ export class ProcedimientosmenoresComponent implements OnInit {
     this.router.navigate(['/procemedicEdit', id]);
   }
 
+  eliminar(id: number): void {
+    if (!confirm('¿Eliminar este procedimiento registrado?')) return;
+    this.cargando = true;
+    this.api.deleteProcedimientoMedico(id).subscribe({
+      next: () => this.cargarProcedimientos(),
+      error: err => { this.cargando = false; console.error(err); }
+    });
+  }
+
   catalogo(): void {
     this.router.navigate(['/gestion-procedimientos']);
   }

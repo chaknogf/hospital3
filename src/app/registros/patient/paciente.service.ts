@@ -2,7 +2,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, from } from 'rxjs';
+import { BehaviorSubject, Observable, from, firstValueFrom } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 
 import { Paciente, PacienteListResponse, Hijode, PacienteJoin, MadreHijoResponse } from '../../interface/interfaces';
@@ -95,20 +95,27 @@ export class PacienteService extends BaseApiService {
 
   /** Carga los primeros 500 pacientes desde el API y los guarda en caché reciente. */
   async loadInitialPacientes(limit: number = 500): Promise<PacienteListResponse> {
-    const response = await this.http.get<PacienteListResponse>(
-      `${this.baseUrl}/pacientes/ultimos?limit=${limit}`
-    ).toPromise();
-    if (response && response.pacientes) {
-      await this.offlineDb.savePacientes(response.pacientes);
-      // También guardar en la tabla de recientes
-      await this.offlineDb.savePacientes(response.pacientes);
-      // Guardar en la tabla de consultados (marcados como iniciales)
-      for (const p of response.pacientes) {
-        p._fuente = 'initial_load' as const;
-        await this.offlineDb.pacientes_consultados.add(p);
+    const pageSize = 200;
+    const cantidad = Math.min(Math.max(limit, 0), 500);
+    const pacientes: Paciente[] = [];
+    let total = 0;
+    for (let skip = 0; skip < cantidad; skip += pageSize) {
+      const page = await firstValueFrom(this.http.get<PacienteListResponse>(
+        `${this.baseUrl}/pacientes/ultimos`,
+        { params: this.limpiarParametros({ skip, limit: Math.min(pageSize, cantidad - skip) }) }
+      ));
+      total = page.total;
+      pacientes.push(...page.pacientes);
+      if (page.pacientes.length < pageSize) break;
+    }
+    if (pacientes.length) {
+      await this.offlineDb.savePacientes(pacientes);
+      for (const paciente of pacientes) {
+        paciente._fuente = 'initial_load' as const;
+        await this.offlineDb.pacientes_consultados.add(paciente);
       }
     }
-    return response || { total: 0, pacientes: [] };
+    return { total, pacientes };
   }
 
   // ======= CRUD PACIENTES =======
@@ -123,7 +130,7 @@ export class PacienteService extends BaseApiService {
       );
     }
 
-    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/`, { params }).pipe(
+    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/buscar`, { params }).pipe(
       tap(response => {
         this.pacientesSubject.next(response.pacientes);
         this.offlineDb.savePacientes(response.pacientes);
@@ -148,7 +155,7 @@ export class PacienteService extends BaseApiService {
       );
     }
 
-    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/buscar/`, { params }).pipe(
+    return this.http.get<PacienteListResponse>(`${this.baseUrl}/pacientes/buscar`, { params }).pipe(
       tap(response => {
         this.pacientesSubject.next(response.pacientes);
         this.offlineDb.savePacientes(response.pacientes);

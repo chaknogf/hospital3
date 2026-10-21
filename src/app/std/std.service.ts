@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap, catchError, finalize } from 'rxjs/operators';
+import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { BaseApiService, PaginationState } from '../service/base-api.service';
 
 import {
@@ -51,12 +51,13 @@ export class StdService extends BaseApiService {
   // =====================================================
 
   getCatalogo(): Observable<Procedimiento[]> {
-    const key = this.cacheKey(`${this.baseUrl}/procedimientos/catalogo`);
+    const url = `${this.baseUrl}/catalogo-procedimientos/`;
+    const params = this.limpiarParametros({ skip: 0, limit: 500, activo: true });
+    const key = this.cacheKey(url, params);
     return this.cacheGet(key,
-      this.http.get<Procedimiento[]>(
-        `${this.baseUrl}/procedimientos/catalogo`
-      ).pipe(
-        tap(data => this.catalogoSubject.next(data)),
+      this.http.get<{ total: number; items: Procedimiento[] }>(url, { params }).pipe(
+        tap(page => this.catalogoSubject.next(page.items)),
+        map(page => page.items),
         catchError(error => this.manejarError(error, 'obtener catálogo'))
       ),
       30 * 60 * 1000
@@ -65,7 +66,7 @@ export class StdService extends BaseApiService {
 
   getProcedimientoCatalogo(id: number): Observable<Procedimiento> {
     return this.http.get<Procedimiento>(
-      `${this.baseUrl}/procedimientos/catalogo/${id}`
+      `${this.baseUrl}/catalogo-procedimientos/${id}`
     ).pipe(
       catchError(error => this.manejarError(error, 'obtener procedimiento'))
     );
@@ -75,7 +76,7 @@ export class StdService extends BaseApiService {
     datos: ProcedimientoCreate
   ): Observable<Procedimiento> {
     this.isLoading.set(true);
-    return this.offMutation('POST', `${this.baseUrl}/procedimientos/catalogo`, datos).pipe(
+    return this.offMutation('POST', `${this.baseUrl}/catalogo-procedimientos/`, datos).pipe(
       tap(() => this.getCatalogo().subscribe()),
       finalize(() => this.isLoading.set(false))
     );
@@ -86,7 +87,7 @@ export class StdService extends BaseApiService {
     datos: ProcedimientoUpdate
   ): Observable<Procedimiento> {
     this.isLoading.set(true);
-    return this.offMutation('PUT', `${this.baseUrl}/procedimientos/catalogo/${id}`, datos).pipe(
+    return this.offMutation('PATCH', `${this.baseUrl}/catalogo-procedimientos/${id}`, datos).pipe(
       tap(() => this.getCatalogo().subscribe()),
       finalize(() => this.isLoading.set(false))
     );
@@ -94,7 +95,7 @@ export class StdService extends BaseApiService {
 
   deleteProcedimiento(id: number): Observable<any> {
     this.isLoading.set(true);
-    return this.offMutation('DELETE', `${this.baseUrl}/procedimientos/catalogo/${id}`).pipe(
+    return this.offMutation('DELETE', `${this.baseUrl}/catalogo-procedimientos/${id}`).pipe(
       tap(() => this.getCatalogo().subscribe()),
       finalize(() => this.isLoading.set(false))
     );

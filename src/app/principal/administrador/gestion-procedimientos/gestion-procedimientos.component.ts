@@ -33,6 +33,9 @@ export class GestionProcedimientosComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
 
   catalogoProcedimientos = signal<CatalogoProcedimiento[]>([]);
+  totalProcedimientos = signal(0);
+  pagina = signal(0);
+  readonly pageSize = 50;
   especialidades = signal<Especialidad[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
@@ -68,15 +71,16 @@ export class GestionProcedimientosComponent implements OnDestroy {
     this.loading.set(true);
     this.error.set(null);
 
-    const filtros: any = { activo: true, limit: 5000 };
+    const filtros: any = { activo: true, limit: this.pageSize, skip: this.pagina() * this.pageSize };
     const texto = this.filtro();
     const esp = this.especialidadFiltro();
     if (texto) filtros.q = texto;
     if (esp) filtros.especialidad_ref = esp;
 
-    this.catalogo.getCatalogoProcedimientos(filtros).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res) => {
-        this.catalogoProcedimientos.set(res);
+    this.catalogo.getCatalogoProcedimientosPage(filtros).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (page) => {
+        this.catalogoProcedimientos.set(page.items);
+        this.totalProcedimientos.set(page.total);
         this.loading.set(false);
       },
       error: () => {
@@ -84,6 +88,16 @@ export class GestionProcedimientosComponent implements OnDestroy {
         this.loading.set(false);
       }
     });
+  }
+
+  cambiarPagina(delta: number): void {
+    const ultimaPagina = Math.max(0, this.numeroPaginas() - 1);
+    this.pagina.set(Math.max(0, Math.min(ultimaPagina, this.pagina() + delta)));
+    this.cargar();
+  }
+
+  numeroPaginas(): number {
+    return Math.ceil(this.totalProcedimientos() / this.pageSize);
   }
 
   cargarEspecialidades(): void {
