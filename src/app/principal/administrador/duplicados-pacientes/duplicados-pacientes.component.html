@@ -9,7 +9,7 @@
     {{ merging() ? 'Fusionando...' : 'Fusionar' }}
   </button>
 
-  <button class="btn" (click)="cargar()" [disabled]="loading()">Recargar</button>
+  <button class="btn" (click)="cargar(true)" [disabled]="loading()">Recargar</button>
   <button class="btn" (click)="volver()">Volver</button>
 </div>
 
@@ -24,6 +24,11 @@
   <div class="section-card">
     <div class="sec-head">
       <span class="sec-title">Filtros</span>
+      @if (refreshing()) {
+        <span class="cache-badge">Actualizando...</span>
+      } @else if (cacheVigente) {
+        <span class="cache-badge cache-badge-ok">Caché</span>
+      }
     </div>
     <div class="sec-body">
       <div class="field">
@@ -43,6 +48,9 @@
       <div class="field">
         <label class="field-label">Incluir fecha de nacimiento</label>
         <input type="checkbox" [ngModel]="incluirFecha()" (ngModelChange)="incluirFecha.set($event)" />
+      </div>
+      <div class="field">
+        <button class="btn" (click)="cargar(true)" [disabled]="loading()">Aplicar filtros</button>
       </div>
     </div>
   </div>
@@ -135,5 +143,3 @@
     </div>
   }
 </div>
-PYEOF
-echo done

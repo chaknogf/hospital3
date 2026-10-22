@@ -13,6 +13,14 @@ interface Duplicado {
   sexo: string | null;
 }
 
+interface CacheDuplicados {
+  data: Duplicado[];
+  ts: number;
+  key: string;
+}
+
+const CACHE_TTL_MS = 60_000;
+
 @Component({
   selector: 'app-duplicados-pacientes',
   templateUrl: './duplicados-pacientes.component.html',
@@ -47,11 +55,25 @@ export class DuplicadosPacientesComponent {
   incluirFecha = signal(true);
 
   loading = signal(false);
+  refreshing = signal(false);
   merging = signal(false);
   error = signal<string | null>(null);
   success = signal<string | null>(null);
 
   confirmText = signal('');
+
+  /** Cache en memoria: evita re-consultar el backend mientras no expire. */
+  private cache: CacheDuplicados | null = null;
+
+  private get cacheKey(): string {
+    return `${this.similitud()}|${this.metodo()}|${this.incluirFecha()}`;
+  }
+
+  get cacheVigente(): boolean {
+    return !!this.cache
+      && this.cache.key === this.cacheKey
+      && (Date.now() - this.cache.ts) < CACHE_TTL_MS;
+  }
 
   get todosSeleccionadosValidos(): boolean {
     return this.seleccionados().size >= 2 && this.principalId() !== null
@@ -62,10 +84,27 @@ export class DuplicadosPacientesComponent {
     return this.todosSeleccionadosValidos && this.confirmText() === 'CONFIRMAR' && !this.merging();
   }
 
-  cargar(): void {
-    this.loading.set(true);
+  /**
+   * Carga el listado de duplicados.
+   * @param forzar si true ignora el cache y consulta el backend.
+   * @param segundoPlano si true no muestra spinner de carga (refresco silencioso).
+   */
+  cargar(forzar = false, segundoPlano = false): void {
     this.error.set(null);
     this.success.set(null);
+
+    // Cache fresco: aplicar sin tocar el backend.
+    if (!forzar && this.cacheVigente) {
+      this.aplicarLista(this.cache!.data);
+      return;
+    }
+
+    if (segundoPlano) {
+      this.refreshing.set(true);
+    } else {
+      this.loading.set(true);
+    }
+
     this.api.getPacientesDuplicadosNombresSimilares({
       similitud_minima: this.similitud(),
       metodo: this.metodo(),
@@ -73,7 +112,10 @@ export class DuplicadosPacientesComponent {
       limit: 500,
       offset: 0,
     }).pipe(
-      finalize(() => this.loading.set(false)),
+      finalize(() => {
+        this.loading.set(false);
+        this.refreshing.set(false);
+      }),
       catchError(err => {
         console.error('error al cargar duplicados: ', err);
         this.error.set(`Error al cargar duplicados: ${err.error?.detail || err.message || 'Error desconocido'}`);
@@ -81,12 +123,18 @@ export class DuplicadosPacientesComponent {
       })
     ).subscribe((res: any) => {
       const lista = (res?.resultados ?? []) as Duplicado[];
-      this.duplicados.set(lista);
-      this.seleccionados.set(new Set());
-      this.principalId.set(null);
-      this.confirmText.set('');
-      this.pageIndex.set(0);
+      this.cache = { data: lista, ts: Date.now(), key: this.cacheKey };
+      this.aplicarLista(lista);
     });
+  }
+
+  /** Aplica una lista al estado (sin resetear si es un refresco en segundo plano). */
+  private aplicarLista(lista: Duplicado[]): void {
+    this.duplicados.set(lista);
+    this.seleccionados.set(new Set());
+    this.principalId.set(null);
+    this.confirmText.set('');
+    this.pageIndex.set(0);
   }
 
   toggle(id: number, checked: boolean): void {
@@ -145,7 +193,10 @@ export class DuplicadosPacientesComponent {
       })
     ).subscribe(() => {
       this.success.set('Pacientes fusionados exitosamente');
-      this.cargar();
+      // Invalidar cache y refrescar en segundo plano (no bloquea ni vuelve a
+      // mostrar el spinner grande). El resto del listado se mantiene visible.
+      this.cache = null;
+      this.cargar(true, true);
     });
   }
 

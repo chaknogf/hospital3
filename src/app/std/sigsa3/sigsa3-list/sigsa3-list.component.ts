@@ -172,6 +172,8 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   gestionarPersonalSalud(): void { this.router.navigate(['/personal-salud']); }
 
+  verDuplicados(): void { this.router.navigate(['/duplicados-pacientes']); }
+
   eliminar(id: number): void {
     if (!confirm('¿Eliminar este registro?')) return;
     this.api.eliminarRegistro(id).pipe(takeUntil(this.destroy$)).subscribe({ next: () => { this.cargar(); this.cdr.markForCheck(); } });

@@ -183,6 +183,9 @@
     <button class="btn-accion accent" (click)="gestionarPersonalSalud()">
       👤 Gestionar Personal Salud
     </button>
+    <button class="btn-accion" (click)="verDuplicados()">
+      👥 Pacientes Duplicados
+    </button>
     @if (seleccionados.size > 0) {
       <button class="btn-accion danger" (click)="eliminarSeleccionados()">
         🗑️ Eliminar ({{ seleccionados.size }})

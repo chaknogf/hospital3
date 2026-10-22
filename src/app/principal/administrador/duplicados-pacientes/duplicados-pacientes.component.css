@@ -28,4 +28,6 @@
 .tabla th { font-family: var(--theme-font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--theme-text-muted); background: rgba(0,0,0,0.2); }
 .tabla tbody tr:hover { background: rgba(255,255,255,0.04); }
 .confirm-input { text-transform: uppercase; }
+.cache-badge { font-family: var(--theme-font-mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--theme-border); color: var(--theme-text-muted); background: rgba(0,0,0,0.2); }
+.cache-badge-ok { color: var(--theme-success); border-color: var(--theme-success); background: var(--theme-success-dim); }
 @media (max-width: 600px) { .adm-body { padding: 1rem; } .action-dock { flex-wrap: wrap; } }
