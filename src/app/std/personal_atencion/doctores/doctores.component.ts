@@ -2,8 +2,8 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MedicoOut } from '../../../interface/medicos.interface';
-import { MedicosService, EspecialidadItem } from '../medicos.service';
+import { PersonalAtencionOut } from '../../../interface/personal_atencion.interface';
+import { PersonalAtencionService, EspecialidadItem } from '../personal_atencion.service';
 import { IconService } from '../../../service/icon.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -30,7 +30,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
 
   // ======= DATA =======
 
-  medicos: MedicoOut[] = [];
+  medicos: PersonalAtencionOut[] = [];
   especialidades: EspecialidadItem[] = [];
   cargando = false;
 
@@ -65,7 +65,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
   icons: { [key: string]: any } = {};
 
   constructor(
-    private api: MedicosService,
+    private api: PersonalAtencionService,
     private router: Router,
     private iconService: IconService
   ) {
@@ -88,7 +88,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.api.medicos$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+    this.api.personalAtencion$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.medicos = data;
       this.cdr.markForCheck();
     });
@@ -118,7 +118,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
 
     this.cargando = true;
 
-    this.api.getMedicos(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
+    this.api.getPersonalAtencion(this.filtros).pipe(takeUntil(this.destroy$)).subscribe({
 
       next: (resultado) => {
 
@@ -205,7 +205,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
 
     if (!confirmar) return;
 
-    this.api.eliminarMedico(id).pipe(takeUntil(this.destroy$)).subscribe({
+    this.api.eliminarPersonalAtencion(id).pipe(takeUntil(this.destroy$)).subscribe({
 
       next: () => {
         this.cargarMedicos();
@@ -220,7 +220,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
     });
   }
 
-  cambiarEstado(data: MedicoOut): void {
+  cambiarEstado(data: PersonalAtencionOut): void {
 
     this.api
       .cambiarEstado(data.id, !data.activo)
@@ -247,7 +247,7 @@ export class DoctoresComponent implements OnInit, OnDestroy {
   // ======= EXCEL =======
 
   async descargarExcel(): Promise<void> {
-    this.api.getAllMedicos().pipe(takeUntil(this.destroy$)).subscribe({
+    this.api.getAllPersonalAtencion().pipe(takeUntil(this.destroy$)).subscribe({
       next: async data => {
         if (!data.length) {
           alert('No hay registros para exportar.');

@@ -8,7 +8,7 @@ import { Subject, of } from 'rxjs';
 import { takeUntil, catchError, finalize } from 'rxjs/operators';
 import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
 import { Hijode, HijodeItem, HijodeDatosExtra, MadreHijoResponse, Paciente } from '../../../interface/interfaces';
-import { Medico } from '../../../interface/medicos.interface';
+import { PersonalAtencion } from '../../../interface/personal_atencion.interface';
 
 /** Gestiona la relación de hijos vinculados a un expediente materno. */
 @Component({
@@ -82,7 +82,7 @@ export class HijosComponent implements OnInit, OnDestroy {
   mostrarSelectorNacimientos = signal(false);
   children: HijodeItem[] = [];
 
-  medicos: Medico[] = [];
+  medicos: PersonalAtencion[] = [];
 
   private destroy$ = new Subject<void>();
 
@@ -167,7 +167,7 @@ export class HijosComponent implements OnInit, OnDestroy {
 
   private cargarMedicos(): void {
     const filtros = { activo: true, especialidad: 'GINECOLOGÍA', limit: 200 };
-    this.apis.getMedicos(filtros)
+    this.apis.getPersonalAtencion(filtros)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {

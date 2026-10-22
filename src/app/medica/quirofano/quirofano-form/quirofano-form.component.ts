@@ -19,9 +19,9 @@ import {
 } from '../../../interface/quirofano.interface';
 import { CatalogoProcedimiento } from '../../../interface/procedimientos';
 import { PacienteJoin } from '../../../interface/interfaces';
-import { MedicoOut } from '../../../interface/medicos.interface';
+import { PersonalAtencionOut } from '../../../interface/personal_atencion.interface';
 import { PacienteService } from '../../../registros/patient/paciente.service';
-import { MedicosService } from '../../../std/medicos/medicos.service';
+import { PersonalAtencionService } from '../../../std/personal_atencion/personal_atencion.service';
 import { IconService } from '../../../service/icon.service';
 import { EspecialidadesService } from '../../../service/especialidades.service';
 import { CatalogoService } from '../../../service/catalogo.service';
@@ -64,7 +64,7 @@ export class QuirofanoFormComponent implements OnInit {
   especialidades: Especialidad[] = [];
   catalogoProcedimientos: CatalogoProcedimiento[] = [];
   areasCuerpo: import('../../../interface/procedimientos').AreaCuerpoIntervenida[] = [];
-  medicos: MedicoOut[] = [];
+  medicos: PersonalAtencionOut[] = [];
 
   form: FormGroup = this.fb.group({
     expediente: ['', Validators.required],
@@ -108,7 +108,7 @@ export class QuirofanoFormComponent implements OnInit {
     private catalogoApi: CatalogoService,
     private especialidadesApi: EspecialidadesService,
     private pacientesApi: PacienteService,
-    private medicosApi: MedicosService,
+    private medicosApi: PersonalAtencionService,
     private iconService: IconService
   ) {
     this.saveIcon = this.iconService.getIcon('saveIcon');
@@ -148,7 +148,7 @@ export class QuirofanoFormComponent implements OnInit {
   }
 
   /** Médicos de la especialidad seleccionada (si hay filtro); si no, toda la plantilla. */
-  get medicosFiltrados(): MedicoOut[] {
+  get medicosFiltrados(): PersonalAtencionOut[] {
     const esp = this.form.value.especialidad_id;
     const sel = this.form.value.personal_atencion_id;
     let lista = this.medicos;
@@ -251,7 +251,7 @@ export class QuirofanoFormComponent implements OnInit {
   }
 
   cargarMedicos(): void {
-    this.medicosApi.getAllMedicos().subscribe({
+    this.medicosApi.getAllPersonalAtencion().subscribe({
       next: (data) => this.medicos = data.filter(m => m.activo),
       error: () => { }
     });

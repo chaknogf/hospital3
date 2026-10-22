@@ -412,15 +412,15 @@ export const routes: Routes = [
       },
       {
         path: 'doctores',
-        loadComponent: () => import('./std/medicos/doctores/doctores.component').then(c => c.DoctoresComponent)
+        loadComponent: () => import('./std/personal_atencion/doctores/doctores.component').then(c => c.DoctoresComponent)
       },
       {
         path: 'doctor',
-        loadComponent: () => import('./std/medicos/doctorForm/doctorForm.component').then(c => c.DoctorFormComponent)
+        loadComponent: () => import('./std/personal_atencion/doctorForm/doctorForm.component').then(c => c.DoctorFormComponent)
       },
       {
         path: 'doctor/:id',
-        loadComponent: () => import('./std/medicos/doctorForm/doctorForm.component').then(c => c.DoctorFormComponent)
+        loadComponent: () => import('./std/personal_atencion/doctorForm/doctorForm.component').then(c => c.DoctorFormComponent)
       },
       {
         path: 'procedimientosmenores',

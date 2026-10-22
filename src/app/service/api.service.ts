@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 import { EstadisticasService } from './estadisticas.service';
 import { PacienteListResponse } from '../interface/interfaces';
 import { ConsultaListResponse } from '../interface/consultas';
-import { Medico } from '../interface/medicos.interface';
+import { PersonalAtencion } from '../interface/personal_atencion.interface';
 import { Usuario, UsuarioOut, UsersListResponse } from '../interface/usuarios.interface';
 
 /** Fachada de endpoints consumidos por los módulos; reutiliza caché y cola offline. */
@@ -423,13 +423,13 @@ export class ApiService extends BaseApiService {
   }
 
   // ── Médicos ─────────────────────────────────────────────
-  getMedicos(filtros: any): Observable<Medico[]> {
+  getPersonalAtencion(filtros: any): Observable<PersonalAtencion[]> {
     this.isLoading.set(true);
     const params = this.limpiarParametros(filtros);
     const key = this.cacheKey(`${this.baseUrl}/personal-atencion/`, params);
 
     return this.cacheGet(key,
-      this.http.get<{ total: number; personal_atencion: Medico[] }>(`${this.baseUrl}/personal-atencion/`, { params }).pipe(
+      this.http.get<{ total: number; personal_atencion: PersonalAtencion[] }>(`${this.baseUrl}/personal-atencion/`, { params }).pipe(
         map(r => r.personal_atencion),
         finalize(() => this.isLoading.set(false)),
         catchError(error => this.manejarError(error, 'obtener datos'))

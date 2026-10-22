@@ -1,5 +1,5 @@
 import { Paciente } from "../../interface/interfaces";
-import { Medico } from "../../interface/medicos.interface";
+import { PersonalAtencion } from "../../interface/personal_atencion.interface";
 
 /** Datos de la constancia de nacimiento y sus relaciones de paciente y personal. */
 export interface ConstanciaNacimiento {
@@ -23,7 +23,7 @@ export interface ConstanciaNacimiento {
   updated_at?: string;
   paciente?: Paciente;
   madre?: Paciente;
-  medico?: Medico;
+  medico?: PersonalAtencion;
 }
 
 /** Respuesta paginada de constancias de nacimiento. */

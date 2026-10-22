@@ -23,8 +23,8 @@ import { SoloNumeroDirective } from '../../../directives/soloNumero.directive';
 import { provideNgxMask, NgxMaskDirective } from 'ngx-mask';
 import { ApiService } from '../../../service/api.service';
 import { PacienteUtilService } from '../../../service/paciente-util.service';
-import { Medico } from '../../../interface/medicos.interface';
-import { MedicosService } from '../../../std/medicos/medicos.service';
+import { PersonalAtencion } from '../../../interface/personal_atencion.interface';
+import { PersonalAtencionService } from '../../../std/personal_atencion/personal_atencion.service';
 import {
   addIcon, removeIcon, saveIcon, cancelIcon, findIcon,
   touchicon,
@@ -65,7 +65,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private api = inject(PacienteService);
   private apis = inject(ApiService);
-  private medicosSrvc = inject(MedicosService);
+  private medicosSrvc = inject(PersonalAtencionService);
   private fb = inject(FormBuilder);
   private sanitizer = inject(DomSanitizer);
   private pacienteUtil = inject(PacienteUtilService);
@@ -88,7 +88,7 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
   municipios_nacimiento = signal<Municipio[]>([]);
   vecindades = signal<Municipio[]>([]);
   paisesIso = signal<PaisesIso[]>([]);
-  medicos: Medico[] = [];
+  medicos: PersonalAtencion[] = [];
 
   // Variables temporales para filtrar municipios
   depto_direccion_temp = signal<string>('');
@@ -304,9 +304,9 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
   private cargarMedicos(): void {
     const filtros = { activo: true, especialidad: 'GINE', limit: 200 };
-    this.medicosSrvc.getMedicos(filtros)
+    this.medicosSrvc.getPersonalAtencion(filtros)
       .pipe(
-        map(r => r.personal_atencion as unknown as Medico[]),
+        map(r => r.personal_atencion as unknown as PersonalAtencion[]),
         takeUntil(this.destroy$)
       )
       .subscribe({

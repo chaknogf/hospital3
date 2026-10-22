@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Sigsa3Service } from '../sigsa3.service';
 import { PersonalSaludCreate, PersonalSaludUpdate } from '../../../interface/sigsa3.interface';
-import { MedicosService, EspecialidadItem } from '../../medicos/medicos.service';
+import { PersonalAtencionService, EspecialidadItem } from '../../personal_atencion/personal_atencion.service';
 import { IconService } from '../../../service/icon.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class PersonalSaludFormComponent implements OnInit {
   private router = inject(Router);
   private location = inject(Location);
   private api = inject(Sigsa3Service);
-  private medicosService = inject(MedicosService);
+  private medicosService = inject(PersonalAtencionService);
   private iconService = inject(IconService);
 
   registroId: number | null = null;

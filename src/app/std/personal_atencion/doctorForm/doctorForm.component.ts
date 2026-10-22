@@ -8,8 +8,8 @@ import {
 } from '@angular/forms';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { MedicoCreate, MedicoOut, MedicoUpdate } from '../../../interface/medicos.interface';
-import { MedicosService, EspecialidadItem } from '../medicos.service';
+import { PersonalAtencionCreate, PersonalAtencionOut, PersonalAtencionUpdate } from '../../../interface/personal_atencion.interface';
+import { PersonalAtencionService, EspecialidadItem } from '../personal_atencion.service';
 import { IconService } from '../../../service/icon.service';
 
 
@@ -34,7 +34,7 @@ export class DoctorFormComponent implements OnInit {
   // ======= DATA =======
 
   medicoId: number | null = null;
-  medicoActual: MedicoOut | null = null;
+  medicoActual: PersonalAtencionOut | null = null;
 
   especialidades: EspecialidadItem[] = [];
   cargando = false;
@@ -65,7 +65,7 @@ export class DoctorFormComponent implements OnInit {
   cancelIcon: any;
 
   constructor(
-    private api: MedicosService,
+    private api: PersonalAtencionService,
     private iconService: IconService
   ) {
 
@@ -97,7 +97,7 @@ export class DoctorFormComponent implements OnInit {
 
   cargarMedico(id: number): void {
     this.cargando = true;
-    this.api.getMedico(id).subscribe({
+    this.api.getPersonalAtencionById(id).subscribe({
       next: (data) => {
         this.medicoActual = data;
         this.form.patchValue({
@@ -129,14 +129,14 @@ export class DoctorFormComponent implements OnInit {
     }
     this.guardando = true;
     const raw = this.form.value;
-    const payload: MedicoCreate | MedicoUpdate = {
+    const payload: PersonalAtencionCreate | PersonalAtencionUpdate = {
       ...raw,
       dpi: raw.dpi === '' ? null : raw.dpi,
       colegiado: raw.colegiado === '' ? null : raw.colegiado,
     };
     // ======= EDITAR =======
     if (this.enEdicion && this.medicoId) {
-      this.api.actualizarMedico(
+      this.api.actualizarPersonalAtencion(
         this.medicoId,
         payload
       ).subscribe({
@@ -156,7 +156,7 @@ export class DoctorFormComponent implements OnInit {
     }
 
     // ======= CREAR =======
-    this.api.crearMedico(payload as MedicoCreate).subscribe({
+    this.api.crearPersonalAtencion(payload as PersonalAtencionCreate).subscribe({
       next: () => {
         this.router.navigate(['/doctores']);
       },

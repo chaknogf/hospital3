@@ -5,8 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Sigsa3Registro, Sigsa3RegistroCreate, Sigsa3RegistroUpdate } from '../../../interface/sigsa3-registros.interface';
 import { Sigsa3RegistrosService } from '../sigsa3-registros.service';
 import { IconService } from '../../../service/icon.service';
-import { MedicosService, EspecialidadItem } from '../../medicos/medicos.service';
-import { MedicoOut } from '../../../interface/medicos.interface';
+import { PersonalAtencionService, EspecialidadItem } from '../../personal_atencion/personal_atencion.service';
+import { PersonalAtencionOut } from '../../../interface/personal_atencion.interface';
 
 @Component({
   selector: 'app-sigsa3-registros-form',
@@ -30,7 +30,7 @@ export class Sigsa3RegistrosFormComponent implements OnInit {
   guardando = false;
   enEdicion = false;
 
-  medicos: MedicoOut[] = [];
+  medicos: PersonalAtencionOut[] = [];
   especialidades: EspecialidadItem[] = [];
   tiposConsulta = [
     { id: 1, nombre: 'Primeras' },
@@ -64,7 +64,7 @@ export class Sigsa3RegistrosFormComponent implements OnInit {
 
   constructor(
     private api: Sigsa3RegistrosService,
-    private apiService: MedicosService,
+    private apiService: PersonalAtencionService,
     private iconService: IconService
   ) {
     this.saveIcon = this.iconService.getIcon('saveIcon');
@@ -82,7 +82,7 @@ export class Sigsa3RegistrosFormComponent implements OnInit {
   }
 
   cargarMedicos(): void {
-    this.apiService.getMedicos({}).subscribe({
+    this.apiService.getPersonalAtencion({}).subscribe({
       next: (data) => this.medicos = data.personal_atencion.filter(m => m.activo),
       error: () => {}
     });

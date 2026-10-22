@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Sigsa3Out, ProgresoSigsa3 } from '../../../interface/sigsa3.interface';
 import { Sigsa3Service } from '../sigsa3.service';
-import { MedicosService, EspecialidadItem } from '../../medicos/medicos.service';
+import { PersonalAtencionService, EspecialidadItem } from '../../personal_atencion/personal_atencion.service';
 import { IconService } from '../../../service/icon.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -73,7 +73,7 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   constructor(
     private api: Sigsa3Service,
-    private medicosApi: MedicosService,
+    private medicosApi: PersonalAtencionService,
     private router: Router,
     private iconService: IconService
   ) {

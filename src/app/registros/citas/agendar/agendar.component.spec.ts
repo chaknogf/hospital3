@@ -8,12 +8,12 @@ import { of } from 'rxjs';
 import { AgendarComponent } from './agendar.component';
 import { CitaService } from '../cita.service';
 import { PacienteService } from '../../patient/paciente.service';
-import { MedicosService } from '../../../std/medicos/medicos.service';
+import { PersonalAtencionService } from '../../../std/personal_atencion/personal_atencion.service';
 
 describe('AgendarComponent', () => {
   let component: AgendarComponent;
   let fixture: ComponentFixture<AgendarComponent>;
-  let medicosService: jasmine.SpyObj<MedicosService>;
+  let medicosService: jasmine.SpyObj<PersonalAtencionService>;
 
   const pediatria = { id: 4, nombre: 'Pediatría', codigo: 'PEDI', abreviatura: 'PED' };
   const ginecologia = { id: 5, nombre: 'Ginecología', codigo: 'GINE', abreviatura: 'GIN' };
@@ -23,14 +23,14 @@ describe('AgendarComponent', () => {
   ] as any;
 
   beforeEach(async () => {
-    medicosService = jasmine.createSpyObj<MedicosService>('MedicosService', [
+    medicosService = jasmine.createSpyObj<PersonalAtencionService>('PersonalAtencionService', [
       'getEspecialidades',
-      'getAllMedicos',
-      'getMedicos',
+      'getAllPersonalAtencion',
+      'getPersonalAtencion',
     ]);
     medicosService.getEspecialidades.and.returnValue(of([pediatria, ginecologia]));
-    medicosService.getAllMedicos.and.returnValue(of(personal));
-    medicosService.getMedicos.and.returnValue(of({
+    medicosService.getAllPersonalAtencion.and.returnValue(of(personal));
+    medicosService.getPersonalAtencion.and.returnValue(of({
       total: 1,
       personal_atencion: [personal[1]],
     }));
@@ -49,7 +49,7 @@ describe('AgendarComponent', () => {
       imports: [AgendarComponent],
       providers: [
         { provide: CitaService, useValue: citaService },
-        { provide: MedicosService, useValue: medicosService },
+        { provide: PersonalAtencionService, useValue: medicosService },
         { provide: PacienteService, useValue: jasmine.createSpyObj('PacienteService', ['getPaciente']) },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => null } } } },
         { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
@@ -71,7 +71,7 @@ describe('AgendarComponent', () => {
     component.form.get('especialidad')?.setValue('GINE');
     tick(250);
 
-    expect(medicosService.getMedicos).toHaveBeenCalledWith({
+    expect(medicosService.getPersonalAtencion).toHaveBeenCalledWith({
       activo: true,
       especialidad_id: 5,
       skip: 0,
@@ -81,7 +81,7 @@ describe('AgendarComponent', () => {
   }));
 
   it('filtra defensivamente la respuesta aunque el backend devuelva otra especialidad', fakeAsync(() => {
-    medicosService.getMedicos.and.returnValue(of({
+    medicosService.getPersonalAtencion.and.returnValue(of({
       total: 2,
       personal_atencion: [personal[1], personal[0]],
     }));

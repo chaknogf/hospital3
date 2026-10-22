@@ -9,7 +9,7 @@ import { Subject, combineLatest } from 'rxjs';
 import { takeUntil, catchError, finalize, map, distinctUntilChanged } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ApiService } from '../../../service/api.service';
-import { Medico } from '../../../interface/medicos.interface';
+import { PersonalAtencion } from '../../../interface/personal_atencion.interface';
 
 /** Registra una constancia de nacimiento vinculando neonato, madre y personal. */
 @Component({
@@ -32,7 +32,7 @@ export class NuevaConstanciaNacimientoComponent implements OnInit, OnDestroy {
   // ======= PROPIEDADES =======
   form: FormGroup;
   private destroy$ = new Subject<void>();
-  medicos: Medico[] = [];
+  medicos: PersonalAtencion[] = [];
 
   // ── Preview visual (no van al payload, solo muestran info al usuario) ──
   pacientePreview: any = null;
@@ -256,7 +256,7 @@ export class NuevaConstanciaNacimientoComponent implements OnInit, OnDestroy {
   // ======= MÉDICOS =======
   cargarMedicos(): void {
     const filtros = { activo: true, especialidad: 'GINECOLOGÍA', limit: 200 };
-    this.apis.getMedicos(filtros)
+    this.apis.getPersonalAtencion(filtros)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: data => this.medicos = data,

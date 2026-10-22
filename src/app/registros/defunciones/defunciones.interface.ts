@@ -1,5 +1,5 @@
 import { DefuncionOut as ConsDefuncionOut } from '../../interface/consDef';
-import { Medico } from '../../interface/medicos.interface';
+import { PersonalAtencion } from '../../interface/personal_atencion.interface';
 
 /** Defunción enriquecida con el identificador requerido por las listas. */
 export interface Defuncion extends ConsDefuncionOut {
@@ -123,7 +123,7 @@ export interface DefuncionOut {
 
   paciente?: FallecidoInfo | null;
   madre?: MadreInfo | null;
-  medico?: Medico | null;
+  medico?: PersonalAtencion | null;
 
   informante_tipo?: string | null;
   informante_documento?: string | null;

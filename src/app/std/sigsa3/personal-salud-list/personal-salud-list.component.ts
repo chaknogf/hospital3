@@ -7,8 +7,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { Sigsa3Service } from '../sigsa3.service';
 import { PersonalSalud } from '../../../interface/sigsa3.interface';
 import { IconService } from '../../../service/icon.service';
-import { MedicosService, EspecialidadItem } from '../../medicos/medicos.service';
-import { MedicoOut } from '../../../interface/medicos.interface';
+import { PersonalAtencionService, EspecialidadItem } from '../../personal_atencion/personal_atencion.service';
+import { PersonalAtencionOut } from '../../../interface/personal_atencion.interface';
 
 @Component({
   selector: 'app-personal-salud-list',
@@ -21,7 +21,7 @@ import { MedicoOut } from '../../../interface/medicos.interface';
 /** Lista el personal de salud asociado a los registros SIGSA-3. */
 export class PersonalSaludListComponent {
   private api = inject(Sigsa3Service);
-  private medicosService = inject(MedicosService);
+  private medicosService = inject(PersonalAtencionService);
   private router = inject(Router);
   private location = inject(Location);
   private iconService = inject(IconService);
@@ -34,7 +34,7 @@ export class PersonalSaludListComponent {
 
   filtros = { nombre: '', especialidad_id: null as number | null, personal_atencion_id: null as number | null };
   especialidades: EspecialidadItem[] = [];
-  medicos: MedicoOut[] = [];
+  medicos: PersonalAtencionOut[] = [];
 
   resultadoOperacion: any = null;
 
@@ -61,7 +61,7 @@ export class PersonalSaludListComponent {
       next: (data) => { this.especialidades = data; this.cdr.markForCheck(); },
       error: () => { }
     });
-    this.medicosService.getAllMedicos().subscribe({
+    this.medicosService.getAllPersonalAtencion().subscribe({
       next: (data) => {
         this.medicos = (data ?? []).filter(m => m.activo);
         this.cdr.markForCheck();

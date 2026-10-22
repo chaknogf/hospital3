@@ -1,7 +1,7 @@
 import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DefuncionOut, FallecidoInfo, MadreInfo } from '../defunciones.interface';
-import { Medico } from '../../../interface/medicos.interface';
+import { PersonalAtencion } from '../../../interface/personal_atencion.interface';
 import { DefuncionesService } from '../defunciones.service';
 const MESES = [
   'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -58,7 +58,7 @@ export class DefuncionInformeComponent implements OnChanges {
     });
   }
 
-  nombreCompleto(p?: FallecidoInfo | MadreInfo | Medico | null): string {
+  nombreCompleto(p?: FallecidoInfo | MadreInfo | PersonalAtencion | null): string {
     if (!p) return '';
     const obj = p as any;
     if (obj.nombre_completo) return obj.nombre_completo;

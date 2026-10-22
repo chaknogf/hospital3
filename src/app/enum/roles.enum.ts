@@ -12,7 +12,7 @@ export const roles: Values[] = [
   { label: 'Estadistica', value: 'std' },
   { label: 'UISAU', value: 'uisau' },
   { label: 'Trabajo Social', value: 'ts' },
-  { label: 'Medico', value: 'medic' },
+  { label: 'Médico', value: 'medic' },
   { label: 'Enfermería', value: 'paramedic' },
   { label: 'Laboratorio', value: 'lab' },
   { label: 'Rayos X', value: 'rx' },

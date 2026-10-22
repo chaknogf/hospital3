@@ -225,7 +225,7 @@ describe('Service: ApiService', () => {
   // ── Médicos ─────────────────────────────────────────────
   it('GET /personal-atencion/ retorna médicos', () => {
     let resultado: any = null;
-    service.getMedicos({}).subscribe(r => resultado = r);
+    service.getPersonalAtencion({}).subscribe(r => resultado = r);
 
     const req = httpMock.expectOne(r => r.url.endsWith('/personal-atencion/'));
     req.flush({ total: 1, personal_atencion: [{ id: 1, nombre: 'Dr. Test' }] });

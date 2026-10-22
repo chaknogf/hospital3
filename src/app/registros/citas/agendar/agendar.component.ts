@@ -19,8 +19,8 @@ import { Dict, especialidades } from '../../../enum/diccionarios';
 import { EdadPipe } from '../../../pipes/edad.pipe';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
 import { CitaConteoComponent } from '../citaConteo/citaConteo.component';
-import { EspecialidadItem, MedicosService } from '../../../std/medicos/medicos.service';
-import { MedicoOut } from '../../../interface/medicos.interface';
+import { EspecialidadItem, PersonalAtencionService } from '../../../std/personal_atencion/personal_atencion.service';
+import { PersonalAtencionOut } from '../../../interface/personal_atencion.interface';
 import { Location } from '@angular/common';
 
 /** Agenda o modifica citas y valida disponibilidad según especialidad y fecha. */
@@ -41,7 +41,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private api = inject(CitaService);
   private pservice = inject(PacienteService);
-  private medicosService = inject(MedicosService);
+  private medicosService = inject(PersonalAtencionService);
   private fb = inject(FormBuilder);
   private sanitizer = inject(DomSanitizer);
   private location = inject(Location);
@@ -52,8 +52,8 @@ export class AgendarComponent implements OnInit, OnDestroy {
   especialidadSeleccionada: string | null = null;
 
   // Personal de atención disponible
-  personal: MedicoOut[] = [];
-  personalFiltrado: MedicoOut[] = [];
+  personal: PersonalAtencionOut[] = [];
+  personalFiltrado: PersonalAtencionOut[] = [];
   especialidadesCatalogo: EspecialidadItem[] = [];
   private filtroPersonalVersion = 0;
   // Fechas deshabilitadas (feriados / asuetos) — 'YYYY-MM-DD'
@@ -133,7 +133,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
 
   /** Carga el catálogo de personal de atención (médicos y demás personal). */
   private cargarPersonalAtencion(): void {
-    this.medicosService.getAllMedicos().pipe(takeUntil(this.destroy$)).subscribe({
+    this.medicosService.getAllPersonalAtencion().pipe(takeUntil(this.destroy$)).subscribe({
       next: lista => {
         this.personal = lista;
         this.filtrarPersonalAtencion(this.form.get('especialidad')?.value);
@@ -181,7 +181,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
     // El filtro se resuelve en backend por FK exacta, no por coincidencia de texto.
     const version = ++this.filtroPersonalVersion;
     this.personalFiltrado = [];
-    this.medicosService.getMedicos({
+    this.medicosService.getPersonalAtencion({
       activo: true,
       especialidad_id: especialidadReal.id,
       skip: 0,

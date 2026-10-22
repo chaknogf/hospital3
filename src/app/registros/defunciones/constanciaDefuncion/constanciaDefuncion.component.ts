@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { DefuncionesService } from '../defunciones.service';
 import { ApiService } from '../../../service/api.service';
 import { DefuncionOut } from '../../../interface/consDef';
-import { Medico } from '../../../interface/medicos.interface';
+import { PersonalAtencion } from '../../../interface/personal_atencion.interface';
 
 /** Edita la constancia, incluyendo causas y datos específicos de muerte fetal. */
 @Component({
@@ -29,7 +29,7 @@ export class ConstanciaDefuncionComponent implements OnInit, OnDestroy {
   form: FormGroup;
   private destroy$ = new Subject<void>();
   defuncion: DefuncionOut | null = null;
-  medicos: Medico[] = [];
+  medicos: PersonalAtencion[] = [];
 
   enEdicion = signal(false);
   isLoading = signal(false);
@@ -207,7 +207,7 @@ export class ConstanciaDefuncionComponent implements OnInit, OnDestroy {
 
   cargarMedicos(): void {
     const filtros = { activo: true, especialidad: 'GINECOLOGÍA', limit: 200 };
-    this.apis.getMedicos(filtros).pipe(takeUntil(this.destroy$)).subscribe({
+    this.apis.getPersonalAtencion(filtros).pipe(takeUntil(this.destroy$)).subscribe({
       next: data => {
         this.medicos = data;
         const ctrl = this.form.get('personal_atencion_id');

@@ -87,7 +87,7 @@ export class HojaCnacimientoComponent implements OnInit, OnDestroy {
 
         const medicoId = data.paciente?.datos_extra?.neonatales?.id_medico;
         if (medicoId) {
-          this.apis.getMedicos({ id: medicoId })
+          this.apis.getPersonalAtencion({ id: medicoId })
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: res => {

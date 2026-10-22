@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, catchError, finalize, map } from 'rxjs/operators';
 import { BaseApiService, PaginationState } from '../../service/base-api.service';
-import { FiltroMedico, MedicoCreate, MedicoListResponse, MedicoOut, MedicoUpdate } from '../../interface/medicos.interface';
+import { FiltroPersonalAtencion, PersonalAtencionCreate, PersonalAtencionListResponse, PersonalAtencionOut, PersonalAtencionUpdate } from '../../interface/personal_atencion.interface';
 
 /** Opción de especialidad utilizada en formularios de personal médico. */
 export interface EspecialidadItem {
@@ -22,12 +22,12 @@ export interface EspecialidadItem {
   providedIn: 'root'
 })
 /** Consulta y mantiene el personal médico y sus especialidades. */
-export class MedicosService extends BaseApiService {
+export class PersonalAtencionService extends BaseApiService {
 
   // ======= SUBJECTS =======
 
-  private medicosSubject = new BehaviorSubject<MedicoOut[]>([]);
-  medicos$ = this.medicosSubject.asObservable();
+  private personalAtencionSubject = new BehaviorSubject<PersonalAtencionOut[]>([]);
+  personalAtencion$ = this.personalAtencionSubject.asObservable();
 
   // ======= PAGINACIÓN / FILTROS =======
 
@@ -46,8 +46,8 @@ export class MedicosService extends BaseApiService {
 
   // ======= PRIVADOS =======
 
-  private refrescarMedicos(): void {
-    this.getMedicos(this.ultimoFiltro.filtro).subscribe();
+  private refrescarPersonalAtencion(): void {
+    this.getPersonalAtencion(this.ultimoFiltro.filtro).subscribe();
   }
 
   getEspecialidades(): Observable<EspecialidadItem[]> {
@@ -64,26 +64,26 @@ export class MedicosService extends BaseApiService {
    * Lista médicos (paginado)
    * GET /personal-atencion
    */
-  getMedicos(filtros?: FiltroMedico): Observable<MedicoListResponse> {
+  getPersonalAtencion(filtros?: FiltroPersonalAtencion): Observable<PersonalAtencionListResponse> {
     this.ultimoFiltro.filtro = filtros ?? {};
 
     const params = this.limpiarParametros(filtros ?? {});
 
-    return this.http.get<MedicoListResponse>(
+    return this.http.get<PersonalAtencionListResponse>(
       `${this.baseUrl}/personal-atencion`,
       { params }
     ).pipe(
-      tap(response => this.medicosSubject.next(response.personal_atencion)),
-      catchError(error => this.manejarError(error, 'obtener médicos'))
+      tap(response => this.personalAtencionSubject.next(response.personal_atencion)),
+      catchError(error => this.manejarError(error, 'obtener personal de atención'))
     );
   }
 
   /**
    * Obtiene todos los médicos (sin límite) para exportación
    */
-  getAllMedicos(): Observable<MedicoOut[]> {
+  getAllPersonalAtencion(): Observable<PersonalAtencionOut[]> {
     const params = this.limpiarParametros({ skip: 0, limit: 500 });
-    return this.http.get<MedicoListResponse>(
+    return this.http.get<PersonalAtencionListResponse>(
       `${this.baseUrl}/personal-atencion`,
       { params }
     ).pipe(
@@ -96,8 +96,8 @@ export class MedicosService extends BaseApiService {
    * Obtiene un médico por ID
    * GET /personal-atencion/{id}
    */
-  getMedico(id: number): Observable<MedicoOut> {
-    return this.http.get<MedicoOut>(
+  getPersonalAtencionById(id: number): Observable<PersonalAtencionOut> {
+    return this.http.get<PersonalAtencionOut>(
       `${this.baseUrl}/personal-atencion/${id}`
     ).pipe(
       catchError(error => this.manejarError(error, 'obtener médico'))
@@ -107,11 +107,11 @@ export class MedicosService extends BaseApiService {
   /**
    * Busca primer médico que coincida
    */
-  buscarMedico(filtros: FiltroMedico): Observable<MedicoOut | null> {
+  buscarPersonalAtencion(filtros: FiltroPersonalAtencion): Observable<PersonalAtencionOut | null> {
     // El formulario usa una coincidencia para precargar el primer resultado encontrado.
     const params = this.limpiarParametros(filtros);
 
-    return this.http.get<MedicoListResponse>(
+    return this.http.get<PersonalAtencionListResponse>(
       `${this.baseUrl}/personal-atencion`,
       { params }
     ).pipe(
@@ -126,29 +126,29 @@ export class MedicosService extends BaseApiService {
    * Crear médico
    * POST /personal-atencion
    */
-  crearMedico(data: MedicoCreate): Observable<MedicoOut> {
+  crearPersonalAtencion(data: PersonalAtencionCreate): Observable<PersonalAtencionOut> {
     this.isLoading.set(true);
     return this.offMutation('POST', `${this.baseUrl}/personal-atencion`, data).pipe(
-      tap(() => this.refrescarMedicos()),
+      tap(() => this.refrescarPersonalAtencion()),
       finalize(() => this.isLoading.set(false))
     );
   }
 
-  actualizarMedico(
+  actualizarPersonalAtencion(
     medicoId: number,
-    data: MedicoUpdate
-  ): Observable<MedicoOut> {
+    data: PersonalAtencionUpdate
+  ): Observable<PersonalAtencionOut> {
     this.isLoading.set(true);
     return this.offMutation('PUT', `${this.baseUrl}/personal-atencion/${medicoId}`, data).pipe(
-      tap(() => this.refrescarMedicos()),
+      tap(() => this.refrescarPersonalAtencion()),
       finalize(() => this.isLoading.set(false))
     );
   }
 
-  eliminarMedico(medicoId: number): Observable<void> {
+  eliminarPersonalAtencion(medicoId: number): Observable<void> {
     this.isLoading.set(true);
     return this.offMutation('DELETE', `${this.baseUrl}/personal-atencion/${medicoId}`).pipe(
-      tap(() => this.refrescarMedicos()),
+      tap(() => this.refrescarPersonalAtencion()),
       finalize(() => this.isLoading.set(false))
     );
   }
@@ -161,7 +161,7 @@ export class MedicosService extends BaseApiService {
   cambiarEstado(
     medicoId: number,
     activo: boolean
-  ): Observable<MedicoOut> {
-    return this.actualizarMedico(medicoId, { activo });
+  ): Observable<PersonalAtencionOut> {
+    return this.actualizarPersonalAtencion(medicoId, { activo });
   }
 }

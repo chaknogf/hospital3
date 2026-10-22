@@ -5,8 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Sigsa3Create, Sigsa3Out, Sigsa3Update } from '../../../interface/sigsa3.interface';
 import { Sigsa3Service } from '../sigsa3.service';
 import { IconService } from '../../../service/icon.service';
-import { MedicosService, EspecialidadItem } from '../../medicos/medicos.service';
-import { MedicoOut } from '../../../interface/medicos.interface';
+import { PersonalAtencionService, EspecialidadItem } from '../../personal_atencion/personal_atencion.service';
+import { PersonalAtencionOut } from '../../../interface/personal_atencion.interface';
 
 @Component({
   selector: 'app-sigsa3-form',
@@ -30,7 +30,7 @@ export class Sigsa3FormComponent implements OnInit {
   guardando = false;
   enEdicion = false;
 
-  medicos: MedicoOut[] = [];
+  medicos: PersonalAtencionOut[] = [];
   especialidades: EspecialidadItem[] = [];
 
   form: FormGroup = this.fb.group({
@@ -62,7 +62,7 @@ export class Sigsa3FormComponent implements OnInit {
 
   constructor(
     private api: Sigsa3Service,
-    private apiService: MedicosService,
+    private apiService: PersonalAtencionService,
     private iconService: IconService
   ) {
     this.saveIcon = this.iconService.getIcon('saveIcon');
@@ -80,7 +80,7 @@ export class Sigsa3FormComponent implements OnInit {
   }
 
   cargarMedicos(): void {
-    this.apiService.getMedicos({}).subscribe({
+    this.apiService.getPersonalAtencion({}).subscribe({
       next: (data) => this.medicos = data.personal_atencion.filter(m => m.activo),
       error: () => {}
     });
