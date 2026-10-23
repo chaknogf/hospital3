@@ -131,7 +131,23 @@ export const traumaIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" he
 
 export const psicoIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9"><path d="M4.222 21.995v-3.55c0-1.271-.333-1.932-.987-3.037A8.888 8.888 0 0 1 10.889 2a8.89 8.89 0 0 1 8.889 8.887c0 .58 0 .87.024 1.032c.058.388.24.722.417 1.068L22 16.441l-1.4.7c-.405.202-.608.303-.749.49s-.181.399-.26.82l-.008.042c-.183.968-.384 2.036-.95 2.71c-.2.237-.448.43-.727.567c-.461.225-1.028.225-2.162.225c-.525 0-1.051.012-1.576 0c-1.243-.031-2.168-1.077-2.168-2.29"/><path d="M14.388 10.532c-.426 0-.815-.162-1.11-.427m1.11.426c0 1.146-.664 2.235-1.942 2.235S10.504 13.854 10.504 15m3.884-4.469c2.15 0 2.15-3.35 0-3.35q-.294.001-.557.095c.105-2.498-3.496-3.176-4.312-.836m.985 1.857c0-.774-.39-1.456-.985-1.857m0 0c-1.852-1.25-4.32.993-3.146 2.993c-1.97.295-1.76 3.333.247 3.333a1.66 1.66 0 0 0 1.362-.712"/></g></svg>`;
 
-export const nutriIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 64 64"><path fill="currentColor" d="M7.684 41.188c.146-4.908-2.524-6.756-5.78-7.977c-1.082 4.199 1.904 7.693 5.78 7.977m.737-21.915c2.076-4.445.356-7.211-2.16-9.618c-2.641 3.432-1.283 7.82 2.16 9.618m1.171 12.374c-.143-4.905 2.524-6.761 5.782-7.977c1.078 4.197-1.906 7.69-5.782 7.977m0 7.565c-.143-4.905 2.524-6.756 5.782-7.975c1.078 4.196-1.906 7.69-5.782 7.975m0-15.127c-.143-4.907 2.524-6.763 5.782-7.982c1.078 4.201-1.906 7.693-5.782 7.982m-1.908 9.539c.146-4.905-2.524-6.761-5.78-7.977c-1.082 4.197 1.904 7.691 5.78 7.977m0-7.562c.146-4.908-2.524-6.763-5.78-7.984c-1.082 4.203 1.904 7.692 5.78 7.984m36.769 37.007H18.142l13.157-22.796zM23.369 60.05h15.858l-7.929-13.735zM3.843 47.54l55.741-15.164l-.828-3.063L3.011 44.479zM43.176.634s.408 8.041 7.456 7.359c0 0 .795-6.718-7.456-7.359m7.379 26.153a4.08 4.08 0 0 1-3.339 1.716c-1.123 0-2.223-.528-2.965-1.268c-1.518-1.656-3.486-5.358-3.486-5.358c-1.103-2.239-1.694-3.971-1.694-5.722c0-3.73 3.019-6.965 6.759-6.965a6.74 6.74 0 0 1 4.726 1.93a6.73 6.73 0 0 1 4.724-1.93c3.739 0 6.758 3.235 6.758 6.965c0 1.751-.592 3.483-1.694 5.722c0 0-1.968 3.701-3.486 5.358c-.742.74-1.842 1.268-2.966 1.268a4.08 4.08 0 0 1-3.338-1.716z"/></svg>`;
+export const nutriIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 32 32">
+	<g fill="none">
+		<path fill="url(#SVGqb0dceSz)" d="M25.5 2A7.5 7.5 0 0 0 18 9.5v4a2.5 2.5 0 0 0 2.5 2.5h.389a616 616 0 0 0-.431 4.262c-.23 2.37-.458 4.9-.458 5.738a4 4 0 1 0 8 0c0-.985-.317-4.033-.586-6.631l-.013-.122a425 425 0 0 1-.283-2.781C27.04 15.668 27 15.158 27 15V3a1 1 0 0 0-1-1z" />
+		<path fill="url(#SVGQapuBdDC)" d="M14.974 2.773a1 1 0 0 0-1.035-.771c-.53.03-.949.467-.949 1.004v6a.995.995 0 0 1-1.99.03V3a1 1 0 1 0-2 0v6.065a.995.995 0 0 1-1.988-.06V3.007a1.007 1.007 0 0 0-1.986-.233C5.004 2.866 4 7.14 4 10a5.99 5.99 0 0 0 2.27 4.7c.496.394.73.823.73 1.182a1 1 0 0 1-.007.114c-.06.504-.307 2.594-.539 4.753C6.226 22.872 6 25.16 6 26a4 4 0 0 0 8 0c0-.839-.226-3.128-.454-5.251c-.232-2.159-.48-4.25-.54-4.753a1 1 0 0 1-.006-.114c0-.359.234-.788.73-1.182A5.99 5.99 0 0 0 16 10c0-2.862-1.007-7.144-1.026-7.227m-1.08-.768l.02-.001h-.008l-.008.001z" />
+		<defs>
+			<linearGradient id="SVGqb0dceSz" x1="16.462" x2="40.694" y1="3.75" y2="11.981" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#e9f3fe" />
+				<stop offset="1" stop-color="#0067bf" />
+			</linearGradient>
+			<linearGradient id="SVGQapuBdDC" x1="2.154" x2="29.967" y1="3.75" y2="15.086" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#e9f3fe" />
+				<stop offset="1" stop-color="#0067bf" />
+			</linearGradient>
+		</defs>
+	</g>
+</svg>
+`;
 
 export const odontoIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M10.003 3.417A5 5 0 0 0 3 8c0 4.49 1.467 8.668 4.21 12.267A1.5 1.5 0 0 0 10 19.5v-.02c.022-.928.534-2.48 2-2.48c1.467 0 1.978 1.552 2 2.48v.02a1.5 1.5 0 0 0 2.79.767C19.532 16.668 21 12.49 21 8a5 5 0 0 0-7.757-4.172l1.964 1.965a1 1 0 0 1-1.414 1.414z"/></svg>`;
 
@@ -172,10 +188,23 @@ export const doctorIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="36" he
 
 export const medicoIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="54" height="54" viewBox="0 0 448 512"><path d="M0 0h448v512H0z" fill="none" /><path fill="currentColor" d="M224 256a128 128 0 1 0 0-256a128 128 0 1 0 0 256m-96 55.2C54 332.9 0 401.3 0 482.3C0 498.7 13.3 512 29.7 512h388.6c16.4 0 29.7-13.3 29.7-29.7c0-81-54-149.4-128-171.1V362c27.6 7.1 48 32.2 48 62v40c0 8.8-7.2 16-16 16h-16c-8.8 0-16-7.2-16-16s7.2-16 16-16v-24c0-17.7-14.3-32-32-32s-32 14.3-32 32v24c8.8 0 16 7.2 16 16s-7.2 16-16 16h-16c-8.8 0-16-7.2-16-16v-40c0-29.8 20.4-54.9 48-62v-57.1q-9-.9-18.3-.9h-91.4q-9.3 0-18.3.9v65.4c23.1 6.9 40 28.3 40 53.7c0 30.9-25.1 56-56 56s-56-25.1-56-56c0-25.4 16.9-46.8 40-53.7zM144 448a24 24 0 1 0 0-48a24 24 0 1 0 0 48" /></svg>`;
 
-export const nutritionIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 64 64">
-	<path d="M0 0h64v64H0z" fill="none" />
-	<path fill="#29b1db" d="M7.684 41.188c.146-4.908-2.524-6.756-5.78-7.977c-1.082 4.199 1.904 7.693 5.78 7.977m.737-21.915c2.076-4.445.356-7.211-2.16-9.618c-2.641 3.432-1.283 7.82 2.16 9.618m1.171 12.374c-.143-4.905 2.524-6.761 5.782-7.977c1.078 4.197-1.906 7.69-5.782 7.977m0 7.565c-.143-4.905 2.524-6.756 5.782-7.975c1.078 4.196-1.906 7.69-5.782 7.975m0-15.127c-.143-4.907 2.524-6.763 5.782-7.982c1.078 4.201-1.906 7.693-5.782 7.982m-1.908 9.539c.146-4.905-2.524-6.761-5.78-7.977c-1.082 4.197 1.904 7.691 5.78 7.977m0-7.562c.146-4.908-2.524-6.763-5.78-7.984c-1.082 4.203 1.904 7.692 5.78 7.984m36.769 37.007H18.142l13.157-22.796zM23.369 60.05h15.858l-7.929-13.735zM3.843 47.54l55.741-15.164l-.828-3.063L3.011 44.479zM43.176.634s.408 8.041 7.456 7.359c0 0 .795-6.718-7.456-7.359m7.379 26.153a4.08 4.08 0 0 1-3.339 1.716c-1.123 0-2.223-.528-2.965-1.268c-1.518-1.656-3.486-5.358-3.486-5.358c-1.103-2.239-1.694-3.971-1.694-5.722c0-3.73 3.019-6.965 6.759-6.965a6.74 6.74 0 0 1 4.726 1.93a6.73 6.73 0 0 1 4.724-1.93c3.739 0 6.758 3.235 6.758 6.965c0 1.751-.592 3.483-1.694 5.722c0 0-1.968 3.701-3.486 5.358c-.742.74-1.842 1.268-2.966 1.268a4.08 4.08 0 0 1-3.338-1.716z" />
+export const nutritionIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 32 32">
+	<g fill="none">
+		<path fill="url(#SVGqb0dceSz)" d="M25.5 2A7.5 7.5 0 0 0 18 9.5v4a2.5 2.5 0 0 0 2.5 2.5h.389a616 616 0 0 0-.431 4.262c-.23 2.37-.458 4.9-.458 5.738a4 4 0 1 0 8 0c0-.985-.317-4.033-.586-6.631l-.013-.122a425 425 0 0 1-.283-2.781C27.04 15.668 27 15.158 27 15V3a1 1 0 0 0-1-1z" />
+		<path fill="url(#SVGQapuBdDC)" d="M14.974 2.773a1 1 0 0 0-1.035-.771c-.53.03-.949.467-.949 1.004v6a.995.995 0 0 1-1.99.03V3a1 1 0 1 0-2 0v6.065a.995.995 0 0 1-1.988-.06V3.007a1.007 1.007 0 0 0-1.986-.233C5.004 2.866 4 7.14 4 10a5.99 5.99 0 0 0 2.27 4.7c.496.394.73.823.73 1.182a1 1 0 0 1-.007.114c-.06.504-.307 2.594-.539 4.753C6.226 22.872 6 25.16 6 26a4 4 0 0 0 8 0c0-.839-.226-3.128-.454-5.251c-.232-2.159-.48-4.25-.54-4.753a1 1 0 0 1-.006-.114c0-.359.234-.788.73-1.182A5.99 5.99 0 0 0 16 10c0-2.862-1.007-7.144-1.026-7.227m-1.08-.768l.02-.001h-.008l-.008.001z" />
+		<defs>
+			<linearGradient id="SVGqb0dceSz" x1="16.462" x2="40.694" y1="3.75" y2="11.981" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#e9f3fe" />
+				<stop offset="1" stop-color="#0067bf" />
+			</linearGradient>
+			<linearGradient id="SVGQapuBdDC" x1="2.154" x2="29.967" y1="3.75" y2="15.086" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#e9f3fe" />
+				<stop offset="1" stop-color="#0067bf" />
+			</linearGradient>
+		</defs>
+	</g>
 </svg>
+
 `;
 
 export const censoCamasIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="63" height="63" viewBox="0 0 48 48">
@@ -189,14 +218,14 @@ export const censoCamasIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="63
 	</g>
 </svg>`;
 
-export const dienteIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 14 14">
-	<path d="M0 0h14v14H0z" fill="none" />
+export const dienteIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 32 32">
 	<g fill="none">
-		<path fill="#d7e0ff" d="M1.49 5.132C1.814 2.185 4.407 1.9 6.172 2.924c.555.322 1.1.322 1.656 0c1.765-1.023 4.358-.739 4.682 2.208c.325 2.956-1.34 6.084-2.232 7.282c-.203.272-.53.402-.87.402a1.32 1.32 0 0 1-1.242-.872l-.315-.874a.905.905 0 0 0-1.702 0l-.315.874a1.32 1.32 0 0 1-1.242.872c-.34 0-.668-.13-.87-.402c-.892-1.198-2.557-4.326-2.232-7.282" />
-		<path stroke="#4147d5" stroke-linecap="round" stroke-linejoin="round" d="M1.49 5.132C1.814 2.185 4.407 1.9 6.172 2.924c.555.322 1.1.322 1.656 0c1.765-1.023 4.358-.739 4.682 2.208c.325 2.956-1.34 6.084-2.232 7.282c-.203.272-.53.402-.87.402a1.32 1.32 0 0 1-1.242-.872l-.315-.874a.905.905 0 0 0-1.702 0l-.315.874a1.32 1.32 0 0 1-1.242.872c-.34 0-.668-.13-.87-.402c-.892-1.198-2.557-4.326-2.232-7.282" />
-		<path stroke="#4147d5" stroke-linecap="round" stroke-linejoin="round" d="M8.291 5.28c-1.06.386-1.63.378-2.582 0" />
+		<path fill="#41a8f0" d="M30.999 10.017a8.47 8.47 0 0 0-8.89-8.006a8.4 8.4 0 0 0-4.425 1.531a2.925 2.925 0 0 1-3.359 0A8.456 8.456 0 0 0 2.542 5.595a8.456 8.456 0 0 0 2.05 11.78c.246.177.506.334.73.466l.01.006l.011.006c.49.273.807.783.839 1.342l.1 1.617v.002a11.2 11.2 0 0 0 3.622 7.562a2.63 2.63 0 0 0 3.71-.148c.393-.425.628-.967.69-1.528v-.007l.461-4.803c.041-.382.237-.916.54-1.343c.328-.46.591-.547.68-.547c.093 0 .364.092.699.555c.311.429.51.96.551 1.336l.459 4.788v.003a2.63 2.63 0 0 0 2.852 2.384a2.57 2.57 0 0 0 1.557-.695a11.2 11.2 0 0 0 3.615-7.557v-.002l.1-1.606v-.002a1.69 1.69 0 0 1 .854-1.353a8.47 8.47 0 0 0 4.327-7.834" />
+		<path fill="#fff" d="M30 10.07a7.47 7.47 0 0 0-7.84-7.06c-1.4.07-2.75.54-3.9 1.35c-1.35.95-3.16.95-4.51 0A7.456 7.456 0 0 0 3.36 6.17a7.456 7.456 0 0 0 1.81 10.39c.21.15.44.29.66.42c.79.44 1.3 1.26 1.35 2.16l.1 1.61c.17 2.64 1.35 5.11 3.3 6.89c.66.61 1.69.57 2.3-.09c.24-.26.39-.6.43-.96l.46-4.8c.12-1.14 1.064-2.79 2.214-2.79s2.126 1.65 2.246 2.79l.46 4.8c.08.9.87 1.56 1.77 1.48c.36-.03.7-.18.96-.43c1.95-1.78 3.13-4.25 3.3-6.89l.1-1.61c.06-.9.57-1.71 1.36-2.16A7.46 7.46 0 0 0 30 10.07" />
+		<path fill="#41a8f0" d="M24.219 5.157c-.719.104-2.513.5-3.938 1.25c-.28.147-.524.298-.746.45a.5.5 0 0 1-.218.152q-.269.197-.508.385c-.19.146-.37.286-.553.413a7 7 0 0 0-.74.873c-.611.845-1.024 1.783-1.024 2.536a.5.5 0 1 1-1 0c0-.925.42-1.915.966-2.76a5 5 0 0 1-.364.013c-1.524 0-2.52-.704-3.504-1.398a14 14 0 0 0-.996-.664c-1.1-.65-3.313-1.053-4.469-1.25c1.188-.323 3.819-.844 4.844-.344c.443.216.91.526 1.38.839c.888.59 1.792 1.192 2.589 1.192c.728 0 1.423-.547 2.118-1.094c.467-.368.935-.736 1.413-.937c.95-.4 3.562.062 4.75.344" />
 	</g>
 </svg>
+
 `;
 
 export const defuncionIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="63" height="63" viewBox="0 0 48 48">
@@ -231,10 +260,131 @@ export const historiaMedicaIcon = `<svg xmlns="http://www.w3.org/2000/svg" width
 	<path fill="#b2ffe7" d="M8 5c-.554 0-1 .446-1 1v1c0 .554.446 1 1 1v5c0 .554.446 1 1 1h5c.554 0 1-.446 1-1V8c.554 0 1-.446 1-1V6c0-.554-.446-1-1-1Zm0 1h7v1H8Zm2 2h3v1h-3z" />
 </svg>`;
 
-export const nurse = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 48 48">
-	<path d="M0 0h48v48H0z" fill="none" />
-	<g fill="none" fill-rule="evenodd" stroke-width="3" clip-rule="evenodd">
-		<path fill="#8fbffa" d="M43.696 9.135c.98 1.336.762 3.135-.15 4.518c-8.535 12.93-14.682 20.785-18.083 24.85c-1.687 2.015-4.617 2.163-6.525.354A165 165 0 0 1 4.955 23.794c-1.21-1.483-1.46-3.576-.282-5.085c1.024-1.312 2.193-2.438 3.25-3.33c1.753-1.48 4.284-1.144 5.86.524c4.863 5.152 7.794 8.75 7.794 8.75s4.818-7.04 12.548-17.87c1.197-1.677 3.33-2.458 5.132-1.459c1.447.803 3.129 2.025 4.439 3.81Z" />
-		<path stroke="#2859c5" stroke-linecap="round" stroke-linejoin="round" d="M43.696 9.135c.98 1.336.762 3.135-.15 4.518c-8.535 12.93-14.682 20.785-18.083 24.85c-1.687 2.015-4.617 2.163-6.525.354A165 165 0 0 1 4.955 23.794c-1.21-1.483-1.46-3.576-.282-5.085c1.024-1.312 2.193-2.438 3.25-3.33c1.753-1.48 4.284-1.144 5.86.524c4.863 5.152 7.794 8.75 7.794 8.75s4.818-7.04 12.548-17.87c1.197-1.677 3.33-2.458 5.132-1.459c1.447.803 3.129 2.025 4.439 3.81Z" />
+export const nurse = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 14 14">
+	<g fill="none">
+		<path fill="#e9f3fe" fill-rule="evenodd" d="M9.21 1.867H4.75a1.5 1.5 0 0 0-1.48 1.03L2.146 5.68a.5.5 0 0 0 .464.687h8.78a.5.5 0 0 0 .461-.693l-1.162-2.78a1.5 1.5 0 0 0-1.48-1.027Z" clip-rule="evenodd" />
+		<path fill="#41a8f0" d="M13.837 6.54a.49.49 0 0 0-.344-.632a26.6 26.6 0 0 0-12.986 0a.49.49 0 0 0-.344.632l1.766 5.405a1 1 0 0 0 .95.689h8.242a1 1 0 0 0 .95-.69z" />
+		<path fill="#e9f3fe" fill-rule="evenodd" d="M7.625 7.367a.625.625 0 0 0-1.25 0v.875H5.5a.625.625 0 0 0 0 1.25h.875v.875a.625.625 0 1 0 1.25 0v-.875H8.5a.625.625 0 1 0 0-1.25h-.875z" clip-rule="evenodd" />
 	</g>
-</svg>`;
+</svg>
+`;
+
+export const tsIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 48 48">
+	<g fill="none">
+		<path fill="url(#SVGM0JdfeZV)" d="M24 5a6.5 6.5 0 1 0 0 13a6.5 6.5 0 0 0 0-13" />
+		<path fill="url(#SVGIHdlMLge)" d="M9.5 9a5.5 5.5 0 1 0 0 11a5.5 5.5 0 0 0 0-11" />
+		<path fill="url(#SVGVJK0ubBZ)" d="M38.5 9a5.5 5.5 0 1 0 0 11a5.5 5.5 0 0 0 0-11" />
+		<path fill="url(#SVGFyfNjdba)" d="M30.478 21.818a3.25 3.25 0 0 0-3.98 2.298l-1.489 5.554a9 9 0 1 0 17.387 4.659l1.488-5.554a3.25 3.25 0 0 0-2.298-3.98z" />
+		<path fill="url(#SVGb8y0xb1O)" d="M17.522 21.818a3.25 3.25 0 0 1 3.98 2.298l1.488 5.554a9 9 0 1 1-17.386 4.66l-1.489-5.554a3.25 3.25 0 0 1 2.299-3.98z" />
+		<path fill="url(#SVGpuHNKb0b)" d="M18.25 21A3.25 3.25 0 0 0 15 24.25V32a9 9 0 1 0 18 0v-7.75A3.25 3.25 0 0 0 29.75 21z" />
+		<defs>
+			<radialGradient id="SVGM0JdfeZV" cx="0" cy="0" r="1" gradientTransform="rotate(59.931 3.08 24.51)scale(8.11995)" gradientUnits="userSpaceOnUse">
+				<stop offset=".339" stop-color="#3dcbff" />
+				<stop offset="1" stop-color="#14b1ff" />
+			</radialGradient>
+			<radialGradient id="SVGIHdlMLge" cx="0" cy="0" r="1" gradientTransform="rotate(47.573 -10.4 14.318)scale(9.01943)" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#f7f8f7" />
+				<stop offset="1" stop-color="#f7f8f7" />
+			</radialGradient>
+			<radialGradient id="SVGVJK0ubBZ" cx="0" cy="0" r="1" gradientTransform="rotate(78.837 11.016 28.388)scale(8.06859)" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#0078d4" />
+				<stop offset="1" stop-color="#004695" />
+			</radialGradient>
+			<radialGradient id="SVGFyfNjdba" cx="0" cy="0" r="1" gradientTransform="rotate(78.837 -.87 32.568)scale(14.1533)" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#0078d4" />
+				<stop offset="1" stop-color="#004695" />
+			</radialGradient>
+			<radialGradient id="SVGb8y0xb1O" cx="0" cy="0" r="1" gradientTransform="rotate(61.056 -14.804 18.71)scale(21.017 15.1281)" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#f7f8f7" />
+				<stop offset="1" stop-color="#f7f8f7" />
+			</radialGradient>
+			<radialGradient id="SVGpuHNKb0b" cx="0" cy="0" r="1" gradientTransform="rotate(62.478 -11.966 32.366)scale(12.1907 11.5211)" gradientUnits="userSpaceOnUse">
+				<stop offset=".339" stop-color="#3dcbff" />
+				<stop offset="1" stop-color="#14b1ff" />
+			</radialGradient>
+		</defs>
+	</g>
+</svg>
+`;
+
+export const uisauIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 32 32">
+	<g fill="none">
+		<path fill="url(#SVG5RztSp1z)" d="M5 17a3 3 0 0 0-3 3v.15S2 26 10.5 26s8.5-5.85 8.5-5.85V20a3 3 0 0 0-3-3z" />
+		<path fill="url(#SVGoP7tkdxs)" d="M5 17a3 3 0 0 0-3 3v.15S2 26 10.5 26s8.5-5.85 8.5-5.85V20a3 3 0 0 0-3-3z" />
+		<path fill="url(#SVGINnJoXnA)" fill-opacity="0.5" d="M5 17a3 3 0 0 0-3 3v.15S2 26 10.5 26s8.5-5.85 8.5-5.85V20a3 3 0 0 0-3-3z" />
+		<path fill="url(#SVGsTcRfeKK)" d="M23 15a4 4 0 1 0 0-8a4 4 0 0 0 0 8" />
+		<path fill="url(#SVGgLfTueyP)" d="M10.5 15a5.5 5.5 0 1 0 0-11a5.5 5.5 0 0 0 0 11" />
+		<path fill="url(#SVG7phgXbWC)" d="M30.5 24a7.5 7.5 0 0 1-11.01 6.63l-3.364.859a.5.5 0 0 1-.608-.608l.853-3.37A7.5 7.5 0 1 1 30.5 24" />
+		<path fill="url(#SVGcWTb4m6l)" d="M20.25 22a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5zm-.75 3.75c0 .414.336.75.75.75h3.5a.75.75 0 0 0 0-1.5h-3.5a.75.75 0 0 0-.75.75" />
+		<defs>
+			<linearGradient id="SVG5RztSp1z" x1="6.043" x2="9.088" y1="18.196" y2="27.383" gradientUnits="userSpaceOnUse">
+				<stop offset=".125" stop-color="#bd96ff" />
+				<stop offset="1" stop-color="#9c6cfe" />
+			</linearGradient>
+			<linearGradient id="SVGoP7tkdxs" x1="10.5" x2="14.776" y1="15.929" y2="31.021" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#885edb" stop-opacity="0" />
+				<stop offset="1" stop-color="#e362f8" />
+			</linearGradient>
+			<linearGradient id="SVGsTcRfeKK" x1="20.902" x2="24.98" y1="8.063" y2="14.574" gradientUnits="userSpaceOnUse">
+				<stop offset=".125" stop-color="#9c6cfe" />
+				<stop offset="1" stop-color="#f7f5f9" />
+			</linearGradient>
+			<linearGradient id="SVGgLfTueyP" x1="7.616" x2="13.222" y1="5.462" y2="14.414" gradientUnits="userSpaceOnUse">
+				<stop offset=".125" stop-color="#bd96ff" />
+				<stop offset="1" stop-color="#9c6cfe" />
+			</linearGradient>
+			<linearGradient id="SVG7phgXbWC" x1="16.036" x2="29.137" y1="19.313" y2="41.643" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#0fafff" />
+				<stop offset="1" stop-color="#cc23d1" />
+			</linearGradient>
+			<linearGradient id="SVGcWTb4m6l" x1="20.112" x2="20.6" y1="22.079" y2="26.97" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#fdfdfd" />
+				<stop offset="1" stop-color="#f7f8f7" />
+			</linearGradient>
+			<radialGradient id="SVGINnJoXnA" cx="0" cy="0" r="1" gradientTransform="matrix(3.5 8 -8.41639 3.68217 21 22.5)" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#f7f8f7" />
+				<stop offset=".268" stop-color="#f7f8f7" stop-opacity="0.812" />
+				<stop offset="1" stop-color="#f7f8f7" stop-opacity="0" />
+			</radialGradient>
+		</defs>
+	</g>
+</svg>
+`;
+
+export const booksIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 32 32">
+	<path d="M0 0h32v32H0z" fill="none" />
+	<g fill="none">
+		<path fill="url(#SVGIu47ZdNc)" d="M3 5.5A2.5 2.5 0 0 1 5.5 3h2A2.5 2.5 0 0 1 10 5.5v21A2.5 2.5 0 0 1 7.5 29h-2A2.5 2.5 0 0 1 3 26.5zm9 0A2.5 2.5 0 0 1 14.5 3h2A2.5 2.5 0 0 1 19 5.5v21a2.5 2.5 0 0 1-2.5 2.5h-2a2.5 2.5 0 0 1-2.5-2.5zm9.8 2.105c-1.295.358-2.064 1.733-1.717 3.07l4.27 16.466c.348 1.338 1.678 2.131 2.973 1.773l1.875-.52c1.294-.357 2.063-1.732 1.716-3.07L26.647 8.86c-.348-1.338-1.678-2.131-2.973-1.773z" />
+		<path fill="url(#SVGAflOGehM)" d="M3 8h7v3H3z" />
+		<path fill="url(#SVGAflOGehM)" d="M27.296 11.365L20.72 13.13l.753 2.904l6.576-1.764z" />
+		<path fill="url(#SVGAflOGehM)" d="M19 8h-7v3h7z" />
+		<defs>
+			<linearGradient id="SVGIu47ZdNc" x1="-18" x2="-16.286" y1="3" y2="38.067" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#43e5ca" />
+				<stop offset="1" stop-color="#2764e7" />
+			</linearGradient>
+			<linearGradient id="SVGAflOGehM" x1="12" x2="20.493" y1="2.267" y2="5.253" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#9ff0f9" />
+				<stop offset="1" stop-color="#6ce0ff" />
+			</linearGradient>
+		</defs>
+	</g>
+</svg>
+`;
+
+export const esthetoscope = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
+	<g fill="none" stroke="#7cc6e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+		<path fill="#7cc6e8" fill-opacity="0.4" d="M23 10C23 11.6569 21.6569 13 20 13C18.3431 13 17 11.6569 17 10C17 8.3431 18.3431 7 20 7C21.6569 7 23 8.3431 23 10Z" stroke="none" />
+		<path d="M8 15C2.9955 15 1.7856 8.2335 2.0294 4.623C2.0936 3.672 2.8935 3 3.8097 3L5.117 3M8 15C13.0045 15 14.2144 8.2335 13.9706 4.623C13.9064 3.672 13.1065 3 12.1903 3L10.883 3M20 12L20 15C20 18.3137 17.3137 21 14 21C10.6863 21 8 18.3137 8 15" />
+	</g>
+</svg>
+`;
+
+export const devTool = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 80 80">
+	<g fill="none">
+		<path fill="#000" fill-rule="evenodd" d="M16 16.256a4 4 0 0 0-4 4v36h20.126c.444 1.725 2.01 3 3.874 3h8a4 4 0 0 0 3.874-3H68v-36a4 4 0 0 0-4-4z" clip-rule="evenodd" />
+		<path fill="#f7f5f9" fill-rule="evenodd" d="M32.126 56.256H4.152a.15.15 0 0 0-.152.152a7.85 7.85 0 0 0 7.848 7.848h56.304A7.85 7.85 0 0 0 76 56.408a.15.15 0 0 0-.152-.152H47.874a4 4 0 0 1-3.874 3h-8a4 4 0 0 1-3.874-3" clip-rule="evenodd" />
+		<path stroke="#0eeb6a" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="m28 28.256l7.848 7.266a1 1 0 0 1 0 1.468L28 44.256m24 0H40.48" />
+	</g>
+</svg>
+`;

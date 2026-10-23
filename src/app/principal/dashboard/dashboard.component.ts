@@ -60,14 +60,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor() {
     this.icons = {
       pacientes: this.iconS.getIcon('tarjetaPaciente'),
-      datosIcon: this.iconS.getIcon('datosIcon'),
+      datosIcon: this.iconS.getIcon('booksIcon'),
       logoicon: this.iconS.getIcon('logoicon'),
       rocket: this.iconS.getIcon('rocketIcon'),
+      dev: this.iconS.getIcon('devTool'),
       nutric: this.iconS.getIcon('nutritionIcon'),
       diente: this.iconS.getIcon('dienteIcon'),
       consultas: this.iconS.getIcon('consultaMedica'),
-      doctor: this.iconS.getIcon('doctorIcon'),
+      doctor: this.iconS.getIcon('esthetoscope'),
       nurse: this.iconS.getIcon('nurse'),
+      ts: this.iconS.getIcon('tsIcon'),
+      uisau: this.iconS.getIcon('uisauIcon')
     };
   }
 
@@ -76,12 +79,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       { nombre: 'Registros Medicos', descripcion: 'Gestión de pacientes y registros médicos', ruta: '/registros', icon: 'pacientes', color: '#3b82f6' },
       { nombre: 'Medicos', descripcion: 'Gestión de consulta médica', ruta: '/clinica', icon: 'doctor', color: '#34d399' },
       { nombre: 'Enfermería', descripcion: 'Gestión paramédica', ruta: '/enfermeria', icon: 'nurse', color: '#5f72ed' },
-      { nombre: 'UISAU', descripcion: 'Gestor de Atención al Usuario', ruta: '/uisau', icon: 'datosIcon', color: '#818cf8' },
-      { nombre: 'Trabajo Social', descripcion: 'Módulo de trabajo social', ruta: '/TrabajoSocial', icon: 'logoicon', color: '#e879f9' },
+      { nombre: 'UISAU', descripcion: 'Gestor de Atención al Usuario', ruta: '/uisau', icon: 'uisau', color: '#818cf8' },
+      { nombre: 'Trabajo Social', descripcion: 'Módulo de trabajo social', ruta: '/TrabajoSocial', icon: 'ts', color: '#e879f9' },
       { nombre: 'Estadística', descripcion: 'Reportes y datos estadísticos', ruta: '/estadistica', icon: 'datosIcon', color: '#22d3ee' },
       { nombre: 'Nutrición', descripcion: 'Gestor de nutrición', ruta: '/menu-nutri', icon: 'nutric', color: '#fbbf24' },
       { nombre: 'Odontología', descripcion: 'Gestor de odontología', ruta: '/menu-odonto', icon: 'diente', color: '#f472b6' },
-      { nombre: 'Huston', descripcion: 'Panel de Control', ruta: '/adminsys', icon: 'rocket', color: '#a78bfa' },
+      { nombre: 'Huston', descripcion: 'Panel de Control', ruta: '/adminsys', icon: 'dev', color: '#a78bfa' },
     ];
 
     this.loadTotales();
