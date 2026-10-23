@@ -490,6 +490,11 @@ export const routes: Routes = [
         loadComponent: () => import('./trabajoSocial/trabajosocial/menuts.component').then(c => c.MenutsComponent),
         canActivate: [roleGuard(['admin', 'ts'])]
       },
+{
+        path: 'enfermeria',
+        loadComponent: () => import('./enfermeria/menu-enfermeria/menu-enfermeria.component').then(c => c.MenuEnfermeriaComponent),
+        canActivate: [roleGuard(['admin', 'editor', 'regular', 'read_only'])]
+      },
       {
         path: 'ts-nacimientos',
         loadComponent: () => import('./trabajoSocial/nacimientos/nacimientos-ts.component').then(c => c.NacimientosTsComponent),

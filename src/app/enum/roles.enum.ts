@@ -8,6 +8,8 @@ export interface Values {
 export const roles: Values[] = [
   { label: 'Usuario', value: 'regular' },
   { label: 'Administrador', value: 'admin' },
+  { label: 'Editor', value: 'editor' },
+  { label: 'Solo lectura', value: 'read_only' },
   { label: 'Registros', value: 'registro' },
   { label: 'Estadistica', value: 'std' },
   { label: 'UISAU', value: 'uisau' },
@@ -19,6 +21,4 @@ export const roles: Values[] = [
   { label: 'Epidemiología', value: 'epi' },
   { label: 'Nutrición', value: 'nutric' },
   { label: 'Odontología', value: 'odonto' },
-
-
 ];

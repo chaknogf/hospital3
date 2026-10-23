@@ -45,7 +45,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   // ======= FILTROS =======
   filtros: any = {
-    id: 0,
+    id: '',
     username: '',
     email: '',
     rol: '',

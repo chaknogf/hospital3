@@ -66,7 +66,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       nutric: this.iconS.getIcon('nutritionIcon'),
       diente: this.iconS.getIcon('dienteIcon'),
       consultas: this.iconS.getIcon('consultaMedica'),
-      doctor: this.iconS.getIcon('medicoIcon'),
+      doctor: this.iconS.getIcon('doctorIcon'),
+      nurse: this.iconS.getIcon('nurse'),
     };
   }
 
@@ -74,6 +75,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.modulos = [
       { nombre: 'Registros Medicos', descripcion: 'Gestión de pacientes y registros médicos', ruta: '/registros', icon: 'pacientes', color: '#3b82f6' },
       { nombre: 'Medicos', descripcion: 'Gestión de consulta médica', ruta: '/clinica', icon: 'doctor', color: '#34d399' },
+      { nombre: 'Enfermería', descripcion: 'Gestión paramédica', ruta: '/enfermeria', icon: 'nurse', color: '#5f72ed' },
       { nombre: 'UISAU', descripcion: 'Gestor de Atención al Usuario', ruta: '/uisau', icon: 'datosIcon', color: '#818cf8' },
       { nombre: 'Trabajo Social', descripcion: 'Módulo de trabajo social', ruta: '/TrabajoSocial', icon: 'logoicon', color: '#e879f9' },
       { nombre: 'Estadística', descripcion: 'Reportes y datos estadísticos', ruta: '/estadistica', icon: 'datosIcon', color: '#22d3ee' },

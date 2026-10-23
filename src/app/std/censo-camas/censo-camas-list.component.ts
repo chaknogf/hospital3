@@ -16,6 +16,7 @@ import { Encamamiento } from '../../interface/interfaces';
 import { ApiService } from '../../service/api.service';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { TabPreservationService } from '../../shared/services/tab-preservation.service';
 
 @Component({
   selector: 'app-censo-camas-list',
@@ -32,6 +33,7 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   private api = inject(ApiService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private tabService = inject(TabPreservationService);
 
   private destroy$ = new Subject<void>();
 
@@ -141,6 +143,11 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.cargarServicios();
     this.cargar();
+    // Restaurar tab seg\'ult ruta navegada
+    const tabGuardado = this.tabService.restaurarTab('/enfermeria') as 'registros' | 'estadisticas' | 'hospitalizacion';
+    if (tabGuardado) {
+      this.tabActiva = tabGuardado;
+    }
   }
 
   ngOnDestroy(): void {
