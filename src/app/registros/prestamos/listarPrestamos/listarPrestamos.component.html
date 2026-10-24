@@ -1,28 +1,13 @@
 <div class="aurora-paciente-container" [class.d-none]="visible">
-  <!-- Botones superiores -->
-  <div
-    class="botones justify-content-between"
-    [ngClass]="{ 'd-none': filtrar }"
-  >
-    <button type="button" (click)="volver()">
-      <span [innerHTML]="menuIcon"></span>
-      Menu
+  <!-- Barra superior: título y acción principal en una sola fila -->
+  <header class="pac-toolbar" [ngClass]="{ 'd-none': filtrar }">
+    <h1 class="pac-toolbar__title">Préstamos de Expedientes</h1>
+
+    <button type="button" class="pac-toolbar__action" (click)="toggleFiltros()">
+      <span class="pac-toolbar__icon" [innerHTML]="findIcon"></span>
+      <span>Buscar</span>
     </button>
-
-    <h1 class="text-white">Préstamos de Expedientes</h1>
-
-    <div class="d-flex gap-2">
-      <button type="button" (click)="toggleNuevo()">
-        <span [innerHTML]="addIcon"></span>
-        Nuevo
-      </button>
-
-      <button type="button" (click)="toggleFiltros()">
-        <span [innerHTML]="findIcon"></span>
-        Buscar
-      </button>
-    </div>
-  </div>
+  </header>
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || visible }">
@@ -111,7 +96,10 @@
   </div>
 
   <!-- Nuevo préstamo: búsqueda del paciente por expediente -->
-  <div class="find-form nuevo-form" [ngClass]="{ 'd-none': !nuevoPrestamo || visible }">
+  <div
+    class="find-form nuevo-form"
+    [ngClass]="{ 'd-none': !nuevoPrestamo || visible }"
+  >
     <form
       class="form-filtros"
       (submit)="buscarPacienteParaPrestamo(); $event.preventDefault()"
@@ -129,9 +117,13 @@
       </fieldset>
 
       <div class="botones-filtros">
-        <button type="submit" class="button-filtros" [disabled]="buscandoPaciente">
+        <button
+          type="submit"
+          class="button-filtros"
+          [disabled]="buscandoPaciente"
+        >
           <span [innerHTML]="searchIcon"></span>
-          {{ buscandoPaciente ? 'Buscando…' : 'Buscar y agregar' }}
+          {{ buscandoPaciente ? "Buscando…" : "Buscar y agregar" }}
         </button>
 
         <button type="button" (click)="toggleNuevo()" class="button-filtros">
@@ -221,7 +213,10 @@
             <!-- Acciones -->
             <td class="secundario">
               <div class="botones-opt">
-                <button (click)="editar(p.id); $event.stopPropagation()" data-label="Editar">
+                <button
+                  (click)="editar(p.id); $event.stopPropagation()"
+                  data-label="Editar"
+                >
                   <span [innerHTML]="editIcon"></span>
                 </button>
                 @if (p.activo) {
@@ -278,7 +273,8 @@
     </button>
 
     <div class="mx-2">
-      Página <strong>{{ paginaActual }}</strong> / {{ totalPaginas }} — {{ total() }} registros
+      Página <strong>{{ paginaActual }}</strong> / {{ totalPaginas }} —
+      {{ total() }} registros
     </div>
 
     <button

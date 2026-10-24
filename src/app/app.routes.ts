@@ -1,6 +1,16 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { roleGuard } from './role.guard';
+import {
+  ESTADISTICA_NAV,
+  MEDICA_NAV,
+  NUTRICION_NAV,
+  REPORTES_NAV,
+  ODONTOLOGIA_NAV,
+  REGISTROS_NAV,
+  TRABAJO_SOCIAL_NAV,
+  UISAU_NAV,
+} from './shared/module-nav';
 
 /** Rutas de la aplicación; el guard de sesión agrupa las vistas autenticadas. */
 export const routes: Routes = [
@@ -113,11 +123,155 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin'])]
       },
 
-      // Registros Médicos
+      // Registros Médicos — barra lateral con rutas hijas
       {
         path: 'registros',
-        loadComponent: () => import('./registros/registrosMedicos/registrosMedicos.component').then(c => c.RegistrosMedicosComponent),
-        canActivate: [roleGuard(['admin', 'registro', 'std'])]
+        loadComponent: () => import('./shared/module-shell/module-shell.component').then(c => c.ModuleShellComponent),
+        canActivate: [roleGuard(['admin', 'registro', 'std'])],
+        data: { module: REGISTROS_NAV },
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'pacientes' },
+          {
+            path: 'pacientes',
+            loadComponent: () => import('./registros/patient/pacientes/pacientes.component').then(c => c.PacientesComponent)
+          },
+          {
+            path: 'consultas',
+            loadComponent: () => import('./registros/consultas/consultas/consultas.component').then(c => c.ConsultasComponent)
+          },
+          {
+            path: 'emergencias',
+            loadComponent: () => import('./registros/consultas/emergencias/emergenciasList/emergenciasList.component').then(c => c.EmergenciasListComponent)
+          },
+          {
+            path: 'coex',
+            loadComponent: () => import('./registros/consultas/coex/coexLista/coexLista.component').then(c => c.CoexListaComponent)
+          },
+          {
+            path: 'ingresos',
+            loadComponent: () => import('./registros/consultas/hospitalizacion/ingresos/ingresos.component').then(c => c.IngresosComponent)
+          },
+          {
+            path: 'recepcion',
+            loadComponent: () => import('./registros/consultas/recepcion/recepcion.component').then(c => c.RecepcionComponent)
+          },
+          {
+            path: 'prestamos',
+            loadComponent: () => import('./registros/prestamos/listarPrestamos/listarPrestamos.component').then(c => c.ListarPrestamosComponent)
+          },
+          {
+            path: 'expedientes',
+            loadComponent: () => import('./registros/patient/expedientes/expedientes.component').then(c => c.ExpedientesComponent)
+          },
+          {
+            path: 'activos-mayores-7-dias',
+            loadComponent: () => import('./std/reportes/activos-mayores-7-dias/activos-mayores-7-dias.component').then(c => c.ActivosMayores7DiasComponent)
+          },
+          {
+            path: 'citas',
+            loadComponent: () => import('./registros/citas/citados/citados.component').then(c => c.CitadosComponent)
+          },
+          {
+            path: 'nacimientos',
+            loadComponent: () => import('./registros/nacimientos/listarConstancias/listarConstancias.component').then(c => c.ListarConstanciasComponent)
+          },
+          {
+            path: 'defunciones',
+            loadComponent: () => import('./registros/defunciones/listarDefunciones/listarDefunciones.component').then(c => c.ListarDefuncionesComponent)
+          },
+          {
+            path: 'doctores',
+            loadComponent: () => import('./std/personal_atencion/doctores/doctores.component').then(c => c.DoctoresComponent)
+          },
+          {
+            path: 'paciente',
+            loadComponent: () => import('./registros/patient/formularioPaciente/formularioPaciente.component').then(c => c.FormularioPacienteComponent)
+          },
+          {
+            path: 'paciente/:modo',
+            loadComponent: () => import('./registros/patient/formularioPaciente/formularioPaciente.component').then(c => c.FormularioPacienteComponent)
+          },
+          {
+            path: 'pacienteEdit/:id',
+            loadComponent: () => import('./registros/patient/formularioPaciente/formularioPaciente.component').then(c => c.FormularioPacienteComponent)
+          },
+          {
+            path: 'detallePaciente/:id',
+            loadComponent: () => import('./registros/patient/detallePaciente/detallePaciente.component').then(c => c.DetallePacienteComponent)
+          },
+          {
+            path: 'hijo/:id',
+            loadComponent: () => import('./registros/patient/hijos/hijos.component').then(c => c.HijosComponent)
+          },
+          {
+            path: 'renap',
+            loadComponent: () => import('./registros/patient/renap/renap.component').then(c => c.RenapComponent)
+          },
+          {
+            path: 'agendar',
+            loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+          },
+          {
+            path: 'agendar/paciente/:pacienteId',
+            loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+          },
+          {
+            path: 'reagendar/cita/:citaId',
+            loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+          },
+          {
+            path: 'admision',
+            loadComponent: () => import('./registros/adminsion/admision/admision.component').then(c => c.AdmisionComponent)
+          },
+          {
+            path: 'admision/:origen',
+            loadComponent: () => import('./registros/adminsion/admision/admision.component').then(c => c.AdmisionComponent)
+          },
+          {
+            path: 'admisionPaciente/:origen/:pacienteId',
+            loadComponent: () => import('./registros/adminsion/admision/admision.component').then(c => c.AdmisionComponent)
+          },
+          {
+            path: 'editarAdmision/:id/:origen',
+            loadComponent: () => import('./registros/adminsion/admision/admision.component').then(c => c.AdmisionComponent)
+          },
+          {
+            path: 'editarAdmision/:id',
+            loadComponent: () => import('./registros/adminsion/admision/admision.component').then(c => c.AdmisionComponent)
+          },
+          {
+            path: 'detalleAdmision/:id',
+            loadComponent: () => import('./registros/adminsion/detalleConsulta/detalleConsulta.component').then(c => c.DetalleConsultaComponent)
+          },
+          {
+            path: 'coexHoja/:id',
+            loadComponent: () => import('./registros/consultas/coex/HojaCoex/HojaCoex.component').then(c => c.HojaCoexComponent)
+          },
+          {
+            path: 'hojaPsico/:id',
+            loadComponent: () => import('./registros/consultas/coex/HojaCoexPsico/HojaCoexPsico.component').then(c => c.HojaCoexPsicoComponent)
+          },
+          {
+            path: 'hojaOdonto/:id',
+            loadComponent: () => import('./registros/consultas/coex/HojaCoexOdonto/HojaCoexOdonto.component').then(c => c.HojaCoexOdontoComponent)
+          },
+          {
+            path: 'hojaEmergencia/:id',
+            loadComponent: () => import('./registros/consultas/emergencias/hoja/hoja.component').then(c => c.HojaComponent)
+          },
+          {
+            path: 'ingreso/:id',
+            loadComponent: () => import('./registros/consultas/hospitalizacion/hojaIngreso/hojaIngreso.component').then(c => c.HojaIngresoComponent)
+          },
+          {
+            path: 'prestamo/:id',
+            loadComponent: () => import('./registros/prestamos/crearPrestamo/crearPrestamo.component').then(c => c.CrearPrestamoComponent)
+          },
+          {
+            path: 'editarPrestamo/:id',
+            loadComponent: () => import('./registros/prestamos/crearPrestamo/crearPrestamo.component').then(c => c.CrearPrestamoComponent)
+          }
+        ]
       },
       {
         path: 'admision',
@@ -236,14 +390,14 @@ export const routes: Routes = [
         loadComponent: () => import('./registros/adminsion/formConsulta/formConsulta.component').then(c => c.FormConsultaComponent)
       },
       {
-        path: 'renap',
-        loadComponent: () => import('./registros/patient/renap/renap.component').then(c => c.RenapComponent)
+        path: 'detalleConsulta/:id',
+        loadComponent: () => import('./registros/adminsion/detalleConsulta/detalleConsulta.component').then(c => c.DetalleConsultaComponent)
       },
       //Prestamos
       {
         path: 'prestamos',
-        loadComponent: () => import('./registros/prestamos/listarPrestamos/listarPrestamos.component').then(c => c.ListarPrestamosComponent),
-
+        redirectTo: 'estadistica/prestamos',
+        pathMatch: 'full'
       },
       {
         path: 'prestamo/:id',
@@ -256,10 +410,39 @@ export const routes: Routes = [
 
       },
       // Médicas
+      // Consulta médica — barra lateral con rutas hijas
       {
         path: 'clinica',
-        loadComponent: () => import('./medica/medica/medica.component').then(c => c.MedicaComponent),
-        canActivate: [roleGuard(['admin', 'medico'])]
+        loadComponent: () => import('./shared/module-shell/module-shell.component').then(c => c.ModuleShellComponent),
+        canActivate: [roleGuard(['admin', 'medico'])],
+        data: { module: MEDICA_NAV },
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'pacientes-activos' },
+          {
+            path: 'pacientes-activos',
+            loadComponent: () => import('./medica/pacienteActivos/pacienteActivos.component').then(c => c.PacienteActivosComponent)
+          },
+          {
+            path: 'notas-medicas',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'notas-medicas/:consultaId',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'historia-clinica',
+            loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
+          },
+          {
+            path: 'historia-clinica/:id',
+            loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
+          },
+          {
+            path: 'quirofano',
+            loadComponent: () => import('./medica/quirofano/quirofano.component').then(c => c.QuirofanoComponent)
+          }
+        ]
       },
       {
         path: 'pacientesActivos',
@@ -317,8 +500,8 @@ export const routes: Routes = [
       },
       {
         path: 'quirofano/resumen',
-        loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent),
-        canActivate: [roleGuard(['admin', 'medico', 'std'])]
+        redirectTo: 'estadistica/quirofano-resumen',
+        pathMatch: 'full'
       },
 
       //Citas
@@ -390,29 +573,108 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin', 'registro', 'std'])]
       },
 
-      //Estadistica
+      // Estadística — barra lateral con rutas hijas
       {
         path: 'estadistica',
-        loadComponent: () => import('./std/estadistica/estadistica.component').then(c => c.EstadisticaComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
+        loadComponent: () => import('./shared/module-shell/module-shell.component').then(c => c.ModuleShellComponent),
+        canActivate: [roleGuard(['admin', 'std'])],
+        data: { module: ESTADISTICA_NAV },
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'consultar' },
+          {
+            path: 'consultar',
+            loadComponent: () => import('./std/consultor/consultor.component').then(c => c.ConsultorComponent)
+          },
+          {
+            path: 'prestamos',
+            loadComponent: () => import('./registros/prestamos/listarPrestamos/listarPrestamos.component').then(c => c.ListarPrestamosComponent)
+          },
+          {
+            path: 'prestamo/:id',
+            loadComponent: () => import('./registros/prestamos/crearPrestamo/crearPrestamo.component').then(c => c.CrearPrestamoComponent)
+          },
+          {
+            path: 'editarPrestamo/:id',
+            loadComponent: () => import('./registros/prestamos/crearPrestamo/crearPrestamo.component').then(c => c.CrearPrestamoComponent)
+          },
+          {
+            path: 'procedimientos',
+            loadComponent: () => import('./std/procedimientos/procedimientosmenores/procedimientosmenores.component').then(c => c.ProcedimientosmenoresComponent)
+          },
+          {
+            path: 'censo-camas',
+            loadComponent: () => import('./std/censo-camas/censo-camas-list.component').then(c => c.CensoCamasListComponent)
+          },
+          {
+            path: 'censo-camas/nuevo',
+            loadComponent: () => import('./std/censo-camas/censo-camas-form.component').then(c => c.CensoCamasFormComponent)
+          },
+          {
+            path: 'censo-camas/editar/:id',
+            loadComponent: () => import('./std/censo-camas/censo-camas-form.component').then(c => c.CensoCamasFormComponent)
+          },
+          {
+            path: 'reportes',
+            loadComponent: () => import('./std/reportes/reportes-inicio.component').then(c => c.ReportesInicioComponent)
+          },
+          {
+            path: 'quirofano-resumen',
+            loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent)
+          },
+          {
+            path: 'personal-hospital',
+            loadComponent: () => import('./std/estadistica/personal-hospital/personal-hospital-list.component').then(c => c.PersonalHospitalListComponent)
+          },
+          {
+            path: 'detallePaciente/:id',
+            loadComponent: () => import('./registros/patient/detallePaciente/detallePaciente.component').then(c => c.DetallePacienteComponent)
+          },
+          {
+            path: 'nacimientos',
+            loadComponent: () => import('./std/nacimientos/lista-nacimientos/lista-nacimientos.component').then(c => c.ListaNacimientosComponent)
+          },
+          {
+            path: 'doctores',
+            loadComponent: () => import('./std/personal_atencion/doctores/doctores.component').then(c => c.DoctoresComponent)
+          },
+          {
+            path: 'sigsa3',
+            loadComponent: () => import('./std/sigsa3/sigsa3-list/sigsa3-list.component').then(c => c.Sigsa3ListComponent)
+          },
+          {
+            path: 'sigsa3-registros',
+            loadComponent: () => import('./std/sigsa3-registros/sigsa3-registros-list/sigsa3-registros-list.component').then(c => c.Sigsa3RegistrosListComponent)
+          },
+          {
+            path: 'agente',
+            loadComponent: () => import('./std/estadistica/agente/agente.component').then(c => c.AgenteComponent)
+          }
+        ]
       },
       {
         path: 'agente',
-        loadComponent: () => import('./std/estadistica/agente/agente.component').then(c => c.AgenteComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
+        redirectTo: 'estadistica/agente',
+        pathMatch: 'full'
+      },
+      {
+        path: 'procedimientosmenores',
+        redirectTo: 'estadistica/procedimientos',
+        pathMatch: 'full'
       },
       {
         path: 'personal-hospital',
-        loadComponent: () => import('./std/estadistica/personal-hospital/personal-hospital-list.component').then(c => c.PersonalHospitalListComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
+        redirectTo: 'estadistica/personal-hospital',
+        pathMatch: 'full'
       },
       {
         path: 'consultar',
-        loadComponent: () => import('./std/consultor/consultor.component').then(c => c.ConsultorComponent)
+        redirectTo: 'estadistica/consultar',
+        pathMatch: 'full'
       },
       {
         path: 'doctores',
-        loadComponent: () => import('./std/personal_atencion/doctores/doctores.component').then(c => c.DoctoresComponent)
+        redirectTo: 'estadistica/doctores',
+        pathMatch: 'full'
       },
       {
         path: 'doctor',
@@ -421,10 +683,6 @@ export const routes: Routes = [
       {
         path: 'doctor/:id',
         loadComponent: () => import('./std/personal_atencion/doctorForm/doctorForm.component').then(c => c.DoctorFormComponent)
-      },
-      {
-        path: 'procedimientosmenores',
-        loadComponent: () => import('./std/procedimientos/procedimientosmenores/procedimientosmenores.component').then(c => c.ProcedimientosmenoresComponent)
       },
       {
         path: 'procemedic',
@@ -450,96 +708,235 @@ export const routes: Routes = [
         pathMatch: 'full'
       },
 
-      // Nutricion
+      // Nutrición — barra lateral con rutas hijas
       {
         path: 'menu-nutri',
-        loadComponent: () => import('./nutricion/menu-nutri/menu-nutri.component').then(c => c.MenuNutriComponent),
-        canActivate: [roleGuard(['admin', 'nutric'])]
+        loadComponent: () => import('./shared/module-shell/module-shell.component').then(c => c.ModuleShellComponent),
+        canActivate: [roleGuard(['admin', 'nutric'])],
+        data: { module: NUTRICION_NAV },
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'consultar' },
+          {
+            path: 'consultar',
+            loadComponent: () => import('./std/consultor/consultor.component').then(c => c.ConsultorComponent)
+          },
+          {
+            path: 'coex',
+            loadComponent: () => import('./nutricion/coex-nutri/coex-nutri.component').then(c => c.CoexNutriComponent)
+          },
+          {
+            path: 'citas',
+            loadComponent: () => import('./nutricion/citas-nutri/citas-nutri.component').then(c => c.CitasNutriComponent)
+          },
+          {
+            path: 'reportes',
+            loadComponent: () => import('./std/reportes/reportes-inicio.component').then(c => c.ReportesInicioComponent)
+          }
+        ]
       },
       {
         path: 'citas-nutri',
-        loadComponent: () => import('./nutricion/citas-nutri/citas-nutri.component').then(c => c.CitasNutriComponent),
-        canActivate: [roleGuard(['admin', 'nutric'])]
+        redirectTo: 'menu-nutri/citas',
+        pathMatch: 'full'
       },
       {
         path: 'coex-nutri',
-        loadComponent: () => import('./nutricion/coex-nutri/coex-nutri.component').then(c => c.CoexNutriComponent),
-        canActivate: [roleGuard(['admin', 'nutric'])]
+        redirectTo: 'menu-nutri/coex',
+        pathMatch: 'full'
       },
 
-      // Odonto
+      // Odontología — barra lateral con rutas hijas
       {
         path: 'menu-odonto',
-        loadComponent: () => import('./odontologia/menu-odonto/menu-odonto.component').then(c => c.MenuOdontoComponent),
-        canActivate: [roleGuard(['admin', 'odonto'])]
+        loadComponent: () => import('./shared/module-shell/module-shell.component').then(c => c.ModuleShellComponent),
+        canActivate: [roleGuard(['admin', 'odonto'])],
+        data: { module: ODONTOLOGIA_NAV },
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'consultar' },
+          {
+            path: 'consultar',
+            loadComponent: () => import('./std/consultor/consultor.component').then(c => c.ConsultorComponent)
+          },
+          {
+            path: 'coex',
+            loadComponent: () => import('./odontologia/coex-odonto/coex-odonto.component').then(c => c.CoexOdontoComponent)
+          },
+          {
+            path: 'citas',
+            loadComponent: () => import('./odontologia/citas-odonto/citas-odonto.component').then(c => c.CitasOdontoComponent)
+          },
+          {
+            path: 'reportes',
+            loadComponent: () => import('./std/reportes/reportes-inicio.component').then(c => c.ReportesInicioComponent)
+          }
+        ]
       },
       {
         path: 'citas-odonto',
-        loadComponent: () => import('./odontologia/citas-odonto/citas-odonto.component').then(c => c.CitasOdontoComponent),
-        canActivate: [roleGuard(['admin', 'odonto'])]
+        redirectTo: 'menu-odonto/citas',
+        pathMatch: 'full'
       },
       {
         path: 'coex-odonto',
-        loadComponent: () => import('./odontologia/coex-odonto/coex-odonto.component').then(c => c.CoexOdontoComponent),
-        canActivate: [roleGuard(['admin', 'odonto'])]
+        redirectTo: 'menu-odonto/coex',
+        pathMatch: 'full'
       },
 
-      //TrabajoSocial
+      // Trabajo Social — barra lateral con rutas hijas
       {
         path: 'TrabajoSocial',
-        loadComponent: () => import('./trabajoSocial/trabajosocial/menuts.component').then(c => c.MenutsComponent),
-        canActivate: [roleGuard(['admin', 'ts'])]
-      },
-{
-        path: 'enfermeria',
-        loadComponent: () => import('./enfermeria/menu-enfermeria/menu-enfermeria.component').then(c => c.MenuEnfermeriaComponent),
-        canActivate: [roleGuard(['admin', 'editor', 'regular', 'read_only'])]
+        loadComponent: () => import('./shared/module-shell/module-shell.component').then(c => c.ModuleShellComponent),
+        canActivate: [roleGuard(['admin', 'ts'])],
+        data: { module: TRABAJO_SOCIAL_NAV },
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'consultar' },
+          {
+            path: 'consultar',
+            loadComponent: () => import('./std/consultor/consultor.component').then(c => c.ConsultorComponent)
+          },
+          {
+            path: 'nacimientos',
+            loadComponent: () => import('./trabajoSocial/nacimientos/nacimientos-ts.component').then(c => c.NacimientosTsComponent)
+          },
+          {
+            path: 'reportes',
+            loadComponent: () => import('./std/reportes/reportes-inicio.component').then(c => c.ReportesInicioComponent)
+          }
+        ]
       },
       {
         path: 'ts-nacimientos',
-        loadComponent: () => import('./trabajoSocial/nacimientos/nacimientos-ts.component').then(c => c.NacimientosTsComponent),
-        canActivate: [roleGuard(['admin', 'ts'])]
+        redirectTo: 'TrabajoSocial/nacimientos',
+        pathMatch: 'full'
+      },
+      // Enfermería — barra lateral con rutas hijas
+      {
+        path: 'enfermeria',
+        loadComponent: () => import('./enfermeria/menu-enfermeria/menu-enfermeria.component').then(c => c.MenuEnfermeriaComponent),
+        canActivate: [roleGuard(['admin', 'paramedic', 'read_only'])],
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'notas-medicas' },
+          {
+            path: 'pacientes-activos',
+            loadComponent: () => import('./medica/pacienteActivos/pacienteActivos.component').then(c => c.PacienteActivosComponent)
+
+          },
+          {
+            path: 'notas-medicas',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'notas-medicas/:consultaId',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'historia-clinica',
+            loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
+          },
+          {
+            path: 'historia-clinica/:id',
+            loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
+          },
+          {
+            path: 'quirofano',
+            loadComponent: () => import('./medica/quirofano/quirofano.component').then(c => c.QuirofanoComponent)
+
+          },
+          {
+            path: 'censo-camas',
+            loadComponent: () => import('./std/censo-camas/censo-camas-list.component').then(c => c.CensoCamasListComponent)
+          },
+          {
+            path: 'censo-camas/nuevo',
+            loadComponent: () => import('./std/censo-camas/censo-camas-form.component').then(c => c.CensoCamasFormComponent)
+          },
+          {
+            path: 'censo-camas/editar/:id',
+            loadComponent: () => import('./std/censo-camas/censo-camas-form.component').then(c => c.CensoCamasFormComponent)
+          },
+          {
+            path: 'medicamentos',
+            loadComponent: () => import('./enfermeria/medicamentos/medicamentos-enfermeria.component').then(c => c.MedicamentosEnfermeriaComponent)
+          },
+          {
+            path: 'reportes',
+            loadComponent: () => import('./std/reportes/reportes-inicio.component').then(c => c.ReportesInicioComponent)
+          }
+        ]
+      },
+      {
+        path: 'ts-nacimientos',
+        redirectTo: 'TrabajoSocial/nacimientos',
+        pathMatch: 'full'
       },
 
-      //UISAU
+      // UISAU — barra lateral con rutas hijas
       {
         path: 'uisau',
-        loadComponent: () => import('./uisau/uisaMenu/uisauMenu.component').then(c => c.UisauMenuComponent),
-        canActivate: [roleGuard(['admin', 'uisau'])]
+        loadComponent: () => import('./shared/module-shell/module-shell.component').then(c => c.ModuleShellComponent),
+        canActivate: [roleGuard(['admin', 'uisau'])],
+        data: { module: UISAU_NAV },
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'consultar' },
+          {
+            path: 'consultar',
+            loadComponent: () => import('./std/consultor/consultor.component').then(c => c.ConsultorComponent)
+          },
+          {
+            path: 'lista',
+            loadComponent: () => import('./uisau/encamamiento/encamamiento.component').then(c => c.EncamamientoComponent)
+          },
+          {
+            path: 'nota',
+            loadComponent: () => import('./uisau/notaUisau/notaUisau.component').then(c => c.NotaUisauComponent)
+          },
+          {
+            path: 'nota/paciente/:pacienteId',
+            loadComponent: () => import('./uisau/notaUisau/notaUisau.component').then(c => c.NotaUisauComponent)
+          },
+          {
+            path: 'nota/:consultaId',
+            loadComponent: () => import('./uisau/notaUisau/notaUisau.component').then(c => c.NotaUisauComponent)
+          },
+          {
+            path: 'reportes',
+            loadComponent: () => import('./std/reportes/reportes-inicio.component').then(c => c.ReportesInicioComponent)
+          }
+        ]
       },
       {
         path: 'encamamiento',
-        loadComponent: () => import('./uisau/encamamiento/encamamiento.component').then(c => c.EncamamientoComponent),
-        canActivate: [roleGuard(['admin', 'uisau'])]
+        redirectTo: 'uisau/lista',
+        pathMatch: 'full'
       },
       {
         path: 'notaUisau/paciente/:pacienteId',
-        loadComponent: () => import('./uisau/notaUisau/notaUisau.component').then(c => c.NotaUisauComponent),
-        canActivate: [roleGuard(['admin', 'uisau'])]
+        redirectTo: 'uisau/nota/paciente/:pacienteId',
+        pathMatch: 'full'
       },
       {
         path: 'notaUisau/:consultaId',
-        loadComponent: () => import('./uisau/notaUisau/notaUisau.component').then(c => c.NotaUisauComponent),
-        canActivate: [roleGuard(['admin', 'uisau'])]
+        redirectTo: 'uisau/nota/:consultaId',
+        pathMatch: 'full'
       },
       {
         path: 'notaUisau',
-        loadComponent: () => import('./uisau/notaUisau/notaUisau.component').then(c => c.NotaUisauComponent),
-        canActivate: [roleGuard(['admin', 'uisau'])]
+        redirectTo: 'uisau/nota',
+        pathMatch: 'full'
       },
 
       // Nacimientos (std)
       {
         path: 'nacimientos-std',
-        loadComponent: () => import('./std/nacimientos/lista-nacimientos/lista-nacimientos.component').then(c => c.ListaNacimientosComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
+        redirectTo: 'estadistica/nacimientos',
+        pathMatch: 'full'
       },
 
       // SIGSA-3
       {
         path: 'sigsa3',
-        loadComponent: () => import('./std/sigsa3/sigsa3-list/sigsa3-list.component').then(c => c.Sigsa3ListComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
+        redirectTo: 'estadistica/sigsa3',
+        pathMatch: 'full'
       },
       {
         path: 'sigsa3/nuevo',
@@ -575,8 +972,8 @@ export const routes: Routes = [
       // SIGSA-3 Registros (normalizados)
       {
         path: 'sigsa3-registros',
-        loadComponent: () => import('./std/sigsa3-registros/sigsa3-registros-list/sigsa3-registros-list.component').then(c => c.Sigsa3RegistrosListComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
+        redirectTo: 'estadistica/sigsa3-registros',
+        pathMatch: 'full'
       },
       {
         path: 'sigsa3-registros/nuevo',
@@ -592,8 +989,8 @@ export const routes: Routes = [
       // Censo de Camas
       {
         path: 'censo-camas',
-        loadComponent: () => import('./std/censo-camas/censo-camas-list.component').then(c => c.CensoCamasListComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
+        redirectTo: 'estadistica/censo-camas',
+        pathMatch: 'full'
       },
       {
         path: 'censo-camas/nuevo',
@@ -621,10 +1018,11 @@ export const routes: Routes = [
         canActivate: [roleGuard(['admin', 'std'])]
       },
 
-      // Reportes y Estadísticas — submenú lateral con rutas hijas
+      // Reportes y Estadísticas — submenú lateral con rutas hijas (se conserva)
       {
         path: 'reportes',
-        loadComponent: () => import('./std/reportes/reportes.component').then(c => c.ReportesComponent),
+        loadComponent: () => import('./shared/module-shell/module-shell.component').then(c => c.ModuleShellComponent),
+        data: { module: REPORTES_NAV },
         // canActivate: [roleGuard(['admin', 'std'])],
         children: [
           {

@@ -48,7 +48,7 @@ export class RecepcionComponent implements OnInit, OnDestroy {
 
 
   // ── Paginación limit+1 ─────────────────────────────────────
-  readonly pageSize = 6;
+  readonly pageSize = 10;
   totalDeRegistros = 0;
   paginaActual: number = 1;
   finPagina: boolean = false;
@@ -323,9 +323,9 @@ export class RecepcionComponent implements OnInit, OnDestroy {
 
   toggleFiltrar(): void { this.filtrar = !this.filtrar; }
 
-  agregar(): void { this.router.navigate(['/pacientes']); }
+  agregar(): void { this.router.navigate(['/registros/pacientes']); }
   verDetalle(id: number): void { this.router.navigate(['/detalleAdmision', id]); }
-  volver(): void { this.router.navigate(['/registros']); }
+  volver(): void { this.router.navigate(['/registros/pacientes']); }
 
   trackById(index: number, item: any): any {
     return item.id ?? index;

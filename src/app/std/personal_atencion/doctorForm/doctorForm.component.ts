@@ -141,7 +141,7 @@ export class DoctorFormComponent implements OnInit {
         payload
       ).subscribe({
         next: () => {
-          this.router.navigate(['/doctores']);
+          this.router.navigate(['/estadistica/doctores']);
         },
         error: (err) => {
           console.error(err);
@@ -158,7 +158,7 @@ export class DoctorFormComponent implements OnInit {
     // ======= CREAR =======
     this.api.crearPersonalAtencion(payload as PersonalAtencionCreate).subscribe({
       next: () => {
-        this.router.navigate(['/doctores']);
+        this.router.navigate(['/estadistica/doctores']);
       },
       error: (err) => {
         console.error(err);

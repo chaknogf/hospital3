@@ -100,7 +100,7 @@ export class ListarDefuncionesComponent implements OnInit, OnDestroy {
 
   editar(id: number) { this.router.navigate(['/cons-def', id]); }
   imprimir(id: number) { this.router.navigate(['/cdprint', id]); }
-  volver() { this.router.navigate(['/registros']); }
+  volver() { this.router.navigate(['/registros/pacientes']); }
   agregar() { this.router.navigate(['/nueva-cons-def']); }
 
   get totalPaginas(): number { return Math.ceil(this.totalDeRegistros / this.pageSize) || 1; }

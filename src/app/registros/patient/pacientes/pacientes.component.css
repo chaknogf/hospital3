@@ -317,3 +317,75 @@ mark {
   background: rgba(239, 68, 68, 0.12);
   border-color: rgba(239, 68, 68, 0.5);
 }
+
+/* ── BARRA SUPERIOR (compacta, una fila) ── */
+.pac-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--theme-space-2);
+  margin: 0 0 var(--theme-space-2);
+  padding: 0 0 var(--theme-space-2);
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.pac-toolbar__title {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--theme-font-size-lg);
+  font-weight: var(--theme-font-weight-heavy);
+  letter-spacing: -0.01em;
+  color: var(--theme-text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pac-toolbar__action {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 var(--theme-space-3);
+  font-family: var(--theme-font-ui);
+  font-size: var(--theme-font-size-sm);
+  font-weight: var(--theme-font-weight-bold);
+  color: var(--theme-text);
+  background: var(--theme-gradient-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-md);
+  cursor: pointer;
+  transition: var(--theme-transition);
+}
+
+.pac-toolbar__action:hover {
+  color: var(--theme-primary);
+  border-color: color-mix(in srgb, var(--theme-primary) 45%, transparent);
+}
+
+.pac-toolbar__action:focus-visible {
+  outline: 2px solid var(--theme-focus-ring);
+  outline-offset: 2px;
+}
+
+.pac-toolbar__icon {
+  display: inline-flex;
+}
+
+.pac-toolbar__icon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 480px) {
+  .pac-toolbar__action span:last-child {
+    display: none;
+  }
+
+  .pac-toolbar__action {
+    padding: 0 10px;
+  }
+}
+

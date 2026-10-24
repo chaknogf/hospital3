@@ -72,7 +72,7 @@ export class RegistrosMedicosComponent implements OnInit {
       { nombre: 'Citas', descripcion: 'Gestor de citas', ruta: '/citas', icon: 'calendar' },
       { nombre: 'Nacimientos', descripcion: 'Constancias de nacimiento', ruta: '/nacimientos', icon: 'baby' },
       { nombre: 'Defunciones', descripcion: 'Informe de Defunción formato oficial', ruta: '/defunciones', icon: 'defuncion' },
-      { nombre: 'Medicos', descripcion: 'Medicos Registrados', ruta: '/doctores', icon: 'doctor' },
+      { nombre: 'Personal de Salud', descripcion: 'Medicos, Especialistas y otro personal', ruta: '/doctores', icon: 'doctor' },
 
     ];
 

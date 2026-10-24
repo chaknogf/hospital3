@@ -5,12 +5,6 @@
       <h1 class="menu-title">{{ title }}</h1>
       <p class="menu-subtitle">{{ subtitle }}</p>
     </div>
-    <button class="back-btn" (click)="regresar()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M19 12H5m0 0 6-6m-6 6 6 6"/>
-      </svg>
-      Menú principal
-    </button>
   </header>
 
   <main class="menu-grid">
@@ -18,7 +12,8 @@
       <button
         class="menu-card"
         [style.--card-accent]="menuColor($index)"
-        (click)="navegar(opt.ruta)">
+        (click)="navegar(opt.ruta)"
+      >
         <span class="menu-card-icon">
           @if (icons[opt.icon]) {
             <span [innerHTML]="icons[opt.icon]"></span>
@@ -30,8 +25,19 @@
           <span class="menu-card-name">{{ opt.nombre }}</span>
           <span class="menu-card-desc">{{ opt.descripcion }}</span>
         </span>
-        <svg class="menu-card-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m9 18 6-6-6-6"/>
+        <svg
+          class="menu-card-arrow"
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m9 18 6-6-6-6" />
         </svg>
       </button>
     }

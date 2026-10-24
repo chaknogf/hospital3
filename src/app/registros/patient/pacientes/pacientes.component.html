@@ -1,21 +1,13 @@
 <div class="aurora-paciente-container" [class.d-none]="modalActivo">
-  <!-- Botones superiores -->
-  <div
-    class="botones justify-content-between"
-    [ngClass]="{ 'd-none': filtrar }"
-  >
-    <button type="button" (click)="volver()">
-      <span [innerHTML]="icons['menu']"></span>
-      Menu
-    </button>
+  <!-- Barra superior: título y acción principal en una sola fila -->
+  <header class="pac-toolbar" [ngClass]="{ 'd-none': filtrar }">
+    <h1 class="pac-toolbar__title">Pacientes</h1>
 
-    <h1 class="text-white">Pacientes</h1>
-
-    <button type="button" (click)="toggleFiltrar()">
-      <span [innerHTML]="icons['find']"></span>
-      Buscar
+    <button type="button" class="pac-toolbar__action" (click)="toggleFiltrar()">
+      <span class="pac-toolbar__icon" [innerHTML]="icons['find']"></span>
+      <span>Buscar</span>
     </button>
-  </div>
+  </header>
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
@@ -191,8 +183,11 @@
           <td data-label="Nombre:">
             <div class="nombre-table">
               <p [innerHTML]="nombres(paciente) | highlight: filtros.q"></p>
-              <p class="mt-1" [innerHTML]="apellidos(paciente) | highlight: filtros.q"
-                 [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'"></p>
+              <p
+                class="mt-1"
+                [innerHTML]="apellidos(paciente) | highlight: filtros.q"
+                [ngClass]="paciente.sexo === 'M' ? 'hombre' : 'mujer'"
+              ></p>
             </div>
           </td>
           <td data-label="Identificador:" class="gap-2">

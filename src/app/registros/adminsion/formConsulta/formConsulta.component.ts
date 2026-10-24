@@ -331,7 +331,7 @@ export class FormConsultaComponent implements OnInit, OnDestroy {
     return !!this.egresoForm.get('condicion')?.value;
   }
 
-  volver(): void { this.router.navigate(['/consultas']); }
+  volver(): void { this.router.navigate(['/registros/consultas']); }
 
   editarPaciente(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
   private mostrarError(accion: string, error: any): void {

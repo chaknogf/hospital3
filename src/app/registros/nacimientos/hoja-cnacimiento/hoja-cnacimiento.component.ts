@@ -112,6 +112,6 @@ export class HojaCnacimientoComponent implements OnInit, OnDestroy {
   }
 
   regresar(): void {
-    this.router.navigate(['/nacimientos']);
+    this.router.navigate(['/registros/nacimientos']);
   }
 }

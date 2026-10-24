@@ -210,7 +210,7 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
   }
 
   notaMedica(consultaId: number): void {
-    this.router.navigate(['/notaMedica', consultaId]);
+    this.router.navigate(['/enfermeria/notas-medicas', consultaId]);
   }
 
   verHistoria(pacienteId: number): void {

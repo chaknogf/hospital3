@@ -1,4 +1,4 @@
-<div class="consultor-layout">
+<div class="consultor-layout" [class.filters-open]="sidebarAbierto">
   <!-- ══ BACKDROP (mobile overlay) ══════════════════════════ -->
   <div
     class="sidebar-backdrop"
@@ -14,12 +14,21 @@
     </div>
 
     <div class="sidebar-header">
-      <button class="btn" (click)="regresar()">❌ Salir</button>
+      <!-- <button class="btn" (click)="regresar()">❌ Salir</button> -->
       <span class="sidebar-title">{{
         modoBusqueda === "pacientes" ? "Buscar paciente" : "Buscar consulta"
       }}</span>
       <button class="btn-clear" (click)="limpiarFiltros()" title="Limpiar">
         Reset
+      </button>
+      <button
+        class="btn-clear filters-close"
+        type="button"
+        (click)="cerrarSidebar()"
+        title="Ocultar filtros"
+        aria-label="Ocultar filtros"
+      >
+        ✕
       </button>
     </div>
 
@@ -200,6 +209,16 @@
 
   <!-- ══ MAIN ══════════════════════════════════════════════════ -->
   <main class="main-panel">
+    <!-- Botón para abrir filtros (solo escritorio, cuando están ocultos) -->
+    <button
+      class="filters-open-btn"
+      type="button"
+      [class.is-hidden]="sidebarAbierto"
+      (click)="toggleSidebar()"
+      [attr.aria-expanded]="sidebarAbierto"
+    >
+      🔍 Filtros
+    </button>
     <!-- Overlay de resultados -->
     @if (mostrarTabla) {
       <div class="overlay" (click)="cerrarTabla()">
@@ -481,7 +500,9 @@
               <div class="dc-field">
                 <span class="dc-lbl">Exp. anteriores</span>
                 <span class="dc-val">{{
-                  paciente.datos_extra?.["expedientes_anteriores"]?.join(", ") || "—"
+                  paciente.datos_extra?.["expedientes_anteriores"]?.join(
+                    ", "
+                  ) || "—"
                 }}</span>
               </div>
             </div>

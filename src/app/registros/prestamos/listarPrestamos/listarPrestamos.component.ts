@@ -13,7 +13,7 @@ import {
   tablaShanonIcon, compartirIcon, prestarIcon, recibidoIcon
 } from '../../../shared/icons/svg-icon';
 import { Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -33,6 +33,7 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
   private location = inject(Location);
   private sanitizer = inject(DomSanitizer);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
@@ -172,7 +173,7 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
   }
 
   editar(id: number): void {
-    this.router.navigate(['/editarPrestamo', id]);
+    this.router.navigate(['../editarPrestamo', id], { relativeTo: this.route });
   }
 
   // ======= NUEVO PRÉSTAMO (búsqueda por expediente) =======
@@ -197,7 +198,7 @@ export class ListarPrestamosComponent implements OnInit, OnDestroy {
           this.cdr.markForCheck();
           return;
         }
-        this.router.navigate(['/prestamo', p.id]);
+        this.router.navigate(['../prestamo', p.id], { relativeTo: this.route });
       },
       error: () => {
         this.buscandoPaciente = false;

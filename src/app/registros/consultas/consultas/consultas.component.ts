@@ -203,14 +203,14 @@ export class ConsultasComponent implements OnInit, OnDestroy {
   }
 
   editar(id: number) {
-    this.router.navigate(['/editarAdmision', id, 'consulta']);
+    this.router.navigate(['/registros/editarAdmision', id, 'consulta']);
   }
   agregar() {
-    this.router.navigate(['/pacientes']);
+    this.router.navigate(['/registros/pacientes']);
   }
 
   verDetalle(consultaId: number) {
-    this.router.navigate(['/detalleAdmision', consultaId]);
+    this.router.navigate(['/registros/detalleAdmision', consultaId]);
   }
 
   imprimir(consultaId: number) {

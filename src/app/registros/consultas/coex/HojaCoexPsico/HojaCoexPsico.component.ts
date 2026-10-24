@@ -209,6 +209,6 @@ export class HojaCoexPsicoComponent implements OnInit, OnDestroy {
 
   regresar(): void {
     // this.location.back();
-    this.router.navigate(['/coex']);
+    this.router.navigate(['/registros/coex']);
   }
 }

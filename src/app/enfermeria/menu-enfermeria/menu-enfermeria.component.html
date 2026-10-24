@@ -1,39 +1,63 @@
-<div class="menu-shell" [style.--accent]="accent">
-  <header class="menu-header">
-    <div class="menu-heading">
-      <p class="menu-kicker">Módulo</p>
-      <h1 class="menu-title">{{ title }}</h1>
-      <p class="menu-subtitle">{{ subtitle }}</p>
-    </div>
-    <button class="back-btn" (click)="navegar('/dash')">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M19 12H5m0 0 6-6m-6 6 6 6"/>
-      </svg>
-      Menú principal
-    </button>
-  </header>
+<div class="enf-shell" [style.--accent]="accent">
+  <aside class="enf-sidebar" [class.is-open]="sidebarAbierta()">
+    <header class="enf-brand">
+      <p class="enf-kicker">Módulo</p>
+      <h1 class="enf-title">{{ title }}</h1>
+      <p class="enf-subtitle">{{ subtitle }}</p>
+    </header>
 
-  <main class="menu-grid">
-    @for (opt of options; track opt.ruta) {
+    <nav class="enf-nav" aria-label="Secciones de Enfermería">
+      @for (opt of options; track opt.ruta) {
+        <a
+          class="enf-link"
+          [routerLink]="opt.ruta"
+          routerLinkActive="is-active"
+          [style.--card-accent]="menuColor($index)"
+          (click)="cerrarSidebar()">
+          <span class="enf-link-icon">
+            @if (icons[opt.icon]) {
+              <span [innerHTML]="icons[opt.icon]"></span>
+            } @else {
+              <span class="enf-link-dot"></span>
+            }
+          </span>
+          <span class="enf-link-body">
+            <span class="enf-link-name">{{ opt.nombre }}</span>
+            <span class="enf-link-desc">{{ opt.descripcion }}</span>
+          </span>
+        </a>
+      }
+    </nav>
+
+    <a class="enf-back" routerLink="/dash">
+      @if (icons['regresar']) {
+        <span class="enf-back-icon" [innerHTML]="icons['regresar']"></span>
+      }
+      Menú principal
+    </a>
+  </aside>
+
+  <div
+    class="enf-overlay"
+    [class.is-visible]="sidebarAbierta()"
+    (click)="cerrarSidebar()"
+    aria-hidden="true"></div>
+
+  <main class="enf-content">
+    <header class="enf-topbar">
       <button
-        class="menu-card"
-        [style.--card-accent]="menuColor($index)"
-        (click)="navegar(opt.ruta)">
-        <span class="menu-card-icon">
-          @if (icons[opt.icon]) {
-            <span [innerHTML]="icons[opt.icon]"></span>
-          } @else {
-            <span class="menu-card-dot"></span>
-          }
-        </span>
-        <span class="menu-card-body">
-          <span class="menu-card-name">{{ opt.nombre }}</span>
-          <span class="menu-card-desc">{{ opt.descripcion }}</span>
-        </span>
-        <svg class="menu-card-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m9 18 6-6-6-6"/>
-        </svg>
+        class="enf-toggle"
+        type="button"
+        (click)="alternarSidebar()"
+        [attr.aria-expanded]="sidebarAbierta()"
+        aria-label="Abrir menú de Enfermería">
+        @if (icons['menu']) {
+          <span [innerHTML]="icons['menu']"></span>
+        }
       </button>
-    }
+      <span class="enf-topbar-title">{{ title }}</span>
+    </header>
+
+    <router-outlet></router-outlet>
   </main>
 </div>

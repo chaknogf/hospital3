@@ -245,7 +245,7 @@ export class NotaUisauComponent implements OnInit, OnDestroy {
   private esNoArchivada = (c: ConsultasIdPaciente): boolean => c.ultimo_estado !== 'archivo';
 
   seleccionarConsulta(consulta: ConsultasIdPaciente): void {
-    this.router.navigate(['/notaUisau', consulta.id]);
+    this.router.navigate(['/uisau', 'nota', consulta.id]);
   }
 
   /* ── Diagnósticos / artículos ──────────────────────────── */

@@ -227,7 +227,7 @@ export class HojaComponent implements OnInit, OnDestroy {
   }
 
   regresar(): void {
-    this.router.navigate(['/emergencias']);
+    this.router.navigate(['/registros/emergencias']);
     // this.location.back();
   }
 }

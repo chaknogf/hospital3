@@ -1,28 +1,20 @@
 <div class="aurora-paciente-container" [class.d-none]="visible">
-  <!-- Botones superiores -->
-  <div
-    class="botones justify-content-between"
-    [ngClass]="{ 'd-none': filtrar }"
-    >
-    <button type="button" (click)="volver()">
-      <span [innerHTML]="menuIcon"></span>
-      Menu
-    </button>
+  <!-- Barra superior: título y acción principal en una sola fila -->
+  <header class="pac-toolbar" [ngClass]="{ 'd-none': filtrar }">
+    <h1 class="pac-toolbar__title">Citas de Pacientes</h1>
 
-    <h1 class="text-white">Citas</h1>
-
-    <button type="button" (click)="toggleFiltros()">
-      <span [innerHTML]="findIcon"></span>
-      Buscar
+    <button type="button" class="pac-toolbar__action" (click)="toggleFiltros()">
+      <span class="pac-toolbar__icon" [innerHTML]="findIcon"></span>
+      <span>Buscar</span>
     </button>
-  </div>
+  </header>
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || visible }">
     <form
       class="form-filtros"
       (submit)="cargarCitas(); $event.preventDefault()"
-      >
+    >
       <fieldset class="fieldset-filtros">
         <label class="label-filtros">Expediente</label>
         <input
@@ -31,7 +23,7 @@
           [(ngModel)]="filtros.expediente"
           name="expediente"
           placeholder="Buscar por expediente"
-          />
+        />
       </fieldset>
 
       <fieldset class="fieldset-filtros">
@@ -40,7 +32,7 @@
           class="input-filtros"
           [(ngModel)]="filtros.especialidad"
           name="especialidad"
-          >
+        >
           <option value="">Todas las especialidades</option>
           @for (esp of especialidadesList; track esp) {
             <option [value]="esp.value">
@@ -57,7 +49,7 @@
           [(ngModel)]="filtros.fecha_cita"
           (change)="cargarCitas()"
           name="fecha"
-          />
+        />
       </fieldset>
 
       <!-- Botones -->
@@ -100,7 +92,7 @@
           <tr
             class="aurora-table-row"
             [class.touch-active]="rowActiva === cita.id"
-            >
+          >
             <!-- Paciente -->
             <td data-label="Paciente:">
               <div class="nombre-table">
@@ -112,7 +104,7 @@
                 <p
                   class="p-0 m-0 text-uppercase"
                   [ngClass]="cita.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-                  >
+                >
                   {{ cita.paciente.nombre.primer_apellido }}
                   {{ cita.paciente.nombre.segundo_apellido }}
                   {{ cita.paciente.nombre.apellido_casada }}
@@ -145,10 +137,13 @@
             <td
               class="secundario d-flex gap-2 align-items-center"
               data-label="No.:"
-              >
+            >
               <strong class="cell-index">{{ i + 1 }}</strong>
               <div class="botones-opt">
-                <button (click)="editarCita(cita.id); $event.stopPropagation()" data-label="Editar">
+                <button
+                  (click)="editarCita(cita.id); $event.stopPropagation()"
+                  data-label="Editar"
+                >
                   <span [innerHTML]="editIcon"></span>
                 </button>
               </div>
@@ -184,7 +179,7 @@
       class="pag-btn"
       [disabled]="!hayPaginaAnterior"
       (click)="cambiarPagina(-1)"
-      >
+    >
       <span [innerHTML]="skipLeft"></span>
     </button>
 
@@ -202,7 +197,7 @@
         class="pag-num"
         [class.pag-num-active]="p === paginaActual"
         (click)="irAPagina(p)"
-        >
+      >
         {{ p }}
       </button>
     }
@@ -222,7 +217,7 @@
       class="pag-btn"
       [disabled]="!hayPaginaSiguiente"
       (click)="cambiarPagina(1)"
-      >
+    >
       <span [innerHTML]="skipRight"></span>
     </button>
 

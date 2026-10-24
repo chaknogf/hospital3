@@ -218,7 +218,7 @@ export class EmergenciasListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/editarAdmision', id, 'emergencia']);
   }
   agregar() {
-    this.router.navigate(['/pacientes']);
+    this.router.navigate(['/registros/pacientes']);
   }
 
   verDetalle(consultaId: number) {
@@ -233,7 +233,7 @@ export class EmergenciasListComponent implements OnInit, OnDestroy {
   }
 
   volver() {
-    this.router.navigate(['/registros']);
+    this.router.navigate(['/registros/pacientes']);
     // this.location.back();
   }
 

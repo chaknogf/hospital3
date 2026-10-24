@@ -1,23 +1,15 @@
 <!-- doctores.component.html -->
 
 <div class="aurora-paciente-container" [class.d-none]="modalActivo">
-  <!-- HEADER -->
-  <div
-    class="botones justify-content-between"
-    [ngClass]="{ 'd-none': filtrar }"
-    >
-    <button type="button" (click)="volver()">
-      <span [innerHTML]="icons['menu']"></span>
-      Menu
-    </button>
+  <!-- Barra superior: título y acción principal en una sola fila -->
+  <header class="pac-toolbar" [ngClass]="{ 'd-none': filtrar }">
+    <h1 class="pac-toolbar__title">Personal de Salud</h1>
 
-    <h1 class="text-white">Personal de Atención</h1>
-
-    <button type="button" (click)="toggleFiltrar()">
-      <span [innerHTML]="icons['find']"></span>
-      Buscar
+    <button type="button" class="pac-toolbar__action" (click)="toggleFiltrar()">
+      <span class="pac-toolbar__icon" [innerHTML]="icons['find']"></span>
+      <span>Buscar</span>
     </button>
-  </div>
+  </header>
 
   <!-- FILTROS -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
@@ -32,7 +24,7 @@
             [(ngModel)]="filtros.nombre"
             name="nombre"
             placeholder="Ej: Juan Pérez"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -44,7 +36,7 @@
             [(ngModel)]="filtros.colegiado"
             name="colegiado"
             placeholder="12345"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -54,7 +46,7 @@
             class="input-filtros"
             [(ngModel)]="filtros.especialidad_id"
             name="especialidad_id"
-            >
+          >
             <option [ngValue]="''">Todas</option>
             @for (e of especialidades; track e.id) {
               <option [ngValue]="e.id">{{ e.nombre }}</option>
@@ -114,7 +106,7 @@
             class="aurora-table-row"
             [class.touch-active]="rowActiva === data.id"
             (click)="activarFila(data.id)"
-            >
+          >
             <td data-label="Nombre">
               <div class="nombre-table">
                 <strong class="text-uppercase">
@@ -139,7 +131,10 @@
             </td>
             <td class="secundario">
               <div class="d-flex gap-1">
-                <button (click)="editar(data.id); $event.stopPropagation()" data-label="Editar">
+                <button
+                  (click)="editar(data.id); $event.stopPropagation()"
+                  data-label="Editar"
+                >
                   <span [innerHTML]="icons['edit']"></span>
                 </button>
               </div>
@@ -173,7 +168,7 @@
         class="pag-btn"
         [disabled]="!hayPaginaAnterior"
         (click)="cambiarPagina(-1)"
-        >
+      >
         <span [innerHTML]="icons['skipLeft']"></span>
       </button>
 
@@ -189,7 +184,7 @@
           class="pag-num"
           [class.pag-num-active]="p === paginaActual"
           (click)="irAPagina(p)"
-          >
+        >
           {{ p }}
         </button>
       }
@@ -207,7 +202,7 @@
         class="pag-btn"
         [disabled]="!hayPaginaSiguiente"
         (click)="cambiarPagina(1)"
-        >
+      >
         <span [innerHTML]="icons['skipRight']"></span>
       </button>
 

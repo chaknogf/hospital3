@@ -1,11 +1,14 @@
 <div class="page-container">
   <div class="page-header">
-    <button class="btn-back" (click)="volver()">← Volver</button>
-    <h1>{{ enEdicion ? 'Editar Registro de Censo' : 'Nuevo Registro de Censo' }}</h1>
+    <h1>
+      {{ enEdicion ? "Editar Registro de Censo" : "Nuevo Registro de Censo" }}
+    </h1>
   </div>
 
   @if (mostrarAlerta) {
-    <div class="alerta-exito" [class.alerta-error]="tipoAlerta === 'error'">{{ mensajeAlerta }}</div>
+    <div class="alerta-exito" [class.alerta-error]="tipoAlerta === 'error'">
+      {{ mensajeAlerta }}
+    </div>
   }
 
   @if (cargando) {
@@ -44,28 +47,37 @@
               <div class="capacidad-info">
                 <span class="capacidad-label">
                   {{ servicioSeleccionado.nombre_servicio }} ·
-                  {{ camasOcupadasTotales }} de {{ camasCensables }} camas ocupadas
+                  {{ camasOcupadasTotales }} de {{ camasCensables }} camas
+                  ocupadas
                 </span>
-                <span class="capacidad-pct" [class.pct-critico]="capacidadNivel === 'critico'"
+                <span
+                  class="capacidad-pct"
+                  [class.pct-critico]="capacidadNivel === 'critico'"
                   [class.pct-alto]="capacidadNivel === 'alto'"
                   [class.pct-medio]="capacidadNivel === 'medio'"
-                  [class.pct-bajo]="capacidadNivel === 'bajo'">
+                  [class.pct-bajo]="capacidadNivel === 'bajo'"
+                >
                   {{ porcentajeOcupacion }}%
                 </span>
               </div>
               <div class="barra-capacidad">
-                <div class="barra-fill" [class.barra-critico]="capacidadNivel === 'critico'"
+                <div
+                  class="barra-fill"
+                  [class.barra-critico]="capacidadNivel === 'critico'"
                   [class.barra-alto]="capacidadNivel === 'alto'"
                   [class.barra-medio]="capacidadNivel === 'medio'"
                   [class.barra-bajo]="capacidadNivel === 'bajo'"
-                  [style.width.%]="porcentajeOcupacion"></div>
+                  [style.width.%]="porcentajeOcupacion"
+                ></div>
               </div>
               <div class="capacidad-sub">
                 <span>✔ {{ camasDisponibles }} camas disponibles</span>
-                @if (capacidadNivel === 'critico') {
-                  <span class="capacidad-aviso">⚠ Servicio al límite o sobre su capacidad</span>
+                @if (capacidadNivel === "critico") {
+                  <span class="capacidad-aviso"
+                    >⚠ Servicio al límite o sobre su capacidad</span
+                  >
                 }
-                @if (capacidadNivel === 'alto') {
+                @if (capacidadNivel === "alto") {
                   <span class="capacidad-aviso">⚠ Ocupación alta (≥80%)</span>
                 }
               </div>
@@ -74,8 +86,17 @@
 
           <!-- Acciones rápidas -->
           <div class="quick-actions">
-            <button type="button" class="btn-quick" (click)="copiarDiaAnterior()" [disabled]="copiandoDiaAnterior">
-              {{ copiandoDiaAnterior ? 'Copiando...' : '⧉ Copiar del día anterior' }}
+            <button
+              type="button"
+              class="btn-quick"
+              (click)="copiarDiaAnterior()"
+              [disabled]="copiandoDiaAnterior"
+            >
+              {{
+                copiandoDiaAnterior
+                  ? "Copiando..."
+                  : "⧉ Copiar del día anterior"
+              }}
             </button>
             @if (mostrarCopia) {
               <span class="copia-msg">{{ mensajeCopia }}</span>
@@ -86,7 +107,11 @@
           @if (existeRegistro && !enEdicion) {
             <div class="aviso-duplicado">
               ⚠ Ya existe censo para esta fecha y servicio.
-              <button type="button" class="btn-link" (click)="irAEditarExistente()">
+              <button
+                type="button"
+                class="btn-link"
+                (click)="irAEditarExistente()"
+              >
                 Abrir y editar ambos sexos
               </button>
             </div>
@@ -105,40 +130,200 @@
               <legend class="sexo-col-head">
                 <span>♂ Masculino</span>
                 <span class="sexo-status" [class.saved]="registroMasculino">
-                  {{ registroMasculino ? 'Registrado' : 'Nuevo' }}
+                  {{ registroMasculino ? "Registrado" : "Nuevo" }}
                 </span>
               </legend>
               <div class="form-grid">
-                <div class="field"><label class="field-label">Ocupados *</label><input class="field-input" type="number" min="0" formControlName="ocupados" /></div>
-                <div class="field"><label class="field-label">Otros ingresos *</label><input class="field-input" type="number" min="0" formControlName="otro_ingresos" /></div>
-                <div class="field"><label class="field-label">Ingresos *</label><input class="field-input" type="number" min="0" formControlName="ingresos" /></div>
-                <div class="field"><label class="field-label">Huéspedes *</label><input class="field-input" type="number" min="0" formControlName="huespedes" /></div>
-                <div class="field"><label class="field-label">Emergencia *</label><input class="field-input" type="number" min="0" formControlName="emergencia" /></div>
-                <div class="field"><label class="field-label">Egresos *</label><input class="field-input" type="number" min="0" formControlName="egresos" /></div>
-                <div class="field"><label class="field-label">Fallecidos *</label><input class="field-input" type="number" min="0" formControlName="fallecidos" /></div>
-                <div class="field"><label class="field-label">Referidos *</label><input class="field-input" type="number" min="0" formControlName="referido" /></div>
-                <div class="field"><label class="field-label">Traslados *</label><input class="field-input" type="number" min="0" formControlName="traslado" /></div>
-                <div class="field"><label class="field-label">Contraindicados *</label><input class="field-input" type="number" min="0" formControlName="contraindicados" /></div>
+                <div class="field">
+                  <label class="field-label">Ocupados *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="ocupados"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Otros ingresos *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="otro_ingresos"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Ingresos *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="ingresos"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Huéspedes *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="huespedes"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Emergencia *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="emergencia"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Egresos *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="egresos"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Fallecidos *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="fallecidos"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Referidos *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="referido"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Traslados *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="traslado"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Contraindicados *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="contraindicados"
+                  />
+                </div>
               </div>
             </fieldset>
             <fieldset class="sexo-col fem" formGroupName="femenino">
               <legend class="sexo-col-head">
                 <span>♀ Femenino</span>
                 <span class="sexo-status" [class.saved]="registroFemenino">
-                  {{ registroFemenino ? 'Registrado' : 'Nuevo' }}
+                  {{ registroFemenino ? "Registrado" : "Nuevo" }}
                 </span>
               </legend>
               <div class="form-grid">
-                <div class="field"><label class="field-label">Ocupados *</label><input class="field-input" type="number" min="0" formControlName="ocupados" /></div>
-                <div class="field"><label class="field-label">Otros ingresos *</label><input class="field-input" type="number" min="0" formControlName="otro_ingresos" /></div>
-                <div class="field"><label class="field-label">Ingresos *</label><input class="field-input" type="number" min="0" formControlName="ingresos" /></div>
-                <div class="field"><label class="field-label">Huéspedes *</label><input class="field-input" type="number" min="0" formControlName="huespedes" /></div>
-                <div class="field"><label class="field-label">Emergencia *</label><input class="field-input" type="number" min="0" formControlName="emergencia" /></div>
-                <div class="field"><label class="field-label">Egresos *</label><input class="field-input" type="number" min="0" formControlName="egresos" /></div>
-                <div class="field"><label class="field-label">Fallecidos *</label><input class="field-input" type="number" min="0" formControlName="fallecidos" /></div>
-                <div class="field"><label class="field-label">Referidos *</label><input class="field-input" type="number" min="0" formControlName="referido" /></div>
-                <div class="field"><label class="field-label">Traslados *</label><input class="field-input" type="number" min="0" formControlName="traslado" /></div>
-                <div class="field"><label class="field-label">Contraindicados *</label><input class="field-input" type="number" min="0" formControlName="contraindicados" /></div>
+                <div class="field">
+                  <label class="field-label">Ocupados *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="ocupados"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Otros ingresos *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="otro_ingresos"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Ingresos *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="ingresos"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Huéspedes *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="huespedes"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Emergencia *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="emergencia"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Egresos *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="egresos"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Fallecidos *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="fallecidos"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Referidos *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="referido"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Traslados *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="traslado"
+                  />
+                </div>
+                <div class="field">
+                  <label class="field-label">Contraindicados *</label
+                  ><input
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    formControlName="contraindicados"
+                  />
+                </div>
               </div>
             </fieldset>
           </div>
@@ -156,25 +341,49 @@
               <div class="audit-sex">
                 <strong>Masculino</strong>
                 @if (registroMasculino) {
-                  <span>{{ registroMasculino.camas_ocupadas }} camas · {{ registroMasculino.egresos_totales }} egresos</span>
-                  <small>Actualizado {{ registroExistente?.updated_at | date:'dd/MM/yyyy HH:mm' }}</small>
-                } @else { <span>Sin registro previo</span> }
+                  <span
+                    >{{ registroMasculino.camas_ocupadas }} camas ·
+                    {{ registroMasculino.egresos_totales }} egresos</span
+                  >
+                  <small
+                    >Actualizado
+                    {{
+                      registroExistente?.updated_at | date: "dd/MM/yyyy HH:mm"
+                    }}</small
+                  >
+                } @else {
+                  <span>Sin registro previo</span>
+                }
               </div>
               <div class="audit-sex">
                 <strong>Femenino</strong>
                 @if (registroFemenino) {
-                  <span>{{ registroFemenino.camas_ocupadas }} camas · {{ registroFemenino.egresos_totales }} egresos</span>
-                  <small>Actualizado {{ registroExistente?.updated_at | date:'dd/MM/yyyy HH:mm' }}</small>
-                } @else { <span>Sin registro previo</span> }
+                  <span
+                    >{{ registroFemenino.camas_ocupadas }} camas ·
+                    {{ registroFemenino.egresos_totales }} egresos</span
+                  >
+                  <small
+                    >Actualizado
+                    {{
+                      registroExistente?.updated_at | date: "dd/MM/yyyy HH:mm"
+                    }}</small
+                  >
+                } @else {
+                  <span>Sin registro previo</span>
+                }
               </div>
             </div>
           </div>
         </div>
       }
       <div class="form-actions">
-        <button type="button" class="btn-cancel" (click)="volver()">Cancelar</button>
+        <button type="button" class="btn-cancel" (click)="volver()">
+          Cancelar
+        </button>
         <button type="submit" class="btn-save" [disabled]="guardando">
-          {{ guardando ? 'Guardando...' : enEdicion ? 'Actualizar' : 'Registrar' }}
+          {{
+            guardando ? "Guardando..." : enEdicion ? "Actualizar" : "Registrar"
+          }}
         </button>
       </div>
     </form>

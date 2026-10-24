@@ -852,12 +852,12 @@ export class FormularioPacienteComponent implements OnInit, OnDestroy {
 
   // ======= MÉTODOS DE NAVEGACIÓN =======
   volver(): void {
-    //this.router.navigate(['/pacientes']);
+    //this.router.navigate(['/registros/pacientes']);
     this.location.back();
   }
 
   irRenap(): void {
-    this.router.navigate(['/renap']);
+    this.router.navigate(['/registros/renap']);
   }
 
   // ======= MANEJO DE ERRORES =======

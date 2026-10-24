@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '@services/api.service';
@@ -7,7 +8,7 @@ import { PacienteResumen } from '@models/interfaces';
 
 @Component({
   selector: 'app-personal-hospital-list',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './personal-hospital-list.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./personal-hospital-list.component.css']
@@ -15,6 +16,7 @@ import { PacienteResumen } from '@models/interfaces';
 /** Muestra los registros de personal incluidos en el informe hospitalario. */
 export class PersonalHospitalListComponent implements OnInit {
   private api = inject(ApiService);
+  private router = inject(Router);
 
   pacientes: PacienteResumen[] = [];
   cargando = false;
@@ -101,6 +103,10 @@ export class PersonalHospitalListComponent implements OnInit {
     if (pagina < 1 || pagina > this.totalPaginas) return;
     this.paginaActual = pagina;
     this.cargar();
+  }
+
+  verDetalle(id: number): void {
+    this.router.navigate(['/estadistica/detallePaciente', id]);
   }
 
   async descargarExcel(): Promise<void> {

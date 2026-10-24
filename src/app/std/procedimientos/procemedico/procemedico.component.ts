@@ -296,7 +296,7 @@ export class ProcemedicoComponent implements OnInit {
       this.api.updateProcedimientoMedico(this.procedimientoId, base as ProceMedicoUpdate).subscribe({
         next: () => {
           this.mostrarMensaje('Procedimiento actualizado correctamente');
-          this.router.navigate(['/procedimientosmenores']);
+          this.router.navigate(['/estadistica/procedimientos']);
         },
         error: err => { this.guardando = false; this.mostrarError(err); }
       });
@@ -387,7 +387,7 @@ export class ProcemedicoComponent implements OnInit {
     this.api.deleteProcedimientoMedico(this.procedimientoId).subscribe({
       next: () => {
         this.mostrarMensaje('Procedimiento eliminado correctamente');
-        this.router.navigate(['/procedimientosmenores']);
+        this.router.navigate(['/estadistica/procedimientos']);
       },
       error: err => { this.guardando = false; this.mostrarError(err); }
     });

@@ -367,22 +367,22 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
   // ══════════════════════════════════════════════════════════
 
   editar(id: number): void { this.router.navigate(['/editarAdmision', id, 'ingreso']); }
-  agregar(): void { this.router.navigate(['/pacientes']); }
+  agregar(): void { this.router.navigate(['/registros/pacientes']); }
   verDetalle(consultaId: number): void {
     this.router.navigate(['/detalleAdmision', consultaId], { queryParams: { origen: 'ingreso' } });
   }
   imprimir(consultaId: number): void { this.router.navigate(['/ingreso', consultaId]); }
-  volver(): void { this.router.navigate(['/uisau']); }
+  volver(): void { this.router.navigate(['/uisau/consultar']); }
 
   /** Abre el registro de la nota UISAU para la consulta seleccionada. */
   agregarNotaUisau(consultaId: number): void {
-    this.router.navigate(['/notaUisau', consultaId]);
+    this.router.navigate(['/uisau', 'nota', consultaId]);
   }
 
   /** Abre la historia UISAU del paciente (pestaña "Historia" de la página unificada). */
   verHistoriaUisau(pacienteId?: number | null): void {
     if (!pacienteId) return;
-    this.router.navigate(['/notaUisau/paciente', pacienteId]);
+    this.router.navigate(['/uisau', 'nota', 'paciente', pacienteId]);
   }
 
   // ══════════════════════════════════════════════════════════

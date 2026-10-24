@@ -35,7 +35,7 @@ export class ExpedientesComponent implements OnInit, OnDestroy {
   cargando = false;
   modo: Modo = 'recientes';
 
-  readonly pageSize = 100;
+  readonly pageSize = 10;
   paginaActual = 1;
   totalDeRegistros = 0;
 
@@ -175,7 +175,7 @@ export class ExpedientesComponent implements OnInit, OnDestroy {
   }
 
   volver(): void {
-    this.router.navigate(['/registros']);
+    this.router.navigate(['/registros/pacientes']);
   }
 
   verDetalle(id: number): void {

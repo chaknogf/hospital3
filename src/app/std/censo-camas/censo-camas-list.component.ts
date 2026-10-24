@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
@@ -34,6 +34,7 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   private tabService = inject(TabPreservationService);
+  @Input() rol: string = 'rol';
 
   private destroy$ = new Subject<void>();
 
@@ -42,6 +43,7 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   cargando = false;
   error: string | null = null;
   filtrar = false;
+
 
   readonly pageSize = 20;
   paginaActual = 1;
@@ -143,6 +145,7 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.cargarServicios();
     this.cargar();
+
     // Restaurar tab seg\'ult ruta navegada
     const tabGuardado = this.tabService.restaurarTab('/enfermeria') as 'registros' | 'estadisticas' | 'hospitalizacion';
     if (tabGuardado) {
@@ -206,11 +209,17 @@ export class CensoCamasListComponent implements OnInit, OnDestroy {
   }
 
   nuevo(): void {
-    this.router.navigate(['/censo-camas/nuevo']);
+    const rol = (this.rol || '').toLowerCase();
+    if (rol === 'std' || rol === 'admin') {
+      this.router.navigate(['/estadistica/censo-camas/nuevo']);
+    } else {
+      this.router.navigate(['/enfermeria/censo-camas/nuevo']);
+    }
   }
 
+
   editar(id: number): void {
-    this.router.navigate(['/censo-camas/editar', id]);
+    this.router.navigate(['/estadistica/censo-camas/editar', id]);
   }
 
   eliminar(id: number): void {

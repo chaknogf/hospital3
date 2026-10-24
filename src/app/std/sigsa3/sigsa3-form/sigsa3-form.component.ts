@@ -133,7 +133,7 @@ export class Sigsa3FormComponent implements OnInit {
 
     if (this.enEdicion && this.registroId) {
       this.api.actualizarRegistro(this.registroId, payload as Sigsa3Update).subscribe({
-        next: () => this.router.navigate(['/sigsa3']),
+        next: () => this.router.navigate(['/estadistica/sigsa3']),
         error: () => { this.guardando = false; },
         complete: () => { this.guardando = false; }
       });
@@ -141,7 +141,7 @@ export class Sigsa3FormComponent implements OnInit {
     }
 
     this.api.crearRegistro(payload as Sigsa3Create).subscribe({
-      next: () => this.router.navigate(['/sigsa3']),
+      next: () => this.router.navigate(['/estadistica/sigsa3']),
       error: () => { this.guardando = false; },
       complete: () => { this.guardando = false; }
     });

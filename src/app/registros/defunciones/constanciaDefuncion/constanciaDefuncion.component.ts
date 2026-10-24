@@ -166,7 +166,7 @@ export class ConstanciaDefuncionComponent implements OnInit, OnDestroy {
       this.defuncion = res;
       this.guardadoOk.set(true);
       setTimeout(() => this.guardadoOk.set(false), 3000);
-      this.router.navigate(['/defunciones']);
+      this.router.navigate(['/registros/defunciones']);
       this.cdr.markForCheck();
     });
   }
@@ -224,7 +224,7 @@ export class ConstanciaDefuncionComponent implements OnInit, OnDestroy {
   }
 
   setTab(tab: 'causas' | 'fetal' | 'madre'): void { this.tabActivo.set(tab); }
-  volver(): void { this.router.navigate(['/defunciones']); }
+  volver(): void { this.router.navigate(['/registros/defunciones']); }
 
   private mostrarError(accion: string, error: any): void {
     const msg = error?.error?.detail || error?.message || 'Consulte la consola';

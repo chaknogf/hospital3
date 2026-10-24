@@ -312,18 +312,18 @@ export class AdmisionComponent implements OnInit, OnDestroy {
     if (tipo === 1) {
       // ✅ Dentro de COEX distinguir por especialidad
       if (especialidad === 'PSIC') {
-        base = '/hojaPsico';
+        base = '/registros/hojaPsico';
       } else if (especialidad === 'ODON') {
-        base = '/hojaOdonto';
+        base = '/registros/hojaOdonto';
       } else {
-        base = '/coexHoja';
+        base = '/registros/coexHoja';
       }
     } else {
       const rutas: Record<number, string> = {
-        2: '/ingreso',
-        3: '/hojaEmergencia'
+        2: '/registros/ingreso',
+        3: '/registros/hojaEmergencia'
       };
-      base = rutas[tipo] ?? '/consultas';
+      base = rutas[tipo] ?? '/registros/consultas';
     }
 
     const destino = id ? [base, id] : [base];
@@ -407,7 +407,7 @@ export class AdmisionComponent implements OnInit, OnDestroy {
       .subscribe({ next: () => this.cdr.markForCheck() });
   }
 
-  editarPaciente(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
+  editarPaciente(id: number): void { this.router.navigate(['/registros/pacienteEdit', id]); }
 
   // ══════════════════════════════════════════════════════════
   // VALORES POR TIPO
@@ -449,7 +449,7 @@ export class AdmisionComponent implements OnInit, OnDestroy {
   //     2: '/ingreso',
   //     3: '/hojaEmergencia'
   //   };
-  //   const base = rutas[tipo] ?? '/consultas';
+  //   const base = rutas[tipo] ?? '/registros/consultas';
   //   const destino = id ? [base, id] : [base];
   //   this.router.navigate(destino);
   // }

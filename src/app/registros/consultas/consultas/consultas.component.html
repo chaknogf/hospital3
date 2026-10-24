@@ -1,21 +1,13 @@
 <div class="aurora-paciente-container" [class.d-none]="modalActivo">
-  <!-- Botones superiores -->
-  <div
-    class="botones justify-content-between"
-    [ngClass]="{ 'd-none': filtrar }"
-    >
-    <button type="button" (click)="volver()">
-      <span [innerHTML]="icons['menu']"></span>
-      Menu
-    </button>
+  <!-- Barra superior: título y acción principal en una sola fila -->
+  <header class="pac-toolbar" [ngClass]="{ 'd-none': filtrar }">
+    <h1 class="pac-toolbar__title">Consultas</h1>
 
-    <h1 class="text-white">Consultas</h1>
-
-    <button type="button" (click)="toggleFiltrar()">
-      <span [innerHTML]="icons['find']"></span>
-      Buscar
+    <button type="button" class="pac-toolbar__action" (click)="toggleFiltrar()">
+      <span class="pac-toolbar__icon" [innerHTML]="icons['find']"></span>
+      <span>Buscar</span>
     </button>
-  </div>
+  </header>
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
@@ -33,7 +25,7 @@
             name="expediente"
             placeholder="E26-003"
             style="text-transform: uppercase"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -46,7 +38,7 @@
             name="documento"
             placeholder="E26-003"
             style="text-transform: uppercase"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -56,7 +48,7 @@
             class="input-filtros"
             [(ngModel)]="filtros.fecha"
             name="fechaConsulta"
-            />
+          />
         </fieldset>
       </div>
 
@@ -69,7 +61,7 @@
             [(ngModel)]="filtros.primer_nombre"
             name="primerNombre"
             placeholder="Ej: Juan"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -80,7 +72,7 @@
             [(ngModel)]="filtros.segundo_nombre"
             name="segundoNombre"
             placeholder="Ej: María"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -91,7 +83,7 @@
             [(ngModel)]="filtros.primer_apellido"
             name="primerApellido"
             placeholder="Ej: García"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -102,7 +94,7 @@
             [(ngModel)]="filtros.segundo_apellido"
             name="segundoApellido"
             placeholder="Ej: Pérez"
-            />
+          />
         </fieldset>
       </div>
 
@@ -144,7 +136,7 @@
             class="aurora-table-row"
             [class.touch-active]="rowActiva === data.id"
             (click)="activarFila(data.id)"
-            >
+          >
             <td data-label="Nombre:">
               <div class="nombre-table">
                 <p class="p-0 m-0 text-uppercase">
@@ -155,7 +147,7 @@
                 <p
                   class="p-0 m-0 text-uppercase"
                   [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-                  >
+                >
                   {{ data.paciente.nombre.primer_apellido }}
                   {{ data.paciente.nombre.segundo_apellido }}
                   @if (data.paciente.nombre.apellido_casada) {
@@ -218,7 +210,7 @@
                   <button
                     (click)="editar(data.id); $event.stopPropagation()"
                     data-label="Editar"
-                    >
+                  >
                     <span [innerHTML]="icons['edit']"></span>
                   </button>
                 } @else {
@@ -226,14 +218,14 @@
                   <button
                     (click)="prestar(data.id); $event.stopPropagation()"
                     data-label="Prestar"
-                    >
+                  >
                     <span [innerHTML]="icons['prestar']"></span>
                   </button>
                 }
                 <button
                   (click)="verDetalle(data.id); $event.stopPropagation()"
                   data-label="Detalle"
-                  >
+                >
                   <span [innerHTML]="icons['tabla']"></span>
                 </button>
                 <!-- <button
@@ -242,84 +234,84 @@
                 >
                 <span [innerHTML]="icons['print']"></span>
               </button> -->
-            </div>
-          </td>
-        </tr>
-      }
-      <!-- Sin resultados -->
-      @if (!cargando && consultas.length === 0) {
-        <tr>
-          <td colspan="5" class="text-center py-3">
-            <em>No se encontraron coincidencias.</em>
-          </td>
-        </tr>
-      }
+              </div>
+            </td>
+          </tr>
+        }
+        <!-- Sin resultados -->
+        @if (!cargando && consultas.length === 0) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>No se encontraron coincidencias.</em>
+            </td>
+          </tr>
+        }
 
-      <!-- Cargando -->
-      @if (cargando) {
-        <tr>
-          <td colspan="5" class="text-center py-3">
-            <em>Cargando... 🛰️ </em>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
-</div>
+        <!-- Cargando -->
+        @if (cargando) {
+          <tr>
+            <td colspan="5" class="text-center py-3">
+              <em>Cargando... 🛰️ </em>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 
-<!-- ── PAGINADOR ── reemplaza el div de paginación actual ── -->
-<div class="paginador">
-  <!-- Botón anterior -->
-  <button
-    class="pag-btn"
-    [disabled]="!hayPaginaAnterior"
-    (click)="cambiarPagina(-1)"
-    >
-    <span [innerHTML]="icons['skipLeft']"></span>
-  </button>
-
-  <!-- Primera página + ellipsis si el rango no empieza en 1 -->
-  @if (paginas[0] > 1) {
-    <button class="pag-num" (click)="irAPagina(1)">1</button>
-  }
-  @if (paginas[0] > 2) {
-    <span class="pag-ellipsis">…</span>
-  }
-
-  <!-- Páginas del rango visible -->
-  @for (p of paginas; track trackById($index, p)) {
+  <!-- ── PAGINADOR ── reemplaza el div de paginación actual ── -->
+  <div class="paginador">
+    <!-- Botón anterior -->
     <button
-      class="pag-num"
-      [class.pag-num-active]="p === paginaActual"
-      (click)="irAPagina(p)"
-      >
-      {{ p }}
-    </button>
-  }
-
-  <!-- Ellipsis + última página si el rango no llega al final -->
-  @if (paginas[paginas.length - 1] < totalPaginas - 1) {
-    <span class="pag-ellipsis">…</span>
-  }
-  @if (paginas[paginas.length - 1] < totalPaginas) {
-    <button class="pag-num" (click)="irAPagina(totalPaginas)">
-      {{ totalPaginas }}
-    </button>
-  }
-
-  <!-- Botón siguiente -->
-  <button
-    class="pag-btn"
-    [disabled]="!hayPaginaSiguiente"
-    (click)="cambiarPagina(1)"
+      class="pag-btn"
+      [disabled]="!hayPaginaAnterior"
+      (click)="cambiarPagina(-1)"
     >
-    <span [innerHTML]="icons['skipRight']"></span>
-  </button>
+      <span [innerHTML]="icons['skipLeft']"></span>
+    </button>
 
-  <!-- Total de registros -->
-  <span class="pag-info">
-    Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
-    {{ totalDeRegistros }} registros
-  </span>
-</div>
+    <!-- Primera página + ellipsis si el rango no empieza en 1 -->
+    @if (paginas[0] > 1) {
+      <button class="pag-num" (click)="irAPagina(1)">1</button>
+    }
+    @if (paginas[0] > 2) {
+      <span class="pag-ellipsis">…</span>
+    }
+
+    <!-- Páginas del rango visible -->
+    @for (p of paginas; track trackById($index, p)) {
+      <button
+        class="pag-num"
+        [class.pag-num-active]="p === paginaActual"
+        (click)="irAPagina(p)"
+      >
+        {{ p }}
+      </button>
+    }
+
+    <!-- Ellipsis + última página si el rango no llega al final -->
+    @if (paginas[paginas.length - 1] < totalPaginas - 1) {
+      <span class="pag-ellipsis">…</span>
+    }
+    @if (paginas[paginas.length - 1] < totalPaginas) {
+      <button class="pag-num" (click)="irAPagina(totalPaginas)">
+        {{ totalPaginas }}
+      </button>
+    }
+
+    <!-- Botón siguiente -->
+    <button
+      class="pag-btn"
+      [disabled]="!hayPaginaSiguiente"
+      (click)="cambiarPagina(1)"
+    >
+      <span [innerHTML]="icons['skipRight']"></span>
+    </button>
+
+    <!-- Total de registros -->
+    <span class="pag-info">
+      Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
+      {{ totalDeRegistros }} registros
+    </span>
+  </div>
 </div>

@@ -1,7 +1,6 @@
 <div class="page-container">
   <div class="page-header">
-    <button class="btn-back" (click)="volver()">← Volver</button>
-    <h1>Activos Mayores a 7 Días</h1>
+    <h1>Consultas Activos Mayores a 7 Días</h1>
   </div>
   @if (cargando) {
     <div class="state-box spinner"></div>
@@ -36,33 +35,31 @@
                     class="dias-badge"
                     [class.dias-alta]="(d.dias_acumulados ?? 0) > 7"
                     >{{ d.dias_acumulados ?? 0 }}d</span
-                    >
-                  </td>
-                  <td>
-                    {{ d.documento }} <br />
-                    {{ d.tipo_consulta | datosExtra: "tipo_consulta" }}
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
+                  >
+                </td>
+                <td>
+                  {{ d.documento }} <br />
+                  {{ d.tipo_consulta | datosExtra: "tipo_consulta" }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (!todosCargados) {
+        <div class="load-more-wrap">
+          <button
+            class="btn-load-more"
+            (click)="cargarMas()"
+            [disabled]="cargandoMas"
+          >
+            {{ cargandoMas ? "Cargando..." : "Cargar más" }}
+          </button>
         </div>
-        @if (!todosCargados) {
-          <div class="load-more-wrap">
-            <button
-              class="btn-load-more"
-              (click)="cargarMas()"
-              [disabled]="cargandoMas"
-              >
-              {{ cargandoMas ? "Cargando..." : "Cargar más" }}
-            </button>
-          </div>
-        }
-      </div>
-    }
-    @if (!cargando && !error && datos.length === 0) {
-      <div class="state-box">
-        Sin datos disponibles.
-      </div>
-    }
-  </div>
+      }
+    </div>
+  }
+  @if (!cargando && !error && datos.length === 0) {
+    <div class="state-box">Sin datos disponibles.</div>
+  }
+</div>

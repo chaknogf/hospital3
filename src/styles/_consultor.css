@@ -18,11 +18,64 @@
 /* ── LAYOUT ────────────────────────────────────────────── */
 .consultor-ui .consultor-layout {
   display: grid;
-  grid-template-columns: 260px 1fr;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  min-height: calc(100dvh - 90px);
   background: var(--theme-background);
+}
+
+/* Escritorio: panel de filtros colapsable junto al contenido */
+@media (min-width: 769px) {
+  .consultor-ui .consultor-layout.filters-open {
+    grid-template-columns: 300px minmax(0, 1fr);
+  }
+  .consultor-ui .consultor-layout:not(.filters-open) > .sidebar {
+    display: none;
+  }
+  .consultor-ui .consultor-layout.filters-open > .sidebar {
+    display: flex;
+    position: sticky;
+    top: 12px;
+    height: auto;
+    max-height: calc(100dvh - 110px);
+    overflow-y: auto;
+    border-radius: 12px;
+    margin: 12px 0 12px 12px;
+  }
+  .consultor-ui .filters-close {
+    display: inline-flex;
+  }
+  .consultor-ui .filters-open-btn {
+    display: inline-flex;
+  }
+  .consultor-ui .filters-open-btn.is-hidden {
+    display: none;
+  }
+}
+
+.consultor-ui .filters-close,
+.consultor-ui .filters-open-btn {
+  display: none;
+}
+
+.consultor-ui .filters-open-btn {
+  position: absolute;
+  left: 16px;
+  bottom: 20px;
+  z-index: 120;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  background: var(--theme-gradient-primary);
+  color: var(--theme-text-on-primary);
+  border: none;
+  border-radius: 999px;
+  font-family: var(--theme-font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px var(--theme-primary-dim);
 }
 
 /* ── SIDEBAR ───────────────────────────────────────────── */
@@ -304,9 +357,9 @@
 /* ── MAIN PANEL ────────────────────────────────────────── */
 .consultor-ui .main-panel {
   position: relative;
+  min-width: 0;
+  min-height: calc(100dvh - 90px);
   overflow: hidden;
-  height: 100vh;
-  height: 100dvh;
   background:
     radial-gradient(circle at 20% 85%, var(--theme-primary-dim) 0%, transparent 55%),
     radial-gradient(circle at 80% 15%, var(--theme-accent-dim) 0%, transparent 55%),

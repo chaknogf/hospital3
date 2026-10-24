@@ -107,12 +107,12 @@ export class PacienteActivosComponent implements OnInit, OnDestroy {
   }
 
   nota(c: ConsultaOut): void {
-    this.router.navigate(['/notaMedica', c.id]);
+    this.router.navigate(['/enfermeria/notas-medicas', c.id]);
   }
 
   historia(c: ConsultaOut): void {
     const pacienteId = c.paciente_id ?? c.paciente?.id;
-    this.router.navigate(['/historiaClinica', pacienteId], { queryParams: { by: 'paciente' } });
+    this.router.navigate(['/enfermeria/historia-clinica', pacienteId], { queryParams: { by: 'paciente' } });
   }
 
   // ── Paginación (sobre la lista ya filtrada) ──────────────

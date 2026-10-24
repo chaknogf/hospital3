@@ -213,7 +213,7 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
   // ══════════════════════════════════════════════════════════
   nuevaIntervencion(): void { this.router.navigate(['/quirofano/nueva']); }
 
-  irAResumen(): void { this.router.navigate(['/quirofano/resumen']); }
+  irAResumen(): void { this.router.navigate(['/estadistica/quirofano-resumen']); }
 
   editarIntervencion(id: number): void { this.router.navigate(['/quirofano/editar', id]); }
 

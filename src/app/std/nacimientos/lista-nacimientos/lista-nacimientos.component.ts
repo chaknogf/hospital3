@@ -27,7 +27,7 @@ import { editIcon, trashIcon } from '../../../shared/icons/svg-icon';
 /** Lista nacimientos con acciones configurables por el módulo consumidor. */
 export class ListaNacimientosComponent implements OnInit, OnDestroy {
   @Input() sinEditar = false;
-  @Input() rutaVolver = '/estadistica';
+  @Input() rutaVolver = '/estadistica/consultar';
 
   private location = inject(Location);
   private api = inject(NacimientosService);

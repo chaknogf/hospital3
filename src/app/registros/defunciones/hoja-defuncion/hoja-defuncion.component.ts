@@ -34,6 +34,6 @@ export class HojaDefuncionComponent implements OnInit {
   }
 
   regresar(): void {
-    this.router.navigate(['/defunciones']);
+    this.router.navigate(['/registros/defunciones']);
   }
 }

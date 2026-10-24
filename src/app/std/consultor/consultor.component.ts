@@ -52,7 +52,9 @@ export class ConsultorComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   // ── Estado del sidebar (bottom sheet en mobile) ──────────
-  sidebarAbierto: boolean = false;
+  // Escritorio: filtros visibles junto al contenido. Móvil: bottom sheet cerrado.
+  sidebarAbierto: boolean =
+    typeof window !== 'undefined' && window.matchMedia('(min-width: 769px)').matches;
 
   // ── CIE-10 modal ─────────────────────────────────────────────
   cie10Abierto = signal(false);
@@ -497,7 +499,7 @@ export class ConsultorComponent implements OnInit, OnDestroy {
   getIdPersona(ref: any): string { return ref?.idpersona || '—'; }
 
   verDetalle(id: number): void { this.router.navigate(['/detalleAdmision', id]); }
-  verHistoria(id: number): void { this.router.navigate(['/historiaClinica', id]); }
+  verHistoria(id: number): void { this.router.navigate(['/enfermeria/historia-clinica', id]); }
 
   /** Abre directamente la nota médica más reciente de la consulta.
    *  Usa GET /ciclos/consulta/{consulta_id} para leer las notas de la consulta y
@@ -521,13 +523,13 @@ export class ConsultorComponent implements OnInit, OnDestroy {
   /** Respaldo: historia completa del paciente; si no se conoce el paciente, cae al id de consulta. */
   private irAHistoriaDelPaciente(c: ConsultasIdPaciente): void {
     if (this.pacienteId) {
-      this.router.navigate(['/historiaClinica', this.pacienteId], { queryParams: { by: 'paciente' } });
+      this.router.navigate(['/enfermeria/historia-clinica', this.pacienteId], { queryParams: { by: 'paciente' } });
     } else {
-      this.router.navigate(['/historiaClinica', c.id]);
+      this.router.navigate(['/enfermeria/historia-clinica', c.id]);
     }
   }
 
-  agregarNotaUisau(id: number): void { this.router.navigate(['/notaUisau', id]); }
+  agregarNotaUisau(id: number): void { this.router.navigate(['/uisau', 'nota', id]); }
   editar(id: number): void { this.router.navigate(['/pacienteEdit', id]); }
   regresar(): void { this.location.back(); }
 

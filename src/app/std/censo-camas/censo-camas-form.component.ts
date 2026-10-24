@@ -238,7 +238,7 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
 
   irAEditarExistente(): void {
     if (this.registroExistente) {
-      this.router.navigate(['/censo-camas/editar', this.registroExistente.id]);
+      this.router.navigate(['/estadistica/censo-camas/editar', this.registroExistente.id]);
     }
   }
 
@@ -320,13 +320,13 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
         if ((res as any)?.queued) {
           this.tipoAlerta = 'exito';
           this.mostrarMensaje('Censo de ambos sexos guardado localmente; se sincronizará al recuperar conexión');
-          if (this.enEdicion) this.router.navigate(['/censo-camas']);
+          if (this.enEdicion) this.router.navigate(['/estadistica/censo-camas']);
           else this.limpiarForm();
           return;
         }
 
         if (this.enEdicion) {
-          this.router.navigate(['/censo-camas']);
+          this.router.navigate(['/estadistica/censo-camas']);
         } else {
           this.tipoAlerta = 'exito';
           this.mostrarMensaje('Registro de censo guardado correctamente');
@@ -351,7 +351,7 @@ export class CensoCamasFormComponent implements OnInit, OnDestroy {
   }
 
   volver(): void {
-    this.router.navigate(['/censo-camas']);
+    this.router.navigate(['/estadistica/censo-camas']);
   }
 
   get f() { return this.form.controls; }

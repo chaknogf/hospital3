@@ -215,7 +215,7 @@ export class DetallePacienteComponent implements OnInit, OnChanges, OnDestroy {
 
   editarCita(id: number): void {
 
-    this.router.navigate(['/reagendar/cita', id]);
+    this.router.navigate(['/registros/reagendar/cita', id]);
   }
 
   /** Prepara listas filtradas para mostrar en HTML */
@@ -417,15 +417,15 @@ export class DetallePacienteComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   regresar(): void {
-    this.router.navigate(['/pacientes']);
+    this.router.navigate(['/registros/pacientes']);
   }
 
   editar(id: number): void {
-    this.router.navigate(['/pacienteEdit', id]);
+    this.router.navigate(['/registros/pacienteEdit', id]);
   }
 
   verDetalle(consultaId: number) {
-    this.router.navigate(['/detalleAdmision', consultaId]);
+    this.router.navigate(['/registros/detalleAdmision', consultaId]);
   }
 
 }

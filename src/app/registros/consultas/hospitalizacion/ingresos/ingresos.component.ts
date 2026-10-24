@@ -43,7 +43,7 @@ export class IngresosComponent implements OnInit, OnDestroy {
   visible = false;
   modalActivo = false;
   espacio: string = ' ';
-  pageSize: number = 8;
+  pageSize: number = 12;
   skip: number = 0;
   tipoConsultas: number = 2;
   paginaActual: number = 1;
@@ -206,7 +206,7 @@ export class IngresosComponent implements OnInit, OnDestroy {
     this.router.navigate(['/editarAdmision', id, 'ingreso']);
   }
   agregar() {
-    this.router.navigate(['/pacientes']);
+    this.router.navigate(['/registros/pacientes']);
   }
 
   verDetalle(consultaId: number) {
@@ -221,7 +221,7 @@ export class IngresosComponent implements OnInit, OnDestroy {
   }
 
   volver() {
-    this.router.navigate(['/registros']);
+    this.router.navigate(['/registros/pacientes']);
     // this.location.back();
   }
 

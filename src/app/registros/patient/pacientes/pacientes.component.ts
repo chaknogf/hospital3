@@ -43,7 +43,7 @@ export class PacientesComponent implements OnInit, OnDestroy {
   espacio = ' ';
 
   // ── Paginación con skip/limit del backend ──────────────────
-  readonly pageSize = 8;
+  readonly pageSize = 12;
   paginaActual = 1;
   totalDeRegistros = 0;   // total real que devuelve el backend
 
@@ -313,21 +313,20 @@ export class PacientesComponent implements OnInit, OnDestroy {
   // ══════════════════════════════════════════════════════════
   editarPaciente(id: number): void {
     this.conservarBusquedaAlSalir = true;
-    this.router.navigate(['/pacienteEdit', id]);
+    this.router.navigate(['/registros/pacienteEdit', id]);
   }
   agregar(): void {
     this.conservarBusquedaAlSalir = true;
-    this.router.navigate(['/paciente']);
+    this.router.navigate(['/registros/paciente']);
   }
   agregarConExpediente(): void {
     this.conservarBusquedaAlSalir = true;
-    this.router.navigate(['/paciente', true]);
+    this.router.navigate(['/registros/paciente', true]);
   }
   verDetallesPaciente(id: number): void {
     this.conservarBusquedaAlSalir = true;
-    this.router.navigate(['/detallePaciente', id]);
+    this.router.navigate(['/registros/detallePaciente', id]);
   }
-  volver(): void { this.router.navigate(['/registros']); }
 
   eliminarPaciente(id: number): void {
     if (confirm('¿Está seguro de que desea eliminar este paciente?')) {
@@ -384,7 +383,7 @@ export class PacientesComponent implements OnInit, OnDestroy {
     };
     const [tipo, origen] = rutas[opt] ?? ['coex', 'coex'];
     this.router.navigate(
-      ['/admisionPaciente', tipo, id],
+      ['/registros/admisionPaciente', tipo, id],
       { queryParams: { origen } }
     );
     this.dialog.nativeElement.close();
@@ -394,12 +393,12 @@ export class PacientesComponent implements OnInit, OnDestroy {
   // pacientes.component.ts
   hijode(id: number): void {
     const madre = this.pacientes.find(p => p.id === id);
-    this.router.navigate(['/hijo', id]);
+    this.router.navigate(['/registros/hijo', id]);
     this.dialog.nativeElement.close();
   }
 
   cita(id: number): void {
-    this.router.navigate(['/agendar/paciente', id]);
+    this.router.navigate(['/registros/agendar/paciente', id]);
   }
 
   // ══════════════════════════════════════════════════════════
@@ -429,49 +428,49 @@ export class PacientesComponent implements OnInit, OnDestroy {
   // utras opciones
   // ══════════════════════════════════════════════════════════
 
-defuncion() {
-  console.log('defuncion');
-}
+  defuncion() {
+    console.log('defuncion');
+  }
 
-prestar(id: number) {
-  this.router.navigate(['/prestamo', id], {
-    queryParams: { origen: 'paciente' }
-  });
-}
+  prestar(id: number) {
+    this.router.navigate(['/registros/prestamo', id], {
+      queryParams: { origen: 'paciente' }
+    });
+  }
 
-// ══════════════════════════════════════════════════════════
-// PRÉSTAMOS — indicador de expedientes prestados
-// ══════════════════════════════════════════════════════════
+  // ══════════════════════════════════════════════════════════
+  // PRÉSTAMOS — indicador de expedientes prestados
+  // ══════════════════════════════════════════════════════════
 
-cargarPrestamosActivos(): void {
-  this.prestamosService.obtenerPrestamosActivos().pipe(takeUntil(this.destroy$)).subscribe({
-    next: prestamos => {
-      this.prestamosActivos = prestamos;
-      this.cdr.markForCheck();
-    },
-    error: () => {
-      this.prestamosActivos = [];
-      this.cdr.markForCheck();
-    }
-  });
-}
+  cargarPrestamosActivos(): void {
+    this.prestamosService.obtenerPrestamosActivos().pipe(takeUntil(this.destroy$)).subscribe({
+      next: prestamos => {
+        this.prestamosActivos = prestamos;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.prestamosActivos = [];
+        this.cdr.markForCheck();
+      }
+    });
+  }
 
-/** Devuelve el préstamo activo de un paciente (si tiene el expediente prestado). */
-prestamoActivo(idPaciente: number): Prestamo | null {
-  return this.prestamosActivos.find(p => p.id_paciente === idPaciente) ?? null;
-}
+  /** Devuelve el préstamo activo de un paciente (si tiene el expediente prestado). */
+  prestamoActivo(idPaciente: number): Prestamo | null {
+    return this.prestamosActivos.find(p => p.id_paciente === idPaciente) ?? null;
+  }
 
-/** El préstamo superó la fecha límite y no ha sido devuelto. */
-prestamoVencido(p: Prestamo): boolean {
-  return !p.fecha_devolucion && !!p.fecha_limite && new Date(p.fecha_limite) < new Date();
-}
+  /** El préstamo superó la fecha límite y no ha sido devuelto. */
+  prestamoVencido(p: Prestamo): boolean {
+    return !p.fecha_devolucion && !!p.fecha_limite && new Date(p.fecha_limite) < new Date();
+  }
 
-/** Ir a editar el préstamo activo del paciente. */
-irPrestamo(p: Prestamo): void {
-  this.router.navigate(['/editarPrestamo', p.id]);
-}
+  /** Ir a editar el préstamo activo del paciente. */
+  irPrestamo(p: Prestamo): void {
+    this.router.navigate(['/registros/editarPrestamo', p.id]);
+  }
 
-trackById(index: number, item: any): any {
-  return item.id ?? index;
-}
+  trackById(index: number, item: any): any {
+    return item.id ?? index;
+  }
 }

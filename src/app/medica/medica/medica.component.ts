@@ -52,19 +52,19 @@ export class MedicaComponent implements OnInit {
       {
         nombre: 'Pacientes activos',
         descripcion: 'Listado por especialidad; registra nota o abre historia',
-        ruta: '/pacientesActivos',
+        ruta: '/enfermeria/pacientes-activos',
         icon: 'paciente',
       },
       {
         nombre: 'Notas médicas',
         descripcion: 'Selecciona una consulta y registra la evolución clínica',
-        ruta: '/notaMedica',
+        ruta: '/enfermeria/notas-medicas',
         icon: 'nota',
       },
       {
         nombre: 'Historia clínica',
         descripcion: 'Consulta ciclos, antecedentes y notas del expediente',
-        ruta: '/historiaClinica',
+        ruta: '/enfermeria/historia-clinica',
         icon: 'paciente',
       },
       {

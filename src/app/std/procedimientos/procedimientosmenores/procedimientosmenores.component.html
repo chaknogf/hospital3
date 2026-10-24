@@ -3,11 +3,6 @@
     class="botones justify-content-between barra-acciones"
     [ngClass]="{ 'd-none': filtrar }"
   >
-    <button type="button" class="btn-menu" (click)="volver()">
-      <span [innerHTML]="icons['menu']"></span>
-      <span class="btn-texto">Menu</span>
-    </button>
-
     <h1 class="text-white barra-titulo">Procedimientos Menores</h1>
 
     <div class="barra-grupo">
@@ -15,7 +10,11 @@
         <span [innerHTML]="icons['find']"></span>
         <span class="btn-texto">Buscar</span>
       </button>
-      <button type="button" class="btn-accion btn-principal" (click)="agregar()">
+      <button
+        type="button"
+        class="btn-accion btn-principal"
+        (click)="agregar()"
+      >
         <span [innerHTML]="icons['create']"></span>
         <span class="btn-texto">Agregar</span>
       </button>

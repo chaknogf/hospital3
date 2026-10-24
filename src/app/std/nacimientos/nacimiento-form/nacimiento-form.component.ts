@@ -146,6 +146,6 @@ export class NacimientoFormComponent implements OnInit {
   }
 
   volver(): void {
-    this.router.navigate(['/nacimientos-std']);
+    this.router.navigate(['/estadistica/nacimientos']);
   }
 }

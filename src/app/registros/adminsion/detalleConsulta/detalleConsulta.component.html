@@ -21,11 +21,7 @@
 <div class="dc-page" *ngIf="detalleVisible() && consulta() && paciente()">
   <!-- ══ HUD HEADER ═══════════════════════════════════════════ -->
   <div class="hud-header">
-    <div class="hud-back">
-      <button class="hud-btn" (click)="regresar()" title="Regresar">
-        <span [innerHTML]="icons['back']"></span>
-      </button>
-    </div>
+    <div class="hud-back"></div>
 
     <div class="hud-title">
       <span class="hud-label">Consulta</span>

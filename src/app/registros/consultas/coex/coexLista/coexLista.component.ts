@@ -301,7 +301,7 @@ export class CoexListaComponent implements OnInit, OnDestroy {
   }
 
   agregar() {
-    this.router.navigate(['/pacientes']);
+    this.router.navigate(['/registros/pacientes']);
   }
 
   verDetalle(consultaId: number) {
@@ -321,11 +321,11 @@ export class CoexListaComponent implements OnInit, OnDestroy {
 
   volver(): void {
     // this.location.back();
-    this.router.navigate(['/registros']);
+    this.router.navigate(['/registros/pacientes']);
   }
 
   /* volver() {
-    this.router.navigate(['/registros']);
+    this.router.navigate(['/registros/pacientes']);
   } */
 
   rowActiva: number | null = null;

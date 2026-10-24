@@ -154,11 +154,11 @@ export class ListarConstanciasComponent implements OnInit, OnDestroy {
   }
 
   pacientes() {
-    this.router.navigate(['/pacientes']);
+    this.router.navigate(['/registros/pacientes']);
   }
 
   volver() {
-    this.router.navigate(['/registros']);
+    this.router.navigate(['/registros/pacientes']);
   }
 
   agregar() {

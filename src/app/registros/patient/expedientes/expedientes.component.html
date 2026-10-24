@@ -1,8 +1,7 @@
 <div class="aurora-expedientes-container">
   <div class="botones justify-content-between">
-    <button type="button" (click)="volver()">Menu</button>
     <h1 class="text-white">Expedientes</h1>
-    <div style="width:80px"></div>
+    <div style="width: 80px"></div>
   </div>
 
   <div class="modo-selector">
@@ -32,7 +31,9 @@
         autocomplete="off"
       />
       <button type="submit">Buscar</button>
-      <button type="button" class="btn-excel" (click)="descargarExcel()">📥 Excel</button>
+      <button type="button" class="btn-excel" (click)="descargarExcel()">
+        📥 Excel
+      </button>
       @if (filtros.q || filtros.expediente_desde || filtros.expediente_hasta) {
         <button type="button" (click)="limpiarBusqueda()">Limpiar</button>
       }
@@ -57,7 +58,7 @@
     </div>
   </div>
 
-  <div class="tabla-wrapper">
+  <div class="aurora-container">
     <table class="aurora-tb">
       <thead>
         <tr>
@@ -74,7 +75,9 @@
           <tr class="aurora-table-row">
             <td data-label="Nombre:">
               <div class="nombre-table">
-                <p [innerHTML]="nombreCompleto(paciente) | highlight: filtros.q"></p>
+                <p
+                  [innerHTML]="nombreCompleto(paciente) | highlight: filtros.q"
+                ></p>
               </div>
             </td>
             <td data-label="Expediente:">
@@ -83,7 +86,9 @@
             <td data-label="Fecha Nacimiento:">
               {{ paciente.fecha_nacimiento | date: "dd/MM/yyyy" }}
               @if (paciente.fecha_nacimiento) {
-                <small class="d-block">{{ paciente.fecha_nacimiento | edad }}</small>
+                <small class="d-block">{{
+                  paciente.fecha_nacimiento | edad
+                }}</small>
               }
             </td>
             <td data-label="Sexo:">
@@ -97,7 +102,9 @@
               }
             </td>
             <td data-label="Acciones:">
-              <button (click)="verDetalle(paciente.id)" data-label="Detalle"><span [innerHTML]="documentoIcon"></span></button>
+              <button (click)="verDetalle(paciente.id)" data-label="Detalle">
+                <span [innerHTML]="documentoIcon"></span>
+              </button>
             </td>
           </tr>
         } @empty {
@@ -121,7 +128,13 @@
   </div>
 
   <div class="paginador">
-    <button class="pag-btn" [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">Anterior</button>
+    <button
+      class="pag-btn"
+      [disabled]="!hayPaginaAnterior"
+      (click)="cambiarPagina(-1)"
+    >
+      Anterior
+    </button>
     @if (paginas[0] > 1) {
       <button class="pag-num" (click)="irAPagina(1)">1</button>
     }
@@ -129,7 +142,11 @@
       <span class="pag-ellipsis">…</span>
     }
     @for (p of paginas; track p) {
-      <button class="pag-num" [class.pag-num-active]="p === paginaActual" (click)="irAPagina(p)">
+      <button
+        class="pag-num"
+        [class.pag-num-active]="p === paginaActual"
+        (click)="irAPagina(p)"
+      >
         {{ p }}
       </button>
     }
@@ -137,11 +154,22 @@
       <span class="pag-ellipsis">…</span>
     }
     @if (paginas[paginas.length - 1] < totalPaginas) {
-      <button class="pag-num" (click)="irAPagina(totalPaginas)">{{ totalPaginas }}</button>
+      <button class="pag-num" (click)="irAPagina(totalPaginas)">
+        {{ totalPaginas }}
+      </button>
     }
-    <button class="pag-btn" [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">Siguiente</button>
+    <button
+      class="pag-btn"
+      [disabled]="!hayPaginaSiguiente"
+      (click)="cambiarPagina(1)"
+    >
+      Siguiente
+    </button>
     <span class="pag-info">
-      Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;{{ totalDeRegistros }} registros
+      Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;{{
+        totalDeRegistros
+      }}
+      registros
     </span>
   </div>
 </div>

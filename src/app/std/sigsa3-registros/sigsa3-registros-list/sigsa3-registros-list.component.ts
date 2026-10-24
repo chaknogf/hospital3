@@ -137,9 +137,9 @@ export class Sigsa3RegistrosListComponent implements OnInit, OnDestroy {
 
   // ── CRUD ──
 
-  nuevo(): void { this.router.navigate(['/sigsa3-registros/nuevo']); }
+  nuevo(): void { this.router.navigate(['/estadistica/sigsa3-registros/nuevo']); }
 
-  editar(id: number): void { this.router.navigate(['/sigsa3-registros/editar', id]); }
+  editar(id: number): void { this.router.navigate(['/estadistica/sigsa3-registros/editar', id]); }
 
   eliminar(id: number): void {
     if (!confirm('¿Eliminar este registro SIGSA-3 normalizado?')) return;

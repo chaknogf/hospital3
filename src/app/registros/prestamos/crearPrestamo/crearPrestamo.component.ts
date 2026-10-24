@@ -223,6 +223,11 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
   // GUARDAR — crea o actualiza según el modo
   // =========================================================
 
+  /** Regresa al listado de préstamos dentro del mismo módulo que lo abrió. */
+  volverPrestamos(): void {
+    this.router.navigate(['../prestamos'], { relativeTo: this.route });
+  }
+
   guardar(): void {
     if (!this.form.id_paciente || !this.form.solicitante?.trim()) {
       this.mostrarMensaje('ID de paciente y solicitante son requeridos.', 'error');
@@ -278,7 +283,7 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
         // Mostrar usuario_entrega que asignó el backend
         this.usuarioEntrega = prestamo.usuario_entrega ?? null;
         this.mostrarMensaje('Préstamo registrado correctamente.', 'success');
-        setTimeout(() => this.router.navigate(['/prestamos']), 1800);
+        setTimeout(() => this.volverPrestamos(), 1800);
         this.cdr.markForCheck();
       },
       error: () => { this.mostrarMensaje('Error al crear el préstamo.', 'error'); this.cdr.markForCheck(); }
@@ -309,7 +314,7 @@ export class CrearPrestamoComponent implements OnInit, OnDestroy {
         this.usuarioEntrega = prestamo.usuario_entrega ?? null;
         this.usuarioRecibe = prestamo.usuario_recibe ?? null;
         this.mostrarMensaje('Préstamo actualizado correctamente.', 'success');
-        setTimeout(() => this.router.navigate(['/prestamos']), 1800);
+        setTimeout(() => this.volverPrestamos(), 1800);
         this.cdr.markForCheck();
       },
       error: () => { this.mostrarMensaje('Error al actualizar el préstamo.', 'error'); this.cdr.markForCheck(); }

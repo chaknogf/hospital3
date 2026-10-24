@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { MenuEfermeriaComponent } from './menu-enfermeria.component';
+import { MenuEnfermeriaComponent } from './menu-enfermeria.component';
 
 describe('MenuEnfermeriaComponent', () => {
   let component: MenuEnfermeriaComponent;

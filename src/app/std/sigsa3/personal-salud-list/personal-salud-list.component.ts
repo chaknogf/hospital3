@@ -90,16 +90,16 @@ export class PersonalSaludListComponent {
     });
   }
 
-  volver(): void { this.router.navigate(['/sigsa3']); }
+  volver(): void { this.router.navigate(['/estadistica/sigsa3']); }
 
   limpiarFiltros(): void {
     this.filtros = { nombre: '', especialidad_id: null, personal_atencion_id: null };
     this.cargar();
   }
 
-  nuevo(): void { this.router.navigate(['/personal-salud/nuevo']); }
+  nuevo(): void { this.router.navigate(['/estadistica/personal-salud/nuevo']); }
 
-  editar(id: number): void { this.router.navigate(['/personal-salud/editar', id]); }
+  editar(id: number): void { this.router.navigate(['/estadistica/personal-salud/editar', id]); }
 
   eliminar(id: number): void {
     if (!confirm('¿Eliminar este registro de personal salud?')) return;

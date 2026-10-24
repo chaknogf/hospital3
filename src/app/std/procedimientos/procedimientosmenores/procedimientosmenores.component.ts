@@ -164,7 +164,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
   }
 
   volver(): void {
-    this.router.navigate(['/estadistica'])
+    this.router.navigate(['/estadistica/consultar'])
   }
 
   agregar(): void {

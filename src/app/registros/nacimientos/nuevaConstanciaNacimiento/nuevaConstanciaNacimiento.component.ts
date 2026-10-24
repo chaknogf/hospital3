@@ -225,7 +225,7 @@ export class NuevaConstanciaNacimientoComponent implements OnInit, OnDestroy {
           finalize(() => {
             this.isLoading.set(false);
             this.guardadoOk.set(true);
-            this.router.navigate(['/nacimientos']);
+            this.router.navigate(['/registros/nacimientos']);
           }),
           takeUntil(this.destroy$)
         ).subscribe();
@@ -278,7 +278,7 @@ export class NuevaConstanciaNacimientoComponent implements OnInit, OnDestroy {
   }
 
   volver(): void {
-    this.router.navigate(['/nacimientos']);
+    this.router.navigate(['/registros/nacimientos']);
   }
 
   private mostrarError(accion: string, error: any): void {

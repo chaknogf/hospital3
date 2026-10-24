@@ -160,17 +160,17 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
     }
   }
 
-  volver(): void { this.router.navigate(['/estadistica']); }
+  volver(): void { this.router.navigate(['/estadistica/consultar']); }
 
   // ── CRUD ──
 
-  nuevo(): void { this.router.navigate(['/sigsa3/nuevo']); }
+  nuevo(): void { this.router.navigate(['/estadistica/sigsa3/nuevo']); }
 
-  editar(id: number): void { this.router.navigate(['/sigsa3/editar', id]); }
+  editar(id: number): void { this.router.navigate(['/estadistica/sigsa3/editar', id]); }
 
-  importar(): void { this.router.navigate(['/sigsa3/importar']); }
+  importar(): void { this.router.navigate(['/estadistica/sigsa3/importar']); }
 
-  gestionarPersonalSalud(): void { this.router.navigate(['/personal-salud']); }
+  gestionarPersonalSalud(): void { this.router.navigate(['/estadistica/personal-salud']); }
 
   verDuplicados(): void { this.router.navigate(['/duplicados-pacientes']); }
 

@@ -15,22 +15,49 @@ cd "$PROYECTO_DIR" || { echo "❌ No se pudo acceder al proyecto"; exit 1; }
 echo "📥 Actualizando código desde git..."
 git pull origin main || { echo "❌ Error en git pull"; exit 1; }
 
-# 3. Validar Node.js (instalar solo si es necesario)
-if ! command -v node &>/dev/null || ! node -e "process.exit(Number(!process.version.startsWith('v24')))" &>/dev/null; then
-  echo "🔧 Configurando Node.js 24..."
-  \. "$HOME/.nvm/nvm.sh"
-  nvm install 24 || { echo "❌ Error instalando Node.js"; exit 1; }
+# 3. Node.js (versión desde NODE_VERSION, .node-version o 24)
+NODE_VERSION="${NODE_VERSION:-$(cat .node-version 2>/dev/null || echo 24)}"
+NODE_MAJOR="${NODE_VERSION%%.*}"
+NODE_MAJOR="${NODE_MAJOR//[!0-9]/}"
+echo "🔧 Node.js objetivo: $NODE_VERSION (major $NODE_MAJOR)"
+
+if ! command -v node &>/dev/null || [ "$(node -v | sed 's/^v//;s/\..*//')" != "$NODE_MAJOR" ]; then
+  NVM_SH="${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+  if [ ! -s "$NVM_SH" ]; then
+    echo "❌ nvm no encontrado en $NVM_SH. Instala Node.js $NODE_VERSION manualmente."
+    exit 1
+  fi
+  # shellcheck disable=SC1090
+  \. "$NVM_SH"
+  echo "📥 Instalando/activando Node.js $NODE_VERSION..."
+  nvm install "$NODE_VERSION" || { echo "❌ Error instalando Node.js"; exit 1; }
+  nvm use "$NODE_VERSION" || { echo "❌ Error activando Node.js"; exit 1; }
+  nvm alias default "$NODE_VERSION" >/dev/null 2>&1 || true
 else
   echo "✅ Node.js $(node -v) ya está disponible"
 fi
+node -v
 
-# 4. Validar pnpm (habilitar corepack solo si es necesario)
-if ! command -v pnpm &>/dev/null; then
-  echo "📦 Configurando pnpm..."
-  corepack enable pnpm
-else
-  echo "✅ pnpm $(pnpm -v) ya está disponible"
+# 4. pnpm (versión desde PNPM_VERSION, packageManager o 12.15.0)
+PNPM_VERSION="${PNPM_VERSION:-$(node -p "require('./package.json').packageManager?.split('@')[1] || ''" 2>/dev/null)}"
+PNPM_VERSION="${PNPM_VERSION:-12.15.0}"
+echo "📦 pnpm objetivo: $PNPM_VERSION"
+
+if command -v corepack &>/dev/null; then
+  corepack enable >/dev/null 2>&1 || true
+  corepack install -g "pnpm@$PNPM_VERSION" >/dev/null 2>&1 \
+    || corepack prepare "pnpm@$PNPM_VERSION" --activate >/dev/null 2>&1 \
+    || true
 fi
+
+if ! command -v pnpm &>/dev/null || [ "$(pnpm -v 2>/dev/null)" != "$PNPM_VERSION" ]; then
+  echo "📥 Instalando pnpm $PNPM_VERSION..."
+  npm install -g "pnpm@$PNPM_VERSION" || { echo "❌ Error instalando pnpm"; exit 1; }
+  hash -r 2>/dev/null || true
+fi
+
+command -v pnpm &>/dev/null || { echo "❌ pnpm no disponible"; exit 1; }
+echo "✅ pnpm $(pnpm -v)"
 
 pnpm install --frozen-lockfile || pnpm install || { echo "❌ Error instalando dependencias"; exit 1; }
 

@@ -19,8 +19,6 @@
 <div class="dc-page" *ngIf="paciente && !cargando && !error">
   <!-- ══ HEADER HUD ═══════════════════════════════════════ -->
   <div class="hud-header">
-    <button class="btn" (click)="regresar()">❌ Salir</button>
-
     <div class="hud-title">
       <span class="hud-label">Paciente</span>
       <span class="hud-id">
@@ -52,12 +50,16 @@
     <!-- PERFIL -->
     <div class="dc-card">
       <div class="patient-hero">
-        <div class="patient-avatar" [class.avatar-m]="paciente.sexo === 'M'" [class.avatar-f]="paciente.sexo !== 'M'">
-            <span class="avatar-letter">
-              {{ paciente.nombre.primer_nombre[0] }}
-              {{ paciente.nombre.primer_apellido[0] }}
-            </span>
-          </div>
+        <div
+          class="patient-avatar"
+          [class.avatar-m]="paciente.sexo === 'M'"
+          [class.avatar-f]="paciente.sexo !== 'M'"
+        >
+          <span class="avatar-letter">
+            {{ paciente.nombre.primer_nombre[0] }}
+            {{ paciente.nombre.primer_apellido[0] }}
+          </span>
+        </div>
 
         <div class="patient-name-block">
           <p class="patient-firstname m-0">
@@ -123,16 +125,20 @@
           <span class="dc-lbl">Expediente</span>
           <span class="dc-val">{{ paciente.expediente || "—" }}</span>
         </div>
-        @if (paciente.datos_extra?.['expedientes_anteriores']?.length) {
+        @if (paciente.datos_extra?.["expedientes_anteriores"]?.length) {
           <div class="dc-field dc-field-full">
             <span class="dc-lbl">Expedientes anteriores</span>
-            <span class="dc-val">{{ paciente.datos_extra?.['expedientes_anteriores']?.join(', ') }}</span>
+            <span class="dc-val">{{
+              paciente.datos_extra?.["expedientes_anteriores"]?.join(", ")
+            }}</span>
           </div>
         }
-        @if (paciente.datos_extra?.['merge']?.['expediente']?.length) {
+        @if (paciente.datos_extra?.["merge"]?.["expediente"]?.length) {
           <div class="dc-field dc-field-full">
             <span class="dc-lbl">Expedientes fusionados</span>
-            <span class="dc-val">{{ paciente.datos_extra?.['merge']?.['expediente']?.join(', ') }}</span>
+            <span class="dc-val">{{
+              paciente.datos_extra?.["merge"]?.["expediente"]?.join(", ")
+            }}</span>
           </div>
         }
       </div>

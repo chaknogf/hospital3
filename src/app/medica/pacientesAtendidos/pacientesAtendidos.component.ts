@@ -316,7 +316,7 @@ export class PacientesAtendidosComponent implements OnInit, OnDestroy {
   }
 
   notamedica(consultaId: number): void {
-    this.router.navigate(['/notaMedica', consultaId]);
+    this.router.navigate(['/enfermeria/notas-medicas', consultaId]);
   }
 
   notamedicas(): void {
@@ -324,7 +324,7 @@ export class PacientesAtendidosComponent implements OnInit, OnDestroy {
   }
 
   historiaclinica(consultaId: number): void {
-    this.router.navigate(['/historiaClinica', consultaId]);
+    this.router.navigate(['/enfermeria/historia-clinica', consultaId]);
   }
 
   private valores(): void {
@@ -345,7 +345,7 @@ export class PacientesAtendidosComponent implements OnInit, OnDestroy {
   toggleFiltrar(): void { this.filtrar = !this.filtrar; }
   activarFila(id: number): void { this.rowActiva = this.rowActiva === id ? null : id; }
 
-  agregar(): void { this.router.navigate(['/pacientes']); }
+  agregar(): void { this.router.navigate(['/registros/pacientes']); }
   verDetalle(id: number): void { this.router.navigate(['/detalleAdmision', id]); }
   volver(): void { this.router.navigate(['/clinica']); }
 

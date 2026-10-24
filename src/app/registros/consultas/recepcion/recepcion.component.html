@@ -1,17 +1,13 @@
 <div class="aurora-paciente-container">
-  <!-- ── BARRA SUPERIOR ── -->
-  <div
-    class="botones justify-content-between"
-    [ngClass]="{ 'd-none': filtrar }"
-    >
-    <button type="button" (click)="volver()">
-      <span [innerHTML]="icons['menu']"></span> Menú
+  <!-- Barra superior: título y acción principal en una sola fila -->
+  <header class="pac-toolbar" [ngClass]="{ 'd-none': filtrar }">
+    <h1 class="pac-toolbar__title">Recepción</h1>
+
+    <button type="button" class="pac-toolbar__action" (click)="toggleFiltrar()">
+      <span class="pac-toolbar__icon" [innerHTML]="icons['find']"></span>
+      <span>Buscar</span>
     </button>
-    <h1 class="text-white">Recepción</h1>
-    <button type="button" (click)="toggleFiltrar()">
-      <span [innerHTML]="icons['find']"></span> Buscar
-    </button>
-  </div>
+  </header>
 
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
     <form class="form-filtros" (submit)="buscar(); $event.preventDefault()">
@@ -28,7 +24,7 @@
             name="expediente"
             placeholder="E26-003"
             style="text-transform: uppercase"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -41,7 +37,7 @@
             name="documento"
             placeholder="E26-003"
             style="text-transform: uppercase"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -51,7 +47,7 @@
             class="input-filtros"
             [(ngModel)]="filtros.fecha"
             name="fechaConsulta"
-            />
+          />
         </fieldset>
       </div>
 
@@ -64,7 +60,7 @@
             [(ngModel)]="filtros.primer_nombre"
             name="primerNombre"
             placeholder="Ej: Juan"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -75,7 +71,7 @@
             [(ngModel)]="filtros.segundo_nombre"
             name="segundoNombre"
             placeholder="Ej: María"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -86,7 +82,7 @@
             [(ngModel)]="filtros.primer_apellido"
             name="primerApellido"
             placeholder="Ej: García"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -97,7 +93,7 @@
             [(ngModel)]="filtros.segundo_apellido"
             name="segundoApellido"
             placeholder="Ej: Pérez"
-            />
+          />
         </fieldset>
       </div>
 
@@ -108,10 +104,10 @@
             name="tipo_consulta"
             [(ngModel)]="filtros.tipo_consulta"
             class="input-filtros"
-            >
+          >
             <option value="">Todos</option>
             @for (t of tipos; track trackById($index, t)) {
-              <option             [value]="t.value">
+              <option [value]="t.value">
                 {{ t.label }}
               </option>
             }
@@ -123,10 +119,10 @@
             name="ciclo"
             [(ngModel)]="filtros.ciclo"
             class="input-filtros"
-            >
+          >
             <option value="">Todos</option>
             @for (c of ciclos; track trackById($index, c)) {
-              <option             [value]="c.value">
+              <option [value]="c.value">
                 {{ c.label }}
               </option>
             }
@@ -166,7 +162,7 @@
           placeholder="Busqueda HE..."
           autocomplete="off"
           style="text-transform: uppercase"
-          />
+        />
         <input
           type="text"
           class=""
@@ -176,7 +172,7 @@
           placeholder="Busqueda exp..."
           autocomplete="off"
           style="text-transform: uppercase"
-          />
+        />
 
         <button type="submit" class="" aria-label="Buscar">
           <span>⌕</span>
@@ -188,10 +184,7 @@
   <!-- ── TABLA ── -->
   <div class="aurora-container">
     @if (cargando) {
-      <div
-        class="text-center p-2"
-        style="color: #60a5fa; font-size: 12px"
-        >
+      <div class="text-center p-2" style="color: #60a5fa; font-size: 12px">
         Cargando...
       </div>
     }
@@ -213,7 +206,7 @@
             class="aurora-table-row"
             [class.touch-active]="rowActiva === data.id"
             (click)="activarFila(data.id)"
-            >
+          >
             <td data-label="Nombre:">
               <div class="nombre-table">
                 <p class="p-0 m-0 text-uppercase">
@@ -223,7 +216,7 @@
                 <p
                   class="p-0 m-0 text-uppercase"
                   [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-                  >
+                >
                   {{ data.paciente.nombre.primer_apellido }}
                   {{ data.paciente.nombre.segundo_apellido }}
                 </p>
@@ -232,7 +225,8 @@
             <td data-label="Identificador:" class="text-justify">
               @if (data?.paciente?.cui) {
                 <div class="ms-4">
-                  <strong>CUI:</strong> <small>{{ data.paciente.cui | cui }}</small>
+                  <strong>CUI:</strong>
+                  <small>{{ data.paciente.cui | cui }}</small>
                 </div>
               }
               @if (data?.paciente?.expediente) {
@@ -241,9 +235,7 @@
                 </div>
               }
               @if (data?.documento) {
-                <div>
-                  <strong>Doc:</strong> {{ data.documento }}
-                </div>
+                <div><strong>Doc:</strong> {{ data.documento }}</div>
               }
             </td>
             <td class="oculto">
@@ -262,7 +254,7 @@
                 class="ciclo-chip"
                 [class.ciclo-recepcion]="data.ultimo_estado === 'recepcion'"
                 [class.ciclo-regular]="data.ultimo_estado !== 'recepcion'"
-                >
+              >
                 {{ data.ultimo_estado }}
               </span>
             </td>
@@ -273,7 +265,7 @@
                   <button
                     data-label="Recibir"
                     (click)="abrirModalRecibido(data); $event.stopPropagation()"
-                    >
+                  >
                     <span [innerHTML]="icons['recibido']"></span>
                   </button>
                 }
@@ -283,7 +275,7 @@
                     data-label="Archivar"
                     class="btn-archivar"
                     (click)="abrirModalArchivar(data); $event.stopPropagation()"
-                    >
+                  >
                     <span [innerHTML]="icons['archivo']"></span>
                   </button>
                 }
@@ -291,7 +283,7 @@
                 <button
                   data-label="Detalle"
                   (click)="verDetalle(data.id); $event.stopPropagation()"
-                  >
+                >
                   <span [innerHTML]="icons['tabla']"></span>
                 </button>
               </div>
@@ -327,7 +319,7 @@
       class="pag-btn"
       [disabled]="!hayPaginaAnterior"
       (click)="cambiarPagina(-1)"
-      >
+    >
       <span [innerHTML]="icons['skipLeft']"></span>
     </button>
 
@@ -345,7 +337,7 @@
         class="pag-num"
         [class.pag-num-active]="p === paginaActual"
         (click)="irAPagina(p)"
-        >
+      >
         {{ p }}
       </button>
     }
@@ -365,7 +357,7 @@
       class="pag-btn"
       [disabled]="!hayPaginaSiguiente"
       (click)="cambiarPagina(1)"
-      >
+    >
       <span [innerHTML]="icons['skipRight']"></span>
     </button>
 
@@ -406,7 +398,7 @@ MODAL — RECIBIDO EN RECEPCIÓN
             type="text"
             [(ngModel)]="formRecibido.servicio"
             placeholder="Ej: MEDI, PEDI, GINE..."
-            />
+          />
         </div>
         <div class="rc-field">
           <label class="rc-lbl">Comentario (opcional)</label>
@@ -428,15 +420,17 @@ MODAL — RECIBIDO EN RECEPCIÓN
           class="rc-btn rc-btn-cancel"
           (click)="cerrarModalRecibido()"
           [disabled]="formRecibido.guardando"
-          >
+        >
           Cancelar
         </button>
         <button
           class="rc-btn rc-btn-confirm rc-btn-recibir"
           (click)="confirmarRecibido()"
           [disabled]="formRecibido.guardando"
-          >
-          {{ formRecibido.guardando ? "Guardando..." : "✔ Confirmar Recepción" }}
+        >
+          {{
+            formRecibido.guardando ? "Guardando..." : "✔ Confirmar Recepción"
+          }}
         </button>
       </div>
     </div>
@@ -474,20 +468,20 @@ MODAL — ARCHIVAR
                 class="rc-condicion-btn"
                 [class.rc-condicion-active]="formArchivar.condicion === c.value"
                 (click)="formArchivar.condicion = c.value"
-                >
+              >
                 <span class="rc-condicion-icon">
                   {{
-                  c.value === "alta"
-                  ? "✅"
-                  : c.value === "referido"
-                  ? "🚑"
-                  : c.value === "fuga"
-                  ? "🏃"
-                  : c.value === "fallecido"
-                  ? "🕊️"
-                  : c.value === "traslado"
-                  ? "📦"
-                  : "📄"
+                    c.value === "alta"
+                      ? "✅"
+                      : c.value === "referido"
+                        ? "🚑"
+                        : c.value === "fuga"
+                          ? "🏃"
+                          : c.value === "fallecido"
+                            ? "🕊️"
+                            : c.value === "traslado"
+                              ? "📦"
+                              : "📄"
                   }}
                 </span>
                 <span class="rc-condicion-label">
@@ -505,7 +499,7 @@ MODAL — ARCHIVAR
             type="text"
             [(ngModel)]="formArchivar.referencia"
             placeholder="Hospital, servicio o institución destino (si aplica)"
-            />
+          />
         </div>
         <div class="rc-field">
           <label class="rc-lbl">Fecha y Hora de egreso</label>
@@ -514,7 +508,7 @@ MODAL — ARCHIVAR
             type="datetime-local"
             [(ngModel)]="formArchivar.registro"
             placeholder="Ej: Requiere valoración especializada, No hay camas disponibles..."
-            />
+          />
         </div>
         <!-- Diagnóstico de egreso — se guarda como Dx en egreso.diagnostico -->
         <div class="rc-field">
@@ -525,7 +519,7 @@ MODAL — ARCHIVAR
             [(ngModel)]="formArchivar.diagnosticos"
             name="diagnostico"
             placeholder="Ej: I:10 Hipertensión"
-            />
+          />
         </div>
         <!-- Comentario libre — va en ciclo.comentario -->
         <div class="rc-field">
@@ -548,13 +542,17 @@ MODAL — ARCHIVAR
             @if (formArchivar.referencia) {
               <div class="rc-preview-row">
                 <span class="rc-preview-key">referencia</span>
-                <span class="rc-preview-val">{{ formArchivar.referencia }}</span>
+                <span class="rc-preview-val">{{
+                  formArchivar.referencia
+                }}</span>
               </div>
             }
             @if (formArchivar.diagnosticos) {
               <div class="rc-preview-row">
                 <span class="rc-preview-key">diagnostico</span>
-                <span class="rc-preview-val">{{ formArchivar.diagnosticos }}</span>
+                <span class="rc-preview-val">{{
+                  formArchivar.diagnosticos
+                }}</span>
               </div>
             }
           </div>
@@ -574,15 +572,17 @@ MODAL — ARCHIVAR
           class="rc-btn rc-btn-cancel"
           (click)="cerrarModalArchivar()"
           [disabled]="formArchivar.guardando"
-          >
+        >
           Cancelar
         </button>
         <button
           class="rc-btn rc-btn-confirm rc-btn-archivar"
           (click)="confirmarArchivar()"
           [disabled]="formArchivar.guardando || !formArchivar.condicion"
-          >
-          {{ formArchivar.guardando ? "Archivando..." : "🗂️ Confirmar Archivo" }}
+        >
+          {{
+            formArchivar.guardando ? "Archivando..." : "🗂️ Confirmar Archivo"
+          }}
         </button>
       </div>
     </div>

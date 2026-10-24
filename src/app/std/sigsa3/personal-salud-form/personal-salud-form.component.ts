@@ -85,7 +85,7 @@ export class PersonalSaludFormComponent implements OnInit {
 
     if (this.enEdicion && this.registroId) {
       this.api.actualizarPersonalSalud(this.registroId, payload as PersonalSaludUpdate).subscribe({
-        next: () => this.router.navigate(['/personal-salud']),
+        next: () => this.router.navigate(['/estadistica/personal-salud']),
         error: () => { this.guardando = false; },
         complete: () => { this.guardando = false; }
       });
@@ -93,7 +93,7 @@ export class PersonalSaludFormComponent implements OnInit {
     }
 
     this.api.crearPersonalSalud(payload as PersonalSaludCreate).subscribe({
-      next: () => this.router.navigate(['/personal-salud']),
+      next: () => this.router.navigate(['/estadistica/personal-salud']),
       error: () => { this.guardando = false; },
       complete: () => { this.guardando = false; }
     });

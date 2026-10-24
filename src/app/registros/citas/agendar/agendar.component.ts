@@ -474,7 +474,7 @@ export class AgendarComponent implements OnInit, OnDestroy {
 
   // ======= NAVEGACIÓN =======
   /*  volver(): void {
-     this.router.navigate(['/pacientes']);
+     this.router.navigate(['/registros/pacientes']);
    } */
 
   volver(): void {

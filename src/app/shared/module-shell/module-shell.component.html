@@ -1,0 +1,66 @@
+<div class="mod-shell" [style.--accent]="config.accent">
+  <aside class="mod-sidebar" [class.is-open]="sidebarAbierta()">
+    <header class="mod-brand">
+      <p class="mod-kicker">Módulo</p>
+      <h1 class="mod-title">{{ config.title }}</h1>
+      @if (config.subtitle) {
+        <p class="mod-subtitle">{{ config.subtitle }}</p>
+      }
+    </header>
+
+    <nav class="mod-nav" [attr.aria-label]="'Secciones de ' + config.title">
+      @for (opt of config.items; track opt.ruta) {
+        <a
+          class="mod-link"
+          [routerLink]="opt.ruta"
+          routerLinkActive="is-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          [style.--card-accent]="menuColor($index)"
+          (click)="cerrarSidebar()">
+          <span class="mod-link-icon">
+            @if (icons[opt.icon]) {
+              <span [innerHTML]="icons[opt.icon]"></span>
+            } @else {
+              <span class="mod-link-dot"></span>
+            }
+          </span>
+          <span class="mod-link-body">
+            <span class="mod-link-name">{{ opt.nombre }}</span>
+            <span class="mod-link-desc">{{ opt.descripcion }}</span>
+          </span>
+        </a>
+      }
+    </nav>
+
+    <a class="mod-back" routerLink="/dash">
+      @if (icons['regresar']) {
+        <span class="mod-back-icon" [innerHTML]="icons['regresar']"></span>
+      }
+      Menú principal
+    </a>
+  </aside>
+
+  <div
+    class="mod-overlay"
+    [class.is-visible]="sidebarAbierta()"
+    (click)="cerrarSidebar()"
+    aria-hidden="true"></div>
+
+  <main class="mod-content">
+    <header class="mod-topbar">
+      <button
+        class="mod-toggle"
+        type="button"
+        (click)="alternarSidebar()"
+        [attr.aria-expanded]="sidebarAbierta()"
+        [attr.aria-label]="'Abrir menú de ' + config.title">
+        @if (icons['menu']) {
+          <span [innerHTML]="icons['menu']"></span>
+        }
+      </button>
+      <span class="mod-topbar-title">{{ config.title }}</span>
+    </header>
+
+    <router-outlet></router-outlet>
+  </main>
+</div>

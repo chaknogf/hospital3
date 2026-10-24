@@ -268,7 +268,7 @@ export class HijosComponent implements OnInit, OnDestroy {
   }
 
   verMadre(): void {
-    this.router.navigate(['/detallePaciente', this.pacienteId]);
+    this.router.navigate(['/registros/detallePaciente', this.pacienteId]);
   }
 
   setSexo(valor: string): void {
@@ -366,7 +366,7 @@ export class HijosComponent implements OnInit, OnDestroy {
         .subscribe(response => {
           if (response) {
             this.success.set(`✅ Se han registrado exitosamente ${response.total} nacimiento(s)`);
-            setTimeout(() => this.router.navigate(['/pacientes']), 2000);
+            setTimeout(() => this.router.navigate(['/registros/pacientes']), 2000);
           }
           this.cdr.markForCheck();
         });
@@ -406,6 +406,6 @@ export class HijosComponent implements OnInit, OnDestroy {
       );
       if (!confirm) return;
     }
-    this.router.navigate(['/pacientes']);
+    this.router.navigate(['/registros/pacientes']);
   }
 }

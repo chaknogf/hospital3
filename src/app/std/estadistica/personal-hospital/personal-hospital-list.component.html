@@ -1,6 +1,5 @@
 <div class="page-container">
   <div class="page-header">
-    <button class="btn-back" routerLink="/estadistica">← Volver</button>
     <h1>Personal del Hospital</h1>
   </div>
 
@@ -8,33 +7,63 @@
   <div class="filter-row">
     <div class="field">
       <label class="field-label">Expediente</label>
-      <input class="field-input" type="text" [(ngModel)]="filtros.expediente"
-        (keyup.enter)="buscar()" placeholder="Ej: EXP-000001" />
+      <input
+        class="field-input"
+        type="text"
+        [(ngModel)]="filtros.expediente"
+        (keyup.enter)="buscar()"
+        placeholder="Ej: EXP-000001"
+      />
     </div>
     <div class="field">
       <label class="field-label">CUI</label>
-      <input class="field-input" type="text" [(ngModel)]="filtros.cui"
-        (keyup.enter)="buscar()" placeholder="Ej: 1234567890101" />
+      <input
+        class="field-input"
+        type="text"
+        [(ngModel)]="filtros.cui"
+        (keyup.enter)="buscar()"
+        placeholder="Ej: 1234567890101"
+      />
     </div>
     <div class="field">
       <label class="field-label">Primer nombre</label>
-      <input class="field-input" type="text" [(ngModel)]="filtros.primer_nombre"
-        (keyup.enter)="buscar()" placeholder="Ej: Juan" />
+      <input
+        class="field-input"
+        type="text"
+        [(ngModel)]="filtros.primer_nombre"
+        (keyup.enter)="buscar()"
+        placeholder="Ej: Juan"
+      />
     </div>
     <div class="field">
       <label class="field-label">Segundo nombre</label>
-      <input class="field-input" type="text" [(ngModel)]="filtros.segundo_nombre"
-        (keyup.enter)="buscar()" placeholder="Ej: Alberto" />
+      <input
+        class="field-input"
+        type="text"
+        [(ngModel)]="filtros.segundo_nombre"
+        (keyup.enter)="buscar()"
+        placeholder="Ej: Alberto"
+      />
     </div>
     <div class="field">
       <label class="field-label">Primer apellido</label>
-      <input class="field-input" type="text" [(ngModel)]="filtros.primer_apellido"
-        (keyup.enter)="buscar()" placeholder="Ej: Pérez" />
+      <input
+        class="field-input"
+        type="text"
+        [(ngModel)]="filtros.primer_apellido"
+        (keyup.enter)="buscar()"
+        placeholder="Ej: Pérez"
+      />
     </div>
     <div class="field">
       <label class="field-label">Segundo apellido</label>
-      <input class="field-input" type="text" [(ngModel)]="filtros.segundo_apellido"
-        (keyup.enter)="buscar()" placeholder="Ej: López" />
+      <input
+        class="field-input"
+        type="text"
+        [(ngModel)]="filtros.segundo_apellido"
+        (keyup.enter)="buscar()"
+        placeholder="Ej: López"
+      />
     </div>
     <div class="field-actions">
       <button class="btn-search" (click)="buscar()">Buscar</button>
@@ -73,17 +102,33 @@
                 <tr>
                   <td>{{ i + 1 + (paginaActual - 1) * pageSize }}</td>
                   <td class="text-left">{{ p.id }}</td>
-                  <td>{{ p.expediente || '-' }}</td>
-                  <td class="text-left">{{ p.nombre_completo || '—' }}</td>
-                  <td>{{ p.sexo || '-' }}</td>
-                  <td>{{ p.fecha_nacimiento ? (p.fecha_nacimiento | date:'dd/MM/yyyy') : '-' }}</td>
+                  <td>{{ p.expediente || "-" }}</td>
+                  <td class="text-left">{{ p.nombre_completo || "—" }}</td>
+                  <td>{{ p.sexo || "-" }}</td>
                   <td>
-                    <span class="badge-estado" [class.activo]="p.estado === 'V'" [class.inactivo]="p.estado !== 'V'">
-                      {{ p.estado === 'V' ? 'Vivo' : p.estado === 'F' ? 'Fallecido' : 'Inactivo' }}
+                    {{
+                      p.fecha_nacimiento
+                        ? (p.fecha_nacimiento | date: "dd/MM/yyyy")
+                        : "-"
+                    }}
+                  </td>
+                  <td>
+                    <span
+                      class="badge-estado"
+                      [class.activo]="p.estado === 'V'"
+                      [class.inactivo]="p.estado !== 'V'"
+                    >
+                      {{
+                        p.estado === "V"
+                          ? "Vivo"
+                          : p.estado === "F"
+                            ? "Fallecido"
+                            : "Inactivo"
+                      }}
                     </span>
                   </td>
-                  <td data-label="Detalle">
-                    <a class="btn-detail" [routerLink]="['/detallePaciente', p.id]" title="Ver detalle del paciente">
+                  <td data-label="Detalle" (click)="verDetalle(p.id)">
+                    <a class="btn" title="Ver detalle del paciente">
                       <i class="bi bi-person-lines-fill"></i>
                     </a>
                   </td>
@@ -100,7 +145,13 @@
       }
       <!-- ── PAGINADOR ── -->
       <div class="paginador">
-        <button class="pag-btn" [disabled]="!hayPaginaAnterior" (click)="cambiarPagina(-1)">‹</button>
+        <button
+          class="pag-btn"
+          [disabled]="!hayPaginaAnterior"
+          (click)="cambiarPagina(-1)"
+        >
+          ‹
+        </button>
         @if (paginas[0] > 1) {
           <button class="pag-num" (click)="irAPagina(1)">1</button>
         }
@@ -108,8 +159,11 @@
           <span class="pag-ellipsis">…</span>
         }
         @for (p of paginas; track p) {
-          <button class="pag-num"
-            [class.pag-num-active]="p === paginaActual" (click)="irAPagina(p)">
+          <button
+            class="pag-num"
+            [class.pag-num-active]="p === paginaActual"
+            (click)="irAPagina(p)"
+          >
             {{ p }}
           </button>
         }
@@ -117,10 +171,17 @@
           <span class="pag-ellipsis">…</span>
         }
         @if (paginas[paginas.length - 1] < totalPaginas) {
-          <button class="pag-num"
-          (click)="irAPagina(totalPaginas)">{{ totalPaginas }}</button>
+          <button class="pag-num" (click)="irAPagina(totalPaginas)">
+            {{ totalPaginas }}
+          </button>
         }
-        <button class="pag-btn" [disabled]="!hayPaginaSiguiente" (click)="cambiarPagina(1)">›</button>
+        <button
+          class="pag-btn"
+          [disabled]="!hayPaginaSiguiente"
+          (click)="cambiarPagina(1)"
+        >
+          ›
+        </button>
         <span class="pag-info">
           Pág. {{ paginaActual }} / {{ totalPaginas }} &nbsp;·&nbsp;
           {{ totalDeRegistros }} registros

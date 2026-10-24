@@ -193,7 +193,7 @@ export class DetalleConsultaComponent implements OnInit, OnDestroy {
     return (ind as unknown as Record<string, string>)[field] ?? '';
   }
   editar(id: number) {
-    this.router.navigate(['/editarAdmision', id]);
+    this.router.navigate(['/registros/editarAdmision', id]);
   }
 
   // ======= ACCIONES =======
@@ -201,9 +201,9 @@ export class DetalleConsultaComponent implements OnInit, OnDestroy {
   regresar(): void { this.location.back(); }
 
   // regresar(): void {
-  //   if (this.esEmergencia) this.router.navigate(['/emergencias']);
-  //   else if (this.esCoex) this.router.navigate(['/coex']);
-  //   else if (this.esIngreso) this.router.navigate(['/ingresos']);
-  //   else this.router.navigate(['/consultas']);
+  //   if (this.esEmergencia) this.router.navigate(['/registros/emergencias']);
+  //   else if (this.esCoex) this.router.navigate(['/registros/coex']);
+  //   else if (this.esIngreso) this.router.navigate(['/registros/ingresos']);
+  //   else this.router.navigate(['/registros/consultas']);
   // }
 }

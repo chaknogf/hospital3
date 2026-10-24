@@ -178,7 +178,7 @@ export class NuevaConstanciaDefuncionComponent implements OnInit, OnDestroy {
     ).subscribe(res => {
       if (!res) return;
       this.guardadoOk.set(true);
-      this.router.navigate(['/defunciones']);
+      this.router.navigate(['/registros/defunciones']);
     });
   }
 
@@ -225,7 +225,7 @@ export class NuevaConstanciaDefuncionComponent implements OnInit, OnDestroy {
 
   setTab(tab: 'paciente' | 'causas' | 'fetal' | 'madre'): void { this.tabActivo.set(tab); }
 
-  volver(): void { this.router.navigate(['/defunciones']); }
+  volver(): void { this.router.navigate(['/registros/defunciones']); }
 
   private mostrarError(accion: string, error: any): void {
     const msg = error?.error?.detail || error?.message || 'Consulte la consola';

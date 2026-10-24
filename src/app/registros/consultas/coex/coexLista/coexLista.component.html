@@ -1,21 +1,13 @@
 <div class="aurora-paciente-container" [class.d-none]="modalActivo">
-  <!-- Botones superiores -->
-  <div
-    class="botones justify-content-between"
-    [ngClass]="{ 'd-none': filtrar }"
-    >
-    <button type="button" (click)="volver()">
-      <span [innerHTML]="icons['menu']"></span>
-      Menu
-    </button>
+  <!-- Barra superior: título y acción principal en una sola fila -->
+  <header class="pac-toolbar" [ngClass]="{ 'd-none': filtrar }">
+    <h1 class="pac-toolbar__title">Consulta Externa</h1>
 
-    <h1 class="text-white">Consulta Externa</h1>
-
-    <button type="button" (click)="toggleFiltrar()">
-      <span [innerHTML]="icons['find']"></span>
-      Buscar
+    <button type="button" class="pac-toolbar__action" (click)="toggleFiltrar()">
+      <span class="pac-toolbar__icon" [innerHTML]="icons['find']"></span>
+      <span>Buscar</span>
     </button>
-  </div>
+  </header>
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
@@ -33,7 +25,7 @@
             name="expediente"
             placeholder="E26-003"
             style="text-transform: uppercase"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -43,7 +35,7 @@
             class="input-filtros"
             [(ngModel)]="filtros.fecha"
             name="fechaConsulta"
-            />
+          />
         </fieldset>
       </div>
 
@@ -56,7 +48,7 @@
             [(ngModel)]="filtros.primer_nombre"
             name="primerNombre"
             placeholder="Ej: Juan"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -67,7 +59,7 @@
             [(ngModel)]="filtros.segundo_nombre"
             name="segundoNombre"
             placeholder="Ej: María"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -78,7 +70,7 @@
             [(ngModel)]="filtros.primer_apellido"
             name="primerApellido"
             placeholder="Ej: García"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -89,7 +81,7 @@
             [(ngModel)]="filtros.segundo_apellido"
             name="segundoApellido"
             placeholder="Ej: Pérez"
-            />
+          />
         </fieldset>
       </div>
 
@@ -120,56 +112,56 @@
     <button
       (click)="seleccionarEspecialidad('MEDI')"
       [class.activo]="especialidadSeleccionada === 'MEDI'"
-      >
+    >
       Medi <span [innerHTML]="icons['medicina']"></span>
     </button>
 
     <button
       (click)="seleccionarEspecialidad('PEDI')"
       [class.activo]="especialidadSeleccionada === 'PEDI'"
-      >
+    >
       Pedia <span [innerHTML]="icons['pedia']"></span>
     </button>
 
     <button
       (click)="seleccionarEspecialidad('GINE')"
       [class.activo]="especialidadSeleccionada === 'GINE'"
-      >
+    >
       Gine <span [innerHTML]="icons['gine']"></span>
     </button>
 
     <button
       (click)="seleccionarEspecialidad('CIRU')"
       [class.activo]="especialidadSeleccionada === 'CIRU'"
-      >
+    >
       Ciru <span [innerHTML]="icons['ciru']"></span>
     </button>
 
     <button
       (click)="seleccionarEspecialidad('TRAU')"
       [class.activo]="especialidadSeleccionada === 'TRAU'"
-      >
+    >
       Trauma <span [innerHTML]="icons['trauma']"></span>
     </button>
 
     <button
       (click)="seleccionarEspecialidad('PSIC')"
       [class.activo]="especialidadSeleccionada === 'PSIC'"
-      >
+    >
       Psico <span [innerHTML]="icons['psico']"></span>
     </button>
 
     <button
       (click)="seleccionarEspecialidad('NUTR')"
       [class.activo]="especialidadSeleccionada === 'NUTR'"
-      >
+    >
       Nutri <span [innerHTML]="icons['nutri']"></span>
     </button>
 
     <button
       (click)="seleccionarEspecialidad('ODON')"
       [class.activo]="especialidadSeleccionada === 'ODON'"
-      >
+    >
       Odonto <span [innerHTML]="icons['odont']"></span>
     </button>
   </div>
@@ -196,7 +188,7 @@
             class="aurora-table-row"
             [class.touch-active]="data.id"
             (click)="activarFila(data.id)"
-            >
+          >
             <td data-label="Nombre:">
               <div class="nombre-table">
                 <p class="p-0 m-0 text-uppercase">
@@ -207,7 +199,7 @@
                 <p
                   class="p-0 mt-1 text-uppercase"
                   [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-                  >
+                >
                   {{ data.paciente.nombre.primer_apellido }}
                   {{ data.paciente.nombre.segundo_apellido }}
                   {{ data.paciente.nombre.apellido_casada }}
@@ -300,7 +292,7 @@
       class="pag-btn"
       [disabled]="!hayPaginaAnterior"
       (click)="cambiarPagina(-1)"
-      >
+    >
       <span [innerHTML]="icons['skipLeft']"></span>
     </button>
 
@@ -318,7 +310,7 @@
         class="pag-num"
         [class.pag-num-active]="p === paginaActual"
         (click)="irAPagina(p)"
-        >
+      >
         {{ p }}
       </button>
     }
@@ -338,7 +330,7 @@
       class="pag-btn"
       [disabled]="!hayPaginaSiguiente"
       (click)="cambiarPagina(1)"
-      >
+    >
       <span [innerHTML]="icons['skipRight']"></span>
     </button>
 

@@ -421,7 +421,7 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
   }
 
   seleccionarConsulta(consulta: ConsultasIdPaciente): void {
-    this.router.navigate(['/notaMedica', consulta.id]);
+    this.router.navigate(['/enfermeria/notas-medicas', consulta.id]);
   }
 
   mapearDatos(ciclo: CicloConsulta): void {

@@ -1,27 +1,18 @@
 <div class="aurora-paciente-container" [class.d-none]="modalActivo">
-
   <div *ngIf="error" class="alert alert-error">
     {{ error }}
     <button type="button" (click)="error = null">&times;</button>
   </div>
 
-  <!-- Botones superiores -->
-  <div
-    class="botones justify-content-between"
-    [ngClass]="{ 'd-none': filtrar }"
-  >
-    <button type="button" (click)="volver()">
-      <span [innerHTML]="icons['menu']"></span>
-      Menu
-    </button>
+  <!-- Barra superior: título y acción principal en una sola fila -->
+  <header class="pac-toolbar" [ngClass]="{ 'd-none': filtrar }">
+    <h1 class="pac-toolbar__title">Informes de Nacimiento</h1>
 
-    <h1 class="text-white">Constancias de Nacimiento</h1>
-
-    <button type="button" (click)="toggleFiltrar()">
-      <span [innerHTML]="icons['find']"></span>
-      Filtrar
+    <button type="button" class="pac-toolbar__action" (click)="toggleFiltrar()">
+      <span class="pac-toolbar__icon" [innerHTML]="icons['find']"></span>
+      <span>Buscar</span>
     </button>
-  </div>
+  </header>
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
@@ -140,8 +131,11 @@
             {{ data.nombre_madre | capitalize }}
           </td>
           <td class="oculto">
-            <span class="estado-badge" [class.activo]="getMetadatoEstado(data.metadatos) === 'creado'">
-              {{ getEstadoLabel(getMetadatoEstado(data.metadatos)) || '—' }}
+            <span
+              class="estado-badge"
+              [class.activo]="getMetadatoEstado(data.metadatos) === 'creado'"
+            >
+              {{ getEstadoLabel(getMetadatoEstado(data.metadatos)) || "—" }}
             </span>
           </td>
           <td class="oculto">
@@ -229,7 +223,11 @@
 </div>
 
 <!-- Modal Estado Informe -->
-<div class="modal-overlay" *ngIf="estadoInformeModal" (click)="cerrarModalEstado()">
+<div
+  class="modal-overlay"
+  *ngIf="estadoInformeModal"
+  (click)="cerrarModalEstado()"
+>
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h3>Estado del Documento</h3>
@@ -238,32 +236,38 @@
 
     <div class="modal-body">
       <p *ngIf="constanciaSeleccionada">
-        <strong>Documento:</strong> {{ constanciaSeleccionada.documento || '—' }}
+        <strong>Documento:</strong>
+        {{ constanciaSeleccionada.documento || "—" }}
       </p>
       <p *ngIf="constanciaSeleccionada">
-        <strong>Madre:</strong> {{ constanciaSeleccionada.nombre_madre | capitalize }}
+        <strong>Madre:</strong>
+        {{ constanciaSeleccionada.nombre_madre | capitalize }}
       </p>
 
       <label class="label-filtros">Estado del Informe</label>
       <div class="bottom-select">
-        <button *ngFor="let est of estadosValidos"
+        <button
+          *ngFor="let est of estadosValidos"
           type="button"
           class="bottom-option"
           [class.active]="estadoInformeActual === est"
-          (click)="estadoInformeActual = est">
+          (click)="estadoInformeActual = est"
+        >
           {{ getEstadoLabel(est) }}
         </button>
       </div>
     </div>
 
     <div class="modal-footer">
-      <button class="button-filtros" (click)="cerrarModalEstado()">Cancelar</button>
+      <button class="button-filtros" (click)="cerrarModalEstado()">
+        Cancelar
+      </button>
       <button
         class="btn-submit"
         (click)="guardarEstadoInforme()"
         [disabled]="!estadoInformeActual || cargandoEstado"
       >
-        {{ cargandoEstado ? 'Guardando...' : 'Guardar' }}
+        {{ cargandoEstado ? "Guardando..." : "Guardar" }}
       </button>
     </div>
   </div>

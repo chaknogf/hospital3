@@ -144,8 +144,8 @@ export class VerNotaMedicaComponent implements OnInit, OnDestroy {
   volver(): void {
     const consultaId = this.ciclo()?.consulta_id;
     const pacienteId = this.ciclo()?.consulta?.paciente?.id;
-    if (pacienteId) this.router.navigate(['/historiaClinica', pacienteId], { queryParams: { by: 'paciente' } });
-    else if (consultaId) this.router.navigate(['/historiaClinica', consultaId]);
-    else this.router.navigate(['/pacientesActivos']);
+    if (pacienteId) this.router.navigate(['/enfermeria/historia-clinica', pacienteId], { queryParams: { by: 'paciente' } });
+    else if (consultaId) this.router.navigate(['/enfermeria/historia-clinica', consultaId]);
+    else this.router.navigate(['/enfermeria/pacientes-activos']);
   }
 }

@@ -181,7 +181,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
         this.constancia = res;
         this.guardadoOk.set(true);
         setTimeout(() => this.guardadoOk.set(false), 3000);
-        this.router.navigate(['/nacimientos']);
+        this.router.navigate(['/registros/nacimientos']);
         this.cdr.markForCheck();
       });
   }
@@ -217,7 +217,7 @@ export class ConstanciasNacimientoComponent implements OnInit, OnDestroy {
 
   // ======= UTILIDADES =======
   volver(): void {
-    this.router.navigate(['/nacimientos'])
+    this.router.navigate(['/registros/nacimientos'])
   }
 
   editarHijo(id: any): void {
