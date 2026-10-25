@@ -119,13 +119,13 @@ export class UsuarioComponent implements OnInit {
     const data = this.form.value as Usuario;
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    console.log(id)
+    // console.log(id)
 
     if (this.enEdicion()) {
       this.actualizar(id, data);
     } else {
       // aquí podrías crear usuario
-      console.log('crear usuario', data);
+      // console.log('crear usuario', data);
     }
   }
 
@@ -145,7 +145,7 @@ export class UsuarioComponent implements OnInit {
       .subscribe(response => {
         if (!response) return;
 
-        console.log('Usuario Actualizado: ', response);
+        // console.log('Usuario Actualizado: ', response);
         this.volver();
       })
   }

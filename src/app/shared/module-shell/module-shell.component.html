@@ -1,6 +1,12 @@
 <div class="mod-shell" [style.--accent]="config.accent">
   <aside class="mod-sidebar" [class.is-open]="sidebarAbierta()">
     <header class="mod-brand">
+      <a class="mod-back" routerLink="/dash">
+        @if (icons["regresar"]) {
+          <span class="mod-back-icon" [innerHTML]="icons['regresar']"></span>
+        }
+        Menú principal
+      </a>
       <p class="mod-kicker">Módulo</p>
       <h1 class="mod-title">{{ config.title }}</h1>
       @if (config.subtitle) {
@@ -16,7 +22,8 @@
           routerLinkActive="is-active"
           [routerLinkActiveOptions]="{ exact: true }"
           [style.--card-accent]="menuColor($index)"
-          (click)="cerrarSidebar()">
+          (click)="cerrarSidebar()"
+        >
           <span class="mod-link-icon">
             @if (icons[opt.icon]) {
               <span [innerHTML]="icons[opt.icon]"></span>
@@ -31,20 +38,14 @@
         </a>
       }
     </nav>
-
-    <a class="mod-back" routerLink="/dash">
-      @if (icons['regresar']) {
-        <span class="mod-back-icon" [innerHTML]="icons['regresar']"></span>
-      }
-      Menú principal
-    </a>
   </aside>
 
   <div
     class="mod-overlay"
     [class.is-visible]="sidebarAbierta()"
     (click)="cerrarSidebar()"
-    aria-hidden="true"></div>
+    aria-hidden="true"
+  ></div>
 
   <main class="mod-content">
     <header class="mod-topbar">
@@ -53,8 +54,9 @@
         type="button"
         (click)="alternarSidebar()"
         [attr.aria-expanded]="sidebarAbierta()"
-        [attr.aria-label]="'Abrir menú de ' + config.title">
-        @if (icons['menu']) {
+        [attr.aria-label]="'Abrir menú de ' + config.title"
+      >
+        @if (icons["menu"]) {
           <span [innerHTML]="icons['menu']"></span>
         }
       </button>
