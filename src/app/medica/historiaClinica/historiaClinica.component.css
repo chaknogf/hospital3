@@ -158,6 +158,12 @@
   font-size: 0.74rem;
   line-height: 1.4;
 }
+.nota-quirofano {
+  margin-top: 5px; padding: 6px 8px; border-left: 2px solid #b45309;
+  border-radius: 0 4px 4px 0; background: color-mix(in srgb, #b45309 10%, transparent);
+  color: var(--text, #cbd5e1); font-size: 0.72rem; line-height: 1.45;
+}
+.nota-quirofano strong { color: var(--text, #f1f5f9); }
 
 /* ── Estados ────────────────────────────────────────────── */
 .state-box { text-align: center; padding: 32px 16px; color: var(--muted, #94a3b8); }

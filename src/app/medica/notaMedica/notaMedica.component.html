@@ -62,6 +62,20 @@
         </div>
       </div>
 
+      @if (intervencionesPaciente().length) {
+        <section class="nm-patient-surgeries">
+          <h2>Intervenciones quirúrgicas del paciente</h2>
+          @for (qx of intervencionesPaciente(); track qx.intervencion_id) {
+            <article class="nm-quirofano">
+              <strong>Intervención #{{ qx.intervencion_id }}</strong>
+              @for (campo of camposQuirofanoNota(qx); track campo.etiqueta) {
+                <p><b>{{ campo.etiqueta }}:</b> {{ campo.valor }}</p>
+              }
+            </article>
+          }
+        </section>
+      }
+
       @if (cargandoConsultas()) {
         <p class="nm-picker__hint">Cargando consultas…</p>
       } @else if (!consultasPaciente().length) {
@@ -118,6 +132,15 @@
       <span>{{ ciclo()?.especialidad | datosExtra: "especialidad" }}</span>
       <span>{{ ciclo()?.servicio | datosExtra: "servicio" }}</span>
     </div>
+
+    @if (intervencionQuirurgica(); as qx) {
+      <section class="nm-quirofano">
+        <strong>Detalle completo de intervención quirúrgica</strong>
+        @for (campo of camposQuirofanoNota(qx); track campo.etiqueta) {
+          <p><b>{{ campo.etiqueta }}:</b> {{ campo.valor }}</p>
+        }
+      </section>
+    }
 
     <nav class="nm-tabs" role="tablist">
       @if (odontologiaActiva()) {

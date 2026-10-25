@@ -56,12 +56,9 @@ export class CicloService extends BaseApiService {
    */
   getCiclosDeConsulta(consulta_id: number): Observable<CicloConsulta[]> {
     const url = `${this.baseUrl}/ciclos/consulta/${consulta_id}?activo=true`;
-    const key = this.cacheKey(url);
-    return this.cacheGet(key,
-      this.http.get<CicloConsulta[]>(url).pipe(
-        tap(response => this.ciclosSubject.next(response as any)),
-        catchError(error => this.manejarError(error, 'obtener ciclos'))
-      )
+    return this.http.get<CicloConsulta[]>(url).pipe(
+      tap(response => this.ciclosSubject.next(response as any)),
+      catchError(error => this.manejarError(error, 'obtener ciclos'))
     );
   }
 
@@ -85,8 +82,13 @@ export class CicloService extends BaseApiService {
   }
 
   /** Historia clínica completa de un paciente, agrupada por consulta */
-  getHistoriaClinica(pacienteId: number): Observable<HistoriaClinicaResponse> {
+  getHistoriaClinica(pacienteId: number, actualizar = false): Observable<HistoriaClinicaResponse> {
     const url = `${this.baseUrl}/ciclos/paciente/${pacienteId}`;
+    if (actualizar) {
+      return this.http.get<HistoriaClinicaResponse>(url).pipe(
+        catchError(error => this.manejarError(error, 'obtener historia clínica'))
+      );
+    }
     const key = this.cacheKey(url);
     return this.cacheGet(key,
       this.http.get<HistoriaClinicaResponse>(url).pipe(

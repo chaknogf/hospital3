@@ -152,25 +152,55 @@ export interface PresaQuirurgica {
   especialidad: string;
 }
 
-/** Datos de la intervención quirúrgica guardados en JSONB al registrarla. */
+/** Datos actuales de una intervención, resueltos desde el ID almacenado en JSONB. */
 export interface DatosQuirurgicos {
   intervencion_id?: number;
+  paciente_id?: number;
+  consulta_id?: number | null;
+  paciente_nombre?: string | null;
   fecha?: string | null;
   expediente?: string | null;
-  procedimientos?: string[];
-  area_cuerpo_intervenida?: string | null;
-  estado_cirugia?: { id?: number | null; nombre?: string | null };
-  quirofano_numero?: { id?: number | null; nombre?: string | null };
-  especialidad_id?: number | null;
   personal_atencion_id?: number | null;
-  horas?: {
-    inicio_anestesia?: string | null;
-    inicio_intervencion?: string | null;
-    finaliza_intervencion?: string | null;
-    finaliza_limpieza_prepara_quirofano?: string | null;
-  };
+  personal_atencion_nombre?: string | null;
+  procedimiento_principal?: string | null;
+  procedimiento_principal_id?: number | null;
+  procedimiento_2?: string | null;
+  procedimiento_2_id?: number | null;
+  procedimiento_2_catalogo_nombre?: string | null;
+  procedimiento_3?: string | null;
+  procedimiento_3_id?: number | null;
+  procedimiento_3_catalogo_nombre?: string | null;
+  procedimiento_4?: string | null;
+  procedimiento_4_id?: number | null;
+  procedimiento_4_catalogo_nombre?: string | null;
+  procedimiento_5?: string | null;
+  procedimiento_5_id?: number | null;
+  procedimiento_5_catalogo_nombre?: string | null;
+  procedimiento_principal_catalogo_nombre?: string | null;
+  area_cuerpo_intervenida?: string | null;
+  area_cuerpo_intervenida_nombre?: string | null;
+  id_area_cuerpo_intervenida?: number | null;
+  estado_cirugia_id?: number | null;
+  estado_cirugia_nombre?: string | null;
+  formato_procedimiento_id?: number | null;
+  formato_procedimiento_nombre?: string | null;
+  procedencia_procedimiento_id?: number | null;
+  procedencia_procedimiento_nombre?: string | null;
+  rango_especialista_id?: number | null;
+  rango_especialista_nombre?: string | null;
+  especialidad_id?: number | null;
+  quirofano_numero_id?: number | null;
+  quirofano_numero_nombre?: string | null;
+  especialidad_nombre?: string | null;
+  hora_inicio_anestesia?: string | null;
+  hora_inicio_intervencion?: string | null;
+  hora_finaliza_intervencion?: string | null;
+  hora_finaliza_limpieza_prepara_quirofano?: string | null;
   observaciones?: string | null;
   datos_extra?: Record<string, unknown> | null;
+  activo?: boolean;
+  created_at?: string | null;
+  updated_at?: string | null;
 }
 
 /** Secciones clínicas opcionales guardadas en un ciclo de atención. */

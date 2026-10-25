@@ -213,4 +213,55 @@ export class HistoriaClinicaComponent implements OnInit {
     if (odonto.piezas_afectadas?.length) partes.push(`Piezas: ${odonto.piezas_afectadas.join(', ')}`);
     return partes.join(' · ') || 'Nota odontológica registrada';
   }
+
+  procedimientosQuirofano(datos: NonNullable<CicloResumen['quirofano']>): string {
+    return [
+      datos.procedimiento_principal,
+      datos.procedimiento_2,
+      datos.procedimiento_3,
+      datos.procedimiento_4,
+      datos.procedimiento_5,
+    ].filter((valor): valor is string => !!valor?.trim()).join(' · ');
+  }
+
+  camposQuirofano(datos: NonNullable<CicloResumen['quirofano']>): Array<{ etiqueta: string; valor: string }> {
+    const etiquetas: Record<string, string> = {
+      intervencion_id: 'ID de intervención', paciente_id: 'ID de paciente', consulta_id: 'ID de consulta',
+      paciente_nombre: 'Paciente', fecha: 'Fecha', expediente: 'Expediente',
+      personal_atencion_id: 'ID del médico', personal_atencion_nombre: 'Médico responsable',
+      procedimiento_principal: 'Procedimiento principal', procedimiento_principal_id: 'ID procedimiento principal',
+      procedimiento_principal_catalogo_nombre: 'Nombre catálogo procedimiento principal',
+      procedimiento_2: 'Procedimiento 2', procedimiento_2_id: 'ID procedimiento 2', procedimiento_2_catalogo_nombre: 'Nombre catálogo procedimiento 2',
+      procedimiento_3: 'Procedimiento 3', procedimiento_3_id: 'ID procedimiento 3', procedimiento_3_catalogo_nombre: 'Nombre catálogo procedimiento 3',
+      procedimiento_4: 'Procedimiento 4', procedimiento_4_id: 'ID procedimiento 4', procedimiento_4_catalogo_nombre: 'Nombre catálogo procedimiento 4',
+      procedimiento_5: 'Procedimiento 5', procedimiento_5_id: 'ID procedimiento 5', procedimiento_5_catalogo_nombre: 'Nombre catálogo procedimiento 5',
+      area_cuerpo_intervenida: 'Área intervenida', id_area_cuerpo_intervenida: 'ID del área', area_cuerpo_intervenida_nombre: 'Nombre del área',
+      estado_cirugia_id: 'ID estado de cirugía', estado_cirugia_nombre: 'Estado de cirugía',
+      formato_procedimiento_id: 'ID formato', formato_procedimiento_nombre: 'Formato',
+      procedencia_procedimiento_id: 'ID procedencia', procedencia_procedimiento_nombre: 'Procedencia',
+      rango_especialista_id: 'ID rango especialista', rango_especialista_nombre: 'Rango especialista',
+      especialidad_id: 'ID especialidad', especialidad_nombre: 'Especialidad',
+      quirofano_numero_id: 'ID quirófano', quirofano_numero_nombre: 'Quirófano',
+      hora_inicio_anestesia: 'Hora de inicio de anestesia', hora_inicio_intervencion: 'Hora de inicio de intervención',
+      hora_finaliza_intervencion: 'Hora de finalización de intervención',
+      hora_finaliza_limpieza_prepara_quirofano: 'Hora de fin de limpieza y preparación',
+      observaciones: 'Observaciones', activo: 'Activo', created_at: 'Creado', updated_at: 'Actualizado',
+    };
+    const filas: Array<{ etiqueta: string; valor: string }> = [];
+    const recorrer = (obj: Record<string, unknown>, prefijo = '') => {
+      Object.entries(obj).forEach(([clave, valor]) => {
+        if (clave === 'id' || clave.endsWith('_id')) return;
+        if (valor === null || valor === undefined || valor === '') return;
+        const ruta = prefijo ? `${prefijo}.${clave}` : clave;
+        if (valor && typeof valor === 'object' && !Array.isArray(valor)) {
+          recorrer(valor as Record<string, unknown>, ruta);
+          return;
+        }
+        const etiqueta = etiquetas[clave] ?? ruta.split('.').map(p => p.replaceAll('_', ' ')).join(' · ');
+        filas.push({ etiqueta, valor: Array.isArray(valor) ? valor.join(', ') : String(valor) });
+      });
+    };
+    recorrer(datos as unknown as Record<string, unknown>);
+    return filas;
+  }
 }

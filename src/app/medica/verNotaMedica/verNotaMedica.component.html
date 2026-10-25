@@ -48,6 +48,20 @@
         </dl>
       </section>
 
+      @if (c.quirofano && camposQuirofano.length) {
+        <section class="rep-section rep-quirofano">
+          <h2>Intervención quirúrgica</h2>
+          <div class="rep-quirofano__grid">
+            @for (campo of camposQuirofano; track campo.etiqueta) {
+              <div class="rep-quirofano__item">
+                <span>{{ campo.etiqueta }}</span>
+                <strong>{{ campo.valor }}</strong>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
       <!-- Signos vitales -->
       @if (signosItems.length) {
         <section class="rep-section">

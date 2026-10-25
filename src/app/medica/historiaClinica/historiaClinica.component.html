@@ -124,6 +124,72 @@
                     } @else {
                       <div class="nota-resumen">{{ resumenCiclo(ciclo) }}</div>
                     }
+                    @if (ciclo.quirofano) {
+                      <div class="nota-quirofano">
+                        <strong
+                          >Intervención quirúrgica ·
+                          {{
+                            ciclo.quirofano.fecha | date: "dd/MM/yyyy"
+                          }}</strong
+                        >
+                        <div>
+                          <b>Procedimientos:</b>
+                          {{ procedimientosQuirofano(ciclo.quirofano) || "—" }}
+                        </div>
+                        <div>
+                          <b>Área:</b>
+                          {{
+                            ciclo.quirofano.area_cuerpo_intervenida ||
+                              ciclo.quirofano.area_cuerpo_intervenida_nombre ||
+                              "—"
+                          }}
+                          · <b>Estado:</b>
+                          {{ ciclo.quirofano.estado_cirugia_nombre || "—" }} ·
+                          <b>Quirófano:</b>
+                          {{ ciclo.quirofano.quirofano_numero_nombre || "—" }}
+                        </div>
+                        <div>
+                          <b>Cirujano:</b>
+                          {{ ciclo.quirofano.personal_atencion_nombre || "—" }}
+                          · <b>Especialidad:</b>
+                          {{ ciclo.quirofano.especialidad_nombre || "—" }}
+                        </div>
+                        <div>
+                          <b>Formato:</b>
+                          {{
+                            ciclo.quirofano.formato_procedimiento_nombre || "—"
+                          }}
+                          · <b>Procedencia:</b>
+                          {{
+                            ciclo.quirofano.procedencia_procedimiento_nombre ||
+                              "—"
+                          }}
+                          · <b>Rango:</b>
+                          {{ ciclo.quirofano.rango_especialista_nombre || "—" }}
+                        </div>
+                        <div>
+                          <b>Horario:</b>
+                          {{ ciclo.quirofano.hora_inicio_anestesia || "—" }}
+                          anestesia ·
+                          {{ ciclo.quirofano.hora_inicio_intervencion || "—" }}
+                          a
+                          {{
+                            ciclo.quirofano.hora_finaliza_intervencion || "—"
+                          }}
+                          · limpieza hasta
+                          {{
+                            ciclo.quirofano
+                              .hora_finaliza_limpieza_prepara_quirofano || "—"
+                          }}
+                        </div>
+                        @if (ciclo.quirofano.observaciones) {
+                          <div>
+                            <b>Observaciones:</b>
+                            {{ ciclo.quirofano.observaciones }}
+                          </div>
+                        }
+                      </div>
+                    }
                   </div>
                 </div>
               }
@@ -198,6 +264,46 @@
             }
             @if (ciclo.egreso?.condicion) {
               <p><strong>Egreso:</strong> {{ ciclo.egreso.condicion }}</p>
+            }
+            @if (ciclo.quirofano) {
+              <p>
+                <strong
+                  >Intervención quirúrgica ({{
+                    ciclo.quirofano.fecha | date: "dd/MM/yyyy"
+                  }}):</strong
+                >
+                {{ procedimientosQuirofano(ciclo.quirofano) || "—" }}. Área:
+                {{
+                  ciclo.quirofano.area_cuerpo_intervenida ||
+                    ciclo.quirofano.area_cuerpo_intervenida_nombre ||
+                    "—"
+                }}. Estado: {{ ciclo.quirofano.estado_cirugia_nombre || "—" }}.
+                Quirófano: {{ ciclo.quirofano.quirofano_numero_nombre || "—" }}.
+                Cirujano: {{ ciclo.quirofano.personal_atencion_nombre || "—" }}.
+                Horario:
+                {{ ciclo.quirofano.hora_inicio_anestesia || "—" }} anestesia,
+                {{ ciclo.quirofano.hora_inicio_intervencion || "—" }} a
+                {{ ciclo.quirofano.hora_finaliza_intervencion || "—" }}.
+              </p>
+              <p>
+                <strong>Formato:</strong>
+                {{ ciclo.quirofano.formato_procedimiento_nombre || "—" }} ·
+                <strong>Procedencia:</strong>
+                {{ ciclo.quirofano.procedencia_procedimiento_nombre || "—" }} ·
+                <strong>Rango:</strong>
+                {{ ciclo.quirofano.rango_especialista_nombre || "—" }} ·
+                <strong>Limpieza hasta:</strong>
+                {{
+                  ciclo.quirofano.hora_finaliza_limpieza_prepara_quirofano ||
+                    "—"
+                }}
+              </p>
+              @if (ciclo.quirofano.observaciones) {
+                <p>
+                  <strong>Observaciones quirúrgicas:</strong>
+                  {{ ciclo.quirofano.observaciones }}
+                </p>
+              }
             }
           </div>
         }

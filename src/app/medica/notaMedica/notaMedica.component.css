@@ -171,6 +171,16 @@
   font: 500 var(--theme-font-size-xs)/1.4 var(--theme-font-mono);
   border-bottom: 1px solid var(--theme-border);
 }
+.nm-quirofano {
+  margin: 0.7rem 0.25rem; padding: 0.75rem 0.9rem;
+  border: 1px solid var(--theme-border); border-left: 3px solid #b45309;
+  border-radius: var(--theme-radius-md); background: color-mix(in srgb, #b45309 8%, var(--theme-surface));
+  color: var(--theme-text); font-size: var(--theme-font-size-sm); line-height: 1.5;
+}
+.nm-quirofano strong { display: block; margin-bottom: 0.3rem; }
+.nm-quirofano p { margin: 0.15rem 0; }
+.nm-patient-surgeries { margin: 0.75rem 0; }
+.nm-patient-surgeries h2 { margin: 0 0 0.4rem; font-size: var(--theme-font-size-md); }
 
 .nm-tabs {
   position: sticky;

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, input, output, OnDestroy, signal, inject, effect } from '@angular/core';
 import {
   CicloConsulta,
+  DatosQuirurgicos,
   DatoMedico,
   SignosVitales,
   Antecedentes,
@@ -56,11 +57,13 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
   busquedaExpediente = '';
   pacienteBuscado = signal<PacienteJoin | null>(null);
   consultasPaciente = signal<ConsultasIdPaciente[]>([]);
+  intervencionesPaciente = signal<DatosQuirurgicos[]>([]);
   buscandoPaciente = signal(false);
   cargandoConsultas = signal(false);
 
   /* ── Signals ─────────────────────────────────────────── */
   ciclo = signal<CicloConsulta | null>(null);
+  intervencionQuirurgica = signal<CicloConsulta['quirofano'] | null>(null);
   isLoading = signal(false);
   guardando = signal(false);
   tieneConsulta = signal(false);
@@ -354,6 +357,9 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
         return of([] as CicloConsulta[]);
       })
     ).subscribe(ciclos => {
+      this.intervencionQuirurgica.set(
+        [...ciclos].reverse().find(item => item.quirofano)?.quirofano ?? null
+      );
       // Una nota creada es inmutable: NO se precarga. Se prepara una nota NUEVA,
       // con continuidad de especialidad/servicio y el número siguiente.
       const ultimo = ciclos[ciclos.length - 1];
@@ -436,6 +442,18 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
     ).subscribe(paciente => {
       if (!paciente) return;
       this.pacienteBuscado.set(paciente);
+      this.intervencionesPaciente.set([]);
+      this.api.getHistoriaClinica(paciente.id, true).pipe(
+        takeUntil(this.destroy$),
+        catchError(() => of(null))
+      ).subscribe(historia => {
+        const intervenciones = historia?.consultas.flatMap(grupo =>
+          grupo.ciclos.map(ciclo => ciclo.quirofano).filter(
+            (quirofano): quirofano is DatosQuirurgicos => !!quirofano
+          )
+        ) ?? [];
+        this.intervencionesPaciente.set(intervenciones);
+      });
       this.cargandoConsultas.set(true);
       this.consultasApi.getConsultasPorPaciente(paciente.id).pipe(
         takeUntil(this.destroy$),
@@ -497,6 +515,53 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
       const bishopKey = lastKey(ef.bishop);
       if (bishopKey && ef.bishop[bishopKey]) this.bishop = { ...ef.bishop[bishopKey] };
     }
+  }
+
+  procedimientosQuirofanoNota(datos: NonNullable<CicloConsulta['quirofano']>): string {
+    return [datos.procedimiento_principal, datos.procedimiento_2, datos.procedimiento_3,
+    datos.procedimiento_4, datos.procedimiento_5]
+      .filter((valor): valor is string => !!valor?.trim()).join(' · ');
+  }
+
+  camposQuirofanoNota(datos: NonNullable<CicloConsulta['quirofano']>): Array<{ etiqueta: string; valor: string }> {
+    const etiquetas: Record<string, string> = {
+      intervencion_id: 'ID de intervención',
+      paciente_nombre: 'Paciente', fecha: 'Fecha', expediente: 'Expediente',
+      personal_atencion_id: 'ID del médico', personal_atencion_nombre: 'Médico responsable',
+      procedimiento_principal: 'Procedimiento principal', procedimiento_principal_id: 'ID procedimiento principal',
+      procedimiento_principal_catalogo_nombre: 'Nombre catálogo procedimiento principal',
+      procedimiento_2: 'Procedimiento 2', procedimiento_2_id: 'ID procedimiento 2', procedimiento_2_catalogo_nombre: 'Nombre catálogo procedimiento 2',
+      procedimiento_3: 'Procedimiento 3', procedimiento_3_id: 'ID procedimiento 3', procedimiento_3_catalogo_nombre: 'Nombre catálogo procedimiento 3',
+      procedimiento_4: 'Procedimiento 4', procedimiento_4_id: 'ID procedimiento 4', procedimiento_4_catalogo_nombre: 'Nombre catálogo procedimiento 4',
+      procedimiento_5: 'Procedimiento 5', procedimiento_5_id: 'ID procedimiento 5', procedimiento_5_catalogo_nombre: 'Nombre catálogo procedimiento 5',
+      area_cuerpo_intervenida: 'Área intervenida', id_area_cuerpo_intervenida: 'ID del área', area_cuerpo_intervenida_nombre: 'Nombre del área',
+      estado_cirugia_id: 'ID estado de cirugía', estado_cirugia_nombre: 'Estado de cirugía',
+      formato_procedimiento_id: 'ID formato', formato_procedimiento_nombre: 'Formato',
+      procedencia_procedimiento_id: 'ID procedencia', procedencia_procedimiento_nombre: 'Procedencia',
+      rango_especialista_id: 'ID rango especialista', rango_especialista_nombre: 'Rango especialista',
+      especialidad_id: 'ID especialidad', especialidad_nombre: 'Especialidad',
+      quirofano_numero_id: 'ID quirófano', quirofano_numero_nombre: 'Quirófano',
+      hora_inicio_anestesia: 'Hora de inicio de anestesia', hora_inicio_intervencion: 'Hora de inicio de intervención',
+      hora_finaliza_intervencion: 'Hora de finalización de intervención',
+      hora_finaliza_limpieza_prepara_quirofano: 'Hora de fin de limpieza y preparación',
+      observaciones: 'Observaciones', activo: 'Activo', created_at: 'Creado', updated_at: 'Actualizado',
+    };
+    const filas: Array<{ etiqueta: string; valor: string }> = [];
+    const recorrer = (obj: Record<string, unknown>, prefijo = '') => {
+      Object.entries(obj).forEach(([clave, valor]) => {
+        if (clave === 'id' || clave.endsWith('_id')) return;
+        if (valor === null || valor === undefined || valor === '') return;
+        const ruta = prefijo ? `${prefijo}.${clave}` : clave;
+        if (valor && typeof valor === 'object' && !Array.isArray(valor)) {
+          recorrer(valor as Record<string, unknown>, ruta);
+          return;
+        }
+        const etiqueta = etiquetas[clave] ?? ruta.split('.').map(p => p.replaceAll('_', ' ')).join(' · ');
+        filas.push({ etiqueta, valor: Array.isArray(valor) ? valor.join(', ') : String(valor) });
+      });
+    };
+    recorrer(datos as unknown as Record<string, unknown>);
+    return filas;
   }
 
   /* ── Acciones UI ───────────────────────────────────────── */
