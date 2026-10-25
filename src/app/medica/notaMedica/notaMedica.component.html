@@ -7,8 +7,12 @@
 }
 
 @if (mensaje()) {
-  <div class="nm-toast" [class.nm-toast--ok]="mensaje()!.tipo === 'success'"
-       [class.nm-toast--err]="mensaje()!.tipo === 'error'" role="alert">
+  <div
+    class="nm-toast"
+    [class.nm-toast--ok]="mensaje()!.tipo === 'success'"
+    [class.nm-toast--err]="mensaje()!.tipo === 'error'"
+    role="alert"
+  >
     {{ mensaje()!.texto }}
   </div>
 }
@@ -18,7 +22,10 @@
   <section class="nm-picker">
     <span class="nm-eyebrow">Expediente clínico</span>
     <h1 class="nm-picker__title">Registrar nota médica</h1>
-    <p class="nm-picker__hint">Busca al paciente por su número de expediente y elige la consulta a documentar.</p>
+    <p class="nm-picker__hint">
+      Busca al paciente por su número de expediente y elige la consulta a
+      documentar.
+    </p>
 
     <div class="nm-picker__search">
       <input
@@ -28,34 +35,49 @@
         placeholder="Ej. 202400123"
         (keyup.enter)="buscarPaciente()"
       />
-      <button class="nm-btn nm-btn--primary" (click)="buscarPaciente()" [disabled]="buscandoPaciente()">
-        {{ buscandoPaciente() ? 'Buscando…' : 'Buscar' }}
+      <button
+        class="nm-btn nm-btn--primary"
+        (click)="buscarPaciente()"
+        [disabled]="buscandoPaciente()"
+      >
+        {{ buscandoPaciente() ? "Buscando…" : "Buscar" }}
       </button>
     </div>
 
-    @if (error()) { <p class="nm-form__error">{{ error() }}</p> }
+    @if (error()) {
+      <p class="nm-form__error">{{ error() }}</p>
+    }
 
     @if (pacienteBuscado()) {
       <div class="nm-patient">
         <div class="nm-patient__avatar" aria-hidden="true">
-          {{ pacienteBuscado()?.sexo === 'F' ? '♀' : '♂' }}
+          {{ pacienteBuscado()?.sexo === "F" ? "♀" : "♂" }}
         </div>
         <div>
-          <strong>{{ pacienteBuscado()?.nombre?.primer_nombre }} {{ pacienteBuscado()?.nombre?.primer_apellido }}</strong>
-          <span>Expediente {{ pacienteBuscado()?.expediente || '—' }}</span>
+          <strong
+            >{{ pacienteBuscado()?.nombre?.primer_nombre }}
+            {{ pacienteBuscado()?.nombre?.primer_apellido }}</strong
+          >
+          <span>Expediente {{ pacienteBuscado()?.expediente || "—" }}</span>
         </div>
       </div>
 
       @if (cargandoConsultas()) {
         <p class="nm-picker__hint">Cargando consultas…</p>
       } @else if (!consultasPaciente().length) {
-        <p class="nm-picker__hint">El paciente no tiene consultas para documentar.</p>
+        <p class="nm-picker__hint">
+          El paciente no tiene consultas para documentar.
+        </p>
       } @else {
         <div class="nm-consultas">
           @for (consulta of consultasPaciente(); track consulta.id) {
             <button class="nm-consulta" (click)="seleccionarConsulta(consulta)">
-              <span class="nm-consulta__fecha">{{ consulta.fecha_consulta | date: 'dd/MM/yyyy' }}</span>
-              <span class="nm-consulta__esp">{{ consulta.especialidad || 'Consulta clínica' }}</span>
+              <span class="nm-consulta__fecha">{{
+                consulta.fecha_consulta | date: "dd/MM/yyyy"
+              }}</span>
+              <span class="nm-consulta__esp">{{
+                consulta.especialidad || "Consulta clínica"
+              }}</span>
               <span class="nm-consulta__ir">→</span>
             </button>
           }
@@ -69,148 +91,351 @@
 @if (tieneConsulta()) {
   <div class="nm-app">
     <header class="nm-topbar">
-      <button class="nm-icon-btn" (click)="regresar()" aria-label="Regresar">←</button>
+      <button class="nm-icon-btn" (click)="regresar()" aria-label="Regresar">
+        ←
+      </button>
       <div class="nm-topbar__title">
-        <span>{{ odontologiaActiva() ? 'Nota odontológica' : 'Nota médica' }}</span>
+        <span>{{
+          odontologiaActiva() ? "Nota odontológica" : "Nota médica"
+        }}</span>
         <small>Ciclo {{ ciclo()?.numero }} · {{ ciclo()?.usuario }}</small>
       </div>
       <span class="nm-pill" [class.nm-pill--open]="ciclo()?.activo">
-        {{ ciclo()?.activo ? 'Activo' : 'Cerrado' }}
+        {{ ciclo()?.activo ? "Activo" : "Cerrado" }}
       </span>
-      <button class="nm-icon-btn nm-icon-btn--save" (click)="guardar()" [disabled]="guardando()" aria-label="Guardar">
-        {{ guardando() ? '…' : '✓' }}
+      <button
+        class="nm-icon-btn nm-icon-btn--save"
+        (click)="guardar()"
+        [disabled]="guardando()"
+        aria-label="Guardar"
+      >
+        {{ guardando() ? "…" : "✓" }}
       </button>
     </header>
 
     <div class="nm-meta">
-      <span>{{ ciclo()?.registro | date: 'dd/MM/yyyy HH:mm' }}</span>
-      <span>{{ ciclo()?.especialidad | datosExtra: 'especialidad' }}</span>
-      <span>{{ ciclo()?.servicio | datosExtra: 'servicio' }}</span>
+      <span>{{ ciclo()?.registro | date: "dd/MM/yyyy HH:mm" }}</span>
+      <span>{{ ciclo()?.especialidad | datosExtra: "especialidad" }}</span>
+      <span>{{ ciclo()?.servicio | datosExtra: "servicio" }}</span>
     </div>
 
     <nav class="nm-tabs" role="tablist">
       @if (odontologiaActiva()) {
-        <button role="tab" [class.is-active]="tabActivo === 'odontologia'" (click)="setTab('odontologia')">Odontología</button>
+        <button
+          role="tab"
+          [class.is-active]="tabActivo === 'odontologia'"
+          (click)="setTab('odontologia')"
+        >
+          Odontología
+        </button>
       } @else {
-        <button role="tab" [class.is-active]="tabActivo === 'clinica'" (click)="setTab('clinica')">Clínica</button>
+        <button
+          role="tab"
+          [class.is-active]="tabActivo === 'clinica'"
+          (click)="setTab('clinica')"
+        >
+          Clínica
+        </button>
       }
-      <button role="tab" [class.is-active]="tabActivo === 'signos'" (click)="setTab('signos')">Signos</button>
-      <button role="tab" [class.is-active]="tabActivo === 'antecedentes'" (click)="setTab('antecedentes')">Antecedentes</button>
+      <button
+        role="tab"
+        [class.is-active]="tabActivo === 'signos'"
+        (click)="setTab('signos')"
+      >
+        Signos
+      </button>
+      <button
+        role="tab"
+        [class.is-active]="tabActivo === 'antecedentes'"
+        (click)="setTab('antecedentes')"
+      >
+        Antecedentes
+      </button>
       @if (!odontologiaActiva()) {
-        <button role="tab" [class.is-active]="tabActivo === 'examen'" (click)="setTab('examen')">Examen</button>
-        <button role="tab" [class.is-active]="tabActivo === 'escalas'" (click)="setTab('escalas')">Escalas</button>
+        <button
+          role="tab"
+          [class.is-active]="tabActivo === 'examen'"
+          (click)="setTab('examen')"
+        >
+          Examen
+        </button>
+        <button
+          role="tab"
+          [class.is-active]="tabActivo === 'escalas'"
+          (click)="setTab('escalas')"
+        >
+          Escalas
+        </button>
       }
-      <button role="tab" [class.is-active]="tabActivo === 'egreso'" (click)="setTab('egreso')">Egreso</button>
+      <button
+        role="tab"
+        [class.is-active]="tabActivo === 'egreso'"
+        (click)="setTab('egreso')"
+      >
+        Egreso
+      </button>
     </nav>
 
     <main class="nm-content">
       @switch (tabActivo) {
-        @case ('odontologia') {
+        @case ("odontologia") {
           <div class="nm-odonto-form">
             <app-odontograma [(value)]="odontologia.odontograma" />
             <div class="nm-form nm-odonto-form__fields">
               <label class="nm-field">
                 <span>Motivo de consulta</span>
-                <textarea rows="3" [(ngModel)]="odontologia.motivo_consulta" placeholder="Dolor, revisión, control u otra necesidad…"></textarea>
+                <textarea
+                  rows="3"
+                  [(ngModel)]="odontologia.motivo_consulta"
+                  placeholder="Dolor, revisión, control u otra necesidad…"
+                ></textarea>
               </label>
               <label class="nm-field">
                 <span>Examen extraoral</span>
-                <textarea rows="2" [(ngModel)]="odontologia.examen_extraoral" placeholder="Simetría facial, ganglios, ATM, tejidos periorales…"></textarea>
+                <textarea
+                  rows="2"
+                  [(ngModel)]="odontologia.examen_extraoral"
+                  placeholder="Simetría facial, ganglios, ATM, tejidos periorales…"
+                ></textarea>
               </label>
               <label class="nm-field">
                 <span>Examen intraoral</span>
-                <textarea rows="3" [(ngModel)]="odontologia.examen_intraoral" placeholder="Mucosas, encías, higiene, oclusión y hallazgos clínicos…"></textarea>
+                <textarea
+                  rows="3"
+                  [(ngModel)]="odontologia.examen_intraoral"
+                  placeholder="Mucosas, encías, higiene, oclusión y hallazgos clínicos…"
+                ></textarea>
               </label>
               <label class="nm-field">
                 <span>Diagnóstico odontológico</span>
-                <textarea rows="3" [(ngModel)]="odontologia.diagnostico" placeholder="Diagnóstico y piezas relacionadas…"></textarea>
+                <textarea
+                  rows="3"
+                  [(ngModel)]="odontologia.diagnostico"
+                  placeholder="Diagnóstico y piezas relacionadas…"
+                ></textarea>
               </label>
               <label class="nm-field">
                 <span>Plan de tratamiento</span>
-                <textarea rows="3" [(ngModel)]="odontologia.plan_tratamiento" placeholder="Procedimientos indicados, secuencia y seguimiento…"></textarea>
+                <textarea
+                  rows="3"
+                  [(ngModel)]="odontologia.plan_tratamiento"
+                  placeholder="Procedimientos indicados, secuencia y seguimiento…"
+                ></textarea>
               </label>
               <label class="nm-field">
                 <span>Procedimiento realizado / observaciones</span>
-                <textarea rows="3" [(ngModel)]="odontologia.procedimientos" placeholder="Procedimiento realizado, anestesia, materiales y tolerancia…"></textarea>
+                <textarea
+                  rows="3"
+                  [(ngModel)]="odontologia.procedimientos"
+                  placeholder="Procedimiento realizado, anestesia, materiales y tolerancia…"
+                ></textarea>
               </label>
             </div>
           </div>
         }
 
         <!-- CLÍNICA -->
-        @case ('clinica') {
+        @case ("clinica") {
           <div class="nm-form">
             <label class="nm-field">
               <span>Detalle clínico / motivo de consulta</span>
-              <textarea rows="4" [(ngModel)]="datosMedicos.detalle_clinicos" placeholder="Descripción del cuadro clínico…"></textarea>
+              <textarea
+                rows="4"
+                [(ngModel)]="datosMedicos.detalle_clinicos"
+                placeholder="Descripción del cuadro clínico…"
+              ></textarea>
             </label>
             <label class="nm-field">
               <span>Impresión clínica / diagnóstico</span>
-              <textarea rows="3" [(ngModel)]="datosMedicos.impresion_clinica" placeholder="Impresión diagnóstica…"></textarea>
+              <textarea
+                rows="3"
+                [(ngModel)]="datosMedicos.impresion_clinica"
+                placeholder="Impresión diagnóstica…"
+              ></textarea>
             </label>
             <label class="nm-field">
               <span>Tratamiento indicado</span>
-              <textarea rows="3" [(ngModel)]="datosMedicos.tratamiento" placeholder="Medicamentos, dosis, vía, frecuencia…"></textarea>
+              <textarea
+                rows="3"
+                [(ngModel)]="datosMedicos.tratamiento"
+                placeholder="Medicamentos, dosis, vía, frecuencia…"
+              ></textarea>
             </label>
             <label class="nm-field">
               <span>Órdenes médicas</span>
-              <textarea rows="2" [(ngModel)]="datosMedicos.ordenes" placeholder="Laboratorios, imágenes, interconsultas…"></textarea>
+              <textarea
+                rows="2"
+                [(ngModel)]="datosMedicos.ordenes"
+                placeholder="Laboratorios, imágenes, interconsultas…"
+              ></textarea>
             </label>
             <label class="nm-field">
               <span>Estudios solicitados</span>
-              <textarea rows="2" [(ngModel)]="datosMedicos.estudios" placeholder="Exámenes de laboratorio o gabinete…"></textarea>
+              <textarea
+                rows="2"
+                [(ngModel)]="datosMedicos.estudios"
+                placeholder="Exámenes de laboratorio o gabinete…"
+              ></textarea>
             </label>
             <label class="nm-field">
               <span>Comentario</span>
-              <textarea rows="2" [(ngModel)]="datosMedicos.comentario" placeholder="Observaciones adicionales…"></textarea>
+              <textarea
+                rows="2"
+                [(ngModel)]="datosMedicos.comentario"
+                placeholder="Observaciones adicionales…"
+              ></textarea>
             </label>
             <label class="nm-field">
               <span>Contraindicado</span>
-              <input type="text" [(ngModel)]="datosMedicos.contraindicado" placeholder="Medicamentos o procedimientos contraindicados" />
+              <input
+                type="text"
+                [(ngModel)]="datosMedicos.contraindicado"
+                placeholder="Medicamentos o procedimientos contraindicados"
+              />
             </label>
           </div>
         }
 
         <!-- SIGNOS VITALES -->
-        @case ('signos') {
+        @case ("signos") {
           <div class="nm-signos">
             <div class="nm-signos__grid">
-              <label class="nm-sv"><span>PA (mmHg)</span><input type="text" [(ngModel)]="signosVitales.pa" placeholder="120/80" /></label>
-              <label class="nm-sv"><span>FC (lpm)</span><input type="text" inputmode="numeric" [(ngModel)]="signosVitales.fc" placeholder="72" /></label>
-              <label class="nm-sv"><span>FR (rpm)</span><input type="text" inputmode="numeric" [(ngModel)]="signosVitales.fr" placeholder="16" /></label>
-              <label class="nm-sv"><span>Temp (°C)</span><input type="text" inputmode="decimal" [(ngModel)]="signosVitales.temp" placeholder="36.5" /></label>
-              <label class="nm-sv"><span>SatO₂ (%)</span><input type="text" inputmode="numeric" [(ngModel)]="signosVitales.sat02" placeholder="98" /></label>
-              <label class="nm-sv"><span>Peso (kg)</span><input type="text" inputmode="decimal" [(ngModel)]="signosVitales.peso" placeholder="70" /></label>
-              <label class="nm-sv"><span>Talla (cm)</span><input type="text" inputmode="decimal" [(ngModel)]="signosVitales.talla" placeholder="170" /></label>
-              <label class="nm-sv"><span>Perim. cefálico</span><input type="text" [(ngModel)]="signosVitales.pt" placeholder="—" /></label>
-              <label class="nm-sv"><span>T. edad gest.</span><input type="text" [(ngModel)]="signosVitales.te" placeholder="—" /></label>
-              <label class="nm-sv"><span>P. edad gest.</span><input type="text" [(ngModel)]="signosVitales.pe" placeholder="—" /></label>
-              <label class="nm-sv nm-sv--full"><span>GMT</span><input type="text" [(ngModel)]="signosVitales.gmt" placeholder="—" /></label>
+              <label class="nm-sv"
+                ><span>PA (mmHg)</span
+                ><input
+                  type="text"
+                  [(ngModel)]="signosVitales.pa"
+                  placeholder="120/80"
+              /></label>
+              <label class="nm-sv"
+                ><span>FC (lpm)</span
+                ><input
+                  type="text"
+                  inputmode="numeric"
+                  [(ngModel)]="signosVitales.fc"
+                  placeholder="72"
+              /></label>
+              <label class="nm-sv"
+                ><span>FR (rpm)</span
+                ><input
+                  type="text"
+                  inputmode="numeric"
+                  [(ngModel)]="signosVitales.fr"
+                  placeholder="16"
+              /></label>
+              <label class="nm-sv"
+                ><span>Temp (°C)</span
+                ><input
+                  type="text"
+                  inputmode="decimal"
+                  [(ngModel)]="signosVitales.temp"
+                  placeholder="36.5"
+              /></label>
+              <label class="nm-sv"
+                ><span>SatO₂ (%)</span
+                ><input
+                  type="text"
+                  inputmode="numeric"
+                  [(ngModel)]="signosVitales.sat02"
+                  placeholder="98"
+              /></label>
+              <label class="nm-sv"
+                ><span>Peso (kg)</span
+                ><input
+                  type="text"
+                  inputmode="decimal"
+                  [(ngModel)]="signosVitales.peso"
+                  placeholder="70"
+              /></label>
+              <label class="nm-sv"
+                ><span>Talla (cm)</span
+                ><input
+                  type="text"
+                  inputmode="decimal"
+                  [(ngModel)]="signosVitales.talla"
+                  placeholder="170"
+              /></label>
+              <label class="nm-sv"
+                ><span>Perim. cefálico</span
+                ><input
+                  type="text"
+                  [(ngModel)]="signosVitales.pt"
+                  placeholder="—"
+              /></label>
+              <label class="nm-sv"
+                ><span>T. edad gest.</span
+                ><input
+                  type="text"
+                  [(ngModel)]="signosVitales.te"
+                  placeholder="—"
+              /></label>
+              <label class="nm-sv"
+                ><span>P. edad gest.</span
+                ><input
+                  type="text"
+                  [(ngModel)]="signosVitales.pe"
+                  placeholder="—"
+              /></label>
+              <label class="nm-sv nm-sv--full"
+                ><span>GMT</span
+                ><input
+                  type="text"
+                  [(ngModel)]="signosVitales.gmt"
+                  placeholder="—"
+              /></label>
             </div>
           </div>
         }
 
         <!-- ANTECEDENTES -->
-        @case ('antecedentes') {
+        @case ("antecedentes") {
           <div class="nm-ant">
             @for (grupo of gruposAntecedentes; track grupo.key) {
               <div class="nm-ant__group">
-                <button class="nm-ant__head" (click)="toggleAntecedente(grupo.key)">
-                  <span class="nm-ant__label">{{ grupo.icon }} {{ grupo.label }}</span>
+                <button
+                  class="nm-ant__head"
+                  (click)="toggleAntecedente(grupo.key)"
+                >
+                  <span class="nm-ant__label"
+                    >{{ grupo.icon }} {{ grupo.label }}</span
+                  >
                   @if (getAntecedentes(grupo.key).length) {
-                    <span class="nm-ant__count">{{ getAntecedentes(grupo.key).length }}</span>
+                    <span class="nm-ant__count">{{
+                      getAntecedentes(grupo.key).length
+                    }}</span>
                   }
-                  <span class="nm-ant__chev" [class.is-open]="antecedentesAbiertos[grupo.key]">▾</span>
+                  <span
+                    class="nm-ant__chev"
+                    [class.is-open]="antecedentesAbiertos[grupo.key]"
+                    >▾</span
+                  >
                 </button>
                 @if (antecedentesAbiertos[grupo.key]) {
                   <div class="nm-ant__body">
                     @for (item of getAntecedentes(grupo.key); track $index) {
                       <div class="nm-ant__row">
-                        <input type="text" [(ngModel)]="item.descripcion" [placeholder]="'Agregar ' + grupo.label.toLowerCase() + '…'" />
-                        <button class="nm-del" (click)="eliminarAntecedente(grupo.key, $index)" aria-label="Eliminar">✕</button>
+                        <input
+                          type="text"
+                          [(ngModel)]="item.descripcion"
+                          [placeholder]="
+                            'Agregar ' + grupo.label.toLowerCase() + '…'
+                          "
+                        />
+                        <button
+                          class="nm-del"
+                          (click)="eliminarAntecedente(grupo.key, $index)"
+                          aria-label="Eliminar"
+                        >
+                          ✕
+                        </button>
                       </div>
                     }
-                    <button class="nm-add" (click)="agregarAntecedente(grupo.key)">+ Agregar</button>
+                    <button
+                      class="nm-add"
+                      (click)="agregarAntecedente(grupo.key)"
+                    >
+                      + Agregar
+                    </button>
                   </div>
                 }
               </div>
@@ -219,89 +444,279 @@
         }
 
         <!-- EXAMEN FÍSICO -->
-        @case ('examen') {
+        @case ("examen") {
           <div class="nm-examen-wrap">
             <!-- Referencia visual del cuerpo humano -->
             <div class="nm-body">
-              <svg class="nm-body__svg" viewBox="0 0 200 340" role="img" aria-label="Mapa corporal">
-                <!-- piel (silueta base) -->
-                <g class="reg" [class.sel]="regionActiva === 'piel'" [class.hov]="regionHover === 'piel'"
-                   (click)="seleccionarRegion('piel')" (mouseenter)="regionHover = 'piel'" (mouseleave)="regionHover = null">
+              <svg
+                class="nm-body__svg"
+                viewBox="0 0 200 360"
+                role="img"
+                aria-label="Mapa corporal"
+              >
+                <!-- piel: silueta completa en un solo contorno -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'piel'"
+                  [class.hov]="regionHover === 'piel'"
+                  (click)="seleccionarRegion('piel')"
+                  (mouseenter)="regionHover = 'piel'"
+                  (mouseleave)="regionHover = null"
+                >
                   <title>Piel</title>
-                  <circle cx="100" cy="40" r="26"/><rect x="62" y="76" width="76" height="100" rx="18"/>
-                  <rect x="70" y="172" width="60" height="28" rx="10"/>
-                  <rect x="40" y="80" width="16" height="96" rx="8"/><rect x="144" y="80" width="16" height="96" rx="8"/>
-                  <rect x="74" y="198" width="24" height="120" rx="10"/><rect x="102" y="198" width="24" height="120" rx="10"/>
+                  <path
+                    d="M100 4 C108.5 4 115 11 115 23 C115 31 113.5 37 111 43 C108.5 46 107.5 50 107.5 56 C107.5 61 120 62 130 66 C140 68 146 74 147 84 C148 96 150 112 152 126 C153 140 156 156 158 170 C160 180 162 190 163 198 C163.5 205 160 210 157 208 C154 206 153 200 152 192 C150 184 148 176 146 166 C144 152 142 140 141 130 C139 118 136 106 134 96 C134 108 128 120 126 132 C126 146 133 158 133 172 C134 190 135 205 134 220 C133 236 132 246 130 256 C129 268 133 282 129 298 C126 312 126 322 126 330 C127 340 134 344 135 349 C135.5 353 118 354 112 352 C110 348 110 340 110 330 C109 316 108 300 109 286 C109 270 108 258 107 248 C106 230 103 205 100 188 C97 205 94 230 93 248 C92 258 91 270 91 286 C92 300 91 316 90 330 C90 340 90 348 88 352 C82 354 64.5 353 65 349 C66 344 73 340 74 330 C74 322 74 312 71 298 C67 282 71 268 70 256 C68 246 67 236 66 220 C65 205 66 190 67 172 C67 158 74 146 74 132 C72 120 66 108 66 96 C64 106 61 118 59 130 C58 140 56 152 54 166 C52 176 50 184 48 192 C47 200 46 206 43 208 C40 210 36.5 205 37 198 C38 190 40 180 42 170 C44 156 47 140 48 126 C50 112 52 96 53 84 C54 74 60 68 70 66 C80 62 92.5 61 92.5 56 C92.5 50 91.5 46 89 43 C86.5 37 85 31 85 23 C85 11 91.5 4 100 4 Z"
+                  />
                 </g>
-                <!-- extremidades -->
-                <g class="reg" [class.sel]="regionActiva === 'extremidades'" [class.hov]="regionHover === 'extremidades'"
-                   (click)="seleccionarRegion('extremidades')" (mouseenter)="regionHover = 'extremidades'" (mouseleave)="regionHover = null">
+
+                <!-- extremidades: brazos y piernas -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'extremidades'"
+                  [class.hov]="regionHover === 'extremidades'"
+                  (click)="seleccionarRegion('extremidades')"
+                  (mouseenter)="regionHover = 'extremidades'"
+                  (mouseleave)="regionHover = null"
+                >
                   <title>Extremidades</title>
-                  <rect x="40" y="80" width="16" height="96" rx="8"/><rect x="144" y="80" width="16" height="96" rx="8"/>
-                  <rect x="74" y="198" width="24" height="120" rx="10"/><rect x="102" y="198" width="24" height="120" rx="10"/>
+                  <!-- brazo derecho de la figura -->
+                  <path
+                    d="M130 66 C140 68 146 74 147 84 C148 96 150 112 152 126 C153 140 156 156 158 170 C160 180 162 190 163 198 C163.5 205 160 210 157 208 C154 206 153 200 152 192 C150 184 148 176 146 166 C144 152 142 140 141 130 C139 118 136 106 134 96 Z"
+                  />
+                  <!-- brazo izquierdo de la figura -->
+                  <path
+                    d="M70 66 C60 68 54 74 53 84 C52 96 50 112 48 126 C47 140 44 156 42 170 C40 180 38 190 37 198 C36.5 205 40 210 43 208 C46 206 47 200 48 192 C50 184 52 176 54 166 C56 152 58 140 59 130 C61 118 64 106 66 96 Z"
+                  />
+                  <!-- pierna derecha de la figura -->
+                  <path
+                    d="M131 166 L133 172 C134 190 135 205 134 220 C133 236 132 246 130 256 C129 268 133 282 129 298 C126 312 126 322 126 330 C127 340 134 344 135 349 C135.5 353 118 354 112 352 C110 348 110 340 110 330 C109 316 108 300 109 286 C109 270 108 258 107 248 C106 230 103 205 100 188 L100 166 Z"
+                  />
+                  <!-- pierna izquierda de la figura -->
+                  <path
+                    d="M69 166 L67 172 C66 190 65 205 66 220 C67 236 68 246 70 256 C71 268 67 282 71 298 C74 312 74 322 74 330 C73 340 66 344 65 349 C64.5 353 82 354 88 352 C90 348 90 340 90 330 C91 316 92 300 91 286 C91 270 92 258 93 248 C94 230 97 205 100 188 L100 166 Z"
+                  />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'columna'" [class.hov]="regionHover === 'columna'"
-                   (click)="seleccionarRegion('columna')" (mouseenter)="regionHover = 'columna'" (mouseleave)="regionHover = null">
-                  <title>Columna</title><rect x="98" y="78" width="4" height="108"/>
+
+                <!-- tórax -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'torax'"
+                  [class.hov]="regionHover === 'torax'"
+                  (click)="seleccionarRegion('torax')"
+                  (mouseenter)="regionHover = 'torax'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Tórax</title>
+                  <path
+                    d="M72 70 C82 66 118 66 128 70 C133 80 134 90 134 96 C134 108 130 116 128 122 L72 122 C70 116 66 108 66 96 C66 90 67 80 72 70 Z"
+                  />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'torax'" [class.hov]="regionHover === 'torax'"
-                   (click)="seleccionarRegion('torax')" (mouseenter)="regionHover = 'torax'" (mouseleave)="regionHover = null">
-                  <title>Tórax</title><rect x="70" y="84" width="60" height="44" rx="10"/>
+
+                <!-- abdomen -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'abdomen'"
+                  [class.hov]="regionHover === 'abdomen'"
+                  (click)="seleccionarRegion('abdomen')"
+                  (mouseenter)="regionHover = 'abdomen'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Abdomen</title>
+                  <path
+                    d="M73.5 124 L126.5 124 C126 140 128 152 130 162 L70 162 C72 152 74 140 73.5 124 Z"
+                  />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'pulmones'" [class.hov]="regionHover === 'pulmones'"
-                   (click)="seleccionarRegion('pulmones')" (mouseenter)="regionHover = 'pulmones'" (mouseleave)="regionHover = null">
-                  <title>Pulmones</title><ellipse cx="84" cy="104" rx="11" ry="16"/><ellipse cx="116" cy="104" rx="11" ry="16"/>
+
+                <!-- genitales / pelvis -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'genitales'"
+                  [class.hov]="regionHover === 'genitales'"
+                  (click)="seleccionarRegion('genitales')"
+                  (mouseenter)="regionHover = 'genitales'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Genitales</title>
+                  <path
+                    d="M70 164 L130 164 C131 174 128 182 118 188 L100 190 L82 188 C72 182 69 174 70 164 Z"
+                  />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'corazon'" [class.hov]="regionHover === 'corazon'"
-                   (click)="seleccionarRegion('corazon')" (mouseenter)="regionHover = 'corazon'" (mouseleave)="regionHover = null">
-                  <title>Corazón</title><ellipse cx="104" cy="108" rx="7" ry="8"/>
+
+                <!-- cuello -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'cuello'"
+                  [class.hov]="regionHover === 'cuello'"
+                  (click)="seleccionarRegion('cuello')"
+                  (mouseenter)="regionHover = 'cuello'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Cuello</title>
+                  <path
+                    d="M92.5 50 L107.5 50 L107.5 56 C107.5 60 111 62 116 64 L84 64 C89 62 92.5 60 92.5 56 Z"
+                  />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'abdomen'" [class.hov]="regionHover === 'abdomen'"
-                   (click)="seleccionarRegion('abdomen')" (mouseenter)="regionHover = 'abdomen'" (mouseleave)="regionHover = null">
-                  <title>Abdomen</title><rect x="72" y="132" width="56" height="38" rx="8"/>
+
+                <!-- columna -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'columna'"
+                  [class.hov]="regionHover === 'columna'"
+                  (click)="seleccionarRegion('columna')"
+                  (mouseenter)="regionHover = 'columna'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Columna</title>
+                  <rect x="97.5" y="66" width="5" height="122" rx="2.5" />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'genitales'" [class.hov]="regionHover === 'genitales'"
-                   (click)="seleccionarRegion('genitales')" (mouseenter)="regionHover = 'genitales'" (mouseleave)="regionHover = null">
-                  <title>Genitales</title><rect x="80" y="172" width="40" height="24" rx="8"/>
+
+                <!-- pulmones -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'pulmones'"
+                  [class.hov]="regionHover === 'pulmones'"
+                  (click)="seleccionarRegion('pulmones')"
+                  (mouseenter)="regionHover = 'pulmones'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Pulmones</title>
+                  <path
+                    d="M96 74 C88 72 78 76 74 86 C71 98 73 110 80 114 C88 116 96 112 96 104 Z"
+                  />
+                  <path
+                    d="M104 74 C112 72 122 76 126 86 C129 98 127 110 120 114 C112 116 104 112 104 104 Z"
+                  />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'cuello'" [class.hov]="regionHover === 'cuello'"
-                   (click)="seleccionarRegion('cuello')" (mouseenter)="regionHover = 'cuello'" (mouseleave)="regionHover = null">
-                  <title>Cuello</title><rect x="90" y="62" width="20" height="14"/>
+
+                <!-- corazón (lado izquierdo del paciente = derecha de la figura) -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'corazon'"
+                  [class.hov]="regionHover === 'corazon'"
+                  (click)="seleccionarRegion('corazon')"
+                  (mouseenter)="regionHover = 'corazon'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Corazón</title>
+                  <path
+                    d="M106 90 C109 86 116 87 115.5 94 C115 101 110 106 106 112 C102 106 98 101 98 95 C97.5 89 103 87 106 90 Z"
+                  />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'cabeza'" [class.hov]="regionHover === 'cabeza'"
-                   (click)="seleccionarRegion('cabeza')" (mouseenter)="regionHover = 'cabeza'" (mouseleave)="regionHover = null">
-                  <title>Cabeza</title><circle cx="100" cy="40" r="26"/>
+
+                <!-- cabeza -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'cabeza'"
+                  [class.hov]="regionHover === 'cabeza'"
+                  (click)="seleccionarRegion('cabeza')"
+                  (mouseenter)="regionHover = 'cabeza'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Cabeza</title>
+                  <path
+                    d="M100 4 C108.5 4 115 11 115 23 C115 31 113.5 37 111 43 C108.5 46 104 49 100 49 C96 49 91.5 46 89 43 C86.5 37 85 31 85 23 C85 11 91.5 4 100 4 Z"
+                  />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'neurologico'" [class.hov]="regionHover === 'neurologico'"
-                   (click)="seleccionarRegion('neurologico')" (mouseenter)="regionHover = 'neurologico'" (mouseleave)="regionHover = null">
-                  <title>Neurológico</title><circle cx="100" cy="22" r="9"/>
+
+                <!-- neurológico -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'neurologico'"
+                  [class.hov]="regionHover === 'neurologico'"
+                  (click)="seleccionarRegion('neurologico')"
+                  (mouseenter)="regionHover = 'neurologico'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Neurológico</title>
+                  <ellipse cx="100" cy="14" rx="11" ry="7" />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'oidos'" [class.hov]="regionHover === 'oidos'"
-                   (click)="seleccionarRegion('oidos')" (mouseenter)="regionHover = 'oidos'" (mouseleave)="regionHover = null">
-                  <title>Oídos</title><ellipse cx="74" cy="40" rx="3" ry="7"/><ellipse cx="126" cy="40" rx="3" ry="7"/>
+
+                <!-- oídos -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'oidos'"
+                  [class.hov]="regionHover === 'oidos'"
+                  (click)="seleccionarRegion('oidos')"
+                  (mouseenter)="regionHover = 'oidos'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Oídos</title>
+                  <path
+                    d="M115 24 C119 23 120 29 118.5 33 C117.5 35 116 35 115 34 Z"
+                  />
+                  <path
+                    d="M85 24 C81 23 80 29 81.5 33 C82.5 35 84 35 85 34 Z"
+                  />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'ojos'" [class.hov]="regionHover === 'ojos'"
-                   (click)="seleccionarRegion('ojos')" (mouseenter)="regionHover = 'ojos'" (mouseleave)="regionHover = null">
-                  <title>Ojos</title><circle cx="92" cy="38" r="3"/><circle cx="108" cy="38" r="3"/>
+
+                <!-- ojos -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'ojos'"
+                  [class.hov]="regionHover === 'ojos'"
+                  (click)="seleccionarRegion('ojos')"
+                  (mouseenter)="regionHover = 'ojos'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Ojos</title>
+                  <path d="M90 24 Q94 21 98 24 Q94 26.5 90 24 Z" />
+                  <path d="M102 24 Q106 21 110 24 Q106 26.5 102 24 Z" />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'nariz'" [class.hov]="regionHover === 'nariz'"
-                   (click)="seleccionarRegion('nariz')" (mouseenter)="regionHover = 'nariz'" (mouseleave)="regionHover = null">
-                  <title>Nariz</title><polygon points="100,40 96,47 104,47"/>
+
+                <!-- nariz -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'nariz'"
+                  [class.hov]="regionHover === 'nariz'"
+                  (click)="seleccionarRegion('nariz')"
+                  (mouseenter)="regionHover = 'nariz'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Nariz</title>
+                  <path
+                    d="M100 26 C99 31 96.5 33.5 96.5 36 C98 38 102 38 103.5 36 C103.5 33.5 101 31 100 26 Z"
+                  />
                 </g>
-                <g class="reg" [class.sel]="regionActiva === 'boca'" [class.hov]="regionHover === 'boca'"
-                   (click)="seleccionarRegion('boca')" (mouseenter)="regionHover = 'boca'" (mouseleave)="regionHover = null">
-                  <title>Boca</title><rect x="93" y="50" width="14" height="3" rx="1"/>
+
+                <!-- boca -->
+                <g
+                  class="reg"
+                  [class.sel]="regionActiva === 'boca'"
+                  [class.hov]="regionHover === 'boca'"
+                  (click)="seleccionarRegion('boca')"
+                  (mouseenter)="regionHover = 'boca'"
+                  (mouseleave)="regionHover = null"
+                >
+                  <title>Boca</title>
+                  <path d="M93.5 41 Q100 38.5 106.5 41 Q100 45 93.5 41 Z" />
+                </g>
+
+                <!-- detalles decorativos (no interactivos) -->
+                <g class="deco" aria-hidden="true">
+                  <path d="M93 69 Q82 69 72 73" />
+                  <path d="M107 69 Q118 69 128 73" />
+                  <ellipse cx="100" cy="138" rx="1.6" ry="2.4" />
+                  <path d="M113 250 Q119 255 125 250" />
+                  <path d="M75 250 Q81 255 87 250" />
                 </g>
               </svg>
+
               <p class="nm-body__legend">
-                @if (regionActiva) { <b>{{ labelRegion(regionActiva) }}</b> } @else { Toca una zona para ir al campo }
+                @if (regionActiva) {
+                  <b>{{ labelRegion(regionActiva) }}</b>
+                } @else {
+                  Toca una zona para ir al campo
+                }
               </p>
             </div>
 
             <!-- Cuadrícula de campos -->
             <div class="nm-examen">
               @for (seg of segmentosCuerpo; track seg.key) {
-                <label class="nm-seg" [class.is-active]="regionActiva === seg.key">
+                <label
+                  class="nm-seg"
+                  [class.is-active]="regionActiva === seg.key"
+                >
                   <span>{{ seg.label }}</span>
                   <input
                     [id]="'campo-' + seg.key"
@@ -317,102 +732,178 @@
         }
 
         <!-- ESCALAS -->
-        @case ('escalas') {
+        @case ("escalas") {
           <div class="nm-escalas">
             <div class="nm-escalas__tabs">
-              <button [class.is-active]="escalaActiva === 'glasgow'" (click)="escalaActiva = 'glasgow'">Glasgow</button>
-              <button [class.is-active]="escalaActiva === 'silverman'" (click)="escalaActiva = 'silverman'">Silverman</button>
-              <button [class.is-active]="escalaActiva === 'downe'" (click)="escalaActiva = 'downe'">Downe</button>
-              <button [class.is-active]="escalaActiva === 'apgar'" (click)="escalaActiva = 'apgar'">Apgar</button>
-              <button [class.is-active]="escalaActiva === 'bishop'" (click)="escalaActiva = 'bishop'">Bishop</button>
+              <button
+                [class.is-active]="escalaActiva === 'glasgow'"
+                (click)="escalaActiva = 'glasgow'"
+              >
+                Glasgow
+              </button>
+              <button
+                [class.is-active]="escalaActiva === 'silverman'"
+                (click)="escalaActiva = 'silverman'"
+              >
+                Silverman
+              </button>
+              <button
+                [class.is-active]="escalaActiva === 'downe'"
+                (click)="escalaActiva = 'downe'"
+              >
+                Downe
+              </button>
+              <button
+                [class.is-active]="escalaActiva === 'apgar'"
+                (click)="escalaActiva = 'apgar'"
+              >
+                Apgar
+              </button>
+              <button
+                [class.is-active]="escalaActiva === 'bishop'"
+                (click)="escalaActiva = 'bishop'"
+              >
+                Bishop
+              </button>
             </div>
 
-            @if (escalaActiva === 'glasgow') {
+            @if (escalaActiva === "glasgow") {
               <div class="nm-escala">
                 @for (f of glasgowFields; track f.key) {
                   <div class="nm-stepper">
                     <span>{{ f.label }}</span>
                     <div class="nm-stepper__ctrl">
-                      <button (click)="ajustar(glasgow, f.key, -1, f.min, f.max)">−</button>
+                      <button
+                        (click)="ajustar(glasgow, f.key, -1, f.min, f.max)"
+                      >
+                        −
+                      </button>
                       <b>{{ val(glasgow, f.key) }}</b>
-                      <button (click)="ajustar(glasgow, f.key, 1, f.min, f.max)">+</button>
+                      <button
+                        (click)="ajustar(glasgow, f.key, 1, f.min, f.max)"
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
                 }
-                <div class="nm-total" [class.is-critico]="glasgowTotal < 9" [class.is-alerta]="glasgowTotal >= 9 && glasgowTotal < 13">
-                  <span>Total Glasgow</span><b>{{ glasgowTotal }}</b><em>{{ interpretarGlasgow() }}</em>
+                <div
+                  class="nm-total"
+                  [class.is-critico]="glasgowTotal < 9"
+                  [class.is-alerta]="glasgowTotal >= 9 && glasgowTotal < 13"
+                >
+                  <span>Total Glasgow</span><b>{{ glasgowTotal }}</b
+                  ><em>{{ interpretarGlasgow() }}</em>
                 </div>
               </div>
             }
 
-            @if (escalaActiva === 'silverman') {
+            @if (escalaActiva === "silverman") {
               <div class="nm-escala">
                 @for (f of silvermanFields; track f.key) {
                   <div class="nm-stepper">
                     <span>{{ f.label }}</span>
                     <div class="nm-stepper__ctrl">
-                      <button (click)="ajustar(silverman, f.key, -1, f.min, f.max)">−</button>
+                      <button
+                        (click)="ajustar(silverman, f.key, -1, f.min, f.max)"
+                      >
+                        −
+                      </button>
                       <b>{{ val(silverman, f.key) }}</b>
-                      <button (click)="ajustar(silverman, f.key, 1, f.min, f.max)">+</button>
+                      <button
+                        (click)="ajustar(silverman, f.key, 1, f.min, f.max)"
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
                 }
-                <div class="nm-total" [class.is-critico]="silvermanTotal >= 7" [class.is-alerta]="silvermanTotal >= 4 && silvermanTotal < 7">
-                  <span>Total Silverman</span><b>{{ silvermanTotal }}</b><em>{{ interpretarSilverman() }}</em>
+                <div
+                  class="nm-total"
+                  [class.is-critico]="silvermanTotal >= 7"
+                  [class.is-alerta]="silvermanTotal >= 4 && silvermanTotal < 7"
+                >
+                  <span>Total Silverman</span><b>{{ silvermanTotal }}</b
+                  ><em>{{ interpretarSilverman() }}</em>
                 </div>
               </div>
             }
 
-            @if (escalaActiva === 'downe') {
+            @if (escalaActiva === "downe") {
               <div class="nm-escala">
                 @for (f of downeFields; track f.key) {
                   <div class="nm-stepper">
                     <span>{{ f.label }}</span>
                     <div class="nm-stepper__ctrl">
-                      <button (click)="ajustar(downe, f.key, -1, f.min, f.max)">−</button>
+                      <button (click)="ajustar(downe, f.key, -1, f.min, f.max)">
+                        −
+                      </button>
                       <b>{{ val(downe, f.key) }}</b>
-                      <button (click)="ajustar(downe, f.key, 1, f.min, f.max)">+</button>
+                      <button (click)="ajustar(downe, f.key, 1, f.min, f.max)">
+                        +
+                      </button>
                     </div>
                   </div>
                 }
-                <div class="nm-total" [class.is-critico]="downeTotal >= 7" [class.is-alerta]="downeTotal >= 4 && downeTotal < 7">
-                  <span>Total Downe</span><b>{{ downeTotal }}</b><em>{{ interpretarDowne() }}</em>
+                <div
+                  class="nm-total"
+                  [class.is-critico]="downeTotal >= 7"
+                  [class.is-alerta]="downeTotal >= 4 && downeTotal < 7"
+                >
+                  <span>Total Downe</span><b>{{ downeTotal }}</b
+                  ><em>{{ interpretarDowne() }}</em>
                 </div>
               </div>
             }
 
-            @if (escalaActiva === 'apgar') {
+            @if (escalaActiva === "apgar") {
               <div class="nm-escala">
                 @for (f of apgarFields; track f.key) {
                   <div class="nm-stepper">
                     <span>{{ f.label }}</span>
                     <div class="nm-stepper__ctrl">
-                      <button (click)="ajustar(apgar, f.key, -1, f.min, f.max)">−</button>
+                      <button (click)="ajustar(apgar, f.key, -1, f.min, f.max)">
+                        −
+                      </button>
                       <b>{{ val(apgar, f.key) }}</b>
-                      <button (click)="ajustar(apgar, f.key, 1, f.min, f.max)">+</button>
+                      <button (click)="ajustar(apgar, f.key, 1, f.min, f.max)">
+                        +
+                      </button>
                     </div>
                   </div>
                 }
-                <div class="nm-total" [class.is-critico]="apgarTotal < 4" [class.is-alerta]="apgarTotal >= 4 && apgarTotal < 7">
-                  <span>Total Apgar</span><b>{{ apgarTotal }}</b><em>{{ interpretarApgar() }}</em>
+                <div
+                  class="nm-total"
+                  [class.is-critico]="apgarTotal < 4"
+                  [class.is-alerta]="apgarTotal >= 4 && apgarTotal < 7"
+                >
+                  <span>Total Apgar</span><b>{{ apgarTotal }}</b
+                  ><em>{{ interpretarApgar() }}</em>
                 </div>
               </div>
             }
 
-            @if (escalaActiva === 'bishop') {
+            @if (escalaActiva === "bishop") {
               <div class="nm-escala">
                 @for (f of bishopFields; track f.key) {
                   <div class="nm-stepper">
                     <span>{{ f.label }}</span>
                     <div class="nm-stepper__ctrl">
-                      <button (click)="ajustar(bishop, f.key, -1, f.min, f.max)">−</button>
+                      <button
+                        (click)="ajustar(bishop, f.key, -1, f.min, f.max)"
+                      >
+                        −
+                      </button>
                       <b>{{ val(bishop, f.key) }}</b>
-                      <button (click)="ajustar(bishop, f.key, 1, f.min, f.max)">+</button>
+                      <button (click)="ajustar(bishop, f.key, 1, f.min, f.max)">
+                        +
+                      </button>
                     </div>
                   </div>
                 }
                 <div class="nm-total" [class.is-ok]="bishopTotal >= 8">
-                  <span>Total Bishop</span><b>{{ bishopTotal }}</b><em>{{ interpretarBishop() }}</em>
+                  <span>Total Bishop</span><b>{{ bishopTotal }}</b
+                  ><em>{{ interpretarBishop() }}</em>
                 </div>
               </div>
             }
@@ -420,7 +911,7 @@
         }
 
         <!-- EGRESO -->
-        @case ('egreso') {
+        @case ("egreso") {
           <div class="nm-form">
             <label class="nm-field">
               <span>Condición de egreso</span>
@@ -437,23 +928,50 @@
             </label>
             <label class="nm-field">
               <span>Referido a</span>
-              <input type="text" [(ngModel)]="egreso.referencia" placeholder="Unidad o servicio de referencia" />
+              <input
+                type="text"
+                [(ngModel)]="egreso.referencia"
+                placeholder="Unidad o servicio de referencia"
+              />
             </label>
             <label class="nm-field">
               <span>Médico responsable del egreso</span>
-              <input type="text" [(ngModel)]="egreso.medico" placeholder="Nombre del médico" />
+              <input
+                type="text"
+                [(ngModel)]="egreso.medico"
+                placeholder="Nombre del médico"
+              />
             </label>
 
             <div class="nm-diag">
-              <span class="nm-diag__title">Diagnósticos al egreso (CIE-10)</span>
+              <span class="nm-diag__title"
+                >Diagnósticos al egreso (CIE-10)</span
+              >
               @for (dx of egreso.diagnosticos; track $index) {
                 <div class="nm-diag__row">
-                  <input class="nm-diag__code" type="text" [(ngModel)]="dx.codigo" placeholder="CIE-10" />
-                  <input type="text" [(ngModel)]="dx.descripcion" placeholder="Descripción del diagnóstico…" />
-                  <button class="nm-del" (click)="eliminarDx($index)" aria-label="Eliminar">✕</button>
+                  <input
+                    class="nm-diag__code"
+                    type="text"
+                    [(ngModel)]="dx.codigo"
+                    placeholder="CIE-10"
+                  />
+                  <input
+                    type="text"
+                    [(ngModel)]="dx.descripcion"
+                    placeholder="Descripción del diagnóstico…"
+                  />
+                  <button
+                    class="nm-del"
+                    (click)="eliminarDx($index)"
+                    aria-label="Eliminar"
+                  >
+                    ✕
+                  </button>
                 </div>
               }
-              <button class="nm-add" (click)="agregarDx()">+ Agregar diagnóstico</button>
+              <button class="nm-add" (click)="agregarDx()">
+                + Agregar diagnóstico
+              </button>
             </div>
           </div>
         }
@@ -461,9 +979,21 @@
     </main>
 
     <footer class="nm-bottombar">
-      <button class="nm-btn nm-btn--ghost" (click)="regresar()">Cancelar</button>
-      <button class="nm-btn nm-btn--primary" (click)="guardar()" [disabled]="guardando()">
-        {{ guardando() ? 'Guardando…' : odontologiaActiva() ? 'Guardar nota odontológica' : 'Guardar nota' }}
+      <button class="nm-btn nm-btn--ghost" (click)="regresar()">
+        Cancelar
+      </button>
+      <button
+        class="nm-btn nm-btn--primary"
+        (click)="guardar()"
+        [disabled]="guardando()"
+      >
+        {{
+          guardando()
+            ? "Guardando…"
+            : odontologiaActiva()
+              ? "Guardar nota odontológica"
+              : "Guardar nota"
+        }}
       </button>
     </footer>
   </div>

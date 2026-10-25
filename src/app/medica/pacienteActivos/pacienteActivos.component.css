@@ -49,7 +49,7 @@
 .pa-search { margin-bottom: 0.9rem; }
 .pa-search input {
   width: 100%;
-  padding: 0.7rem 0.85rem;
+  padding: 0.7rem 2.85rem;
   border: 1px solid var(--theme-border); border-radius: var(--theme-radius-md);
   background: var(--theme-surface); color: var(--theme-text);
   font-size: var(--theme-font-size-sm);

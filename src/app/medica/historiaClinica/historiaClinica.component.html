@@ -2,17 +2,20 @@
   <!-- Header -->
   <header class="historia-header">
     <div class="header-left">
-      <button class="btn-back" (click)="regresar()">← Volver</button>
+      <!-- <button class="btn-back" (click)="regresar()">← Volver</button> -->
       <div>
         <h1>Historia Clínica</h1>
         @if (historia()) {
           <p class="paciente-info">
             {{ historia()!.paciente_nombre }}
             @if (historia()!.paciente_expediente) {
-              <span class="badge-exp">{{ historia()!.paciente_expediente }}</span>
+              <span class="badge-exp">{{
+                historia()!.paciente_expediente
+              }}</span>
             }
             <span class="stats-resumen">
-              {{ historia()!.total_consultas }} consultas · {{ historia()!.total_ciclos }} notas
+              {{ historia()!.total_consultas }} consultas ·
+              {{ historia()!.total_ciclos }} notas
             </span>
           </p>
         }
@@ -57,12 +60,21 @@
             (click)="toggleConsulta(ch.consulta.id)"
             [style.--tipo-color]="colorTipoConsulta(ch.consulta.tipo_consulta)"
           >
-            <span class="consulta-icon">{{ estaColapsada(ch.consulta.id) ? '▶' : '▼' }}</span>
-            <span class="consulta-tipo-badge" [style.background]="colorTipoConsulta(ch.consulta.tipo_consulta)">
+            <span class="consulta-icon">{{
+              estaColapsada(ch.consulta.id) ? "▶" : "▼"
+            }}</span>
+            <span
+              class="consulta-tipo-badge"
+              [style.background]="colorTipoConsulta(ch.consulta.tipo_consulta)"
+            >
               {{ nombreTipoConsulta(ch.consulta.tipo_consulta) }}
             </span>
-            <span class="consulta-fecha">{{ formatearFecha(ch.consulta.fecha_consulta) }}</span>
-            <span class="consulta-especialidad">{{ ch.consulta.especialidad }}</span>
+            <span class="consulta-fecha">{{
+              formatearFecha(ch.consulta.fecha_consulta)
+            }}</span>
+            <span class="consulta-especialidad">{{
+              ch.consulta.especialidad
+            }}</span>
             <span class="consulta-meta">{{ ch.total_ciclos }} notas</span>
           </button>
 
@@ -83,22 +95,32 @@
                       @if (esNotaOdontologica(ciclo)) {
                         <span class="nota-tipo-odonto">Odontología</span>
                       }
-                      <span class="nota-hora">{{ formatearRegistro(ciclo.registro) }}</span>
+                      <span class="nota-hora">{{
+                        formatearRegistro(ciclo.registro)
+                      }}</span>
                       @if (badgeEgreso(ciclo)) {
-                        <span class="nota-egreso">{{ badgeEgreso(ciclo) }}</span>
+                        <span class="nota-egreso">{{
+                          badgeEgreso(ciclo)
+                        }}</span>
                       }
                     </div>
                     <div class="nota-autor">
                       {{ ciclo.usuario_nombre || ciclo.usuario }}
                       @if (ciclo.especialidad) {
-                        <span class="nota-especialidad">· {{ ciclo.especialidad }}</span>
+                        <span class="nota-especialidad"
+                          >· {{ ciclo.especialidad }}</span
+                        >
                       }
                     </div>
                     @if (signosVitalesCompactos(ciclo)) {
-                      <div class="nota-signos">{{ signosVitalesCompactos(ciclo) }}</div>
+                      <div class="nota-signos">
+                        {{ signosVitalesCompactos(ciclo) }}
+                      </div>
                     }
                     @if (esNotaOdontologica(ciclo)) {
-                      <div class="nota-odontologia-resumen">{{ resumenOdontologico(ciclo) }}</div>
+                      <div class="nota-odontologia-resumen">
+                        {{ resumenOdontologico(ciclo) }}
+                      </div>
                     } @else {
                       <div class="nota-resumen">{{ resumenCiclo(ciclo) }}</div>
                     }
@@ -144,17 +166,31 @@
         </h2>
         @for (ciclo of ch.ciclos; track ciclo.id) {
           <div class="print-nota">
-            <h3>Nota #{{ ciclo.numero }} — {{ ciclo.usuario_nombre || ciclo.usuario }}</h3>
+            <h3>
+              Nota #{{ ciclo.numero }} —
+              {{ ciclo.usuario_nombre || ciclo.usuario }}
+            </h3>
             @if (signosVitalesCompactos(ciclo)) {
-              <p class="print-signos"><strong>Signos:</strong> {{ signosVitalesCompactos(ciclo) }}</p>
+              <p class="print-signos">
+                <strong>Signos:</strong> {{ signosVitalesCompactos(ciclo) }}
+              </p>
             }
             @if (ciclo.impresion_clinica) {
-              <p><strong>Impresión clínica:</strong> {{ ciclo.impresion_clinica }}</p>
+              <p>
+                <strong>Impresión clínica:</strong>
+                {{ ciclo.impresion_clinica }}
+              </p>
             }
             @if (esNotaOdontologica(ciclo)) {
-              <p><strong>Nota odontológica:</strong> {{ resumenOdontologico(ciclo) }}</p>
+              <p>
+                <strong>Nota odontológica:</strong>
+                {{ resumenOdontologico(ciclo) }}
+              </p>
               @if (ciclo.odontologia?.procedimientos) {
-                <p><strong>Procedimiento:</strong> {{ ciclo.odontologia?.procedimientos }}</p>
+                <p>
+                  <strong>Procedimiento:</strong>
+                  {{ ciclo.odontologia?.procedimientos }}
+                </p>
               }
             }
             @if (resumenCiclo(ciclo) !== ciclo.impresion_clinica) {
