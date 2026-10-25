@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -30,7 +30,10 @@ export class HistoriaClinicaComponent implements OnInit, OnDestroy {
   router = inject(Router);
   private location = inject(Location);
   private destroy$ = new Subject<void>();
-
+  readonly id = input<number | null>(null);
+  readonly cerrar = output<void>();
+  // solo HistoriaClinicaComponent:
+  readonly by = input<string | null>(null);
   historia = signal<HistoriaClinicaResponse | null>(null);
   cargando = signal(true);
   error = signal<string | null>(null);
@@ -49,14 +52,31 @@ export class HistoriaClinicaComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    const by = this.route.snapshot.queryParamMap.get('by');
+    const inputId = this.id();
+    const inputBy = this.by();
 
-    if (by === 'paciente' && id) {
-      this.cargarHistoriaPorPaciente(id);
-    } else if (id) {
-      this.cargarHistoriaPorConsulta(id);
+    if (inputId) {
+      this.cargando.set(true);
+      this.cargarHistoriaPorPaciente(Number(inputId));
+      return;
     }
+
+    const idParam = Number(this.route.snapshot.paramMap.get('id'));
+    const queryId = Number(this.route.snapshot.queryParamMap.get('id') || this.route.snapshot.queryParamMap.get('pacienteId'));
+    const id = idParam || queryId;
+    const by = this.route.snapshot.queryParamMap.get('by') || (queryId ? 'paciente' : null);
+
+    if ((by === 'paciente' || queryId) && id) {
+      this.cargando.set(true);
+      this.cargarHistoriaPorPaciente(id);
+      return;
+    } else if (id) {
+      this.cargando.set(true);
+      this.cargarHistoriaPorConsulta(id);
+      return;
+    }
+
+    this.cargando.set(false);
   }
 
   ngOnDestroy(): void {

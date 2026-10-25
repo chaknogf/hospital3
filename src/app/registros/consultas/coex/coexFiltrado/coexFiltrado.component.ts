@@ -1,7 +1,7 @@
 // coexFiltrado.component.ts
 
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, input, effect, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject, input, effect, ChangeDetectionStrategy, ChangeDetectorRef, signal, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DatosExtraPipe } from '../../../../pipes/datos-extra.pipe';
@@ -11,18 +11,27 @@ import { ConsultaResponse, TotalesResponse, TotalesItem } from '../../../../inte
 import { ciclos, Dict } from '../../../../enum/diccionarios';
 import { ConsultaService } from '../../consultas.service';
 import { IconService } from '../../../../service/icon.service';
-import { Location } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
+import { NotaMedicaComponent } from '../../../../medica/notaMedica/notaMedica.component';
+import { HistoriaClinicaComponent } from '../../../../medica/historiaClinica/historiaClinica.component';
+import { AgendarComponent } from '../../../citas/agendar/agendar.component';
+import { AuthService } from '../../../../service/auth.service';
 /** Filtra consultas externas por fecha, tipo y especialidad. */
+
+type ModalTipo = 'cita' | 'nota' | 'historia';
+
+interface ModalState {
+  tipo: ModalTipo;
+  id: number;
+}
 @Component({
   selector: 'app-coexFiltrado',
   templateUrl: './coexFiltrado.component.html',
   styleUrls: ['./coexFiltrado.component.css'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe]
+  imports: [CommonModule, FormsModule, DatosExtraPipe, CuiPipe, TimePipe, NotaMedicaComponent, HistoriaClinicaComponent, AgendarComponent]
 })
 export class CoexFiltradoComponent implements OnInit, OnDestroy {
 
@@ -31,6 +40,7 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
   private iconService = inject(IconService);
   private location = inject(Location);
   private cdr = inject(ChangeDetectorRef);
+  private authService = inject(AuthService);
 
   private destroy$ = new Subject<void>();
 
@@ -51,7 +61,6 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
   paginaActual = 1;
   totalDeRegistros = 0;
   ciclos: Dict[] = ciclos;
-  modalActivo = false;
   private yaInicializado = false;
 
   private fechaActual = new Date().toLocaleDateString('en-CA');
@@ -105,6 +114,8 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
 
   }
 
+
+
   // ======= CICLO DE VIDA =======
   ngOnInit(): void {
     this.fechaActual = new Date().toLocaleDateString('en-CA');
@@ -148,8 +159,8 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
 
     this.api.getConsultas(filtrosLimpios).pipe(takeUntil(this.destroy$)).subscribe({
       next: resultado => { this.consultas = resultado.consultas; this.cdr.markForCheck(); },
-      error: () => { this.consultas = []; this.cdr.markForCheck(); },
-      complete: () => { this.cargando = false; }
+      error: () => { this.consultas = []; this.cargando = false; this.cdr.markForCheck(); },
+      complete: () => { this.cargando = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -205,20 +216,7 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
     this.filtrar = !this.filtrar;
   }
 
-  cita(id: number): void {
-    this.router.navigate(['/agendar/paciente', id]);
-  }
 
-  notaMedica(consultaId: number): void {
-    this.router.navigate(['/enfermeria/notas-medicas', consultaId]);
-  }
-
-  verHistoria(pacienteId: number): void {
-    this.router.navigate(
-      ['/historiaClinica', pacienteId],
-      { queryParams: { by: 'paciente' } }
-    );
-  }
 
   // ======= NAVEGACIÓN =======
   editar(id: number): void {
@@ -306,5 +304,94 @@ export class CoexFiltradoComponent implements OnInit, OnDestroy {
     return d.toTimeString().slice(0, 5);
   }
 
+  // ======= MODAL =======
+  readonly modal = signal<ModalState | null>(null);
 
+  // Reemplaza tu propiedad `modalActivo = false;`
+  get modalActivo(): boolean {
+    return this.modal() !== null;
+  }
+
+  readonly titulos: Record<ModalTipo, string> = {
+    cita: 'Agendar cita',
+    nota: 'Nota de consulta',
+    historia: 'Historia clínica',
+  };
+
+  // ======= ACCIONES (reemplazan a las que usaban router) =======
+  private getRole(): string {
+    const user = this.authService.getUsuarioActual();
+    return (user?.role || localStorage.getItem('role') || '').toLowerCase();
+  }
+
+  private usarModal(): boolean {
+    const role = this.getRole();
+    // Usar modal para roles que lo requieren (como se pidió), pero permitir navegación por rol
+    return false; // Siempre usar navegación según el rol para cumplir lo solicitado
+  }
+
+  cita(pacienteId: number): void {
+    const role = this.getRole();
+    // Según el rol, navegar al módulo correspondiente
+    if (role === 'nutric' || role === 'nutricion') {
+      this.router.navigate(['/menu-nutri/agendar/paciente', pacienteId]);
+      return;
+    }
+    if (role === 'odonto' || role === 'odontologia') {
+      this.router.navigate(['/menu-odonto/agendar/paciente', pacienteId]);
+      return;
+    }
+    // Por defecto, ir al agendar general
+    this.router.navigate(['/agendar/paciente', pacienteId]);
+  }
+
+  notaMedica(consultaId: number): void {
+    const role = this.getRole();
+    if (role === 'medico' || role === 'admin') {
+      this.router.navigate(['/clinica/notas-medicas', consultaId]);
+      return;
+    }
+    if (role === 'odonto' || role === 'admin') {
+      this.router.navigate(['/menu-odonto/notaMedica', consultaId]);
+      return;
+    }
+    if (role === 'nutric' || role === 'nutricion') {
+      this.router.navigate(['/menu-nutri/notaMedica', consultaId]);
+      return;
+    }
+    if (role === 'enfermeria' || role === 'paramedic') {
+      this.router.navigate(['/enfermeria/notas-medicas', consultaId]);
+      return;
+    }
+    this.router.navigate(['/clinica/notas-medicas', consultaId]);
+  }
+
+
+  verHistoria(pacienteId: number): void {
+    const role = this.getRole();
+    if (role === 'medico' || role === 'admin') {
+      this.router.navigate(['/clinica/historia-clinica'], { queryParams: { id: pacienteId, by: 'paciente' } });
+      return;
+    }
+    if (role === 'odonto' || role === 'admin') {
+      this.router.navigate(['/menu-odonto/historiaClinica'], { queryParams: { id: pacienteId, by: 'paciente' } });
+      return;
+    }
+    if (role === 'nutric' || role === 'nutricion') {
+      this.router.navigate(['/menu-nutri/historia-clinica'], { queryParams: { id: pacienteId, by: 'paciente' } });
+      return;
+    }
+    if (role === 'enfermeria' || role === 'paramedic') {
+      this.router.navigate(['/enfermeria/historia-clinica'], { queryParams: { id: pacienteId, by: 'paciente' } });
+      return;
+    }
+    this.router.navigate(['/historiaClinica', pacienteId], { queryParams: { by: 'paciente' } });
+  }
+
+  @HostListener('document:keydown.escape')
+  cerrarModal(): void {
+    if (!this.modalActivo) return;
+    this.modal.set(null);
+    this.cargarConsultas(); // opcional: refresca la lista por si hubo cambios
+  }
 }

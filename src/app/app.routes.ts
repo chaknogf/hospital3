@@ -10,6 +10,7 @@ import {
   REGISTROS_NAV,
   TRABAJO_SOCIAL_NAV,
   UISAU_NAV,
+  ENFERMERIA_NAV,
 } from './shared/module-nav';
 
 /** Rutas de la aplicación; el guard de sesión agrupa las vistas autenticadas. */
@@ -440,8 +441,28 @@ export const routes: Routes = [
           },
           {
             path: 'quirofano',
-            loadComponent: () => import('./medica/quirofano/quirofano.component').then(c => c.QuirofanoComponent)
-          }
+            loadComponent: () => import('./medica/quirofano/quirofano.component').then(c => c.QuirofanoComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria'])]
+          },
+          {
+            path: 'quirofano/nueva',
+            loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria'])]
+          },
+          {
+            path: 'quirofano/editar/:id',
+            loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria'])]
+          },
+          {
+            path: 'quirofano-resumen',
+            loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
+          },
+          {
+            path: 'reagendar/cita/:citaId',
+            loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+          },
         ]
       },
       {
@@ -454,11 +475,19 @@ export const routes: Routes = [
         loadComponent: () => import('./medica/pacientesAtendidos/pacientesAtendidos.component').then(c => c.PacientesAtendidosComponent)
       },
       {
-        path: 'notaMedica/:consultaId',
+        path: 'notasMedica',
         loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
       },
       {
-        path: 'notaMedica',
+        path: 'notasMedica/:consultaId',
+        loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+      },
+      {
+        path: 'notasMedica',
+        loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+      },
+      {
+        path: 'notasMedica/:consultaId',
         loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
       },
       {
@@ -467,8 +496,7 @@ export const routes: Routes = [
       },
       {
         path: 'cie10',
-        loadComponent: () => import('./medica/cie10/cie10.component').then(c => c.Cie10Component),
-        canActivate: [roleGuard(['admin', 'medico', 'std'])]
+        loadComponent: () => import('./medica/cie10/cie10.component').then(c => c.Cie10Component)
       },
       {
         path: 'historiaClinica/:id',
@@ -482,27 +510,27 @@ export const routes: Routes = [
         path: 'historiaClinica',
         loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
       },
-      // Quirófano
-      {
-        path: 'quirofano',
-        loadComponent: () => import('./medica/quirofano/quirofano.component').then(c => c.QuirofanoComponent),
-        canActivate: [roleGuard(['admin', 'medico'])]
-      },
-      {
-        path: 'quirofano/nueva',
-        loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
-        canActivate: [roleGuard(['admin', 'medico'])]
-      },
-      {
-        path: 'quirofano/editar/:id',
-        loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
-        canActivate: [roleGuard(['admin', 'medico'])]
-      },
-      {
-        path: 'quirofano/resumen',
-        redirectTo: 'estadistica/quirofano-resumen',
-        pathMatch: 'full'
-      },
+      // // Quirófano
+      // {
+      //   path: 'quirofano',
+      //   loadComponent: () => import('./medica/quirofano/quirofano.component').then(c => c.QuirofanoComponent),
+      //   canActivate: [roleGuard(['admin', 'medico'])]
+      // },
+      // {
+      //   path: 'quirofano/nueva',
+      //   loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
+      //   canActivate: [roleGuard(['admin', 'medico'])]
+      // },
+      // {
+      //   path: 'quirofano/editar/:id',
+      //   loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
+      //   canActivate: [roleGuard(['admin', 'medico'])]
+      // },
+      // {
+      //   path: 'quirofano/resumen',
+      //   redirectTo: 'estadistica/quirofano-resumen',
+      //   pathMatch: 'full'
+      // },
 
       //Citas
       {
@@ -618,8 +646,29 @@ export const routes: Routes = [
             loadComponent: () => import('./std/reportes/reportes-inicio.component').then(c => c.ReportesInicioComponent)
           },
           {
+            path: 'quirofano',
+            loadComponent: () => import('./medica/quirofano/quirofano.component').then(c => c.QuirofanoComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
+          },
+          {
+            path: 'quirofano/nueva',
+            loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
+          },
+          {
+            path: 'quirofano/editar/:id',
+            loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
+          },
+          {
+            path: 'quirofano/resumen',
+            loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
+          },
+          {
             path: 'quirofano-resumen',
-            loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent)
+            loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
           },
           {
             path: 'personal-hospital',
@@ -650,6 +699,22 @@ export const routes: Routes = [
             loadComponent: () => import('./std/estadistica/agente/agente.component').then(c => c.AgenteComponent)
           }
         ]
+      },
+      {
+        path: 'quirofano-resumen',
+        loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent)
+      },
+      {
+        path: 'estadistica/quirofano-resumen',
+        loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent)
+      },
+      {
+        path: 'clinica/quirofano/resumen',
+        loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent)
+      },
+      {
+        path: 'enfermeria/quirofano/resumen',
+        loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent)
       },
       {
         path: 'agente',
@@ -729,9 +794,69 @@ export const routes: Routes = [
             loadComponent: () => import('./nutricion/citas-nutri/citas-nutri.component').then(c => c.CitasNutriComponent)
           },
           {
+            path: 'agendar',
+            loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+          },
+          {
+            path: 'agendar/paciente/:pacienteId',
+            loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+          },
+          {
+            path: 'reagendar/cita/:citaId',
+            loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+          },
+          {
+            path: 'notas-medicas',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'notas-medicas/:consultaId',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'nota-medica',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'nota-medica/:consultaId',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'notaMedica',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'notaMedica/:consultaId',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'notasMedica/:consultaId',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'notas-medica',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'notas-medica/:consultaId',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'historia-clinica',
+            loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
+          },
+          {
+            path: 'historiaClinica',
+            loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
+          },
+          {
+            path: 'historia-clinica/:id',
+            loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
+          },
+          {
             path: 'reportes',
             loadComponent: () => import('./std/reportes/reportes-inicio.component').then(c => c.ReportesInicioComponent)
-          }
+          },
         ]
       },
       {
@@ -766,21 +891,41 @@ export const routes: Routes = [
             loadComponent: () => import('./odontologia/citas-odonto/citas-odonto.component').then(c => c.CitasOdontoComponent)
           },
           {
+            path: 'agendar',
+            loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+          },
+          {
+            path: 'agendar/paciente/:pacienteId',
+            loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+          },
+          {
+            path: 'reagendar/cita/:citaId',
+            loadComponent: () => import('./registros/citas/agendar/agendar.component').then(c => c.AgendarComponent)
+          },
+          {
             path: 'reportes',
             loadComponent: () => import('./std/reportes/reportes-inicio.component').then(c => c.ReportesInicioComponent)
-          }
+          },
+          {
+            path: 'notaMedica/:consultaId',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+          {
+            path: 'notas-medicas',
+            loadComponent: () => import('./medica/notaMedica/notaMedica.component').then(c => c.NotaMedicaComponent)
+          },
+
+          {
+            path: 'historia-clinica',
+            loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
+          },
+          {
+            path: 'historiaClinica/:id',
+            loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
+          },
         ]
       },
-      {
-        path: 'citas-odonto',
-        redirectTo: 'menu-odonto/citas',
-        pathMatch: 'full'
-      },
-      {
-        path: 'coex-odonto',
-        redirectTo: 'menu-odonto/coex',
-        pathMatch: 'full'
-      },
+
 
       // Trabajo Social — barra lateral con rutas hijas
       {
@@ -812,10 +957,11 @@ export const routes: Routes = [
       // Enfermería — barra lateral con rutas hijas
       {
         path: 'enfermeria',
-        loadComponent: () => import('./enfermeria/menu-enfermeria/menu-enfermeria.component').then(c => c.MenuEnfermeriaComponent),
+        loadComponent: () => import('./shared/module-shell/module-shell.component').then(c => c.ModuleShellComponent),
         canActivate: [roleGuard(['admin', 'paramedic', 'read_only'])],
+        data: { module: ENFERMERIA_NAV },
         children: [
-          { path: '', pathMatch: 'full', redirectTo: 'notas-medicas' },
+          { path: '', pathMatch: 'full', redirectTo: 'pacientes-activos' },
           {
             path: 'pacientes-activos',
             loadComponent: () => import('./medica/pacienteActivos/pacienteActivos.component').then(c => c.PacienteActivosComponent)
@@ -839,8 +985,23 @@ export const routes: Routes = [
           },
           {
             path: 'quirofano',
-            loadComponent: () => import('./medica/quirofano/quirofano.component').then(c => c.QuirofanoComponent)
-
+            loadComponent: () => import('./medica/quirofano/quirofano.component').then(c => c.QuirofanoComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
+          },
+          {
+            path: 'quirofano/nueva',
+            loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
+          },
+          {
+            path: 'quirofano/editar/:id',
+            loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
+          },
+          {
+            path: 'quirofano-resumen',
+            loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent),
+            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
           },
           {
             path: 'censo-camas',
@@ -899,31 +1060,36 @@ export const routes: Routes = [
             loadComponent: () => import('./uisau/notaUisau/notaUisau.component').then(c => c.NotaUisauComponent)
           },
           {
+            path: 'detalleAdmision/:id',
+            loadComponent: () => import('./registros/adminsion/detalleConsulta/detalleConsulta.component').then(c => c.DetalleConsultaComponent)
+          },
+          {
+            path: 'encamamiento',
+            redirectTo: 'uisau/lista',
+            pathMatch: 'full'
+          },
+          {
+            path: 'notaUisau/paciente/:pacienteId',
+            redirectTo: 'uisau/nota/paciente/:pacienteId',
+            pathMatch: 'full'
+          },
+          {
+            path: 'notaUisau/:consultaId',
+            redirectTo: 'uisau/nota/:consultaId',
+            pathMatch: 'full'
+          },
+          {
+            path: 'notaUisau',
+            redirectTo: 'uisau/nota',
+            pathMatch: 'full'
+          },
+          {
             path: 'reportes',
             loadComponent: () => import('./std/reportes/reportes-inicio.component').then(c => c.ReportesInicioComponent)
           }
         ]
       },
-      {
-        path: 'encamamiento',
-        redirectTo: 'uisau/lista',
-        pathMatch: 'full'
-      },
-      {
-        path: 'notaUisau/paciente/:pacienteId',
-        redirectTo: 'uisau/nota/paciente/:pacienteId',
-        pathMatch: 'full'
-      },
-      {
-        path: 'notaUisau/:consultaId',
-        redirectTo: 'uisau/nota/:consultaId',
-        pathMatch: 'full'
-      },
-      {
-        path: 'notaUisau',
-        redirectTo: 'uisau/nota',
-        pathMatch: 'full'
-      },
+
 
       // Nacimientos (std)
       {

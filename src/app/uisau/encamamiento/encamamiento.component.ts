@@ -369,7 +369,7 @@ export class EncamamientoComponent implements OnInit, OnDestroy {
   editar(id: number): void { this.router.navigate(['/editarAdmision', id, 'ingreso']); }
   agregar(): void { this.router.navigate(['/registros/pacientes']); }
   verDetalle(consultaId: number): void {
-    this.router.navigate(['/detalleAdmision', consultaId], { queryParams: { origen: 'ingreso' } });
+    this.router.navigate(['/uisau/detalleAdmision', consultaId], { queryParams: { origen: 'ingreso' } });
   }
   imprimir(consultaId: number): void { this.router.navigate(['/ingreso', consultaId]); }
   volver(): void { this.router.navigate(['/uisau/consultar']); }

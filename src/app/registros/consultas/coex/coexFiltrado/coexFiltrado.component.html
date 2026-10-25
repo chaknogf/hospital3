@@ -1,24 +1,15 @@
-<div class="aurora-paciente-container" [class.d-none]="modalActivo">
-  <!-- Botones superiores -->
-  <div
-    class="botones justify-content-between"
-    [ngClass]="{ 'd-none': filtrar }"
-    >
-    <button type="button" (click)="volver()">
-      <span [innerHTML]="icons['menu']"></span>
-      Menu
-    </button>
+<div class="aurora-paciente-container">
+  <!-- Barra superior: título y acción principal en una sola fila -->
+  <header class="pac-toolbar" [ngClass]="{ 'd-none': filtrar }">
+    <h3>
+      Consulta Externa de {{ especialidad() | datosExtra: "especialidad" }}
+    </h3>
 
-    <div class="titulos-coex">
-      <h1 class="text-white">Consulta Externa</h1>
-      <h3>{{ especialidad() | datosExtra: "especialidad" }}</h3>
-    </div>
-
-    <button type="button" (click)="toggleFiltrar()">
-      <span [innerHTML]="icons['find']"></span>
-      Buscar
+    <button type="button" class="pac-toolbar__action" (click)="toggleFiltrar()">
+      <span class="pac-toolbar__icon" [innerHTML]="icons['find']"></span>
+      <span>Buscar</span>
     </button>
-  </div>
+  </header>
 
   <!-- Contenedor de Búsqueda -->
   <div class="find-form" [ngClass]="{ 'd-none': !filtrar || modalActivo }">
@@ -36,7 +27,7 @@
             name="expediente"
             placeholder="E26-003"
             style="text-transform: uppercase"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -46,7 +37,7 @@
             class="input-filtros"
             [(ngModel)]="filtros.fecha"
             name="fechaConsulta"
-            />
+          />
         </fieldset>
       </div>
 
@@ -59,7 +50,7 @@
             [(ngModel)]="filtros.primer_nombre"
             name="primerNombre"
             placeholder="Ej: Juan"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -70,7 +61,7 @@
             [(ngModel)]="filtros.segundo_nombre"
             name="segundoNombre"
             placeholder="Ej: María"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -81,7 +72,7 @@
             [(ngModel)]="filtros.primer_apellido"
             name="primerApellido"
             placeholder="Ej: García"
-            />
+          />
         </fieldset>
 
         <fieldset class="fieldset-filtros">
@@ -92,7 +83,7 @@
             [(ngModel)]="filtros.segundo_apellido"
             name="segundoApellido"
             placeholder="Ej: Pérez"
-            />
+          />
         </fieldset>
       </div>
 
@@ -136,7 +127,7 @@
             class="aurora-table-row"
             [class.touch-active]="data.id"
             (click)="activarFila(data.id)"
-            >
+          >
             <td data-label="Nombre:">
               <div class="nombre-table">
                 <p class="p-0 m-0 text-uppercase">
@@ -147,7 +138,7 @@
                 <p
                   class="p-0 mt-1 text-uppercase"
                   [ngClass]="data.paciente.sexo === 'M' ? 'hombre' : 'mujer'"
-                  >
+                >
                   {{ data.paciente.nombre.primer_apellido }}
                   {{ data.paciente.nombre.segundo_apellido }}
                   {{ data.paciente.nombre.apellido_casada }}
@@ -198,10 +189,16 @@
             </td>
             <td class="secundario">
               <div class="d-flex gap-1">
-                <button (click)="notaMedica(data.id)" data-label="Nota de Consulta">
+                <button
+                  (click)="notaMedica(data.id)"
+                  data-label="Nota de Consulta"
+                >
                   <span [innerHTML]="icons['medical']"></span>
                 </button>
-                <button (click)="verHistoria(data.paciente.id)" data-label="Historias Médicas">
+                <button
+                  (click)="verHistoria(data.paciente.id)"
+                  data-label="Historias Médicas"
+                >
                   <span [innerHTML]="icons['history']"></span>
                 </button>
                 <button (click)="cita(data.paciente.id)" data-label="Cita">
@@ -239,7 +236,7 @@
       class="pag-btn"
       [disabled]="!hayPaginaAnterior"
       (click)="cambiarPagina(-1)"
-      >
+    >
       <span [innerHTML]="icons['skipLeft']"></span>
     </button>
 
@@ -257,7 +254,7 @@
         class="pag-num"
         [class.pag-num-active]="p === paginaActual"
         (click)="irAPagina(p)"
-        >
+      >
         {{ p }}
       </button>
     }
@@ -277,7 +274,7 @@
       class="pag-btn"
       [disabled]="!hayPaginaSiguiente"
       (click)="cambiarPagina(1)"
-      >
+    >
       <span [innerHTML]="icons['skipRight']"></span>
     </button>
 
@@ -288,3 +285,39 @@
     </span>
   </div>
 </div>
+
+@if (modal(); as m) {
+  <div class="coex-modal-backdrop" (click)="cerrarModal()">
+    <section
+      class="coex-modal"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="coex-modal__header">
+        <h4>{{ titulos[m.tipo] }}</h4>
+        <button type="button" class="coex-modal__close" (click)="cerrarModal()">
+          ✕
+        </button>
+      </header>
+
+      <div class="coex-modal__body">
+        @switch (m.tipo) {
+          @case ("cita") {
+            <app-agendar [id]="m.id" (cerrar)="cerrarModal()" />
+          }
+          @case ("nota") {
+            <app-notaMedica [id]="m.id" (cerrar)="cerrarModal()" />
+          }
+          @case ("historia") {
+            <app-historia-clinica
+              [id]="m.id"
+              by="paciente"
+              (cerrar)="cerrarModal()"
+            />
+          }
+        }
+      </div>
+    </section>
+  </div>
+}

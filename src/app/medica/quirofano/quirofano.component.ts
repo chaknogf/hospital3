@@ -3,7 +3,7 @@
 import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -14,6 +14,7 @@ import { PacienteService } from '../../registros/patient/paciente.service';
 import { IconService } from '../../service/icon.service';
 import { ciclos } from '../../enum/diccionarios';
 import { QuirofanoService } from './quirofano.service';
+import { AuthService } from '../../service/auth.service';
 
 const ESTADOS_INACTIVOS = new Set(['recepcion', 'archivo', 'descartado', 'egreso']);
 const TIPO_HOSPITALIZACION = 2;
@@ -33,8 +34,10 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
   private pacientesApi = inject(PacienteService);
   private router = inject(Router);
   private location = inject(Location);
+  private route = inject(ActivatedRoute);
   private iconService = inject(IconService);
   private cdr = inject(ChangeDetectorRef);
+  private auth = inject(AuthService);
 
   private destroy$ = new Subject<void>();
 
@@ -211,11 +214,49 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
   // ══════════════════════════════════════════════════════════
   // NAVEGACIÓN / ACCIONES
   // ══════════════════════════════════════════════════════════
-  nuevaIntervencion(): void { this.router.navigate(['/quirofano/nueva']); }
+  private getBasePath(): string {
+    const role = (this.auth.role() || localStorage.getItem('role') || '').toLowerCase();
+    if (role === 'enfermeria' || role === 'paramedic' || role === 'read_only') {
+      return '/enfermeria';
+    }
+    if (role === 'medico' || role === 'admin') {
+      const url = this.router.url;
+      if (url.includes('/clinica/')) {
+        return '/clinica';
+      }
+      return '/pacientesActivos';
+    }
+    const url = this.router.url;
+    if (url.includes('/enfermeria/')) return '/enfermeria';
+    if (url.includes('/clinica/')) return '/clinica';
+    return '/clinica';
+  }
 
-  irAResumen(): void { this.router.navigate(['/estadistica/quirofano-resumen']); }
+  nuevaIntervencion(): void { this.router.navigate([`${this.getBasePath()}/quirofano/nueva`]); }
 
-  editarIntervencion(id: number): void { this.router.navigate(['/quirofano/editar', id]); }
+  irAResumen(): void { 
+    const url = this.router.url;
+    if (url.includes('/enfermeria/')) {
+      this.router.navigate(['../quirofano/resumen'], { relativeTo: this.route });
+      return;
+    }
+    if (url.includes('/clinica/')) {
+      this.router.navigate(['../quirofano/resumen'], { relativeTo: this.route });
+      return;
+    }
+    if (url.includes('/estadistica/')) {
+      this.router.navigate(['resumen'], { relativeTo: this.route });
+      return;
+    }
+    const role = (this.auth.role() || localStorage.getItem('role') || '').toLowerCase();
+    if (role === 'enfermeria' || role === 'paramedic' || role === 'read_only') {
+      this.router.navigate(['/enfermeria/quirofano/resumen']);
+      return;
+    }
+    this.router.navigate(['/clinica/quirofano/resumen']);
+  }
+
+  editarIntervencion(id: number): void { this.router.navigate([`${this.getBasePath()}/quirofano/editar`, id]); }
 
   eliminarIntervencion(id: number): void {
     if (!confirm('¿Eliminar esta intervención quirúrgica?')) return;
@@ -226,7 +267,7 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
 
   registrarIntervencion(c: ConsultaOut): void {
     const expediente = c.expediente || c.paciente?.expediente || '';
-    this.router.navigate(['/quirofano/nueva'], {
+    this.router.navigate([`${this.getBasePath()}/quirofano/nueva`], {
       queryParams: { expediente, consulta_id: c.id ?? undefined }
     });
   }
@@ -238,7 +279,7 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
     this.pacientesApi.pacienteExpediente(expediente).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.buscandoExpediente = false;
-        this.router.navigate(['/quirofano/nueva'], { queryParams: { expediente } });
+        this.router.navigate([`${this.getBasePath()}/quirofano/nueva`], { queryParams: { expediente } });
       },
       error: () => {
         this.buscandoExpediente = false;

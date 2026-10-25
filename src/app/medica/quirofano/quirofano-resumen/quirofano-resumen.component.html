@@ -3,10 +3,6 @@
 <div class="resumen-container">
   <!-- HEADER -->
   <div class="encabezado">
-    <button type="button" class="btn-header" (click)="volver()">
-      <span [innerHTML]="icons.back" aria-hidden="true"></span>
-      Quirófano
-    </button>
     <h1 class="titulo">Resumen Quirúrgico</h1>
     <app-quirofano-excel-export [filtros]="paramsActuales()" />
   </div>
@@ -15,12 +11,22 @@
   <form class="panel-filtros" [formGroup]="filtros" (ngSubmit)="generar()">
     <fieldset class="campo">
       <label for="f-desde">Desde</label>
-      <input id="f-desde" type="date" class="input" formControlName="fecha_desde" />
+      <input
+        id="f-desde"
+        type="date"
+        class="input"
+        formControlName="fecha_desde"
+      />
     </fieldset>
 
     <fieldset class="campo">
       <label for="f-hasta">Hasta</label>
-      <input id="f-hasta" type="date" class="input" formControlName="fecha_hasta" />
+      <input
+        id="f-hasta"
+        type="date"
+        class="input"
+        formControlName="fecha_hasta"
+      />
     </fieldset>
 
     <fieldset class="campo">
@@ -50,28 +56,46 @@
       </label>
       <button type="submit" class="btn-primario" [disabled]="cargando()">
         <span [innerHTML]="icons.search" aria-hidden="true"></span>
-        {{ cargando() ? 'Generando…' : 'Generar' }}
+        {{ cargando() ? "Generando…" : "Generar" }}
       </button>
-      <button type="button" class="btn-secundario" (click)="limpiar()">Limpiar</button>
+      <button type="button" class="btn-secundario" (click)="limpiar()">
+        Limpiar
+      </button>
     </div>
 
     @if (filtros.value.usar_jornada) {
       <div class="jornada-inline">
         <fieldset class="campo">
           <label for="f-ap">Apertura</label>
-          <input id="f-ap" type="time" class="input" formControlName="hora_apertura" />
+          <input
+            id="f-ap"
+            type="time"
+            class="input"
+            formControlName="hora_apertura"
+          />
         </fieldset>
         <fieldset class="campo">
           <label for="f-ci">Cierre</label>
-          <input id="f-ci" type="time" class="input" formControlName="hora_cierre" />
+          <input
+            id="f-ci"
+            type="time"
+            class="input"
+            formControlName="hora_cierre"
+          />
         </fieldset>
         <fieldset class="campo">
           <label for="f-dias">Días abiertos</label>
-          <input id="f-dias" type="number" min="0" class="input" formControlName="dias_abiertos" />
+          <input
+            id="f-dias"
+            type="number"
+            min="0"
+            class="input"
+            formControlName="dias_abiertos"
+          />
         </fieldset>
         <p class="nota-jornada">
-          Con «Definir jornada» los KPIs de uso usan estos valores en lugar de los
-          horarios registrados en las intervenciones.
+          Con «Definir jornada» los KPIs de uso usan estos valores en lugar de
+          los horarios registrados en las intervenciones.
         </p>
       </div>
     }
@@ -84,7 +108,9 @@
 
   <!-- CARGANDO -->
   @if (cargando()) {
-    <div class="estado-carga"><span class="spinner"></span> Generando reporte…</div>
+    <div class="estado-carga">
+      <span class="spinner"></span> Generando reporte…
+    </div>
   }
 
   @if (!cargando() && reporte(); as rep) {
@@ -117,11 +143,15 @@
           <span class="tarjeta-etiqueta">Procedimientos</span>
         </article>
         <article class="tarjeta">
-          <span class="tarjeta-valor">{{ fmtHM(k.tiempo_promedio_intervencion_seg) }}</span>
+          <span class="tarjeta-valor">{{
+            fmtHM(k.tiempo_promedio_intervencion_seg)
+          }}</span>
           <span class="tarjeta-etiqueta">T. prom. intervención</span>
         </article>
         <article class="tarjeta">
-          <span class="tarjeta-valor">{{ fmtHM(k.tiempo_promedio_uso_quirofano_seg) }}</span>
+          <span class="tarjeta-valor">{{
+            fmtHM(k.tiempo_promedio_uso_quirofano_seg)
+          }}</span>
           <span class="tarjeta-etiqueta">T. prom. uso quirófano</span>
         </article>
         <article class="tarjeta">
@@ -132,7 +162,10 @@
           <span class="tarjeta-valor">{{ fmtPct(k.tasa_cancelacion) }}</span>
           <span class="tarjeta-etiqueta">Tasa cancelación</span>
           @if (k.tasa_cancelacion_con_reprogramadas !== k.tasa_cancelacion) {
-            <span class="tarjeta-nota" title="Incluye reprogramadas en el denominador">
+            <span
+              class="tarjeta-nota"
+              title="Incluye reprogramadas en el denominador"
+            >
               c/rep: {{ fmtPct(k.tasa_cancelacion_con_reprogramadas) }}
             </span>
           }
@@ -149,9 +182,14 @@
         }
         @for (b of barrasUso(); track b.etiqueta) {
           <div class="barra-fila">
-            <span class="barra-nombre" [title]="b.etiqueta">{{ b.etiqueta }}</span>
+            <span class="barra-nombre" [title]="b.etiqueta">{{
+              b.etiqueta
+            }}</span>
             <div class="barra-pista">
-              <div class="barra-relleno" [style.width.%]="b.fraccion * 100"></div>
+              <div
+                class="barra-relleno"
+                [style.width.%]="b.fraccion * 100"
+              ></div>
             </div>
             <span class="barra-valor">{{ b.texto }}</span>
           </div>
@@ -167,14 +205,20 @@
           <div class="barra-apilada">
             @for (s of segmentosEstado(); track s.etiqueta) {
               @if (s.cantidad > 0) {
-                <div [class]="'segmento ' + s.clase" [style.width.%]="s.fraccion * 100"
-                     [title]="s.etiqueta + ': ' + s.cantidad"></div>
+                <div
+                  [class]="'segmento ' + s.clase"
+                  [style.width.%]="s.fraccion * 100"
+                  [title]="s.etiqueta + ': ' + s.cantidad"
+                ></div>
               }
             }
           </div>
           <ul class="leyenda">
             @for (s of segmentosEstado(); track s.etiqueta) {
-              <li><span [class]="'punto ' + s.clase"></span>{{ s.etiqueta }}: {{ s.cantidad }}</li>
+              <li>
+                <span [class]="'punto ' + s.clase"></span>{{ s.etiqueta }}:
+                {{ s.cantidad }}
+              </li>
             }
           </ul>
         }
@@ -205,16 +249,23 @@
             </tr>
           </thead>
           <tbody>
-            @for (p of rep.por_quirofano; track p.kpi.quirofano_numero_id ?? 'sin') {
+            @for (
+              p of rep.por_quirofano;
+              track p.kpi.quirofano_numero_id ?? "sin"
+            ) {
               <tr>
                 <td>
                   <strong>{{ p.kpi.nombre }}</strong>
                   @if (p.kpi.es_fallback) {
-                    <span class="tag-fallback" title="Jornada tomada de la configuración">config</span>
+                    <span
+                      class="tag-fallback"
+                      title="Jornada tomada de la configuración"
+                      >config</span
+                    >
                   }
                 </td>
-                <td>{{ p.kpi.hora_apertura ?? '—' }}</td>
-                <td>{{ p.kpi.hora_cierre ?? '—' }}</td>
+                <td>{{ p.kpi.hora_apertura ?? "—" }}</td>
+                <td>{{ p.kpi.hora_cierre ?? "—" }}</td>
                 <td>{{ p.kpi.dias_abiertos }}</td>
                 <td>{{ p.kpi.total_intervenciones }}</td>
                 <td>{{ p.kpi.finalizadas }}</td>
@@ -227,7 +278,11 @@
               </tr>
             }
             @if (rep.por_quirofano.length === 0) {
-              <tr><td colspan="12" class="vacio">Sin quirófanos para el filtro aplicado.</td></tr>
+              <tr>
+                <td colspan="12" class="vacio">
+                  Sin quirófanos para el filtro aplicado.
+                </td>
+              </tr>
             }
           </tbody>
         </table>
@@ -253,7 +308,11 @@
             </tr>
           </thead>
           <tbody>
-            @for (pr of rep.procedimientos; track pr.procedimiento; let i = $index) {
+            @for (
+              pr of rep.procedimientos;
+              track pr.procedimiento;
+              let i = $index
+            ) {
               <tr>
                 <td>{{ i + 1 }}</td>
                 <td>{{ pr.procedimiento }}</td>
@@ -264,7 +323,11 @@
               </tr>
             }
             @if (rep.procedimientos.length === 0) {
-              <tr><td colspan="6" class="vacio">Sin procedimientos en el período.</td></tr>
+              <tr>
+                <td colspan="6" class="vacio">
+                  Sin procedimientos en el período.
+                </td>
+              </tr>
             }
           </tbody>
         </table>
@@ -276,34 +339,77 @@
       <div class="bloque-cabecera">
         <h2>Configuración de jornada</h2>
         <button type="button" class="btn-secundario" (click)="toggleConfig()">
-          {{ configAbierta() ? 'Ocultar' : 'Editar' }}
+          {{ configAbierta() ? "Ocultar" : "Editar" }}
         </button>
       </div>
       @if (configAbierta()) {
         <p class="nota">
-          Valores por defecto de apertura, cierre y días hábiles por quirófano. Se
-          usan solo cuando el período no aporta horarios ni se define una jornada manual.
+          Valores por defecto de apertura, cierre y días hábiles por quirófano.
+          Se usan solo cuando el período no aporta horarios ni se define una
+          jornada manual.
         </p>
         <div class="tabla-scroll">
           <table class="tabla">
             <thead>
-              <tr><th>Quirófano</th><th>Apertura</th><th>Cierre</th><th>Días hábiles</th><th></th></tr>
+              <tr>
+                <th>Quirófano</th>
+                <th>Apertura</th>
+                <th>Cierre</th>
+                <th>Días hábiles</th>
+                <th></th>
+              </tr>
             </thead>
             <tbody>
               @for (c of configPeriodo(); track c.quirofano_numero_id) {
                 <tr>
-                  <td>{{ c.quirofano_numero_nombre ?? ('Quirófano #' + c.quirofano_numero_id) }}</td>
                   <td>
-                    <input type="time" class="input mini" [value]="c.hora_apertura"
-                           (change)="onCampoConfig(c.quirofano_numero_id, 'hora_apertura', $event)" />
+                    {{
+                      c.quirofano_numero_nombre ??
+                        "Quirófano #" + c.quirofano_numero_id
+                    }}
                   </td>
                   <td>
-                    <input type="time" class="input mini" [value]="c.hora_cierre"
-                           (change)="onCampoConfig(c.quirofano_numero_id, 'hora_cierre', $event)" />
+                    <input
+                      type="time"
+                      class="input mini"
+                      [value]="c.hora_apertura"
+                      (change)="
+                        onCampoConfig(
+                          c.quirofano_numero_id,
+                          'hora_apertura',
+                          $event
+                        )
+                      "
+                    />
                   </td>
                   <td>
-                    <input type="number" min="0" class="input mini" [value]="c.dias_habiles"
-                           (change)="onCampoConfig(c.quirofano_numero_id, 'dias_habiles', $event)" />
+                    <input
+                      type="time"
+                      class="input mini"
+                      [value]="c.hora_cierre"
+                      (change)="
+                        onCampoConfig(
+                          c.quirofano_numero_id,
+                          'hora_cierre',
+                          $event
+                        )
+                      "
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min="0"
+                      class="input mini"
+                      [value]="c.dias_habiles"
+                      (change)="
+                        onCampoConfig(
+                          c.quirofano_numero_id,
+                          'dias_habiles',
+                          $event
+                        )
+                      "
+                    />
                   </td>
                   <td>
                     @if (guardandoConfig() === c.quirofano_numero_id) {
@@ -322,13 +428,23 @@
     <section class="bloque">
       <div class="bloque-cabecera">
         <h2>Detalle de intervenciones</h2>
-        <span class="badge">{{ detalleActual()?.intervenciones?.length ?? 0 }}</span>
+        <span class="badge">{{
+          detalleActual()?.intervenciones?.length ?? 0
+        }}</span>
       </div>
 
       @if (rep.por_quirofano.length > 0) {
         <div class="tabs">
-          @for (p of rep.por_quirofano; track p.kpi.quirofano_numero_id ?? 'sin'; let i = $index) {
-            <button type="button" [class.on]="detalleIndex() === i" (click)="seleccionarDetalle(i)">
+          @for (
+            p of rep.por_quirofano;
+            track p.kpi.quirofano_numero_id ?? "sin";
+            let i = $index
+          ) {
+            <button
+              type="button"
+              [class.on]="detalleIndex() === i"
+              (click)="seleccionarDetalle(i)"
+            >
               {{ p.kpi.nombre }}
             </button>
           }
@@ -366,27 +482,37 @@
                 <tr>
                   <td>{{ f.no }}</td>
                   <td>{{ f.fecha }}</td>
-                  <td>{{ f.paciente_nombre ?? '—' }}</td>
-                  <td>{{ f.rango_medico ?? '—' }}</td>
-                  <td>{{ f.especialidad ?? '—' }}</td>
-                  <td>{{ f.medico ?? '—' }}</td>
-                  <td>{{ f.procedencia ?? '—' }}</td>
-                  <td>{{ f.formato ?? '—' }}</td>
-                  <td>{{ f.procedimientos ?? '—' }}</td>
-                  <td>{{ f.area_cuerpo ?? '—' }}</td>
-                  <td>{{ f.hora_inicio_anestesia ?? '—' }}</td>
-                  <td>{{ f.hora_inicio_intervencion ?? '—' }}</td>
-                  <td>{{ f.hora_finaliza_intervencion ?? '—' }}</td>
-                  <td>{{ f.hora_finaliza_limpieza ?? '—' }}</td>
+                  <td>{{ f.paciente_nombre ?? "—" }}</td>
+                  <td>{{ f.rango_medico ?? "—" }}</td>
+                  <td>{{ f.especialidad ?? "—" }}</td>
+                  <td>{{ f.medico ?? "—" }}</td>
+                  <td>{{ f.procedencia ?? "—" }}</td>
+                  <td>{{ f.formato ?? "—" }}</td>
+                  <td>{{ f.procedimientos ?? "—" }}</td>
+                  <td>{{ f.area_cuerpo ?? "—" }}</td>
+                  <td>{{ f.hora_inicio_anestesia ?? "—" }}</td>
+                  <td>{{ f.hora_inicio_intervencion ?? "—" }}</td>
+                  <td>{{ f.hora_finaliza_intervencion ?? "—" }}</td>
+                  <td>{{ f.hora_finaliza_limpieza ?? "—" }}</td>
                   <td>{{ fmtHM(f.tiempo_intervencion_seg) }}</td>
                   <td>{{ fmtHM(f.tiempo_uso_quirofano_seg) }}</td>
                   <td>{{ fmtHM(f.tiempo_limpieza_seg) }}</td>
-                  <td><span [class]="'chip ' + claseEstado(f.estado)">{{ f.estado ?? '—' }}</span></td>
-                  <td class="obs" [title]="f.observaciones ?? ''">{{ f.observaciones ?? '—' }}</td>
+                  <td>
+                    <span [class]="'chip ' + claseEstado(f.estado)">{{
+                      f.estado ?? "—"
+                    }}</span>
+                  </td>
+                  <td class="obs" [title]="f.observaciones ?? ''">
+                    {{ f.observaciones ?? "—" }}
+                  </td>
                 </tr>
               }
               @if (det.intervenciones.length === 0) {
-                <tr><td colspan="19" class="vacio">Sin intervenciones registradas.</td></tr>
+                <tr>
+                  <td colspan="19" class="vacio">
+                    Sin intervenciones registradas.
+                  </td>
+                </tr>
               }
             </tbody>
           </table>
@@ -396,6 +522,8 @@
   }
 
   @if (!cargando() && !reporte() && !error()) {
-    <div class="estado-vacio">Elige un período y pulsa «Generar» para ver el resumen.</div>
+    <div class="estado-vacio">
+      Elige un período y pulsa «Generar» para ver el resumen.
+    </div>
   }
 </div>

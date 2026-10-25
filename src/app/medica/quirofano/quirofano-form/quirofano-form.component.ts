@@ -4,6 +4,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../../service/auth.service';
 
 import {
   FormatoProcedimiento,
@@ -42,6 +43,7 @@ export class QuirofanoFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private location = inject(Location);
+  private auth = inject(AuthService);
 
   intervencionId: number | null = null;
   consultaId: number | null = null;
@@ -391,7 +393,7 @@ export class QuirofanoFormComponent implements OnInit {
     if (this.enEdicion && this.intervencionId) {
       const payload = this.limpiarPayload(base) as IntervencionUpdate;
       this.api.actualizarIntervencion(this.intervencionId, payload).subscribe({
-        next: () => this.router.navigate(['/quirofano']),
+        next: () => this.router.navigate([this.getBasePath() + '/quirofano']),
         error: () => { this.guardando = false; }
       });
       return;
@@ -404,12 +406,33 @@ export class QuirofanoFormComponent implements OnInit {
     }) as IntervencionCreate;
 
     this.api.crearIntervencion(payload).subscribe({
-      next: () => this.router.navigate(['/quirofano']),
+      next: () => this.router.navigate([this.getBasePath() + '/quirofano']),
       error: () => { this.guardando = false; }
     });
   }
 
-  volver(): void { this.location.back(); }
+  private getBasePath(): string {
+    const role = (this.auth.role() || localStorage.getItem('role') || '').toLowerCase();
+    if (role === 'enfermeria' || role === 'paramedic' || role === 'read_only') {
+      return '/enfermeria';
+    }
+    if (role === 'medico' || role === 'admin') {
+      const url = this.router.url;
+      if (url.includes('/clinica/')) {
+        return '/clinica';
+      }
+      return '/pacientesActivos';
+    }
+    const url = this.router.url;
+    if (url.includes('/enfermeria/')) return '/enfermeria';
+    if (url.includes('/clinica/')) return '/clinica';
+    return '/clinica';
+  }
+
+  volver(): void {
+    const base = this.getBasePath();
+    this.router.navigate([base + '/quirofano']);
+  }
 
   onAreaCuerpoInput(event: Event): void {
     const texto = (event.target as HTMLInputElement).value;

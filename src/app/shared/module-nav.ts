@@ -25,6 +25,7 @@ export const MEDICA_NAV: ModuleNavConfig = {
     { nombre: 'Notas médicas', descripcion: 'Selecciona una consulta y registra la evolución clínica', ruta: 'notas-medicas', icon: 'notaMedica' },
     { nombre: 'Historia clínica', descripcion: 'Consulta ciclos, antecedentes y notas del expediente', ruta: 'historia-clinica', icon: 'historiaMedicaIcon' },
     { nombre: 'Quirófano', descripcion: 'Intervenciones quirúrgicas y pacientes hospitalizados', ruta: 'quirofano', icon: 'ciruIcon' },
+    { nombre: 'Resumen Quirófano', descripcion: 'Estadísticas del área quirúrgica', ruta: 'quirofano-resumen', icon: 'ciruIcon' },
   ],
 };
 
@@ -59,6 +60,8 @@ export const NUTRICION_NAV: ModuleNavConfig = {
   items: [
     { nombre: 'Pacientes', descripcion: 'Pacientes y consultas', ruta: 'consultar', icon: 'persons2' },
     { nombre: 'COEX', descripcion: 'Consulta Externa de Nutrición', ruta: 'coex', icon: 'consultaMedica' },
+    { nombre: 'Notas médicas', descripcion: 'Selecciona una consulta y registra la evolución clínica', ruta: 'notas-medicas', icon: 'notaMedica' },
+    { nombre: 'Historia clínica', descripcion: 'Consulta ciclos, antecedentes y notas del expediente', ruta: 'historia-clinica', icon: 'historiaMedicaIcon' },
     { nombre: 'Citas', descripcion: 'Agendar y consultar citas', ruta: 'citas', icon: 'calendarIcon' },
     { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: 'reportes', icon: 'archivoIcon' },
   ],
@@ -71,6 +74,8 @@ export const ODONTOLOGIA_NAV: ModuleNavConfig = {
   items: [
     { nombre: 'Pacientes', descripcion: 'Pacientes y consultas', ruta: 'consultar', icon: 'persons2' },
     { nombre: 'COEX', descripcion: 'Consulta Externa de Odontología', ruta: 'coex', icon: 'consultaMedica' },
+    { nombre: 'Notas médicas', descripcion: 'Selecciona una consulta y registra la evolución clínica', ruta: 'notas-medicas', icon: 'notaMedica' },
+    { nombre: 'Historia clínica', descripcion: 'Consulta ciclos, antecedentes y notas del expediente', ruta: 'historia-clinica', icon: 'historiaMedicaIcon' },
     { nombre: 'Citas', descripcion: 'Agendar y consultar citas', ruta: 'citas', icon: 'calendarIcon' },
     { nombre: 'Reportes', descripcion: 'Reportes y estadísticas detalladas', ruta: 'reportes', icon: 'archivoIcon' },
   ],
@@ -137,5 +142,58 @@ export const UISAU_NAV: ModuleNavConfig = {
     { nombre: 'Lista', descripcion: 'Pacientes por servicio: COEX, hospitalización y emergencia', ruta: 'lista', icon: 'ambulanceIcon' },
     { nombre: 'Nota', descripcion: 'Registrar nota y consultar la historia UISAU', ruta: 'nota', icon: 'documentoIcon' },
     { nombre: 'Estadísticas', descripcion: 'Reportes y estadísticas detalladas', ruta: 'reportes', icon: 'archivoIcon' },
+  ],
+};
+
+export const ENFERMERIA_NAV: ModuleNavConfig = {
+  title: 'Enfermería',
+  subtitle: 'Gestión de paramédica',
+  accent: '#818cf8',
+  items: [
+    {
+      nombre: 'Pacientes activos', descripcion: 'Listado por especialidad; registra nota o abre historia', ruta: 'pacientes-activos', icon: 'patientIcon'
+    },
+    {
+      nombre: 'Notas médicas',
+      descripcion: 'Selecciona una consulta y registra la evolución clínica',
+      ruta: 'notas-medicas',
+      icon: 'notaMedica',
+    },
+    {
+      nombre: 'Historia clínica',
+      descripcion: 'Consulta ciclos, antecedentes y notas del expediente',
+      ruta: 'historia-clinica',
+      icon: 'historiaMedicaIcon',
+    },
+    {
+      nombre: 'Quirófano',
+      descripcion: 'Intervenciones quirúrgicas y pacientes hospitalizados',
+      ruta: 'quirofano',
+      icon: 'ciruIcon',
+    },
+    {
+      nombre: 'Resumen Quirófano',
+      descripcion: 'Estadísticas del área quirúrgica',
+      ruta: 'quirofano-resumen',
+      icon: 'ciruIcon',
+    },
+    {
+      nombre: 'Censo de Camas',
+      descripcion: 'Gestión y registro del censo diario de camas',
+      ruta: 'censo-camas',
+      icon: 'censoCamasIcon',
+    },
+    {
+      nombre: 'Medicamentos',
+      descripcion: 'Gestión de inventario y administración de medicamentos',
+      ruta: 'medicamentos',
+      icon: 'medicinaIcon',
+    },
+    {
+      nombre: 'Reportes',
+      descripcion: 'Reportes y estadísticas detalladas',
+      ruta: 'reportes',
+      icon: 'archivoIcon',
+    },
   ],
 };

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, input, output, OnDestroy, signal, inject, effect } from '@angular/core';
 import {
   CicloConsulta,
   DatoMedico,
@@ -67,6 +67,9 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
   odontologiaActiva = signal(false);
   error = signal<string | null>(null);
   mensaje = signal<{ texto: string; tipo: 'success' | 'error' } | null>(null);
+  readonly id = input<number | null>(null);
+  readonly cerrar = output<void>();
+
 
   odontologia: NotaOdontologica = {
     motivo_consulta: '',
@@ -295,10 +298,28 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
   }
 
   /* ── Lifecycle ─────────────────────────────────────────── */
-  constructor() { }
+  constructor() {
+    // Soportar uso en modal con input
+    effect(() => {
+      const inputId = this.id();
+      if (inputId && !this.consultaId) {
+        this.cargarDatosDesdeInput(inputId);
+        this.gruposAntecedentes.forEach(g => {
+          this.antecedentesAbiertos[g.key] = false;
+        });
+      }
+    });
+  }
 
   ngOnInit(): void {
-    this.cargarDatos();
+    const inputId = this.id();
+    const queryId = this.route.snapshot.queryParamMap.get('consultaId') || this.route.snapshot.queryParamMap.get('id');
+    const id = inputId ? Number(inputId) : (queryId ? Number(queryId) : null);
+    if (id) {
+      this.cargarDatosDesdeInput(id);
+    } else {
+      this.cargarDatos();
+    }
     this.gruposAntecedentes.forEach(g => {
       this.antecedentesAbiertos[g.key] = false;
     });
@@ -311,6 +332,13 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
 
   cargarDatos(): void {
     const id = Number(this.route.snapshot.paramMap.get('consultaId'));
+    if (!id) {
+      return;
+    }
+    this.cargarDatosDesdeInput(id);
+  }
+
+  cargarDatosDesdeInput(id: number): void {
     if (!id) {
       return;
     }
@@ -329,7 +357,7 @@ export class NotaMedicaComponent implements OnInit, OnDestroy {
       // Una nota creada es inmutable: NO se precarga. Se prepara una nota NUEVA,
       // con continuidad de especialidad/servicio y el número siguiente.
       const ultimo = ciclos[ciclos.length - 1];
-    this.ciclo.set({
+      this.ciclo.set({
         consulta_id: id,
         numero: (ultimo?.numero ?? 0) + 1,
         activo: true,

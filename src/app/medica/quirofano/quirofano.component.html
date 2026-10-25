@@ -6,21 +6,8 @@
     class="botones justify-content-between"
     [ngClass]="{ 'd-none': filtrar }"
   >
-    <button type="button" (click)="volver()">
-      <span [innerHTML]="icons['menu']"></span>
-      Menú
-    </button>
     <h1 class="text-white">Quirófano</h1>
-    <div class="d-flex gap-1">
-      <button type="button" (click)="irAResumen()">
-        <span [innerHTML]="icons['tabla']"></span>
-        Resumen
-      </button>
-      <button type="button" (click)="toggleFiltrar()">
-        <span [innerHTML]="icons['find']"></span>
-        Buscar
-      </button>
-    </div>
+    <div class="d-flex gap-1"></div>
   </div>
 
   <!-- FILTROS -->
@@ -45,7 +32,7 @@
             [disabled]="buscandoExpediente || !filtroExpediente"
           >
             <span [innerHTML]="icons['search']"></span>
-            {{ buscandoExpediente ? 'Buscando...' : 'Nueva intervención' }}
+            {{ buscandoExpediente ? "Buscando..." : "Nueva intervención" }}
           </button>
         </div>
       </div>
@@ -78,7 +65,11 @@
         />
       </fieldset>
       <div class="d-flex gap-1 flex-wrap">
-        <button class="button-filtros" type="button" (click)="buscarIntervenciones()">
+        <button
+          class="button-filtros"
+          type="button"
+          (click)="buscarIntervenciones()"
+        >
           <span [innerHTML]="icons['search']"></span> Buscar
         </button>
         <button class="button-filtros" type="button" (click)="limpiarFiltros()">
@@ -95,19 +86,36 @@
 
   <!-- VISTA -->
   <div class="vista-tabs">
-    <button type="button" [class.on]="vista === 'ambos'" (click)="setVista('ambos')">
+    <button
+      type="button"
+      [class.on]="vista === 'ambos'"
+      (click)="setVista('ambos')"
+    >
       Ambos
     </button>
-    <button type="button" [class.on]="vista === 'hospitalizacion'" (click)="setVista('hospitalizacion')">
+    <button
+      type="button"
+      [class.on]="vista === 'hospitalizacion'"
+      (click)="setVista('hospitalizacion')"
+    >
       Hospitalización
     </button>
-    <button type="button" [class.on]="vista === 'intervenciones'" (click)="setVista('intervenciones')">
-      Intervenciones
+    <button
+      type="button"
+      [class.on]="vista === 'intervenciones'"
+      (click)="setVista('intervenciones')"
+    >
+      Intervenciones Realizadas
+    </button>
+
+    <button type="button" (click)="toggleFiltrar()">
+      <span [innerHTML]="icons['find']"></span>
+      Buscar
     </button>
   </div>
 
   <!-- HOSPITALIZACIÓN -->
-  @if (vista === 'ambos' || vista === 'hospitalizacion') {
+  @if (vista === "ambos" || vista === "hospitalizacion") {
     <section class="sec-block">
       <div class="sec-head">
         <h2 class="sec-title">Pacientes en Hospitalización</h2>
@@ -138,26 +146,37 @@
                   <td>{{ experienciaPaciente(c) }}</td>
                   <td>
                     <div class="cell-paciente">
-                      <span class="nombre-linea" [class.con-intervencion]="tieneIntervencion(c)">
+                      <span
+                        class="nombre-linea"
+                        [class.con-intervencion]="tieneIntervencion(c)"
+                      >
                         <strong>{{ nombrePaciente(c) }}</strong>
                         @if (tieneIntervencion(c)) {
-                          <span class="mark-intervenido"
-                                [innerHTML]="icons['ciru']"
-                                title="Ya tiene intervención quirúrgica"></span>
+                          <span
+                            class="mark-intervenido"
+                            [innerHTML]="icons['ciru']"
+                            title="Ya tiene intervención quirúrgica"
+                          ></span>
                         }
                       </span>
                     </div>
                   </td>
-                  <td>{{ c.especialidad || '—' }}</td>
-                  <td>{{ c.servicio || '—' }}</td>
-                  <td>{{ c.fecha_consulta || '—' }}</td>
+                  <td>{{ c.especialidad || "—" }}</td>
+                  <td>{{ c.servicio || "—" }}</td>
+                  <td>{{ c.fecha_consulta || "—" }}</td>
                   <td>
-                    <span class="qro-chip">{{ ultimoEstadoLabel(c.ultimo_estado) }}</span>
+                    <span class="qro-chip">{{
+                      ultimoEstadoLabel(c.ultimo_estado)
+                    }}</span>
                   </td>
                   <td>
                     <div class="d-flex gap-1">
-                      <button class="btn-sm accent" (click)="registrarIntervencion(c)">
-                        <span [innerHTML]="icons['addPerson']"></span> Intervenir
+                      <button
+                        class="btn-sm accent"
+                        (click)="registrarIntervencion(c)"
+                      >
+                        <span [innerHTML]="icons['addPerson']"></span>
+                        Intervenir
                       </button>
                     </div>
                   </td>
@@ -177,16 +196,28 @@
 
       @if (consultasTotalPaginas > 1) {
         <div class="paginador">
-          <button [disabled]="!hayPaginaAnteriorConsultas" (click)="cambiarPaginaConsulta(-1)">◀</button>
-          <span class="pag-info">{{ consultasPagina }} / {{ consultasTotalPaginas }}</span>
-          <button [disabled]="!hayPaginaSiguienteConsultas" (click)="cambiarPaginaConsulta(1)">▶</button>
+          <button
+            [disabled]="!hayPaginaAnteriorConsultas"
+            (click)="cambiarPaginaConsulta(-1)"
+          >
+            ◀
+          </button>
+          <span class="pag-info"
+            >{{ consultasPagina }} / {{ consultasTotalPaginas }}</span
+          >
+          <button
+            [disabled]="!hayPaginaSiguienteConsultas"
+            (click)="cambiarPaginaConsulta(1)"
+          >
+            ▶
+          </button>
         </div>
       }
     </section>
   }
 
   <!-- INTERVENCIONES -->
-  @if (vista === 'ambos' || vista === 'intervenciones') {
+  @if (vista === "ambos" || vista === "intervenciones") {
     <section class="sec-block">
       <div class="sec-head">
         <h2 class="sec-title">Historial de Intervenciones</h2>
@@ -217,12 +248,12 @@
             <tbody>
               @for (i of intervenciones; track i.intervencion_id) {
                 <tr>
-                  <td>{{ i.fecha || '—' }}</td>
-                  <td>{{ i.hora_inicio_intervencion || '—' }}</td>
-                  <td>{{ i.quirofano_numero_nombre || '—' }}</td>
+                  <td>{{ i.fecha || "—" }}</td>
+                  <td>{{ i.hora_inicio_intervencion || "—" }}</td>
+                  <td>{{ i.quirofano_numero_nombre || "—" }}</td>
                   <td>
                     <div class="cell-paciente">
-                      <strong>{{ i.paciente_nombre || '—' }}</strong>
+                      <strong>{{ i.paciente_nombre || "—" }}</strong>
                       @if (i.expediente) {
                         <small>{{ i.expediente }}</small>
                       }
@@ -230,24 +261,34 @@
                   </td>
                   <td>
                     <div class="cell-paciente">
-                      <strong>{{ i.procedimiento_principal || '—' }}</strong>
+                      <strong>{{ i.procedimiento_principal || "—" }}</strong>
                       @if (i.area_cuerpo_intervenida) {
                         <small>Área: {{ i.area_cuerpo_intervenida }}</small>
                       }
                     </div>
                   </td>
-                  <td>{{ i.especialidad_nombre || '—' }}</td>
+                  <td>{{ i.especialidad_nombre || "—" }}</td>
                   <td>
-                    <span class="qro-chip">{{ i.estado_cirugia_nombre || '—' }}</span>
+                    <span class="qro-chip">{{
+                      i.estado_cirugia_nombre || "—"
+                    }}</span>
                   </td>
-                  <td>{{ i.formato_procedimiento_nombre || '—' }}</td>
-                  <td>{{ i.personal_atencion_nombre || '—' }}</td>
+                  <td>{{ i.formato_procedimiento_nombre || "—" }}</td>
+                  <td>{{ i.personal_atencion_nombre || "—" }}</td>
                   <td>
                     <div class="d-flex gap-1">
-                      <button class="btn-sm" (click)="editarIntervencion(i.intervencion_id)" title="Editar">
+                      <button
+                        class="btn-sm"
+                        (click)="editarIntervencion(i.intervencion_id)"
+                        title="Editar"
+                      >
                         <span [innerHTML]="icons['edit']"></span>
                       </button>
-                      <button class="btn-sm danger" (click)="eliminarIntervencion(i.intervencion_id)" title="Eliminar">
+                      <button
+                        class="btn-sm danger"
+                        (click)="eliminarIntervencion(i.intervencion_id)"
+                        title="Eliminar"
+                      >
                         <span [innerHTML]="icons['delete']"></span>
                       </button>
                     </div>
@@ -268,9 +309,19 @@
 
       @if (intTotalPaginas > 1) {
         <div class="paginador">
-          <button [disabled]="!intHayPaginaAnterior" (click)="cambiarPaginaIntervencion(-1)">◀</button>
+          <button
+            [disabled]="!intHayPaginaAnterior"
+            (click)="cambiarPaginaIntervencion(-1)"
+          >
+            ◀
+          </button>
           <span class="pag-info">{{ intPagina }} / {{ intTotalPaginas }}</span>
-          <button [disabled]="!intHayPaginaSiguiente" (click)="cambiarPaginaIntervencion(1)">▶</button>
+          <button
+            [disabled]="!intHayPaginaSiguiente"
+            (click)="cambiarPaginaIntervencion(1)"
+          >
+            ▶
+          </button>
         </div>
       }
     </section>

@@ -190,7 +190,8 @@ export class OfflineDatabaseService extends Dexie {
 
   /** Guarda una consulta en la tabla de consultados (para offline + límite 500). */
   async guardarConsultaConsultada(consulta: ConsultaOut): Promise<void> {
-    await this.consultas_consultados.add(consulta);
+    if (consulta?.id == null) return;
+    await this.consultas_consultados.put(consulta);
     // Mantener solo los últimos 500
     const count = await this.consultas_consultados.count();
     if (count > 500) {

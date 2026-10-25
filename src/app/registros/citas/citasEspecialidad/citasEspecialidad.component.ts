@@ -192,7 +192,12 @@ export class CitasEspecialidadComponent implements OnInit, OnDestroy {
   }
 
   editarCita(id: number): void {
-    this.router.navigate(['/reagendar/cita', id]);
+    // Reagenda dentro del módulo actual (nutrición, odontología, médica, etc.).
+    // `relativeTo` resuelve la ruta hija del módulo donde esté montado el componente;
+    // si el módulo no la expone, se usa la ruta de nivel superior como respaldo.
+    this.router
+      .navigate(['../reagendar/cita', id], { relativeTo: this.route })
+      .catch(() => this.router.navigate(['/reagendar/cita', id]));
   }
 
   // ======= UTILIDADES =======

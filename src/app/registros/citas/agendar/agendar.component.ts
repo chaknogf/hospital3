@@ -1,6 +1,6 @@
 import { ConteoCitas } from '../../../interface/citas';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject, signal, OnChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, OnChanges, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CitaService } from '../cita.service';
 import { PacienteService } from '../../patient/paciente.service';
@@ -50,6 +50,8 @@ export class AgendarComponent implements OnInit, OnDestroy {
   form: FormGroup;
   private destroy$ = new Subject<void>();
   especialidadSeleccionada: string | null = null;
+  readonly id = input<number | null>(null);
+  readonly cerrar = output<void>();
 
   // Personal de atención disponible
   personal: PersonalAtencionOut[] = [];
@@ -103,13 +105,21 @@ export class AgendarComponent implements OnInit, OnDestroy {
     this.cargarPersonalAtencion();
     this.cargarDiasInhabiles();
 
-    const pacienteId = this.route.snapshot.paramMap.get('pacienteId');
-    const citaId = this.route.snapshot.paramMap.get('citaId');
+    const inputId = this.id();
+    const queryPacienteId = this.route.snapshot.queryParamMap.get('pacienteId');
+    if (inputId) {
+      this.buscarPacientePorId(Number(inputId));
+    } else if (queryPacienteId) {
+      this.buscarPacientePorId(Number(queryPacienteId));
+    } else {
+      const pacienteId = this.route.snapshot.paramMap.get('pacienteId');
+      const citaId = this.route.snapshot.paramMap.get('citaId');
 
-    if (pacienteId) {
-      this.buscarPacientePorId(Number(pacienteId));
-    } else if (citaId) {
-      this.cargarCitaParaEdicion(Number(citaId));
+      if (pacienteId) {
+        this.buscarPacientePorId(Number(pacienteId));
+      } else if (citaId) {
+        this.cargarCitaParaEdicion(Number(citaId));
+      }
     }
 
     this.form.get('especialidad')?.valueChanges
