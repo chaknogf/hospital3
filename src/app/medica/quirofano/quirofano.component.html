@@ -37,14 +37,62 @@
         </div>
       </div>
       <fieldset class="fieldset-filtros">
-        <label class="label-filtros">Intervenciones — expediente</label>
+        <label class="label-filtros">Expediente</label>
         <input
           type="text"
           class="input-filtros"
           [(ngModel)]="filtroInt.expediente"
           name="filtro_int_expediente"
-          placeholder="Filtrar historial por expediente"
+          placeholder="Filtrar por expediente"
+          (input)="onFiltroIntervencionChange()"
         />
+      </fieldset>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Documento / Hoja de emergencia</label>
+        <input
+          type="text"
+          class="input-filtros"
+          [(ngModel)]="filtroInt.documento"
+          name="filtro_int_documento"
+          placeholder="Filtrar por documento"
+          (input)="onFiltroIntervencionChange()"
+        />
+      </fieldset>
+      <fieldset class="fieldset-filtros">
+        <label class="label-filtros">Nombre completo</label>
+        <input
+          type="text"
+          class="input-filtros"
+          [(ngModel)]="filtroInt.nombre"
+          name="filtro_int_nombre"
+          placeholder="Filtrar por nombre del paciente"
+          (input)="onFiltroIntervencionChange()"
+        />
+      </fieldset>
+      <fieldset class="fieldset-filtros" style="width: 100%">
+        <label class="label-filtros">Especialidad</label>
+        <div class="d-flex gap-1 flex-wrap">
+          <button
+            type="button"
+            class="btn-sm"
+            [class.accent]="especialidadFiltroSeleccionada === null"
+            (click)="filtrarPorEspecialidad(null)"
+            style="border-radius: 6px; padding: 6px 12px"
+          >
+            Todas
+          </button>
+          @for (esp of especialidadesFiltro; track esp.id) {
+            <button
+              type="button"
+              class="btn-sm"
+              [class.accent]="especialidadFiltroSeleccionada === esp.id"
+              (click)="filtrarPorEspecialidad(esp.id)"
+              style="border-radius: 6px; padding: 6px 12px; text-transform: uppercase"
+            >
+              {{ esp.nombre }}
+            </button>
+          }
+        </div>
       </fieldset>
       <fieldset class="fieldset-filtros">
         <label class="label-filtros">Desde</label>
@@ -53,6 +101,7 @@
           class="input-filtros"
           [(ngModel)]="filtroInt.fecha_desde"
           name="fecha_desde"
+          (change)="onFiltroIntervencionChange()"
         />
       </fieldset>
       <fieldset class="fieldset-filtros">
@@ -62,6 +111,7 @@
           class="input-filtros"
           [(ngModel)]="filtroInt.fecha_hasta"
           name="fecha_hasta"
+          (change)="onFiltroIntervencionChange()"
         />
       </fieldset>
       <div class="d-flex gap-1 flex-wrap">

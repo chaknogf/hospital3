@@ -3,12 +3,13 @@ import { IconService } from './../../../service/icon.service';
 import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';;
+import { ActivatedRoute, Router } from '@angular/router';
 import { CategoriaEdadItem, ProceMedico } from '../../../interface/procedimientos';
 import { Especialidad } from '../../../interface/quirofano.interface';
 import { EspecialidadesService } from '../../../service/especialidades.service';
 import { StdService } from '../../std.service';
 import { DatosExtraPipe } from '../../../pipes/datos-extra.pipe';
+import { ciruIcon } from '@shared/icons/svg-icon';
 
 @Component({
   selector: 'app-procedimientosmenores',
@@ -29,6 +30,7 @@ export class ProcedimientosmenoresComponent implements OnInit {
   private api = inject(StdService);
   private especialidadesApi = inject(EspecialidadesService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private iconService = inject(IconService);
 
   procedimientos: ProceMedico[] = [];
@@ -86,7 +88,8 @@ export class ProcedimientosmenoresComponent implements OnInit {
       menu: this.iconService.getIcon('menuIcon'),
       arrowDown: this.iconService.getIcon('arrowDown'),
       skipLeft: this.iconService.getIcon('skipLeft'),
-      skipRight: this.iconService.getIcon('skipRight')
+      skipRight: this.iconService.getIcon('skipRight'),
+      ciru: this.iconService.getIcon('ciruIcon')
     };
   }
 
@@ -165,6 +168,19 @@ export class ProcedimientosmenoresComponent implements OnInit {
 
   volver(): void {
     this.router.navigate(['/estadistica/consultar'])
+  }
+
+  incluir(): void {
+    const url = this.router.url;
+    if (url.includes('/estadistica/')) {
+      this.router.navigate(['/estadistica/gestion-procedimientos']);
+      return;
+    }
+    if (url.includes('/adminsys') || url.includes('/administrador')) {
+      this.router.navigate(['/adminsys/gestion-procedimientos']);
+      return;
+    }
+    this.router.navigate(['/estadistica/gestion-procedimientos']);
   }
 
   agregar(): void {

@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { ConsultaOut } from '../../interface/consultas';
-import { IntervencionQuirurgica } from '../../interface/quirofano.interface';
+import { Especialidad, IntervencionQuirurgica } from '../../interface/quirofano.interface';
 import { ConsultaService } from '../../registros/consultas/consultas.service';
 import { PacienteService } from '../../registros/patient/paciente.service';
 import { IconService } from '../../service/icon.service';
@@ -67,7 +67,9 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
   // Consultas de hospitalización que ya tienen una intervención registrada
   consultasConIntervencion = new Set<number>();
 
-  filtroInt = { expediente: '', fecha_desde: '', fecha_hasta: '' };
+  filtroInt = { expediente: '', documento: '', nombre: '', especialidad: '', especialidad_id: null as number | null, fecha_desde: '', fecha_hasta: '' };
+  especialidadesFiltro: Especialidad[] = [];
+  especialidadFiltroSeleccionada: number | null = null;
 
   // ── Iconos ──
   icons: { [key: string]: any } = {};
@@ -90,8 +92,38 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.cargarEspecialidadesFiltro();
+    const hoy = new Date();
+    const ayer = new Date(hoy);
+    ayer.setDate(hoy.getDate() - 1);
+    const toIso = (d: Date) => d.toISOString().split('T')[0];
+    this.filtroInt.fecha_desde = toIso(ayer);
+    this.filtroInt.fecha_hasta = toIso(hoy);
     this.cargarHospitalizacion();
     this.cargarIntervenciones();
+  }
+
+  cargarEspecialidadesFiltro(): void {
+    const nombres = ['ciru', 'gine', 'trau'];
+    this.api.getEspecialidades().pipe(takeUntil(this.destroy$)).subscribe({
+      next: res => {
+        this.especialidadesFiltro = res.filter(e => {
+          if (e.estado === false) return false;
+          const n = (e.nombre || '').toLowerCase();
+          return nombres.some(x => n.includes(x));
+        }).sort((a,b) => {
+          const na = (a.nombre||'').toLowerCase();
+          const nb = (b.nombre||'').toLowerCase();
+          if (na.includes('ciru')) return -1;
+          if (nb.includes('ciru')) return 1;
+          if (na.includes('gine')) return -1;
+          if (nb.includes('gine')) return 1;
+          return 0;
+        });
+        this.cdr.markForCheck();
+      },
+      error: () => { this.especialidadesFiltro = []; this.cdr.markForCheck(); }
+    });
   }
 
   ngOnDestroy(): void {
@@ -104,12 +136,20 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
   // ══════════════════════════════════════════════════════════
   cargarHospitalizacion(): void {
     this.consultasCargando = true;
-    this.consultasApi.getConsultas({
+    const params: any = {
       skip: (this.consultasPagina - 1) * this.consultasPageSize,
       limit: this.consultasPageSize,
       activo: true,
       tipo_consulta: TIPO_HOSPITALIZACION
-    }).pipe(takeUntil(this.destroy$)).subscribe({
+    };
+    if (this.filtroInt.expediente) params.expediente = this.filtroInt.expediente;
+    if (this.filtroInt.documento) params.documento = this.filtroInt.documento;
+    if (this.filtroInt.nombre) params.q = this.filtroInt.nombre;
+    if (this.especialidadFiltroSeleccionada) {
+      const esp = this.especialidadesFiltro.find(e => e.id === this.especialidadFiltroSeleccionada);
+      if (esp?.nombre) params.especialidad = esp.nombre;
+    }
+    this.consultasApi.getConsultas(params).pipe(takeUntil(this.destroy$)).subscribe({
       next: res => {
         this.consultasTotal = res.total;
         this.consultas = res.consultas.filter(c => this.esConsultaActiva(c));
@@ -170,6 +210,17 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
       limit: this.intPageSize + 1
     };
     if (this.filtroInt.expediente) params.expediente = this.filtroInt.expediente;
+    if (this.filtroInt.documento) { params.documento = this.filtroInt.documento; params.hoja_emergencia = this.filtroInt.documento; }
+    if (this.filtroInt.nombre) { params.nombre = this.filtroInt.nombre; params.paciente_nombre = this.filtroInt.nombre; }
+    if (this.especialidadFiltroSeleccionada) {
+      params.especialidad_id = this.especialidadFiltroSeleccionada;
+      this.filtroInt.especialidad_id = this.especialidadFiltroSeleccionada;
+    } else if (this.filtroInt.especialidad) {
+      params.especialidad = this.filtroInt.especialidad;
+      this.filtroInt.especialidad_id = null;
+    } else {
+      this.filtroInt.especialidad_id = null;
+    }
     if (this.filtroInt.fecha_desde) params.fecha_desde = this.filtroInt.fecha_desde;
     if (this.filtroInt.fecha_hasta) params.fecha_hasta = this.filtroInt.fecha_hasta;
 
@@ -188,6 +239,22 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
     });
   }
 
+  filtrarPorEspecialidad(id: number | null): void {
+    this.especialidadFiltroSeleccionada = id;
+    this.filtroInt.especialidad_id = id;
+    this.intPagina = 1;
+    this.consultasPagina = 1;
+    this.cargarIntervenciones();
+    this.cargarHospitalizacion();
+  }
+
+  onFiltroIntervencionChange(): void {
+    this.intPagina = 1;
+    this.consultasPagina = 1;
+    this.cargarIntervenciones();
+    this.cargarHospitalizacion();
+  }
+
   // ══════════════════════════════════════════════════════════
   // VISTA / FILTROS
   // ══════════════════════════════════════════════════════════
@@ -199,7 +266,12 @@ export class QuirofanoComponent implements OnInit, OnDestroy {
 
   limpiarFiltros(): void {
     this.filtroExpediente = '';
-    this.filtroInt = { expediente: '', fecha_desde: '', fecha_hasta: '' };
+    const hoy = new Date();
+    const ayer = new Date(hoy);
+    ayer.setDate(hoy.getDate() - 1);
+    const toIso = (d: Date) => d.toISOString().split('T')[0];
+    this.filtroInt = { expediente: '', documento: '', nombre: '', especialidad: '', especialidad_id: null, fecha_desde: toIso(ayer), fecha_hasta: toIso(hoy) };
+    this.especialidadFiltroSeleccionada = null;
     this.intPagina = 1;
     this.consultasPagina = 1;
     this.cargarHospitalizacion();

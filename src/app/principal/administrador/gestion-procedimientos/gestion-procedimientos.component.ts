@@ -161,13 +161,41 @@ export class GestionProcedimientosComponent implements OnDestroy {
       return;
     }
 
+    const abreviatura = this.formCodigo().trim();
+    const normalizar = (s: string) => (s || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const nombreNorm = normalizar(procedimiento);
+    const abrevNorm = abreviatura ? normalizar(abreviatura) : '';
+
+    const similares = this.catalogoProcedimientos().filter(c => {
+      if (this.editando() && this.idOriginal() && c.id === this.idOriginal()) return false;
+      const cn = normalizar(c.nombre);
+      const ca = c.abreviatura ? normalizar(c.abreviatura) : '';
+      if (abrevNorm && ca && ca === abrevNorm) return true;
+      if (nombreNorm && cn && cn === nombreNorm) return true;
+      if (abrevNorm && ca && (ca.includes(abrevNorm) || abrevNorm.includes(ca))) return true;
+      if (nombreNorm && cn && (cn.includes(nombreNorm) || nombreNorm.includes(cn))) return true;
+      return false;
+    });
+
+    if (similares.length > 0) {
+      const lista = similares.slice(0, 3).map(s => `• ${s.nombre}${s.abreviatura ? ' [' + s.abreviatura + ']' : ''}`).join('\n');
+      const continuar = confirm(`Ya existe(n) procedimiento(s) con nombre o abreviatura similar(es):\n\n${lista}${similares.length > 3 ? '\n• ...' : ''}\n\n¿Desea agregarlo de todas formas?`);
+      if (!continuar) return;
+    }
+
     this.guardando.set(true);
     this.error.set(null);
     this.success.set(null);
 
     const payload: Partial<CatalogoProcedimiento> = {
       nombre: procedimiento,
-      abreviatura: this.formCodigo().trim() || undefined,
+      abreviatura: abreviatura || undefined,
       descripcion: this.formDescripcion().trim() || undefined,
       anestesia: this.formAnestesia(),
       especialidades_ids: this.formEspecialidades(),

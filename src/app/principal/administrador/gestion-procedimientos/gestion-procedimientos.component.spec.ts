@@ -68,6 +68,7 @@ describe('GestionProcedimientosComponent', () => {
   });
 
   it('guardar envía especialidades_ids al backend', () => {
+    spyOn(window, 'confirm').and.returnValue(true);
     component.abrirNuevo();
     component.formProcedimiento.set('Procedimiento de prueba');
     component.toggleEspecialidad(2);

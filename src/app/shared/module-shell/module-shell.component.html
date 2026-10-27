@@ -1,5 +1,5 @@
 <div class="mod-shell" [style.--accent]="config.accent">
-  <aside class="mod-sidebar" [class.is-open]="sidebarAbierta()">
+  <aside class="mod-sidebar no-imprimir" [class.is-open]="sidebarAbierta()">
     <header class="mod-brand">
       <a class="mod-back" routerLink="/dash">
         @if (icons["regresar"]) {
@@ -41,14 +41,14 @@
   </aside>
 
   <div
-    class="mod-overlay"
+    class="mod-overlay no-imprimir"
     [class.is-visible]="sidebarAbierta()"
     (click)="cerrarSidebar()"
     aria-hidden="true"
   ></div>
 
   <main class="mod-content">
-    <header class="mod-topbar">
+    <header class="mod-topbar no-imprimir">
       <button
         class="mod-toggle"
         type="button"

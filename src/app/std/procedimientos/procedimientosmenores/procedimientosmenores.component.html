@@ -20,6 +20,14 @@
       </button>
       <button
         type="button"
+        class="btn-accion btn-principal"
+        (click)="incluir()"
+      >
+        <span [innerHTML]="icons['ciru']"></span>
+        <span class="btn-texto">Incluir</span>
+      </button>
+      <button
+        type="button"
         class="btn-accion btn-secundario"
         (click)="irACaptura()"
         title="Llenar a mano los procedimientos más usados de una especialidad e imprimir la hoja"

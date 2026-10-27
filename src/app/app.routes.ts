@@ -91,7 +91,7 @@ export const routes: Routes = [
       {
         path: 'gestion-procedimientos',
         loadComponent: () => import('./principal/administrador/gestion-procedimientos/gestion-procedimientos.component').then(c => c.GestionProcedimientosComponent),
-        canActivate: [roleGuard(['admin'])]
+        canActivate: [roleGuard(['admin', 'std', 'medico', 'medic'])]
       },
       {
         path: 'desactivar-consulta',
@@ -510,27 +510,6 @@ export const routes: Routes = [
         path: 'historiaClinica',
         loadComponent: () => import('./medica/historiaClinica/historiaClinica.component').then(c => c.HistoriaClinicaComponent)
       },
-      // // Quirófano
-      // {
-      //   path: 'quirofano',
-      //   loadComponent: () => import('./medica/quirofano/quirofano.component').then(c => c.QuirofanoComponent),
-      //   canActivate: [roleGuard(['admin', 'medico'])]
-      // },
-      // {
-      //   path: 'quirofano/nueva',
-      //   loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
-      //   canActivate: [roleGuard(['admin', 'medico'])]
-      // },
-      // {
-      //   path: 'quirofano/editar/:id',
-      //   loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
-      //   canActivate: [roleGuard(['admin', 'medico'])]
-      // },
-      // {
-      //   path: 'quirofano/resumen',
-      //   redirectTo: 'estadistica/quirofano-resumen',
-      //   pathMatch: 'full'
-      // },
 
       //Citas
       {
@@ -628,6 +607,11 @@ export const routes: Routes = [
           {
             path: 'procedimientos',
             loadComponent: () => import('./std/procedimientos/procedimientosmenores/procedimientosmenores.component').then(c => c.ProcedimientosmenoresComponent)
+          },
+          {
+            path: 'gestion-procedimientos',
+            loadComponent: () => import('./principal/administrador/gestion-procedimientos/gestion-procedimientos.component').then(c => c.GestionProcedimientosComponent),
+            canActivate: [roleGuard(['admin', 'std', 'medico', 'medic'])]
           },
           {
             path: 'censo-camas',
@@ -986,22 +970,22 @@ export const routes: Routes = [
           {
             path: 'quirofano',
             loadComponent: () => import('./medica/quirofano/quirofano.component').then(c => c.QuirofanoComponent),
-            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
+            canActivate: [roleGuard(['admin', 'medico', 'paramedic'])]
           },
           {
             path: 'quirofano/nueva',
             loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
-            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
+            canActivate: [roleGuard(['admin', 'medico', 'paramedic'])]
           },
           {
             path: 'quirofano/editar/:id',
             loadComponent: () => import('./medica/quirofano/quirofano-form/quirofano-form.component').then(c => c.QuirofanoFormComponent),
-            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
+            canActivate: [roleGuard(['admin', 'medico', 'paramedic'])]
           },
           {
             path: 'quirofano-resumen',
             loadComponent: () => import('./medica/quirofano/quirofano-resumen/quirofano-resumen.component').then(c => c.QuirofanoResumenComponent),
-            canActivate: [roleGuard(['admin', 'medico', 'enfermeria', 'paramedic'])]
+            canActivate: [roleGuard(['admin', 'medico', 'paramedic'])]
           },
           {
             path: 'censo-camas',
