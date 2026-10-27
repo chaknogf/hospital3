@@ -1,0 +1,112 @@
+
+/* ═══════════════════════════════════════════════════════════════
+   SURFACE DUO / DUO 2 RESPONSIVE (CSS only)
+   Target: Duo 540x720, Duo2 550x720; spanned ~1114x720 / ~1146x720
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Foldable/dual-screen viewport segments (where supported) */
+@supports (env(viewport-segment-width, 0)) {
+  .ds-fold-aware {
+    padding-left: env(viewport-segment-left, 0);
+    padding-right: env(viewport-segment-right, 0);
+  }
+}
+
+/* Duo single screen widths */
+@media (max-width: 559.98px) {
+  /* Stack common layout blocks */
+  .quirofano-filtros,
+  .filtros,
+  .buscador,
+  .panel-filtros {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm, 0.5rem);
+  }
+
+  .quirofano-filtros .filtro-item,
+  .panel-filtros .filtro-item {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Allow horizontal scroll for wide tables locally */
+  .table-responsive,
+  .ds-table-wrap,
+  .mat-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ds-table th,
+  .ds-table td,
+  table th,
+  table td {
+    white-space: nowrap;
+  }
+
+  /* Touch-friendly buttons/inputs */
+  button,
+  .btn,
+  input,
+  select,
+  .ds-input {
+    min-height: 44px;
+  }
+
+  /* Prevent horizontal overflow */
+  body,
+  .container,
+  .page,
+  main {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+/* Duo2-ish single screen */
+@media (min-width: 540px) and (max-width: 560px) and (max-height: 740px) {
+  .contenedor,
+  .main-content {
+    padding-left: var(--space-sm, 0.5rem);
+    padding-right: var(--space-sm, 0.5rem);
+  }
+
+  .grid,
+  .row {
+    row-gap: var(--space-sm, 0.5rem);
+  }
+}
+
+/* Spanned/dual-screen: avoid spreading across hinge, keep scrollable regions */
+@media (min-width: 1100px) and (max-width: 1160px) and (max-height: 740px) {
+  .ds-split-avoid {
+    column-gap: var(--space-md, 0.75rem);
+  }
+
+  /* Keep tables in scrollable containers, don't force full-width split */
+  .table-responsive,
+  .ds-table-wrap {
+    max-width: 100%;
+  }
+
+  /* Stack cards to avoid hinge crossing awkwardly */
+  .card,
+  .ds-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* General dual-screen hint (optional) */
+@media (horizontal-viewport-segments: 2) {
+  .main-content,
+  .contenedor {
+    padding-inline: max(var(--space-md, 0.75rem), env(viewport-segment-left, 0), env(viewport-segment-right, 0));
+  }
+
+  .table-responsive,
+  .ds-table-wrap {
+    overflow-x: auto;
+  }
+}

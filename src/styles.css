@@ -25,6 +25,7 @@
 @import './styles/_admin.css';
 @import './styles/_consultor.css';
 @import './styles/_detalle-consulta.css';
+@import './styles/_surface-duo.css';
 
 :root {
   /* ── GRAYS (escala neutra, independiente del tema) ── */
