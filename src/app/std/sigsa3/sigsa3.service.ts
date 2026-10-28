@@ -204,9 +204,10 @@ export class Sigsa3Service extends BaseApiService {
     );
   }
 
-  normalizarDatos(): Observable<any> {
+  normalizarDatos(maxRegistros = 2000): Observable<any> {
     this.isLoading.set(true);
-    return this.http.post<any>(`${this.baseUrl}/sigsa3/normalizar`, {}).pipe(
+    let params = new (window as any).URLSearchParams();
+    return this.http.post<any>(`${this.baseUrl}/sigsa3/normalizar?max_registros=${maxRegistros}`, {}).pipe(
       finalize(() => this.isLoading.set(false)),
       catchError(error => this.manejarError(error, 'normalizar datos'))
     );

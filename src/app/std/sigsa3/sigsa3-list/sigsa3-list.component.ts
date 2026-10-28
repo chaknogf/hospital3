@@ -280,15 +280,28 @@ export class Sigsa3ListComponent implements OnInit, OnDestroy {
 
   normalizarDatos(): void {
     this.procesando = true;
-    this.api.normalizarDatos().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res) => {
-        this.resultadoOperacion = res;
-        this.procesando = false;
-        this.cargar();
-        this.cdr.markForCheck();
-      },
-      error: () => { this.procesando = false; this.cdr.markForCheck(); }
-    });
+    this.resultadoOperacion = null;
+    const acumulado: any = { migrados: 0, purgeados_de_staging: 0, errores: 0 };
+    const paso = () => {
+      this.api.normalizarDatos(2000).pipe(takeUntil(this.destroy$)).subscribe({
+        next: (res) => {
+          acumulado.migrados += res?.migrados ?? 0;
+          acumulado.purgeados_de_staging += res?.purgeados_de_staging ?? 0;
+          acumulado.errores += res?.errores ?? 0;
+          this.resultadoOperacion = { ...res, ...acumulado, modo: res?.modo };
+          this.cdr.markForCheck();
+          if ((res?.migrados ?? 0) > 0 && (res?.migrados ?? 0) >= 2000) {
+            paso();
+          } else {
+            this.procesando = false;
+            this.cargar();
+            this.cdr.markForCheck();
+          }
+        },
+        error: () => { this.procesando = false; this.cdr.markForCheck(); }
+      });
+    };
+    paso();
   }
 
   sincronizarTodo(): void {

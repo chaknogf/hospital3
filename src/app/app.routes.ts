@@ -675,6 +675,36 @@ export const routes: Routes = [
             loadComponent: () => import('./std/sigsa3/sigsa3-list/sigsa3-list.component').then(c => c.Sigsa3ListComponent)
           },
           {
+            path: 'sigsa3/nuevo',
+            loadComponent: () => import('./std/sigsa3/sigsa3-form/sigsa3-form.component').then(c => c.Sigsa3FormComponent),
+            canActivate: [roleGuard(['admin', 'std'])]
+          },
+          {
+            path: 'sigsa3/editar/:id',
+            loadComponent: () => import('./std/sigsa3/sigsa3-form/sigsa3-form.component').then(c => c.Sigsa3FormComponent),
+            canActivate: [roleGuard(['admin', 'std'])]
+          },
+          {
+            path: 'sigsa3/importar',
+            loadComponent: () => import('./std/sigsa3/sigsa3-import/sigsa3-import.component').then(c => c.Sigsa3ImportComponent),
+            canActivate: [roleGuard(['admin', 'std'])]
+          },
+          {
+            path: 'personal-salud',
+            loadComponent: () => import('./std/sigsa3/personal-salud-list/personal-salud-list.component').then(c => c.PersonalSaludListComponent),
+            canActivate: [roleGuard(['admin', 'std'])]
+          },
+          {
+            path: 'personal-salud/nuevo',
+            loadComponent: () => import('./std/sigsa3/personal-salud-form/personal-salud-form.component').then(c => c.PersonalSaludFormComponent),
+            canActivate: [roleGuard(['admin', 'std'])]
+          },
+          {
+            path: 'personal-salud/editar/:id',
+            loadComponent: () => import('./std/sigsa3/personal-salud-form/personal-salud-form.component').then(c => c.PersonalSaludFormComponent),
+            canActivate: [roleGuard(['admin', 'std'])]
+          },
+          {
             path: 'sigsa3-registros',
             loadComponent: () => import('./std/sigsa3-registros/sigsa3-registros-list/sigsa3-registros-list.component').then(c => c.Sigsa3RegistrosListComponent)
           },
@@ -1088,37 +1118,6 @@ export const routes: Routes = [
         redirectTo: 'estadistica/sigsa3',
         pathMatch: 'full'
       },
-      {
-        path: 'sigsa3/nuevo',
-        loadComponent: () => import('./std/sigsa3/sigsa3-form/sigsa3-form.component').then(c => c.Sigsa3FormComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
-      },
-      {
-        path: 'sigsa3/editar/:id',
-        loadComponent: () => import('./std/sigsa3/sigsa3-form/sigsa3-form.component').then(c => c.Sigsa3FormComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
-      },
-      {
-        path: 'sigsa3/importar',
-        loadComponent: () => import('./std/sigsa3/sigsa3-import/sigsa3-import.component').then(c => c.Sigsa3ImportComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
-      },
-      {
-        path: 'personal-salud',
-        loadComponent: () => import('./std/sigsa3/personal-salud-list/personal-salud-list.component').then(c => c.PersonalSaludListComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
-      },
-      {
-        path: 'personal-salud/nuevo',
-        loadComponent: () => import('./std/sigsa3/personal-salud-form/personal-salud-form.component').then(c => c.PersonalSaludFormComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
-      },
-      {
-        path: 'personal-salud/editar/:id',
-        loadComponent: () => import('./std/sigsa3/personal-salud-form/personal-salud-form.component').then(c => c.PersonalSaludFormComponent),
-        canActivate: [roleGuard(['admin', 'std'])]
-      },
-
       // SIGSA-3 Registros (normalizados)
       {
         path: 'sigsa3-registros',
