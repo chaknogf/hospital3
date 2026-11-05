@@ -11,6 +11,7 @@ import {
   TRABAJO_SOCIAL_NAV,
   UISAU_NAV,
   ENFERMERIA_NAV,
+  FARMACIA_NAV,
 } from './shared/module-nav';
 
 /** Rutas de la aplicación; el guard de sesión agrupa las vistas autenticadas. */
@@ -1030,13 +1031,37 @@ export const routes: Routes = [
             loadComponent: () => import('./std/censo-camas/censo-camas-form.component').then(c => c.CensoCamasFormComponent)
           },
           {
-            path: 'medicamentos',
-            loadComponent: () => import('./enfermeria/medicamentos/medicamentos-enfermeria.component').then(c => c.MedicamentosEnfermeriaComponent)
+            path: 'solicitar-insumos',
+            loadComponent: () => import('./enfermeria/solicitar-insumos/solicitar-insumos.component').then(c => c.SolicitarInsumosComponent)
+          },
+          {
+            path: 'atenciones-insumos',
+            loadComponent: () => import('./enfermeria/atenciones-insumos/atenciones-insumos.component').then(c => c.AtencionesInsumosComponent)
+          },
+          {
+            path: 'unidosis',
+            loadComponent: () => import('./enfermeria/unidosis/unidosis.component').then(c => c.UnidosisEnfermeriaComponent)
           },
           {
             path: 'reportes',
             loadComponent: () => import('./std/reportes/reportes-inicio.component').then(c => c.ReportesInicioComponent)
           }
+        ]
+      },
+      // Farmacia — barra lateral con rutas hijas
+      {
+        path: 'farmacia',
+        loadComponent: () => import('./shared/module-shell/module-shell.component').then(c => c.ModuleShellComponent),
+        canActivate: [roleGuard(['admin', 'jefe_farmacia', 'auxiliar_farmacia'])],
+        data: { module: FARMACIA_NAV },
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'catalogo' },
+          { path: 'catalogo', loadComponent: () => import('./farmacia/catalogo/catalogo.component').then(c => c.CatalogoComponent) },
+          { path: 'almacenes', loadComponent: () => import('./farmacia/almacenes/almacenes.component').then(c => c.AlmacenesComponent) },
+          { path: 'kardex', loadComponent: () => import('./farmacia/kardex/kardex.component').then(c => c.KardexComponent) },
+          { path: 'requisiciones', loadComponent: () => import('./farmacia/requisiciones/requisiciones.component').then(c => c.RequisicionesComponent) },
+          { path: 'despachos', loadComponent: () => import('./farmacia/despachos/despachos.component').then(c => c.DespachosComponent) },
+          { path: 'unidosis', loadComponent: () => import('./farmacia/unidosis/unidosis.component').then(c => c.UnidosisFarmaciaComponent) },
         ]
       },
       {
@@ -1250,6 +1275,17 @@ export const routes: Routes = [
             path: 'referencias-consultas',
             loadComponent: () => import('./std/reportes/referencias-consultas/referencias-consultas.component').then(c => c.ReferenciasConsultasComponent)
           },
+          // ── Farmacia ──
+          { path: 'farmacia/catalogo', loadComponent: () => import('./farmacia/catalogo/catalogo.component').then(c => c.CatalogoComponent), canActivate: [roleGuard(['admin', 'jefe_farmacia', 'auxiliar_farmacia'])] },
+          { path: 'farmacia/almacenes', loadComponent: () => import('./farmacia/almacenes/almacenes.component').then(c => c.AlmacenesComponent), canActivate: [roleGuard(['admin', 'jefe_farmacia', 'auxiliar_farmacia'])] },
+          { path: 'farmacia/kardex', loadComponent: () => import('./farmacia/kardex/kardex.component').then(c => c.KardexComponent), canActivate: [roleGuard(['admin', 'jefe_farmacia', 'auxiliar_farmacia'])] },
+          { path: 'farmacia/requisiciones', loadComponent: () => import('./farmacia/requisiciones/requisiciones.component').then(c => c.RequisicionesComponent), canActivate: [roleGuard(['admin', 'jefe_farmacia', 'auxiliar_farmacia'])] },
+          { path: 'farmacia/despachos', loadComponent: () => import('./farmacia/despachos/despachos.component').then(c => c.DespachosComponent), canActivate: [roleGuard(['admin', 'jefe_farmacia', 'auxiliar_farmacia'])] },
+          { path: 'farmacia/unidosis', loadComponent: () => import('./farmacia/unidosis/unidosis.component').then(c => c.UnidosisFarmaciaComponent), canActivate: [roleGuard(['admin', 'jefe_farmacia', 'auxiliar_farmacia'])] },
+          // ── Enfermería (solicitud y consumo de insumos) ──
+          { path: 'solicitar-insumos', loadComponent: () => import('./enfermeria/solicitar-insumos/solicitar-insumos.component').then(c => c.SolicitarInsumosComponent), canActivate: [roleGuard(['admin', 'paramedic'])] },
+          { path: 'atenciones-insumos', loadComponent: () => import('./enfermeria/atenciones-insumos/atenciones-insumos.component').then(c => c.AtencionesInsumosComponent), canActivate: [roleGuard(['admin', 'paramedic'])] },
+          { path: 'unidosis', loadComponent: () => import('./enfermeria/unidosis/unidosis.component').then(c => c.UnidosisEnfermeriaComponent), canActivate: [roleGuard(['admin', 'paramedic'])] },
         ]
       },
     ]

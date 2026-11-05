@@ -145,6 +145,20 @@ export const UISAU_NAV: ModuleNavConfig = {
   ],
 };
 
+export const FARMACIA_NAV: ModuleNavConfig = {
+  title: 'Farmacia',
+  subtitle: 'Catálogo, almacenes, kardex, requisiciones, despachos y unidosis',
+  accent: '#10b981',
+  items: [
+    { nombre: 'Catálogo insumos', descripcion: 'Insumos y presentaciones (importar CSV)', ruta: 'catalogo', icon: 'datosIcon' },
+    { nombre: 'Almacenes y lotes', descripcion: 'Stock por lote, ingreso y ajuste', ruta: 'almacenes', icon: 'archivoIcon' },
+    { nombre: 'Kardex', descripcion: 'Libro mayor de movimientos', ruta: 'kardex', icon: 'datosIcon' },
+    { nombre: 'Requisiciones', descripcion: 'Solicitudes de servicio', ruta: 'requisiciones', icon: 'archivoIcon' },
+    { nombre: 'Despachos', descripcion: 'Salidas de almacén', ruta: 'despachos', icon: 'compartirIcon' },
+    { nombre: 'Unidosis', descripcion: 'Preparación de dosis unitarias', ruta: 'unidosis', icon: 'medicinaIcon' },
+  ],
+};
+
 export const ENFERMERIA_NAV: ModuleNavConfig = {
   title: 'Enfermería',
   subtitle: 'Gestión de paramédica',
@@ -184,9 +198,21 @@ export const ENFERMERIA_NAV: ModuleNavConfig = {
       icon: 'censoCamasIcon',
     },
     {
-      nombre: 'Medicamentos',
-      descripcion: 'Gestión de inventario y administración de medicamentos',
-      ruta: 'medicamentos',
+      nombre: 'Solicitar insumos',
+      descripcion: 'Solicitud de medicamentos y material quirúrgico (requisición)',
+      ruta: 'solicitar-insumos',
+      icon: 'medicinaIcon',
+    },
+    {
+      nombre: 'Atenciones insumos',
+      descripcion: 'Consumo de insumos por paciente y atención',
+      ruta: 'atenciones-insumos',
+      icon: 'medicinaIcon',
+    },
+    {
+      nombre: 'Unidosis',
+      descripcion: 'Preparación y administración de dosis unitarias',
+      ruta: 'unidosis',
       icon: 'medicinaIcon',
     },
     {
