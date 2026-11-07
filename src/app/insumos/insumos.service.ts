@@ -77,8 +77,12 @@ export class InsumosService extends BaseApiService {
   anularDespacho(id: number): Observable<Despacho> { return this.http.post<Despacho>(`${this.base}/despachos/${id}/anular`, {}); }
 
   // Servicios (encamamiento) — para listados de destino
-  listarServicios(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/encamamiento`);
+  listarServicios(activo: boolean | null = true): Observable<any> {
+    const params: any = {};
+    if (activo !== null) params.activo = activo;
+    return this.http.get(`${this.baseUrl}/encamamiento/`, {
+      params: this.limpiarParametros(params),
+    });
   }
 
   // Atenciones / Unidosis

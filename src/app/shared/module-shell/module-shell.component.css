@@ -249,3 +249,16 @@
     transition: none;
   }
 }
+
+@media print {
+  /* El shell usa grid de sidebar + contenido; al imprimir debe fluir en bloque. */
+  .mod-shell {
+    display: block !important;
+    min-height: 0 !important;
+  }
+
+  .mod-content {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}

@@ -155,6 +155,7 @@ export const FARMACIA_NAV: ModuleNavConfig = {
     { nombre: 'Kardex', descripcion: 'Libro mayor de movimientos', ruta: 'kardex', icon: 'datosIcon' },
     { nombre: 'Requisiciones', descripcion: 'Solicitudes de servicio', ruta: 'requisiciones', icon: 'archivoIcon' },
     { nombre: 'Despachos', descripcion: 'Salidas de almacén', ruta: 'despachos', icon: 'compartirIcon' },
+    { nombre: 'Informe por periodo', descripcion: 'Despachos y kardex del periodo', ruta: 'reportes/periodo', icon: 'archivoIcon' },
     { nombre: 'Unidosis', descripcion: 'Preparación de dosis unitarias', ruta: 'unidosis', icon: 'medicinaIcon' },
   ],
 };

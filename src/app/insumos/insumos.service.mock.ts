@@ -34,6 +34,7 @@ export const mockInsumosService = {
   obtenerDespacho: () => of({}),
   despachar: () => of({}),
   anularDespacho: () => of({}),
+  listarServicios: () => of([]),
   crearAtencion: () => of({}),
   listarAtenciones: () => of({ total: 0, items: [] }),
   obtenerAtencion: () => of({}),
